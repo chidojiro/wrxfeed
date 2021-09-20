@@ -266,5 +266,6 @@ module.exports = {
         additionalHooks: 'useRecoilCallback',
       },
     ],
+    'eol-last': ["error", "always"],
   },
 };
