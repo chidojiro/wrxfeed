@@ -14,32 +14,32 @@ const routes: RouteItem<ComponentType>[] = [
   },
   {
     path: '/login',
-    component: lazy(() => import('./admin/pages/LoginPage')),
+    component: lazy(() => import('./auth/pages/LoginPage')),
   },
   {
     path: '/forgot-pwd',
-    component: lazy(() => import('./admin/pages/ForgotPwdPage')),
+    component: lazy(() => import('./auth/pages/ForgotPwdPage')),
   },
   {
     path: '/forgot-pwd/success',
-    component: lazy(() => import('./admin/pages/ForgotPwdSuccessPage')),
+    component: lazy(() => import('./auth/pages/ForgotPwdSuccessPage')),
   },
   {
     path: '/reset-pwd',
-    component: lazy(() => import('./admin/pages/ResetPwdPage')),
+    component: lazy(() => import('./auth/pages/ResetPwdPage')),
   },
   {
     path: '/reset-pwd/success',
-    component: lazy(() => import('./admin/pages/ResetPwdSuccessPage')),
+    component: lazy(() => import('./auth/pages/ResetPwdSuccessPage')),
   },
   {
     path: '/profile',
-    component: lazy(() => import('./admin/pages/ProfilePage')),
+    component: lazy(() => import('./auth/pages/ProfilePage')),
     permissions: ['admin'],
   },
   {
     path: '/profile/change-pwd',
-    component: lazy(() => import('./admin/pages/ChangePwdPage')),
+    component: lazy(() => import('./auth/pages/ChangePwdPage')),
     permissions: ['admin'],
   },
   {

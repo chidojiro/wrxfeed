@@ -4,7 +4,7 @@ import { createTheme } from '@mui/material/styles';
 export const theme = createTheme({
   palette: {
     primary: {
-      main: '#296BE3',
+      main: '#0f0d15',
     },
   },
   shape: {
@@ -58,22 +58,28 @@ export const theme = createTheme({
         fullWidth: true,
       },
     },
-    MuiInput: {
+    MuiOutlinedInput: {
       styleOverrides: {
-        underline: {
-          '&::before': {
-            borderColor: '#BFBFBF',
-          },
-          '&::after': {
-            borderColor: '#BFBFBF',
-          },
+        root: {
+          borderRadius: '16px',
+        },
+        input: {
+          padding: '16.5px',
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          left: '4px',
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          padding: '6px 24px',
+          padding: '8px 24px',
+          borderRadius: '24px',
         },
       },
     },
@@ -91,14 +97,18 @@ export const theme = createTheme({
         },
       },
     },
-    MuiInputLabel: {
-      defaultProps: {
-        shrink: true,
-      },
-    },
     MuiTextField: {
       defaultProps: {
         fullWidth: true,
+      },
+    },
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          borderRadius: '24px',
+          backgroundColor: '#fff',
+          padding: '32px',
+        },
       },
     },
   },

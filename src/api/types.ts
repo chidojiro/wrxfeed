@@ -5,7 +5,7 @@ import {
   LoginFormModel,
   Profile,
   ProfileFormModel,
-} from '../admin/types';
+} from '../auth/types';
 import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
 
 export interface ApiClient {

@@ -17,11 +17,13 @@
     "strictNullChecks": true,
     "baseUrl": ".",
     "paths": {
+      "@*": ["./src/*/index"],
       "@/*": ["src/*"],
       "@api/*": ["src/api/*"],
       "@common/*": ["src/common/*"],
       "@error/*": ["src/error/*"],
-      "@identity/*": ["src/identity/*"]
+      "@identity/*": ["src/identity/*"],
+      "@auth/*": ["src/auth/*"]
     }
   },
   "exclude": ["**/build/**", "**/coverage/**", "**/dist/**", "**/node_modules/**"]
