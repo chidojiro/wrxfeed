@@ -34,7 +34,11 @@ module.exports = (env) => {
         template: path.resolve('public/index.html'),
       }),
       new CopyPlugin({
-        patterns: [{ from: path.resolve('public/robots.txt'), to: 'robots.txt' }],
+        patterns: [
+          { from: path.resolve('public/robots.txt'), to: 'robots.txt' },
+          // Netlify setting
+          { from: path.resolve('public/netlify.toml'), to: 'netlify.toml' },
+        ],
       }),
       // Create global constants which can be configured at compile time
       new webpack.DefinePlugin({

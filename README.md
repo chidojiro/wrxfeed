@@ -2,6 +2,9 @@
 
 Web UI for WrxFeed fintech.
 
+## Netlify deploy status
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/bf53b711-3921-47e7-b1c0-e53f9995e189/deploy-status)](https://app.netlify.com/sites/wrxfeed/deploys)
 
 ## Requirements
 
