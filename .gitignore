@@ -31,3 +31,5 @@ infra/admin.yml
 
 package-lock.json
 .firebase
+# Local Netlify folder
+.netlify
