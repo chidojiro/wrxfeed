@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
       - name: Build
-        run: yarn build --if-present
+        run: yarn build
       # Deploy to Netlify using our dev secrets
       - name: Deploy to netlify
         uses: netlify/actions/cli@master
