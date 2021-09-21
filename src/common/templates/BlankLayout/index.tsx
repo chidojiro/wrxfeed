@@ -1,15 +1,16 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import Container from '../../atoms/Container';
+import { ContainerProps } from '@mui/material';
+import Container from '@common/atoms/Container';
 
 export interface BlankLayoutProps {
   title: string;
 }
 
-const BlankLayout: React.FC<BlankLayoutProps> = ({ title, children }) => {
+const BlankLayout: React.FC<BlankLayoutProps & ContainerProps> = ({ title, children, ...rest }) => {
   return (
     <>
-      <Container>
+      <Container {...rest}>
         <Typography component="h1" variant="h2">
           {title}
         </Typography>

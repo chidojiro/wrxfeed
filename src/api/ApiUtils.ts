@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiError } from '../error';
 import { Identity } from '../identity';
-import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '../admin/types';
+import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '../auth/types';
 import { ApiClient, ChangePasswordDto, ResetPasswordDto } from './types';
 import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
 import { removeEmptyFields, sleep } from '../common/utils';
