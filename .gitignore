@@ -30,5 +30,4 @@ infra/nginx.conf
 infra/admin.yml
 
 package-lock.json
-yarn.lock
 .firebase
