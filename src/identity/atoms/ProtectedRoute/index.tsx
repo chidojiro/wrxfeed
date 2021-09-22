@@ -1,7 +1,6 @@
-import { useAuthStateContext } from '@api/containers/AuthProvider';
 import React from 'react';
 import { Route, RouteProps, Redirect, useLocation } from 'react-router-dom';
-// import { useIdentity } from '../../hooks';
+import { useIdentity } from '../../hooks';
 
 export interface ProtectedRouteProps extends RouteProps {
   loginUrl?: string;
@@ -14,14 +13,13 @@ const ProtectedRoute: React.VFC<ProtectedRouteProps> = ({
   loginUrl = '/login',
   permissions = [],
 }) => {
-  const authStates = useAuthStateContext();
+  const identity = useIdentity();
   const location = useLocation();
   const dst = {
     pathname: loginUrl,
     state: { from: location },
   };
-  console.log(authStates?.identity, dst);
-  return authStates?.identity || permissions.length === 0 ? (
+  return identity || permissions.length === 0 ? (
     <Route path={path} component={component} exact />
   ) : (
     <Redirect to={dst} />
