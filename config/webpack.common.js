@@ -25,6 +25,7 @@ module.exports = (env) => {
         '@error': path.resolve('src/error'),
         '@identity': path.resolve('src/identity'),
         '@auth': path.resolve('src/auth'),
+        '@main': path.resolve('src/main'),
       },
     },
     plugins: [
