@@ -33,6 +33,10 @@ const routes: RouteItem<ComponentType>[] = [
     component: lazy(() => import('./auth/pages/ResetPwdSuccessPage')),
   },
   {
+    path: '/overview',
+    component: lazy(() => import('./home/pages/OverviewPage')),
+  },
+  {
     path: '/profile',
     component: lazy(() => import('./auth/pages/ProfilePage')),
     permissions: ['admin'],

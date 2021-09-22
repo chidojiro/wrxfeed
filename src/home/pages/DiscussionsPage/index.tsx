@@ -3,8 +3,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link as RouterLink } from 'react-router-dom';
-import ActionButtons from '../../atoms/ActionButtons';
-import BlankLayout from '../../templates/BlankLayout';
+import ActionButtons from '../../../common/atoms/ActionButtons';
+import BlankLayout from '../../../common/templates/BlankLayout';
 
 const NotFoundPage: React.VFC = () => {
   return (
