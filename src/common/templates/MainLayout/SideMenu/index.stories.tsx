@@ -1,14 +1,14 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react/types-6-0';
-import Sidebar from '.';
+import SideMenu from '.';
 
 export default {
-  title: 'Organisms/Sidebar',
-  component: Sidebar,
+  title: 'Organisms/SideMenu',
+  component: SideMenu,
 } as Meta;
 
 const Template: Story = () => {
-  return <Sidebar />;
+  return <SideMenu />;
 };
 
 export const Default = Template.bind({});

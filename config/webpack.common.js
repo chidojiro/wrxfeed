@@ -26,6 +26,7 @@ module.exports = (env) => {
         '@identity': path.resolve('src/identity'),
         '@auth': path.resolve('src/auth'),
         '@home': path.resolve('src/home'),
+        '@main': path.resolve('src/main'),
       },
     },
     plugins: [

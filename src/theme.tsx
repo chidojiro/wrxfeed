@@ -1,10 +1,28 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { createTheme } from '@mui/material/styles';
+
+declare module '@mui/material/styles' {
+  interface Palette {
+    highlight: Palette['primary'];
+  }
+
+  // allow configuration using `createTheme`
+  interface PaletteOptions {
+    highlight?: PaletteOptions['primary'];
+  }
+}
 
 export const theme = createTheme({
   palette: {
     primary: {
       main: '#0f0d15',
+    },
+    highlight: {
+      main: '#DDFF55',
+      contrastText: '#273240',
+    },
+    error: {
+      main: '#FF5F68',
+      contrastText: '#fff',
     },
   },
   shape: {
@@ -25,7 +43,7 @@ export const theme = createTheme({
       'sans-serif',
     ].join(','),
     h1: {
-      fontSize: '1.3125rem',
+      fontSize: '1.875rem',
       fontWeight: 'bold',
     },
     h2: {

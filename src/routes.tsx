@@ -9,51 +9,21 @@ export interface RouteItem<T extends ComponentType> {
 const routes: RouteItem<ComponentType>[] = [
   {
     path: '/',
-    component: lazy(() => import('./diary/pages/ActivityListPage')),
+    component: lazy(() => import('@main/pages/Overview')),
     permissions: ['admin'],
   },
   {
     path: '/login',
-    component: lazy(() => import('./auth/pages/LoginPage')),
-  },
-  {
-    path: '/forgot-pwd',
-    component: lazy(() => import('./auth/pages/ForgotPwdPage')),
-  },
-  {
-    path: '/forgot-pwd/success',
-    component: lazy(() => import('./auth/pages/ForgotPwdSuccessPage')),
-  },
-  {
-    path: '/reset-pwd',
-    component: lazy(() => import('./auth/pages/ResetPwdPage')),
-  },
-  {
-    path: '/reset-pwd/success',
-    component: lazy(() => import('./auth/pages/ResetPwdSuccessPage')),
+    component: lazy(() => import('@auth/pages/LoginPage')),
   },
   {
     path: '/overview',
-    component: lazy(() => import('./home/pages/OverviewPage')),
-  },
-  {
-    path: '/profile',
-    component: lazy(() => import('./auth/pages/ProfilePage')),
+    component: lazy(() => import('@main/pages/Overview')),
     permissions: ['admin'],
   },
   {
-    path: '/profile/change-pwd',
-    component: lazy(() => import('./auth/pages/ChangePwdPage')),
-    permissions: ['admin'],
-  },
-  {
-    path: '/activities/new',
-    component: lazy(() => import('./diary/pages/AddActivityPage')),
-    permissions: ['admin'],
-  },
-  {
-    path: '/activities/edit/:id',
-    component: lazy(() => import('./diary/pages/UpdateActivityPage')),
+    path: '/discussions',
+    component: lazy(() => import('@main/pages/Discussion')),
     permissions: ['admin'],
   },
 ];
