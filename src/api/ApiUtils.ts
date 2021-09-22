@@ -31,7 +31,7 @@ export default class ApiUtils implements ApiClient {
     });
     const identity: Identity = {
       displayName: resp.data.displayName,
-      expireAt: new Date(resp.data.expireAt),
+      expireAt: new Date(resp.data.expireAt || Date.now()),
       // token won't be saved in local storage but in http cookie
       token: '',
       avatar: resp.data.avatar,
