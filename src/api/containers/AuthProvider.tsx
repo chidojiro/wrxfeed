@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import AuthStateContext from '@api/contexts/AuthContext';
 import { User } from 'firebase/auth';
-import { Identity } from '@/identity';
+import { Identity, useSetIdentity } from '@identity';
 
 interface AuthStateProviderProps {
   Firebase: any;
@@ -9,6 +9,7 @@ interface AuthStateProviderProps {
 
 const AuthStateProvider: React.FC<AuthStateProviderProps> = ({ children, Firebase }) => {
   const [authState, setAuthState] = useState<Identity>();
+  const setIdentity = useSetIdentity();
 
   const signOut = () => Firebase.signOut(setAuthState);
   const signUpWithEmailAndPassword = (
@@ -51,8 +52,9 @@ const AuthStateProvider: React.FC<AuthStateProviderProps> = ({ children, Firebas
     onError: (error: any) => void,
   ) => Firebase.signInWithFacebook(setAuthState, callback, onError);
 
-  const signInWithGoogle = (callback: (user: User | null | undefined) => void) =>
-    Firebase.signInWithGoogle(setAuthState, callback);
+  const signInWithGoogle = (callback: (user: User | null | undefined) => void) => {
+    Firebase.signInWithGoogle(setIdentity, callback);
+  };
 
   const updateEmailAddress = (email: string, callback: (user: User | null | undefined) => void) =>
     Firebase.updateEmailAddress(email, callback);
@@ -78,7 +80,6 @@ const AuthStateProvider: React.FC<AuthStateProviderProps> = ({ children, Firebas
   return (
     <AuthStateContext.Provider
       value={{
-        identity: authState,
         signOut,
         signUpWithEmailAndPassword,
         signInWithEmailAndPassword,

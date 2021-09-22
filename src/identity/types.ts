@@ -1,5 +1,3 @@
-import { User } from 'firebase/auth';
-
 export interface Identity {
   displayName: string | null;
   token: string;
@@ -8,5 +6,4 @@ export interface Identity {
   roles?: string[];
   avatar?: string;
   status?: string;
-  user?: User;
 }

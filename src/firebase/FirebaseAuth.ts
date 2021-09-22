@@ -125,7 +125,6 @@ export class FirebaseAuth {
       console.log(user);
       setAuthState({
         status: user?.isAnonymous ? AUTHENTICATED_ANONYMOUSLY : AUTHENTICATED,
-        user,
         email: user?.email,
         displayName: user?.displayName,
         token,
