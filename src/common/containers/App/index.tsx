@@ -11,7 +11,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import '@/styles.css';
 import LoadingFallback from '@common/atoms/LoadingFallback';
 import NotFoundPage from '@common/pages/NotFoundPage';
-import OverviewPage from '@home/pages/OverviewPage';
+// import OverviewPage from '@home/pages/OverviewPage';
+// import DiscussionsPage from '@home/pages/DiscussionsPage';
 import { theme } from '@/theme';
 import routes from '@/routes';
 import { ProtectedRoute } from '@/identity';
@@ -56,7 +57,7 @@ const App: React.FC = () => {
                   <Router key={Math.random()}>
                     <Suspense fallback={<LoadingFallback />}>
                       <Switch>
-                        {/* {routes.map((r) => (
+                        {routes.map((r) => (
                           // Added property`key` to Router to fix warning
                           // when hot reloading Route component
                           <ProtectedRoute
@@ -66,11 +67,11 @@ const App: React.FC = () => {
                             permissions={r.permissions}
                             exact
                           />
-                        ))} */}
+                        ))}
                         {/* 404 homepage */}
                         <Route>
-                          {/* <NotFoundPage /> */}
-                          <OverviewPage />
+                          <NotFoundPage />
+                          {/* <DiscussionsPage /> */}
                         </Route>
                       </Switch>
                     </Suspense>

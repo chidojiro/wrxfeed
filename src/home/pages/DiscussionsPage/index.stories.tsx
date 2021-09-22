@@ -1,11 +1,11 @@
 import React from 'react';
 import { Meta } from '@storybook/react/types-6-0';
 
-import NotFoundPage from '.';
+import DiscussionsPage from '.';
 
 export default {
-  title: 'Pages/NotFoundPage',
-  component: NotFoundPage,
+  title: 'Pages/DiscussionsPage',
+  component: DiscussionsPage,
 } as Meta;
 
-export const Primary: React.VFC = () => <NotFoundPage />;
+export const Primary: React.VFC = () => <DiscussionsPage />;
