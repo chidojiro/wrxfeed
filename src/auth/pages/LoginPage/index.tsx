@@ -9,9 +9,13 @@ import { useErrorHandler, isBadRequest } from '@error';
 import { useNavUtils } from '@common/hooks';
 import BlankLayout from '@common/templates/BlankLayout';
 import { Stack } from '@mui/material';
+import { useAuthStateContext } from '@api/containers/AuthProvider';
+import { User } from 'firebase/auth';
 import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
 
 const LoginPage: React.VFC = () => {
+  const authState = useAuthStateContext();
+
   const api = useApi();
   const setIdentity = useSetIdentity();
   const { redirect } = useNavUtils();
@@ -33,11 +37,22 @@ const LoginPage: React.VFC = () => {
     [api, setIdentity, redirect, handleError],
   );
 
+  const onSignInWithGoogle = (user: User | null | undefined) => {
+    if (user) {
+      redirect('/');
+    }
+  };
+
   return (
     <BlankLayout title="WrxFeed Sign In" sx={{ marginTop: '20vh' }}>
       <Stack spacing={4}>
         <LoginForm onSubmit={handleSubmit} />
-        <SocialAuthButton provider={AuthProvider.GOOGLE} variant="outlined" fullWidth>
+        <SocialAuthButton
+          provider={AuthProvider.GOOGLE}
+          variant="outlined"
+          fullWidth
+          onClick={() => authState?.signInWithGoogle(onSignInWithGoogle)}
+        >
           Continue with Google
         </SocialAuthButton>
       </Stack>
