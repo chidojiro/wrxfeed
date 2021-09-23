@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "webpack serve --config config/webpack.dev.js",
+    "dev": "webpack serve --config config/webpack.dev.js",
     "build": "webpack --env production --config config/webpack.prod.js",
     "preversion": "git-branch-is -r \"^(feature|fix|hotfix)/[a-z\\-\\d\\.]+$\" && echo Preversion checks passed. Your branch name is correct format.",
     "test": "jest --coverage --errorOnDeprecated",
@@ -37,6 +38,7 @@
     "@mui/styles": "^5.0.0-rc.1",
     "axios": "^0.21.1",
     "date-fns": "^2.22.1",
+    "dayjs": "^1.10.7",
     "firebase": "^9.0.2",
     "numeral": "^2.0.6",
     "react": "^17.0.2",
@@ -92,6 +94,7 @@
     "mini-css-extract-plugin": "^1.6.2",
     "prettier": "^2.0.5",
     "react-test-renderer": "^17.0.2",
+    "reactotron-react-js": "^3.3.7",
     "source-map-loader": "^1.0.1",
     "style-loader": "^1.2.1",
     "ts-jest": "^26.1.3",

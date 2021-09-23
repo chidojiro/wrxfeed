@@ -8,7 +8,7 @@ import BlankLayout from '../../templates/BlankLayout';
 
 const NotFoundPage: React.VFC = () => {
   return (
-    <BlankLayout title="Not Found">
+    <BlankLayout title="Not Found" style={{ marginTop: '100px' }}>
       <Typography align="center" paragraph>
         <SearchIcon style={{ fontSize: '5rem' }} />
       </Typography>

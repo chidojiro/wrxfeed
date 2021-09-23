@@ -66,10 +66,10 @@ const App: React.FC = () => {
                             exact
                           />
                         ))}
-
                         {/* 404 homepage */}
                         <Route>
                           <NotFoundPage />
+                          {/* <DiscussionsPage /> */}
                         </Route>
                       </Switch>
                     </Suspense>

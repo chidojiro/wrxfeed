@@ -6,9 +6,10 @@ const drawerWidth = 212;
 
 export interface MainLayoutProps {
   title: string;
+  boxStyle?: React.CSSProperties;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) => {
   return (
     <Box sx={{ display: 'flex', p: 3, height: '100vh' }}>
       <CssBaseline />
@@ -29,14 +30,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
         variant="permanent"
         anchor="left"
       >
-        <Stack spacing={6}>
+        <Stack spacing={6} style={{ display: 'flex', flex: 1, padding: 0 }}>
           <Typography color="white" variant="h4">
             {title}
           </Typography>
           <SideMenu />
         </Stack>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: '#fff', p: 4, borderRadius: 3 }}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, bgcolor: '#fff', p: 4, borderRadius: 3, ...boxStyle }}
+      >
         {children}
       </Box>
     </Box>

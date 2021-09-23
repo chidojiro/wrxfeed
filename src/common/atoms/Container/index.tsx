@@ -7,6 +7,6 @@ const Container = withStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(4),
   },
-}))((props: ContainerProps) => <MuiContainer maxWidth="sm" {...props} />);
+}))((props: ContainerProps) => <MuiContainer maxWidth="lg" {...props} />);
 
 export default Container;
