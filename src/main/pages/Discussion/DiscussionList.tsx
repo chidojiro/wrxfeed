@@ -60,6 +60,34 @@ export const dummyDiscussionSimple: DiscussionSimple[] = [
     time: 'Yesterday at 3:30 PM ',
     content: 'This is for the tax consultancy.',
   },
+  {
+    discussionId: 7,
+    commentBy: 'Matt Lock',
+    postName: 'Linh & Sivilay PC-CPA',
+    time: 'Yesterday at 3:30 PM ',
+    content: 'This is for the tax consultancy.',
+  },
+  {
+    discussionId: 8,
+    commentBy: 'Matt Lock',
+    postName: 'Linh & Sivilay PC-CPA',
+    time: 'Yesterday at 3:30 PM ',
+    content: 'This is for the tax consultancy.',
+  },
+  {
+    discussionId: 9,
+    commentBy: 'Matt Lock',
+    postName: 'Linh & Sivilay PC-CPA',
+    time: 'Yesterday at 3:30 PM ',
+    content: 'This is for the tax consultancy.',
+  },
+  {
+    discussionId: 10,
+    commentBy: 'Matt Lock',
+    postName: 'Linh & Sivilay PC-CPA',
+    time: 'Yesterday at 3:30 PM ',
+    content: 'This is for the tax consultancy.',
+  },
 ];
 
 export type TextBoldProps = {
@@ -98,8 +126,9 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
 }) => {
   return (
     <div style={{ ...style, marginTop: 70 }}>
-      {data.map((item: DiscussionSimple) => {
+      {data.map((item: DiscussionSimple, index: number) => {
         const { commentBy, discussionId, postName, time, content } = item;
+        const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';
         return (
           <div
             key={discussionId}
@@ -111,6 +140,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
               borderTopWidth: 1,
               borderTopStyle: 'groove',
               padding: '8px',
+              backgroundColor: interleaveBackground,
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -134,12 +164,34 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
               style={{
                 display: 'flex',
                 flexDirection: 'row',
+                alignItems: 'center',
                 marginTop: 8,
                 paddingLeft: 64,
               }}
             >
-              <p style={{ display: 'flex', fontSize: 14, lineHeight: '18px', margin: 0 }}>
-                {`${commentBy} - ${time}`}
+              <p
+                style={{
+                  display: 'flex',
+                  fontSize: 14,
+                  lineHeight: '17px',
+                  margin: 0,
+                  fontWeight: 600,
+                  color: '#0F0D15',
+                }}
+              >
+                {`${commentBy} `}
+              </p>
+              <p
+                style={{
+                  display: 'flex',
+                  fontSize: 12,
+                  lineHeight: '15px',
+                  margin: 0,
+                  color: '#9EA0AA',
+                  marginLeft: 4,
+                }}
+              >
+                {` • ${time}`}
               </p>
             </div>
             <div
@@ -159,8 +211,31 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
                   marginRight: 8,
                 }}
               />
-              <p style={{ display: 'flex', fontSize: 14, lineHeight: '18px', margin: 0 }}>
-                {`@${commentBy} ${content}`}
+              <p
+                style={{
+                  display: 'flex',
+                  fontSize: 14,
+                  lineHeight: '18px',
+                  margin: 0,
+                  backgroundColor: '#DEE6FF',
+                  marginRight: 4,
+                  padding: '2px 4px 2px 4px',
+                  borderRadius: 4,
+                  color: '#6565FB',
+                }}
+              >
+                {`@${commentBy} `}
+              </p>
+              <p
+                style={{
+                  display: 'flex',
+                  fontSize: 16,
+                  lineHeight: '19px',
+                  margin: 0,
+                  color: '#273240',
+                }}
+              >
+                {` ${content}`}
               </p>
             </div>
           </div>
