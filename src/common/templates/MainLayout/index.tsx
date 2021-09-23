@@ -30,7 +30,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
         variant="permanent"
         anchor="left"
       >
-        <Stack spacing={6}>
+        <Stack spacing={6} style={{ display: 'flex', flex: 1, padding: 0 }}>
           <Typography color="white" variant="h4">
             {title}
           </Typography>

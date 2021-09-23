@@ -13,8 +13,9 @@ export const getRandomPostPrimaryColor = (): string => {
 };
 
 export const getPostAbbreviation = (name: string): string => {
-  const nameStr = name.replace(' &', '');
+  const nameStr = name;
   return nameStr
+    .replace(' &', '')
     .split(' ')
     .map((n) => n[0])
     .join('')
