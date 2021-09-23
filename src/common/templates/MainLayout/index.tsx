@@ -6,7 +6,7 @@ const drawerWidth = 212;
 
 export interface MainLayoutProps {
   title: string;
-  boxStyle: React.CSSProperties;
+  boxStyle?: React.CSSProperties;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) => {

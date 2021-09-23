@@ -1,94 +1,6 @@
 import React from 'react';
-// import Text from '@mui/material/Typography';
-// import { PostDiscussion } from './dummy';
-
-export type DiscussionSimple = {
-  discussionId: string | number;
-  commentBy: string;
-  postName: string;
-  time: string;
-  content: string;
-};
-
-export const dummyDiscussionSimple: DiscussionSimple[] = [
-  {
-    discussionId: 0,
-    commentBy: 'Graham Miller',
-    postName: 'Gusto Pay* Arrow',
-    time: 'Today at 6:00 AM',
-    content: 'looping you in.',
-  },
-  {
-    discussionId: 1,
-    commentBy: 'Dzuy Linh and Matt Lock',
-    postName: 'Google Analytics-Adservices',
-    time: 'Today at 2:00 PM',
-    content: 'of course! We’ll ramp up for the Q4 push.',
-  },
-  {
-    discussionId: 2,
-    commentBy: 'Alex Sivilay',
-    postName: 'LA Brea Av3016865252',
-    time: 'Yesterday at 3:30 PM ',
-    content: 'for visibility',
-  },
-  {
-    discussionId: 3,
-    commentBy: 'Several people',
-    postName: 'American AIR0012185711384',
-    time: '2d ago',
-    content: 'Yes the airfare is best for for 10/10 with American.',
-  },
-  {
-    discussionId: 4,
-    commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
-    time: 'Yesterday at 3:30 PM ',
-    content: 'This is for the tax consultancy.',
-  },
-  {
-    discussionId: 5,
-    commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
-    time: 'Yesterday at 3:30 PM ',
-    content: 'This is for the tax consultancy.',
-  },
-  {
-    discussionId: 6,
-    commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
-    time: 'Yesterday at 3:30 PM ',
-    content: 'This is for the tax consultancy.',
-  },
-  {
-    discussionId: 7,
-    commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
-    time: 'Yesterday at 3:30 PM ',
-    content: 'This is for the tax consultancy.',
-  },
-  {
-    discussionId: 8,
-    commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
-    time: 'Yesterday at 3:30 PM ',
-    content: 'This is for the tax consultancy.',
-  },
-  {
-    discussionId: 9,
-    commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
-    time: 'Yesterday at 3:30 PM ',
-    content: 'This is for the tax consultancy.',
-  },
-  {
-    discussionId: 10,
-    commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
-    time: 'Yesterday at 3:30 PM ',
-    content: 'This is for the tax consultancy.',
-  },
-];
+import './DiscussionList.css';
+import { DiscussionSimple, dummyDiscussionSimple } from './dummy';
 
 export type TextBoldProps = {
   text: string;
@@ -114,32 +26,21 @@ export type DiscussionListProps = {
   style?: React.CSSProperties;
 };
 
-// const defaultProps: DiscussionListProps = {
-//   data: [],
-//   style: {},
-// };
-
 const DiscussionList: React.FC<DiscussionListProps> = ({
   data = dummyDiscussionSimple,
   style,
   children,
 }) => {
   return (
-    <div style={{ ...style, marginTop: 70 }}>
+    <div style={{ ...style, marginTop: 70, maxWidth: 712 }}>
       {data.map((item: DiscussionSimple, index: number) => {
-        const { commentBy, discussionId, postName, time, content } = item;
+        const { commentBy, id, postName, time, content } = item;
         const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';
         return (
           <div
-            key={discussionId}
+            key={id}
+            className="cellDiscussion"
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              minHeight: 100,
-              borderTopColor: 'rgba(15, 13, 21, 0.3)',
-              borderTopWidth: 1,
-              borderTopStyle: 'groove',
-              padding: '8px',
               backgroundColor: interleaveBackground,
             }}
           >
@@ -148,7 +49,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
               <p
                 style={{
                   display: 'flex',
-                  color: '#9EA0AA',
+                  color: '#273240',
                   fontSize: 14,
                   lineHeight: '18px',
                   margin: 0,
@@ -245,7 +146,5 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
     </div>
   );
 };
-
-// DiscussionList.defaultProps = defaultProps;
 
 export default DiscussionList;

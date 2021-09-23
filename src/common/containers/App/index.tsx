@@ -11,8 +11,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import '@/styles.css';
 import LoadingFallback from '@common/atoms/LoadingFallback';
 import NotFoundPage from '@common/pages/NotFoundPage';
-// import OverviewPage from '@home/pages/OverviewPage';
-// import DiscussionsPage from '@home/pages/DiscussionsPage';
 import { theme } from '@/theme';
 import routes from '@/routes';
 import { ProtectedRoute } from '@/identity';
