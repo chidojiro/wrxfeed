@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles';
+import { Gray } from '@theme/colors';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -11,18 +12,37 @@ declare module '@mui/material/styles' {
   }
 }
 
+// Update the Button's color prop options
+declare module '@mui/material/Chip' {
+  interface ChipPropsColorOverrides {
+    highlight: true;
+  }
+}
+
+// Update the Button's color prop options
+declare module '@mui/material/SvgIcon' {
+  interface SvgIconPropsColorOverrides {
+    highlight: true;
+  }
+}
+
 export const theme = createTheme({
   palette: {
     primary: {
-      main: '#0f0d15',
+      main: Gray[1],
+      light: Gray[2],
+      contrastText: '#fff',
     },
     highlight: {
       main: '#DDFF55',
-      contrastText: '#273240',
+      contrastText: Gray[2],
     },
     error: {
       main: '#FF5F68',
       contrastText: '#fff',
+    },
+    text: {
+      primary: Gray[1],
     },
   },
   shape: {
@@ -32,15 +52,17 @@ export const theme = createTheme({
     htmlFontSize: 16,
     fontSize: 16,
     fontFamily: [
-      '"Nunito Sans"',
+      'Inter',
       '-apple-system',
       'BlinkMacSystemFont',
+      '"Segoe UI"',
       'Roboto',
-      'Oxygen-Sans',
-      'Ubuntu',
-      'Cantarell',
       '"Helvetica Neue"',
+      'Arial',
       'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
     ].join(','),
     h1: {
       fontSize: '1.875rem',
@@ -55,7 +77,11 @@ export const theme = createTheme({
       fontSize: '1.25rem',
     },
     h4: {
-      fontSize: '1.0625rem',
+      fontSize: '1rem',
+      fontWeight: 'bold',
+    },
+    h5: {
+      fontSize: '0.875rem',
       fontWeight: 'bold',
     },
     body1: {

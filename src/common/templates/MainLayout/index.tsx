@@ -39,7 +39,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
       </Drawer>
       <Box
         component="main"
-        sx={{ flexGrow: 1, bgcolor: '#fff', p: 4, borderRadius: 3, ...boxStyle }}
+        sx={{
+          flexGrow: 1,
+          bgcolor: '#fff',
+          p: 4,
+          borderRadius: 3,
+          overflow: 'hidden',
+          ...boxStyle,
+        }}
       >
         {children}
       </Box>

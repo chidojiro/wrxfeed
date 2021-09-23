@@ -11,7 +11,7 @@ import BlankLayout from '@common/templates/BlankLayout';
 import { Stack } from '@mui/material';
 import { useAuthStateContext } from '@api/containers/AuthProvider';
 import { User } from 'firebase/auth';
-import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
+import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
 
 const LoginPage: React.VFC = () => {
   const authState = useAuthStateContext();

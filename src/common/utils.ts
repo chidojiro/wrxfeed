@@ -1,9 +1,11 @@
+import { AvatarProps } from '@mui/material';
+import { format } from 'date-fns';
 import numeral from 'numeral';
 import { FieldValues } from 'react-hook-form';
 import * as yup from 'yup';
 import { LazyBuilder } from 'yup/lib/Lazy';
 
-export function formatNumber(n?: number): string {
+export function formatCurrency(n?: number): string {
   return n ? numeral(n).format('0,0.[00]') : '0';
 }
 
@@ -30,4 +32,54 @@ export function removeEmptyFields(data: FieldValues): FieldValues {
   return Object.entries(data).reduce((current, [key, value]) => {
     return value ? { ...current, [key]: value } : current;
   }, {});
+}
+
+/**
+ * Convert a string to color hex
+ * @param string
+ */
+export function stringToColor(string: string): string {
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = '#';
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.substr(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+/**
+ * Get avatar props with color based on name for MUI Avatar
+ */
+export function stringAvatar(name: string): AvatarProps {
+  let initials = '';
+  if (name.split(' ').length) {
+    initials += name.split(' ')[0][0];
+  }
+
+  if (name.split(' ').length > 1) {
+    initials += name.split(' ')[1][0];
+  }
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+      color: 'white',
+    },
+    children: initials,
+  };
+}
+
+const DATE_FORMAT = 'M/dd/yyyy';
+export function formatDate(mills: number): string {
+  return format(new Date(mills), DATE_FORMAT);
 }
