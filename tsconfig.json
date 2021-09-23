@@ -23,7 +23,6 @@
       "@error/*": ["src/error/*"],
       "@identity/*": ["src/identity/*"],
       "@auth/*": ["src/auth/*"],
-      "@home/*": ["src/home/*"],
       "@main/*": ["src/main/*"],
       "@theme/*": ["src/theme/*"],
       "@*": ["./src/*/index"],

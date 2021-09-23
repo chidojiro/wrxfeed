@@ -7,10 +7,6 @@ declare global {
   }
 }
 
-// interface PluginConfig {
-//   except?: string[];
-// }
-
 const tron = Reactotron.configure().connect();
 tron.clear!();
 console.tron = tron;
