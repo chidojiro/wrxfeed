@@ -36,7 +36,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children }) => {
           <SideMenu />
         </Stack>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, bgcolor: '#fff', p: 4, borderRadius: 3 }}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, bgcolor: '#fff', p: 4, borderRadius: 3, overflow: 'hidden' }}
+      >
         {children}
       </Box>
     </Box>

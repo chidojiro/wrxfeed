@@ -17,8 +17,7 @@
     "strictNullChecks": true,
     "baseUrl": ".",
     "paths": {
-      "@*": ["./src/*/index"],
-      "@/*": ["src/*"],
+      "@assets/*": ["src/assets/*"],
       "@api/*": ["src/api/*"],
       "@common/*": ["src/common/*"],
       "@error/*": ["src/error/*"],
@@ -26,7 +25,10 @@
       "@auth/*": ["src/auth/*"],
       "@home/*": ["src/home/*"],
       "@main/*": ["src/main/*"],
-    }
+      "@theme/*": ["src/theme/*"],
+      "@*": ["./src/*/index"],
+      "@src/*": ["src/*"],
+    },
   },
   "exclude": ["**/build/**", "**/coverage/**", "**/dist/**", "**/node_modules/**"]
 }

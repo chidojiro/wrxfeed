@@ -8,19 +8,19 @@ import { RecoilRoot } from 'recoil';
 import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
-import '@/styles.css';
+import '@src/styles.css';
 import LoadingFallback from '@common/atoms/LoadingFallback';
 import NotFoundPage from '@common/pages/NotFoundPage';
 // import OverviewPage from '@home/pages/OverviewPage';
 // import DiscussionsPage from '@home/pages/DiscussionsPage';
-import { theme } from '@/theme';
-import routes from '@/routes';
-import { ProtectedRoute } from '@/identity';
-import { ApiProvider } from '@/api';
-import { API_BASE_URL } from '@/config';
-import { ConfirmProvider } from '@/confirm';
-import AuthStateProvider from '@/api/containers/AuthProvider';
-import { FirebaseAuth } from '@/firebase/FirebaseAuth';
+import { ApiProvider } from '@api';
+import AuthStateProvider from '@api/containers/AuthProvider';
+import { theme } from '@theme/theme';
+import routes from '@src/routes';
+import { ProtectedRoute } from '@identity';
+import { API_BASE_URL } from '@src/config';
+import { ConfirmProvider } from '@src/confirm';
+import { FirebaseAuth } from '@src/firebase/FirebaseAuth';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface

@@ -19,7 +19,8 @@ module.exports = (env) => {
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
       alias: {
-        '@': path.resolve('src'),
+        '@src': path.resolve('src'),
+        '@assets': path.resolve('src/assets'),
         '@api': path.resolve('src/api'),
         '@common': path.resolve('src/common'),
         '@error': path.resolve('src/error'),
@@ -27,6 +28,7 @@ module.exports = (env) => {
         '@auth': path.resolve('src/auth'),
         '@home': path.resolve('src/home'),
         '@main': path.resolve('src/main'),
+        '@theme': path.resolve('src/theme'),
       },
     },
     plugins: [
@@ -74,7 +76,7 @@ module.exports = (env) => {
       rules: [
         // load image, font
         {
-          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          test: /\.(png|jpg|jpeg|gif)$/i,
           type: 'asset/resource',
         },
         // load font
@@ -110,6 +112,16 @@ module.exports = (env) => {
               },
             },
           ],
+        },
+        {
+          test: /\.svg$/i,
+          // issuer section restricts svg as component only to
+          // svgs imported from js / ts files.
+          //
+          // This allows configuring other behavior for
+          // svgs imported from other file types (such as .css)
+          issuer: { and: [/\.(js|ts|md)x?$/] },
+          use: ['@svgr/webpack', 'url-loader'],
         },
       ],
     },
