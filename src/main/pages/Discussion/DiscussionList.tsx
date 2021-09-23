@@ -1,6 +1,8 @@
 import React from 'react';
 import './DiscussionList.css';
-import { DiscussionSimple, dummyDiscussionSimple } from './dummy';
+import { dummyDiscussion } from './dummy';
+import { Discussion } from './types';
+import PostTag from './PostTag';
 
 export type TextBoldProps = {
   text: string;
@@ -22,19 +24,19 @@ const TextBold: React.FC<TextBoldProps> = ({ text }) => (
 );
 
 export type DiscussionListProps = {
-  data?: DiscussionSimple[];
+  data?: Discussion[];
   style?: React.CSSProperties;
 };
 
 const DiscussionList: React.FC<DiscussionListProps> = ({
-  data = dummyDiscussionSimple,
+  data = dummyDiscussion,
   style,
   children,
 }) => {
   return (
     <div style={{ ...style, marginTop: 70, maxWidth: 712 }}>
-      {data.map((item: DiscussionSimple, index: number) => {
-        const { commentBy, id, postName, time, content } = item;
+      {data.map((item: Discussion, index: number) => {
+        const { commentBy, id, post, time, content, action } = item;
         const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';
         return (
           <div
@@ -57,9 +59,10 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
                   marginRight: 4,
                 }}
               >
-                {' mentioned you in '}
+                {` ${action} `}
               </p>
-              <TextBold text={postName} />
+              {/* <TextBold text={post.name} /> */}
+              <PostTag post={post} />
             </div>
             <div
               style={{

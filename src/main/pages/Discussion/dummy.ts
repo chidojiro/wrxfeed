@@ -1,86 +1,124 @@
-export type DiscussionSimple = {
-  id: string | number;
-  commentBy: string;
-  postName: string;
-  time: string;
-  content: string;
-};
+import { Discussion, DiscussionAction } from './types';
 
-export const dummyDiscussionSimple: DiscussionSimple[] = [
+export const dummyDiscussion: Discussion[] = [
   {
     id: 0,
     commentBy: 'Graham Miller',
-    postName: 'Gusto Pay* Arrow',
+    action: DiscussionAction.MENTION,
+    post: {
+      id: 0,
+      name: 'Gusto Pay* Arrow',
+    },
     time: 'Today at 6:00 AM',
     content: 'looping you in.',
   },
   {
     id: 1,
     commentBy: 'Dzuy Linh and Matt Lock',
-    postName: 'Google Analytics-Adservices',
+    action: DiscussionAction.COMMENT,
+    post: {
+      id: 0,
+      name: 'Google Analytics-Adservices',
+    },
     time: 'Today at 2:00 PM',
     content: 'of course! We’ll ramp up for the Q4 push.',
   },
   {
     id: 2,
     commentBy: 'Alex Sivilay',
-    postName: 'LA Brea Av3016865252',
+    action: DiscussionAction.MENTION,
+    post: {
+      id: '120',
+      name: 'LA Brea Av3016865252',
+    },
     time: 'Yesterday at 3:30 PM ',
     content: 'for visibility',
   },
   {
     id: 3,
     commentBy: 'Several people',
-    postName: 'American AIR0012185711384',
+    action: DiscussionAction.COMMENT,
+    post: {
+      id: 'American21',
+      name: 'American AIR0012185711384',
+    },
     time: '2d ago',
     content: 'Yes the airfare is best for for 10/10 with American.',
   },
   {
     id: 4,
     commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
+    action: DiscussionAction.MENTION,
+    post: {
+      id: 'Linh21',
+      name: 'Linh & Sivilay PC-CPA',
+    },
     time: 'Yesterday at 3:30 PM ',
     content: 'This is for the tax consultancy.',
   },
   {
     id: 5,
     commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
+    action: DiscussionAction.MENTION,
+    post: {
+      id: 'Linh22',
+      name: 'Linh & Sivilay PC-CPA',
+    },
     time: 'Yesterday at 3:30 PM ',
     content: 'This is for the tax consultancy.',
   },
   {
     id: 6,
     commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
+    action: DiscussionAction.MENTION,
+    post: {
+      id: 'Linh22',
+      name: 'Linh & Sivilay PC-CPA',
+    },
     time: 'Yesterday at 3:30 PM ',
     content: 'This is for the tax consultancy.',
   },
   {
     id: 7,
     commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
+    action: DiscussionAction.MENTION,
+    post: {
+      id: 'Linh22',
+      name: 'Linh & Sivilay PC-CPA',
+    },
     time: 'Yesterday at 3:30 PM ',
     content: 'This is for the tax consultancy.',
   },
   {
     id: 8,
     commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
+    action: DiscussionAction.MENTION,
+    post: {
+      id: 'Linh22',
+      name: 'Linh & Sivilay PC-CPA',
+    },
     time: 'Yesterday at 3:30 PM ',
     content: 'This is for the tax consultancy.',
   },
   {
     id: 9,
     commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
+    action: DiscussionAction.MENTION,
+    post: {
+      id: 'Linh22',
+      name: 'Linh & Sivilay PC-CPA',
+    },
     time: 'Yesterday at 3:30 PM ',
     content: 'This is for the tax consultancy.',
   },
   {
     id: 10,
     commentBy: 'Matt Lock',
-    postName: 'Linh & Sivilay PC-CPA',
+    action: DiscussionAction.MENTION,
+    post: {
+      id: 'Linh22',
+      name: 'Linh & Sivilay PC-CPA',
+    },
     time: 'Yesterday at 3:30 PM ',
     content: 'This is for the tax consultancy.',
   },
