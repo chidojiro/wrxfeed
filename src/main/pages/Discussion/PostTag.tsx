@@ -12,8 +12,9 @@ export const getRandomPostPrimaryColor = (): string => {
   return colorSelect;
 };
 
-export const getShortNamePost = (name: string): string => {
-  return name
+export const getPostAbbreviation = (name: string): string => {
+  const nameStr = name.replace(' &', '');
+  return nameStr
     .split(' ')
     .map((n) => n[0])
     .join('')
@@ -46,7 +47,7 @@ const PostTag: React.FC<PostTagProps> = ({ style, post }) => {
             margin: 0,
           }}
         >
-          {getShortNamePost(post?.name)}
+          {getPostAbbreviation(post?.name)}
         </p>
       </div>
       <p

@@ -5,10 +5,11 @@ import { Discussion } from './types';
 import PostTag from './PostTag';
 
 export type TextBoldProps = {
+  style?: React.CSSProperties;
   text: string;
 };
 
-const TextBold: React.FC<TextBoldProps> = ({ text }) => (
+const TextBold: React.FC<TextBoldProps> = ({ text, style }) => (
   <p
     style={{
       display: 'flex',
@@ -17,6 +18,7 @@ const TextBold: React.FC<TextBoldProps> = ({ text }) => (
       fontWeight: 'bold',
       lineHeight: '18px',
       margin: 0,
+      ...style,
     }}
   >
     {`${text}`}
