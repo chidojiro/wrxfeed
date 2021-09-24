@@ -4,8 +4,8 @@ name: Development workflow
 # When workflow is triggered
 on:
   push:
-    branches:
-      - main
+    tags:
+      - v.*
 
 # Jobs to carry out
 jobs:
