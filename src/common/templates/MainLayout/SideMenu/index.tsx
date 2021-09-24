@@ -55,14 +55,14 @@ const SideMenu: React.VFC = () => {
           <HighLight
             sx={{ visibility: location.pathname === MenuRoutes.Overview ? 'visible' : 'hidden' }}
           />
-          <MenuItem primary="Overview" />
+          <MenuItem primary="All Company" />
         </ListItemButton>
         <ListItemButton sx={{ padding: 0 }} component={RouterLink} to="/discussions">
           <HighLight
             sx={{ visibility: location.pathname === MenuRoutes.Discussions ? 'visible' : 'hidden' }}
           />
           <StyledBadge badgeContent={2} color="error">
-            <MenuItem primary="Discussions" />
+            <MenuItem primary="Inbox" />
           </StyledBadge>
         </ListItemButton>
         <ListItemButton sx={{ padding: 0 }} onClick={logout}>

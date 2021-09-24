@@ -7,6 +7,7 @@ import TransactionList from '@main/organisms/TransactionList';
 import IconButton from '@main/atoms/IconButton';
 import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.svg';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
+import UploadCSVModal from './UploadCSVModal';
 
 const transactions: Transaction[] = [
   {
@@ -112,6 +113,7 @@ const OverviewPage: React.VFC = () => {
           <Box />
         </Grid>
       </Grid>
+      <UploadCSVModal open />
     </MainLayout>
   );
 };
