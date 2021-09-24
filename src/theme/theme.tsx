@@ -1,28 +1,36 @@
 import { createTheme } from '@mui/material/styles';
-import { Gray } from '@theme/colors';
+import { Accent, Gray, Highlight, LighBG } from '@theme/colors';
 
 declare module '@mui/material/styles' {
   interface Palette {
     highlight: Palette['primary'];
+    lightBg: Palette['primary'];
+    accent: Palette['primary'];
   }
 
   // allow configuration using `createTheme`
   interface PaletteOptions {
     highlight?: PaletteOptions['primary'];
+    lightBg?: PaletteOptions['primary'];
+    accent?: PaletteOptions['primary'];
   }
 }
 
-// Update the Button's color prop options
+// Update the component's color prop options
 declare module '@mui/material/Chip' {
   interface ChipPropsColorOverrides {
     highlight: true;
   }
 }
-
-// Update the Button's color prop options
 declare module '@mui/material/SvgIcon' {
   interface SvgIconPropsColorOverrides {
     highlight: true;
+    accent: true;
+  }
+}
+declare module '@mui/material/Stack' {
+  interface StackPropsColorOverrides {
+    lightBg: true;
   }
 }
 
@@ -33,16 +41,25 @@ export const theme = createTheme({
       light: Gray[2],
       contrastText: '#fff',
     },
-    highlight: {
-      main: '#DDFF55',
-      contrastText: Gray[2],
-    },
     error: {
       main: '#FF5F68',
       contrastText: '#fff',
     },
     text: {
       primary: Gray[1],
+      secondary: Gray[2],
+    },
+    // Custom colors
+    highlight: {
+      main: Highlight,
+      contrastText: Gray[2],
+    },
+    lightBg: {
+      main: LighBG,
+      contrastText: Gray[2],
+    },
+    accent: {
+      main: Accent[2],
     },
   },
   shape: {
