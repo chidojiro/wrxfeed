@@ -60,6 +60,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
               {!isShowAllComments && hiddenCommentCount > 0 && (
                 <Collapse key="hidden-comment-count">
                   <CommentRemaining
+                    sx={{ marginBottom: 0.5 }}
                     hiddenCount={hiddenCommentCount}
                     onClick={() => showAllComments(true)}
                   />
