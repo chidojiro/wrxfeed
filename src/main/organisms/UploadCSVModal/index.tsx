@@ -99,7 +99,7 @@ const UploadCSVModal: React.FC<UploadCSVModalProps> = ({ style, open = false }) 
           justifyContent="flex-end"
           direction="row"
         >
-          <Button variant="text" style={{ borderRadius: '4px' }}>
+          <Button variant="text" style={{ borderRadius: '4px' }} onClick={handleClose}>
             <Typography fontSize="14px" fontWeight={600} color={Gray[2]}>
               Cancel
             </Typography>
@@ -107,6 +107,7 @@ const UploadCSVModal: React.FC<UploadCSVModalProps> = ({ style, open = false }) 
           <Button
             variant="contained"
             style={{ backgroundColor: Gray[3], borderRadius: '4px', marginLeft: '4px' }}
+            onClick={handleClose}
           >
             <Typography fontSize="14px" fontWeight={600}>
               Upload file
