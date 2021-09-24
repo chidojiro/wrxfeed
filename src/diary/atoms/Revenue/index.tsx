@@ -4,7 +4,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import Typography from '@mui/material/Typography';
 import Popover from '@mui/material/Popover';
 import Chip from '../../../common/atoms/Chip';
-import { formatNumber } from '../../../common/utils';
+import { formatCurrency } from '../../../common/utils';
 
 export interface RevenueProps {
   income: number;
@@ -30,9 +30,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Revenue: React.VFC<RevenueProps> = (props) => {
   const { income, outcome } = props;
   const classes = useStyles(props);
-  const label = formatNumber(Math.abs(income - outcome));
-  const it = formatNumber(income);
-  const ot = formatNumber(outcome);
+  const label = formatCurrency(Math.abs(income - outcome));
+  const it = formatCurrency(income);
+  const ot = formatCurrency(outcome);
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const open = Boolean(anchorEl);
   const id = open ? 'revenue-popover' : undefined;
