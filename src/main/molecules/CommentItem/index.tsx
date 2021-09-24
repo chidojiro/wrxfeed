@@ -1,0 +1,29 @@
+import React from 'react';
+import { Comment } from '@main/types';
+import { Stack, StackProps } from '@mui/material';
+import CommentOwner from '@main/atoms/CommentOwner';
+import CommentText from '@main/atoms/CommentText';
+import { styled } from '@mui/styles';
+import { LighBG } from '@theme/colors';
+import { SxProps } from '@mui/system';
+
+export type CommentItemProps = StackProps & {
+  comment: Comment;
+  sx: SxProps;
+};
+
+const Container = styled(Stack)({
+  padding: '8px 14px',
+  backgroundColor: LighBG,
+});
+
+const CommentItem: React.VFC<CommentItemProps> = ({ comment, ...rest }) => {
+  return (
+    <Container spacing={0.5} {...rest}>
+      <CommentOwner owner={comment.owner} commentDate={comment.commentDate} />
+      <CommentText content={comment.content} />
+    </Container>
+  );
+};
+
+export default CommentItem;
