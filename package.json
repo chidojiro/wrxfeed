@@ -36,6 +36,7 @@
     "@mui/lab": "^5.0.0-alpha.46",
     "@mui/material": "^5.0.0",
     "@mui/styles": "^5.0.0-rc.1",
+    "@mui/system": "^5.0.1",
     "axios": "^0.21.1",
     "date-fns": "^2.22.1",
     "dayjs": "^1.10.7",

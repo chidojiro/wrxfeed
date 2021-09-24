@@ -1,29 +1,75 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
-import { styled, makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
+import { styled } from '@mui/system';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
-import { Button, ButtonProps, InputBase, Paper, PaperProps, Stack } from '@mui/material';
+import {
+  Button,
+  ButtonProps,
+  InputBase as MUIInputBase,
+  InputBaseProps,
+  Paper,
+  PaperProps,
+  Stack,
+} from '@mui/material';
 import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { ReactComponent as AttachIcon } from '@assets/icons/outline/attach.svg';
 import { Gray } from '@theme/colors';
+import UploadButton from '@common/atoms/UploadButton';
 
 const useStyles = makeStyles(() => ({
   container: () => ({
     display: 'flex',
-    flexGrow: 0,
+    flexGrow: 1,
     minWidth: '70%',
     backgroundColor: '#F6F7F3',
     borderRadius: 8,
     padding: '6px 6px 6px 8px',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     border: '1px solid #F6F7F3',
-    transition: 'flex-grow 300ms ease-in-out',
+    transition: 'all 300ms ease-in-out',
     '&.focus': {
-      flexGrow: 1,
       borderColor: Gray[2],
+      backgroundColor: '#fff',
+    },
+  }),
+  attach: () => ({
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 25,
+    height: 25,
+    borderRadius: 12.5,
+    '&:hover': {
+      backgroundColor: '#DDFF55',
     },
   }),
 }));
+
+const StyledInputBase = styled(MUIInputBase)<InputBaseProps>(({ theme }) => ({
+  marginLeft: theme.spacing(1),
+  marginRight: theme.spacing(1),
+  flex: 1,
+  fontSize: '0.875rem',
+  padding: '2px 0px 3px',
+  textarea: {
+    transition: 'height 300ms ease-in-out',
+  },
+}));
+
+const InputBase: React.VFC<InputBaseProps> = () => {
+  const { filled, focused } = useFormControl() || {};
+
+  return (
+    <StyledInputBase
+      placeholder="Comment here…"
+      inputProps={{ 'aria-label': 'comment here' }}
+      multiline
+      rows={focused || filled ? 3 : 1}
+    >
+      Send
+    </StyledInputBase>
+  );
+};
 
 const StyledButton = styled(Button)<ButtonProps>(() => ({
   backgroundColor: Gray[1],
@@ -41,31 +87,11 @@ const StyledButton = styled(Button)<ButtonProps>(() => ({
   },
 }));
 
-const SendButton: React.VFC<ButtonProps> = (props) => {
+const SendButton: React.VFC<ButtonProps> = () => {
   const { filled } = useFormControl() || {};
 
-  return (
-    <StyledButton disabled={!filled} {...props}>
-      Send
-    </StyledButton>
-  );
+  return <StyledButton disabled={!filled}>Send</StyledButton>;
 };
-
-const Input = styled('input')({
-  display: 'none',
-});
-
-const Label = styled('label')({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  width: 25,
-  height: 25,
-  borderRadius: 12.5,
-  '&:hover': {
-    backgroundColor: '#DDFF55',
-  },
-});
 
 const Container: React.VFC<PaperProps> = ({ children }) => {
   const classes = useStyles();
@@ -79,20 +105,16 @@ const Container: React.VFC<PaperProps> = ({ children }) => {
 };
 
 const CommentBox: React.VFC = () => {
+  const classes = useStyles();
   return (
     <FormControl sx={{ flexDirection: 'row', marginBottom: 0 }}>
       <Container>
-        <InputBase
-          sx={{ ml: 1, mr: 1, flex: 1, fontSize: '0.875rem', height: '1rem' }}
-          placeholder="Comment here…"
-          inputProps={{ 'aria-label': 'comment here' }}
-        />
+        <InputBase />
         <Stack direction="row" spacing={1} alignItems="center">
           <SmileIcon />
-          <Label htmlFor="icon-button-file">
-            <Input accept="image/*" id="icon-button-file" type="file" />
+          <UploadButton className={classes.attach} id="icon-button-file" accept="image/*">
             <AttachIcon />
-          </Label>
+          </UploadButton>
           <SendButton />
         </Stack>
       </Container>

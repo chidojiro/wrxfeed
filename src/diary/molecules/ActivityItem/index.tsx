@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import TimeLabel from '../../atoms/TimeLabel';
 import { Activity } from '../../types';
 import ActivityMenu from '../ActivityMenu';
-import { formatNumber } from '../../../common/utils';
+import { formatCurrency } from '../../../common/utils';
 
 const useStyles = makeStyles((theme) => ({
   content: () => ({
@@ -47,12 +47,12 @@ const ActivityItem: React.VFC<ActivityItemProps> = ({ model }) => {
         <Box display="flex" columnGap={8}>
           {Boolean(model.income && model.income > 0) && (
             <Typography variant="body2" className={classes.income}>
-              {formatNumber(model.income)}
+              {formatCurrency(model.income)}
             </Typography>
           )}
           {Boolean(model.outcome && model.outcome > 0) && (
             <Typography variant="body2" className={classes.outcome}>
-              {formatNumber(model.outcome)}
+              {formatCurrency(model.outcome)}
             </Typography>
           )}
         </Box>
