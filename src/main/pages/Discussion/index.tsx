@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '@mui/material';
 import MainLayout from '@common/templates/MainLayout';
-import DiscussionList from './DiscussionList';
+import DiscussionList from '../../organisms/DiscussionList';
 
 const DiscussionPage: React.VFC = () => {
   return (
