@@ -1,5 +1,5 @@
 import { AvatarProps } from '@mui/material';
-import { format } from 'date-fns';
+import { format, isToday, isYesterday } from 'date-fns';
 import numeral from 'numeral';
 import { FieldValues } from 'react-hook-form';
 import * as yup from 'yup';
@@ -81,5 +81,14 @@ export function stringAvatar(name: string): AvatarProps {
 
 const DATE_FORMAT = 'M/dd/yyyy';
 export function formatDate(mills: number): string {
+  const date = new Date(mills);
+
+  if (isToday(date)) {
+    return `Today at ${format(date, 'kk:mm')}`;
+  }
+
+  if (isYesterday(date)) {
+    return `Yesterday at ${format(date, 'kk:mm')}`;
+  }
   return format(new Date(mills), DATE_FORMAT);
 }
