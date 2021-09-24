@@ -1,12 +1,12 @@
 import React from 'react';
 import { Typography } from '@mui/material';
 import MainLayout from '@common/templates/MainLayout';
-import DiscussionList from './DiscussionList';
+import DiscussionList from '../../organisms/DiscussionList';
 
 const DiscussionPage: React.VFC = () => {
   return (
     <MainLayout title="Bird" boxStyle={{ overflowY: 'scroll' }}>
-      <Typography variant="h1">Discussions</Typography>
+      <Typography variant="h1">Inbox</Typography>
       <DiscussionList />
     </MainLayout>
   );

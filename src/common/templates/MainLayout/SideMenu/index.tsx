@@ -6,6 +6,10 @@ import ListItemText, { ListItemTextProps } from '@mui/material/ListItemText';
 import { useSetIdentity } from '@identity';
 import { useApi } from '@api';
 import { styled } from '@mui/material/styles';
+import { ReactComponent as LogoutIcon } from '@assets/icons/outline/logout.svg';
+import { ReactComponent as UploadIcon } from '@assets/icons/outline/upload.svg';
+import { useSetRecoilState } from 'recoil';
+import { showUploadCSVModalState } from '@main/organisms/UploadCSVModal/states';
 
 enum MenuRoutes {
   Overview = '/overview',
@@ -19,6 +23,34 @@ const HighLight = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.highlight.main,
   marginRight: '12px',
 }));
+
+// const ActionIcon = styled('img')(({ theme, icon }) => ({
+//   width: '20px',
+//   height: '20px',
+//   backgroundColor: theme.palette.highlight.main,
+//   marginRight: '8px',
+// }));
+
+export type ActionIconProps = {
+  style?: React.CSSProperties;
+  icon: string;
+};
+
+// const ActionIcon: React.FC<ActionIconProps> = ({ style, icon }) => (
+//   <img
+//     alt="ActionIcon"
+//     style={{
+//       display: 'flex',
+//       color: '#273240',
+//       fontSize: 14,
+//       fontWeight: 'bold',
+//       lineHeight: '18px',
+//       margin: 0,
+//       ...style,
+//     }}
+//     src={icon}
+//   />
+// );
 
 const StyledBadge = styled(Badge)<BadgeProps>(() => ({
   '& .MuiBadge-badge': {
@@ -41,32 +73,39 @@ const MenuItem = styled(ListItemText)<ListItemTextProps>(() => ({
 
 const SideMenu: React.VFC = () => {
   const location = useLocation();
+  const setOpenUploadCSVModal = useSetRecoilState(showUploadCSVModalState);
   const setIdentity = useSetIdentity();
   const apiClient = useApi();
   const logout = React.useCallback(async () => {
     apiClient.logout();
     setIdentity(undefined);
   }, [setIdentity, apiClient]);
-
+  const uploadCSV = () => setOpenUploadCSVModal(true);
   return (
     <>
-      <List>
+      <List style={{}}>
         <ListItemButton sx={{ padding: 0 }} component={RouterLink} to="/overview">
           <HighLight
             sx={{ visibility: location.pathname === MenuRoutes.Overview ? 'visible' : 'hidden' }}
           />
-          <MenuItem primary="Overview" />
+          <MenuItem primary="All Company" />
         </ListItemButton>
         <ListItemButton sx={{ padding: 0 }} component={RouterLink} to="/discussions">
           <HighLight
             sx={{ visibility: location.pathname === MenuRoutes.Discussions ? 'visible' : 'hidden' }}
           />
           <StyledBadge badgeContent={2} color="error">
-            <MenuItem primary="Discussions" />
+            <MenuItem primary="Inbox" />
           </StyledBadge>
         </ListItemButton>
-        <ListItemButton sx={{ padding: 0 }} onClick={logout}>
-          <HighLight sx={{ visibility: 'hidden' }} />
+      </List>
+      <List style={{ marginTop: 'auto' }}>
+        <ListItemButton sx={{ padding: 0 }} onClick={uploadCSV}>
+          <UploadIcon style={{ marginRight: 5 }} />
+          <MenuItem primary="Upload CSV" />
+        </ListItemButton>
+        <ListItemButton sx={{ padding: 0, marginTop: '50px' }} onClick={logout}>
+          <LogoutIcon style={{ marginRight: 5 }} />
           <MenuItem primary="Logout" />
         </ListItemButton>
       </List>

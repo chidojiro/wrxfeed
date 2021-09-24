@@ -5,16 +5,18 @@ import TransactionList from '@main/organisms/TransactionList';
 import IconButton from '@main/atoms/IconButton';
 import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.svg';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
+import UploadCSVModal from '../../organisms/UploadCSVModal';
 import { transactions } from './dummy';
 
 const OverviewPage: React.VFC = () => {
+  const companyName = 'Bird';
   return (
-    <MainLayout title="Bird">
+    <MainLayout title={companyName}>
       <Grid container sx={{ height: '100%' }}>
         <Grid item xs={9} sx={{ height: '100%' }}>
           <Stack sx={{ height: '100%' }}>
             <Stack sx={{ height: 106 }} direction="row" justifyContent="space-between">
-              <Typography variant="h1">Overview</Typography>
+              <Typography variant="h1">Company</Typography>
               <IconButton
                 startIcon={
                   <SvgColorIcon
@@ -50,6 +52,7 @@ const OverviewPage: React.VFC = () => {
           <Box />
         </Grid>
       </Grid>
+      <UploadCSVModal />
     </MainLayout>
   );
 };

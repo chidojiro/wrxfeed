@@ -1,5 +1,5 @@
 import React from 'react';
-import './DiscussionList.css';
+import './styles.css';
 import { dummyDiscussion } from './dummy';
 import { Discussion } from './types';
 import PostTag from './PostTag';
