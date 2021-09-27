@@ -1,12 +1,21 @@
 export interface Profile {
   email: string;
-  displayName: string;
-  avatar?: string;
+  fullName: string;
+  title: string;
+  department: string;
+  signupDate: Date;
 }
 
 export interface LoginFormModel {
   email: string;
   password: string;
+}
+
+export interface GoogleAuth {
+  prompt: string;
+  authuser?: string;
+  scope: string;
+  code?: string;
 }
 
 export interface ProfileFormModel {

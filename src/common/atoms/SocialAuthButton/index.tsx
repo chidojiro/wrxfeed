@@ -1,6 +1,7 @@
 import React from 'react';
-import Button, { ButtonProps } from '@mui/material/Button';
-import GoogleIcon from '@mui/icons-material/Google';
+import { ButtonProps, SvgIcon, Button } from '@mui/material';
+import { ReactComponent as GoogleLogo } from '@assets/icons/google-logo.svg';
+import { Gray } from '@theme/colors';
 
 export enum AuthProvider {
   GOOGLE = 'GOOGLE',
@@ -13,32 +14,37 @@ export interface SocialAuthButtonProps extends ButtonProps {
 function getAuthProviderIcon(provider: AuthProvider) {
   switch (provider) {
     case AuthProvider.GOOGLE: {
-      return <GoogleIcon />;
+      return <SvgIcon component={GoogleLogo} width={23} height={23} sx={{ mr: 1 }} />;
     }
     default: {
-      return <GoogleIcon />;
+      return <SvgIcon component={GoogleLogo} />;
     }
   }
 }
 
 const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
   provider = AuthProvider.GOOGLE,
+  sx,
   ...rest
 }) => {
   const socialIcon = getAuthProviderIcon(provider);
 
-  const btnProps = {
-    startIcon: socialIcon,
-    ...rest,
-  };
   return (
     <Button
-      {...btnProps}
+      startIcon={socialIcon}
+      variant="outlined"
       sx={{
-        borderRadius: 24,
+        borderRadius: 2,
         textTransform: 'none',
-        ...rest.sx,
+        borderColor: Gray[1],
+        color: Gray[1],
+        fontSize: '1.5em',
+        fontWeight: 400,
+        width: 459,
+        height: 72,
+        ...sx,
       }}
+      {...rest}
     />
   );
 };
