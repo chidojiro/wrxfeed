@@ -1,15 +1,15 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react/types-6-0';
 
-import CommentBox from '.';
+import EmojiPopover from '.';
 
 export default {
-  title: 'Atoms/CommentBox',
-  component: CommentBox,
+  title: 'Atoms/EmojiPopover',
+  component: EmojiPopover,
 } as Meta;
 
 const Template: Story = () => {
-  return <CommentBox />;
+  return <EmojiPopover />;
 };
 
 export const Default = Template.bind({});

@@ -11,12 +11,13 @@ import {
   Stack,
   InputBaseProps,
 } from '@mui/material';
-import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
+// import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { ReactComponent as AttachIcon } from '@assets/icons/outline/attach.svg';
 import { Gray, Highlight } from '@theme/colors';
 import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel } from '@main/types';
+import EmojiPopover from '@main/atoms/EmojiPopover';
 
 const useStyles = makeStyles(() => ({
   container: () => ({
@@ -147,7 +148,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({ onSubmit }) => {
             render={({ field }) => <InputBase {...field} />}
           />
           <Stack direction="row" spacing={1} alignItems="center">
-            <SmileIcon />
+            {/* <SmileIcon /> */}
+            <EmojiPopover />
             <UploadButton className={classes.attach} id="icon-button-file" accept="image/*">
               <AttachIcon />
             </UploadButton>

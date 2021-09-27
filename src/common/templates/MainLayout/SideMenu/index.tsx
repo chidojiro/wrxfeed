@@ -7,9 +7,9 @@ import { useSetIdentity } from '@identity';
 import { useApi } from '@api';
 import { styled } from '@mui/material/styles';
 import { ReactComponent as LogoutIcon } from '@assets/icons/outline/logout.svg';
-import { ReactComponent as UploadIcon } from '@assets/icons/outline/upload.svg';
-import { useSetRecoilState } from 'recoil';
-import { showUploadCSVModalState } from '@main/organisms/UploadCSVModal/states';
+// import { ReactComponent as UploadIcon } from '@assets/icons/outline/upload.svg';
+// import { useSetRecoilState } from 'recoil';
+// import { showUploadCSVModalState } from '@main/organisms/UploadCSVModal/states';
 
 enum MenuRoutes {
   Overview = '/overview',
@@ -73,14 +73,14 @@ const MenuItem = styled(ListItemText)<ListItemTextProps>(() => ({
 
 const SideMenu: React.VFC = () => {
   const location = useLocation();
-  const setOpenUploadCSVModal = useSetRecoilState(showUploadCSVModalState);
+  // const setOpenUploadCSVModal = useSetRecoilState(showUploadCSVModalState);
   const setIdentity = useSetIdentity();
   const apiClient = useApi();
   const logout = React.useCallback(async () => {
     apiClient.logout();
     setIdentity(undefined);
   }, [setIdentity, apiClient]);
-  const uploadCSV = () => setOpenUploadCSVModal(true);
+  // const uploadCSV = () => setOpenUploadCSVModal(true);
   return (
     <>
       <List style={{}}>
@@ -100,10 +100,10 @@ const SideMenu: React.VFC = () => {
         </ListItemButton>
       </List>
       <List style={{ marginTop: 'auto' }}>
-        <ListItemButton sx={{ padding: 0 }} onClick={uploadCSV}>
+        {/* <ListItemButton sx={{ padding: 0 }} onClick={uploadCSV}>
           <UploadIcon style={{ marginRight: 5 }} />
           <MenuItem primary="Upload CSV" />
-        </ListItemButton>
+        </ListItemButton> */}
         <ListItemButton sx={{ padding: 0, marginTop: '50px' }} onClick={logout}>
           <LogoutIcon style={{ marginRight: 5 }} />
           <MenuItem primary="Logout" />
