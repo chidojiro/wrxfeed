@@ -1,12 +1,11 @@
 import React from 'react';
 // import { SubmitHandler } from 'react-hook-form';
-// import { toast } from 'react-toastify';
 // import { LoginFormModel } from '@auth/types';
 // import LoginForm from '@auth/organisms/LoginForm';
 // import { useApi } from '@api';
-// import { useSetIdentity } from '@identity';
-// import { useErrorHandler, isBadRequest } from '@error';
-// import { useNavUtils } from '@common/hooks';
+import { useSetIdentity } from '@identity';
+import { useErrorHandler, isBadRequest } from '@error';
+import { useNavUtils } from '@common/hooks';
 import BlankLayout from '@common/templates/BlankLayout';
 import { Box, Stack, Typography } from '@mui/material';
 // import { useAuthStateContext } from '@api/containers/AuthProvider';
@@ -14,16 +13,16 @@ import { Box, Stack, Typography } from '@mui/material';
 import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
 import WrxfeedStar from '@auth/atoms/WrxfeedStar';
 import GoogleLogin from 'react-google-login';
-
-const clientId = '656098091361-44il4b6fo4551uhrcce0ti16kn75t2um.apps.googleusercontent.com';
+import { toast } from 'react-toastify';
+import { GOOGLE_CLIENT_ID } from '@src/config';
+// import { Identity } from '@identity/types';
+// import { GoogleAuth } from '@auth/types';
 
 const LoginPage: React.VFC = () => {
-  // const authState = useAuthStateContext();
-
-  // const api = useApi();
-  // const setIdentity = useSetIdentity();
-  // const { redirect } = useNavUtils();
-  // const handleError = useErrorHandler();
+  // const apiClient = useApi();
+  const setIdentity = useSetIdentity();
+  const { redirect } = useNavUtils();
+  const handleError = useErrorHandler();
   // const handleSubmit: SubmitHandler<LoginFormModel> = React.useCallback(
   //   async (data) => {
   //     try {
@@ -47,9 +46,35 @@ const LoginPage: React.VFC = () => {
   //   }
   // };
 
-  // const responseGoogle = (response) => {
-  //   console.log(response);
-  // };
+  const responseGoogleSuccess = async (response: any) => {
+    try {
+      // const data: GoogleAuth = {
+      //   prompt: 'consent',
+      //   authuser: response.profileObj?.email,
+      //   scope: 'openid profile email',
+      //   code: response.accessToken,
+      // };
+      // const userToken = await apiClient.signInWithGoogle(data);
+      setIdentity({
+        displayName: response.profileObj?.name,
+        email: response.profileObj?.email,
+        avatar: response.profileObj?.imageUrl,
+        token: response.tokenObj?.access_token,
+        expireAt: response.tokenObj?.expires_at,
+      });
+      redirect('/');
+    } catch (error) {
+      if (isBadRequest(error)) {
+        toast.error('This google account is invalid.');
+      } else {
+        handleError(error);
+      }
+    }
+  };
+
+  const responseGoogleFailure = (error: any) => {
+    toast.error(error.details);
+  };
 
   return (
     <BlankLayout>
@@ -80,10 +105,12 @@ const LoginPage: React.VFC = () => {
           </Typography>
         </Box>
         <GoogleLogin
-          clientId={clientId}
-          // onSuccess={responseGoogle}
-          // onFailure={responseGoogle}
+          clientId={GOOGLE_CLIENT_ID}
+          onSuccess={responseGoogleSuccess}
+          onFailure={responseGoogleFailure}
           cookiePolicy="single_host_origin"
+          prompt="consent"
+          isSignedIn
           render={(renderProps) => (
             <SocialAuthButton
               provider={AuthProvider.GOOGLE}
