@@ -42,7 +42,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
         sx={{
           flexGrow: 1,
           bgcolor: '#fff',
-          p: 4,
+          p: 3,
           borderRadius: 3,
           overflow: 'hidden',
           ...boxStyle,

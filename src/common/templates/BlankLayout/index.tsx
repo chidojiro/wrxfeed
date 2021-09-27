@@ -1,22 +1,25 @@
 import React from 'react';
-import Typography from '@mui/material/Typography';
-import { ContainerProps } from '@mui/material';
-import Container from '@common/atoms/Container';
+import { Box, BoxProps } from '@mui/material';
 
-export interface BlankLayoutProps {
-  title: string;
-}
-
-const BlankLayout: React.FC<BlankLayoutProps & ContainerProps> = ({ title, children, ...rest }) => {
+const BlankLayout: React.VFC<BoxProps> = ({ children, ...rest }) => {
   return (
-    <>
-      <Container {...rest}>
-        <Typography component="h1" variant="h2">
-          {title}
-        </Typography>
-        {children}
-      </Container>
-    </>
+    <Box
+      sx={{
+        position: 'fixed',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        m: 3,
+        p: 3,
+        borderRadius: 6,
+        backgroundColor: '#fff',
+        overflow: 'scroll',
+      }}
+      {...rest}
+    >
+      {children}
+    </Box>
   );
 };
 
