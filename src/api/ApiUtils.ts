@@ -1,7 +1,14 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { UserToken } from '@identity/types';
 import { ApiError } from '../error';
 import { Identity } from '../identity';
-import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '../auth/types';
+import {
+  ForgotPwdFormModel,
+  GoogleAuth,
+  LoginFormModel,
+  Profile,
+  ProfileFormModel,
+} from '../auth/types';
 import { ApiClient, ChangePasswordDto, ResetPasswordDto } from './types';
 import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
 import { removeEmptyFields, sleep } from '../common/utils';
@@ -41,6 +48,19 @@ export default class ApiUtils implements ApiClient {
     return identity;
   }
 
+  async signInWithGoogle(data: GoogleAuth): Promise<UserToken> {
+    const resp = await this.request<UserToken>({
+      url: '/auth/google/access-tokens',
+      method: 'POST',
+      data,
+    });
+    const userToken: UserToken = {
+      token: resp.data.token,
+      expireAt: resp.data.expireAt,
+    };
+    return userToken;
+  }
+
   async logout(): Promise<void> {
     return this.request({
       url: '/auth/tokens/mine',
@@ -50,7 +70,7 @@ export default class ApiUtils implements ApiClient {
 
   async getProfile(): Promise<Profile> {
     const resp = await this.request<Profile>({
-      url: '/admin/accounts/me',
+      url: '/user/me',
       method: 'GET',
     });
     return resp.data;
@@ -176,20 +196,34 @@ export const fakeApiUtils: ApiClient = {
     return fakeIdenity;
   },
 
+  signInWithGoogle: async () => {
+    const userToken: UserToken = {
+      token: '',
+      expireAt: new Date(),
+    };
+    return userToken;
+  },
+
   logout: async () => undefined,
 
   getProfile: async () => {
     await sleep(1000);
     return {
-      displayName: 'Admin',
-      email: 'john@gmail.com',
+      email: 'antran@gmail.com',
+      fullName: 'An Tran',
+      title: 'Admin',
+      department: 'Dev',
+      signupDate: new Date(),
     };
   },
 
   updateProfile: async () => {
     return {
-      displayName: 'Admin',
-      email: 'john@gmail.com',
+      email: 'antran@gmail.com',
+      fullName: 'An Tran',
+      title: 'Admin',
+      department: 'Dev',
+      signupDate: new Date(),
     };
   },
 

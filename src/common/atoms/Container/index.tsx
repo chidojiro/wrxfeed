@@ -5,8 +5,8 @@ import MuiContainer, { ContainerProps } from '@mui/material/Container';
 
 const Container = withStyles((theme: Theme) => ({
   root: {
-    padding: theme.spacing(4),
+    padding: theme.spacing(3),
   },
-}))((props: ContainerProps) => <MuiContainer maxWidth="lg" {...props} />);
+}))((props: ContainerProps) => <MuiContainer maxWidth="xl" {...props} />);
 
 export default Container;
