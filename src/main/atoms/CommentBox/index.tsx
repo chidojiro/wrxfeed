@@ -18,6 +18,8 @@ import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel } from '@main/types';
 import EmojiPopover from '@main/atoms/EmojiPopover';
+import { useSetRecoilState } from 'recoil';
+import { showMentionPopover } from '../MentionPopover/states';
 
 const useStyles = makeStyles(() => ({
   container: () => ({
@@ -120,6 +122,7 @@ export interface CommentFormProps {
 }
 
 const CommentBox: React.VFC<CommentFormProps> = ({ onSubmit }) => {
+  const setShowMentionPopover = useSetRecoilState(showMentionPopover);
   const classes = useStyles();
   const {
     control,
@@ -138,17 +141,20 @@ const CommentBox: React.VFC<CommentFormProps> = ({ onSubmit }) => {
     }
   }, [isSubmitted, reset]);
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setShowMentionPopover(event.currentTarget);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FormControl sx={{ flexDirection: 'row', marginBottom: 0 }}>
-        <Container onSubmit={handleSubmit(onSubmit)}>
+        <Container onSubmit={handleSubmit(onSubmit)} onChange={handleChange}>
           <Controller
             name="content"
             control={control}
             render={({ field }) => <InputBase {...field} />}
           />
           <Stack direction="row" spacing={1} alignItems="center">
-            {/* <SmileIcon /> */}
             <EmojiPopover />
             <UploadButton className={classes.attach} id="icon-button-file" accept="image/*">
               <AttachIcon />

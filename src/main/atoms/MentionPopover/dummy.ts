@@ -13,4 +13,12 @@ export const mentionUsers: User[] = [
     name: 'Alex Reid',
     avatar: '',
   },
+  {
+    name: 'Harry Potter',
+    avatar: '',
+  },
+  {
+    name: 'James Cameron',
+    avatar: '',
+  },
 ];

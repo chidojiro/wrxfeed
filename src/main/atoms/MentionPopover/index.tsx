@@ -1,24 +1,27 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import { Stack, Typography } from '@mui/material';
 import Popover from '@mui/material/Popover';
 // import Button from '@mui/material/Button';
 import { LighBG, Gray } from '@theme/colors';
-import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
+// import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
 import { User } from '@main/types';
 
+import { useRecoilState } from 'recoil';
 import { mentionUsers } from './dummy';
+import { showMentionPopover } from './states';
 
-export interface EmojiPopoverProps {
+export interface MentionPopoverProps {
   isOpen?: boolean;
 }
 
-const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
-  const [anchorEl, setAnchorEl] = React.useState<any>(null);
+const MentionPopover: React.VFC<MentionPopoverProps> = () => {
+  const [anchorEl, setAnchorEl] = useRecoilState(showMentionPopover);
+  // const [anchorEl, setAnchorEl] = React.useState<any>(null);
 
-  const handleClick = (event: MouseEvent) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleClick = (event: MouseEvent) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -28,7 +31,6 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
   const id = open ? 'simple-popover' : undefined;
   return (
     <div>
-      <SmileIcon onClick={handleClick} />
       <Popover
         id={id}
         open={open}
@@ -76,4 +78,4 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
   );
 };
 
-export default EmojiPopover;
+export default MentionPopover;

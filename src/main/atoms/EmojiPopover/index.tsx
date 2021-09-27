@@ -1,13 +1,13 @@
 import React, { MouseEvent } from 'react';
-import { Stack, Typography } from '@mui/material';
+import { Divider, Stack, Typography } from '@mui/material';
 import Popover from '@mui/material/Popover';
-// import Button from '@mui/material/Button';
 import { LighBG, Gray } from '@theme/colors';
 import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
-import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
-import { User } from '@main/types';
+import { ReactComponent as SearchEmoji } from '@assets/icons/outline/searchEmoji.svg';
+import { Emoji, GroupEmoji } from '@main/types';
 
-import { mentionUsers } from './dummy';
+import { NextEmoji } from '@assets/index';
+import { dummyEmoji, dummyGroupEmoji, getEmojiList } from './dummy';
 
 export interface EmojiPopoverProps {
   isOpen?: boolean;
@@ -15,6 +15,12 @@ export interface EmojiPopoverProps {
 
 const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
   const [anchorEl, setAnchorEl] = React.useState<any>(null);
+  const [emojiList, setEmojiList] = React.useState<Emoji[] | []>(dummyEmoji);
+
+  React.useEffect(() => {
+    console.log('Check getEmojiList = ', getEmojiList());
+    setEmojiList(getEmojiList());
+  }, []);
 
   const handleClick = (event: MouseEvent) => {
     setAnchorEl(event.currentTarget);
@@ -35,12 +41,11 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
         anchorEl={anchorEl}
         onClose={handleClose}
         // style={{ marginBottom: '10px', backgroundColor: 'blue' }}
-        // sx={{ backgroundColor: 'blue' }}
         anchorPosition={{
           top: 10,
           left: 10,
         }}
-        elevation={2}
+        elevation={0}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'center',
@@ -50,26 +55,88 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
           horizontal: 'center',
         }}
       >
-        <Stack width="400px" height="300px" borderRadius="24px" bgcolor={LighBG}>
-          <Typography margin="16px" color={Gray[3]} fontSize="14px" lineHeight="20px">
-            Suggested users
-          </Typography>
-          {mentionUsers.map((item: User) => {
-            return (
-              <Stack
-                key={item.name}
-                direction="row"
-                alignItems="center"
-                paddingX="16px"
-                paddingY="8px"
-              >
-                <AvatarIcon width="24px" height="24px" />
-                <Typography fontSize="14px" height="17px" color={Gray[1]}>
-                  {item?.name}
-                </Typography>
+        <Stack paddingBottom="10px" bgcolor="transparent">
+          <Stack
+            width="302px"
+            height="326px"
+            borderRadius="24px"
+            bgcolor={LighBG}
+            style={{ border: '1px solid rgba(0, 0, 0, 0.1)' }}
+          >
+            <Stack margin="8px" direction="row" alignItems="center" paddingX="12px" paddingY="8px">
+              <SearchEmoji width="16px" height="16px" style={{ marginRight: '8px' }} />
+              <Stack marginLeft="8px">
+                <input
+                  style={{
+                    display: 'flex',
+                    fontSize: '14px',
+                    lineHeight: '17px',
+                    color: Gray[1],
+                    outline: 'none',
+                    borderWidth: 0,
+                    backgroundColor: 'transparent',
+                    margin: '0px',
+                  }}
+                  placeholder="Search Emoji"
+                />
               </Stack>
-            );
-          })}
+            </Stack>
+            <Stack
+              direction="row"
+              flex={1}
+              flexWrap="wrap"
+              justifyContent="center"
+              paddingX="8px"
+              style={{ overflowY: 'scroll' }}
+            >
+              {emojiList.map((item: Emoji) => {
+                return (
+                  <button
+                    type="button"
+                    key={item.id}
+                    style={{
+                      display: 'flex',
+                      width: '21px',
+                      height: '21px',
+                      margin: '0px 5px 4px 5px',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      outline: 'none',
+                      borderWidth: '0px',
+                      backgroundColor: 'transparent',
+                    }}
+                    // alignItems="center"
+                    // justifyContent="center"
+                    // width="21px"
+                    // height="21px"
+                    // marginX="5px"
+                    // marginBottom="4px"
+                  >
+                    <Typography fontSize="14px">{item.emoji}</Typography>
+                  </button>
+                );
+              })}
+            </Stack>
+            <Divider />
+            <Stack
+              direction="row"
+              alignItems="center"
+              height="50px"
+              paddingX="20px"
+              overflow="hidden"
+            >
+              <Stack direction="row" alignItems="center" overflow="auto">
+                {dummyGroupEmoji.map((item: GroupEmoji) => {
+                  return (
+                    <Stack key={item.id} marginRight="26px">
+                      <item.emojiRepresent />
+                    </Stack>
+                  );
+                })}
+              </Stack>
+              <NextEmoji width="16px" height="16px" />
+            </Stack>
+          </Stack>
         </Stack>
       </Popover>
     </div>

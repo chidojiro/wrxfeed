@@ -28,7 +28,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
   children,
 }) => {
   return (
-    <Stack marginTop="70px" maxWidth="712px" style={style}>
+    <Stack marginTop="70px" width="70%" minWidth="712px" style={style}>
       {data.map((item: Discussion, index: number) => {
         const { commentBy, id, post, time, content, action } = item;
         const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';

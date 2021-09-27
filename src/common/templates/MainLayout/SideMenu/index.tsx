@@ -106,10 +106,10 @@ const SideMenu: React.VFC = () => {
           <UploadIcon style={{ marginRight: 5 }} />
           <MenuItem primary="Upload CSV" />
         </ListItemButton> */}
-        <ListItemButton sx={{ padding: 0, marginTop: '50px' }} onClick={logout}>
+        {/* <ListItemButton sx={{ padding: 0, marginTop: '50px' }} onClick={logout}>
           <LogoutIcon style={{ marginRight: 5 }} />
           <MenuItem primary="Logout" />
-        </ListItemButton>
+        </ListItemButton> */}
         <GoogleLogout
           clientId={GOOGLE_CLIENT_ID}
           onLogoutSuccess={logout}
