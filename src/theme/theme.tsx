@@ -92,6 +92,7 @@ export const theme = createTheme({
     },
     h3: {
       fontSize: '1.25rem',
+      fontWeight: 'bold',
     },
     h4: {
       fontSize: '1rem',
@@ -166,9 +167,10 @@ export const theme = createTheme({
     MuiContainer: {
       styleOverrides: {
         root: {
-          borderRadius: '24px',
+          borderRadius: 24,
+          margin: 24,
           backgroundColor: '#fff',
-          padding: '32px',
+          padding: 24,
         },
       },
     },

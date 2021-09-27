@@ -1,7 +1,9 @@
+import { UserToken } from '@identity/types';
 import { Identity } from '../identity';
 import {
   ChangePwdFormModel,
   ForgotPwdFormModel,
+  GoogleAuth,
   LoginFormModel,
   Profile,
   ProfileFormModel,
@@ -11,6 +13,7 @@ import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../di
 export interface ApiClient {
   login: (data: LoginFormModel) => Promise<Identity>;
   logout: () => Promise<void>;
+  signInWithGoogle: (data: GoogleAuth) => Promise<UserToken>;
   getProfile: () => Promise<Profile>;
   updateProfile: (data: ProfileFormModel) => Promise<Profile>;
   changePassword: (data: ChangePasswordDto) => Promise<void>;
@@ -25,6 +28,11 @@ export interface ApiClient {
 
   getTags: () => Promise<string[]>;
   getRevenue: (filter: ActivityFilterModel) => Promise<Revenue>;
+}
+
+export interface AuthClient {
+  signOut: () => Promise<void>;
+  signInWithGoogle: () => Promise<UserToken>;
 }
 
 export type ChangePasswordDto = Omit<ChangePwdFormModel, 'confirmPassword'>;

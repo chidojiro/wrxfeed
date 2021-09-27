@@ -22,6 +22,6 @@ export type Transaction = {
   comments?: Comment[];
 };
 
-export interface CommentFormModel {
+export type CommentFormModel = {
   content: string;
-}
+};
