@@ -13,7 +13,7 @@ module.exports = (env) => {
       hot: true,
       open: true,
       historyApiFallback: true,
-      host: '0.0.0.0',
+      host: 'localhost',
       port: 3000,
       proxy: {
         '/api': {

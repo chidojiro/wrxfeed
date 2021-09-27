@@ -1,5 +1,7 @@
 import React from 'react';
-import './styles.css';
+import { Stack, Typography } from '@mui/material';
+import { Gray, Accent } from '@theme/colors';
+import Divider from '@mui/material/Divider';
 import { dummyDiscussion } from './dummy';
 import { Discussion } from './types';
 import PostTag from './PostTag';
@@ -10,19 +12,9 @@ export type TextBoldProps = {
 };
 
 const TextBold: React.FC<TextBoldProps> = ({ text, style }) => (
-  <p
-    style={{
-      display: 'flex',
-      color: '#273240',
-      fontSize: 14,
-      fontWeight: 'bold',
-      lineHeight: '18px',
-      margin: 0,
-      ...style,
-    }}
-  >
+  <Typography color={Gray[2]} fontSize="14px" fontWeight="bold" lineHeight="18px" style={style}>
     {`${text}`}
-  </p>
+  </Typography>
 );
 
 export type DiscussionListProps = {
@@ -36,119 +28,68 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
   children,
 }) => {
   return (
-    <div style={{ ...style, marginTop: 70, maxWidth: 712 }}>
+    <Stack marginTop="70px" width="70%" minWidth="712px" style={style}>
       {data.map((item: Discussion, index: number) => {
         const { commentBy, id, post, time, content, action } = item;
         const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';
         return (
-          <div
-            key={id}
-            className="cellDiscussion"
-            style={{
-              backgroundColor: interleaveBackground,
-            }}
-          >
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-              <TextBold text={commentBy} />
-              <p
-                style={{
-                  display: 'flex',
-                  color: '#273240',
-                  fontSize: 14,
-                  lineHeight: '18px',
-                  margin: 0,
-                  marginLeft: 4,
-                  marginRight: 4,
-                }}
-              >
-                {` ${action} `}
-              </p>
-              {/* <TextBold text={post.name} /> */}
-              <PostTag post={post} />
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: 8,
-                paddingLeft: 64,
-              }}
+          <>
+            <Divider />
+            <Stack
+              key={id}
+              bgcolor={interleaveBackground}
+              direction="column"
+              minHeight="100px"
+              padding="8px"
             >
-              <p
-                style={{
-                  display: 'flex',
-                  fontSize: 14,
-                  lineHeight: '17px',
-                  margin: 0,
-                  fontWeight: 600,
-                  color: '#0F0D15',
-                }}
-              >
-                {`${commentBy} `}
-              </p>
-              <p
-                style={{
-                  display: 'flex',
-                  fontSize: 12,
-                  lineHeight: '15px',
-                  margin: 0,
-                  color: '#9EA0AA',
-                  marginLeft: 4,
-                }}
-              >
-                {` • ${time}`}
-              </p>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                marginTop: 8,
-                paddingLeft: 76,
-              }}
-            >
-              <div
-                style={{
-                  width: 2,
-                  height: 19,
-                  borderRadius: 2,
-                  backgroundColor: '#2D91AB',
-                  marginRight: 8,
-                }}
-              />
-              <p
-                style={{
-                  display: 'flex',
-                  fontSize: 14,
-                  lineHeight: '18px',
-                  margin: 0,
-                  backgroundColor: '#DEE6FF',
-                  marginRight: 4,
-                  padding: '2px 4px 2px 4px',
-                  borderRadius: 4,
-                  color: '#6565FB',
-                }}
-              >
-                {`@${commentBy} `}
-              </p>
-              <p
-                style={{
-                  display: 'flex',
-                  fontSize: 16,
-                  lineHeight: '19px',
-                  margin: 0,
-                  color: '#273240',
-                }}
-              >
-                {` ${content}`}
-              </p>
-            </div>
-          </div>
+              <Stack direction="row" alignItems="center">
+                <TextBold text={commentBy} />
+                <Typography color={Gray[2]} fontSize="14px" marginY="4px" marginTop="4px">
+                  {` ${action} `}
+                </Typography>
+                <PostTag post={post} />
+              </Stack>
+              <Stack direction="row" alignItems="center" marginTop="8px" marginLeft="64px">
+                <Typography color={Gray[1]} fontSize="14px" lineHeight="17px" fontWeight={600}>
+                  {`${commentBy} `}
+                </Typography>
+                <Typography fontSize="12px" lineHeight="15px" marginLeft="4px" color={Gray[3]}>
+                  {` • ${time}`}
+                </Typography>
+              </Stack>
+              <Stack direction="row" marginTop="8px" paddingLeft="76px">
+                <Stack
+                  width="2px"
+                  height="19px"
+                  borderRadius="2px"
+                  marginRight="8px"
+                  style={{
+                    backgroundColor: '#2D91AB',
+                  }}
+                />
+                <Typography
+                  fontSize="16px"
+                  lineHeight="18px"
+                  marginRight="4px"
+                  borderRadius="4px"
+                  bgcolor={Accent[3]}
+                  style={{
+                    padding: '2px 4px 2px 4px',
+                    color: '#6565FB',
+                  }}
+                >
+                  {`@${commentBy} `}
+                </Typography>
+                <Typography fontSize="16px" lineHeight="19px" color={Gray[2]}>
+                  {` ${content}`}
+                </Typography>
+              </Stack>
+            </Stack>
+          </>
         );
       })}
       {children}
-    </div>
+    </Stack>
   );
 };
 

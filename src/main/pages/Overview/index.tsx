@@ -5,6 +5,7 @@ import TransactionList from '@main/organisms/TransactionList';
 import IconButton from '@main/atoms/IconButton';
 import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.svg';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
+import MentionPopover from '@main/atoms/MentionPopover';
 import UploadCSVModal from '../../organisms/UploadCSVModal';
 import { transactions } from './dummy';
 
@@ -53,6 +54,7 @@ const OverviewPage: React.VFC = () => {
         </Grid>
       </Grid>
       <UploadCSVModal />
+      <MentionPopover />
     </MainLayout>
   );
 };
