@@ -1,4 +1,4 @@
-export type Transaction = {
+export type Discussion = {
   id: number;
   status?: string;
   accountNo?: string;

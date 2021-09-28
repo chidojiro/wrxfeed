@@ -7,18 +7,20 @@ export enum UserStatus {
 }
 
 export type User = {
-  id: number;
-  email: string;
+  id?: number;
+  email?: string;
+  fullName?: string;
   firstName?: string;
   lastName?: string;
+  avatar?: string;
   title?: string;
   department?: string;
-  signupDate: Date;
-  status: UserStatus;
-  company: Company;
+  signupDate?: string;
+  status?: UserStatus;
+  company?: Company;
   referer?: User;
-  account: Account;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
+  account?: Account;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string;
 };

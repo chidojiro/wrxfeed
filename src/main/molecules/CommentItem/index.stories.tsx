@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react/types-6-0';
 
-import { Comment } from '@main/types';
+import { Comment } from '@main/entity';
 import CommentItem, { CommentItemProps } from '.';
 
 export default {
@@ -16,11 +16,11 @@ const Template: Story<CommentItemProps> = (args) => {
 
 export const Default = Template.bind({});
 const comment: Comment = {
-  id: '1',
-  owner: {
-    name: 'Professional Services',
+  id: 1,
+  user: {
+    fullName: 'Professional Services',
   },
-  commentDate: Date.now(),
+  createdAt: new Date().toISOString(),
   content: 'Of course! We’ll ramp up for the Q4 push.',
 };
 Default.args = { comment };

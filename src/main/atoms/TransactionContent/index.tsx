@@ -1,5 +1,5 @@
 import React from 'react';
-import { Transaction } from '@main/types';
+import { Transaction } from '@main/entity';
 import { Avatar, Grid, Stack, Typography } from '@mui/material';
 import { formatDate, formatCurrency, stringAvatar } from '@common/utils';
 import { Gray } from '@theme/colors';
@@ -10,7 +10,7 @@ export interface TransactionContentProps {
 }
 
 const TransactionContent: React.VFC<TransactionContentProps> = ({ transaction }) => {
-  const avatarProps = stringAvatar(transaction.owner.name);
+  const avatarProps = stringAvatar(transaction.category || '');
 
   return (
     <>
@@ -24,12 +24,12 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({ transaction })
           <Grid item xs container direction="column">
             <Grid item xs>
               <Stack direction="row" spacing={0.5} alignItems="center">
-                <Typography variant="h4">{transaction.owner.name}</Typography>
+                <Typography variant="h4">{transaction.category}</Typography>
                 <Typography color={Gray[3]} variant="body2">
                   •
                 </Typography>
                 <Typography color={Gray[3]} variant="body2">
-                  {formatDate(transaction.date)}
+                  {formatDate(transaction?.transDate)}
                 </Typography>
                 {transaction.status !== undefined && <StatusTag status={transaction.status} />}
               </Stack>

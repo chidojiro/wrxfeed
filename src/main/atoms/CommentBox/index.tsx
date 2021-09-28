@@ -17,7 +17,7 @@ import { Gray, Highlight } from '@theme/colors';
 import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel } from '@main/types';
-// import EmojiPopover from '@main/atoms/EmojiPopover';
+import EmojiPopover from '@main/atoms/EmojiPopover';
 import EmojiMartPopover from '@main/atoms/EmojiMartPopover';
 import MentionPopover from '@main/atoms/MentionPopover';
 import { useSetRecoilState } from 'recoil';
@@ -157,7 +157,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({ onSubmit }) => {
             render={({ field }) => <InputBase {...field} />}
           />
           <Stack direction="row" spacing={1} alignItems="center">
-            {/* <EmojiPopover /> */}
+            <EmojiPopover />
             <MentionPopover />
             <EmojiMartPopover />
             <UploadButton className={classes.attach} id="icon-button-file" accept="image/*">

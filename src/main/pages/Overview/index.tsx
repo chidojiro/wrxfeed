@@ -7,7 +7,6 @@ import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
 import MentionPopover from '@main/atoms/MentionPopover';
 import UploadCSVModal from '../../organisms/UploadCSVModal';
-import { transactions } from './dummy';
 
 const OverviewPage: React.VFC = () => {
   const companyName = 'Bird';
@@ -44,7 +43,7 @@ const OverviewPage: React.VFC = () => {
                   paddingRight: 2,
                 }}
               >
-                <TransactionList transactions={transactions} />
+                <TransactionList />
               </Box>
             </Stack>
           </Stack>

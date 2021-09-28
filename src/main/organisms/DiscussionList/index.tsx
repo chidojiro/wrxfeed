@@ -35,56 +35,78 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
         return (
           <>
             <Divider />
-            <Stack
+            <button
+              type="button"
               key={id}
-              bgcolor={interleaveBackground}
-              direction="column"
-              minHeight="100px"
-              padding="8px"
+              style={{
+                display: 'flex',
+                borderRadius: '0px',
+                alignItems: 'left',
+                justifyContent: 'flex-start',
+                padding: '0px',
+                margin: '0px',
+                width: 'auto',
+                borderWidth: '0px',
+                outline: 'none',
+              }}
             >
-              <Stack direction="row" alignItems="center">
-                <TextBold text={commentBy} />
-                <Typography color={Gray[2]} fontSize="14px" marginY="4px" marginTop="4px">
-                  {` ${action} `}
-                </Typography>
-                <PostTag post={post} />
+              <Stack
+                bgcolor={interleaveBackground}
+                flex={1}
+                direction="column"
+                minHeight="100px"
+                padding="8px"
+              >
+                <Stack direction="row" alignItems="center">
+                  <TextBold text={commentBy} />
+                  <Typography
+                    color={Gray[2]}
+                    fontSize="14px"
+                    marginY="4px"
+                    marginX="4px"
+                    marginTop="4px"
+                  >
+                    {` ${action} `}
+                  </Typography>
+                  <PostTag post={post} />
+                </Stack>
+                <Stack direction="row" alignItems="center" marginTop="8px" marginLeft="64px">
+                  <Typography color={Gray[1]} fontSize="14px" lineHeight="17px" fontWeight={600}>
+                    {`${commentBy} `}
+                  </Typography>
+                  <Typography fontSize="12px" lineHeight="15px" marginLeft="4px" color={Gray[3]}>
+                    {` • ${time}`}
+                  </Typography>
+                </Stack>
+                <Stack direction="row" marginTop="8px" paddingLeft="76px">
+                  <Stack
+                    width="2px"
+                    height="19px"
+                    borderRadius="2px"
+                    marginRight="8px"
+                    style={{
+                      backgroundColor: '#2D91AB',
+                    }}
+                  />
+                  <Typography
+                    fontSize="16px"
+                    lineHeight="18px"
+                    marginRight="4px"
+                    borderRadius="4px"
+                    bgcolor={Accent[3]}
+                    style={{
+                      padding: '2px 4px 2px 4px',
+                      color: '#6565FB',
+                    }}
+                  >
+                    {`@${commentBy} `}
+                  </Typography>
+                  <Typography fontSize="16px" lineHeight="19px" color={Gray[2]}>
+                    {` ${content}`}
+                  </Typography>
+                </Stack>
               </Stack>
-              <Stack direction="row" alignItems="center" marginTop="8px" marginLeft="64px">
-                <Typography color={Gray[1]} fontSize="14px" lineHeight="17px" fontWeight={600}>
-                  {`${commentBy} `}
-                </Typography>
-                <Typography fontSize="12px" lineHeight="15px" marginLeft="4px" color={Gray[3]}>
-                  {` • ${time}`}
-                </Typography>
-              </Stack>
-              <Stack direction="row" marginTop="8px" paddingLeft="76px">
-                <Stack
-                  width="2px"
-                  height="19px"
-                  borderRadius="2px"
-                  marginRight="8px"
-                  style={{
-                    backgroundColor: '#2D91AB',
-                  }}
-                />
-                <Typography
-                  fontSize="16px"
-                  lineHeight="18px"
-                  marginRight="4px"
-                  borderRadius="4px"
-                  bgcolor={Accent[3]}
-                  style={{
-                    padding: '2px 4px 2px 4px',
-                    color: '#6565FB',
-                  }}
-                >
-                  {`@${commentBy} `}
-                </Typography>
-                <Typography fontSize="16px" lineHeight="19px" color={Gray[2]}>
-                  {` ${content}`}
-                </Typography>
-              </Stack>
-            </Stack>
+            </button>
           </>
         );
       })}

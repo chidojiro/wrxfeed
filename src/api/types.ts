@@ -1,9 +1,10 @@
 import { UserToken } from '@identity/types';
+import { Comment, Transaction, Discussion } from '@main/entity';
 import { Identity } from '../identity';
 import {
   ChangePwdFormModel,
   ForgotPwdFormModel,
-  GoogleAuth,
+  GoogleAuthParams,
   LoginFormModel,
   Profile,
   ProfileFormModel,
@@ -11,14 +12,20 @@ import {
 import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
 
 export interface ApiClient {
+  // Authentication API
   login: (data: LoginFormModel) => Promise<Identity>;
   logout: () => Promise<void>;
-  signInWithGoogle: (data: GoogleAuth) => Promise<UserToken>;
+  signInWithGoogle: (data: GoogleAuthParams) => Promise<UserToken>;
   getProfile: () => Promise<Profile>;
   updateProfile: (data: ProfileFormModel) => Promise<Profile>;
   changePassword: (data: ChangePasswordDto) => Promise<void>;
   forgotPassword: (data: ForgotPwdFormModel) => Promise<void>;
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
+  // Transaction API
+  getTransactions: (pagination?: Pagination) => Promise<Transaction[]>;
+  getComments: (transactionId: string | number, pagination?: Pagination) => Promise<Comment[]>;
+
+  getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
 
   searchActivities: (filter: ActivityFilterModel) => Promise<[Activity[], number]>;
   addActivity: (data: ActivityFormModel) => Promise<Activity>;
@@ -40,4 +47,9 @@ export type ChangePasswordDto = Omit<ChangePwdFormModel, 'confirmPassword'>;
 export interface ResetPasswordDto {
   password: string;
   token: string;
+}
+
+export interface Pagination {
+  offset: number;
+  limit: number;
 }
