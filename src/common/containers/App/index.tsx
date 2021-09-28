@@ -29,6 +29,20 @@ declare module '@mui/styles/defaultTheme' {
   interface DefaultTheme extends Theme {}
 }
 
+const StyledToastContainer = () => (
+  <ToastContainer
+    position="top-center"
+    autoClose={3000}
+    hideProgressBar
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+  />
+);
+
 const App: React.FC = () => {
   return (
     <StyledEngineProvider injectFirst>
@@ -64,7 +78,7 @@ const App: React.FC = () => {
               </ApiProvider>
             </RecoilRoot>
           </LocalizationProvider>
-          <ToastContainer />
+          <StyledToastContainer />
         </ThemeProvider>
       </CookieProvider>
     </StyledEngineProvider>

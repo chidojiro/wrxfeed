@@ -1,14 +1,11 @@
 import React from 'react';
 
 import Divider from '@mui/material/Divider';
-import { Transaction } from '@main/types';
 import TransactionItem from '@main/molecules/TransactionItem';
+import { useTransaction } from '@main/hooks';
 
-export interface TransactionListProps {
-  transactions: Transaction[];
-}
-
-const TransactionList: React.VFC<TransactionListProps> = ({ transactions }) => {
+const TransactionList: React.VFC = () => {
+  const { transactions } = useTransaction();
   return (
     <>
       {transactions.map((transaction) => (

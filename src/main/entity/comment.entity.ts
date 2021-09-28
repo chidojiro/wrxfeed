@@ -6,9 +6,10 @@ export type Comment = {
   content: string;
   attachment?: string;
   user: User;
-  transaction: Transaction;
-  parent?: Comment;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
+  transaction?: Transaction;
+  parent?: string;
+  replyCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string;
 };

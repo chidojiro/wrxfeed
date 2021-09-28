@@ -1,5 +1,6 @@
 export type Transaction = {
   id: number;
+  status?: string;
   accountNo: string;
   transDate: string;
   postDate: string;
@@ -8,7 +9,8 @@ export type Transaction = {
   type?: string;
   amount: number;
   memo?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
+  commentCount: number;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string;
 };

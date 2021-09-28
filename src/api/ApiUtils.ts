@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
+import { Comment, Transaction } from '@main/entity';
 import { ApiError } from '../error';
 import { Identity } from '../identity';
 import {
@@ -9,7 +10,7 @@ import {
   Profile,
   ProfileFormModel,
 } from '../auth/types';
-import { ApiClient, ChangePasswordDto, ResetPasswordDto } from './types';
+import { ApiClient, ChangePasswordDto, Pagination, ResetPasswordDto } from './types';
 import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
 import { removeEmptyFields, sleep } from '../common/utils';
 import { getTimeRangeFromFilter } from '../diary/utils';
@@ -107,6 +108,24 @@ export default class ApiUtils implements ApiClient {
       method: 'PUT',
       data,
     });
+  }
+
+  async getTransacrions(pagination?: Pagination): Promise<Transaction[]> {
+    const res = await this.request<Transaction[]>({
+      url: '/feed/transactions',
+      method: 'GET',
+      params: pagination,
+    });
+    return res.data;
+  }
+
+  async getComments(transactionId: string, pagination?: Pagination): Promise<Comment[]> {
+    const res = await this.request<Comment[]>({
+      url: `/feed/transactions/${transactionId}/comments`,
+      method: 'GET',
+      params: pagination,
+    });
+    return res.data;
   }
 
   async searchActivities(filter: ActivityFilterModel): Promise<[Activity[], number]> {
@@ -233,61 +252,16 @@ export const fakeApiUtils: ApiClient = {
 
   resetPassword: async () => undefined,
 
+  async getTransacrions(): Promise<Transaction[]> {
+    return [];
+  },
+
+  async getComments(): Promise<Comment[]> {
+    return [];
+  },
+
   searchActivities: async () => {
-    const models = [
-      {
-        id: '1',
-        time: '2021-06-15T01:21:03.368Z',
-        tags: ['play', 'gog'],
-        income: 100.0,
-        outcome: 0,
-        content:
-          'Lorem ipsum dolor sit amet\nconsectetur adipiscing elit\nmagnam aliquam quaerat voluptatem',
-      },
-      {
-        id: '2',
-        time: '2021-06-15T01:20:03.368Z',
-        tags: ['play'],
-        income: 0,
-        outcome: 123.0,
-        content: 'Nemo enim ipsam voluptatem',
-      },
-      {
-        id: '3',
-        time: '2021-06-15T01:19:03.368Z',
-        tags: ['nec'],
-        income: 0,
-        outcome: 230.0,
-        content:
-          'At vero eos et accusamus et iusto odio dignissimos\nut aut reiciendis voluptatibus ',
-      },
-      {
-        id: '4',
-        time: '2021-06-14T01:21:03.368Z',
-        tags: ['play', 'gog'],
-        income: 100.0,
-        outcome: 0,
-        content:
-          'Lorem ipsum dolor sit amet\nconsectetur adipiscing elit\nmagnam aliquam quaerat voluptatem',
-      },
-      {
-        id: '5',
-        time: '2021-06-14T01:20:03.368Z',
-        tags: ['play'],
-        income: 0,
-        outcome: 123.0,
-        content: 'Nemo enim ipsam voluptatem',
-      },
-      {
-        id: '6',
-        time: '2021-06-13T01:19:03.368Z',
-        tags: ['nec'],
-        income: 0,
-        outcome: 230.0,
-        content:
-          'At vero eos et accusamus et iusto odio dignissimos\nut aut reiciendis voluptatibus ',
-      },
-    ];
+    const models: Activity[] = [];
     const pageCount = 12;
     return [models, pageCount];
   },
