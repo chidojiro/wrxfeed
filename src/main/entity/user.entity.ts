@@ -8,10 +8,11 @@ export enum UserStatus {
 
 export type User = {
   id?: number;
-  email: string;
+  email?: string;
   fullName?: string;
   firstName?: string;
   lastName?: string;
+  avatar?: string;
   title?: string;
   department?: string;
   signupDate?: string;

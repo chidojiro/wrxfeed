@@ -9,7 +9,7 @@ import { SxProps } from '@mui/system';
 
 export type CommentItemProps = StackProps & {
   comment: Comment;
-  sx: SxProps;
+  sx?: SxProps;
 };
 
 const Container = styled(Stack)({
