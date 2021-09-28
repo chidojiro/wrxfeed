@@ -6,18 +6,17 @@ import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
 import WrxfeedStar from '@auth/atoms/WrxfeedStar';
 import { API_BASE_URL, API_DOMAIN } from '@src/config';
 import Routes from '@src/routes';
-import useCookie from '@common/hooks/useCookie';
+import { useIdentity } from '@identity/hooks';
 
 const LoginPage: React.VFC = () => {
   const { redirect } = useNavUtils();
-  const { cookies } = useCookie();
+  const identity = useIdentity();
 
   useEffect(() => {
-    const token = cookies.get('token');
-    if (token) {
+    if (identity?.token) {
       redirect(Routes.Home.path);
     }
-  }, [redirect, cookies]);
+  }, [redirect, identity]);
 
   const redirectGoogleAuth = () => {
     window.open(`${API_DOMAIN}${API_BASE_URL}/auth/google/login`, '_self');
