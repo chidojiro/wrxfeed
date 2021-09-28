@@ -3,11 +3,11 @@ import Chip, { ChipProps } from '@mui/material/Chip';
 import { styled } from '@mui/material/styles';
 
 export enum STATUS {
-  NEW,
+  NEW = 'New',
 }
 
 export type StatusTagProps = ChipProps & {
-  status: STATUS;
+  status: string;
 };
 
 const StyledTag = styled(Chip)<ChipProps>(() => ({

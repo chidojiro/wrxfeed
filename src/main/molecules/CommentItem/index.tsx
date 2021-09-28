@@ -1,5 +1,5 @@
 import React from 'react';
-import { Comment } from '@main/types';
+import { Comment } from '@main/entity';
 import { Stack, StackProps } from '@mui/material';
 import CommentOwner from '@main/atoms/CommentOwner';
 import CommentText from '@main/atoms/CommentText';
@@ -20,7 +20,7 @@ const Container = styled(Stack)({
 const CommentItem: React.VFC<CommentItemProps> = ({ comment, ...rest }) => {
   return (
     <Container spacing={0.5} {...rest}>
-      <CommentOwner owner={comment.owner} commentDate={comment.commentDate} />
+      <CommentOwner owner={comment.user} commentDate={comment.commentDate} />
       <CommentText content={comment.content} />
     </Container>
   );
