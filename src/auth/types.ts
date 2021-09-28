@@ -11,13 +11,6 @@ export interface LoginFormModel {
   password: string;
 }
 
-export interface GoogleAuth {
-  prompt: string;
-  authuser?: string;
-  scope: string;
-  code?: string;
-}
-
 export interface ProfileFormModel {
   displayName: string;
   email: string;
