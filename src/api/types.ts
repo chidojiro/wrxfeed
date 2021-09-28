@@ -3,7 +3,7 @@ import { Identity } from '../identity';
 import {
   ChangePwdFormModel,
   ForgotPwdFormModel,
-  GoogleAuth,
+  GoogleAuthParams,
   LoginFormModel,
   Profile,
   ProfileFormModel,
@@ -13,7 +13,7 @@ import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../di
 export interface ApiClient {
   login: (data: LoginFormModel) => Promise<Identity>;
   logout: () => Promise<void>;
-  signInWithGoogle: (data: GoogleAuth) => Promise<UserToken>;
+  signInWithGoogle: (data: GoogleAuthParams) => Promise<UserToken>;
   getProfile: () => Promise<Profile>;
   updateProfile: (data: ProfileFormModel) => Promise<Profile>;
   changePassword: (data: ChangePasswordDto) => Promise<void>;
