@@ -5,6 +5,7 @@ import { LighBG, Gray } from '@theme/colors';
 import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { ReactComponent as SearchEmoji } from '@assets/icons/outline/searchEmoji.svg';
 import { Emoji, GroupEmoji } from '@main/types';
+import 'emoji-mart/css/emoji-mart.css';
 
 import { NextEmoji } from '@assets/index';
 import { dummyEmoji, dummyGroupEmoji, getEmojiList } from './dummy';
