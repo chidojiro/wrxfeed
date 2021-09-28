@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { ComponentType, lazy, LazyExoticComponent } from 'react';
 
 export interface RouteItem<T extends ComponentType> {
@@ -6,26 +7,36 @@ export interface RouteItem<T extends ComponentType> {
   permissions?: string[];
 }
 
-const routes: RouteItem<ComponentType>[] = [
-  {
+export interface Route {
+  [index: string]: RouteItem<ComponentType>;
+}
+
+const routes: Route = {
+  // Public pages
+  Login: {
+    path: '/login',
+    component: lazy(() => import('@auth/pages/LoginPage')),
+  },
+  GoogleRedirect: {
+    path: '/google/redirect',
+    component: lazy(() => import('@auth/pages/AuthRedirect')),
+  },
+  // Protected pages
+  Home: {
     path: '/',
     component: lazy(() => import('@main/pages/Overview')),
     permissions: ['admin'],
   },
-  {
-    path: '/login',
-    component: lazy(() => import('@auth/pages/LoginPage')),
-  },
-  {
+  Overview: {
     path: '/overview',
     component: lazy(() => import('@main/pages/Overview')),
     permissions: ['admin'],
   },
-  {
+  Discussions: {
     path: '/discussions',
     component: lazy(() => import('@main/pages/Discussion')),
     permissions: ['admin'],
   },
-];
+};
 
 export default routes;

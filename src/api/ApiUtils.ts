@@ -2,7 +2,13 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
 import { ApiError } from '../error';
 import { Identity } from '../identity';
-import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '../auth/types';
+import {
+  ForgotPwdFormModel,
+  GoogleAuthParams,
+  LoginFormModel,
+  Profile,
+  ProfileFormModel,
+} from '../auth/types';
 import { ApiClient, ChangePasswordDto, ResetPasswordDto } from './types';
 import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
 import { removeEmptyFields, sleep } from '../common/utils';
@@ -42,11 +48,11 @@ export default class ApiUtils implements ApiClient {
     return identity;
   }
 
-  async signInWithGoogle(code: string): Promise<UserToken> {
+  async signInWithGoogle(data: GoogleAuthParams): Promise<UserToken> {
     const resp = await this.request<UserToken>({
       url: '/auth/google/access-tokens',
       method: 'POST',
-      data: { code },
+      params: data,
     });
     const userToken: UserToken = {
       token: resp.data.token,
@@ -57,7 +63,7 @@ export default class ApiUtils implements ApiClient {
 
   async logout(): Promise<void> {
     return this.request({
-      url: '/auth/tokens/mine',
+      url: '/auth/access-tokens/mine',
       method: 'DELETE',
     });
   }

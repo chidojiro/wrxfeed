@@ -7,11 +7,12 @@ import { useSetIdentity } from '@identity';
 import { useApi } from '@api';
 import { styled } from '@mui/material/styles';
 import { ReactComponent as LogoutIcon } from '@assets/icons/outline/logout.svg';
+import { useNavUtils } from '@common/hooks';
+import Routes from '@src/routes';
+import useCookie from '@common/hooks/useCookie';
 // import { ReactComponent as UploadIcon } from '@assets/icons/outline/upload.svg';
 // import { useSetRecoilState } from 'recoil';
 // import { showUploadCSVModalState } from '@main/organisms/UploadCSVModal/states';
-import { GoogleLogout } from 'react-google-login';
-import { GOOGLE_CLIENT_ID } from '@src/config';
 
 enum MenuRoutes {
   Overview = '/overview',
@@ -78,10 +79,14 @@ const SideMenu: React.VFC = () => {
   // const setOpenUploadCSVModal = useSetRecoilState(showUploadCSVModalState);
   const setIdentity = useSetIdentity();
   const apiClient = useApi();
+  const { redirect } = useNavUtils();
+  const { cookies } = useCookie();
   const logout = React.useCallback(async () => {
     apiClient.logout();
+    cookies.set('token', '');
     setIdentity(undefined);
-  }, [setIdentity, apiClient]);
+    redirect(Routes.Login.path);
+  }, [setIdentity, redirect, apiClient, cookies]);
   // const uploadCSV = () => setOpenUploadCSVModal(true);
   return (
     <>
@@ -110,20 +115,10 @@ const SideMenu: React.VFC = () => {
           <LogoutIcon style={{ marginRight: 5 }} />
           <MenuItem primary="Logout" />
         </ListItemButton> */}
-        <GoogleLogout
-          clientId={GOOGLE_CLIENT_ID}
-          onLogoutSuccess={logout}
-          render={(logoutProps) => (
-            <ListItemButton
-              sx={{ padding: 0, marginTop: '50px' }}
-              disabled={logoutProps.disabled}
-              onClick={logoutProps.onClick}
-            >
-              <LogoutIcon style={{ marginRight: 5 }} />
-              <MenuItem primary="Logout" />
-            </ListItemButton>
-          )}
-        />
+        <ListItemButton sx={{ padding: 0, marginTop: '50px' }} onClick={logout}>
+          <LogoutIcon style={{ marginRight: 5 }} />
+          <MenuItem primary="Logout" />
+        </ListItemButton>
       </List>
     </>
   );
