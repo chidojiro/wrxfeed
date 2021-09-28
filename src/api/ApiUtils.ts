@@ -106,7 +106,7 @@ export default class ApiUtils implements ApiClient {
     });
   }
 
-  async getTransacrions(pagination?: Pagination): Promise<Transaction[]> {
+  async getTransactions(pagination?: Pagination): Promise<Transaction[]> {
     const res = await this.request<Transaction[]>({
       url: '/feed/transactions',
       method: 'GET',
@@ -248,7 +248,7 @@ export const fakeApiUtils: ApiClient = {
 
   resetPassword: async () => undefined,
 
-  async getTransacrions(): Promise<Transaction[]> {
+  async getTransactions(): Promise<Transaction[]> {
     return [];
   },
 

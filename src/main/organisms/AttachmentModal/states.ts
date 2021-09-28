@@ -4,5 +4,5 @@ const prefix = 'main/AttachmentModal/';
 
 export const showAttachmentModalState = atom<boolean>({
   key: `${prefix}/show`,
-  default: false,
+  default: true,
 });

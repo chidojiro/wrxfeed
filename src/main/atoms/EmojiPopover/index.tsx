@@ -19,7 +19,7 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
   const [emojiList, setEmojiList] = React.useState<Emoji[] | []>(dummyEmoji);
 
   React.useEffect(() => {
-    console.log('Check getEmojiList = ', getEmojiList());
+    // console.log('Check getEmojiList = ', getEmojiList());
     setEmojiList(getEmojiList());
   }, []);
 

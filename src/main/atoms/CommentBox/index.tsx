@@ -18,8 +18,8 @@ import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel } from '@main/types';
 import EmojiPopover from '@main/atoms/EmojiPopover';
-import EmojiMartPopover from '@main/atoms/EmojiMartPopover';
-import MentionPopover from '@main/atoms/MentionPopover';
+// import EmojiMartPopover from '@main/atoms/EmojiMartPopover';
+// import MentionPopover from '@main/atoms/MentionPopover';
 import { useSetRecoilState } from 'recoil';
 import { showMentionPopover } from '../MentionPopover/states';
 
@@ -121,9 +121,17 @@ const Container: React.VFC<PaperProps> = ({ children }) => {
 
 export interface CommentFormProps {
   onSubmit: SubmitHandler<CommentFormModel>;
+  showAttach?: boolean;
+  showSend?: boolean;
+  showEmoji?: boolean;
 }
 
-const CommentBox: React.VFC<CommentFormProps> = ({ onSubmit }) => {
+const CommentBox: React.VFC<CommentFormProps> = ({
+  onSubmit,
+  showAttach = true,
+  showSend = true,
+  showEmoji = true,
+}) => {
   const setShowMentionPopover = useSetRecoilState(showMentionPopover);
   const classes = useStyles();
   const {
@@ -157,13 +165,15 @@ const CommentBox: React.VFC<CommentFormProps> = ({ onSubmit }) => {
             render={({ field }) => <InputBase {...field} />}
           />
           <Stack direction="row" spacing={1} alignItems="center">
-            <EmojiPopover />
-            <MentionPopover />
-            <EmojiMartPopover />
-            <UploadButton className={classes.attach} id="icon-button-file" accept="image/*">
-              <AttachIcon />
-            </UploadButton>
-            <SendButton />
+            {!!showEmoji && <EmojiPopover />}
+            {/* <MentionPopover /> */}
+            {/* <EmojiMartPopover /> */}
+            {!!showAttach && (
+              <UploadButton className={classes.attach} id="icon-button-file" accept="image/*">
+                <AttachIcon />
+              </UploadButton>
+            )}
+            {!!showSend && <SendButton />}
           </Stack>
         </Container>
       </FormControl>

@@ -2,11 +2,12 @@ import * as React from 'react';
 import { styled } from '@mui/system';
 import ModalUnstyled from '@mui/core/ModalUnstyled';
 import { useRecoilState } from 'recoil';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography, Box } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { Gray } from '@theme/colors';
-import { ReactComponent as CsvIcon } from '@assets/icons/outline/csvIcon.svg';
-import { showUploadCSVModalState } from './states';
+import { Gray, Accent } from '@theme/colors';
+// import { ReactComponent as CsvIcon } from '@assets/icons/outline/csvIcon.svg';
+import CommentBox from '@main/atoms/CommentBox';
+import { showAttachmentModalState } from './states';
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -31,13 +32,13 @@ const Backdrop = styled('div')`
   -webkit-tap-highlight-color: transparent;
 `;
 
-export type UploadCSVModalProps = {
+export type AttachmentModalProps = {
   style?: React.CSSProperties;
   open?: boolean;
 };
 
-const UploadCSVModal: React.FC<UploadCSVModalProps> = ({ style, open = false }) => {
-  const [isOpen, setIsOpen] = useRecoilState(showUploadCSVModalState);
+const AttachmentModal: React.FC<AttachmentModalProps> = ({ style, open = false }) => {
+  const [isOpen, setIsOpen] = useRecoilState(showAttachmentModalState);
   const handleClose = () => setIsOpen(false);
 
   React.useEffect(() => {
@@ -63,33 +64,26 @@ const UploadCSVModal: React.FC<UploadCSVModalProps> = ({ style, open = false }) 
           outline: 'none',
         }}
       >
-        <Stack padding="24px">
+        <Box style={{ marginTop: '24px', marginLeft: '24px', outline: 'none', borderWidth: '0px' }}>
+          <img
+            alt="alt_image_upload"
+            src="https://p4.wallpaperbetter.com/wallpaper/500/442/354/outrun-vaporwave-hd-wallpaper-preview.jpg"
+            style={{ width: '144px', height: '80px', borderRadius: '4px' }}
+          />
+        </Box>
+        <Stack paddingX="24px" marginTop="14px">
           <Typography color={Gray[1]} fontWeight="bold" fontSize="18px">
-            Import from CSV file
+            file-name.png
           </Typography>
           <Typography color={Gray[3]} marginTop="2px" fontSize="14px">
-            Maximum size: 50MB
+            Upload to Gusto Pay* Arrow
           </Typography>
         </Stack>
-        <Stack paddingX="24px" flex={1}>
-          <Stack
-            height="26px"
-            minWidth="146px"
-            bgcolor={Gray[1]}
-            direction="row"
-            paddingX="8px"
-            alignItems="center"
-            marginRight="auto"
-            borderRadius="4px"
-          >
-            <CsvIcon style={{ width: '20px', height: '17px' }} />
-            <Typography color="white" fontSize="14px" fontWeight={600} marginLeft="4px">
-              Select a file .csv
-            </Typography>
-          </Stack>
-          <Typography color={Gray[3]} marginTop="5px">
-            No file chosen
+        <Stack flex={1} padding="24px">
+          <Typography color={Gray[1]} fontWeight="bold" fontSize="14px" marginBottom="8px">
+            Add a comment
           </Typography>
+          <CommentBox onSubmit={() => undefined} showAttach={false} showSend={false} />
         </Stack>
         <Divider />
         <Stack
@@ -106,11 +100,11 @@ const UploadCSVModal: React.FC<UploadCSVModalProps> = ({ style, open = false }) 
           </Button>
           <Button
             variant="contained"
-            style={{ backgroundColor: Gray[3], borderRadius: '4px', marginLeft: '4px' }}
+            style={{ backgroundColor: Accent[2], borderRadius: '4px', marginLeft: '4px' }}
             onClick={handleClose}
           >
             <Typography fontSize="14px" fontWeight={600}>
-              Upload file
+              Upload
             </Typography>
           </Button>
         </Stack>
@@ -119,4 +113,4 @@ const UploadCSVModal: React.FC<UploadCSVModalProps> = ({ style, open = false }) 
   );
 };
 
-export default UploadCSVModal;
+export default AttachmentModal;
