@@ -1,24 +1,29 @@
-import { User } from '@main/types';
+import { User } from '@main/entity';
 
 export const mentionUsers: User[] = [
   {
-    name: 'Abbie Mendez',
+    email: 'abc@gmail.com',
+    fullName: 'Abbie Mendez',
     avatar: '',
   },
   {
-    name: 'Ariel Montgomery',
+    email: 'montgomery@gmail.com',
+    fullName: 'Ariel Montgomery',
     avatar: '',
   },
   {
-    name: 'Alex Reid',
+    email: 'montgomery@gmail.com',
+    fullName: 'Alex Reid',
     avatar: '',
   },
   {
-    name: 'Harry Potter',
+    email: 'harry@gmail.com',
+    fullName: 'Harry Potter',
     avatar: '',
   },
   {
-    name: 'James Cameron',
+    email: 'james@gmail.com',
+    fullName: 'James Cameron',
     avatar: '',
   },
 ];

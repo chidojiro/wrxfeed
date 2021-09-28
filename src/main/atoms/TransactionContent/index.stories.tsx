@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react/types-6-0';
 
-import { Transaction } from '@main/types';
+import { Transaction } from '@main/entity';
 import { STATUS } from '@common/atoms/StatusTag';
 import TransactionContent, { TransactionContentProps } from '.';
 
@@ -17,11 +17,9 @@ const Template: Story<TransactionContentProps> = (args) => {
 
 export const Default = Template.bind({});
 const transaction: Transaction = {
-  id: '1',
-  owner: {
-    name: 'Professional Services',
-  },
-  date: Date.now(),
+  id: 1,
+  category: 'Professional Services',
+  transDate: new Date().toISOString(),
   amount: 17000,
   description: 'Google Analytics-Adservices',
   status: STATUS.NEW,
