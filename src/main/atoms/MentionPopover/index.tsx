@@ -5,7 +5,7 @@ import Popover from '@mui/material/Popover';
 import { LighBG, Gray } from '@theme/colors';
 // import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
-import { User } from '@main/types';
+import { User } from '@main/entity';
 
 import { useRecoilState } from 'recoil';
 import { mentionUsers } from './dummy';
@@ -59,7 +59,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = () => {
           {mentionUsers.map((item: User) => {
             return (
               <Stack
-                key={item.name}
+                key={item.id}
                 direction="row"
                 alignItems="center"
                 paddingX="16px"
@@ -67,7 +67,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = () => {
               >
                 <AvatarIcon width="24px" height="24px" />
                 <Typography fontSize="14px" height="17px" color={Gray[1]}>
-                  {item?.name}
+                  {item?.fullName}
                 </Typography>
               </Stack>
             );

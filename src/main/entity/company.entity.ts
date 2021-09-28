@@ -3,7 +3,7 @@ export type Company = {
   name: string;
   logo?: string;
   domain?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string;
 };
