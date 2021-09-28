@@ -55,11 +55,7 @@ export default class ApiUtils implements ApiClient {
       method: 'POST',
       params: data,
     });
-    const userToken: UserToken = {
-      token: resp.data.token,
-      expireAt: resp.data.expireAt,
-    };
-    return userToken;
+    return resp.data;
   }
 
   async logout(): Promise<void> {

@@ -1,4 +1,4 @@
-import useCookie from '@common/hooks/useCookie';
+import { useIdentity } from '@identity/hooks';
 import routes from '@src/routes';
 import React from 'react';
 import { Route, RouteProps, Redirect, useLocation } from 'react-router-dom';
@@ -14,14 +14,13 @@ const ProtectedRoute: React.VFC<ProtectedRouteProps> = ({
   loginUrl = routes.Login.path,
   permissions = [],
 }) => {
-  const { cookies } = useCookie();
+  const identity = useIdentity();
   const location = useLocation();
-  const token = cookies.get('token');
   const dst = {
     pathname: loginUrl,
     state: { from: location },
   };
-  return token || permissions.length === 0 ? (
+  return identity?.token || permissions.length === 0 ? (
     <Route path={path} component={component} exact />
   ) : (
     <Redirect to={dst} />

@@ -1,6 +1,6 @@
 import { useApi } from '@api';
 import { useNavUtils, useQuery } from '@common/hooks';
-import useCookie from '@common/hooks/useCookie';
+import { useSetIdentity } from '@identity/hooks';
 import { UserToken } from '@identity/types';
 import { LinearProgress } from '@mui/material';
 import Routes from '@src/routes';
@@ -11,7 +11,7 @@ const AuthRedirect: React.VFC = () => {
   const apiClient = useApi();
   const query = useQuery();
   const { redirect } = useNavUtils();
-  const { cookies } = useCookie();
+  const setIdentity = useSetIdentity();
 
   const getUserToken = useCallback(async () => {
     try {
@@ -22,7 +22,7 @@ const AuthRedirect: React.VFC = () => {
         scope: query.get('scope'),
       });
       if (userToken.token) {
-        cookies.set('token', userToken.token);
+        setIdentity({ token: userToken.token });
         redirect(Routes.Home.path);
       } else {
         toast.error('Fail to verify Google Account');
@@ -32,11 +32,11 @@ const AuthRedirect: React.VFC = () => {
       toast.error('Fail to verify Google Account');
       redirect(Routes.Login.path);
     }
-  }, [query, apiClient, redirect, cookies]);
+  }, [query, apiClient, redirect, setIdentity]);
 
   useEffect(() => {
     getUserToken();
-  }, [getUserToken]);
+  }, []);
 
   return <LinearProgress color="primary" />;
 };
