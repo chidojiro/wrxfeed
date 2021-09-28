@@ -4,7 +4,7 @@ import { ApiError } from '../error';
 import { Identity } from '../identity';
 import {
   ForgotPwdFormModel,
-  GoogleAuth,
+  GoogleAuthParams,
   LoginFormModel,
   Profile,
   ProfileFormModel,
@@ -48,11 +48,11 @@ export default class ApiUtils implements ApiClient {
     return identity;
   }
 
-  async signInWithGoogle(data: GoogleAuth): Promise<UserToken> {
+  async signInWithGoogle(data: GoogleAuthParams): Promise<UserToken> {
     const resp = await this.request<UserToken>({
       url: '/auth/google/access-tokens',
       method: 'POST',
-      data,
+      params: data,
     });
     const userToken: UserToken = {
       token: resp.data.token,
@@ -63,7 +63,7 @@ export default class ApiUtils implements ApiClient {
 
   async logout(): Promise<void> {
     return this.request({
-      url: '/auth/tokens/mine',
+      url: '/auth/access-tokens/mine',
       method: 'DELETE',
     });
   }
