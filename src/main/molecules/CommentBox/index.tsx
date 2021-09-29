@@ -1,16 +1,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { forwardRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/system';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
-import {
-  Button,
-  InputBase as MuiInputBase,
-  Paper,
-  PaperProps,
-  Stack,
-  InputBaseProps,
-} from '@mui/material';
+import { Button, Paper, PaperProps, Stack } from '@mui/material';
 // import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { ReactComponent as AttachIcon } from '@assets/icons/outline/attach.svg';
 import { Gray, Highlight } from '@theme/colors';
@@ -21,7 +14,8 @@ import EmojiPopover from '@main/atoms/EmojiPopover';
 // import EmojiMartPopover from '@main/atoms/EmojiMartPopover';
 // import MentionPopover from '@main/atoms/MentionPopover';
 import { useSetRecoilState } from 'recoil';
-import { showMentionPopover } from '../MentionPopover/states';
+import { showMentionPopover } from '@main/atoms/MentionPopover/states';
+import CommentInput from '@main/atoms/CommentInput';
 
 const useStyles = makeStyles(() => ({
   container: () => ({
@@ -50,37 +44,6 @@ const useStyles = makeStyles(() => ({
     },
   }),
 }));
-
-const StyledInput = styled(MuiInputBase)<InputBaseProps>(({ theme }) => ({
-  marginLeft: theme.spacing(1),
-  marginRight: theme.spacing(1),
-  flex: 1,
-  fontSize: '0.875rem',
-  padding: '2px 0px 3px',
-  textarea: {
-    transition: 'height 300ms ease-in-out',
-  },
-}));
-
-const InputBase: React.VFC<InputBaseProps> = forwardRef(
-  ({ name, value, onChange, onBlur }, ref) => {
-    const { filled, focused } = useFormControl() || {};
-
-    return (
-      <StyledInput
-        ref={ref}
-        name={name}
-        value={value}
-        placeholder="Comment here…"
-        inputProps={{ 'aria-label': 'comment here' }}
-        multiline
-        rows={focused || filled ? 3 : 1}
-        onChange={onChange}
-        onBlur={onBlur}
-      />
-    );
-  },
-);
 
 const StyledButton = styled(Button)(() => ({
   backgroundColor: Gray[1],
@@ -162,7 +125,9 @@ const CommentBox: React.VFC<CommentFormProps> = ({
           <Controller
             name="content"
             control={control}
-            render={({ field }) => <InputBase {...field} />}
+            render={({ field }) => (
+              <CommentInput {...field} handleEnterPress={handleSubmit(onSubmit)} />
+            )}
           />
           <Stack direction="row" spacing={1} alignItems="center">
             {!!showEmoji && <EmojiPopover />}

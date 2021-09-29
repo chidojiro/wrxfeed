@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { CommentFormModel } from '@main/types';
 import { Comment, Transaction } from '@main/entity';
 import TransactionContent from '@main/atoms/TransactionContent';
-import CommentBox from '@main/atoms/CommentBox';
+import CommentBox from '@main/molecules/CommentBox';
 import { Stack, Box, List, Collapse } from '@mui/material';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentRemaining from '@main/atoms/CommentRemaining';
@@ -30,6 +30,8 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
   const hiddenCommentCount = (comments?.length ?? 0) - INITIAL_COMMENT_NUMBER;
 
   const onSubmitComment = (values: CommentFormModel) => {
+    const isDirty = !!values.content;
+    if (!isDirty) return;
     const parsedContent = values.content
       .split(' ')
       .map((word) => {
