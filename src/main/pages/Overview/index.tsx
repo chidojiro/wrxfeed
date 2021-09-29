@@ -7,6 +7,7 @@ import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
 import MentionPopover from '@main/atoms/MentionPopover';
 import AttachmentModal from '@main/organisms/AttachmentModal';
+// import CommentBox from '@main/molecules/CommentBox';
 import UploadCSVModal from '../../organisms/UploadCSVModal';
 
 const OverviewPage: React.VFC = () => {
@@ -45,6 +46,7 @@ const OverviewPage: React.VFC = () => {
                 }}
               >
                 <TransactionList />
+                {/* <CommentBox style={{ marginTop: '500px' }} onSubmit={() => undefined} /> */}
               </Box>
             </Stack>
           </Stack>
@@ -55,7 +57,7 @@ const OverviewPage: React.VFC = () => {
       </Grid>
       <UploadCSVModal />
       <AttachmentModal />
-      <MentionPopover />
+      <MentionPopover onSelectUser={() => undefined} />
     </MainLayout>
   );
 };

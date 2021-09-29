@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect } from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/system';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
@@ -9,7 +9,7 @@ import { ReactComponent as AttachIcon } from '@assets/icons/outline/attach.svg';
 import { Gray, Highlight } from '@theme/colors';
 import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { CommentFormModel } from '@main/types';
+import { CommentFormModel, Emoji } from '@main/types';
 import EmojiPopover from '@main/atoms/EmojiPopover';
 // import EmojiMartPopover from '@main/atoms/EmojiMartPopover';
 // import MentionPopover from '@main/atoms/MentionPopover';
@@ -87,6 +87,8 @@ export interface CommentFormProps {
   showAttach?: boolean;
   showSend?: boolean;
   showEmoji?: boolean;
+  placeholder?: string;
+  style?: React.CSSProperties;
 }
 
 const CommentBox: React.VFC<CommentFormProps> = ({
@@ -94,6 +96,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   showAttach = true,
   showSend = true,
   showEmoji = true,
+  placeholder = '💬 Comment here…',
+  style = {},
 }) => {
   const setShowMentionPopover = useSetRecoilState(showMentionPopover);
   const classes = useStyles();
@@ -114,23 +118,48 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     }
   }, [isSubmitted, reset]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setShowMentionPopover(event.currentTarget);
+  const handleMention = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    // console.log('Check handleChange event = ', event.currentTarget.value);
+    const { value } = event.currentTarget;
+
+    if (value.substr(value.length - 1) === '@') {
+      setShowMentionPopover(event.currentTarget);
+    }
+    // const parsedContent = value
+    //   .split(' ')
+    //   .map((word) => {
+    //     if (word.startsWith('@')) {
+    //       // return `<mention userid="123" tagname="${word.replace('@', '')}"/>`;
+    //       setShowMentionPopover(event.currentTarget);
+    //     }
+    //     return word;
+    //   })
+    //   .join(' ');
+    // console.log('Check parsedContent = ', parsedContent);
+  };
+
+  const onSelectEmoji = (emoji: Emoji) => {
+    console.log(emoji);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} style={style}>
       <FormControl sx={{ flexDirection: 'row', marginBottom: 0 }}>
-        <Container onSubmit={handleSubmit(onSubmit)} onChange={handleChange}>
+        <Container onSubmit={handleSubmit(onSubmit)}>
           <Controller
             name="content"
             control={control}
             render={({ field }) => (
-              <CommentInput {...field} handleEnterPress={handleSubmit(onSubmit)} />
+              <CommentInput
+                {...field}
+                onEnterPress={handleSubmit(onSubmit)}
+                onMention={handleMention}
+                placeholder={placeholder}
+              />
             )}
           />
           <Stack direction="row" spacing={1} alignItems="center">
-            {!!showEmoji && <EmojiPopover />}
+            {!!showEmoji && <EmojiPopover onSelectEmoji={onSelectEmoji} />}
             {/* <MentionPopover /> */}
             {/* <EmojiMartPopover /> */}
             {!!showAttach && (

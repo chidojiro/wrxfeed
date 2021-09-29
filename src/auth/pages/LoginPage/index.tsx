@@ -34,6 +34,8 @@ const LoginPage: React.VFC = () => {
       setIdentity({
         token: userToken.token,
         expireAt: userToken.expireAt,
+        fullName: userProfile?.name,
+        email: userProfile?.email,
         provider: {
           name: ProviderName.GOOGLE,
           profile: {

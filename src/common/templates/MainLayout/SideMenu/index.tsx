@@ -7,8 +7,6 @@ import { useSetIdentity } from '@identity';
 import { useApi } from '@api';
 import { styled } from '@mui/material/styles';
 import { ReactComponent as LogoutIcon } from '@assets/icons/outline/logout.svg';
-import { useNavUtils } from '@common/hooks';
-import Routes from '@src/routes';
 // import { ReactComponent as UploadIcon } from '@assets/icons/outline/upload.svg';
 // import { useSetRecoilState } from 'recoil';
 // import { showUploadCSVModalState } from '@main/organisms/UploadCSVModal/states';
@@ -78,12 +76,10 @@ const SideMenu: React.VFC = () => {
   // const setOpenUploadCSVModal = useSetRecoilState(showUploadCSVModalState);
   const setIdentity = useSetIdentity();
   const apiClient = useApi();
-  const { redirect } = useNavUtils();
   const logout = React.useCallback(async () => {
     apiClient.logout();
     setIdentity(undefined);
-    redirect(Routes.Login.path);
-  }, [setIdentity, redirect, apiClient]);
+  }, [setIdentity, apiClient]);
   // const uploadCSV = () => setOpenUploadCSVModal(true);
   return (
     <>

@@ -12,9 +12,10 @@ import { dummyEmoji, dummyGroupEmoji, getEmojiList } from './dummy';
 
 export interface EmojiPopoverProps {
   isOpen?: boolean;
+  onSelectEmoji: (emoji: Emoji) => void;
 }
 
-const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
+const EmojiPopover: React.VFC<EmojiPopoverProps> = ({ onSelectEmoji }) => {
   const [anchorEl, setAnchorEl] = React.useState<any>(null);
   const [emojiList, setEmojiList] = React.useState<Emoji[] | []>(dummyEmoji);
 
@@ -93,6 +94,7 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
               {emojiList.map((item: Emoji) => {
                 return (
                   <button
+                    onClick={() => onSelectEmoji(item)}
                     type="button"
                     key={item.id}
                     style={{

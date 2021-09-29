@@ -1,5 +1,5 @@
 import { UserToken } from '@identity/types';
-import { Comment, Transaction, Discussion } from '@main/entity';
+import { Comment, Transaction, Discussion, User } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { Identity } from '../identity';
 import {
@@ -22,11 +22,16 @@ export interface ApiClient {
   forgotPassword: (data: ForgotPwdFormModel) => Promise<void>;
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   // Transaction API
-  getTransactions: (pagination?: Pagination) => Promise<Transaction[]>;
-  getComments: (transactionId: number, pagination?: Pagination) => Promise<Comment[]>;
-  addComment: (transactionId: number, data: CommentFormModel) => Promise<Comment>;
+  getTransactions?: (pagination?: Pagination) => Promise<Transaction[]>;
+  getComments?: (transactionId: number, pagination?: Pagination) => Promise<Comment[]>;
+  addComment?: (transactionId: number, data: CommentFormModel) => Promise<Comment>;
 
-  getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
+  // Discussion API
+  getDiscussions?: (pagination?: Pagination) => Promise<Discussion[]>;
+  // Attach file API
+  uploadAttachment?: (id: string, data: File) => Promise<void>;
+  // Mention API
+  getMentions?: (pagination?: Pagination) => Promise<User[]>;
 
   searchActivities: (filter: ActivityFilterModel) => Promise<[Activity[], number]>;
   addActivity: (data: ActivityFormModel) => Promise<Activity>;

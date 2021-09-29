@@ -3,7 +3,7 @@ import { Stack, Typography, Button, Divider } from '@mui/material';
 import Popover from '@mui/material/Popover';
 import { LighBG, Gray, Highlight } from '@theme/colors';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
-import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
+// import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { User } from '@main/entity/user.entity';
 
 import { useRecoilState } from 'recoil';
@@ -13,30 +13,31 @@ import { showMentionPopover } from './states';
 
 export interface MentionPopoverProps {
   isOpen?: boolean;
+  onSelectUser: (user: User) => void;
 }
 
-const MentionPopover: React.VFC<MentionPopoverProps> = () => {
+const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   const [anchorEl, setAnchorEl] = useRecoilState(showMentionPopover);
   // const [anchorEl, setAnchorEl] = React.useState<any>(null);
   const [mention, setMention] = React.useState<User | null>(null);
 
-  const handleClick = (event: MouseEvent) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleClick = (event: MouseEvent) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const onMouseOver = (mention: User) => {
-    setMention(mention);
+  const onMouseOver = (user: User) => {
+    setMention(user);
   };
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   return (
     <div>
-      <SmileIcon onClick={handleClick} />
+      {/* <SmileIcon onClick={handleClick} /> */}
       <Popover
         id={id}
         open={open}
@@ -56,11 +57,11 @@ const MentionPopover: React.VFC<MentionPopoverProps> = () => {
         elevation={0}
         anchorOrigin={{
           vertical: 'top',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'bottom',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
       >
         <Stack
@@ -72,6 +73,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = () => {
           style={{
             filter:
               'drop-shadow(0px 3px 5px rgba(39, 50, 64, 0.2)) drop-shadow(0px 0px 1px rgba(39, 50, 64, 0.3))',
+            border: '1px solid #273240',
           }}
         >
           <Stack height="36px" paddingX="16px" paddingY="8px" marginTop="8px">
@@ -96,6 +98,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = () => {
                 type="button"
                 key={item.id}
                 onMouseOver={() => onMouseOver(item)}
+                onClick={() => onSelectUser(item)}
                 style={{
                   padding: '0px',
                   justifyContent: 'left',
