@@ -1,5 +1,6 @@
 import { UserToken } from '@identity/types';
 import { Comment, Transaction, Discussion } from '@main/entity';
+import { CommentFormModel } from '@main/types';
 import { Identity } from '../identity';
 import {
   ChangePwdFormModel,
@@ -23,7 +24,8 @@ export interface ApiClient {
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   // Transaction API
   getTransactions: (pagination?: Pagination) => Promise<Transaction[]>;
-  getComments: (transactionId: string | number, pagination?: Pagination) => Promise<Comment[]>;
+  getComments: (transactionId: number, pagination?: Pagination) => Promise<Comment[]>;
+  addComment: (transactionId: number, data: CommentFormModel) => Promise<Comment>;
 
   getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
 

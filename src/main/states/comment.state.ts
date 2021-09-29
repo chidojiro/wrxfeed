@@ -4,13 +4,13 @@ import { Comment } from '@main/entity';
 import { atom, selector } from 'recoil';
 
 interface CommentFilter extends Pagination {
-  transactionId: string;
+  transactionId: number;
 }
 
 export const commentFilterState = atom<CommentFilter>({
   key: 'main/commentFilter',
   default: {
-    transactionId: '',
+    transactionId: -1,
     offset: 0,
     limit: 10,
   },

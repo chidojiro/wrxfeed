@@ -2,26 +2,26 @@ import { useApi } from '@api';
 import { Pagination } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
+import { useIdentity } from '@identity/hooks';
 import { Comment } from '@main/entity';
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { CommentFormModel } from '@main/types';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 interface CommentHookValues {
   comments: Comment[];
-  setComments: Dispatch<SetStateAction<Comment[]>>;
+  addComment: (comment: CommentFormModel) => Promise<void>;
 }
 
-export function useComment(
-  transactionId: string | number,
-  pagination?: Pagination,
-): CommentHookValues {
-  const apiClient = useApi();
+export function useComment(transactionId: number, pagination?: Pagination): CommentHookValues {
+  const identity = useIdentity();
+  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [comments, setComments] = useState<Comment[]>([]);
 
   const getComments = useCallback(async () => {
     try {
-      const res = await apiClient.getComments(transactionId, pagination);
+      const res = await ApiClient.getComments(transactionId, pagination);
       setComments((prevComments) => [...prevComments, ...res]);
     } catch (error) {
       if (isBadRequest(error)) {
@@ -30,12 +30,31 @@ export function useComment(
         errorHandler(error);
       }
     }
-  }, [apiClient, errorHandler, transactionId, pagination]);
+  }, [ApiClient, errorHandler, transactionId, pagination]);
+
+  const addComment = async (comment: CommentFormModel) => {
+    try {
+      const res = await ApiClient.addComment(transactionId, comment);
+      if (!res.user) {
+        res.user = {
+          email: identity?.email || '',
+          fullName: identity?.displayName || identity?.email || '',
+        };
+      }
+      setComments((prevComments) => [...prevComments, res]);
+    } catch (error) {
+      if (isBadRequest(error)) {
+        toast.error('Can not get comments');
+      } else {
+        errorHandler(error);
+      }
+    }
+  };
 
   // invalidate list when component is unmounted
   useEffect(() => {
     getComments();
   }, [getComments]);
 
-  return { comments, setComments };
+  return { comments, addComment };
 }

@@ -14,8 +14,8 @@ export const transactionFilterState = atom<Pagination>({
 export const transactionSelector = selector<Transaction[]>({
   key: 'main/transactions', // unique ID (with respect to other atoms/selectors)
   get: async ({ get }) => {
-    const apiClient = await getApiClient();
+    const { getTransactions } = await getApiClient();
     const filter = get(transactionFilterState);
-    return apiClient.getTransactions(filter);
+    return getTransactions(filter);
   },
 });

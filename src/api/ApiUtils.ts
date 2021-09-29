@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
 import { Comment, Transaction } from '@main/entity';
+import { CommentFormModel } from '@main/types';
 import { ApiError } from '../error';
 import { Identity } from '../identity';
 import {
@@ -22,16 +23,16 @@ export default class ApiUtils implements ApiClient {
     this.client = axios.create({ baseURL: endpoint });
   }
 
-  async request<T, R = AxiosResponse<T>>(config: AxiosRequestConfig): Promise<R> {
+  request = async <T, R = AxiosResponse<T>>(config: AxiosRequestConfig): Promise<R> => {
     try {
       const result = await this.client.request<T, R>(config);
       return result;
     } catch (error) {
       throw new ApiError(error);
     }
-  }
+  };
 
-  async login(data: LoginFormModel): Promise<Identity> {
+  login = async (data: LoginFormModel): Promise<Identity> => {
     const resp = await this.request<Identity>({
       url: '/auth/admin/tokens',
       method: 'POST',
@@ -47,23 +48,23 @@ export default class ApiUtils implements ApiClient {
       roles: resp.data.roles,
     };
     return identity;
-  }
+  };
 
-  async signInWithGoogle(data: GoogleAuthParams): Promise<UserToken> {
+  signInWithGoogle = async (data: GoogleAuthParams): Promise<UserToken> => {
     const resp = await this.request<UserToken>({
       url: '/auth/google/access-tokens',
       method: 'POST',
       params: data,
     });
     return resp.data;
-  }
+  };
 
-  async logout(): Promise<void> {
+  logout = async (): Promise<void> => {
     return this.request({
       url: '/auth/access-tokens/mine',
       method: 'DELETE',
     });
-  }
+  };
 
   async getProfile(): Promise<Profile> {
     const resp = await this.request<Profile>({
@@ -106,23 +107,32 @@ export default class ApiUtils implements ApiClient {
     });
   }
 
-  async getTransactions(pagination?: Pagination): Promise<Transaction[]> {
+  getTransactions = async (pagination?: Pagination): Promise<Transaction[]> => {
     const res = await this.request<Transaction[]>({
       url: '/feed/transactions',
       method: 'GET',
       params: pagination,
     });
     return res.data;
-  }
+  };
 
-  async getComments(transactionId: string, pagination?: Pagination): Promise<Comment[]> {
+  getComments = async (transactionId: number, pagination?: Pagination): Promise<Comment[]> => {
     const res = await this.request<Comment[]>({
       url: `/feed/transactions/${transactionId}/comments`,
       method: 'GET',
       params: pagination,
     });
     return res.data;
-  }
+  };
+
+  addComment = async (transactionId: number, data: CommentFormModel): Promise<Comment> => {
+    const res = await this.request<Comment>({
+      url: `/feed/transactions/${transactionId}/comments`,
+      method: 'POST',
+      data,
+    });
+    return res.data;
+  };
 
   async searchActivities(filter: ActivityFilterModel): Promise<[Activity[], number]> {
     const [from, to] = getTimeRangeFromFilter(filter);

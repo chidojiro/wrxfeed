@@ -6,7 +6,7 @@ import { Button, Stack, Typography, Box } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { Gray, Accent } from '@theme/colors';
 // import { ReactComponent as CsvIcon } from '@assets/icons/outline/csvIcon.svg';
-import CommentBox from '@main/atoms/CommentBox';
+import CommentBox from '@main/molecules/CommentBox';
 import { AttachState, showAttachmentModalState } from './states';
 
 export type FileAttachPreviewProps = {
