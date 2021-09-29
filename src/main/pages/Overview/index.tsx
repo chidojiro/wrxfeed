@@ -1,12 +1,11 @@
 import React from 'react';
 import { Typography, Box, Grid, Stack } from '@mui/material';
 import MainLayout from '@common/templates/MainLayout';
-// import TransactionList from '@main/organisms/TransactionList';
+import TransactionList from '@main/organisms/TransactionList';
 import IconButton from '@main/atoms/IconButton';
 import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.svg';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
 import MentionPopover from '@main/atoms/MentionPopover';
-import CommentBox from '@main/molecules/CommentBox';
 import AttachmentModal from '@main/organisms/AttachmentModal';
 import UploadCSVModal from '../../organisms/UploadCSVModal';
 
@@ -45,8 +44,7 @@ const OverviewPage: React.VFC = () => {
                   paddingRight: 2,
                 }}
               >
-                {/* <TransactionList /> */}
-                <CommentBox onSubmit={() => undefined} />
+                <TransactionList />
               </Box>
             </Stack>
           </Stack>
