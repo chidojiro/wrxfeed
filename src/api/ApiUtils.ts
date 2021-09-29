@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
-import { Comment, Transaction } from '@main/entity';
+import { Comment, Transaction, User } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { ApiError } from '@error';
 import { Identity } from '@identity';
@@ -127,6 +127,29 @@ export default class ApiUtils implements ApiClient {
       data,
     });
     return res.data;
+  };
+
+  getMentions = async (pagination?: Pagination): Promise<User[]> => {
+    const res = await this.request<User[]>({
+      url: '/user/me/mentions',
+      method: 'GET',
+      params: pagination,
+    });
+    // console.log('Check res = ', res);
+    return res.data;
+  };
+
+  // /api/media/upload-tokens
+  postUploadAttachment = async (file: File): Promise<void> => {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    const res = await this.request<User[]>({
+      url: '/media/me/upload-tokens',
+      method: 'POST',
+      data: formData,
+    });
+    console.log(res);
+    // return res.data;
   };
 
   async searchActivities(filter: ActivityFilterModel): Promise<[Activity[], number]> {

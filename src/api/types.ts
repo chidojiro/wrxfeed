@@ -22,16 +22,16 @@ export interface ApiClient {
   forgotPassword: (data: ForgotPwdFormModel) => Promise<void>;
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   // Transaction API
-  getTransactions?: (pagination?: Pagination) => Promise<Transaction[]>;
-  getComments?: (transactionId: number, pagination?: Pagination) => Promise<Comment[]>;
-  addComment?: (transactionId: number, data: CommentFormModel) => Promise<Comment>;
+  getTransactions: (pagination?: Pagination) => Promise<Transaction[]>;
+  getComments: (transactionId: number, pagination?: Pagination) => Promise<Comment[]>;
+  addComment: (transactionId: number, data: CommentFormModel) => Promise<Comment>;
 
   // Discussion API
-  getDiscussions?: (pagination?: Pagination) => Promise<Discussion[]>;
+  getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
   // Attach file API
-  uploadAttachment?: (id: string, data: File) => Promise<void>;
+  uploadAttachment: (data: File) => Promise<void>;
   // Mention API
-  getMentions?: (pagination?: Pagination) => Promise<User[]>;
+  getMentions: (pagination?: Pagination) => Promise<User[]>;
 
   searchActivities: (filter: ActivityFilterModel) => Promise<[Activity[], number]>;
   addActivity: (data: ActivityFormModel) => Promise<Activity>;

@@ -8,6 +8,7 @@ import { User } from '@main/entity/user.entity';
 
 import { useRecoilState } from 'recoil';
 import { InviteIcon } from '@assets/index';
+import { useMention } from '@main/hooks';
 import { mentionUsers } from './dummy';
 import { showMentionPopover } from './states';
 
@@ -20,6 +21,11 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   const [anchorEl, setAnchorEl] = useRecoilState(showMentionPopover);
   // const [anchorEl, setAnchorEl] = React.useState<any>(null);
   const [mention, setMention] = React.useState<User | null>(null);
+  const mentions = useMention();
+
+  React.useEffect(() => {
+    console.log('Check new mentions = ', mentions);
+  }, [mentions]);
 
   // const handleClick = (event: MouseEvent) => {
   //   setAnchorEl(event.currentTarget);
