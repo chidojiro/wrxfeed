@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect } from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/system';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
@@ -118,24 +118,11 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     }
   }, [isSubmitted, reset]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log('Check handleChange event = ', event.currentTarget.value);
+  const handleMention = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { value } = event.currentTarget;
-
     if (value.substr(value.length - 1) === '@') {
       setShowMentionPopover(event.currentTarget);
     }
-    // const parsedContent = value
-    //   .split(' ')
-    //   .map((word) => {
-    //     if (word.startsWith('@')) {
-    //       // return `<mention userid="123" tagname="${word.replace('@', '')}"/>`;
-    //       setShowMentionPopover(event.currentTarget);
-    //     }
-    //     return word;
-    //   })
-    //   .join(' ');
-    // console.log('Check parsedContent = ', parsedContent);
   };
 
   const onSelectEmoji = (emoji: Emoji) => {
@@ -152,9 +139,9 @@ const CommentBox: React.VFC<CommentFormProps> = ({
             render={({ field }) => (
               <CommentInput
                 {...field}
-                handleEnterPress={handleSubmit(onSubmit)}
+                onEnterPress={handleSubmit(onSubmit)}
+                onMention={handleMention}
                 placeholder={placeholder}
-                onChange={handleChange}
               />
             )}
           />
