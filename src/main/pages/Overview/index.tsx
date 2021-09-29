@@ -46,7 +46,7 @@ const OverviewPage: React.VFC = () => {
                 }}
               >
                 {/* <TransactionList /> */}
-                <CommentBox onSubmit={() => undefined} />
+                <CommentBox style={{ marginTop: '500px' }} onSubmit={() => undefined} />
               </Box>
             </Stack>
           </Stack>

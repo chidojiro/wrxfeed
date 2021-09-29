@@ -16,7 +16,7 @@ export type FileAttachPreviewProps = {
 
 const FileAttachPreview: React.FC<FileAttachPreviewProps> = ({ file }) => {
   const [previewSrc, setPreviewSrc] = React.useState<string>(
-    'https://p4.wallpaperbetter.com/wallpaper/500/442/354/outrun-vaporwave-hd-wallpaper-preview.jpg',
+    'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png',
   );
 
   React.useEffect(() => {
@@ -34,7 +34,7 @@ const FileAttachPreview: React.FC<FileAttachPreviewProps> = ({ file }) => {
         id="image_preview_upload"
         alt="alt_image_upload"
         src={previewSrc}
-        style={{ width: '144px', height: '80px', borderRadius: '4px' }}
+        style={{ width: '144px', height: '80px', borderRadius: '4px', objectFit: 'cover' }}
       />
     </Box>
   );

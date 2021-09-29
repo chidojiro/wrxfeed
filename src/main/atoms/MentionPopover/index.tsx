@@ -3,7 +3,7 @@ import { Stack, Typography, Button, Divider } from '@mui/material';
 import Popover from '@mui/material/Popover';
 import { LighBG, Gray, Highlight } from '@theme/colors';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
-import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
+// import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { User } from '@main/entity/user.entity';
 
 import { useRecoilState } from 'recoil';
@@ -20,23 +20,23 @@ const MentionPopover: React.VFC<MentionPopoverProps> = () => {
   // const [anchorEl, setAnchorEl] = React.useState<any>(null);
   const [mention, setMention] = React.useState<User | null>(null);
 
-  const handleClick = (event: MouseEvent) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleClick = (event: MouseEvent) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const onMouseOver = (mention: User) => {
-    setMention(mention);
+  const onMouseOver = (user: User) => {
+    setMention(user);
   };
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   return (
     <div>
-      <SmileIcon onClick={handleClick} />
+      {/* <SmileIcon onClick={handleClick} /> */}
       <Popover
         id={id}
         open={open}
@@ -56,11 +56,11 @@ const MentionPopover: React.VFC<MentionPopoverProps> = () => {
         elevation={0}
         anchorOrigin={{
           vertical: 'top',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'bottom',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
       >
         <Stack

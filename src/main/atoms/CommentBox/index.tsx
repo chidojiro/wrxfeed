@@ -63,15 +63,15 @@ const StyledInput = styled(MuiInputBase)<InputBaseProps>(({ theme }) => ({
 }));
 
 const InputBase: React.VFC<InputBaseProps> = forwardRef(
-  ({ name, value, onChange, onBlur }, ref) => {
+  ({ name, value, onChange, onBlur, placeholder }, ref) => {
     const { filled, focused } = useFormControl() || {};
 
     return (
       <StyledInput
         ref={ref}
         name={name}
-        value={value}
-        placeholder="Comment here…"
+        // value={value}
+        placeholder={placeholder}
         inputProps={{ 'aria-label': 'comment here' }}
         multiline
         rows={focused || filled ? 3 : 1}
@@ -124,6 +124,8 @@ export interface CommentFormProps {
   showAttach?: boolean;
   showSend?: boolean;
   showEmoji?: boolean;
+  placeholder?: string;
+  style?: React.CSSProperties;
 }
 
 const CommentBox: React.VFC<CommentFormProps> = ({
@@ -131,6 +133,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   showAttach = true,
   showSend = true,
   showEmoji = true,
+  placeholder = '💬 Comment here…',
+  style = {},
 }) => {
   const setShowMentionPopover = useSetRecoilState(showMentionPopover);
   const classes = useStyles();
@@ -152,20 +156,40 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   }, [isSubmitted, reset]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setShowMentionPopover(event.currentTarget);
+    console.log('Check handleChange event = ', event.currentTarget.value);
+    const { value } = event.currentTarget;
+
+    if (value.substr(value.length - 1) === '@') {
+      setShowMentionPopover(event.currentTarget);
+    }
+    // const parsedContent = value
+    //   .split(' ')
+    //   .map((word) => {
+    //     if (word.startsWith('@')) {
+    //       // return `<mention userid="123" tagname="${word.replace('@', '')}"/>`;
+    //       setShowMentionPopover(event.currentTarget);
+    //     }
+    //     return word;
+    //   })
+    //   .join(' ');
+    // console.log('Check parsedContent = ', parsedContent);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} style={style}>
       <FormControl sx={{ flexDirection: 'row', marginBottom: 0 }}>
-        <Container onSubmit={handleSubmit(onSubmit)} onChange={handleChange}>
+        <Container onSubmit={handleSubmit(onSubmit)}>
           <Controller
             name="content"
             control={control}
-            render={({ field }) => <InputBase {...field} />}
+            render={({ field }) => (
+              <InputBase placeholder={placeholder} {...field} onChange={handleChange} />
+            )}
           />
           <Stack direction="row" spacing={1} alignItems="center">
-            {!!showEmoji && <EmojiPopover />}
+            {!!showEmoji && (
+              <EmojiPopover onSelectEmoji={(emoji) => console.log('Check emoji = ', emoji)} />
+            )}
             {/* <MentionPopover /> */}
             {/* <EmojiMartPopover /> */}
             {!!showAttach && (
