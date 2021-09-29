@@ -24,7 +24,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
   const [isShowAllComments, showAllComments] = useState(false);
   // Variables
   const shownComments = useMemo(() => {
-    return isShowAllComments ? comments : comments?.slice(0, INITIAL_COMMENT_NUMBER);
+    return isShowAllComments ? comments : comments?.slice(-INITIAL_COMMENT_NUMBER);
   }, [isShowAllComments, comments]);
   const hasComment = !!comments?.length;
   const hiddenCommentCount = (comments?.length ?? 0) - INITIAL_COMMENT_NUMBER;
@@ -43,7 +43,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
       .join(' ');
     setComments((prevComments) => {
       const newComment: Comment = {
-        id: (prevComments?.length ?? 0 + 1).toString(),
+        id: prevComments?.length ?? 0 + 1,
         user: {
           email: identity?.email || '',
           fullName: identity?.displayName || identity?.email || '',
@@ -51,7 +51,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
         content: parsedContent,
         createdAt: new Date().toString(),
       };
-      return prevComments ? [newComment, ...prevComments] : [];
+      return prevComments ? [...prevComments, newComment] : [];
     });
   };
 
@@ -73,8 +73,8 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
                   />
                 </Collapse>
               )}
-              {shownComments?.map((comment, idx) => (
-                <Collapse key={`${comment.id}-${idx.toString()}`}>
+              {shownComments?.map((comment) => (
+                <Collapse key={comment.id}>
                   <CommentItem sx={{ marginBottom: 0.5 }} comment={comment} />
                 </Collapse>
               ))}
