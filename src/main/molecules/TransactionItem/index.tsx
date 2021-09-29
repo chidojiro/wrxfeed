@@ -1,12 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { CommentFormModel } from '@main/types';
-import { Comment, Transaction } from '@main/entity';
+import { Transaction } from '@main/entity';
 import TransactionContent from '@main/atoms/TransactionContent';
 import CommentBox from '@main/molecules/CommentBox';
 import { Stack, Box, List, Collapse } from '@mui/material';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentRemaining from '@main/atoms/CommentRemaining';
-import { useIdentity } from '@identity/hooks';
 import { TransitionGroup } from 'react-transition-group';
 import { useComment } from '@main/hooks';
 
@@ -18,9 +17,8 @@ export interface TransactionItemProps {
 
 const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
   // Recoil states
-  const identity = useIdentity();
   // Local States
-  const { comments, setComments } = useComment(transaction.id);
+  const { comments, addComment } = useComment(transaction.id);
   const [isShowAllComments, showAllComments] = useState(false);
   // Variables
   const shownComments = useMemo(() => {
@@ -41,18 +39,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
         return word;
       })
       .join(' ');
-    setComments((prevComments) => {
-      const newComment: Comment = {
-        id: prevComments?.length ?? 0 + 1,
-        user: {
-          email: identity?.email || '',
-          fullName: identity?.displayName || identity?.email || '',
-        },
-        content: parsedContent,
-        createdAt: new Date().toString(),
-      };
-      return prevComments ? [...prevComments, newComment] : [];
-    });
+    addComment({ content: parsedContent });
   };
 
   return (
