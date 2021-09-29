@@ -1,3 +1,5 @@
+import { AxiosError } from 'axios';
+import { ApiErrorCode } from '@src/error';
 import DeferredObject from './DeferredObject';
 import { ApiClient } from './types';
 
@@ -10,4 +12,15 @@ export function getApiClient(): PromiseLike<ApiClient> {
 
 export function setApiClient(val: ApiClient): void {
   deferred.resolve(val);
+}
+
+export async function handleResponseFail(error: AxiosError): Promise<never> {
+  const apiClient = await getApiClient();
+  if (error.response?.status === ApiErrorCode.Unauthenticated) {
+    // Force Logout
+    await apiClient.logout();
+    localStorage.clear();
+    window.location.href = '/logout';
+  }
+  return Promise.reject(error);
 }

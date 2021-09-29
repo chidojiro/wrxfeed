@@ -1,12 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
-import { Comment, Transaction } from '@main/entity';
+import { Comment, Transaction, User } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { ApiError } from '@error';
 import { Identity } from '@identity';
 import { ApiClient, ChangePasswordDto, Pagination, ResetPasswordDto } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { removeEmptyFields, sleep } from '@common/utils';
+import { handleResponseFail } from '@api/utils';
 import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
 import { getTimeRangeFromFilter } from '../diary/utils';
 
@@ -15,12 +16,12 @@ export default class ApiUtils implements ApiClient {
 
   constructor(endpoint: string) {
     this.client = axios.create({ baseURL: endpoint });
+    this.client.interceptors.request.use((response) => response, handleResponseFail);
   }
 
   request = async <T, R = AxiosResponse<T>>(config: AxiosRequestConfig): Promise<R> => {
     try {
-      const result = await this.client.request<T, R>(config);
-      return result;
+      return await this.client.request<T, R>(config);
     } catch (error) {
       throw new ApiError(error);
     }
@@ -32,7 +33,7 @@ export default class ApiUtils implements ApiClient {
       method: 'POST',
       data,
     });
-    const identity: Identity = {
+    return {
       fullName: resp.data.fullName,
       expireAt: new Date(resp.data.expireAt || Date.now()),
       // token won't be saved in local storage but in http cookie
@@ -40,7 +41,6 @@ export default class ApiUtils implements ApiClient {
       avatar: resp.data.avatar,
       email: resp.data.email,
     };
-    return identity;
   };
 
   signInWithGoogle = async (accessToken: string): Promise<UserToken> => {
@@ -127,6 +127,29 @@ export default class ApiUtils implements ApiClient {
       data,
     });
     return res.data;
+  };
+
+  getMentions = async (pagination?: Pagination): Promise<User[]> => {
+    const res = await this.request<User[]>({
+      url: '/user/me/mentions',
+      method: 'GET',
+      params: pagination,
+    });
+    // console.log('Check res = ', res);
+    return res.data;
+  };
+
+  // /api/media/upload-tokens
+  postUploadAttachment = async (file: File): Promise<void> => {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    const res = await this.request<User[]>({
+      url: '/media/me/upload-tokens',
+      method: 'POST',
+      data: formData,
+    });
+    console.log(res);
+    // return res.data;
   };
 
   async searchActivities(filter: ActivityFilterModel): Promise<[Activity[], number]> {

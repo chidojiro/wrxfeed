@@ -119,23 +119,10 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   }, [isSubmitted, reset]);
 
   const handleMention = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    // console.log('Check handleChange event = ', event.currentTarget.value);
     const { value } = event.currentTarget;
-
     if (value.substr(value.length - 1) === '@') {
       setShowMentionPopover(event.currentTarget);
     }
-    // const parsedContent = value
-    //   .split(' ')
-    //   .map((word) => {
-    //     if (word.startsWith('@')) {
-    //       // return `<mention userid="123" tagname="${word.replace('@', '')}"/>`;
-    //       setShowMentionPopover(event.currentTarget);
-    //     }
-    //     return word;
-    //   })
-    //   .join(' ');
-    // console.log('Check parsedContent = ', parsedContent);
   };
 
   const onSelectEmoji = (emoji: Emoji) => {

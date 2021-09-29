@@ -11,12 +11,14 @@ import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 're
 import { useApi } from '@api';
 import { toast } from 'react-toastify';
 import { ProviderName } from '@main/entity';
+import { useErrorHandler } from '@src/error';
 
 const LoginPage: React.VFC = () => {
   const { signInWithGoogle } = useApi();
   const { redirect } = useNavUtils();
   const identity = useIdentity();
   const setIdentity = useSetIdentity();
+  const errorHandler = useErrorHandler();
 
   useEffect(() => {
     if (identity?.token) {
@@ -27,26 +29,30 @@ const LoginPage: React.VFC = () => {
   const handleResponseSuccess = async (
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => {
-    if ('accessToken' in response) {
-      const { accessToken } = response;
-      const userToken = await signInWithGoogle(accessToken);
-      const userProfile = 'profileObj' in response ? response.profileObj : null;
-      setIdentity({
-        token: userToken.token,
-        expireAt: userToken.expireAt,
-        fullName: userProfile?.name,
-        email: userProfile?.email,
-        provider: {
-          name: ProviderName.GOOGLE,
-          profile: {
-            id: userProfile?.googleId,
-            email: userProfile?.email,
-            name: userProfile?.name,
-            givenName: userProfile?.givenName,
-            familyName: userProfile?.familyName,
+    try {
+      if ('accessToken' in response) {
+        const { accessToken } = response;
+        const userToken = await signInWithGoogle(accessToken);
+        const userProfile = 'profileObj' in response ? response.profileObj : null;
+        setIdentity({
+          token: userToken.token,
+          expireAt: userToken.expireAt,
+          fullName: userProfile?.name,
+          email: userProfile?.email,
+          provider: {
+            name: ProviderName.GOOGLE,
+            profile: {
+              id: userProfile?.googleId,
+              email: userProfile?.email,
+              name: userProfile?.name,
+              givenName: userProfile?.givenName,
+              familyName: userProfile?.familyName,
+            },
           },
-        },
-      });
+        });
+      }
+    } catch (error: any) {
+      await errorHandler(error);
     }
   };
 
