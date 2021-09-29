@@ -17,10 +17,6 @@ const routes: Route = {
     path: '/login',
     component: lazy(() => import('@auth/pages/LoginPage')),
   },
-  GoogleRedirect: {
-    path: '/google/redirect',
-    component: lazy(() => import('@auth/pages/AuthRedirect')),
-  },
   // Protected pages
   Home: {
     path: '/',

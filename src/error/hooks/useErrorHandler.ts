@@ -9,7 +9,6 @@ export default function useErrorHandler(): ErrorHandler {
   return React.useCallback(
     async (error) => {
       if (!isApiError(error)) {
-        // Replcae with toastify
         toast.error('An error occurred in the app.');
         return;
       }
@@ -45,7 +44,7 @@ export default function useErrorHandler(): ErrorHandler {
           break;
 
         default:
-          toast.error('An unknow error occured.');
+          toast.error('An unknown error occurred.');
           break;
       }
     },

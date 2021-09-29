@@ -6,7 +6,7 @@ import { Gray } from '@theme/colors';
 
 export interface CommentOwnerProps {
   owner: User;
-  commentDate: Date;
+  commentDate: string;
 }
 
 const CommentOwner: React.VFC<CommentOwnerProps> = ({ owner, commentDate }) => {

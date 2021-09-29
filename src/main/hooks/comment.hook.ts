@@ -22,12 +22,17 @@ export function useComment(transactionId: number, pagination?: Pagination): Comm
   const getComments = useCallback(async () => {
     try {
       const res = await ApiClient.getComments(transactionId, pagination);
-      setComments((prevComments) => [...prevComments, ...res]);
+      const sortedData = res.sort((a, b) => {
+        if (a.createdAt < b.createdAt) return -1;
+        if (a.createdAt > b.createdAt) return 1;
+        return 0;
+      });
+      setComments((prevComments) => [...prevComments, ...sortedData]);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');
       } else {
-        errorHandler(error);
+        await errorHandler(error);
       }
     }
   }, [ApiClient, errorHandler, transactionId, pagination]);
@@ -38,7 +43,7 @@ export function useComment(transactionId: number, pagination?: Pagination): Comm
       if (!res.user) {
         res.user = {
           email: identity?.email || '',
-          fullName: identity?.displayName || identity?.email || '',
+          fullName: identity?.fullName || identity?.email || '',
         };
       }
       setComments((prevComments) => [...prevComments, res]);
@@ -46,14 +51,14 @@ export function useComment(transactionId: number, pagination?: Pagination): Comm
       if (isBadRequest(error)) {
         toast.error('Can not get comments');
       } else {
-        errorHandler(error);
+        await errorHandler(error);
       }
     }
   };
 
   // invalidate list when component is unmounted
   useEffect(() => {
-    getComments();
+    getComments().then();
   }, [getComments]);
 
   return { comments, addComment };

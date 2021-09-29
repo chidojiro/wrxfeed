@@ -1,19 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
-import { Comment, Transaction, User, Discussion } from '@main/entity';
+import { Comment, Transaction } from '@main/entity';
 import { CommentFormModel } from '@main/types';
+import { ApiError } from '@error';
+import { Identity } from '@identity';
+import { ApiClient, ChangePasswordDto, Pagination, ResetPasswordDto } from '@api/types';
+import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
+import { removeEmptyFields, sleep } from '@common/utils';
 import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
-import { ApiError } from '../error';
-import { Identity } from '../identity';
-import {
-  ForgotPwdFormModel,
-  GoogleAuthParams,
-  LoginFormModel,
-  Profile,
-  ProfileFormModel,
-} from '../auth/types';
-import { ApiClient, ChangePasswordDto, Pagination, ResetPasswordDto } from './types';
-import { removeEmptyFields, sleep } from '../common/utils';
 import { getTimeRangeFromFilter } from '../diary/utils';
 
 export default class ApiUtils implements ApiClient {
@@ -39,22 +33,23 @@ export default class ApiUtils implements ApiClient {
       data,
     });
     const identity: Identity = {
-      displayName: resp.data.displayName,
+      fullName: resp.data.fullName,
       expireAt: new Date(resp.data.expireAt || Date.now()),
       // token won't be saved in local storage but in http cookie
       token: '',
       avatar: resp.data.avatar,
       email: resp.data.email,
-      roles: resp.data.roles,
     };
     return identity;
   };
 
-  signInWithGoogle = async (data: GoogleAuthParams): Promise<UserToken> => {
+  signInWithGoogle = async (accessToken: string): Promise<UserToken> => {
     const resp = await this.request<UserToken>({
       url: '/auth/google/access-tokens',
       method: 'POST',
-      params: data,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
     return resp.data;
   };
@@ -130,40 +125,6 @@ export default class ApiUtils implements ApiClient {
       url: `/feed/transactions/${transactionId}/comments`,
       method: 'POST',
       data,
-    });
-    return res.data;
-  };
-
-  getMentions = async (pagination?: Pagination): Promise<User[]> => {
-    const res = await this.request<User[]>({
-      url: '/user/me/mentions',
-      method: 'GET',
-      params: pagination,
-    });
-    return res.data;
-  };
-
-  uploadAttachment = async (id: string, file: File): Promise<void> => {
-    const formData = new FormData();
-    formData.append('image', file, file?.name);
-    // /api/media/upload-tokens
-    const res = await this.request<void>({
-      url: '/media/upload-tokens',
-      method: 'POST',
-      params: {
-        contentType: 'image/jpeg',
-        Accept: 'application/json, */*',
-      },
-      data: formData,
-    });
-    return res.data;
-  };
-
-  getDiscussions = async (pagination?: Pagination): Promise<Discussion[]> => {
-    const res = await this.request<Discussion[]>({
-      url: '/feed/discussions',
-      method: 'GET',
-      params: pagination,
     });
     return res.data;
   };
@@ -246,11 +207,10 @@ export default class ApiUtils implements ApiClient {
 export const fakeApiUtils: ApiClient = {
   login: async () => {
     const fakeIdenity: Identity = {
-      displayName: 'Admin',
+      fullName: 'Admin',
       token: '',
       expireAt: new Date(),
       email: '',
-      roles: [],
     };
     return fakeIdenity;
   },

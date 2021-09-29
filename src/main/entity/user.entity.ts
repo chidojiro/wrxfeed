@@ -6,8 +6,27 @@ export enum UserStatus {
   Inactive = 'IN_ACTIVE',
 }
 
+export enum ProviderName {
+  GOOGLE = 'GOOGLE',
+}
+
+export type ProviderProfile = {
+  id?: string;
+  imageUrl?: string;
+  email?: string;
+  name?: string;
+  givenName?: string;
+  familyName?: string;
+};
+
+export type Provider = {
+  name: ProviderName;
+  profile: ProviderProfile | null;
+};
+
 export type User = {
   id?: number;
+  provider?: Provider;
   email?: string;
   fullName?: string;
   firstName?: string;

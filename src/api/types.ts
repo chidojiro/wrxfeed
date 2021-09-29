@@ -5,7 +5,6 @@ import { Identity } from '../identity';
 import {
   ChangePwdFormModel,
   ForgotPwdFormModel,
-  GoogleAuthParams,
   LoginFormModel,
   Profile,
   ProfileFormModel,
@@ -16,7 +15,7 @@ export interface ApiClient {
   // Authentication API
   login: (data: LoginFormModel) => Promise<Identity>;
   logout: () => Promise<void>;
-  signInWithGoogle: (data: GoogleAuthParams) => Promise<UserToken>;
+  signInWithGoogle: (accessToken: string) => Promise<UserToken>;
   getProfile: () => Promise<Profile>;
   updateProfile: (data: ProfileFormModel) => Promise<Profile>;
   changePassword: (data: ChangePasswordDto) => Promise<void>;

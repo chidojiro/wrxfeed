@@ -9,7 +9,7 @@ export type Comment = {
   transaction?: Transaction;
   parent?: string;
   replyCount?: number;
-  createdAt?: string;
+  createdAt: string;
   updatedAt?: string;
   deletedAt?: string;
 };
