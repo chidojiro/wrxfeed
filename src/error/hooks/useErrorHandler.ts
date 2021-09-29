@@ -31,7 +31,7 @@ export default function useErrorHandler(): ErrorHandler {
           break;
 
         case ApiErrorCode.Unauthenticated:
-          toast.error('Your have to login to continue.');
+          toast.error('Your authorization failed. Please check your account info and try again.');
           redirect('/login');
           break;
 

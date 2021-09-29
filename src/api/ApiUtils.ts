@@ -7,6 +7,7 @@ import { Identity } from '@identity';
 import { ApiClient, ChangePasswordDto, Pagination, ResetPasswordDto } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { removeEmptyFields, sleep } from '@common/utils';
+import { handleResponseFail } from '@api/utils';
 import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
 import { getTimeRangeFromFilter } from '../diary/utils';
 
@@ -15,12 +16,12 @@ export default class ApiUtils implements ApiClient {
 
   constructor(endpoint: string) {
     this.client = axios.create({ baseURL: endpoint });
+    this.client.interceptors.request.use((response) => response, handleResponseFail);
   }
 
   request = async <T, R = AxiosResponse<T>>(config: AxiosRequestConfig): Promise<R> => {
     try {
-      const result = await this.client.request<T, R>(config);
-      return result;
+      return await this.client.request<T, R>(config);
     } catch (error) {
       throw new ApiError(error);
     }
@@ -32,7 +33,7 @@ export default class ApiUtils implements ApiClient {
       method: 'POST',
       data,
     });
-    const identity: Identity = {
+    return {
       fullName: resp.data.fullName,
       expireAt: new Date(resp.data.expireAt || Date.now()),
       // token won't be saved in local storage but in http cookie
@@ -40,7 +41,6 @@ export default class ApiUtils implements ApiClient {
       avatar: resp.data.avatar,
       email: resp.data.email,
     };
-    return identity;
   };
 
   signInWithGoogle = async (accessToken: string): Promise<UserToken> => {
