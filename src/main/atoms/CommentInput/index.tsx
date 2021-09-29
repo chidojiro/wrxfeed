@@ -1,10 +1,11 @@
-import React, { KeyboardEvent, Ref } from 'react';
+import React, { ChangeEvent, KeyboardEvent, Ref } from 'react';
 import { styled } from '@mui/system';
 import { useFormControl } from '@mui/material/FormControl';
 import { InputBase, InputBaseProps } from '@mui/material';
 
 interface CommentInputProps extends InputBaseProps {
-  handleEnterPress?: (event: KeyboardEvent) => void;
+  onEnterPress?: (event: KeyboardEvent) => void;
+  onMention?: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
 const StyledInput = styled(InputBase)<InputBaseProps>(({ theme }) => ({
@@ -19,7 +20,7 @@ const StyledInput = styled(InputBase)<InputBaseProps>(({ theme }) => ({
 }));
 
 const CommentInput: React.ForwardRefRenderFunction<Ref<unknown>, CommentInputProps> = (
-  { name, onChange, onBlur, handleEnterPress, placeholder },
+  { name, value, placeholder, onChange, onBlur, onEnterPress, onMention },
   ref,
 ) => {
   const { filled, focused } = useFormControl() || {};
@@ -29,25 +30,34 @@ const CommentInput: React.ForwardRefRenderFunction<Ref<unknown>, CommentInputPro
     if (event.key === 'Enter' && !event.shiftKey) {
       // Stops enter from creating a new line
       event.preventDefault();
-      if (handleEnterPress) {
-        handleEnterPress(event);
+      if (onEnterPress) {
+        onEnterPress(event);
       }
       return true;
     }
     return false;
   };
 
+  const handleTextChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (onMention) {
+      onMention(event);
+    }
+    if (onChange) {
+      onChange(event);
+    }
+  };
+
   return (
     <StyledInput
       ref={ref}
       name={name}
-      // value={value}
+      value={value}
       placeholder={placeholder}
       inputProps={{ 'aria-label': 'comment here' }}
       multiline
       rows={focused || filled ? 3 : 1}
       onKeyPress={handleKeyPress}
-      onChange={onChange}
+      onChange={handleTextChange}
       onBlur={onBlur}
     />
   );
