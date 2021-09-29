@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect } from 'react';
+import React, { ChangeEvent, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/system';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
@@ -118,8 +118,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     }
   }, [isSubmitted, reset]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    console.log('Check handleChange event = ', event.currentTarget.value);
+  const handleMention = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    // console.log('Check handleChange event = ', event.currentTarget.value);
     const { value } = event.currentTarget;
 
     if (value.substr(value.length - 1) === '@') {
@@ -152,9 +152,9 @@ const CommentBox: React.VFC<CommentFormProps> = ({
             render={({ field }) => (
               <CommentInput
                 {...field}
-                handleEnterPress={handleSubmit(onSubmit)}
+                onEnterPress={handleSubmit(onSubmit)}
+                onMention={handleMention}
                 placeholder={placeholder}
-                onChange={handleChange}
               />
             )}
           />
