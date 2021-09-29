@@ -2,7 +2,15 @@ import { atom } from 'recoil';
 
 const prefix = 'main/AttachmentModal/';
 
-export const showAttachmentModalState = atom<boolean>({
+export interface AttachState {
+  isShow: boolean;
+  file: File | null;
+}
+
+export const showAttachmentModalState = atom<AttachState>({
   key: `${prefix}/show`,
-  default: true,
+  default: {
+    isShow: false,
+    file: null,
+  },
 });

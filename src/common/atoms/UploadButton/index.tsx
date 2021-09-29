@@ -19,13 +19,29 @@ const Label = styled('label')({
 
 const UploadButton: React.VFC<UploadButtonProps> = ({ children, id, className, accept }) => {
   // const [selectedFile, setSelectedFile] = React.useState<any>(null);
-  const setOpenAttachmentModal = useSetRecoilState(showAttachmentModalState);
+  const setAttachModal = useSetRecoilState(showAttachmentModalState);
 
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     // handle validations
     console.log('Check event.target.files[0] = ', event);
-    setOpenAttachmentModal(true);
-    // setSelectedFile(event?.target?.files[0]);
+    // const element = window.document.getElementById('foobar');
+
+    if (!event?.target?.files) {
+      alert('oops, something was wrong!');
+      return;
+    }
+
+    if (Array.isArray(event.target.files)) {
+      alert('Unsupport multiple attachment!');
+      return;
+    }
+
+    console.log('Check event.target.files[0] = ', event.target.files[0]);
+
+    setAttachModal({
+      isShow: true,
+      file: event.target.files[0],
+    });
   };
 
   return (
