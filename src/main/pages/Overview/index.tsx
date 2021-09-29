@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Box, Grid, Stack } from '@mui/material';
 import MainLayout from '@common/templates/MainLayout';
-import TransactionList from '@main/organisms/TransactionList';
+// import TransactionList from '@main/organisms/TransactionList';
 import IconButton from '@main/atoms/IconButton';
 import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.svg';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
@@ -45,7 +45,7 @@ const OverviewPage: React.VFC = () => {
                   paddingRight: 2,
                 }}
               >
-                <TransactionList />
+                {/* <TransactionList /> */}
                 <CommentBox onSubmit={() => undefined} />
               </Box>
             </Stack>

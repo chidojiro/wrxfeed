@@ -7,7 +7,38 @@ import Divider from '@mui/material/Divider';
 import { Gray, Accent } from '@theme/colors';
 // import { ReactComponent as CsvIcon } from '@assets/icons/outline/csvIcon.svg';
 import CommentBox from '@main/molecules/CommentBox';
-import { showAttachmentModalState } from './states';
+import { AttachState, showAttachmentModalState } from './states';
+
+export type FileAttachPreviewProps = {
+  style?: React.CSSProperties;
+  file: File | null;
+};
+
+const FileAttachPreview: React.FC<FileAttachPreviewProps> = ({ file }) => {
+  const [previewSrc, setPreviewSrc] = React.useState<string>(
+    'https://p4.wallpaperbetter.com/wallpaper/500/442/354/outrun-vaporwave-hd-wallpaper-preview.jpg',
+  );
+
+  React.useEffect(() => {
+    console.log('Check new file = ', file);
+    if (!file) {
+      console.log('Detect null file');
+      return;
+    }
+    setPreviewSrc(URL.createObjectURL(file));
+  }, [file?.name]);
+
+  return (
+    <Box style={{ marginTop: '24px', marginLeft: '24px', outline: 'none', borderWidth: '0px' }}>
+      <img
+        id="image_preview_upload"
+        alt="alt_image_upload"
+        src={previewSrc}
+        style={{ width: '144px', height: '80px', borderRadius: '4px' }}
+      />
+    </Box>
+  );
+};
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -34,20 +65,16 @@ const Backdrop = styled('div')`
 
 export type AttachmentModalProps = {
   style?: React.CSSProperties;
-  open?: boolean;
+  open?: AttachState;
 };
 
-const AttachmentModal: React.FC<AttachmentModalProps> = ({ style, open = false }) => {
-  const [isOpen, setIsOpen] = useRecoilState(showAttachmentModalState);
-  const handleClose = () => setIsOpen(false);
-
-  React.useEffect(() => {
-    setIsOpen(open);
-  }, [open]);
+const AttachmentModal: React.FC<AttachmentModalProps> = ({ style }) => {
+  const [attachState, setAttachState] = useRecoilState(showAttachmentModalState);
+  const handleClose = () => setAttachState({ isShow: false, file: null });
 
   return (
     <StyledModal
-      open={isOpen}
+      open={attachState.isShow}
       onClose={handleClose}
       BackdropComponent={Backdrop}
       onBackdropClick={handleClose}
@@ -64,18 +91,12 @@ const AttachmentModal: React.FC<AttachmentModalProps> = ({ style, open = false }
           outline: 'none',
         }}
       >
-        <Box style={{ marginTop: '24px', marginLeft: '24px', outline: 'none', borderWidth: '0px' }}>
-          <img
-            alt="alt_image_upload"
-            src="https://p4.wallpaperbetter.com/wallpaper/500/442/354/outrun-vaporwave-hd-wallpaper-preview.jpg"
-            style={{ width: '144px', height: '80px', borderRadius: '4px' }}
-          />
-        </Box>
+        <FileAttachPreview file={attachState.file} />
         <Stack paddingX="24px" marginTop="14px">
           <Typography color={Gray[1]} fontWeight="bold" fontSize="18px">
-            file-name.png
+            {attachState.file?.name || 'file-name.png'}
           </Typography>
-          <Typography color={Gray[3]} marginTop="2px" fontSize="14px">
+          <Typography color={Gray[2]} marginTop="2px" fontSize="14px">
             Upload to Gusto Pay* Arrow
           </Typography>
         </Stack>
