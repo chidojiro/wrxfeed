@@ -20,7 +20,7 @@ const Container = styled(Stack)({
 const CommentItem: React.VFC<CommentItemProps> = ({ comment, ...rest }) => {
   return (
     <Container spacing={0.5} {...rest}>
-      <CommentOwner owner={comment.user} commentDate={comment.commentDate} />
+      <CommentOwner owner={comment.user} commentDate={comment.createdAt} />
       <CommentText content={comment.content} />
     </Container>
   );

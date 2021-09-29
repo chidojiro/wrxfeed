@@ -33,3 +33,6 @@ package-lock.json
 .firebase
 # Local Netlify folder
 .netlify
+
+# WebStorm
+.idea
