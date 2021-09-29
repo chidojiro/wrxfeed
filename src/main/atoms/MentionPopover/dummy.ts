@@ -1,29 +1,64 @@
-import { User } from '@main/entity';
+import { User, UserStatus } from '@main/entity/user.entity';
 
 export const mentionUsers: User[] = [
   {
-    email: 'abc@gmail.com',
-    fullName: 'Abbie Mendez',
-    avatar: '',
+    id: 0,
+    email: 'AbbieMendez@gmail.com',
+    signupDate: new Date(),
+    status: UserStatus.Active,
+    company: {
+      id: 0,
+      name: 'Amazon',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    account: {
+      id: 0,
+      roles: ['admin'],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
-    email: 'montgomery@gmail.com',
-    fullName: 'Ariel Montgomery',
-    avatar: '',
+    id: 1,
+    email: 'ArielMontgomery@gmail.com',
+    signupDate: new Date(),
+    status: UserStatus.Active,
+    company: {
+      id: 0,
+      name: 'Amazon',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    account: {
+      id: 0,
+      roles: ['admin'],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
-    email: 'montgomery@gmail.com',
-    fullName: 'Alex Reid',
-    avatar: '',
-  },
-  {
-    email: 'harry@gmail.com',
-    fullName: 'Harry Potter',
-    avatar: '',
-  },
-  {
-    email: 'james@gmail.com',
-    fullName: 'James Cameron',
-    avatar: '',
+    id: 2,
+    email: 'AlexReid@gmail.com',
+    signupDate: new Date(),
+    status: UserStatus.Active,
+    company: {
+      id: 0,
+      name: 'Amazon',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    account: {
+      id: 0,
+      roles: ['admin'],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];

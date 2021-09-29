@@ -1,12 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { CommentFormModel } from '@main/types';
-import { Comment, Transaction } from '@main/entity';
+import { Transaction } from '@main/entity';
 import TransactionContent from '@main/atoms/TransactionContent';
-import CommentBox from '@main/atoms/CommentBox';
+import CommentBox from '@main/molecules/CommentBox';
 import { Stack, Box, List, Collapse } from '@mui/material';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentRemaining from '@main/atoms/CommentRemaining';
-import { useIdentity } from '@identity/hooks';
 import { TransitionGroup } from 'react-transition-group';
 import { useComment } from '@main/hooks';
 
@@ -18,18 +17,19 @@ export interface TransactionItemProps {
 
 const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
   // Recoil states
-  const identity = useIdentity();
   // Local States
-  const { comments, setComments } = useComment(transaction.id);
+  const { comments, addComment } = useComment(transaction.id);
   const [isShowAllComments, showAllComments] = useState(false);
   // Variables
   const shownComments = useMemo(() => {
-    return isShowAllComments ? comments : comments?.slice(0, INITIAL_COMMENT_NUMBER);
+    return isShowAllComments ? comments : comments?.slice(-INITIAL_COMMENT_NUMBER);
   }, [isShowAllComments, comments]);
   const hasComment = !!comments?.length;
   const hiddenCommentCount = (comments?.length ?? 0) - INITIAL_COMMENT_NUMBER;
 
   const onSubmitComment = (values: CommentFormModel) => {
+    const isDirty = !!values.content;
+    if (!isDirty) return;
     const parsedContent = values.content
       .split(' ')
       .map((word) => {
@@ -39,18 +39,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
         return word;
       })
       .join(' ');
-    setComments((prevComments) => {
-      const newComment: Comment = {
-        id: (prevComments?.length ?? 0 + 1).toString(),
-        user: {
-          email: identity?.email || '',
-          fullName: identity?.displayName || identity?.email || '',
-        },
-        content: parsedContent,
-        createdAt: new Date(),
-      };
-      return prevComments ? [newComment, ...prevComments] : [];
-    });
+    addComment({ content: parsedContent });
   };
 
   return (
@@ -71,8 +60,8 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
                   />
                 </Collapse>
               )}
-              {shownComments?.map((comment, idx) => (
-                <Collapse key={`${comment.id}-${idx.toString()}`}>
+              {shownComments?.map((comment) => (
+                <Collapse key={comment.id}>
                   <CommentItem sx={{ marginBottom: 0.5 }} comment={comment} />
                 </Collapse>
               ))}

@@ -29,7 +29,7 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({ transaction })
                   •
                 </Typography>
                 <Typography color={Gray[3]} variant="body2">
-                  {formatDate(transaction.transDate)}
+                  {formatDate(transaction?.transDate)}
                 </Typography>
                 {transaction.status !== undefined && <StatusTag status={transaction.status} />}
               </Stack>

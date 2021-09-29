@@ -5,6 +5,7 @@ import { ReactComponent as HumanEmoji } from '@assets/icons/outline/HumanEmoji.s
 import { ReactComponent as IdeaEmoji } from '@assets/icons/outline/IdeaEmoji.svg';
 import { ReactComponent as ShapeEmoji } from '@assets/icons/outline/ShapeEmoji.svg';
 import { ReactComponent as TravelPlacesEmoji } from '@assets/icons/outline/TravelPlacesEmoji.svg';
+import { ReactComponent as InviteIcon } from '@assets/icons/outline/invite.svg';
 
 export {
   NextEmoji,
@@ -14,4 +15,5 @@ export {
   IdeaEmoji,
   ShapeEmoji,
   TravelPlacesEmoji,
+  InviteIcon,
 };

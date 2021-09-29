@@ -1,10 +1,10 @@
 import { UserToken } from '@identity/types';
-import { Comment, Transaction } from '@main/entity';
+import { Comment, Transaction, Discussion } from '@main/entity';
+import { CommentFormModel } from '@main/types';
 import { Identity } from '../identity';
 import {
   ChangePwdFormModel,
   ForgotPwdFormModel,
-  GoogleAuthParams,
   LoginFormModel,
   Profile,
   ProfileFormModel,
@@ -15,15 +15,18 @@ export interface ApiClient {
   // Authentication API
   login: (data: LoginFormModel) => Promise<Identity>;
   logout: () => Promise<void>;
-  signInWithGoogle: (data: GoogleAuthParams) => Promise<UserToken>;
+  signInWithGoogle: (accessToken: string) => Promise<UserToken>;
   getProfile: () => Promise<Profile>;
   updateProfile: (data: ProfileFormModel) => Promise<Profile>;
   changePassword: (data: ChangePasswordDto) => Promise<void>;
   forgotPassword: (data: ForgotPwdFormModel) => Promise<void>;
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   // Transaction API
-  getTransacrions: (pagination?: Pagination) => Promise<Transaction[]>;
-  getComments: (transactionId: string, pagination?: Pagination) => Promise<Comment[]>;
+  getTransactions: (pagination?: Pagination) => Promise<Transaction[]>;
+  getComments: (transactionId: number, pagination?: Pagination) => Promise<Comment[]>;
+  addComment: (transactionId: number, data: CommentFormModel) => Promise<Comment>;
+
+  getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
 
   searchActivities: (filter: ActivityFilterModel) => Promise<[Activity[], number]>;
   addActivity: (data: ActivityFormModel) => Promise<Activity>;

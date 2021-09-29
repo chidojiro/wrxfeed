@@ -6,6 +6,7 @@ import IconButton from '@main/atoms/IconButton';
 import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.svg';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
 import MentionPopover from '@main/atoms/MentionPopover';
+import AttachmentModal from '@main/organisms/AttachmentModal';
 import UploadCSVModal from '../../organisms/UploadCSVModal';
 
 const OverviewPage: React.VFC = () => {
@@ -53,6 +54,7 @@ const OverviewPage: React.VFC = () => {
         </Grid>
       </Grid>
       <UploadCSVModal />
+      <AttachmentModal />
       <MentionPopover />
     </MainLayout>
   );

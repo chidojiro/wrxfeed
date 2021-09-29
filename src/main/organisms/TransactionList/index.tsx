@@ -5,7 +5,7 @@ import TransactionItem from '@main/molecules/TransactionItem';
 import { useTransaction } from '@main/hooks';
 
 const TransactionList: React.VFC = () => {
-  const { transactions } = useTransaction();
+  const { transactions = [] } = useTransaction();
   return (
     <>
       {transactions.map((transaction) => (

@@ -1,18 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
 import { Comment, Transaction } from '@main/entity';
-import { ApiError } from '../error';
-import { Identity } from '../identity';
-import {
-  ForgotPwdFormModel,
-  GoogleAuthParams,
-  LoginFormModel,
-  Profile,
-  ProfileFormModel,
-} from '../auth/types';
-import { ApiClient, ChangePasswordDto, Pagination, ResetPasswordDto } from './types';
+import { CommentFormModel } from '@main/types';
+import { ApiError } from '@error';
+import { Identity } from '@identity';
+import { ApiClient, ChangePasswordDto, Pagination, ResetPasswordDto } from '@api/types';
+import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
+import { removeEmptyFields, sleep } from '@common/utils';
 import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
-import { removeEmptyFields, sleep } from '../common/utils';
 import { getTimeRangeFromFilter } from '../diary/utils';
 
 export default class ApiUtils implements ApiClient {
@@ -22,48 +17,49 @@ export default class ApiUtils implements ApiClient {
     this.client = axios.create({ baseURL: endpoint });
   }
 
-  async request<T, R = AxiosResponse<T>>(config: AxiosRequestConfig): Promise<R> {
+  request = async <T, R = AxiosResponse<T>>(config: AxiosRequestConfig): Promise<R> => {
     try {
       const result = await this.client.request<T, R>(config);
       return result;
     } catch (error) {
       throw new ApiError(error);
     }
-  }
+  };
 
-  async login(data: LoginFormModel): Promise<Identity> {
+  login = async (data: LoginFormModel): Promise<Identity> => {
     const resp = await this.request<Identity>({
       url: '/auth/admin/tokens',
       method: 'POST',
       data,
     });
     const identity: Identity = {
-      displayName: resp.data.displayName,
+      fullName: resp.data.fullName,
       expireAt: new Date(resp.data.expireAt || Date.now()),
       // token won't be saved in local storage but in http cookie
       token: '',
       avatar: resp.data.avatar,
       email: resp.data.email,
-      roles: resp.data.roles,
     };
     return identity;
-  }
+  };
 
-  async signInWithGoogle(data: GoogleAuthParams): Promise<UserToken> {
+  signInWithGoogle = async (accessToken: string): Promise<UserToken> => {
     const resp = await this.request<UserToken>({
       url: '/auth/google/access-tokens',
       method: 'POST',
-      params: data,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
     return resp.data;
-  }
+  };
 
-  async logout(): Promise<void> {
+  logout = async (): Promise<void> => {
     return this.request({
       url: '/auth/access-tokens/mine',
       method: 'DELETE',
     });
-  }
+  };
 
   async getProfile(): Promise<Profile> {
     const resp = await this.request<Profile>({
@@ -106,23 +102,32 @@ export default class ApiUtils implements ApiClient {
     });
   }
 
-  async getTransacrions(pagination?: Pagination): Promise<Transaction[]> {
+  getTransactions = async (pagination?: Pagination): Promise<Transaction[]> => {
     const res = await this.request<Transaction[]>({
       url: '/feed/transactions',
       method: 'GET',
       params: pagination,
     });
     return res.data;
-  }
+  };
 
-  async getComments(transactionId: string, pagination?: Pagination): Promise<Comment[]> {
+  getComments = async (transactionId: number, pagination?: Pagination): Promise<Comment[]> => {
     const res = await this.request<Comment[]>({
       url: `/feed/transactions/${transactionId}/comments`,
       method: 'GET',
       params: pagination,
     });
     return res.data;
-  }
+  };
+
+  addComment = async (transactionId: number, data: CommentFormModel): Promise<Comment> => {
+    const res = await this.request<Comment>({
+      url: `/feed/transactions/${transactionId}/comments`,
+      method: 'POST',
+      data,
+    });
+    return res.data;
+  };
 
   async searchActivities(filter: ActivityFilterModel): Promise<[Activity[], number]> {
     const [from, to] = getTimeRangeFromFilter(filter);
@@ -202,11 +207,10 @@ export default class ApiUtils implements ApiClient {
 export const fakeApiUtils: ApiClient = {
   login: async () => {
     const fakeIdenity: Identity = {
-      displayName: 'Admin',
+      fullName: 'Admin',
       token: '',
       expireAt: new Date(),
       email: '',
-      roles: [],
     };
     return fakeIdenity;
   },
@@ -248,7 +252,7 @@ export const fakeApiUtils: ApiClient = {
 
   resetPassword: async () => undefined,
 
-  async getTransacrions(): Promise<Transaction[]> {
+  async getTransactions(): Promise<Transaction[]> {
     return [];
   },
 
