@@ -6,13 +6,6 @@ export interface Profile {
   signupDate: Date;
 }
 
-export interface GoogleAuthParams {
-  prompt: string | null;
-  authuser: string | null;
-  scope: string | null;
-  code: string | null;
-}
-
 export interface LoginFormModel {
   email: string;
   password: string;
