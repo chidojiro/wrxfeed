@@ -4,13 +4,19 @@ import BlankLayout from '@common/templates/BlankLayout';
 import { Box, Stack, Typography } from '@mui/material';
 import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
 import WrxfeedStar from '@auth/atoms/WrxfeedStar';
-import { API_BASE_URL, API_DOMAIN } from '@src/config';
+import { GOOGLE_CLIENT_ID } from '@src/config';
 import Routes from '@src/routes';
-import { useIdentity } from '@identity/hooks';
+import { useIdentity, useSetIdentity } from '@identity/hooks';
+import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import { useApi } from '@api';
+import { toast } from 'react-toastify';
+import { ProviderName } from '@main/entity';
 
 const LoginPage: React.VFC = () => {
+  const { signInWithGoogle } = useApi();
   const { redirect } = useNavUtils();
   const identity = useIdentity();
+  const setIdentity = useSetIdentity();
 
   useEffect(() => {
     if (identity?.token) {
@@ -18,8 +24,36 @@ const LoginPage: React.VFC = () => {
     }
   }, [redirect, identity]);
 
-  const redirectGoogleAuth = () => {
-    window.open(`${API_DOMAIN}${API_BASE_URL}/auth/google/login`, '_self');
+  const handleResponseSuccess = async (
+    response: GoogleLoginResponse | GoogleLoginResponseOffline,
+  ) => {
+    if ('accessToken' in response) {
+      const { accessToken } = response;
+      const userToken = await signInWithGoogle(accessToken);
+      const userProfile = 'profileObj' in response ? response.profileObj : null;
+      setIdentity({
+        token: userToken.token,
+        expireAt: userToken.expireAt,
+        provider: {
+          name: ProviderName.GOOGLE,
+          profile: {
+            id: userProfile?.googleId,
+            email: userProfile?.email,
+            name: userProfile?.name,
+            givenName: userProfile?.givenName,
+            familyName: userProfile?.familyName,
+          },
+        },
+      });
+    }
+  };
+
+  const handleResponseFailure = (error: any) => {
+    if ('details' in error) {
+      toast.error(error.details);
+    } else {
+      toast.error('Fail to connect your Google Account');
+    }
   };
 
   return (
@@ -50,9 +84,20 @@ const LoginPage: React.VFC = () => {
             {'Reach your\nfinancial goal↗'}
           </Typography>
         </Box>
-        <SocialAuthButton provider={AuthProvider.GOOGLE} onClick={redirectGoogleAuth}>
-          Sign up with Google
-        </SocialAuthButton>
+        <GoogleLogin
+          clientId={GOOGLE_CLIENT_ID}
+          onSuccess={handleResponseSuccess}
+          onFailure={handleResponseFailure}
+          render={(renderProps) => (
+            <SocialAuthButton
+              provider={AuthProvider.GOOGLE}
+              disabled={renderProps.disabled}
+              onClick={renderProps.onClick}
+            >
+              Sign up with Google
+            </SocialAuthButton>
+          )}
+        />
       </Stack>
     </BlankLayout>
   );
