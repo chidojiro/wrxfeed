@@ -1,13 +1,13 @@
 import React from 'react';
 import { Typography, Box, Grid, Stack } from '@mui/material';
 import MainLayout from '@common/templates/MainLayout';
-// import TransactionList from '@main/organisms/TransactionList';
+import TransactionList from '@main/organisms/TransactionList';
 import IconButton from '@main/atoms/IconButton';
 import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.svg';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
 import MentionPopover from '@main/atoms/MentionPopover';
-import CommentBox from '@main/atoms/CommentBox';
 import AttachmentModal from '@main/organisms/AttachmentModal';
+// import CommentBox from '@main/molecules/CommentBox';
 import UploadCSVModal from '../../organisms/UploadCSVModal';
 
 const OverviewPage: React.VFC = () => {
@@ -45,8 +45,8 @@ const OverviewPage: React.VFC = () => {
                   paddingRight: 2,
                 }}
               >
-                {/* <TransactionList /> */}
-                <CommentBox style={{ marginTop: '500px' }} onSubmit={() => undefined} />
+                <TransactionList />
+                {/* <CommentBox style={{ marginTop: '500px' }} onSubmit={() => undefined} /> */}
               </Box>
             </Stack>
           </Stack>
@@ -57,7 +57,7 @@ const OverviewPage: React.VFC = () => {
       </Grid>
       <UploadCSVModal />
       <AttachmentModal />
-      <MentionPopover />
+      <MentionPopover onSelectUser={() => undefined} />
     </MainLayout>
   );
 };

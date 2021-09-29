@@ -13,9 +13,10 @@ import { showMentionPopover } from './states';
 
 export interface MentionPopoverProps {
   isOpen?: boolean;
+  onSelectUser: (user: User) => void;
 }
 
-const MentionPopover: React.VFC<MentionPopoverProps> = () => {
+const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   const [anchorEl, setAnchorEl] = useRecoilState(showMentionPopover);
   // const [anchorEl, setAnchorEl] = React.useState<any>(null);
   const [mention, setMention] = React.useState<User | null>(null);
@@ -72,6 +73,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = () => {
           style={{
             filter:
               'drop-shadow(0px 3px 5px rgba(39, 50, 64, 0.2)) drop-shadow(0px 0px 1px rgba(39, 50, 64, 0.3))',
+            border: '1px solid #273240',
           }}
         >
           <Stack height="36px" paddingX="16px" paddingY="8px" marginTop="8px">
@@ -96,6 +98,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = () => {
                 type="button"
                 key={item.id}
                 onMouseOver={() => onMouseOver(item)}
+                onClick={() => onSelectUser(item)}
                 style={{
                   padding: '0px',
                   justifyContent: 'left',

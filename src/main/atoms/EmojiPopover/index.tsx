@@ -12,7 +12,7 @@ import { dummyEmoji, dummyGroupEmoji, getEmojiList } from './dummy';
 
 export interface EmojiPopoverProps {
   isOpen?: boolean;
-  onSelectEmoji: (emoji: Emoji) => null;
+  onSelectEmoji: (emoji: Emoji) => void;
 }
 
 const EmojiPopover: React.VFC<EmojiPopoverProps> = ({ onSelectEmoji }) => {

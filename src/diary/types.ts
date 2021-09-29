@@ -1,3 +1,5 @@
+import { User, Transaction } from '@main/entity';
+
 export interface Activity {
   id: string;
   content: string;
@@ -36,4 +38,11 @@ export interface ActivityFilterModel {
   pageSize: number;
   from?: Date;
   to?: Date;
+}
+
+export interface AttachmentFormModel {
+  comment: Comment;
+  file: File;
+  publisher: User;
+  transaction: Transaction;
 }
