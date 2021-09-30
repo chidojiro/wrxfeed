@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, Typography, Button, Divider } from '@mui/material';
 import Popover from '@mui/material/Popover';
-import { LighBG, Gray, Highlight } from '@theme/colors';
+import { Gray, Highlight, LightBG } from '@theme/colors';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
 // import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { User } from '@main/entity/user.entity';
@@ -80,7 +80,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
           width="492px"
           height="300px"
           borderRadius="24px"
-          bgcolor={LighBG}
+          bgcolor={LightBG}
           margin="5px"
           style={{
             filter:

@@ -3,9 +3,10 @@ export type CommentFormModel = {
 };
 
 export type Emoji = {
-  id: number | string;
+  id: number | string | undefined;
   emoji: string;
-  emojiGroupId: number | string;
+  emojiGroupId?: number | string | undefined;
+  name?: string;
 };
 
 export type GroupEmoji = {
