@@ -18,7 +18,6 @@ const Label = styled('label')({
 });
 
 const UploadButton: React.VFC<UploadButtonProps> = ({ children, id, className, accept }) => {
-  // const [selectedFile, setSelectedFile] = React.useState<any>(null);
   const setAttachModal = useSetRecoilState(showAttachmentModalState);
 
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
