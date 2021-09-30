@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, BoxProps } from '@mui/material';
 
-const BlankLayout: React.VFC<BoxProps> = ({ children, ...rest }) => {
+const BlankLayout: React.VFC<BoxProps> = ({ children, sx, ...rest }) => {
   return (
     <Box
       sx={{
@@ -15,6 +15,7 @@ const BlankLayout: React.VFC<BoxProps> = ({ children, ...rest }) => {
         borderRadius: 6,
         backgroundColor: '#fff',
         overflow: 'scroll',
+        ...sx,
       }}
       {...rest}
     >

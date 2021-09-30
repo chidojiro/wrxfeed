@@ -34,6 +34,7 @@ export default class ApiUtils implements ApiClient {
       data,
     });
     return {
+      id: resp.data.id,
       fullName: resp.data.fullName,
       expireAt: new Date(resp.data.expireAt || Date.now()),
       // token won't be saved in local storage but in http cookie
@@ -61,22 +62,22 @@ export default class ApiUtils implements ApiClient {
     });
   };
 
-  async getProfile(): Promise<Profile> {
+  getProfile = async (): Promise<Profile> => {
     const resp = await this.request<Profile>({
       url: '/user/me',
       method: 'GET',
     });
     return resp.data;
-  }
+  };
 
-  async updateProfile(data: ProfileFormModel): Promise<Profile> {
+  updateProfile = async (data: ProfileFormModel): Promise<Profile> => {
     const resp = await this.request<Profile>({
-      url: '/admin/accounts/me',
+      url: '/user/me',
       method: 'PATCH',
       data,
     });
     return resp.data;
-  }
+  };
 
   async changePassword(data: ChangePasswordDto): Promise<void> {
     await this.request<void>({
@@ -251,6 +252,7 @@ export const fakeApiUtils: ApiClient = {
   getProfile: async () => {
     await sleep(1000);
     return {
+      id: 1,
       email: 'antran@gmail.com',
       fullName: 'An Tran',
       title: 'Admin',
@@ -261,6 +263,7 @@ export const fakeApiUtils: ApiClient = {
 
   updateProfile: async () => {
     return {
+      id: 1,
       email: 'antran@gmail.com',
       fullName: 'An Tran',
       title: 'Admin',
