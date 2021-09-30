@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles';
-import { Accent, Gray, Highlight, LighBG } from '@theme/colors';
+import { Accent, Gray, Highlight, LightBG } from '@theme/colors';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -26,6 +26,12 @@ declare module '@mui/material/SvgIcon' {
   interface SvgIconPropsColorOverrides {
     highlight: true;
     accent: true;
+  }
+}
+
+declare module '@mui/material/Button' {
+  interface ButtonPropsColorOverrides {
+    highlight: true;
   }
 }
 declare module '@mui/material/Stack' {
@@ -55,7 +61,7 @@ export const theme = createTheme({
       contrastText: Gray[2],
     },
     lightBg: {
-      main: LighBG,
+      main: LightBG,
       contrastText: Gray[2],
     },
     accent: {
@@ -122,11 +128,22 @@ export const theme = createTheme({
     },
     MuiOutlinedInput: {
       styleOverrides: {
-        root: {
-          borderRadius: '16px',
-        },
         input: {
-          padding: '16.5px',
+          padding: '16.5px 24px',
+        },
+        notchedOutline: {
+          borderRadius: 8,
+          borderWidth: 1,
+          borderStyle: 'solid',
+          borderColor: Gray[8],
+        },
+        root: {
+          '&.Mui-focused': {
+            '.MuiOutlinedInput-notchedOutline': {
+              borderColor: Gray[1],
+              borderWidth: 1,
+            },
+          },
         },
       },
     },
@@ -141,7 +158,8 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           padding: '8px 24px',
-          borderRadius: '24px',
+          borderRadius: 8,
+          textTransform: 'none',
         },
       },
     },
@@ -171,6 +189,33 @@ export const theme = createTheme({
           margin: 24,
           backgroundColor: '#fff',
           padding: 24,
+        },
+      },
+    },
+    MuiInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          borderWidth: 1,
+          borderStyle: 'solid',
+          borderColor: Gray[8],
+          fontSize: '1rem',
+          '::before': {
+            display: 'none',
+          },
+          '::after': {
+            display: 'none',
+          },
+          '&.Mui-focused': {
+            borderColor: Gray[1],
+          },
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        icon: {
+          right: 20,
         },
       },
     },
