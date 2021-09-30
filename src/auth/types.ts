@@ -1,9 +1,13 @@
 export interface Profile {
+  id: number;
   email: string;
   fullName: string;
-  title: string;
-  department: string;
-  signupDate: Date;
+  title?: string;
+  department?: string;
+  signupDate?: string;
+  bio?: string;
+  lastLoginAt?: string;
+  avatar?: string;
 }
 
 export interface LoginFormModel {
@@ -21,9 +25,13 @@ export interface OnboardFormModel {
 }
 
 export interface ProfileFormModel {
-  displayName: string;
-  email: string;
-  avatar?: string;
+  firstName: string;
+  lastName: string;
+  companyName: string;
+  title: string;
+  department: string;
+  bio: string;
+  lastLoginAt: string;
 }
 
 export interface ChangePwdFormModel {

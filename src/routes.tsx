@@ -18,9 +18,10 @@ const routes: Route = {
     component: lazy(() => import('@auth/pages/LoginPage')),
   },
   // Protected pages
-  Onboarding: {
+  Onboard: {
     path: '/onboarding',
     component: lazy(() => import('@auth/pages/OnboardPage')),
+    permissions: ['admin'],
   },
   Home: {
     path: '/',

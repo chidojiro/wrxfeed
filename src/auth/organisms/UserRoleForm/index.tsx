@@ -16,7 +16,7 @@ import { ReactComponent as ChevronDown } from '@assets/icons/outline/down-small.
 const schema = yup.object({
   title: yup.string().required('This field is required'),
   department: yup.string().required('This field is required'),
-  bio: yup.string().required('This field is required'),
+  bio: yup.string(),
 });
 
 export interface UserRoleFormProps {
@@ -83,13 +83,7 @@ const UserRoleForm: React.VFC<UserRoleFormProps> = ({ sx, onSubmit }) => {
           name="bio"
           control={control}
           render={({ field }) => (
-            <FormInput
-              placeholder="About you"
-              type="text"
-              required
-              error={!!errors.lastName}
-              {...field}
-            />
+            <FormInput placeholder="About you" type="text" error={!!errors.lastName} {...field} />
           )}
         />
         <FormControl>

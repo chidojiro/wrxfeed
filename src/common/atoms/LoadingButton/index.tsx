@@ -1,6 +1,6 @@
 import React from 'react';
 import Button, { ButtonProps } from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
+// import CircularProgress from '@mui/material/CircularProgress';
 
 export interface LoadingButtonProps extends ButtonProps {
   loading?: boolean;
@@ -12,9 +12,8 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
   loadingIndicator,
   ...rest
 }) => {
-  const indicator = loadingIndicator || <CircularProgress color="inherit" size={16} />;
+  // const indicator = loadingIndicator || <CircularProgress color="inherit" size={16} />;
   const btnProps = {
-    startIcon: loading ? indicator : undefined,
     disabled: loading,
     ...rest,
   };

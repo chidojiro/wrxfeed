@@ -1,10 +1,14 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import BlankLayout from '@common/templates/BlankLayout';
 import BasicUserInfoForm from '@auth/organisms/BasicUserInfoForm';
 import { LightBG } from '@theme/colors';
 import UserRoleForm from '@auth/organisms/UserRoleForm';
-import { OnboardFormModel } from '@auth/types';
+import { ProfileFormModel } from '@auth/types';
 import OnboardTemplate from '@auth/templates/OnboardTemplate';
+import { useApi } from '@api';
+import { useIdentity, useSetIdentity } from '@identity/hooks';
+import { useNavUtils } from '@common/hooks';
+import Routes from '@src/routes';
 
 enum InputStep {
   BasicInfo,
@@ -12,17 +16,40 @@ enum InputStep {
 }
 
 const OnboardPage: React.VFC = () => {
+  const { updateProfile } = useApi();
+  const setIdentity = useSetIdentity();
+  const identity = useIdentity();
+  const { redirect } = useNavUtils();
   const [step, setStep] = useState(InputStep.BasicInfo);
-  const formDataRef = useRef<OnboardFormModel>();
+  const formDataRef = useRef<ProfileFormModel>();
 
-  const handleSubmitBasicInfo = (data: OnboardFormModel) => {
+  useEffect(() => {
+    if (identity?.token && identity?.lastLoginAt) {
+      redirect(Routes.Home.path);
+    }
+  }, [redirect, identity]);
+
+  const handleSubmitBasicInfo = (data: ProfileFormModel) => {
     setStep(step + 1);
     formDataRef.current = { ...formDataRef.current, ...data };
   };
 
-  const handleSubmitRole = (data: OnboardFormModel) => {
+  const handleSubmitRole = async (data: ProfileFormModel) => {
     formDataRef.current = { ...formDataRef.current, ...data };
-    console.log(formDataRef.current);
+    const updates = {
+      ...formDataRef.current,
+      lastLoginAt: new Date().toISOString(),
+    };
+    try {
+      const profile = await updateProfile(updates);
+      setIdentity({
+        ...identity,
+        ...profile,
+      });
+      redirect(Routes.Home.path);
+    } catch (error: any) {
+      redirect(Routes.Home.path);
+    }
   };
 
   return (
