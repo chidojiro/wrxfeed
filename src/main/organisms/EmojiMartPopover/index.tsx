@@ -3,16 +3,17 @@ import { Stack } from '@mui/material';
 import Popover from '@mui/material/Popover';
 import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import 'emoji-mart/css/emoji-mart.css';
-import { Picker } from 'emoji-mart';
+import { EmojiData, Picker } from 'emoji-mart';
+import { Emoji } from '@main/types';
 // import { Picker } from './emoji-mart';
 
 export interface EmojiPopoverProps {
   isOpen?: boolean;
+  onSelectEmoji: (emoji: Emoji) => void;
 }
 
-const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
+const EmojiPopover: React.VFC<EmojiPopoverProps> = ({ onSelectEmoji }) => {
   const [anchorEl, setAnchorEl] = React.useState<any>(null);
-  const [chosenEmoji, setChosenEmoji] = React.useState<any>(null);
 
   const handleClick = (event: MouseEvent) => {
     setAnchorEl(event.currentTarget);
@@ -22,8 +23,12 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = () => {
     setAnchorEl(null);
   };
 
-  const onEmojiSelect = (emoji: any) => {
-    setChosenEmoji(emoji);
+  const onEmojiSelect = (emoji: EmojiData) => {
+    const emojiIcon = emoji.colons || '';
+    onSelectEmoji({
+      id: emoji.id,
+      emoji: emojiIcon,
+    });
     console.log('Check emoji = ', emoji);
   };
 

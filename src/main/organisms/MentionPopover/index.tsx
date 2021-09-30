@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, Typography, Button, Divider } from '@mui/material';
 import Popover from '@mui/material/Popover';
-import { LighBG, Gray, Highlight } from '@theme/colors';
+import { Gray, Highlight, LightBG } from '@theme/colors';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
 // import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { User } from '@main/entity/user.entity';
@@ -9,7 +9,7 @@ import { showInviteModalState } from '@main/organisms/InviteModal/states';
 
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { InviteIcon } from '@assets/index';
-import { useMention } from '@main/hooks';
+// import { useMention } from '@main/hooks';
 import { mentionUsers } from './dummy';
 import { showMentionPopover } from './states';
 
@@ -20,14 +20,13 @@ export interface MentionPopoverProps {
 
 const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   const [anchorEl, setAnchorEl] = useRecoilState(showMentionPopover);
-  // const [anchorEl, setAnchorEl] = React.useState<any>(null);
   const setInviteModal = useSetRecoilState(showInviteModalState);
   const [mention, setMention] = React.useState<User | null>(null);
-  const mentions = useMention();
+  // const mentions = useMention();
 
-  React.useEffect(() => {
-    console.log('Check new mentions = ', mentions);
-  }, [mentions]);
+  // React.useEffect(() => {
+  //   console.log('Check new mentions = ', mentions);
+  // }, [mentions]);
 
   // const handleClick = (event: MouseEvent) => {
   //   setAnchorEl(event.currentTarget);
@@ -41,7 +40,10 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
     setMention(user);
   };
 
-  const onClickInvite = () => setInviteModal(true);
+  const onClickInvite = () => {
+    handleClose();
+    setInviteModal(true);
+  };
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -78,7 +80,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
           width="492px"
           height="300px"
           borderRadius="24px"
-          bgcolor={LighBG}
+          bgcolor={LightBG}
           margin="5px"
           style={{
             filter:

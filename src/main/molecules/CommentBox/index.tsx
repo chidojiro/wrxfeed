@@ -10,8 +10,8 @@ import { Gray, Highlight } from '@theme/colors';
 import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel, Emoji } from '@main/types';
-import EmojiPopover from '@main/organisms/EmojiPopover';
-// import EmojiMartPopover from '@main/atoms/EmojiMartPopover';
+// import EmojiPopover from '@main/organisms/EmojiPopover';
+import EmojiMartPopover from '@main/organisms/EmojiMartPopover';
 // import MentionPopover from '@main/atoms/MentionPopover';
 import { useSetRecoilState } from 'recoil';
 import { showMentionPopover } from '@main/organisms/MentionPopover/states';
@@ -146,7 +146,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({
             )}
           />
           <Stack direction="row" spacing={1} alignItems="center">
-            {!!showEmoji && <EmojiPopover onSelectEmoji={onSelectEmoji} />}
+            {/* {!!showEmoji && <EmojiPopover onSelectEmoji={onSelectEmoji} />} */}
+            {!!showEmoji && <EmojiMartPopover onSelectEmoji={onSelectEmoji} />}
             {/* <MentionPopover /> */}
             {/* <EmojiMartPopover /> */}
             {!!showAttach && (
