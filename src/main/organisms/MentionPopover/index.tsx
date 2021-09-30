@@ -5,8 +5,9 @@ import { LighBG, Gray, Highlight } from '@theme/colors';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
 // import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { User } from '@main/entity/user.entity';
+import { showInviteModalState } from '@main/organisms/InviteModal/states';
 
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { InviteIcon } from '@assets/index';
 import { useMention } from '@main/hooks';
 import { mentionUsers } from './dummy';
@@ -20,6 +21,7 @@ export interface MentionPopoverProps {
 const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   const [anchorEl, setAnchorEl] = useRecoilState(showMentionPopover);
   // const [anchorEl, setAnchorEl] = React.useState<any>(null);
+  const setInviteModal = useSetRecoilState(showInviteModalState);
   const [mention, setMention] = React.useState<User | null>(null);
   const mentions = useMention();
 
@@ -38,6 +40,8 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   const onMouseOver = (user: User) => {
     setMention(user);
   };
+
+  const onClickInvite = () => setInviteModal(true);
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -151,6 +155,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
               backgroundColor: Gray[2],
               borderRadius: '4px',
             }}
+            onClick={onClickInvite}
           >
             <InviteIcon style={{ marginRight: '4px' }} />
             <Typography fontSize="14px" lineHeight="17px" fontWeight="600" color="white">

@@ -10,11 +10,11 @@ import { Gray, Highlight } from '@theme/colors';
 import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel, Emoji } from '@main/types';
-import EmojiPopover from '@main/atoms/EmojiPopover';
+import EmojiPopover from '@main/organisms/EmojiPopover';
 // import EmojiMartPopover from '@main/atoms/EmojiMartPopover';
 // import MentionPopover from '@main/atoms/MentionPopover';
 import { useSetRecoilState } from 'recoil';
-import { showMentionPopover } from '@main/atoms/MentionPopover/states';
+import { showMentionPopover } from '@main/organisms/MentionPopover/states';
 import CommentInput from '@main/atoms/CommentInput';
 
 const useStyles = makeStyles(() => ({
