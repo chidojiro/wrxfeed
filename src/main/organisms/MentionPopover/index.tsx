@@ -18,26 +18,94 @@ export interface MentionPopoverProps {
   onSelectUser: (user: User) => void;
 }
 
+export enum KeyboardCode {
+  up = 38,
+  down = 40,
+}
+
+export type MentionSelect = {
+  user: User;
+  index: number;
+};
+
 const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   const [anchorEl, setAnchorEl] = useRecoilState(showMentionPopover);
   const setInviteModal = useSetRecoilState(showInviteModalState);
-  const [mention, setMention] = React.useState<User | null>(null);
+  const [mentionSelect, setMentionSelect] = React.useState<MentionSelect>();
+  const [mentionData, setMentionData] = React.useState<User[]>([]);
   // const mentions = useMention();
 
-  // React.useEffect(() => {
-  //   console.log('Check new mentions = ', mentions);
-  // }, [mentions]);
+  React.useEffect(() => {
+    setMentionData(mentionUsers);
+  }, []);
+
+  React.useEffect(() => {
+    console.log('Check new mentionData = ', mentionData);
+  }, [mentionData]);
 
   // const handleClick = (event: MouseEvent) => {
   //   setAnchorEl(event.currentTarget);
   // };
 
+  const escFunction = React.useCallback((event: KeyboardEvent, mention?: MentionSelect) => {
+    console.log('escFunction', event);
+    console.log('keyCode', event.key);
+    console.log('mentionSelect', mention);
+    // return
+    if (!mention) {
+      console.log('mentionData.length', mentionData.length);
+      if (mentionData.length > 0) {
+        setMentionSelect({
+          user: mentionData[0],
+          index: 0,
+        });
+      }
+      return;
+    }
+    if (event.key === 'ArrowUp') {
+      console.log('Detect up is pressed');
+      if (mentionData.length > mention?.index + 1) {
+        setMentionSelect({
+          user: mentionData[mention?.index + 1],
+          index: mention?.index + 1,
+        });
+      }
+    }
+    if (event.key === 'ArrowDown') {
+      console.log('Detect down is pressed');
+      if (mentionData.length > mention?.index + 1) {
+        setMentionSelect({
+          user: mentionData[mention?.index + 1],
+          index: mention?.index + 1,
+        });
+      }
+    }
+  }, []);
+
+  React.useEffect(() => {
+    window.addEventListener(
+      'keydown',
+      (event: KeyboardEvent) => escFunction(event, mentionSelect),
+      false,
+    );
+    return () => {
+      window.removeEventListener(
+        'keydown',
+        (event: KeyboardEvent) => escFunction(event, mentionSelect),
+        false,
+      );
+    };
+  }, []);
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const onMouseOver = (user: User) => {
-    setMention(user);
+  const onMouseOver = (user: User, index: number) => {
+    setMentionSelect({
+      user,
+      index,
+    });
   };
 
   const onClickInvite = () => {
@@ -49,19 +117,11 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   const id = open ? 'simple-popover' : undefined;
   return (
     <div>
-      {/* <SmileIcon onClick={handleClick} /> */}
       <Popover
         id={id}
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        style={
-          {
-            // filter:
-            //   'drop-shadow(0px 3px 5px rgba(39, 50, 64, 0.2)) drop-shadow(0px 0px 1px rgba(39, 50, 64, 0.3))',
-          }
-        }
-        // sx={{ backgroundColor: 'blue' }}
         anchorPosition={{
           top: 10,
           left: 10,
@@ -101,15 +161,15 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
               }}
             />
           </Stack>
-          {mentionUsers.map((item: User) => {
-            const isSelect = item.id === mention?.id;
+          {mentionData.map((item: User, index: number) => {
+            const isSelect = item.id === mentionSelect?.user?.id;
             const bgColor = isSelect ? Highlight : 'transparent';
             const contentColor = isSelect ? Gray[1] : Gray[3];
             return (
               <Button
                 type="button"
                 key={item.id}
-                onMouseOver={() => onMouseOver(item)}
+                onMouseOver={() => onMouseOver(item, index)}
                 onClick={() => onSelectUser(item)}
                 style={{
                   padding: '0px',

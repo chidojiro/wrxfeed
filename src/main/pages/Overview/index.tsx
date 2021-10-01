@@ -10,6 +10,7 @@ import MentionPopover from '@main/organisms/MentionPopover';
 import AttachmentModal from '@main/organisms/AttachmentModal';
 import { showInviteModalState } from '@main/organisms/InviteModal/states';
 // import CommentBox from '@main/molecules/CommentBox';
+// import { MentionsInput, Mention } from 'react-mentions';
 import UploadCSVModal from '../../organisms/UploadCSVModal';
 import InviteModal from '../../organisms/InviteModal';
 
