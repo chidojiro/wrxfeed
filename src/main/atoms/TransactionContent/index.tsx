@@ -10,7 +10,7 @@ export interface TransactionContentProps {
 }
 
 const TransactionContent: React.VFC<TransactionContentProps> = ({ transaction }) => {
-  const avatarProps = stringAvatar(transaction.category || '');
+  const avatarProps = stringAvatar(transaction.department || '');
 
   return (
     <>
@@ -35,7 +35,7 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({ transaction })
               </Stack>
             </Grid>
             <Grid item>
-              <Typography sx={{ fontSize: '0.875rem' }}>{transaction.description}</Typography>
+              <Typography sx={{ fontSize: '0.875rem' }}>{transaction.vendor}</Typography>
             </Grid>
           </Grid>
           <Grid item>

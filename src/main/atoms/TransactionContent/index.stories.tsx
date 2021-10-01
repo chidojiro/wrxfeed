@@ -21,7 +21,7 @@ const transaction: Transaction = {
   category: 'Professional Services',
   transDate: new Date().toISOString(),
   amount: 17000,
-  description: 'Google Analytics-Adservices',
+  vendor: 'Vendor name',
   status: STATUS.NEW,
 };
 Default.args = { transaction };
