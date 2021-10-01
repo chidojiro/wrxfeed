@@ -4,7 +4,13 @@ import { Comment, Transaction, User } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { ApiError } from '@error';
 import { Identity } from '@identity';
-import { ApiClient, ChangePasswordDto, Pagination, ResetPasswordDto } from '@api/types';
+import {
+  ApiClient,
+  ChangePasswordDto,
+  CommentFilters,
+  Pagination,
+  ResetPasswordDto,
+} from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { removeEmptyFields, sleep } from '@common/utils';
 import { handleResponseFail } from '@api/utils';
@@ -36,7 +42,7 @@ export default class ApiUtils implements ApiClient {
     return {
       id: resp.data.id,
       fullName: resp.data.fullName,
-      expireAt: new Date(resp.data.expireAt || Date.now()),
+      expireAt: resp.data.expireAt,
       // token won't be saved in local storage but in http cookie
       token: '',
       avatar: resp.data.avatar,
@@ -112,11 +118,15 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getComments = async (transactionId: number, pagination?: Pagination): Promise<Comment[]> => {
+  getComments = async (filters: CommentFilters): Promise<Comment[]> => {
+    const params = {
+      order: filters.order,
+      ...filters.pagination,
+    };
     const res = await this.request<Comment[]>({
-      url: `/feed/transactions/${transactionId}/comments`,
+      url: `/feed/transactions/${filters.transactionId}/comments`,
       method: 'GET',
-      params: pagination,
+      params,
     });
     return res.data;
   };
@@ -233,7 +243,7 @@ export const fakeApiUtils: ApiClient = {
     const fakeIdenity: Identity = {
       fullName: 'Admin',
       token: '',
-      expireAt: new Date(),
+      expireAt: new Date().toISOString(),
       email: '',
     };
     return fakeIdenity;
@@ -242,7 +252,7 @@ export const fakeApiUtils: ApiClient = {
   signInWithGoogle: async () => {
     const userToken: UserToken = {
       token: '',
-      expireAt: new Date(),
+      expireAt: new Date().toISOString(),
     };
     return userToken;
   },
@@ -257,7 +267,7 @@ export const fakeApiUtils: ApiClient = {
       fullName: 'An Tran',
       title: 'Admin',
       department: 'Dev',
-      signupDate: new Date(),
+      signupDate: new Date().toISOString(),
     };
   },
 
@@ -268,7 +278,7 @@ export const fakeApiUtils: ApiClient = {
       fullName: 'An Tran',
       title: 'Admin',
       department: 'Dev',
-      signupDate: new Date(),
+      signupDate: new Date().toISOString(),
     };
   },
 

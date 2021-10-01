@@ -51,7 +51,7 @@ const OnboardPage: React.VFC = () => {
         });
       }
       redirect(Routes.Home.path);
-    } catch (error: any) {
+    } catch (error: unknown) {
       await errorHandler(error);
     }
   };

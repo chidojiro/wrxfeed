@@ -1,5 +1,5 @@
 import { useApi } from '@api';
-import { Pagination } from '@api/types';
+import { OrderDirection, Pagination } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { useIdentity } from '@identity/hooks';
@@ -21,8 +21,12 @@ export function useComment(transactionId: number, pagination?: Pagination): Comm
 
   const getComments = useCallback(async () => {
     try {
-      const res = await ApiClient.getComments(transactionId, pagination);
-      setComments((prevComments) => [...prevComments, ...res]);
+      const res = await ApiClient.getComments({
+        transactionId,
+        order: OrderDirection.DESC,
+        pagination,
+      });
+      setComments((prevComments) => [...prevComments, ...res.reverse()]);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');
