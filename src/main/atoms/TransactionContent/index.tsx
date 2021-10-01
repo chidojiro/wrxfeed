@@ -1,6 +1,6 @@
 import React from 'react';
 import { Transaction } from '@main/entity';
-import { Avatar, Grid, Stack, Typography } from '@mui/material';
+import { Avatar, Grid, Stack, Tooltip, Typography } from '@mui/material';
 import { formatDate, formatCurrency, stringAvatar } from '@common/utils';
 import { Gray } from '@theme/colors';
 import StatusTag from '@common/atoms/StatusTag';
@@ -16,9 +16,11 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({ transaction })
     <>
       <Grid container spacing={2}>
         <Grid item>
-          <Avatar sx={{ width: 32, height: 32, ...avatarProps.sx }}>
-            <Typography variant="h5">{avatarProps.children}</Typography>
-          </Avatar>
+          <Tooltip title={transaction.department || ''}>
+            <Avatar sx={{ width: 32, height: 32, ...avatarProps.sx }}>
+              <Typography variant="h5">{avatarProps.children}</Typography>
+            </Avatar>
+          </Tooltip>
         </Grid>
         <Grid item xs={12} sm container>
           <Grid item xs container direction="column">
