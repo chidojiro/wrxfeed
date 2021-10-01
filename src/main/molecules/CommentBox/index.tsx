@@ -129,6 +129,10 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     console.log(emoji);
   };
 
+  // const handleOnChange = (event: React.FormEvent<HTMLInputElement>) => {
+  //   console.log('Check event = ', event);
+  // };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} style={style}>
       <FormControl sx={{ flexDirection: 'row', marginBottom: 0 }}>
@@ -142,6 +146,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
                 onEnterPress={handleSubmit(onSubmit)}
                 onMention={handleMention}
                 placeholder={placeholder}
+                // onChange={handleOnChange}
               />
             )}
           />

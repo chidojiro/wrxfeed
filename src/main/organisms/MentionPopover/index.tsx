@@ -9,7 +9,6 @@ import { showInviteModalState } from '@main/organisms/InviteModal/states';
 
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { InviteIcon } from '@assets/index';
-// import { useMention } from '@main/hooks';
 import { mentionUsers } from './dummy';
 import { showMentionPopover } from './states';
 
@@ -33,7 +32,6 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   const setInviteModal = useSetRecoilState(showInviteModalState);
   const [mentionSelect, setMentionSelect] = React.useState<MentionSelect>();
   const [mentionData, setMentionData] = React.useState<User[]>([]);
-  // const mentions = useMention();
 
   React.useEffect(() => {
     setMentionData(mentionUsers);
@@ -161,38 +159,40 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
               }}
             />
           </Stack>
-          {mentionData.map((item: User, index: number) => {
-            const isSelect = item.id === mentionSelect?.user?.id;
-            const bgColor = isSelect ? Highlight : 'transparent';
-            const contentColor = isSelect ? Gray[1] : Gray[3];
-            return (
-              <Button
-                type="button"
-                key={item.id}
-                onMouseOver={() => onMouseOver(item, index)}
-                onClick={() => onSelectUser(item)}
-                style={{
-                  padding: '0px',
-                  justifyContent: 'left',
-                  backgroundColor: bgColor,
-                  borderRadius: '0px',
-                }}
-              >
-                <Stack direction="row" alignItems="center" paddingX="16px" paddingY="8px">
-                  <AvatarIcon fill={contentColor} />
-                  <Typography
-                    fontSize="14px"
-                    marginLeft="8px"
-                    color={Gray[1]}
-                    fontWeight="600"
-                    style={{ textTransform: 'lowercase' }}
-                  >
-                    {item?.email}
-                  </Typography>
-                </Stack>
-              </Button>
-            );
-          })}
+          <Stack height="108px" overflow="scroll">
+            {mentionData.map((item: User, index: number) => {
+              const isSelect = item.id === mentionSelect?.user?.id;
+              const bgColor = isSelect ? Highlight : 'transparent';
+              const contentColor = isSelect ? Gray[1] : Gray[3];
+              return (
+                <Button
+                  type="button"
+                  key={item.id}
+                  onMouseOver={() => onMouseOver(item, index)}
+                  onClick={() => onSelectUser(item)}
+                  style={{
+                    padding: '0px',
+                    justifyContent: 'left',
+                    backgroundColor: bgColor,
+                    borderRadius: '0px',
+                  }}
+                >
+                  <Stack direction="row" alignItems="center" paddingX="16px" paddingY="8px">
+                    <AvatarIcon fill={contentColor} />
+                    <Typography
+                      fontSize="14px"
+                      marginLeft="8px"
+                      color={Gray[1]}
+                      fontWeight="600"
+                      style={{ textTransform: 'lowercase' }}
+                    >
+                      {item?.email}
+                    </Typography>
+                  </Stack>
+                </Button>
+              );
+            })}
+          </Stack>
           <Divider style={{ marginTop: '8px' }} />
           <Stack paddingX="16px" paddingY="8px" marginTop="24px">
             <Typography

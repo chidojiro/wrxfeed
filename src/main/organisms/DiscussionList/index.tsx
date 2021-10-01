@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack, Typography } from '@mui/material';
 import { Gray, Accent } from '@theme/colors';
 import Divider from '@mui/material/Divider';
-import { dummyDiscussion } from './dummy';
+import { useDiscussion } from '@main/hooks';
 import { Discussion } from './types';
 import PostTag from './PostTag';
 
@@ -22,22 +22,23 @@ export type DiscussionListProps = {
   style?: React.CSSProperties;
 };
 
-const DiscussionList: React.FC<DiscussionListProps> = ({
-  data = dummyDiscussion,
-  style,
-  children,
-}) => {
+const DiscussionList: React.FC<DiscussionListProps> = ({ data = [], style, children }) => {
+  const discussions = useDiscussion();
+
+  React.useEffect(() => {
+    console.log('Check new discussions = ', discussions);
+  }, [discussions]);
+
   return (
     <Stack marginTop="70px" width="70%" minWidth="712px" style={style}>
       {data.map((item: Discussion, index: number) => {
         const { commentBy, id, post, time, content, action } = item;
         const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';
         return (
-          <>
+          <div key={id}>
             <Divider />
             <button
               type="button"
-              key={id}
               style={{
                 display: 'flex',
                 borderRadius: '0px',
@@ -107,7 +108,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({
                 </Stack>
               </Stack>
             </button>
-          </>
+          </div>
         );
       })}
       {children}
