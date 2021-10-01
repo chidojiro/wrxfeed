@@ -22,12 +22,7 @@ export function useComment(transactionId: number, pagination?: Pagination): Comm
   const getComments = useCallback(async () => {
     try {
       const res = await ApiClient.getComments(transactionId, pagination);
-      const sortedData = res.sort((a, b) => {
-        if (a.createdAt < b.createdAt) return -1;
-        if (a.createdAt > b.createdAt) return 1;
-        return 0;
-      });
-      setComments((prevComments) => [...prevComments, ...sortedData]);
+      setComments((prevComments) => [...prevComments, ...res]);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');
