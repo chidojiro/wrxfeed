@@ -1,8 +1,8 @@
 {
-  "name": "wrxfeed-web",
+  "name": "gravity-web",
   "version": "1.0.0",
-  "description": "Web UI for WrxFeed fintech",
-  "author": "WrxFeed-team",
+  "description": "Web UI for Gravity fintech",
+  "author": "GravityLabs",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

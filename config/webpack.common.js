@@ -33,7 +33,7 @@ module.exports = (env) => {
     plugins: [
       // Automatically generate an HTML5 file for you that includes all your webpack bundles
       new HtmlWebpackPlugin({
-        title: 'WrxFeed',
+        title: 'Gravity',
         favicon: path.resolve('public/favicon.svg'),
         template: path.resolve('public/index.html'),
       }),
@@ -50,12 +50,12 @@ module.exports = (env) => {
       }),
 
       new WebpackPwaManifest({
-        name: 'WrxFeed',
-        short_name: 'WrxFeed',
+        name: 'Gravity',
+        short_name: 'Gravity',
         orientation: 'portrait',
         display: 'standalone',
         start_url: '.',
-        description: 'WrxFeed fintech',
+        description: 'Gravity',
         background_color: '#0F0D15',
         theme_color: '#ffffff',
         icons: [
