@@ -19,7 +19,7 @@ const WrxfeedStar: React.VFC<BoxProps> = (props) => {
     <Container {...props}>
       <StarSvg />
       <Typography sx={{ position: 'absolute', transform: 'rotate(15deg)' }} variant="h3">
-        Wrxfeed
+        Gravity
       </Typography>
     </Container>
   );

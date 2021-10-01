@@ -1,6 +1,6 @@
-# WrxFeed Web
+# Gravity Web
 
-Web UI for WrxFeed fintech.
+Web UI for Gravity fintech.
 
 ## Netlify deploy status
 

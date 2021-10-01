@@ -62,14 +62,7 @@ export function stringToColor(string: string): string {
  * Get avatar props with color based on name for MUI Avatar
  */
 export function stringAvatar(name: string): AvatarProps {
-  let initials = '';
-  if (name.split(' ').length) {
-    initials += name.split(' ')[0][0];
-  }
-
-  if (name.split(' ').length > 1) {
-    initials += name.split(' ')[1][0];
-  }
+  const initials = name.slice(0, 3);
   return {
     sx: {
       bgcolor: stringToColor(name),
