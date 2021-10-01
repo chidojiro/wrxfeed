@@ -9,8 +9,6 @@ import SvgColorIcon from '@common/atoms/SvgColorIcon';
 import MentionPopover from '@main/organisms/MentionPopover';
 import AttachmentModal from '@main/organisms/AttachmentModal';
 import { showInviteModalState } from '@main/organisms/InviteModal/states';
-// import CommentBox from '@main/molecules/CommentBox';
-// import { MentionsInput, Mention } from 'react-mentions';
 import UploadCSVModal from '../../organisms/UploadCSVModal';
 import InviteModal from '../../organisms/InviteModal';
 
@@ -41,20 +39,7 @@ const OverviewPage: React.VFC = () => {
               </IconButton>
             </Stack>
             <Stack sx={{ position: 'relative', width: '100%' }} flexGrow={1}>
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  overflow: 'scroll',
-                  paddingRight: 2,
-                }}
-              >
-                <TransactionList />
-                {/* <CommentBox style={{ marginTop: '500px' }} onSubmit={() => undefined} /> */}
-              </Box>
+              <TransactionList />
             </Stack>
           </Stack>
         </Grid>

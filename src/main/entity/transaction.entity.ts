@@ -1,14 +1,12 @@
 export type Transaction = {
   id: number;
   status?: string;
-  accountNo?: string;
   transDate?: string;
-  postDate?: string;
-  description?: string;
+  department?: string;
   category?: string;
-  type?: string;
+  vendor?: string;
+  currency?: string;
   amount: number;
-  memo?: string;
   commentCount?: number;
   createdAt?: string;
   updatedAt?: string;
