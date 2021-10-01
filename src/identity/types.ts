@@ -3,7 +3,7 @@ import { Provider } from '@main/entity';
 
 export interface UserToken {
   token: string;
-  expireAt?: Date;
+  expireAt?: string;
 }
 
 export interface Identity extends UserToken, Profile {

@@ -23,7 +23,7 @@ export interface ApiClient {
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   // Transaction API
   getTransactions: (pagination?: Pagination) => Promise<Transaction[]>;
-  getComments: (transactionId: number, pagination?: Pagination) => Promise<Comment[]>;
+  getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: CommentFormModel) => Promise<Comment>;
 
   // Discussion API
@@ -58,4 +58,15 @@ export interface ResetPasswordDto {
 export interface Pagination {
   offset: number;
   limit: number;
+}
+
+export enum OrderDirection {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
+export interface CommentFilters {
+  transactionId: number;
+  order?: OrderDirection;
+  pagination?: Pagination;
 }
