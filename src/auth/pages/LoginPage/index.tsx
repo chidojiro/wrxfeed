@@ -54,7 +54,7 @@ const LoginPage: React.VFC = () => {
           },
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       await errorHandler(error);
     }
   };

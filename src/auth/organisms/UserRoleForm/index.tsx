@@ -3,7 +3,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import FormControl from '@mui/material/FormControl';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { OnboardFormModel } from '@auth/types';
+import { ProfileFormModel } from '@auth/types';
 import LoadingButton from '@common/atoms/LoadingButton';
 import FormInput from '@auth/atoms/FormInput';
 import { MenuItem, Select, Stack } from '@mui/material';
@@ -20,7 +20,7 @@ const schema = yup.object({
 });
 
 export interface UserRoleFormProps {
-  onSubmit: SubmitHandler<OnboardFormModel>;
+  onSubmit: SubmitHandler<ProfileFormModel>;
   sx: SxProps;
 }
 
@@ -33,7 +33,7 @@ const UserRoleForm: React.VFC<UserRoleFormProps> = ({ sx, onSubmit }) => {
     control,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = useForm<OnboardFormModel>({
+  } = useForm<ProfileFormModel>({
     defaultValues: {
       title: '',
       department: '',

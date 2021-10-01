@@ -15,15 +15,6 @@ export interface LoginFormModel {
   password: string;
 }
 
-export interface OnboardFormModel {
-  firstName: string;
-  lastName: string;
-  companyName: string;
-  title: string;
-  department: string;
-  bio: string;
-}
-
 export interface ProfileFormModel {
   firstName: string;
   lastName: string;

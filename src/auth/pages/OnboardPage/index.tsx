@@ -9,6 +9,7 @@ import { useApi } from '@api';
 import { useIdentity, useSetIdentity } from '@identity/hooks';
 import { useNavUtils } from '@common/hooks';
 import Routes from '@src/routes';
+import { useErrorHandler } from '@error/hooks';
 
 enum InputStep {
   BasicInfo,
@@ -20,6 +21,7 @@ const OnboardPage: React.VFC = () => {
   const setIdentity = useSetIdentity();
   const identity = useIdentity();
   const { redirect } = useNavUtils();
+  const errorHandler = useErrorHandler();
   const [step, setStep] = useState(InputStep.BasicInfo);
   const formDataRef = useRef<ProfileFormModel>();
 
@@ -42,13 +44,15 @@ const OnboardPage: React.VFC = () => {
     };
     try {
       const profile = await updateProfile(updates);
-      setIdentity({
-        ...identity,
-        ...profile,
-      });
+      if (identity) {
+        setIdentity({
+          ...identity,
+          ...profile,
+        });
+      }
       redirect(Routes.Home.path);
-    } catch (error: any) {
-      redirect(Routes.Home.path);
+    } catch (error: unknown) {
+      await errorHandler(error);
     }
   };
 
