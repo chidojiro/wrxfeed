@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { ChangeEvent, useEffect } from 'react';
+import React, { ChangeEvent, useEffect, useRef } from 'react';
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/system';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
@@ -101,6 +101,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
 }) => {
   const setShowMentionPopover = useSetRecoilState(showMentionPopover);
   const classes = useStyles();
+  const commentInputRef = useRef<React.RefObject<any>>();
   const {
     control,
     handleSubmit,
@@ -127,6 +128,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
 
   const onSelectEmoji = (emoji: Emoji) => {
     console.log(emoji);
+    console.log('Check commentInputRef = ', commentInputRef);
   };
 
   // const handleOnChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -146,7 +148,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
                 onEnterPress={handleSubmit(onSubmit)}
                 onMention={handleMention}
                 placeholder={placeholder}
-                // onChange={handleOnChange}
+                onRef={commentInputRef}
               />
             )}
           />
