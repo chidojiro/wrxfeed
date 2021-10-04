@@ -6,7 +6,7 @@ import { Accent } from '@theme/colors';
 type TokenizedTextProps = TypographyProps & {
   children?: string;
   tokenFontSize?: string | number;
-  sx: SxProps;
+  sx?: SxProps;
 };
 
 const StyledTypography = styled(Typography)<TokenizedTextProps>(({ tokenFontSize }) => ({

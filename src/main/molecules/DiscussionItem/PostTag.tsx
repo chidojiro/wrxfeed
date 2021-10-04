@@ -1,9 +1,9 @@
+import { Transaction } from '@main/entity';
 import React from 'react';
-import { Post } from './types';
 
 export type PostTagProps = {
   style?: React.CSSProperties;
-  post: Post;
+  transaction: Transaction | undefined;
 };
 
 export const getRandomPostPrimaryColor = (): string => {
@@ -12,7 +12,8 @@ export const getRandomPostPrimaryColor = (): string => {
   return colorSelect;
 };
 
-export const getPostAbbreviation = (name: string): string => {
+export const getPostAbbreviation = (name?: string): string => {
+  if (!name) return '';
   const nameStr = name;
   return nameStr
     .replace(' &', '')
@@ -23,8 +24,23 @@ export const getPostAbbreviation = (name: string): string => {
     .toUpperCase();
 };
 
-const PostTag: React.FC<PostTagProps> = ({ style, post }) => {
-  const avatarPostColor = post?.primaryColor || getRandomPostPrimaryColor();
+const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
+  if (!transaction) {
+    return (
+      <p
+        style={{
+          display: 'flex',
+          color: '#273240',
+          fontSize: 14,
+          lineHeight: '18px',
+          margin: 0,
+        }}
+      >
+        a transaction
+      </p>
+    );
+  }
+  const avatarPostColor = getRandomPostPrimaryColor();
   return (
     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', ...style }}>
       <div
@@ -48,7 +64,7 @@ const PostTag: React.FC<PostTagProps> = ({ style, post }) => {
             margin: 0,
           }}
         >
-          {getPostAbbreviation(post?.name)}
+          {getPostAbbreviation(transaction?.department)}
         </p>
       </div>
       <p
@@ -62,7 +78,7 @@ const PostTag: React.FC<PostTagProps> = ({ style, post }) => {
           marginLeft: 4,
         }}
       >
-        {`${post?.name}`}
+        {`${transaction?.department}`}
       </p>
     </div>
   );
