@@ -28,11 +28,9 @@ export interface DiscussionItemProps {
 }
 
 const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) => {
-  console.log('Check discussion = ', discussion);
   const { redirect } = useNavUtils();
 
   const onClickDiscussion = () => {
-    console.log('Check in onClickDiscussion');
     redirect(Routes.Overview.path);
   };
 
