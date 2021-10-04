@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { CommentFormModel } from '@main/types';
 import { Transaction } from '@main/entity';
 import TransactionContent from '@main/atoms/TransactionContent';
@@ -8,8 +8,10 @@ import CommentItem from '@main/molecules/CommentItem';
 import CommentRemaining from '@main/atoms/CommentRemaining';
 import { TransitionGroup } from 'react-transition-group';
 import { useComment } from '@main/hooks';
+import { Pagination } from '@api/types';
 
 const INITIAL_COMMENT_NUMBER = 2;
+const LOAD_MORE_LIMIT = 5;
 
 export interface TransactionItemProps {
   transaction: Transaction;
@@ -18,14 +20,11 @@ export interface TransactionItemProps {
 const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
   // Recoil states
   // Local States
-  const { comments, addComment } = useComment(transaction.id);
-  const [isShowAllComments, showAllComments] = useState(false);
+  const [filter, setFilter] = useState<Pagination>({ offset: 0, limit: INITIAL_COMMENT_NUMBER });
+  const { comments, total, isLoading, addComment } = useComment(transaction, filter);
   // Variables
-  const shownComments = useMemo(() => {
-    return isShowAllComments ? comments : comments?.slice(-INITIAL_COMMENT_NUMBER);
-  }, [isShowAllComments, comments]);
-  const hasComment = !!comments?.length;
-  const hiddenCommentCount = (comments?.length ?? 0) - INITIAL_COMMENT_NUMBER;
+  const hasComment = !!total;
+  const hiddenCommentCount = total - comments.length;
 
   console.log('Check comments = ', comments);
 
@@ -45,6 +44,14 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
     addComment({ content: parsedContent });
   };
 
+  const loadMoreComments = useCallback(() => {
+    if (isLoading) return;
+    setFilter((prevFilter) => ({
+      limit: LOAD_MORE_LIMIT,
+      offset: prevFilter.offset + prevFilter.limit,
+    }));
+  }, [isLoading]);
+
   return (
     <Stack sx={{ p: 2 }} spacing={2}>
       <Box sx={{ pt: 1 }}>
@@ -54,16 +61,17 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
         <Stack sx={{ pl: 6, pt: 1, pb: 1 }} spacing={0.5}>
           <List>
             <TransitionGroup>
-              {!isShowAllComments && hiddenCommentCount > 0 && (
+              {hiddenCommentCount > 0 && (
                 <Collapse key="hidden-comment-count">
                   <CommentRemaining
                     sx={{ marginBottom: 0.5 }}
                     hiddenCount={hiddenCommentCount}
-                    onClick={() => showAllComments(true)}
+                    onClick={loadMoreComments}
+                    loading={isLoading}
                   />
                 </Collapse>
               )}
-              {shownComments?.map((comment) => (
+              {comments?.map((comment) => (
                 <Collapse key={comment.id}>
                   <CommentItem sx={{ marginBottom: 0.5 }} comment={comment} />
                 </Collapse>
