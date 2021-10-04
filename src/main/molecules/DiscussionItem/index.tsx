@@ -4,6 +4,8 @@ import { Gray } from '@theme/colors';
 import { Stack, Typography, Divider } from '@mui/material';
 import CommentText from '@main/atoms/CommentText';
 import { formatDate } from '@common/utils';
+import { useNavUtils } from '@common/hooks';
+import Routes from '@src/routes';
 import PostTag from './PostTag';
 
 export type TextBoldProps = {
@@ -27,9 +29,11 @@ export interface DiscussionItemProps {
 
 const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) => {
   console.log('Check discussion = ', discussion);
+  const { redirect } = useNavUtils();
 
   const onClickDiscussion = () => {
     console.log('Check in onClickDiscussion');
+    redirect(Routes.Overview.path);
   };
 
   const { content, createdAt, user, transaction } = discussion;
@@ -44,12 +48,11 @@ const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) =
         style={{
           display: 'flex',
           flex: 1,
+          width: '100%',
           borderRadius: '0px',
-          alignItems: 'left',
           justifyContent: 'flex-start',
           padding: '0px',
           margin: '0px',
-          width: 'auto',
           borderWidth: '0px',
           outline: 'none',
           backgroundColor: 'transparent',

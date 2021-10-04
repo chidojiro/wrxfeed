@@ -25,7 +25,21 @@ export const getPostAbbreviation = (name?: string): string => {
 };
 
 const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
-  if (!transaction) return null;
+  if (!transaction) {
+    return (
+      <p
+        style={{
+          display: 'flex',
+          color: '#273240',
+          fontSize: 14,
+          lineHeight: '18px',
+          margin: 0,
+        }}
+      >
+        a transaction
+      </p>
+    );
+  }
   const avatarPostColor = getRandomPostPrimaryColor();
   return (
     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', ...style }}>
