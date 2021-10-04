@@ -38,9 +38,10 @@ const OnboardPage: React.VFC = () => {
 
   const handleSubmitRole = async (data: ProfileFormModel) => {
     formDataRef.current = { ...formDataRef.current, ...data };
+    const lastLoginAt = new Date().toISOString();
     const updates = {
       ...formDataRef.current,
-      lastLoginAt: new Date().toISOString(),
+      lastLoginAt,
     };
     try {
       const profile = await updateProfile(updates);
@@ -48,6 +49,7 @@ const OnboardPage: React.VFC = () => {
         setIdentity({
           ...identity,
           ...profile,
+          lastLoginAt,
         });
       }
       redirect(Routes.Home.path);
