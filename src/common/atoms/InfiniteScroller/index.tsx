@@ -1,13 +1,14 @@
 import React, { ReactNode, useCallback, useRef } from 'react';
 import { Box } from '@mui/material';
-import { useEventListener } from '@common/hooks/useEventListener';
+import { useDebounce, useEventListener } from '@common/hooks';
 import { SxProps } from '@mui/system';
 
-const DEFAULT_THRESHOLD = 250;
+const DEFAULT_THRESHOLD = 100;
+const DEBOUNCE_WAIT = 300; // 0.3s
 
 interface InfiniteScrollerProps {
   threshold?: number;
-  onLoadMore?: () => void;
+  onLoadMore: () => void;
   sx?: SxProps;
   isLoading?: boolean;
   LoadingComponent?: ReactNode;
@@ -23,13 +24,15 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
 }) => {
   const scrollerRef = useRef<HTMLDivElement>();
 
+  const handleLoadMoreTrigger = useDebounce(onLoadMore, DEBOUNCE_WAIT, []);
+
   const handleScroll = useCallback(() => {
     const winScroll = scrollerRef.current?.scrollTop ?? 0;
 
-    if (winScroll > (threshold ?? DEFAULT_THRESHOLD) && onLoadMore) {
-      onLoadMore();
+    if (winScroll > (threshold ?? DEFAULT_THRESHOLD)) {
+      handleLoadMoreTrigger();
     }
-  }, [threshold, onLoadMore]);
+  }, [threshold, handleLoadMoreTrigger]);
 
   useEventListener('scroll', handleScroll, scrollerRef.current || window);
 
@@ -43,7 +46,6 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
 
 InfiniteScroller.defaultProps = {
   threshold: DEFAULT_THRESHOLD,
-  onLoadMore: () => undefined,
   sx: undefined,
   isLoading: false,
   LoadingComponent: null,

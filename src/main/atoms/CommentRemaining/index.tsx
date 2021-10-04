@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack, Typography } from '@mui/material';
+import { CircularProgress, Stack, Typography } from '@mui/material';
 import { Accent } from '@theme/colors';
 import { ReactComponent as MessageTextAltIcon } from '@assets/icons/solid/message-text-alt.svg';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
@@ -9,9 +9,15 @@ export interface CommentRemainingProps {
   hiddenCount: number;
   onClick?: () => void;
   sx?: SxProps;
+  loading?: boolean;
 }
 
-const CommentRemaining: React.VFC<CommentRemainingProps> = ({ hiddenCount, onClick, sx }) => {
+const CommentRemaining: React.VFC<CommentRemainingProps> = ({
+  hiddenCount,
+  onClick,
+  sx,
+  loading,
+}) => {
   return (
     <Stack
       sx={{ cursor: 'pointer', ...sx }}
@@ -34,6 +40,7 @@ const CommentRemaining: React.VFC<CommentRemainingProps> = ({ hiddenCount, onCli
       <Typography color={Accent[2]} variant="body2" fontWeight={600}>
         Show previous comments
       </Typography>
+      {loading && <CircularProgress size={15} />}
     </Stack>
   );
 };
