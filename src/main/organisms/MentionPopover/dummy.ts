@@ -28,4 +28,13 @@ export const mentionUsers: User[] = [
       name: 'Amazon',
     },
   },
+  {
+    id: 3,
+    email: 'BritneyReid@gmail.com',
+    status: UserStatus.Active,
+    company: {
+      id: 0,
+      name: 'Apple',
+    },
+  },
 ];

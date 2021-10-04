@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
-import { Comment, Transaction, User } from '@main/entity';
+import { Comment, Transaction, User, Discussion } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { ApiError } from '@error';
 import { Identity } from '@identity';
@@ -150,7 +150,16 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  // /api/media/upload-tokens
+  getDiscussions = async (pagination?: Pagination): Promise<Discussion[]> => {
+    const res = await this.request<Discussion[]>({
+      url: '/user/me/mentions',
+      method: 'GET',
+      params: pagination,
+    });
+    // console.log('Check res = ', res);
+    return res.data;
+  };
+
   postUploadAttachment = async (file: File): Promise<void> => {
     const formData = new FormData();
     formData.append('file', file, file.name);
