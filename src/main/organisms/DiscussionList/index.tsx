@@ -1,118 +1,66 @@
-import React from 'react';
-import { Stack, Typography } from '@mui/material';
-import { Gray, Accent } from '@theme/colors';
-import Divider from '@mui/material/Divider';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Stack, Box, Skeleton } from '@mui/material';
 import { useDiscussion } from '@main/hooks';
-import { Discussion } from './types';
-import PostTag from './PostTag';
-
-export type TextBoldProps = {
-  style?: React.CSSProperties;
-  text: string;
-};
-
-const TextBold: React.FC<TextBoldProps> = ({ text, style }) => (
-  <Typography color={Gray[2]} fontSize="14px" fontWeight="bold" lineHeight="18px" style={style}>
-    {`${text}`}
-  </Typography>
-);
+import { Pagination } from '@api/types';
+import { Discussion } from '@main/entity';
+import DiscussionItem from '@main/molecules/DiscussionItem';
+import InfiniteScroller from '@common/atoms/InfiniteScroller';
 
 export type DiscussionListProps = {
-  data?: Discussion[];
   style?: React.CSSProperties;
 };
 
-const DiscussionList: React.FC<DiscussionListProps> = ({ data = [], style, children }) => {
-  const discussions = useDiscussion();
+const LIMIT = 10;
 
-  React.useEffect(() => {
+const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
+  const [filter, setFilter] = useState<Pagination>({ offset: 0, limit: LIMIT });
+  const { discussions, hasMore, isLoading } = useDiscussion(filter);
+
+  const handleLoadMore = useCallback(() => {
+    if (!hasMore || isLoading) return;
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      offset: prevFilter.offset + prevFilter.limit,
+    }));
+  }, [hasMore, isLoading]);
+
+  useEffect(() => {
     console.log('Check new discussions = ', discussions);
   }, [discussions]);
 
-  return (
-    <Stack marginTop="70px" width="70%" minWidth="712px" style={style}>
-      {data.map((item: Discussion, index: number) => {
-        const { commentBy, id, post, time, content, action } = item;
-        const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';
-        return (
-          <div key={id}>
-            <Divider />
-            <button
-              type="button"
-              style={{
-                display: 'flex',
-                borderRadius: '0px',
-                alignItems: 'left',
-                justifyContent: 'flex-start',
-                padding: '0px',
-                margin: '0px',
-                width: 'auto',
-                borderWidth: '0px',
-                outline: 'none',
-              }}
-            >
-              <Stack
-                bgcolor={interleaveBackground}
-                flex={1}
-                direction="column"
-                minHeight="100px"
-                padding="8px"
-              >
-                <Stack direction="row" alignItems="center">
-                  <TextBold text={commentBy} />
-                  <Typography
-                    color={Gray[2]}
-                    fontSize="14px"
-                    marginY="4px"
-                    marginX="4px"
-                    marginTop="4px"
-                  >
-                    {` ${action} `}
-                  </Typography>
-                  <PostTag post={post} />
-                </Stack>
-                <Stack direction="row" alignItems="center" marginTop="8px" marginLeft="64px">
-                  <Typography color={Gray[1]} fontSize="14px" lineHeight="17px" fontWeight={600}>
-                    {`${commentBy} `}
-                  </Typography>
-                  <Typography fontSize="12px" lineHeight="15px" marginLeft="4px" color={Gray[3]}>
-                    {` • ${time}`}
-                  </Typography>
-                </Stack>
-                <Stack direction="row" marginTop="8px" paddingLeft="76px">
-                  <Stack
-                    width="2px"
-                    height="19px"
-                    borderRadius="2px"
-                    marginRight="8px"
-                    style={{
-                      backgroundColor: '#2D91AB',
-                    }}
-                  />
-                  <Typography
-                    fontSize="16px"
-                    lineHeight="18px"
-                    marginRight="4px"
-                    borderRadius="4px"
-                    bgcolor={Accent[3]}
-                    style={{
-                      padding: '2px 4px 2px 4px',
-                      color: '#6565FB',
-                    }}
-                  >
-                    {`@${commentBy} `}
-                  </Typography>
-                  <Typography fontSize="16px" lineHeight="19px" color={Gray[2]}>
-                    {` ${content}`}
-                  </Typography>
-                </Stack>
-              </Stack>
-            </button>
-          </div>
-        );
-      })}
-      {children}
+  const renderLoadingSkeleton = () => (
+    <Stack sx={{ ml: 1 }} direction="row">
+      <Box sx={{ margin: 1 }}>
+        <Skeleton variant="circular" width={32} height={32} />
+      </Box>
+      <Box sx={{ width: '100%', mr: 3, mt: 1, ml: 1 }}>
+        <Skeleton sx={{ borderRadius: 1 }} animation="wave" width="100%" />
+        <Skeleton sx={{ borderRadius: 1, mt: 3 }} variant="rectangular" width="100%" height={50} />
+      </Box>
     </Stack>
+  );
+
+  return (
+    <InfiniteScroller
+      sx={{
+        marginTop: '70px',
+        width: '70%',
+        minWidth: '712px',
+        overflow: 'auto',
+        paddingRight: 2,
+        ...style,
+      }}
+      onLoadMore={handleLoadMore}
+      isLoading={isLoading}
+      LoadingComponent={renderLoadingSkeleton()}
+    >
+      {discussions.map((item: Discussion, index: number) => (
+        <React.Fragment key={item.id}>
+          <DiscussionItem discussion={item} index={index} />
+        </React.Fragment>
+      ))}
+      {children}
+    </InfiniteScroller>
   );
 };
 

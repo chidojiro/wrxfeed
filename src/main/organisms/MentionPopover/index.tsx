@@ -47,7 +47,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
 
   const escFunction = React.useCallback((event: KeyboardEvent, mention?: MentionSelect) => {
     console.log('escFunction', event);
-    console.log('keyCode', event.key);
+    // console.log('keyCode', event.key);
     console.log('mentionSelect', mention);
     // return
     if (!mention) {

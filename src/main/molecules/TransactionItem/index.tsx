@@ -27,6 +27,8 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
   const hasComment = !!comments?.length;
   const hiddenCommentCount = (comments?.length ?? 0) - INITIAL_COMMENT_NUMBER;
 
+  console.log('Check comments = ', comments);
+
   const onSubmitComment = (values: CommentFormModel) => {
     const isDirty = !!values.content;
     if (!isDirty) return;
@@ -34,7 +36,8 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
       .split(' ')
       .map((word) => {
         if (word.startsWith('@')) {
-          return `<mention userid="8483" tagname="${word.replace('@', '')}"/>`;
+          // 6 is Harry user id
+          return `<mention userid="6" tagname="${word.replace('@', '')}"/>`;
         }
         return word;
       })

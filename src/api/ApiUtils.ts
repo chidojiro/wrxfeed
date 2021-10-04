@@ -156,7 +156,7 @@ export default class ApiUtils implements ApiClient {
       method: 'GET',
       params: pagination,
     });
-    // console.log('Check res = ', res);
+    console.log('Check res = ', res);
     return res.data;
   };
 
