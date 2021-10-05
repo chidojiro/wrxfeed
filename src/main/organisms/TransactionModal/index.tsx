@@ -59,8 +59,10 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ style }) => {
           borderWidth: '0px',
           outline: 'none',
         }}
-        maxWidth="784px"
-        maxHeight="415px"
+        maxWidth="884px"
+        maxHeight="620px"
+        minWidth="375px"
+        minHeight="300px"
         padding="24px"
         overflow="scroll"
       >

@@ -3,13 +3,13 @@ import { Stack, Typography, Button, Divider } from '@mui/material';
 import Popover from '@mui/material/Popover';
 import { Gray, Highlight, LightBG } from '@theme/colors';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
-// import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { User } from '@main/entity/user.entity';
 import { showInviteModalState } from '@main/organisms/InviteModal/states';
 
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { InviteIcon } from '@assets/index';
 // import { MentionsInput, Mention } from 'react-mentions';
+import EventEmitter, { EventName } from '@main/EventEmitter';
 import { mentionUsers } from './dummy';
 import { showMentionPopover } from './states';
 
@@ -50,65 +50,67 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
     }
     const newWidth = `${mentionState.element?.clientWidth}px`;
     setModalWidth(newWidth);
-  }, [mentionState.element]);
+  }, [mentionState]);
 
   useEffect(() => {
     console.log('Check new mentionData = ', mentionData);
   }, [mentionData]);
 
-  // const handleClick = (event: MouseEvent) => {
-  //   setMentionState(event.currentTarget);
-  // };
-
-  const escFunction = React.useCallback((event: KeyboardEvent, mention?: MentionSelect) => {
-    // console.log('escFunction', event);
-    // console.log('keyCode', event.key);
-    // console.log('mentionSelect', mention);
-    // return
-    if (!mention) {
-      // console.log('mentionData.length', mentionData.length);
+  const handleKeyDown = function (): void {
+    console.log('Check handleKeyDown');
+    if (!mentionSelect) {
       if (mentionData.length > 0) {
         setMentionSelect({
-          user: mentionData[0],
           index: 0,
+          user: mentionData[0],
         });
       }
       return;
     }
-    if (event.key === 'ArrowUp') {
-      console.log('Detect up is pressed');
-      if (mentionData.length > mention?.index + 1) {
+    if (mentionData.length > mentionSelect?.index + 1) {
+      setMentionSelect({
+        user: mentionData[mentionSelect?.index + 1],
+        index: mentionSelect?.index + 1,
+      });
+    }
+  };
+
+  const handleKeyUp = function (): void {
+    console.log('Check handleKeyUp');
+    if (!mentionSelect) {
+      if (mentionData.length > 0) {
         setMentionSelect({
-          user: mentionData[mention?.index + 1],
-          index: mention?.index + 1,
+          index: 0,
+          user: mentionData[0],
         });
       }
+      return;
     }
-    if (event.key === 'ArrowDown') {
-      console.log('Detect down is pressed');
-      if (mentionData.length > mention?.index + 1) {
-        setMentionSelect({
-          user: mentionData[mention?.index + 1],
-          index: mention?.index + 1,
-        });
-      }
+    if (mentionSelect?.index > 0) {
+      setMentionSelect({
+        user: mentionData[mentionSelect?.index - 1],
+        index: mentionSelect?.index - 1,
+      });
     }
+  };
+
+  useEffect(() => {
+    EventEmitter.subscribe(EventName.ON_KEY_UP, handleKeyUp);
+    return () => {
+      EventEmitter.unsubscribe(EventName.ON_KEY_UP, handleKeyUp);
+    };
   }, []);
 
   useEffect(() => {
-    window.addEventListener(
-      'keydown',
-      (event: KeyboardEvent) => escFunction(event, mentionSelect),
-      false,
-    );
+    EventEmitter.subscribe(EventName.ON_KEY_DOWN, handleKeyDown);
     return () => {
-      window.removeEventListener(
-        'keydown',
-        (event: KeyboardEvent) => escFunction(event, mentionSelect),
-        false,
-      );
+      EventEmitter.unsubscribe(EventName.ON_KEY_DOWN, handleKeyDown);
     };
   }, []);
+
+  // const handleClick = (event: MouseEvent) => {
+  //   setMentionState(event.currentTarget);
+  // };
 
   const handleClose = () => {
     setMentionState({
@@ -153,12 +155,8 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
         id={id}
         disableAutoFocus
         disableEnforceFocus
-        onKeyDown={() => {
-          console.log('Check onKeyDown');
-        }}
-        onKeyUp={() => {
-          console.log('Check onKeyUp');
-        }}
+        // onKeyDown={() => handleKeyDown()}
+        // onKeyUp={() => handleKeyUp()}
         open={open}
         anchorEl={mentionState?.element}
         onClose={handleClose}
