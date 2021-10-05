@@ -9,8 +9,11 @@ import { showInviteModalState } from '@main/organisms/InviteModal/states';
 
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { InviteIcon } from '@assets/index';
+// import { MentionsInput, Mention } from 'react-mentions';
 import { mentionUsers } from './dummy';
 import { showMentionPopover } from './states';
+
+const MENTION_MODAL_MIN_WIDTH = 472;
 
 export interface MentionPopoverProps {
   isOpen?: boolean;
@@ -28,8 +31,8 @@ export type MentionSelect = {
 };
 
 const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
-  const [anchorEl, setAnchorEl] = useRecoilState(showMentionPopover);
-  const [modalWidth, setModalWidth] = useState<string>('492px');
+  const [mentionState, setMentionState] = useRecoilState(showMentionPopover);
+  const [modalWidth, setModalWidth] = useState<string>(`${MENTION_MODAL_MIN_WIDTH}px`);
   const setInviteModal = useSetRecoilState(showInviteModalState);
   const [mentionSelect, setMentionSelect] = useState<MentionSelect>();
   const [mentionData, setMentionData] = useState<User[]>([]);
@@ -39,26 +42,31 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   }, []);
 
   useEffect(() => {
-    console.log('Check anchorEl = ', anchorEl);
-    const newWidth = `${anchorEl.element?.clientWidth}px`;
+    if (
+      !mentionState?.element?.clientWidth ||
+      mentionState?.element?.clientWidth < MENTION_MODAL_MIN_WIDTH
+    ) {
+      return;
+    }
+    const newWidth = `${mentionState.element?.clientWidth}px`;
     setModalWidth(newWidth);
-  }, [anchorEl]);
+  }, [mentionState.element]);
 
   useEffect(() => {
     console.log('Check new mentionData = ', mentionData);
   }, [mentionData]);
 
   // const handleClick = (event: MouseEvent) => {
-  //   setAnchorEl(event.currentTarget);
+  //   setMentionState(event.currentTarget);
   // };
 
   const escFunction = React.useCallback((event: KeyboardEvent, mention?: MentionSelect) => {
-    console.log('escFunction', event);
+    // console.log('escFunction', event);
     // console.log('keyCode', event.key);
-    console.log('mentionSelect', mention);
+    // console.log('mentionSelect', mention);
     // return
     if (!mention) {
-      console.log('mentionData.length', mentionData.length);
+      // console.log('mentionData.length', mentionData.length);
       if (mentionData.length > 0) {
         setMentionSelect({
           user: mentionData[0],
@@ -103,7 +111,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   }, []);
 
   const handleClose = () => {
-    setAnchorEl({
+    setMentionState({
       element: null,
     });
   };
@@ -120,19 +128,46 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
     setInviteModal(true);
   };
 
-  const open = Boolean(anchorEl?.element) || false;
+  // const renderReactMentions = () => {
+  //   return (
+  //     <MentionsInput value={null} onChange={() => {}}>
+  //       <Mention
+  //         trigger="@"
+  //         data={[]}
+  //         renderSuggestion={() => {
+  //           return <div />;
+  //         }}
+  //       />
+  //     </MentionsInput>
+  //   );
+  // };
+
+  const open = Boolean(mentionState?.element) || false;
   const id = open ? 'simple-popover' : undefined;
   return (
-    <div>
+    <div style={{ backgroundColor: 'transparent' }}>
       <Popover
+        PaperProps={{
+          sx: { backgroundColor: 'transparent' },
+        }}
         id={id}
+        disableAutoFocus
+        disableEnforceFocus
+        onKeyDown={() => {
+          console.log('Check onKeyDown');
+        }}
+        onKeyUp={() => {
+          console.log('Check onKeyUp');
+        }}
         open={open}
-        anchorEl={anchorEl?.element}
+        anchorEl={mentionState?.element}
         onClose={handleClose}
         anchorPosition={{
           top: 10,
           left: 10,
         }}
+        style={{ backgroundColor: 'transparent' }}
+        sx={{ backgroundColor: 'transparent' }}
         elevation={0}
         anchorOrigin={{
           vertical: 'top',
@@ -156,17 +191,9 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
           }}
         >
           <Stack height="36px" paddingX="16px" paddingY="8px" marginTop="8px">
-            <input
-              placeholder="Suggested users"
-              style={{
-                display: 'flex',
-                color: Gray[3],
-                fontSize: '14px',
-                borderWidth: '0px',
-                backgroundColor: 'transparent',
-                outline: 'none',
-              }}
-            />
+            <Typography fontSize="14px" color={Gray[3]}>
+              Suggested users
+            </Typography>
           </Stack>
           <Stack height="108px" overflow="scroll">
             {mentionData.map((item: User, index: number) => {

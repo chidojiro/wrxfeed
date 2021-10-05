@@ -59,6 +59,12 @@ const CommentInput: React.ForwardRefRenderFunction<Ref<unknown>, CommentInputPro
       onKeyPress={handleKeyPress}
       onChange={handleTextChange}
       onBlur={onBlur}
+      onKeyDown={() => {
+        console.log('Check StyledInput onKeyDown');
+      }}
+      onKeyUp={() => {
+        console.log('Check StyledInput onKeyUp');
+      }}
     />
   );
 };
