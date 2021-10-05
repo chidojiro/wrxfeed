@@ -12,6 +12,7 @@ import { ReactComponent as LogoutIcon } from '@assets/icons/outline/logout.svg';
 // import { showUploadCSVModalState } from '@main/organisms/UploadCSVModal/states';
 
 enum MenuRoutes {
+  Home = '/',
   Overview = '/overview',
   Discussions = '/discussions',
 }
@@ -86,7 +87,12 @@ const SideMenu: React.VFC = () => {
       <List style={{}}>
         <ListItemButton sx={{ padding: 0 }} component={RouterLink} to="/overview">
           <HighLight
-            sx={{ visibility: location.pathname === MenuRoutes.Overview ? 'visible' : 'hidden' }}
+            sx={{
+              visibility:
+                location.pathname === MenuRoutes.Home || location.pathname === MenuRoutes.Overview
+                  ? 'visible'
+                  : 'hidden',
+            }}
           />
           <MenuItem primary="All Company" />
         </ListItemButton>
