@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { styled } from '@mui/system';
 import ModalUnstyled from '@mui/core/ModalUnstyled';
 import { useRecoilState } from 'recoil';
@@ -37,9 +37,9 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ style }) => {
   const [transactionState, setTransactionModalState] = useRecoilState(showTransactionModalState);
   const handleClose = () => setTransactionModalState({ transaction: null });
   const { transaction } = transactionState;
-  useEffect(() => {
-    console.log(`Check new transactionState = ${JSON.stringify(transactionState)}`);
-  }, [transactionState]);
+  // React.useEffect(() => {
+  //   console.log(`Check new transactionState = ${JSON.stringify(transactionState)}`);
+  // }, [transactionState]);
 
   // if (!transactionState.transaction) return null;
 

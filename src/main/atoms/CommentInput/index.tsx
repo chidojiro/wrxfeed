@@ -62,9 +62,11 @@ const CommentInput: React.ForwardRefRenderFunction<HTMLInputElement, CommentInpu
       onBlur={onBlur}
       onFocus={onFocus}
       onKeyDown={() => {
+        console.log('Check onKeyDown');
         EventEmitter.dispatch(EventName.ON_KEY_DOWN);
       }}
       onKeyUp={() => {
+        console.log('Check onKeyUp');
         EventEmitter.dispatch(EventName.ON_KEY_UP);
       }}
     />

@@ -2,6 +2,7 @@ export enum EventName {
   EXAMPLE = 'EXAMPLE',
   ON_KEY_DOWN = 'ON_KEY_DOWN',
   ON_KEY_UP = 'ON_KEY_UP',
+  SELECT_MENTION = 'SELECT_MENTION',
 }
 
 type Callback = (...args: unknown[]) => unknown;

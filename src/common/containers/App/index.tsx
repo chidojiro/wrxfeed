@@ -23,7 +23,7 @@ import {
   TransactionModal,
   UploadCSVModal,
   AttachmentModal,
-  MentionPopover,
+  // MentionPopover,
   InviteModal,
 } from '@main/organisms';
 
@@ -83,7 +83,7 @@ const App: React.FC = () => {
                       <TransactionModal />
                       <UploadCSVModal />
                       <AttachmentModal />
-                      <MentionPopover onSelectUser={() => undefined} />
+                      {/* <MentionPopover /> */}
                       <InviteModal />
                     </Suspense>
                   </Router>

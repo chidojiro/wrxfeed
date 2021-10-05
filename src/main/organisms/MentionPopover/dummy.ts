@@ -5,6 +5,7 @@ export const mentionUsers: User[] = [
     id: 0,
     email: 'AbellMendez@gmail.com',
     status: UserStatus.Active,
+    fullName: 'Abell Mendez',
     company: {
       id: 0,
       name: 'Apple',
@@ -14,6 +15,7 @@ export const mentionUsers: User[] = [
     id: 1,
     email: 'BananaMontgomery@gmail.com',
     status: UserStatus.Active,
+    fullName: 'Banana Montgomery',
     company: {
       id: 0,
       name: 'Black Berry',
@@ -21,8 +23,9 @@ export const mentionUsers: User[] = [
   },
   {
     id: 2,
-    email: 'CristinoReid@gmail.com',
+    email: 'CristianoReid@gmail.com',
     status: UserStatus.Active,
+    fullName: 'Cristiano Reid',
     company: {
       id: 0,
       name: 'Cisco',
@@ -30,8 +33,9 @@ export const mentionUsers: User[] = [
   },
   {
     id: 3,
-    email: 'DritneyReid@gmail.com',
+    email: 'DanielPobga@gmail.com',
     status: UserStatus.Active,
+    fullName: 'Daniel Pobga',
     company: {
       id: 0,
       name: 'Dwarves',
