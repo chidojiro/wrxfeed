@@ -14,7 +14,7 @@ import { showMentionPopover } from './states';
 
 export interface MentionPopoverProps {
   isOpen?: boolean;
-  onSelectUser: (user: User) => void;
+  onSelectUser?: (user: User) => void;
 }
 
 export enum KeyboardCode {
@@ -169,7 +169,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
                   type="button"
                   key={item.id}
                   onMouseOver={() => onMouseOver(item, index)}
-                  onClick={() => onSelectUser(item)}
+                  onClick={() => (onSelectUser ? onSelectUser(item) : undefined)}
                   style={{
                     padding: '0px',
                     justifyContent: 'left',
