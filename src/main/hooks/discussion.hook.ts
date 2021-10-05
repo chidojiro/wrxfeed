@@ -22,7 +22,6 @@ export function useDiscussion(pagination: Pagination): DiscussionHookValues {
     try {
       setLoading(true);
       const res = await ApiClient.getDiscussions(pagination);
-      console.log(`Check res = ${JSON.stringify(res)}`);
       setDiscussions((prevTrans) => [...prevTrans, ...res]);
       setHasMore(!!res.length);
     } catch (error) {

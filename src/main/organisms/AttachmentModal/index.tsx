@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/system';
 import ModalUnstyled from '@mui/core/ModalUnstyled';
 import { useRecoilState } from 'recoil';
@@ -15,11 +15,11 @@ export type FileAttachPreviewProps = {
 };
 
 const FileAttachPreview: React.FC<FileAttachPreviewProps> = ({ file }) => {
-  const [previewSrc, setPreviewSrc] = React.useState<string>(
+  const [previewSrc, setPreviewSrc] = useState<string>(
     'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png',
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log('Check new file = ', file);
     if (!file) {
       console.log('Detect null file');
