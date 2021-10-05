@@ -1,7 +1,7 @@
 import React, { MouseEvent } from 'react';
 import { Divider, Stack, Typography } from '@mui/material';
 import Popover from '@mui/material/Popover';
-import { LighBG, Gray } from '@theme/colors';
+import { LightBG, Gray } from '@theme/colors';
 import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { ReactComponent as SearchEmoji } from '@assets/icons/outline/searchEmoji.svg';
 import { Emoji, GroupEmoji } from '@main/types';
@@ -38,6 +38,9 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = ({ onSelectEmoji }) => {
     <div>
       <SmileIcon onClick={handleClick} />
       <Popover
+        PaperProps={{
+          sx: { backgroundColor: 'transparent' },
+        }}
         id={id}
         open={open}
         anchorEl={anchorEl}
@@ -62,7 +65,7 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = ({ onSelectEmoji }) => {
             width="302px"
             height="326px"
             borderRadius="24px"
-            bgcolor={LighBG}
+            bgcolor={LightBG}
             style={{ border: '1px solid rgba(0, 0, 0, 0.1)' }}
           >
             <Stack margin="8px" direction="row" alignItems="center" paddingX="12px" paddingY="8px">

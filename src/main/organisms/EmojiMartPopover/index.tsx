@@ -38,6 +38,9 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = ({ onSelectEmoji }) => {
     <div>
       <SmileIcon onClick={handleClick} />
       <Popover
+        PaperProps={{
+          sx: { backgroundColor: 'transparent' },
+        }}
         id={id}
         open={open}
         anchorEl={anchorEl}

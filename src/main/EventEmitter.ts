@@ -1,3 +1,7 @@
+const EventEmitter = {};
+
+export default EventEmitter;
+
 // export default {
 //   _events: {},
 //   dispatch(event, data) {
