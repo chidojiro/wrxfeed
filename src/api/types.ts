@@ -9,7 +9,13 @@ import {
   Profile,
   ProfileFormModel,
 } from '../auth/types';
-import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
+import {
+  Activity,
+  ActivityFilterModel,
+  ActivityFormModel,
+  Revenue,
+  InviteFormModel,
+} from '../diary/types';
 
 export interface ApiClient {
   // Authentication API
@@ -26,12 +32,11 @@ export interface ApiClient {
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: CommentFormModel) => Promise<Comment>;
 
-  // Discussion API
   getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
-  // Attach file API
   uploadAttachment: (data: File) => Promise<void>;
-  // Mention API
+  // For Inbox/Discussion list
   getMentions: (pagination?: Pagination) => Promise<User[]>;
+  postAddInvitation: (data: InviteFormModel) => Promise<void>;
 
   searchActivities: (filter: ActivityFilterModel) => Promise<[Activity[], number]>;
   addActivity: (data: ActivityFormModel) => Promise<Activity>;

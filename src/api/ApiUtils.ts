@@ -14,7 +14,13 @@ import {
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { removeEmptyFields, sleep } from '@common/utils';
 import { handleResponseFail } from '@api/utils';
-import { Activity, ActivityFilterModel, ActivityFormModel, Revenue } from '../diary/types';
+import {
+  InviteFormModel,
+  Activity,
+  ActivityFilterModel,
+  ActivityFormModel,
+  Revenue,
+} from '../diary/types';
 import { getTimeRangeFromFilter } from '../diary/utils';
 
 export default class ApiUtils implements ApiClient {
@@ -156,7 +162,6 @@ export default class ApiUtils implements ApiClient {
       method: 'GET',
       params: pagination,
     });
-    console.log('Check res = ', res);
     return res.data;
   };
 
@@ -167,6 +172,16 @@ export default class ApiUtils implements ApiClient {
       url: '/media/me/upload-tokens',
       method: 'POST',
       data: formData,
+    });
+    console.log(res);
+    // return res.data;
+  };
+
+  postAddInvitation = async (data: InviteFormModel): Promise<void> => {
+    const res = await this.request<User[]>({
+      url: '/inv/invitations',
+      method: 'POST',
+      data,
     });
     console.log(res);
     // return res.data;
