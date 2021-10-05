@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, Ref } from 'react';
+import React, { ChangeEvent, KeyboardEvent } from 'react';
 import { styled } from '@mui/system';
 import { useFormControl } from '@mui/material/FormControl';
 import { InputBase, InputBaseProps } from '@mui/material';
@@ -20,8 +20,8 @@ const StyledInput = styled(InputBase)<InputBaseProps>(({ theme }) => ({
   },
 }));
 
-const CommentInput: React.ForwardRefRenderFunction<Ref<unknown>, CommentInputProps> = (
-  { name, value, placeholder, onChange, onBlur, onEnterPress, onMention },
+const CommentInput: React.ForwardRefRenderFunction<HTMLInputElement, CommentInputProps> = (
+  { name, value, placeholder, onChange, onBlur, onFocus, onEnterPress, onMention },
   ref,
 ) => {
   const { filled, focused } = useFormControl() || {};
@@ -50,7 +50,7 @@ const CommentInput: React.ForwardRefRenderFunction<Ref<unknown>, CommentInputPro
 
   return (
     <StyledInput
-      ref={ref}
+      inputRef={ref}
       name={name}
       value={value}
       placeholder={placeholder}
@@ -60,6 +60,7 @@ const CommentInput: React.ForwardRefRenderFunction<Ref<unknown>, CommentInputPro
       onKeyPress={handleKeyPress}
       onChange={handleTextChange}
       onBlur={onBlur}
+      onFocus={onFocus}
       onKeyDown={() => {
         EventEmitter.dispatch(EventName.ON_KEY_DOWN);
       }}

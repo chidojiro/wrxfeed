@@ -5,7 +5,6 @@ import { LightBG, Gray } from '@theme/colors';
 import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { ReactComponent as SearchEmoji } from '@assets/icons/outline/searchEmoji.svg';
 import { Emoji, GroupEmoji } from '@main/types';
-import 'emoji-mart/css/emoji-mart.css';
 
 import { NextEmoji } from '@assets/index';
 import { dummyEmoji, dummyGroupEmoji, getEmojiList } from './dummy';
@@ -20,7 +19,6 @@ const EmojiPopover: React.VFC<EmojiPopoverProps> = ({ onSelectEmoji }) => {
   const [emojiList, setEmojiList] = React.useState<Emoji[] | []>(dummyEmoji);
 
   React.useEffect(() => {
-    // console.log('Check getEmojiList = ', getEmojiList());
     setEmojiList(getEmojiList());
   }, []);
 

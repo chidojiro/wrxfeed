@@ -1,21 +1,30 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { ChangeEvent, useEffect, useRef } from 'react';
+import React, {
+  ChangeEvent,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  FocusEventHandler,
+} from 'react';
 import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/system';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
-import { Button, Paper, PaperProps, Stack } from '@mui/material';
+import { Box, Button, Paper, PaperProps, Stack } from '@mui/material';
 // import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { ReactComponent as AttachIcon } from '@assets/icons/outline/attach.svg';
+import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { Gray, Highlight } from '@theme/colors';
 import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { CommentFormModel, Emoji } from '@main/types';
+import { CommentFormModel } from '@main/types';
 // import EmojiPopover from '@main/organisms/EmojiPopover';
-import EmojiMartPopover from '@main/organisms/EmojiMartPopover';
+import EmojiPicker from '@main/molecules/EmojiPicker';
 // import MentionPopover from '@main/atoms/MentionPopover';
 import { useSetRecoilState } from 'recoil';
 import { showMentionPopover } from '@main/organisms/MentionPopover/states';
 import CommentInput from '@main/atoms/CommentInput';
+import { EmojiData } from 'emoji-mart';
 
 const useStyles = makeStyles(() => ({
   container: () => ({
@@ -33,7 +42,8 @@ const useStyles = makeStyles(() => ({
       backgroundColor: '#fff',
     },
   }),
-  attach: () => ({
+  inputOption: () => ({
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: 25,
@@ -101,18 +111,32 @@ const CommentBox: React.VFC<CommentFormProps> = ({
 }) => {
   const setShowMentionPopover = useSetRecoilState(showMentionPopover);
   const classes = useStyles();
-  const commentInputRef = useRef<React.RefObject<HTMLInputElement>>();
+  const emojiRef = useRef<HTMLDivElement>();
   const formRef = useRef<HTMLFormElement>(null);
   const {
     control,
     handleSubmit,
     reset,
+    setFocus,
+    setValue,
+    getValues,
     formState: { isSubmitted },
   } = useForm<CommentFormModel>({
     defaultValues: {
       content: '',
     },
   });
+  const [isOpenEmojiPicker, openEmojiPicker] = useState(false);
+  // useCallback functions
+  const onSelectEmoji = useCallback(
+    (emoji: EmojiData) => {
+      if ('native' in emoji) {
+        const values = getValues();
+        setValue('content', values.content + emoji.native);
+      }
+    },
+    [getValues, setValue],
+  );
 
   useEffect(() => {
     if (isSubmitted) {
@@ -127,14 +151,27 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     }
   };
 
-  const onSelectEmoji = (emoji: Emoji) => {
-    console.log(emoji);
-    console.log('Check commentInputRef = ', commentInputRef);
+  const onOpenEmojiPicker = () => {
+    // setFocus('content');
+    openEmojiPicker(true);
+    setFocus('content');
   };
 
-  // const handleOnChange = (event: React.FormEvent<HTMLInputElement>) => {
-  //   console.log('Check event = ', event);
-  // };
+  const onCloseEmojiPicker = () => {
+    openEmojiPicker(false);
+  };
+
+  const onFocusCommentInput: FocusEventHandler<HTMLTextAreaElement | HTMLInputElement> = (
+    event,
+  ) => {
+    // Move the cursor to end of text
+    if (typeof event.target.selectionStart === 'number') {
+      // eslint-disable-next-line no-param-reassign
+      event.target.selectionStart = event.target.value.length;
+      // eslint-disable-next-line no-param-reassign
+      event.target.selectionEnd = event.target.value.length;
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} style={{ ...style }} ref={formRef}>
@@ -146,20 +183,29 @@ const CommentBox: React.VFC<CommentFormProps> = ({
             render={({ field }) => (
               <CommentInput
                 {...field}
+                onFocus={onFocusCommentInput}
                 onEnterPress={handleSubmit(onSubmit)}
                 onMention={handleMention}
                 placeholder={placeholder}
-                // onRef={commentInputRef}
               />
             )}
           />
           <Stack direction="row" spacing={1} alignItems="center">
-            {/* {!!showEmoji && <EmojiPopover onSelectEmoji={onSelectEmoji} />} */}
-            {!!showEmoji && <EmojiMartPopover onSelectEmoji={onSelectEmoji} />}
-            {/* <MentionPopover /> */}
-            {/* <EmojiMartPopover /> */}
+            {showEmoji && (
+              <>
+                <Box ref={emojiRef} className={classes.inputOption} onClick={onOpenEmojiPicker}>
+                  <SmileIcon />
+                </Box>
+                <EmojiPicker
+                  open={isOpenEmojiPicker}
+                  onClose={onCloseEmojiPicker}
+                  anchorEl={emojiRef.current}
+                  onSelectEmoji={onSelectEmoji}
+                />
+              </>
+            )}
             {!!showAttach && (
-              <UploadButton className={classes.attach} id="icon-button-file" accept="image/*">
+              <UploadButton className={classes.inputOption} id="icon-button-file" accept="image/*">
                 <AttachIcon />
               </UploadButton>
             )}
