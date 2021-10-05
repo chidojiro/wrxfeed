@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Stack, Typography, Button, Divider } from '@mui/material';
 import Popover from '@mui/material/Popover';
 import { Gray, Highlight, LightBG } from '@theme/colors';
@@ -29,15 +29,22 @@ export type MentionSelect = {
 
 const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   const [anchorEl, setAnchorEl] = useRecoilState(showMentionPopover);
+  const [modalWidth, setModalWidth] = useState<string>('492px');
   const setInviteModal = useSetRecoilState(showInviteModalState);
-  const [mentionSelect, setMentionSelect] = React.useState<MentionSelect>();
-  const [mentionData, setMentionData] = React.useState<User[]>([]);
+  const [mentionSelect, setMentionSelect] = useState<MentionSelect>();
+  const [mentionData, setMentionData] = useState<User[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setMentionData(mentionUsers);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    console.log('Check anchorEl = ', anchorEl);
+    const newWidth = `${anchorEl.element?.clientWidth}px`;
+    setModalWidth(newWidth);
+  }, [anchorEl]);
+
+  useEffect(() => {
     console.log('Check new mentionData = ', mentionData);
   }, [mentionData]);
 
@@ -80,7 +87,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener(
       'keydown',
       (event: KeyboardEvent) => escFunction(event, mentionSelect),
@@ -96,7 +103,9 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   }, []);
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setAnchorEl({
+      element: null,
+    });
   };
 
   const onMouseOver = (user: User, index: number) => {
@@ -111,14 +120,14 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
     setInviteModal(true);
   };
 
-  const open = Boolean(anchorEl);
+  const open = Boolean(anchorEl?.element) || false;
   const id = open ? 'simple-popover' : undefined;
   return (
     <div>
       <Popover
         id={id}
         open={open}
-        anchorEl={anchorEl}
+        anchorEl={anchorEl?.element}
         onClose={handleClose}
         anchorPosition={{
           top: 10,
@@ -135,7 +144,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
         }}
       >
         <Stack
-          width="492px"
+          width={modalWidth}
           height="300px"
           borderRadius="24px"
           bgcolor={LightBG}

@@ -101,7 +101,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({
 }) => {
   const setShowMentionPopover = useSetRecoilState(showMentionPopover);
   const classes = useStyles();
-  const commentInputRef = useRef<React.RefObject<any>>();
+  const commentInputRef = useRef<React.RefObject<HTMLInputElement>>();
+  const formRef = useRef<HTMLFormElement>(null);
   const {
     control,
     handleSubmit,
@@ -122,7 +123,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   const handleMention = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { value } = event.currentTarget;
     if (value.substr(value.length - 1) === '@') {
-      setShowMentionPopover(event.currentTarget);
+      setShowMentionPopover({ element: formRef.current });
     }
   };
 
@@ -136,7 +137,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   // };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} style={style}>
+    <form onSubmit={handleSubmit(onSubmit)} style={{ ...style }} ref={formRef}>
       <FormControl sx={{ flexDirection: 'row', marginBottom: 0 }}>
         <Container onSubmit={handleSubmit(onSubmit)}>
           <Controller
@@ -148,7 +149,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
                 onEnterPress={handleSubmit(onSubmit)}
                 onMention={handleMention}
                 placeholder={placeholder}
-                onRef={commentInputRef}
+                // onRef={commentInputRef}
               />
             )}
           />

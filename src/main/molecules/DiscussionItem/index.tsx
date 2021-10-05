@@ -39,7 +39,6 @@ const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) =
   const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';
 
   const onClickDiscussion = () => {
-    console.log(`check onClickDiscussion transaction = ${JSON.stringify(transaction)}`);
     // redirect(Routes.Overview.path); not now
     if (!transaction) {
       toast.error('Cannot show details of this transaction, please try it later!');
