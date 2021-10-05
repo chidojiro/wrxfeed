@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Stack, Typography, Button, Divider } from '@mui/material';
 import Popover from '@mui/material/Popover';
 import { Gray, Highlight, LightBG } from '@theme/colors';
@@ -9,12 +9,15 @@ import { showInviteModalState } from '@main/organisms/InviteModal/states';
 
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { InviteIcon } from '@assets/index';
+// import { MentionsInput, Mention } from 'react-mentions';
 import { mentionUsers } from './dummy';
 import { showMentionPopover } from './states';
 
+const MENTION_MODAL_MIN_WIDTH = 472;
+
 export interface MentionPopoverProps {
   isOpen?: boolean;
-  onSelectUser: (user: User) => void;
+  onSelectUser?: (user: User) => void;
 }
 
 export enum KeyboardCode {
@@ -28,30 +31,42 @@ export type MentionSelect = {
 };
 
 const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
-  const [anchorEl, setAnchorEl] = useRecoilState(showMentionPopover);
+  const [mentionState, setMentionState] = useRecoilState(showMentionPopover);
+  const [modalWidth, setModalWidth] = useState<string>(`${MENTION_MODAL_MIN_WIDTH}px`);
   const setInviteModal = useSetRecoilState(showInviteModalState);
-  const [mentionSelect, setMentionSelect] = React.useState<MentionSelect>();
-  const [mentionData, setMentionData] = React.useState<User[]>([]);
+  const [mentionSelect, setMentionSelect] = useState<MentionSelect>();
+  const [mentionData, setMentionData] = useState<User[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setMentionData(mentionUsers);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (
+      !mentionState?.element?.clientWidth ||
+      mentionState?.element?.clientWidth < MENTION_MODAL_MIN_WIDTH
+    ) {
+      return;
+    }
+    const newWidth = `${mentionState.element?.clientWidth}px`;
+    setModalWidth(newWidth);
+  }, [mentionState.element]);
+
+  useEffect(() => {
     console.log('Check new mentionData = ', mentionData);
   }, [mentionData]);
 
   // const handleClick = (event: MouseEvent) => {
-  //   setAnchorEl(event.currentTarget);
+  //   setMentionState(event.currentTarget);
   // };
 
   const escFunction = React.useCallback((event: KeyboardEvent, mention?: MentionSelect) => {
-    console.log('escFunction', event);
+    // console.log('escFunction', event);
     // console.log('keyCode', event.key);
-    console.log('mentionSelect', mention);
+    // console.log('mentionSelect', mention);
     // return
     if (!mention) {
-      console.log('mentionData.length', mentionData.length);
+      // console.log('mentionData.length', mentionData.length);
       if (mentionData.length > 0) {
         setMentionSelect({
           user: mentionData[0],
@@ -80,7 +95,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener(
       'keydown',
       (event: KeyboardEvent) => escFunction(event, mentionSelect),
@@ -96,7 +111,9 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
   }, []);
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setMentionState({
+      element: null,
+    });
   };
 
   const onMouseOver = (user: User, index: number) => {
@@ -111,19 +128,46 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
     setInviteModal(true);
   };
 
-  const open = Boolean(anchorEl);
+  // const renderReactMentions = () => {
+  //   return (
+  //     <MentionsInput value={null} onChange={() => {}}>
+  //       <Mention
+  //         trigger="@"
+  //         data={[]}
+  //         renderSuggestion={() => {
+  //           return <div />;
+  //         }}
+  //       />
+  //     </MentionsInput>
+  //   );
+  // };
+
+  const open = Boolean(mentionState?.element) || false;
   const id = open ? 'simple-popover' : undefined;
   return (
-    <div>
+    <div style={{ backgroundColor: 'transparent' }}>
       <Popover
+        PaperProps={{
+          sx: { backgroundColor: 'transparent' },
+        }}
         id={id}
+        disableAutoFocus
+        disableEnforceFocus
+        onKeyDown={() => {
+          console.log('Check onKeyDown');
+        }}
+        onKeyUp={() => {
+          console.log('Check onKeyUp');
+        }}
         open={open}
-        anchorEl={anchorEl}
+        anchorEl={mentionState?.element}
         onClose={handleClose}
         anchorPosition={{
           top: 10,
           left: 10,
         }}
+        style={{ backgroundColor: 'transparent' }}
+        sx={{ backgroundColor: 'transparent' }}
         elevation={0}
         anchorOrigin={{
           vertical: 'top',
@@ -135,7 +179,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
         }}
       >
         <Stack
-          width="492px"
+          width={modalWidth}
           height="300px"
           borderRadius="24px"
           bgcolor={LightBG}
@@ -147,17 +191,9 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
           }}
         >
           <Stack height="36px" paddingX="16px" paddingY="8px" marginTop="8px">
-            <input
-              placeholder="Suggested users"
-              style={{
-                display: 'flex',
-                color: Gray[3],
-                fontSize: '14px',
-                borderWidth: '0px',
-                backgroundColor: 'transparent',
-                outline: 'none',
-              }}
-            />
+            <Typography fontSize="14px" color={Gray[3]}>
+              Suggested users
+            </Typography>
           </Stack>
           <Stack height="108px" overflow="scroll">
             {mentionData.map((item: User, index: number) => {
@@ -169,7 +205,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({ onSelectUser }) => {
                   type="button"
                   key={item.id}
                   onMouseOver={() => onMouseOver(item, index)}
-                  onClick={() => onSelectUser(item)}
+                  onClick={() => (onSelectUser ? onSelectUser(item) : undefined)}
                   style={{
                     padding: '0px',
                     justifyContent: 'left',

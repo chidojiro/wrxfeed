@@ -46,3 +46,7 @@ export interface AttachmentFormModel {
   publisher: User;
   transaction: Transaction;
 }
+
+export interface InviteFormModel {
+  email: string;
+}

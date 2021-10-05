@@ -6,11 +6,7 @@ import TransactionList from '@main/organisms/TransactionList';
 import IconButton from '@main/atoms/IconButton';
 import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.svg';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
-import MentionPopover from '@main/organisms/MentionPopover';
-import AttachmentModal from '@main/organisms/AttachmentModal';
 import { showInviteModalState } from '@main/organisms/InviteModal/states';
-import UploadCSVModal from '../../organisms/UploadCSVModal';
-import InviteModal from '../../organisms/InviteModal';
 
 const OverviewPage: React.VFC = () => {
   const companyName = 'Bird';
@@ -47,10 +43,6 @@ const OverviewPage: React.VFC = () => {
           <Box />
         </Grid>
       </Grid>
-      <UploadCSVModal />
-      <AttachmentModal />
-      <MentionPopover onSelectUser={() => undefined} />
-      <InviteModal />
     </MainLayout>
   );
 };

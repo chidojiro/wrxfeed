@@ -8,6 +8,7 @@ import { RecoilRoot } from 'recoil';
 import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
+import 'emoji-mart/css/emoji-mart.css';
 import '@src/styles.css';
 import LoadingFallback from '@common/atoms/LoadingFallback';
 import NotFoundPage from '@common/pages/NotFoundPage';
@@ -18,6 +19,13 @@ import { ProtectedRoute } from '@identity';
 import { API_BASE_URL } from '@src/config';
 import { ConfirmProvider } from '@src/confirm';
 import { CookieProvider } from '@common/hooks/useCookie';
+import {
+  TransactionModal,
+  UploadCSVModal,
+  AttachmentModal,
+  MentionPopover,
+  InviteModal,
+} from '@main/organisms';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -72,6 +80,11 @@ const App: React.FC = () => {
                           {/* <DiscussionsPage /> */}
                         </Route>
                       </Switch>
+                      <TransactionModal />
+                      <UploadCSVModal />
+                      <AttachmentModal />
+                      <MentionPopover onSelectUser={() => undefined} />
+                      <InviteModal />
                     </Suspense>
                   </Router>
                 </ConfirmProvider>
