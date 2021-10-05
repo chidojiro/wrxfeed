@@ -3,38 +3,42 @@ import { User, UserStatus } from '@main/entity/user.entity';
 export const mentionUsers: User[] = [
   {
     id: 0,
-    email: 'AbbieMendez@gmail.com',
+    email: 'AbellMendez@gmail.com',
     status: UserStatus.Active,
+    fullName: 'Abell Mendez',
     company: {
       id: 0,
-      name: 'Amazon',
+      name: 'Apple',
     },
   },
   {
     id: 1,
-    email: 'ArielMontgomery@gmail.com',
+    email: 'BananaMontgomery@gmail.com',
     status: UserStatus.Active,
+    fullName: 'Banana Montgomery',
     company: {
       id: 0,
-      name: 'Amazon',
+      name: 'Black Berry',
     },
   },
   {
     id: 2,
-    email: 'AlexReid@gmail.com',
+    email: 'CristianoReid@gmail.com',
     status: UserStatus.Active,
+    fullName: 'Cristiano Reid',
     company: {
       id: 0,
-      name: 'Amazon',
+      name: 'Cisco',
     },
   },
   {
     id: 3,
-    email: 'BritneyReid@gmail.com',
+    email: 'DanielPobga@gmail.com',
     status: UserStatus.Active,
+    fullName: 'Daniel Pobga',
     company: {
       id: 0,
-      name: 'Apple',
+      name: 'Dwarves',
     },
   },
 ];

@@ -100,7 +100,7 @@ const SideMenu: React.VFC = () => {
           <HighLight
             sx={{ visibility: location.pathname === MenuRoutes.Discussions ? 'visible' : 'hidden' }}
           />
-          <StyledBadge badgeContent={2} color="error">
+          <StyledBadge badgeContent={0} color="error">
             <MenuItem primary="Inbox" />
           </StyledBadge>
         </ListItemButton>

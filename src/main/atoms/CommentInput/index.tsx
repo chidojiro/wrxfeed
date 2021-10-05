@@ -2,6 +2,7 @@ import React, { ChangeEvent, KeyboardEvent } from 'react';
 import { styled } from '@mui/system';
 import { useFormControl } from '@mui/material/FormControl';
 import { InputBase, InputBaseProps } from '@mui/material';
+import EventEmitter, { EventName } from '@main/EventEmitter';
 
 interface CommentInputProps extends InputBaseProps {
   onEnterPress?: (event: KeyboardEvent) => void;
@@ -61,10 +62,12 @@ const CommentInput: React.ForwardRefRenderFunction<HTMLInputElement, CommentInpu
       onBlur={onBlur}
       onFocus={onFocus}
       onKeyDown={() => {
-        console.log('Check StyledInput onKeyDown');
+        console.log('Check onKeyDown');
+        EventEmitter.dispatch(EventName.ON_KEY_DOWN);
       }}
       onKeyUp={() => {
-        console.log('Check StyledInput onKeyUp');
+        console.log('Check onKeyUp');
+        EventEmitter.dispatch(EventName.ON_KEY_UP);
       }}
     />
   );

@@ -20,11 +20,12 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel } from '@main/types';
 // import EmojiPopover from '@main/organisms/EmojiPopover';
 import EmojiPicker from '@main/molecules/EmojiPicker';
-// import MentionPopover from '@main/atoms/MentionPopover';
-import { useSetRecoilState } from 'recoil';
-import { showMentionPopover } from '@main/organisms/MentionPopover/states';
+import MentionPopover from '@main/organisms/MentionPopover';
+// import { useSetRecoilState } from 'recoil';
+// import { showMentionPopover } from '@main/organisms/MentionPopover/states';
 import CommentInput from '@main/atoms/CommentInput';
 import { EmojiData } from 'emoji-mart';
+import { User } from '@main/entity';
 
 const useStyles = makeStyles(() => ({
   container: () => ({
@@ -109,7 +110,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   placeholder = '💬 Comment here…',
   style = {},
 }) => {
-  const setShowMentionPopover = useSetRecoilState(showMentionPopover);
+  // const setShowMentionPopover = useSetRecoilState(showMentionPopover);
   const classes = useStyles();
   const emojiRef = useRef<HTMLDivElement>();
   const formRef = useRef<HTMLFormElement>(null);
@@ -127,6 +128,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     },
   });
   const [isOpenEmojiPicker, openEmojiPicker] = useState(false);
+  const [isOpenMention, openMention] = useState(false);
+  const [inputElement, setInputElement] = useState<HTMLFormElement | null>(null);
   // useCallback functions
   const onSelectEmoji = useCallback(
     (emoji: EmojiData) => {
@@ -146,9 +149,24 @@ const CommentBox: React.VFC<CommentFormProps> = ({
 
   const handleMention = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { value } = event.currentTarget;
-    if (value.substr(value.length - 1) === '@') {
-      setShowMentionPopover({ element: formRef.current });
+    if (value.substr(value.length - 1) === '@' && formRef.current) {
+      // setShowMentionPopover({ element: formRef.current });
+      setInputElement(formRef.current);
+      openMention(true);
     }
+  };
+
+  const onSelectUserMention = useCallback(
+    (user: User) => {
+      console.log('Check user ', user);
+      const values = getValues();
+      setValue('content', `${values.content}${user.fullName}`);
+    },
+    [getValues, setValue],
+  );
+
+  const onCloseMention = () => {
+    openMention(false);
   };
 
   const onOpenEmojiPicker = () => {
@@ -213,6 +231,12 @@ const CommentBox: React.VFC<CommentFormProps> = ({
           </Stack>
         </Container>
       </FormControl>
+      <MentionPopover
+        open={isOpenMention}
+        onClose={onCloseMention}
+        onSelectUser={onSelectUserMention}
+        inputElement={inputElement}
+      />
     </form>
   );
 };
