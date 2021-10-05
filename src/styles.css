@@ -4,3 +4,43 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Emoji mart styles */
+.emoji-mart {
+  border-radius: 24px;
+  background-color: #F6F7F3;
+}
+
+.emoji-mart-category-label > span {
+  background-color: #F6F7F3;
+  padding: 8px 6px;
+}
+
+.emoji-mart-category .emoji-mart-emoji:hover:before {
+  background-color: #e8e8ea;
+}
+
+.emoji-mart-anchors {
+  padding: 4px 12px 0px;
+}
+
+.emoji-mart-search {
+  margin-top: 16px;
+  padding: 0px 16px;
+}
+
+.emoji-mart-search > input {
+  padding: 8px 25px 8px 10px;
+  background-color: #F6F7F3;
+}
+
+.emoji-mart-search-icon {
+  top: 9px;
+  right: 22px;
+}
+
+.emoji-mart-scroll {
+  margin-bottom: 16px;
+  padding: 0px 16px 6px;
+  height: 285px;
+}
