@@ -98,7 +98,7 @@ export interface CommentFormProps {
   showAttach?: boolean;
   showSend?: boolean;
   showEmoji?: boolean;
-  enableMention: boolean;
+  enableMention?: boolean;
   placeholder?: string;
   style?: React.CSSProperties;
 }
