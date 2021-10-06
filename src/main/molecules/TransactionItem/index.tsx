@@ -15,6 +15,7 @@ import { Gray, LightBG } from '@theme/colors';
 import TransactionNotifyBanner from '@main/atoms/TransactionNotifyBanner';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
+import FeedBackModal from '@main/molecules/FeelBackModal';
 
 const INITIAL_COMMENT_NUMBER = 2;
 const LOAD_MORE_LIMIT = 5;
@@ -42,9 +43,12 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
   const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
   const [isHidden, setHidden] = useState(false);
   const [notifyMessage, setNotifyMessage] = useState('');
+  const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
   // Variables
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
+
+  // console.log('comments = ', comments);
 
   const onSubmitComment = (values: CommentFormModel) => {
     const isDirty = !!values.content;
@@ -53,8 +57,8 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
       .split(' ')
       .map((word) => {
         if (word.startsWith('@')) {
-          // 6 is Harry user id, matt is 8
-          return `<mention userid="8" tagname="${word.replace('@', '')}"/>`;
+          // 6 is Harry user id, Matt is 8, harry mnc is 21
+          return `<mention userid="21" tagname="${word.replace('@', '')}"/>`;
         }
         return word;
       })
@@ -105,6 +109,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
 
   const handleShareFeedback = () => {
     openMenu(false);
+    openFeedbackModal(true);
   };
 
   return (
@@ -173,6 +178,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
             {confirmModal?.description}
           </Typography>
         </ConfirmModal>
+        <FeedBackModal open={isOpenFeedbackModal} />
       </Stack>
 
       <PopoverMenu

@@ -7,6 +7,8 @@ import { ReactComponent as ShapeEmoji } from '@assets/icons/outline/ShapeEmoji.s
 import { ReactComponent as TravelPlacesEmoji } from '@assets/icons/outline/TravelPlacesEmoji.svg';
 import { ReactComponent as InviteIcon } from '@assets/icons/outline/invite.svg';
 import { ReactComponent as SearchIcon } from '@assets/icons/outline/searchEmoji.svg';
+import { ReactComponent as ArrowUpIcon } from '@assets/icons/outline/arrowUp.svg';
+import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 
 export {
   NextEmoji,
@@ -18,4 +20,6 @@ export {
   TravelPlacesEmoji,
   InviteIcon,
   SearchIcon,
+  ArrowUpIcon,
+  MoreVerticalIcon,
 };

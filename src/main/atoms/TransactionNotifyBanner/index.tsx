@@ -7,7 +7,7 @@ import { Green } from '@theme/colors';
 import { styled, SxProps } from '@mui/system';
 import { Slide } from '@mui/material';
 
-const DEFAULT_TIMEOUT = 3000;
+const DEFAULT_TIMEOUT = 1500;
 
 interface HiddenTransactionBannerProps extends StackProps {
   sx?: SxProps;

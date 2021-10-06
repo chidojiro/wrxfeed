@@ -50,9 +50,9 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
     setModalWidth(newWidth);
   }, [inputElement]);
 
-  useEffect(() => {
-    console.log('Check new mentionData = ', mentionData);
-  }, [mentionData]);
+  // useEffect(() => {
+  //   console.log('Check new mentionData = ', mentionData);
+  // }, [mentionData]);
 
   const handleKeyDown = function (): void {
     console.log('Check handleKeyDown');
@@ -160,17 +160,12 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
         id={id}
         disableAutoFocus
         disableEnforceFocus
-        // onKeyDown={() => handleKeyDown()}
-        // onKeyUp={() => handleKeyUp()}
-        // open={open}
         anchorEl={inputElement}
         onClose={onClose}
         anchorPosition={{
           top: 10,
           left: 10,
         }}
-        style={{ backgroundColor: 'transparent' }}
-        sx={{ backgroundColor: 'transparent' }}
         elevation={0}
         anchorOrigin={{
           vertical: 'top',
