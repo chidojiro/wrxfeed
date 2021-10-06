@@ -1,16 +1,17 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { Box, Divider, Skeleton, Stack } from '@mui/material';
 import TransactionItem from '@main/molecules/TransactionItem';
 import { useTransaction } from '@main/hooks';
 // import InfiniteScroll from 'react-infinite-scroller';
 import { Pagination } from '@api/types';
-import InfiniteScroller from '@common/atoms/InfiniteScroller';
+import InfiniteScroller, { InfiniteScrollerHandle } from '@common/atoms/InfiniteScroller';
 
 const LIMIT = 10;
 
 const TransactionList: React.VFC = () => {
   const [filter, setFilter] = useState<Pagination>({ offset: 0, limit: LIMIT });
   const { transactions, hasMore, isLoading } = useTransaction(filter);
+  const listViewRef = useRef<InfiniteScrollerHandle>(null);
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -34,6 +35,7 @@ const TransactionList: React.VFC = () => {
 
   return (
     <InfiniteScroller
+      ref={listViewRef}
       sx={{
         position: 'absolute',
         top: 0,

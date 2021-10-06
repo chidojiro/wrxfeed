@@ -50,9 +50,9 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
     setModalWidth(newWidth);
   }, [inputElement]);
 
-  useEffect(() => {
-    console.log('Check new mentionData = ', mentionData);
-  }, [mentionData]);
+  // useEffect(() => {
+  //   console.log('Check new mentionData = ', mentionData);
+  // }, [mentionData]);
 
   const handleKeyDown = function (): void {
     console.log('Check handleKeyDown');
