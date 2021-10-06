@@ -41,7 +41,7 @@ const TransactionList: React.VFC = () => {
         left: 0,
         right: 0,
         overflow: 'auto',
-        paddingRight: 2,
+        mr: 2,
       }}
       onLoadMore={handleLoadMore}
       isLoading={isLoading}

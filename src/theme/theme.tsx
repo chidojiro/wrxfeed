@@ -1,11 +1,12 @@
 import { createTheme } from '@mui/material/styles';
-import { Accent, Gray, Highlight, LightBG } from '@theme/colors';
+import { Accent, Gray, Highlight, LightBG, System } from '@theme/colors';
 
 declare module '@mui/material/styles' {
   interface Palette {
     highlight: Palette['primary'];
     lightBg: Palette['primary'];
     accent: Palette['primary'];
+    alert: Palette['primary'];
   }
 
   // allow configuration using `createTheme`
@@ -13,6 +14,7 @@ declare module '@mui/material/styles' {
     highlight?: PaletteOptions['primary'];
     lightBg?: PaletteOptions['primary'];
     accent?: PaletteOptions['primary'];
+    alert?: PaletteOptions['primary'];
   }
 }
 
@@ -26,6 +28,7 @@ declare module '@mui/material/SvgIcon' {
   interface SvgIconPropsColorOverrides {
     highlight: true;
     accent: true;
+    alert: true;
   }
 }
 
@@ -66,6 +69,9 @@ export const theme = createTheme({
     },
     accent: {
       main: Accent[2],
+    },
+    alert: {
+      main: System.Alert,
     },
   },
   shape: {
@@ -216,6 +222,14 @@ export const theme = createTheme({
       styleOverrides: {
         icon: {
           right: 20,
+        },
+      },
+    },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          paddingTop: 4,
+          paddingBottom: 4,
         },
       },
     },
