@@ -4,7 +4,7 @@ import BlankLayout from '@common/templates/BlankLayout';
 import { Box, Stack, Typography } from '@mui/material';
 import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
 import WrxfeedStar from '@auth/atoms/WrxfeedStar';
-import { GOOGLE_CLIENT_ID } from '@src/config';
+import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@src/config';
 import Routes from '@src/routes';
 import { useIdentity, useSetIdentity } from '@identity/hooks';
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
@@ -97,6 +97,7 @@ const LoginPage: React.VFC = () => {
         </Box>
         <GoogleLogin
           clientId={GOOGLE_CLIENT_ID}
+          scope={GOOGLE_SCOPES}
           onSuccess={handleResponseSuccess}
           onFailure={handleResponseFailure}
           render={(renderProps) => (
