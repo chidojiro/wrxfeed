@@ -40,9 +40,6 @@ const useStyles = makeStyles(() => ({
 
 const ScrollToTopButton: React.VFC<ScrollToTopButtonProps> = ({ style, onClick, visible }) => {
   const classes = useStyles();
-  React.useEffect(() => {
-    console.log('Check new visible = ', visible);
-  }, [visible]);
   return (
     <Fab
       className={`${classes.container} ${visible ? 'fadeIn' : 'fadeOut'}`}

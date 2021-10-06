@@ -1,9 +1,12 @@
 import React from 'react';
 import { Transaction } from '@main/entity';
-import { Avatar, Grid, Stack, Tooltip, Typography } from '@mui/material';
+import { Avatar, Grid, Stack, Tooltip, Typography, Box } from '@mui/material';
 import { formatDate, formatCurrency, stringAvatar } from '@common/utils';
 import { Gray } from '@theme/colors';
 import StatusTag from '@common/atoms/StatusTag';
+import { MoreVerticalIcon } from '@assets/index';
+import { MoreOptionTypes } from '@main/molecules/MoreOptions';
+import { MoreOptions, FeelBackModal } from '../../molecules';
 
 export interface TransactionContentProps {
   transaction: Transaction;
@@ -11,7 +14,15 @@ export interface TransactionContentProps {
 
 const TransactionContent: React.VFC<TransactionContentProps> = ({ transaction }) => {
   const avatarProps = stringAvatar(transaction.department || '');
-
+  const [showMoreOptions, setShowMoreOptions] = React.useState<boolean>(false);
+  const [showFeelBack, setShowFeelBack] = React.useState<boolean>(false);
+  const moreOptionsRef = React.useRef<HTMLDivElement>();
+  const onSelectOption = (option: string) => {
+    setShowMoreOptions(false);
+    if (option === MoreOptionTypes.ShareFeedback) {
+      setShowFeelBack(true);
+    }
+  };
   return (
     <>
       <Grid container spacing={2}>
@@ -46,6 +57,21 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({ transaction })
               {formatCurrency(transaction.amount)}
             </Typography>
           </Grid>
+          <Box
+            ref={moreOptionsRef}
+            marginLeft="8px"
+            // className={classes.inputOption}
+            onClick={() => setShowMoreOptions(true)}
+          >
+            <MoreVerticalIcon />
+          </Box>
+          <MoreOptions
+            open={showMoreOptions}
+            anchorEl={moreOptionsRef.current}
+            onSelectOption={onSelectOption}
+            onClose={() => setShowMoreOptions(false)}
+          />
+          <FeelBackModal open={showFeelBack} />
         </Grid>
       </Grid>
     </>

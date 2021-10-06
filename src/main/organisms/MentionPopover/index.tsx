@@ -160,17 +160,12 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
         id={id}
         disableAutoFocus
         disableEnforceFocus
-        // onKeyDown={() => handleKeyDown()}
-        // onKeyUp={() => handleKeyUp()}
-        // open={open}
         anchorEl={inputElement}
         onClose={onClose}
         anchorPosition={{
           top: 10,
           left: 10,
         }}
-        style={{ backgroundColor: 'transparent' }}
-        sx={{ backgroundColor: 'transparent' }}
         elevation={0}
         anchorOrigin={{
           vertical: 'top',

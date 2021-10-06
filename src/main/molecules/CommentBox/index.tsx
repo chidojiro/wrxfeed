@@ -98,6 +98,7 @@ export interface CommentFormProps {
   showAttach?: boolean;
   showSend?: boolean;
   showEmoji?: boolean;
+  enableMention: boolean;
   placeholder?: string;
   style?: React.CSSProperties;
 }
@@ -107,6 +108,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   showAttach = true,
   showSend = true,
   showEmoji = true,
+  enableMention = true,
   placeholder = '💬 Comment here…',
   style = {},
 }) => {
@@ -148,6 +150,9 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   }, [isSubmitted, reset]);
 
   const handleMention = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    if (!enableMention) {
+      return;
+    }
     const { value } = event.currentTarget;
     if (value.substr(value.length - 1) === '@' && formRef.current) {
       // setShowMentionPopover({ element: formRef.current });

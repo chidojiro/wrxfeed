@@ -24,9 +24,9 @@ const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
     }));
   }, [hasMore, isLoading]);
 
-  useEffect(() => {
-    console.log('Check new discussions = ', discussions);
-  }, [discussions]);
+  // useEffect(() => {
+  //   console.log('Check new discussions = ', discussions);
+  // }, [discussions]);
 
   const renderLoadingSkeleton = () => (
     <Stack sx={{ ml: 1 }} direction="row">
