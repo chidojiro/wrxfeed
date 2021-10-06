@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es6" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */,
     "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
+    "moduleResolution": "node",
     "strict": true /* Enable all strict type-checking options. */,
     "outDir": "./dist/" /* Redirect output structure to the directory. */,
     "sourceMap": true /* Generates corresponding '.map' file. */,
@@ -15,6 +16,7 @@
     "lib": ["es6", "dom"],
     "noImplicitThis": true,
     "strictNullChecks": true,
+    "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@assets/*": ["src/assets/*"],
@@ -29,5 +31,20 @@
       "@src/*": ["src/*"],
     },
   },
-  "exclude": ["**/build/**", "**/coverage/**", "**/dist/**", "**/node_modules/**"]
+  // NEW: Options for file/directory watching
+  "watchOptions": {
+    // Use native file system events for files and directories
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    // Poll files for updates more frequently
+    // when they're updated a lot.
+    "fallbackPolling": "dynamicPriority",
+    // Don't coalesce watch notification
+    "synchronousWatchDirectory": true,
+    // Finally, two additional settings for reducing the amount of possible
+    // files to track  work from these directories
+    "excludeDirectories": ["**/node_modules", "build", "dist"],
+  },
+  "include": ["src/**/*"],
+  "exclude": ["build", "coverage", "dist", "node_modules"]
 }
