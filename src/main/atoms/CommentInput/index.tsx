@@ -56,7 +56,7 @@ const CommentInput: React.ForwardRefRenderFunction<HTMLInputElement, CommentInpu
       placeholder={placeholder}
       inputProps={{ 'aria-label': 'comment here' }}
       multiline
-      rows={focused || filled ? 3 : 1}
+      // rows={focused || filled ? 1 : 1}
       onKeyPress={handleKeyPress}
       onChange={handleTextChange}
       onBlur={onBlur}
