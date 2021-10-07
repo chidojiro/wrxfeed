@@ -7,18 +7,20 @@ import CommentBox from '@main/molecules/CommentBox';
 interface FeelBackModalProps {
   style?: React.CSSProperties;
   open: boolean;
+  onClose: () => void;
 }
 
-const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open }) => {
+const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose }) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
   React.useEffect(() => {
     setOpen(open);
   }, [open]);
   const handleClose = () => {
     setOpen(false);
+    onClose();
   };
   return (
-    <Modal open={isOpen} customStyle={style}>
+    <Modal open={isOpen} customStyle={style} onClose={handleClose}>
       <Stack width="442px" height="488px" borderRadius="24px" bgcolor="white">
         <Stack paddingX="40px" flex={1}>
           <Typography fontSize="24px" color={Gray[1]} marginTop="44px" fontWeight="bold">

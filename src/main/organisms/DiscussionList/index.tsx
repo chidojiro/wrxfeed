@@ -46,7 +46,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
         marginTop: '70px',
         width: '70%',
         minWidth: '712px',
-        overflow: 'auto',
+        overflow: 'scroll',
         paddingRight: 2,
         ...style,
       }}

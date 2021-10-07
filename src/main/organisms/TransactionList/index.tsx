@@ -42,7 +42,7 @@ const TransactionList: React.VFC = () => {
         bottom: 0,
         left: 0,
         right: 0,
-        overflow: 'auto',
+        overflow: 'scroll',
         mr: 2,
       }}
       onLoadMore={handleLoadMore}

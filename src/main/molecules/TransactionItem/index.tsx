@@ -178,7 +178,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
             {confirmModal?.description}
           </Typography>
         </ConfirmModal>
-        <FeedBackModal open={isOpenFeedbackModal} />
+        <FeedBackModal open={isOpenFeedbackModal} onClose={() => openFeedbackModal(false)} />
       </Stack>
 
       <PopoverMenu
