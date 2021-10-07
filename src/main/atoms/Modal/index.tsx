@@ -28,11 +28,15 @@ const Backdrop = styled('div')`
 interface ModalProps {
   open: boolean;
   customStyle?: React.CSSProperties;
+  onClose: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ open, customStyle, children }) => {
+const Modal: React.FC<ModalProps> = ({ open, customStyle, children, onClose }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
-  const handleClose = () => setIsOpen(false);
+  const handleClose = () => {
+    setIsOpen(false);
+    onClose();
+  };
 
   React.useEffect(() => {
     setIsOpen(open);

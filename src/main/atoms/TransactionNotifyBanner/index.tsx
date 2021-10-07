@@ -47,7 +47,7 @@ const TransactionNotifyBanner: VFC<HiddenTransactionBannerProps> = ({
       container={container}
     >
       <Container direction="row" spacing={1} {...rest}>
-        <SvgColorIcon component={TickCircle} pathStyle={{ fill: Green[1] }} viewBox="0 0 15 15" />
+        <SvgColorIcon component={TickCircle} pathstyle={{ fill: Green[1] }} viewBox="0 0 15 15" />
         <Typography fontSize="0.875em" fontWeight={400} color={Green[1]} component="span">
           {message}
         </Typography>

@@ -21,6 +21,8 @@ export const LightBG = '#F6F7F3';
 export const Highlight = '#DDFF55';
 export const Neutral = {
   Light: '#42526E',
+  5: '#8D9183',
+  10: '#ECEEE4',
 };
 export const System = {
   Alert: '#FF5F68',

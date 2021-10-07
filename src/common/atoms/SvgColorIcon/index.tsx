@@ -5,14 +5,14 @@ import { CSSProperties } from '@mui/system';
 
 type SvgColorIconProps = SvgIconProps & {
   component?: React.FC;
-  pathStyle?: CSSProperties;
+  pathstyle?: CSSProperties;
 };
 
 const StyledSvgIcon = styled(SvgIcon)<SvgColorIconProps>(
-  ({ color, theme, width, height, pathStyle }) => ({
+  ({ color, theme, width, height, pathstyle }) => ({
     width,
     height,
-    path: pathStyle || {
+    path: pathstyle || {
       fill: theme.palette[color || 'primary'].main,
     },
   }),

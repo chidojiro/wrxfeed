@@ -13,6 +13,9 @@ export interface TransactionContentProps {
   isHidden?: boolean;
   onEllipsisClick?: () => void;
   ellipsisRef?: MutableRefObject<unknown>;
+  onClickDepartment?: (department?: string) => void;
+  onClickVendor?: (vendor?: string) => void;
+  onClickCategory?: (category?: string) => void;
 }
 
 const TransactionContent: React.VFC<TransactionContentProps> = ({
@@ -20,6 +23,9 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({
   isHidden,
   ellipsisRef,
   onEllipsisClick,
+  onClickDepartment,
+  onClickVendor,
+  onClickCategory,
 }) => {
   // Variables
   const avatarProps = stringAvatar(transaction.department || '');
@@ -28,7 +34,10 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({
     <Grid container spacing={2}>
       <Grid item>
         <Tooltip title={transaction.department || ''}>
-          <Avatar sx={{ width: 32, height: 32, ...avatarProps.sx }}>
+          <Avatar
+            sx={{ width: 32, height: 32, ...avatarProps.sx }}
+            onClick={() => onClickDepartment && onClickDepartment(transaction.department)}
+          >
             <Typography variant="h5">{avatarProps.children}</Typography>
           </Avatar>
         </Tooltip>
@@ -37,7 +46,13 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({
         <Grid item xs container direction="column">
           <Grid item xs>
             <Stack direction="row" spacing={0.5} alignItems="center">
-              <Typography variant="h4">{transaction.category}</Typography>
+              <Typography
+                variant="h4"
+                component="a"
+                onClick={() => onClickCategory && onClickCategory(transaction.category)}
+              >
+                {transaction.category}
+              </Typography>
               <Typography color={Gray[3]} variant="body2">
                 •
               </Typography>
@@ -50,7 +65,7 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({
                   <SvgColorIcon
                     sx={{ width: 'auto', height: 'auto' }}
                     component={EyeHideIcon}
-                    pathStyle={{ fill: System.Alert, stroke: System.Alert }}
+                    pathstyle={{ fill: System.Alert, stroke: System.Alert }}
                     viewBox="-2 -2 19 19"
                   />
                   <Typography variant="body2" color={Gray[3]}>
@@ -61,12 +76,18 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({
             </Stack>
           </Grid>
           <Grid item>
-            <Typography sx={{ fontSize: '0.875rem' }}>{transaction.vendor}</Typography>
+            <Typography
+              sx={{ fontSize: '0.875rem' }}
+              component="a"
+              onClick={() => onClickVendor && onClickVendor(transaction.vendor)}
+            >
+              {transaction.vendor}
+            </Typography>
           </Grid>
         </Grid>
         <Grid item>
           <Typography variant="h5" color={Gray[2]}>
-            {`$${formatCurrency(transaction.amount)}`}
+            {`$${formatCurrency(transaction?.amount)}`}
           </Typography>
         </Grid>
         <Grid item>

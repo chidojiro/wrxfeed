@@ -6,7 +6,7 @@ export type Transaction = {
   category?: string;
   vendor?: string;
   currency?: string;
-  amount: number;
+  amount?: number;
   commentCount?: number;
   createdAt?: string;
   updatedAt?: string;

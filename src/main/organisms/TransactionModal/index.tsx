@@ -61,10 +61,10 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ style }) => {
         }}
         maxWidth="884px"
         maxHeight="620px"
-        minWidth="375px"
-        minHeight="300px"
+        minWidth="475px"
+        minHeight="240px"
         padding="24px"
-        overflow="scroll"
+        // overflow="scroll"
       >
         {!!transaction && <TransactionItem transaction={transaction} />}
       </Stack>

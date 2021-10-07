@@ -22,6 +22,9 @@ const LOAD_MORE_LIMIT = 5;
 
 export interface TransactionItemProps {
   transaction: Transaction;
+  onClickDepartment?: (department?: string) => void;
+  onClickVendor?: (vendor?: string) => void;
+  onClickCategory?: (category?: string) => void;
 }
 
 interface ConfirmModalProps {
@@ -31,7 +34,12 @@ interface ConfirmModalProps {
   confirmLabel: string;
 }
 
-const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
+const TransactionItem: React.VFC<TransactionItemProps> = ({
+  transaction,
+  onClickDepartment,
+  onClickVendor,
+  onClickCategory,
+}) => {
   // Recoil states
   // Refs
   const menuAnchorRef = useRef();
@@ -126,6 +134,9 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
             isHidden={isHidden}
             ellipsisRef={menuAnchorRef}
             onEllipsisClick={() => openMenu(true)}
+            onClickDepartment={onClickDepartment}
+            onClickCategory={onClickCategory}
+            onClickVendor={onClickVendor}
           />
         </Box>
         {hasComment && (
@@ -178,7 +189,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
             {confirmModal?.description}
           </Typography>
         </ConfirmModal>
-        <FeedBackModal open={isOpenFeedbackModal} />
+        <FeedBackModal open={isOpenFeedbackModal} onClose={() => openFeedbackModal(false)} />
       </Stack>
 
       <PopoverMenu
@@ -188,19 +199,19 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
       >
         {isHidden ? (
           <PopoverMenuItem
-            key="unhide-category"
+            value="unhide-category"
             label="Unhide Category"
             onClick={openUnhideCategoryConfirmation}
           />
         ) : (
           <PopoverMenuItem
-            key="hide-category"
+            value="hide-category"
             label="Hide Category"
             onClick={openHideCategoryConfirmation}
           />
         )}
         <PopoverMenuItem
-          key="share-feedback"
+          value="share-feedback"
           label="Share Feedback"
           onClick={handleShareFeedback}
         />

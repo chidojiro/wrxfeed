@@ -1,12 +1,13 @@
 import React, { ChangeEvent, KeyboardEvent } from 'react';
 import { styled } from '@mui/system';
-import { useFormControl } from '@mui/material/FormControl';
-import { InputBase, InputBaseProps } from '@mui/material';
+import InputBase, { InputBaseProps } from '@mui/material/InputBase';
 import EventEmitter, { EventName } from '@main/EventEmitter';
 
 interface CommentInputProps extends InputBaseProps {
   onEnterPress?: (event: KeyboardEvent) => void;
   onMention?: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  rows?: number;
+  maxRows?: number;
 }
 
 const StyledInput = styled(InputBase)<InputBaseProps>(({ theme }) => ({
@@ -21,11 +22,9 @@ const StyledInput = styled(InputBase)<InputBaseProps>(({ theme }) => ({
 }));
 
 const CommentInput: React.ForwardRefRenderFunction<HTMLInputElement, CommentInputProps> = (
-  { name, value, placeholder, onChange, onBlur, onFocus, onEnterPress, onMention },
+  { name, value, placeholder, onChange, onBlur, onFocus, onEnterPress, onMention, rows, maxRows },
   ref,
 ) => {
-  const { filled, focused } = useFormControl() || {};
-
   const handleKeyPress = (event: KeyboardEvent): boolean => {
     // Enter without Shift Key
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -56,17 +55,16 @@ const CommentInput: React.ForwardRefRenderFunction<HTMLInputElement, CommentInpu
       placeholder={placeholder}
       inputProps={{ 'aria-label': 'comment here' }}
       multiline
-      rows={focused || filled ? 3 : 1}
+      rows={rows}
+      maxRows={maxRows}
       onKeyPress={handleKeyPress}
       onChange={handleTextChange}
       onBlur={onBlur}
       onFocus={onFocus}
       onKeyDown={() => {
-        console.log('Check onKeyDown');
         EventEmitter.dispatch(EventName.ON_KEY_DOWN);
       }}
       onKeyUp={() => {
-        console.log('Check onKeyUp');
         EventEmitter.dispatch(EventName.ON_KEY_UP);
       }}
     />
