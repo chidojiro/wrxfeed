@@ -57,8 +57,8 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({ transaction }) => {
       .split(' ')
       .map((word) => {
         if (word.startsWith('@')) {
-          // 6 is Harry user id, Matt is 8, harry mnc is 21
-          return `<mention userid="21" tagname="${word.replace('@', '')}"/>`;
+          // 6 is Harry user id, Matt is 8, harrymnc is 21
+          return `<mention userid="6" tagname="${word.replace('@', '')}"/>`;
         }
         return word;
       })

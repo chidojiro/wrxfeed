@@ -66,8 +66,7 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({
         </Grid>
         <Grid item>
           <Typography variant="h5" color={Gray[2]}>
-            -$
-            {formatCurrency(transaction.amount)}
+            {`$${formatCurrency(transaction.amount)}`}
           </Typography>
         </Grid>
         <Grid item>
