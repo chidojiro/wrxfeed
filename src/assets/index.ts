@@ -9,6 +9,8 @@ import { ReactComponent as InviteIcon } from '@assets/icons/outline/invite.svg';
 import { ReactComponent as SearchIcon } from '@assets/icons/outline/searchEmoji.svg';
 import { ReactComponent as ArrowUpIcon } from '@assets/icons/outline/arrowUp.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
+import { ReactComponent as EssentialsSendIcon } from '@assets/icons/outline/essentials-send.svg';
+import { ReactComponent as EssentialsSendEnableIcon } from '@assets/icons/solid/essentials-send-enable.svg';
 
 export {
   NextEmoji,
@@ -22,4 +24,6 @@ export {
   SearchIcon,
   ArrowUpIcon,
   MoreVerticalIcon,
+  EssentialsSendIcon,
+  EssentialsSendEnableIcon,
 };
