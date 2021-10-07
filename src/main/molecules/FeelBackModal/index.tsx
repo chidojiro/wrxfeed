@@ -3,7 +3,7 @@ import { Stack, Typography, Divider, Button } from '@mui/material';
 import { Gray, Accent } from '@theme/colors';
 import React from 'react';
 import CommentBox from '@main/molecules/CommentBox';
-import FormControl, { useFormControl } from '@mui/material/FormControl';
+import { useFormControl } from '@mui/material/FormControl';
 
 interface FeelBackModalProps {
   style?: React.CSSProperties;

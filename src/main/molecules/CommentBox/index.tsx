@@ -142,7 +142,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   enableMention = true,
   placeholder = '💬 Comment here…',
   style = {},
-  rows = 1,
+  rows,
   maxRows = 6,
   alwaysFocus = false,
 }) => {
