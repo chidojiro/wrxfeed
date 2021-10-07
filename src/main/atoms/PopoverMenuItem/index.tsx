@@ -5,14 +5,14 @@ import Typography from '@mui/material/Typography';
 import { Highlight, Gray } from '@theme/colors';
 
 interface PopoverMenuItemProps extends ListItemProps {
-  key: string;
+  value: string;
   label: string;
   onClick: () => void;
 }
 
-const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({ key, label, onClick, ...rest }) => {
+const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({ value, label, onClick, ...rest }) => {
   return (
-    <ListItem key={key} disablePadding {...rest}>
+    <ListItem key={value} disablePadding {...rest}>
       <ListItemButton sx={{ ':hover': { backgroundColor: Highlight } }} onClick={onClick}>
         <Typography component="span" variant="h5" fontWeight={400} color={Gray[2]}>
           {label}

@@ -1,5 +1,5 @@
 import { useApi } from '@api';
-import { Pagination } from '@api/types';
+import { TransactionFilter } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { Transaction } from '@main/entity';
@@ -12,7 +12,7 @@ interface TransactionHookValues {
   isLoading: boolean;
 }
 
-export function useTransaction(pagination: Pagination): TransactionHookValues {
+export function useTransaction(filter: TransactionFilter): TransactionHookValues {
   const [transactions, setTransaction] = useState<Transaction[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -22,8 +22,12 @@ export function useTransaction(pagination: Pagination): TransactionHookValues {
   const getTransactions = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await ApiClient.getTransactions(pagination);
-      setTransaction((prevTrans) => [...prevTrans, ...res]);
+      const res = await ApiClient.getTransactions(filter);
+      if (filter.pagination?.offset) {
+        setTransaction((prevTrans) => [...prevTrans, ...res]);
+      } else {
+        setTransaction(res);
+      }
       setHasMore(!!res.length);
     } catch (error) {
       if (isBadRequest(error)) {
@@ -34,7 +38,7 @@ export function useTransaction(pagination: Pagination): TransactionHookValues {
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, errorHandler, pagination]);
+  }, [ApiClient, errorHandler, filter]);
 
   useEffect(() => {
     getTransactions().then();

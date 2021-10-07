@@ -28,7 +28,7 @@ export interface ApiClient {
   forgotPassword: (data: ForgotPwdFormModel) => Promise<void>;
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   // Transaction API
-  getTransactions: (pagination?: Pagination) => Promise<Transaction[]>;
+  getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: CommentFormModel) => Promise<Comment>;
 
@@ -73,5 +73,12 @@ export enum OrderDirection {
 export interface CommentFilters {
   transactionId: number;
   order?: OrderDirection;
+  pagination?: Pagination;
+}
+
+export interface TransactionFilter {
+  department?: string;
+  vendor?: string;
+  category?: string;
   pagination?: Pagination;
 }
