@@ -41,12 +41,14 @@ export interface CommentFormProps {
   onSubmit: SubmitHandler<CommentFormModel>;
   placeholder?: string;
   style?: React.CSSProperties;
+  onSearch: (text: string) => void;
 }
 
 const CommentBox: React.VFC<CommentFormProps> = ({
   onSubmit,
   placeholder = 'Search for teammates',
   style = {},
+  onSearch,
 }) => {
   const {
     control,
@@ -67,6 +69,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     console.log('Check handleSearch', event);
+    onSearch(event.target.value);
   };
 
   return (
