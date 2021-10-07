@@ -1,8 +1,9 @@
 import { Modal } from '@main/atoms';
 import { Stack, Typography, Divider, Button } from '@mui/material';
-import { Gray } from '@theme/colors';
+import { Gray, Accent } from '@theme/colors';
 import React from 'react';
 import CommentBox from '@main/molecules/CommentBox';
+import FormControl, { useFormControl } from '@mui/material/FormControl';
 
 interface FeelBackModalProps {
   style?: React.CSSProperties;
@@ -12,6 +13,7 @@ interface FeelBackModalProps {
 
 const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose }) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
+  const { filled } = useFormControl() || {};
   React.useEffect(() => {
     setOpen(open);
   }, [open]);
@@ -38,6 +40,8 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose }) 
             showEmoji={false}
             showSend={false}
             enableMention={false}
+            rows={6}
+            alwaysFocus
           />
           <Typography marginTop="8px" marginLeft="auto" color={Gray[3]} fontSize="14px">
             max 200 characters
@@ -58,7 +62,11 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose }) 
           </Button>
           <Button
             variant="contained"
-            style={{ backgroundColor: Gray[3], borderRadius: '4px', marginLeft: '4px' }}
+            style={{
+              backgroundColor: filled ? Accent[2] : Gray[3],
+              borderRadius: '4px',
+              marginLeft: '4px',
+            }}
             onClick={handleClose}
           >
             <Typography fontSize="14px" fontWeight={600}>

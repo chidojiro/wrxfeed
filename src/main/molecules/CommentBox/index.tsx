@@ -11,18 +11,14 @@ import { makeStyles } from '@mui/styles';
 import { styled } from '@mui/system';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
 import { Box, Divider, Paper, PaperProps, Stack } from '@mui/material';
-// import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { ReactComponent as AttachIcon } from '@assets/icons/outline/attach.svg';
 import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
 import { Gray, Highlight } from '@theme/colors';
 import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel } from '@main/types';
-// import EmojiPopover from '@main/organisms/EmojiPopover';
 import EmojiPicker from '@main/molecules/EmojiPicker';
 import MentionPopover from '@main/organisms/MentionPopover';
-// import { useSetRecoilState } from 'recoil';
-// import { showMentionPopover } from '@main/organisms/MentionPopover/states';
 import CommentInput from '@main/atoms/CommentInput';
 import { EmojiData } from 'emoji-mart';
 import { User } from '@main/entity';
@@ -109,12 +105,16 @@ const SendButtonAirplane: React.VFC = (props) => {
   );
 };
 
-const Container: React.VFC<PaperProps> = ({ children }) => {
+export interface ContainerProps extends PaperProps {
+  alwaysFocus: boolean;
+}
+
+const Container: React.VFC<ContainerProps> = ({ children, alwaysFocus }) => {
   const classes = useStyles();
   const { focused } = useFormControl() || {};
 
   return (
-    <Paper className={`${classes.container} ${focused && 'focus'}`} elevation={0}>
+    <Paper className={`${classes.container} ${(focused || alwaysFocus) && 'focus'}`} elevation={0}>
       {children}
     </Paper>
   );
@@ -128,6 +128,10 @@ export interface CommentFormProps {
   enableMention?: boolean;
   placeholder?: string;
   style?: React.CSSProperties;
+  rows?: number;
+  maxRows?: number;
+  maxCharacter?: number;
+  alwaysFocus?: boolean;
 }
 
 const CommentBox: React.VFC<CommentFormProps> = ({
@@ -138,8 +142,10 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   enableMention = true,
   placeholder = '💬 Comment here…',
   style = {},
+  rows = 1,
+  maxRows = 6,
+  alwaysFocus = false,
 }) => {
-  // const setShowMentionPopover = useSetRecoilState(showMentionPopover);
   const classes = useStyles();
   const emojiRef = useRef<HTMLDivElement>();
   const formRef = useRef<HTMLFormElement>(null);
@@ -226,7 +232,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)} style={{ ...style }} ref={formRef}>
       <FormControl sx={{ flexDirection: 'row', marginBottom: 0 }}>
-        <Container onSubmit={handleSubmit(onSubmit)}>
+        <Container onSubmit={handleSubmit(onSubmit)} alwaysFocus={alwaysFocus}>
           <Controller
             name="content"
             control={control}
@@ -237,6 +243,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({
                 onEnterPress={handleSubmit(onSubmit)}
                 onMention={handleMention}
                 placeholder={placeholder}
+                rows={rows}
+                maxRows={maxRows}
               />
             )}
           />
