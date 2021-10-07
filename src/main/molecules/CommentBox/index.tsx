@@ -202,7 +202,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
                 <Box ref={emojiRef} className={classes.inputOption} onClick={onOpenEmojiPicker}>
                   <SvgColorIcon
                     component={SmileIcon}
-                    pathStyle={{ fill: Neutral[5] }}
+                    pathstyle={{ fill: Neutral[5] }}
                     viewBox="0 0 17 17"
                   />
                 </Box>
@@ -218,7 +218,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
               <UploadButton className={classes.inputOption} id="icon-button-file" accept="image/*">
                 <SvgColorIcon
                   component={AttachIcon}
-                  pathStyle={{ stroke: Neutral[5], fill: 'none' }}
+                  pathstyle={{ stroke: Neutral[5], fill: 'none' }}
                   viewBox="0 0 17 17"
                 />
               </UploadButton>
