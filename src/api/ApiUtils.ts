@@ -10,9 +10,10 @@ import {
   CommentFilters,
   Pagination,
   ResetPasswordDto,
+  TransactionFilter,
 } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
-import { removeEmptyFields, sleep } from '@common/utils';
+import { removeEmptyFields } from '@common/utils';
 import { handleResponseFail } from '@api/utils';
 import {
   InviteFormModel,
@@ -115,11 +116,11 @@ export default class ApiUtils implements ApiClient {
     });
   }
 
-  getTransactions = async (pagination?: Pagination): Promise<Transaction[]> => {
+  getTransactions = async (filter?: TransactionFilter): Promise<Transaction[]> => {
     const res = await this.request<Transaction[]>({
       url: '/feed/transactions',
       method: 'GET',
-      params: pagination,
+      params: filter?.pagination,
     });
     return res.data;
   };
@@ -165,7 +166,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  postUploadAttachment = async (file: File): Promise<void> => {
+  uploadAttachment = async (file: File): Promise<void> => {
     const formData = new FormData();
     formData.append('file', file, file.name);
     const res = await this.request<User[]>({
@@ -261,117 +262,3 @@ export default class ApiUtils implements ApiClient {
     return resp.data;
   }
 }
-
-export const fakeApiUtils: ApiClient = {
-  login: async () => {
-    const fakeIdenity: Identity = {
-      fullName: 'Admin',
-      token: '',
-      expireAt: new Date().toISOString(),
-      email: '',
-    };
-    return fakeIdenity;
-  },
-
-  signInWithGoogle: async () => {
-    const userToken: UserToken = {
-      token: '',
-      expireAt: new Date().toISOString(),
-    };
-    return userToken;
-  },
-
-  logout: async () => undefined,
-
-  getProfile: async () => {
-    await sleep(1000);
-    return {
-      id: 1,
-      email: 'antran@gmail.com',
-      fullName: 'An Tran',
-      title: 'Admin',
-      department: 'Dev',
-      signupDate: new Date().toISOString(),
-    };
-  },
-
-  updateProfile: async () => {
-    return {
-      id: 1,
-      email: 'antran@gmail.com',
-      fullName: 'An Tran',
-      title: 'Admin',
-      department: 'Dev',
-      signupDate: new Date().toISOString(),
-    };
-  },
-
-  changePassword: async () => undefined,
-
-  forgotPassword: async () => undefined,
-
-  resetPassword: async () => undefined,
-
-  async getTransactions(): Promise<Transaction[]> {
-    return [];
-  },
-
-  async getComments(): Promise<Comment[]> {
-    return [];
-  },
-
-  searchActivities: async () => {
-    const models: Activity[] = [];
-    const pageCount = 12;
-    return [models, pageCount];
-  },
-
-  addActivity: async (data) => {
-    return {
-      ...data,
-      id: 'newid',
-      time: data.time.toISOString(),
-      income: data.income || 0,
-      outcome: data.outcome || 0,
-    };
-  },
-
-  updateActivity: async (id: string, data: ActivityFormModel) => {
-    return {
-      ...data,
-      id,
-      time: data.time.toISOString(),
-      income: data.income || 0,
-      outcome: data.outcome || 0,
-    };
-  },
-
-  deleteActivity: async () => {
-    await sleep(10);
-  },
-
-  getActivity: async () => {
-    // await sleep(1000);
-    // const err = new ApiError('Test');
-    // err.statusCode = 404;
-    // throw err;
-    return {
-      id: '1',
-      time: '2021-06-15T01:21:03.368Z',
-      tags: ['play', 'gog'],
-      income: 100.0,
-      outcome: 0,
-      content:
-        'Lorem ipsum dolor sit amet\nconsectetur adipiscing elit\nmagnam aliquam quaerat voluptatem',
-    };
-  },
-
-  getTags: async () => {
-    const tags = ['abc', 'def', 'ghi'];
-    return tags;
-  },
-
-  getRevenue: async () => {
-    return { income: 123, outcome: 456 };
-  },
-};

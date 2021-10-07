@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, {
   ChangeEvent,
   useEffect,
@@ -8,39 +7,42 @@ import React, {
   FocusEventHandler,
 } from 'react';
 import { makeStyles } from '@mui/styles';
-import { styled } from '@mui/system';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
-import { Box, Divider, Paper, PaperProps, Stack } from '@mui/material';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Paper, { PaperProps } from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import { ReactComponent as AttachIcon } from '@assets/icons/outline/attach.svg';
 import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
-import { Gray, Highlight } from '@theme/colors';
+import { Highlight, Neutral } from '@theme/colors';
 import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel } from '@main/types';
 import EmojiPicker from '@main/molecules/EmojiPicker';
 import MentionPopover from '@main/organisms/MentionPopover';
 import CommentInput from '@main/atoms/CommentInput';
+import SendButton from '@main/atoms/SendButton';
 import { EmojiData } from 'emoji-mart';
 import { User } from '@main/entity';
-import { EssentialsSendIcon, EssentialsSendEnableIcon } from '@assets/index';
+import SvgColorIcon from '@common/atoms/SvgColorIcon';
 
-const useStyles = makeStyles(() => ({
-  container: () => ({
+const useStyles = makeStyles({
+  container: {
     display: 'flex',
     flexGrow: 1,
     minWidth: '70%',
-    backgroundColor: '#F6F7F3',
+    backgroundColor: Neutral[10],
     borderRadius: 8,
     padding: '6px 6px 6px 8px',
     alignItems: 'flex-end',
-    border: '1px solid #F6F7F3',
+    border: `1px solid ${Neutral[10]}`,
     transition: 'all 300ms ease-in-out',
     '&.focus': {
-      borderColor: Gray[2],
+      borderColor: Neutral[5],
       backgroundColor: '#fff',
     },
-  }),
-  inputOption: () => ({
+  },
+  inputOption: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -50,61 +52,8 @@ const useStyles = makeStyles(() => ({
     '&:hover': {
       backgroundColor: Highlight,
     },
-  }),
-}));
-
-// const StyledButton = styled(Button)(() => ({
-//   backgroundColor: Gray[1],
-//   padding: '0.5px 16px',
-//   borderRadius: 4,
-//   color: '#fff',
-//   fontSize: '0.875rem',
-//   fontWeight: 600,
-//   '&:disabled': {
-//     backgroundColor: Gray[3],
-//     color: '#fff',
-//   },
-//   '&:hover': {
-//     backgroundColor: Gray[2],
-//   },
-// }));
-
-// const SendButton: React.VFC = (props) => {
-//   const { filled } = useFormControl() || {};
-
-//   return (
-//     <StyledButton disabled={!filled} type="submit" {...props}>
-//       Send
-//     </StyledButton>
-//   );
-// };
-
-const StyledButtonAirplane = styled('button')(() => ({
-  display: 'flex',
-  marginLeft: '10px',
-  backgroundColor: 'transparent',
-  padding: '0px',
-  borderRadius: '0px',
-  borderWidth: '0px',
-  flexDirection: 'row',
-  alignItems: 'center',
-  outline: 'none',
-  paddingRight: '5px',
-}));
-
-const SendButtonAirplane: React.VFC = (props) => {
-  const { filled } = useFormControl() || {};
-
-  const SendIcon = filled ? <EssentialsSendEnableIcon /> : <EssentialsSendIcon />;
-
-  return (
-    <StyledButtonAirplane type="submit" {...props}>
-      <Divider orientation="vertical" sx={{ height: '19px' }} style={{ marginRight: '10px' }} />
-      {SendIcon}
-    </StyledButtonAirplane>
-  );
-};
-
+  },
+});
 export interface ContainerProps extends PaperProps {
   alwaysFocus: boolean;
 }
@@ -196,7 +145,6 @@ const CommentBox: React.VFC<CommentFormProps> = ({
 
   const onSelectUserMention = useCallback(
     (user: User) => {
-      console.log('Check user ', user);
       const values = getValues();
       setValue('content', `${values.content}${user.fullName}`);
     },
@@ -252,7 +200,11 @@ const CommentBox: React.VFC<CommentFormProps> = ({
             {showEmoji && (
               <>
                 <Box ref={emojiRef} className={classes.inputOption} onClick={onOpenEmojiPicker}>
-                  <SmileIcon />
+                  <SvgColorIcon
+                    component={SmileIcon}
+                    pathstyle={{ fill: Neutral[5] }}
+                    viewBox="0 0 17 17"
+                  />
                 </Box>
                 <EmojiPicker
                   open={isOpenEmojiPicker}
@@ -264,10 +216,19 @@ const CommentBox: React.VFC<CommentFormProps> = ({
             )}
             {!!showAttach && (
               <UploadButton className={classes.inputOption} id="icon-button-file" accept="image/*">
-                <AttachIcon />
+                <SvgColorIcon
+                  component={AttachIcon}
+                  pathstyle={{ stroke: Neutral[5], fill: 'none' }}
+                  viewBox="0 0 17 17"
+                />
               </UploadButton>
             )}
-            {!!showSend && <SendButtonAirplane />}
+            {!!showSend && (
+              <>
+                <Divider orientation="vertical" sx={{ height: '19px' }} />
+                <SendButton />
+              </>
+            )}
           </Stack>
         </Container>
       </FormControl>
