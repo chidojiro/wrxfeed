@@ -1,14 +1,16 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
 import ModalUnstyled from '@mui/core/ModalUnstyled';
 import { useRecoilState } from 'recoil';
-import { Stack, Typography, Button } from '@mui/material';
-import { Gray, Highlight } from '@theme/colors';
+import { Stack, Typography } from '@mui/material';
+import { Gray } from '@theme/colors';
 import SearchBox from '@main/molecules/SearchBox';
-import { User } from '@main/entity/user.entity';
+import { Contact } from '@main/entity/contact.entity';
 // import CommentBox from '@main/molecules/CommentBox';
+import { GetContactsFilter } from '@api/types';
+import { useGetContacts } from '@main/hooks/contact.hook';
+import InviteContactItem from '@main/molecules/InviteContactItem';
 import { showInviteModalState } from './states';
-import { inviteUsers } from './dummy';
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -38,11 +40,31 @@ export type InviteModalProps = {
   open?: boolean;
 };
 
+const LIMIT = 20;
+const INIT_PAGINATION = Object.freeze({
+  offset: 0,
+  limit: LIMIT,
+});
+
 const InviteModal: React.FC<InviteModalProps> = ({ style, open = false }) => {
   const [isOpen, setIsOpen] = useRecoilState(showInviteModalState);
   const handleClose = () => setIsOpen(false);
+  const [filterKeyword, setFilterKeyword] = useState('');
 
-  React.useEffect(() => {
+  const [filter, setFilter] = useState<GetContactsFilter>({
+    text: '',
+    pagination: INIT_PAGINATION,
+  });
+  const { contacts } = useGetContacts(filter);
+
+  useEffect(() => {
+    setFilter({
+      text: filterKeyword,
+      pagination: INIT_PAGINATION,
+    });
+  }, [filterKeyword]);
+
+  useEffect(() => {
     setIsOpen(open);
   }, [open]);
 
@@ -73,50 +95,19 @@ const InviteModal: React.FC<InviteModalProps> = ({ style, open = false }) => {
             Collaborators will get an email that gives them access to the workspace.
           </Typography>
         </Stack>
-        <Stack flex={1}>
-          <Stack width="430px" height="56px" alignSelf="center" paddingY="30px">
-            <SearchBox onSubmit={() => undefined} />
+        <Stack flex={1} overflow="scroll">
+          <Stack width="430px" height="56px" alignSelf="center" marginY="30px">
+            <SearchBox
+              onSubmit={() => undefined}
+              onSearch={(text: string) => setFilterKeyword(text)}
+            />
           </Stack>
-          <Stack marginTop="30px" alignItems="center">
-            {inviteUsers.map((item: User) => {
-              const userFullName = `${item.firstName} ${item.lastName}`;
-              return (
-                <Stack
-                  key={item.id}
-                  direction="row"
-                  justifyContent="space-between"
-                  marginTop="32px"
-                  width="403px"
-                >
-                  <Stack>
-                    <Typography color={Gray[2]} fontSize="14px" lineHeight="17px" fontWeight={600}>
-                      {userFullName}
-                    </Typography>
-                    <Typography color={Gray[3]} fontSize="14px" lineHeight="20px">
-                      {item.email}
-                    </Typography>
-                  </Stack>
-                  <Button
-                    style={{
-                      backgroundColor: Highlight,
-                      padding: '8px 20px 8px 20px',
-                      borderRadius: '100px',
-                      marginTop: '5px',
-                    }}
-                  >
-                    <Typography
-                      color={Gray[1]}
-                      fontSize="14px"
-                      lineHeight="17px"
-                      fontWeight={600}
-                      style={{ textTransform: 'capitalize' }}
-                    >
-                      Send Invite
-                    </Typography>
-                  </Button>
-                </Stack>
-              );
-            })}
+          <Stack flex={1} alignItems="center" overflow="scroll">
+            {contacts.map((contact: Contact, index: number) => (
+              <React.Fragment key={contact?.email}>
+                <InviteContactItem contact={contact} index={index} />
+              </React.Fragment>
+            ))}
           </Stack>
         </Stack>
       </Stack>

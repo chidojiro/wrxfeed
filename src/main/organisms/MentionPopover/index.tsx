@@ -13,8 +13,8 @@ import EventEmitter, { EventName } from '@main/EventEmitter';
 import { mentionUsers } from './dummy';
 // import { showMentionPopover } from './states';
 
-const MENTION_MODAL_MIN_WIDTH = 446;
-const MENTION_MODAL_MAX_WIDTH = 336;
+const MENTION_MODAL_MIN_WIDTH = 336;
+const MENTION_MODAL_MAX_WIDTH = 300;
 
 export interface MentionPopoverProps extends PopoverProps {
   onSelectUser?: (user: User) => void;
@@ -60,7 +60,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
   // }, [mentionData]);
 
   const handleKeyDown = function (): void {
-    console.log('Check handleKeyDown');
+    // console.log('Check handleKeyDown');
     if (!mentionSelect) {
       if (mentionData.length > 0) {
         setMentionSelect({
