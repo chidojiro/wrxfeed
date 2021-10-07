@@ -1,7 +1,6 @@
 import React, { ChangeEvent, KeyboardEvent } from 'react';
 import { styled } from '@mui/system';
-// import { useFormControl } from '@mui/material/FormControl';
-import { InputBase, InputBaseProps } from '@mui/material';
+import InputBase, { InputBaseProps } from '@mui/material/InputBase';
 import EventEmitter, { EventName } from '@main/EventEmitter';
 
 interface CommentInputProps extends InputBaseProps {
@@ -26,8 +25,6 @@ const CommentInput: React.ForwardRefRenderFunction<HTMLInputElement, CommentInpu
   { name, value, placeholder, onChange, onBlur, onFocus, onEnterPress, onMention, rows, maxRows },
   ref,
 ) => {
-  // const { filled, focused } = useFormControl() || {};
-
   const handleKeyPress = (event: KeyboardEvent): boolean => {
     // Enter without Shift Key
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -58,7 +55,6 @@ const CommentInput: React.ForwardRefRenderFunction<HTMLInputElement, CommentInpu
       placeholder={placeholder}
       inputProps={{ 'aria-label': 'comment here' }}
       multiline
-      // rows={focused || filled ? 1 : 1}
       rows={rows}
       maxRows={maxRows}
       onKeyPress={handleKeyPress}
