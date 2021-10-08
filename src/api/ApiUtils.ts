@@ -8,9 +8,11 @@ import {
   ApiClient,
   ChangePasswordDto,
   CommentFilters,
+  GetUploadTokenBody,
   Pagination,
   ResetPasswordDto,
   TransactionFilter,
+  UploadToken,
 } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { removeEmptyFields } from '@common/utils';
@@ -166,16 +168,25 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  uploadAttachment = async (file: File): Promise<void> => {
-    const formData = new FormData();
-    formData.append('file', file, file.name);
-    const res = await this.request<User[]>({
-      url: '/media/me/upload-tokens',
+  // Media
+  getUploadFileToken = async (body: GetUploadTokenBody): Promise<UploadToken> => {
+    const res = await this.request<UploadToken>({
+      url: '/media/upload-tokens',
       method: 'POST',
+      data: body,
+    });
+    return res.data;
+  };
+
+  uploadAttachment = async (file: File, uploadToken: UploadToken): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await this.request<string>({
+      url: uploadToken.uploadUrl,
+      method: 'PUT',
       data: formData,
     });
-    console.log(res);
-    // return res.data;
+    return res.data;
   };
 
   postAddInvitation = async (data: InviteFormModel): Promise<void> => {

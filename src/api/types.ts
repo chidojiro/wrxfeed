@@ -33,7 +33,9 @@ export interface ApiClient {
   addComment: (transactionId: number, data: CommentFormModel) => Promise<Comment>;
 
   getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
-  uploadAttachment: (data: File) => Promise<void>;
+  // Media
+  getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
+  uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
   // For Inbox/Discussion list
   getMentions: (pagination?: Pagination) => Promise<User[]>;
   postAddInvitation: (data: InviteFormModel) => Promise<void>;
@@ -81,4 +83,19 @@ export interface TransactionFilter {
   vendor?: string;
   category?: string;
   pagination?: Pagination;
+}
+
+export enum UploadTypes {
+  Attachments = 'attachments',
+}
+
+export interface GetUploadTokenBody {
+  filename: string;
+  contentType: string;
+  uploadType: UploadTypes;
+}
+
+export interface UploadToken {
+  uploadUrl: string;
+  fileUrl: string;
 }

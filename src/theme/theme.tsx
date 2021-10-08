@@ -114,6 +114,10 @@ export const theme = createTheme({
       fontSize: '0.875rem',
       fontWeight: 'bold',
     },
+    h6: {
+      fontSize: '0.75rem',
+      fontWeight: 'bold',
+    },
     body1: {
       fontSize: '1rem',
     },

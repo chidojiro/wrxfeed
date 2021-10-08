@@ -70,7 +70,7 @@ const Container: React.VFC<ContainerProps> = ({ children, alwaysFocus }) => {
 };
 
 export interface CommentFormProps {
-  onSubmit: SubmitHandler<CommentFormModel>;
+  onSubmit?: SubmitHandler<CommentFormModel>;
   showAttach?: boolean;
   showSend?: boolean;
   showEmoji?: boolean;
@@ -81,6 +81,8 @@ export interface CommentFormProps {
   maxRows?: number;
   maxCharacter?: number;
   alwaysFocus?: boolean;
+  onAttachFile?: (file: File) => void;
+  onChange?: (content?: string) => void;
 }
 
 const CommentBox: React.VFC<CommentFormProps> = ({
@@ -94,6 +96,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   rows,
   maxRows = 6,
   alwaysFocus = false,
+  onAttachFile,
+  onChange,
 }) => {
   const classes = useStyles();
   const emojiRef = useRef<HTMLDivElement>();
@@ -105,12 +109,14 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     setFocus,
     setValue,
     getValues,
+    watch,
     formState: { isSubmitted },
   } = useForm<CommentFormModel>({
     defaultValues: {
       content: '',
     },
   });
+  const watchContent = watch('content', '');
   const [isOpenEmojiPicker, openEmojiPicker] = useState(false);
   const [isOpenMention, openMention] = useState(false);
   const [inputElement, setInputElement] = useState<HTMLFormElement | null>(null);
@@ -130,6 +136,12 @@ const CommentBox: React.VFC<CommentFormProps> = ({
       reset();
     }
   }, [isSubmitted, reset]);
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(watchContent);
+    }
+  }, [onChange, watchContent]);
 
   const handleMention = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     if (!enableMention) {
@@ -177,10 +189,16 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     }
   };
 
+  const onFileSelected = (file: File | null) => {
+    if (file && onAttachFile) {
+      onAttachFile(file);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} style={{ ...style }} ref={formRef}>
+    <form onSubmit={onSubmit && handleSubmit(onSubmit)} style={{ ...style }} ref={formRef}>
       <FormControl sx={{ flexDirection: 'row', marginBottom: 0 }}>
-        <Container onSubmit={handleSubmit(onSubmit)} alwaysFocus={alwaysFocus}>
+        <Container onSubmit={onSubmit && handleSubmit(onSubmit)} alwaysFocus={alwaysFocus}>
           <Controller
             name="content"
             control={control}
@@ -188,7 +206,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
               <CommentInput
                 {...field}
                 onFocus={onFocusCommentInput}
-                onEnterPress={handleSubmit(onSubmit)}
+                onEnterPress={onSubmit && handleSubmit(onSubmit)}
                 onMention={handleMention}
                 placeholder={placeholder}
                 rows={rows}
@@ -215,7 +233,12 @@ const CommentBox: React.VFC<CommentFormProps> = ({
               </>
             )}
             {!!showAttach && (
-              <UploadButton className={classes.inputOption} id="icon-button-file" accept="image/*">
+              <UploadButton
+                className={classes.inputOption}
+                id="icon-button-file"
+                accept="image/*"
+                onFileSelected={onFileSelected}
+              >
                 <SvgColorIcon
                   component={AttachIcon}
                   pathstyle={{ stroke: Neutral[5], fill: 'none' }}
