@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { LazyBuilder } from 'yup/lib/Lazy';
 
 export function formatCurrency(n?: number): string {
-  return n ? numeral(n).format('0,0.[00]') : '0';
+  return n ? numeral(n).format('0,0.00') : '0.00';
 }
 
 export function hasSubArray(master: string[], sub: string[]): boolean {
@@ -81,11 +81,11 @@ export function formatDate(value: string | number | Date | undefined): string {
   const isISODate = value === 'string' && isoDateFormat.test(value);
   const date = isISODate ? parseISO(value) : new Date(value);
   if (isToday(date)) {
-    return `Today at ${format(date, 'kk:mm')}`;
+    return `Today at ${format(date, 'K:mm a')}`;
   }
 
   if (isYesterday(date)) {
-    return `Yesterday at ${format(date, 'kk:mm')}`;
+    return `Yesterday at ${format(date, 'K:mm a')}`;
   }
   return format(date, DATE_FORMAT);
 }

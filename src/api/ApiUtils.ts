@@ -121,10 +121,16 @@ export default class ApiUtils implements ApiClient {
   }
 
   getTransactions = async (filter?: TransactionFilter): Promise<Transaction[]> => {
+    const params = {
+      ...filter?.pagination,
+      dep: filter?.department,
+      ven: filter?.vendor,
+      cat: filter?.category,
+    };
     const res = await this.request<Transaction[]>({
       url: '/feed/transactions',
       method: 'GET',
-      params: filter?.pagination,
+      params,
     });
     return res.data;
   };
@@ -171,7 +177,6 @@ export default class ApiUtils implements ApiClient {
       method: 'GET',
       params,
     });
-    console.log('Check getUsers res = ', res);
     return res.data;
   };
 
@@ -185,7 +190,6 @@ export default class ApiUtils implements ApiClient {
       method: 'GET',
       params,
     });
-    console.log('Check res.data = ', res.data);
     return res.data;
   };
 
