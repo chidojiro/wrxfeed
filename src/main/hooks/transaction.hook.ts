@@ -22,6 +22,10 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
   const getTransactions = useCallback(async () => {
     try {
       setLoading(true);
+      // Reset list if new filter coming
+      if (!filter.pagination?.offset) {
+        setTransaction([]);
+      }
       const res = await ApiClient.getTransactions(filter);
       if (filter.pagination?.offset) {
         setTransaction((prevTrans) => [...prevTrans, ...res]);
