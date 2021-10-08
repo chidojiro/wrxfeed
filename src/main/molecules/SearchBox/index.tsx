@@ -68,7 +68,6 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   }, [isSubmitted, reset]);
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    console.log('Check handleSearch', event);
     onSearch(event.target.value);
   };
 

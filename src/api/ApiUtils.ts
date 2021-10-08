@@ -183,6 +183,7 @@ export default class ApiUtils implements ApiClient {
       method: 'GET',
       params,
     });
+    console.log('Check res.data = ', res.data);
     return res.data;
   };
 
@@ -203,12 +204,13 @@ export default class ApiUtils implements ApiClient {
       method: 'POST',
       data: formData,
     });
-    console.log(res);
+    console.log('Check uploadAttachment res = ', res);
     // return res.data;
   };
 
   postAddInvitation = async (data: InviteFormModel): Promise<void> => {
-    const res = await this.request<User[]>({
+    console.log('Check postAddInvitation data = ', data);
+    const res = await this.request<void>({
       url: '/inv/invitations',
       method: 'POST',
       data,

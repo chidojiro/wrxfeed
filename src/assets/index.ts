@@ -11,6 +11,7 @@ import { ReactComponent as ArrowUpIcon } from '@assets/icons/outline/arrowUp.svg
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EssentialsSendIcon } from '@assets/icons/outline/essentials-send.svg';
 import { ReactComponent as EssentialsSendEnableIcon } from '@assets/icons/solid/essentials-send-enable.svg';
+import { ReactComponent as TickCircleIcon } from '@assets/icons/outline/tick-circle.svg';
 
 export {
   NextEmoji,
@@ -26,4 +27,5 @@ export {
   MoreVerticalIcon,
   EssentialsSendIcon,
   EssentialsSendEnableIcon,
+  TickCircleIcon,
 };

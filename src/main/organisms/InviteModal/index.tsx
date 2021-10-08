@@ -64,6 +64,10 @@ const InviteModal: React.FC<InviteModalProps> = ({ style, open = false }) => {
     });
   }, [filterKeyword]);
 
+  // useEffect(() => {
+  //   console.log('Check contacts = ', contacts);
+  // }, [contacts]);
+
   useEffect(() => {
     setIsOpen(open);
   }, [open]);

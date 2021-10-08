@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Contact } from '@main/entity';
 import { Gray, Highlight } from '@theme/colors';
 import { Stack, Typography, Button } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useInvite } from '@main/hooks';
+import { TickCircleIcon } from '@assets/index';
 
 export interface InviteContactItemProps {
   contact: Contact;
@@ -13,9 +14,9 @@ export interface InviteContactItemProps {
 const InviteContactItem: React.VFC<InviteContactItemProps> = ({ contact }) => {
   const { isSent, postAddInvitation } = useInvite();
 
-  useEffect(() => {
-    console.log('Check new isSent = ', isSent);
-  }, [isSent]);
+  // React.useEffect(() => {
+  //   console.log('Check new isSent = ', isSent);
+  // }, [isSent]);
 
   const onClickInvite = () => {
     if (!contact) {
@@ -44,14 +45,15 @@ const InviteContactItem: React.VFC<InviteContactItemProps> = ({ contact }) => {
       <Button
         onClick={onClickInvite}
         style={{
-          backgroundColor: Highlight,
+          backgroundColor: isSent ? Gray[2] : Highlight,
           padding: '8px 20px 8px 20px',
           borderRadius: '100px',
           marginTop: '5px',
         }}
       >
+        {!!isSent && <TickCircleIcon style={{ marginRight: '10px' }} />}
         <Typography
-          color={Gray[1]}
+          color={isSent ? 'white' : Gray[1]}
           fontSize="14px"
           lineHeight="17px"
           fontWeight={600}
