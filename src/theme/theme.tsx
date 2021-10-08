@@ -35,6 +35,7 @@ declare module '@mui/material/SvgIcon' {
 declare module '@mui/material/Button' {
   interface ButtonPropsColorOverrides {
     highlight: true;
+    accent: true;
   }
 }
 declare module '@mui/material/Stack' {
