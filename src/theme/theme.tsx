@@ -69,6 +69,7 @@ export const theme = createTheme({
     },
     accent: {
       main: Accent[2],
+      contrastText: '#fff',
     },
     alert: {
       main: System.Alert,
@@ -112,6 +113,10 @@ export const theme = createTheme({
     },
     h5: {
       fontSize: '0.875rem',
+      fontWeight: 'bold',
+    },
+    h6: {
+      fontSize: '0.75rem',
       fontWeight: 'bold',
     },
     body1: {

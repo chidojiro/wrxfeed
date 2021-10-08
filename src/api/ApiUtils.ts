@@ -8,9 +8,11 @@ import {
   ApiClient,
   ChangePasswordDto,
   CommentFilters,
+  GetUploadTokenBody,
   Pagination,
   ResetPasswordDto,
   TransactionFilter,
+  UploadToken,
   GetUsersFilter,
   GetContactsFilter,
 } from '@api/types';
@@ -196,16 +198,24 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  uploadAttachment = async (file: File): Promise<void> => {
-    const formData = new FormData();
-    formData.append('file', file, file.name);
-    const res = await this.request<User[]>({
-      url: '/media/me/upload-tokens',
+  // Media
+  getUploadFileToken = async (body: GetUploadTokenBody): Promise<UploadToken> => {
+    const res = await this.request<UploadToken>({
+      url: '/media/upload-tokens',
       method: 'POST',
-      data: formData,
+      data: body,
     });
-    console.log('Check uploadAttachment res = ', res);
-    // return res.data;
+    return res.data;
+  };
+
+  uploadAttachment = async (file: File, uploadToken: UploadToken): Promise<string> => {
+    const fileData = new Uint8Array(await file.arrayBuffer());
+    const res = await this.request<string>({
+      url: uploadToken.uploadUrl,
+      method: 'PUT',
+      data: fileData,
+    });
+    return res.data;
   };
 
   postAddInvitation = async (data: InviteFormModel): Promise<void> => {

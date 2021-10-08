@@ -1,5 +1,6 @@
 export type CommentFormModel = {
-  content: string;
+  content?: string;
+  attachment?: string;
 };
 
 export type Emoji = {

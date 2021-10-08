@@ -1,12 +1,11 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { showAttachmentModalState } from '@main/organisms/AttachmentModal/states';
-import { useSetRecoilState } from 'recoil';
 
 type UploadButtonProps = React.LabelHTMLAttributes<Element> & {
   id: string;
   className?: string;
   accept?: string;
+  onFileSelected: (file: File | null) => void;
 };
 
 const FileInput = styled('input')({
@@ -17,17 +16,21 @@ const Label = styled('label')({
   display: 'flex',
 });
 
-const UploadButton: React.VFC<UploadButtonProps> = ({ children, id, className, accept }) => {
-  const setAttachModal = useSetRecoilState(showAttachmentModalState);
-
+const UploadButton: React.VFC<UploadButtonProps> = ({
+  children,
+  id,
+  className,
+  accept,
+  onFileSelected,
+}) => {
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event?.target?.files) {
       return;
     }
-    setAttachModal({
-      isShow: true,
-      file: event.target.files[0],
-    });
+    onFileSelected(event.target.files[0]);
+    // Reset file input
+    // eslint-disable-next-line no-param-reassign
+    event.target.value = '';
   };
 
   return (

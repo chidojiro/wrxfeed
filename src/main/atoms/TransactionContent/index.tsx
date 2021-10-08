@@ -1,12 +1,13 @@
 import React, { MutableRefObject } from 'react';
 import { Transaction } from '@main/entity';
-import { Avatar, Grid, Stack, Tooltip, Typography, Box } from '@mui/material';
-import { formatDate, formatCurrency, stringAvatar } from '@common/utils';
+import { Grid, Stack, Typography, Box } from '@mui/material';
+import { formatDate, formatCurrency } from '@common/utils';
 import { Gray, System } from '@theme/colors';
 import StatusTag from '@common/atoms/StatusTag';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
+import CircleAvatar from '@main/atoms/CircleAvatar';
 
 export interface TransactionContentProps {
   transaction: Transaction;
@@ -27,20 +28,10 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({
   onClickVendor,
   onClickCategory,
 }) => {
-  // Variables
-  const avatarProps = stringAvatar(transaction.department || '');
-
   return (
     <Grid container spacing={2}>
       <Grid item>
-        <Tooltip title={transaction.department || ''}>
-          <Avatar
-            sx={{ width: 32, height: 32, ...avatarProps.sx }}
-            onClick={() => onClickDepartment && onClickDepartment(transaction.department)}
-          >
-            <Typography variant="h5">{avatarProps.children}</Typography>
-          </Avatar>
-        </Tooltip>
+        <CircleAvatar name={transaction.department} onClick={onClickDepartment} />
       </Grid>
       <Grid item xs={12} sm container>
         <Grid item xs container direction="column">
