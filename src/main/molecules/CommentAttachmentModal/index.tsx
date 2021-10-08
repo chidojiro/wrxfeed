@@ -107,7 +107,7 @@ const CommentAttachmentModal: React.FC<AttachmentModalProps> = ({
                 name={transaction?.department}
                 initialLength={1}
               />
-              {transaction?.category ?? ''}
+              <span style={{ fontWeight: 600 }}>{transaction?.category ?? ''}</span>
             </Stack>
           </Typography>
         </Stack>
