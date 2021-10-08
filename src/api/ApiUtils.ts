@@ -183,7 +183,7 @@ export default class ApiUtils implements ApiClient {
       method: 'GET',
       params,
     });
-    console.log('Check res.data = ', res.data);
+    // console.log('Check res.data = ', res.data);
     return res.data;
   };
 

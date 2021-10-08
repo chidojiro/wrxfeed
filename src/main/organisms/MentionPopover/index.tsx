@@ -5,13 +5,11 @@ import { Gray, Highlight, LightBG } from '@theme/colors';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
 import { User } from '@main/entity/user.entity';
 import { showInviteModalState } from '@main/organisms/InviteModal/states';
-
 import { useSetRecoilState } from 'recoil';
 import { InviteIcon } from '@assets/index';
-// import { MentionsInput, Mention } from 'react-mentions';
 import EventEmitter, { EventName } from '@main/EventEmitter';
-import { mentionUsers } from './dummy';
-// import { showMentionPopover } from './states';
+import { useGetUsers } from '@main/hooks/users.hook';
+import { GetUsersFilter } from '@api/types';
 
 const MENTION_MODAL_MIN_WIDTH = 336;
 const MENTION_MODAL_MAX_WIDTH = 300;
@@ -27,21 +25,39 @@ export type MentionSelect = {
   index: number;
 };
 
+const LIMIT = 20;
+const INIT_PAGINATION = Object.freeze({
+  offset: 0,
+  limit: LIMIT,
+});
+
 const MentionPopover: React.VFC<MentionPopoverProps> = ({
   onSelectUser,
   inputElement,
   onClose,
   ...rest
 }) => {
-  // const [mentionState, setMentionState] = useRecoilState(showMentionPopover);
   const [modalWidth, setModalWidth] = useState<string>(`${MENTION_MODAL_MIN_WIDTH}px`);
   const setInviteModal = useSetRecoilState(showInviteModalState);
   const [mentionSelect, setMentionSelect] = useState<MentionSelect>();
-  const [mentionData, setMentionData] = useState<User[]>([]);
+  const [filterKeyword, setFilterKeyword] = useState('');
+
+  const [filter, setFilter] = useState<GetUsersFilter>({
+    text: '',
+    pagination: INIT_PAGINATION,
+  });
+  const { users } = useGetUsers(filter);
 
   useEffect(() => {
-    setMentionData(mentionUsers);
-  }, []);
+    setFilter({
+      text: filterKeyword,
+      pagination: INIT_PAGINATION,
+    });
+  }, [filterKeyword]);
+
+  useEffect(() => {
+    console.log('Check new users = ', users);
+  }, [users]);
 
   useEffect(() => {
     if (
@@ -55,43 +71,43 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
     setModalWidth(newWidth);
   }, [inputElement]);
 
-  // useEffect(() => {
-  //   console.log('Check new mentionData = ', mentionData);
-  // }, [mentionData]);
+  useEffect(() => {
+    console.log('Check new users = ', users);
+  }, [users]);
 
-  const handleKeyDown = function (): void {
-    // console.log('Check handleKeyDown');
+  const handleKeyDown = () => {
+    console.log('Check handleKeyDown');
     if (!mentionSelect) {
-      if (mentionData.length > 0) {
+      if (users.length > 0) {
         setMentionSelect({
           index: 0,
-          user: mentionData[0],
+          user: users[0],
         });
       }
       return;
     }
-    if (mentionData.length > mentionSelect?.index + 1) {
+    if (users.length > mentionSelect?.index + 1) {
       setMentionSelect({
-        user: mentionData[mentionSelect?.index + 1],
+        user: users[mentionSelect?.index + 1],
         index: mentionSelect?.index + 1,
       });
     }
   };
 
-  const handleKeyUp = function (): void {
+  const handleKeyUp = () => {
     console.log('Check handleKeyUp');
     if (!mentionSelect) {
-      if (mentionData.length > 0) {
+      if (users.length > 0) {
         setMentionSelect({
           index: 0,
-          user: mentionData[0],
+          user: users[0],
         });
       }
       return;
     }
     if (mentionSelect?.index > 0) {
       setMentionSelect({
-        user: mentionData[mentionSelect?.index - 1],
+        user: users[mentionSelect?.index - 1],
         index: mentionSelect?.index - 1,
       });
     }
@@ -202,7 +218,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
             </Typography>
           </Stack>
           <Stack height="108px" overflow="scroll">
-            {mentionData.map((item: User, index: number) => {
+            {users.map((item: User, index: number) => {
               const isSelect = item.id === mentionSelect?.user?.id;
               const bgColor = isSelect ? Highlight : 'transparent';
               const contentColor = isSelect ? Gray[1] : Gray[3];

@@ -83,7 +83,6 @@ const App: React.FC = () => {
                       <TransactionModal />
                       <UploadCSVModal />
                       <AttachmentModal />
-                      {/* <MentionPopover /> */}
                       <InviteModal />
                     </Suspense>
                   </Router>

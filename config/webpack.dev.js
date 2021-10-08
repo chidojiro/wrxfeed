@@ -24,6 +24,10 @@ module.exports = (env) => {
     plugins: [
       // follow build performance best practice
       new ForkTsCheckerWebpackPlugin({
+        typescript: {
+          build: true,
+          memoryLimit: 16000,
+      },
         eslint: {
           files: './src/**/*.{ts,tsx,js,jsx}', // required - same as command `eslint ./src/**/*.{ts,tsx,js,jsx} --ext .ts,.tsx,.js,.jsx`
         },
