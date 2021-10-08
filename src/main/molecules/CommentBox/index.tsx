@@ -148,17 +148,29 @@ const CommentBox: React.VFC<CommentFormProps> = ({
       return;
     }
     const { value } = event.currentTarget;
-    if (value.substr(value.length - 1) === '@' && formRef.current) {
-      // setShowMentionPopover({ element: formRef.current });
+    // if (value.substr(value.length - 1) === '@' && formRef.current) {
+    //   setInputElement(formRef.current);
+    //   openMention(true);
+    // }
+    if (value.slice(-1) === '@' && formRef.current) {
       setInputElement(formRef.current);
       openMention(true);
+    }
+    if (value.slice(-1) === ' ' && formRef.current) {
+      setInputElement(formRef.current);
+      openMention(false);
     }
   };
 
   const onSelectUserMention = useCallback(
     (user: User) => {
       const values = getValues();
-      setValue('content', `${values.content}${user.fullName}`);
+      // setValue(
+      //   'content',
+      //   `${values.content}<mention userid="${user?.id}" tagname="${user?.fullName}"/>`,
+      // );
+      setValue('content', `${values.content}${user?.fullName}`);
+      // `<mention userid="6" tagname="${word.replace('@', '')}"/>`
     },
     [getValues, setValue],
   );
