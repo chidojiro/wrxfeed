@@ -87,6 +87,7 @@ const OverviewPage: React.VFC = () => {
               <TransactionList
                 transactions={transactions}
                 isLoading={isLoading}
+                hasMore={hasMore}
                 onLoadMore={handleLoadMore}
                 onFilter={handleFilter}
               />
