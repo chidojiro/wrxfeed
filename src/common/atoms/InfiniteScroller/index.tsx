@@ -18,6 +18,7 @@ interface InfiniteScrollerProps {
   sx?: SxProps;
   isLoading?: boolean;
   LoadingComponent?: ReactNode;
+  renderScrollToTop: () => ReactNode;
 }
 
 const InfiniteScroller = React.forwardRef<InfiniteScrollerHandle, InfiniteScrollerProps>(

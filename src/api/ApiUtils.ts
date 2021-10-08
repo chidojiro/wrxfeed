@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
-import { Comment, Transaction, User, Discussion } from '@main/entity';
+import { Comment, Transaction, User, Discussion, Contact } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { ApiError } from '@error';
 import { Identity } from '@identity';
@@ -13,6 +13,8 @@ import {
   ResetPasswordDto,
   TransactionFilter,
   UploadToken,
+  GetUsersFilter,
+  GetContactsFilter,
 } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { removeEmptyFields } from '@common/utils';
@@ -159,6 +161,34 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
+  getUsers = async (filter: GetUsersFilter): Promise<User[]> => {
+    const params = {
+      text: filter?.text,
+      ...filter.pagination,
+    };
+    const res = await this.request<User[]>({
+      url: '/user/users',
+      method: 'GET',
+      params,
+    });
+    console.log('Check getUsers res = ', res);
+    return res.data;
+  };
+
+  getContacts = async (filter: GetContactsFilter): Promise<Contact[]> => {
+    const params = {
+      text: filter.text,
+      ...filter.pagination,
+    };
+    const res = await this.request<Contact[]>({
+      url: '/inv/contacts',
+      method: 'GET',
+      params,
+    });
+    console.log('Check res.data = ', res.data);
+    return res.data;
+  };
+
   getDiscussions = async (pagination?: Pagination): Promise<Discussion[]> => {
     const res = await this.request<Discussion[]>({
       url: '/user/me/mentions',
@@ -189,12 +219,13 @@ export default class ApiUtils implements ApiClient {
   };
 
   postAddInvitation = async (data: InviteFormModel): Promise<void> => {
-    const res = await this.request<User[]>({
+    console.log('Check postAddInvitation data = ', data);
+    const res = await this.request<void>({
       url: '/inv/invitations',
       method: 'POST',
       data,
     });
-    console.log(res);
+    console.log('Check postAddInvitation res = ', res);
     // return res.data;
   };
 

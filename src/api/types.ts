@@ -1,5 +1,5 @@
 import { UserToken } from '@identity/types';
-import { Comment, Transaction, Discussion, User } from '@main/entity';
+import { Comment, Transaction, Discussion, User, Contact } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { Identity } from '../identity';
 import {
@@ -39,6 +39,8 @@ export interface ApiClient {
   // For Inbox/Discussion list
   getMentions: (pagination?: Pagination) => Promise<User[]>;
   postAddInvitation: (data: InviteFormModel) => Promise<void>;
+  getUsers: (filter: GetUsersFilter) => Promise<User[]>;
+  getContacts: (filter: GetContactsFilter) => Promise<Contact[]>;
 
   searchActivities: (filter: ActivityFilterModel) => Promise<[Activity[], number]>;
   addActivity: (data: ActivityFormModel) => Promise<Activity>;
@@ -98,4 +100,14 @@ export interface GetUploadTokenBody {
 export interface UploadToken {
   uploadUrl: string;
   fileUrl: string;
+}
+
+export interface GetUsersFilter {
+  text: string;
+  pagination?: Pagination;
+}
+
+export interface GetContactsFilter {
+  text: string;
+  pagination?: Pagination;
 }
