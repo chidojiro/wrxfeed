@@ -3,7 +3,7 @@ import { styled } from '@mui/system';
 import ModalUnstyled from '@mui/core/ModalUnstyled';
 import { Button, LinearProgress, Stack, Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { Accent, Gray } from '@theme/colors';
+import { Gray } from '@theme/colors';
 import CommentBox from '@main/molecules/CommentBox';
 import { useFileUploader } from '@common/hooks/useFileUploader';
 import { GetUploadTokenBody } from '@api/types';
@@ -129,7 +129,7 @@ const CommentAttachmentModal: React.FC<AttachmentModalProps> = ({
           <Button
             disabled={isUploading}
             variant="text"
-            style={{ borderRadius: '4px' }}
+            sx={{ borderRadius: '4px' }}
             onClick={onClose}
           >
             <Typography fontSize="14px" fontWeight={600} color={Gray[2]}>
@@ -138,7 +138,8 @@ const CommentAttachmentModal: React.FC<AttachmentModalProps> = ({
           </Button>
           <Button
             variant="contained"
-            style={{ backgroundColor: Accent[2], borderRadius: '4px', marginLeft: '4px' }}
+            color="accent"
+            sx={{ borderRadius: '4px', marginLeft: '4px' }}
             disabled={isUploading}
             onClick={handleFileUpload}
           >

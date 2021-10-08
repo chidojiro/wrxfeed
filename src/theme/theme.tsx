@@ -69,6 +69,7 @@ export const theme = createTheme({
     },
     accent: {
       main: Accent[2],
+      contrastText: '#fff',
     },
     alert: {
       main: System.Alert,

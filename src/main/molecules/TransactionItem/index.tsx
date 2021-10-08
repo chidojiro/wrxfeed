@@ -59,8 +59,6 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
 
-  // console.log('comments = ', comments);
-
   const onSubmitComment = (values: CommentFormModel) => {
     const isDirty = !!values?.content || !!values?.attachment;
     if (!isDirty) return;

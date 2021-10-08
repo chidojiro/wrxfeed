@@ -179,12 +179,11 @@ export default class ApiUtils implements ApiClient {
   };
 
   uploadAttachment = async (file: File, uploadToken: UploadToken): Promise<string> => {
-    const formData = new FormData();
-    formData.append('file', file);
+    const fileData = new Uint8Array(await file.arrayBuffer());
     const res = await this.request<string>({
       url: uploadToken.uploadUrl,
       method: 'PUT',
-      data: formData,
+      data: fileData,
     });
     return res.data;
   };
