@@ -3,12 +3,12 @@ import { CommentFormModel } from '@main/types';
 import { Transaction } from '@main/entity';
 import TransactionContent from '@main/atoms/TransactionContent';
 import CommentBox from '@main/molecules/CommentBox';
-import { Stack, Box, List, Collapse, Typography } from '@mui/material';
+import { Box, Collapse, List, Stack, Typography } from '@mui/material';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentRemaining from '@main/atoms/CommentRemaining';
 import { TransitionGroup } from 'react-transition-group';
 import { useComment } from '@main/hooks';
-import { Pagination } from '@api/types';
+import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { Gray, LightBG } from '@theme/colors';
@@ -16,6 +16,7 @@ import TransactionNotifyBanner from '@main/atoms/TransactionNotifyBanner';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/molecules/FeelBackModal';
+import AttachmentModal from '@main/molecules/CommentAttachmentModal';
 
 const INITIAL_COMMENT_NUMBER = 2;
 const LOAD_MORE_LIMIT = 5;
@@ -52,17 +53,17 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
   const [isHidden, setHidden] = useState(false);
   const [notifyMessage, setNotifyMessage] = useState('');
   const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
+  const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
+  const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
   // Variables
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
 
-  // console.log('comments = ', comments);
-
   const onSubmitComment = (values: CommentFormModel) => {
-    const isDirty = !!values.content;
+    const isDirty = !!values?.content || !!values?.attachment;
     if (!isDirty) return;
     const parsedContent = values.content
-      .split(' ')
+      ?.split(' ')
       .map((word) => {
         if (word.startsWith('@')) {
           // 6 is Harry user id, Matt is 8, harrymnc is 21
@@ -71,7 +72,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
         return word;
       })
       .join(' ');
-    addComment({ content: parsedContent });
+    addComment({ content: parsedContent, attachment: values.attachment }).then();
   };
 
   const loadMoreComments = useCallback(() => {
@@ -118,6 +119,15 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
   const handleShareFeedback = () => {
     openMenu(false);
     openFeedbackModal(true);
+  };
+
+  const handleAttachFile = (file: File) => {
+    setUploadFileOptions({
+      filename: `${transaction.id}-${Date.now()}-${file.name}`,
+      contentType: file.type,
+      uploadType: UploadTypes.Attachments,
+    });
+    setAttachFileComment(file);
   };
 
   return (
@@ -168,7 +178,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
         )}
         {!isHidden && (
           <Box sx={{ pl: 6, pt: 0.5, pb: 1 }}>
-            <CommentBox onSubmit={onSubmitComment} />
+            <CommentBox onSubmit={onSubmitComment} onAttachFile={handleAttachFile} />
           </Box>
         )}
         <ConfirmModal
@@ -190,6 +200,14 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
           </Typography>
         </ConfirmModal>
         <FeedBackModal open={isOpenFeedbackModal} onClose={() => openFeedbackModal(false)} />
+        <AttachmentModal
+          transaction={transaction}
+          open={!!attachFileComment}
+          file={attachFileComment}
+          uploadOptions={uploadFileOptions}
+          onClose={() => setAttachFileComment(null)}
+          onFileUploaded={onSubmitComment}
+        />
       </Stack>
 
       <PopoverMenu

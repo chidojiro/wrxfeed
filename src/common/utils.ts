@@ -13,8 +13,8 @@ export function hasSubArray(master: string[], sub: string[]): boolean {
   return master && sub && sub.every((value, index) => master.indexOf(value, index) + 1 > 0);
 }
 
-export async function sleep(milisecond: number): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, milisecond));
+export async function sleep(millisecond: number): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, millisecond));
 }
 
 /**
@@ -61,8 +61,8 @@ export function stringToColor(string: string): string {
 /**
  * Get avatar props with color based on name for MUI Avatar
  */
-export function stringAvatar(name: string): AvatarProps {
-  const initials = name.slice(0, 3);
+export function stringAvatar(name: string, initialLength?: number): AvatarProps {
+  const initials = name.slice(0, initialLength ?? 3);
   return {
     sx: {
       bgcolor: stringToColor(name),
