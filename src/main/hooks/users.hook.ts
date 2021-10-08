@@ -41,7 +41,11 @@ export function useGetUsers(filter: GetUsersFilter): UsersHookValues {
   }, [ApiClient, errorHandler, filter]);
 
   useEffect(() => {
-    getUsers().then();
-  }, [getUsers]);
+    getUsers();
+  }, []);
+
+  // useEffect(() => {
+  //   getUsers().then();
+  // }, [getUsers]);
   return { users, hasMore, isLoading };
 }

@@ -272,6 +272,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
         onClose={onCloseMention}
         onSelectUser={onSelectUserMention}
         inputElement={inputElement}
+        watchContent={watchContent || ''}
       />
     </form>
   );
