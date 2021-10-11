@@ -82,7 +82,7 @@ export interface CommentFormProps {
   maxCharacter?: number;
   alwaysFocus?: boolean;
   onAttachFile?: (file: File) => void;
-  onChange?: (content?: string) => void;
+  onChangeText?: (content?: string) => void;
 }
 
 const CommentBox: React.VFC<CommentFormProps> = ({
@@ -97,7 +97,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   maxRows = 6,
   alwaysFocus = false,
   onAttachFile,
-  onChange,
+  onChangeText,
 }) => {
   const classes = useStyles();
   const emojiRef = useRef<HTMLDivElement>();
@@ -138,20 +138,16 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   }, [isSubmitted, reset]);
 
   useEffect(() => {
-    if (onChange) {
-      onChange(watchContent);
+    if (onChangeText) {
+      onChangeText(watchContent);
     }
-  }, [onChange, watchContent]);
+  }, [onChangeText, watchContent]);
 
   const handleMention = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     if (!enableMention) {
       return;
     }
     const { value } = event.currentTarget;
-    // if (value.substr(value.length - 1) === '@' && formRef.current) {
-    //   setInputElement(formRef.current);
-    //   openMention(true);
-    // }
     if (value.slice(-1) === '@' && formRef.current) {
       setInputElement(formRef.current);
       openMention(true);
@@ -169,7 +165,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({
       //   'content',
       //   `${values.content}<mention userid="${user?.id}" tagname="${user?.fullName}"/>`,
       // );
-      setValue('content', `${values.content}${user?.fullName}`);
+      const newContent = values?.content?.substring(0, values?.content?.length - 1);
+      setValue('content', `${newContent}${user?.fullName}`);
       // `<mention userid="6" tagname="${word.replace('@', '')}"/>`
     },
     [getValues, setValue],

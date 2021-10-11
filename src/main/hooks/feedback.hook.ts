@@ -1,38 +1,39 @@
 import { useApi } from '@api';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
-import { Contact } from '@main/entity';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { FeedBackFormModel } from '../../diary/types';
 
-interface InviteHookValues {
+interface FeedbackHookValues {
   isSent: boolean;
   isLoading: boolean;
-  postAddInvitation: (contact: Contact) => Promise<void>;
+  postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
 }
 
-export function useInvite(): InviteHookValues {
+export function useFeedBack(): FeedbackHookValues {
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [isLoading, setLoading] = useState(false);
   const [isSent, setSent] = useState(false);
 
-  const postAddInvitation = async (contact: Contact) => {
+  const postFeedback = async (transactionId: number, data: FeedBackFormModel) => {
     try {
       setLoading(true);
-      const res = await ApiClient.postAddInvitation({ email: contact.email });
+      const res = await ApiClient.postFeedback(transactionId, data);
       console.log({ res });
       setLoading(false);
       setSent(true);
+      toast.success('Send your feedback successfully!');
     } catch (error) {
       setLoading(false);
       setSent(false);
       if (isBadRequest(error)) {
-        toast.error('Can not send invite!');
+        toast.error('Can not send your feedback!');
       } else {
         await errorHandler(error);
       }
     }
   };
-  return { isSent, isLoading, postAddInvitation };
+  return { isSent, isLoading, postFeedback };
 }

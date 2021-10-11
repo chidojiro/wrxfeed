@@ -3,24 +3,71 @@ import { Stack, Typography, Divider, Button } from '@mui/material';
 import { Gray, Accent } from '@theme/colors';
 import React from 'react';
 import CommentBox from '@main/molecules/CommentBox';
-import { useFormControl } from '@mui/material/FormControl';
+import { useFeedBack } from '@main/hooks';
+import { toast } from 'react-toastify';
 
 interface FeelBackModalProps {
   style?: React.CSSProperties;
   open: boolean;
   onClose: () => void;
+  transactionId: number;
 }
 
-const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose }) => {
+const RED_COLOR = '#ff5f68';
+const MAX_LENGTH_FEEDBACK = 200;
+
+const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose, transactionId }) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
-  const { filled } = useFormControl() || {};
+  const [feedback, setFeedback] = React.useState<string>('');
+  const { postFeedback } = useFeedBack();
+
+  const isSendable = feedback.length > 0 && feedback.length <= MAX_LENGTH_FEEDBACK;
+
   React.useEffect(() => {
     setOpen(open);
   }, [open]);
+
   const handleClose = () => {
     setOpen(false);
     onClose();
   };
+
+  const handleSubmit = () => {
+    if (!isSendable) {
+      toast.error('Exceeded the maximum word count for a feedback!');
+      return;
+    }
+    postFeedback(transactionId, { content: feedback });
+    handleClose();
+  };
+
+  const isMax = feedback.length > MAX_LENGTH_FEEDBACK;
+  const maxLengthText =
+    feedback.length === 0
+      ? `max ${MAX_LENGTH_FEEDBACK} characters`
+      : `/${MAX_LENGTH_FEEDBACK} characters`;
+
+  const renderMaxCharacters = () => {
+    return (
+      <Stack flexDirection="row" marginLeft="auto">
+        {feedback.length !== 0 && (
+          <Typography
+            marginTop="8px"
+            marginLeft="auto"
+            color={isMax ? RED_COLOR : Gray[3]}
+            fontSize="14px"
+            marginX="0px"
+          >
+            {feedback.length}
+          </Typography>
+        )}
+        <Typography marginTop="8px" color={Gray[3]} fontSize="14px" marginX="0px">
+          {maxLengthText}
+        </Typography>
+      </Stack>
+    );
+  };
+
   return (
     <Modal open={isOpen} customStyle={style} onClose={handleClose}>
       <Stack width="442px" height="488px" borderRadius="24px" bgcolor="white">
@@ -42,10 +89,11 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose }) 
             enableMention={false}
             rows={6}
             alwaysFocus
+            onChangeText={(content: string | undefined) => {
+              setFeedback(content || '');
+            }}
           />
-          <Typography marginTop="8px" marginLeft="auto" color={Gray[3]} fontSize="14px">
-            max 200 characters
-          </Typography>
+          {renderMaxCharacters()}
         </Stack>
         <Divider />
         <Stack
@@ -63,11 +111,12 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose }) 
           <Button
             variant="contained"
             style={{
-              backgroundColor: filled ? Accent[2] : Gray[3],
+              backgroundColor: isSendable ? Accent[2] : Gray[3],
               borderRadius: '4px',
               marginLeft: '4px',
+              padding: '8px 16px 8px 16px',
             }}
-            onClick={handleClose}
+            onClick={handleSubmit}
           >
             <Typography fontSize="14px" fontWeight={600}>
               Submit

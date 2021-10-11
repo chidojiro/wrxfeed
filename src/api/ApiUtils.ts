@@ -20,6 +20,7 @@ import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@
 import { removeEmptyFields } from '@common/utils';
 import { handleResponseFail } from '@api/utils';
 import {
+  FeedBackFormModel,
   InviteFormModel,
   Activity,
   ActivityFilterModel,
@@ -231,6 +232,16 @@ export default class ApiUtils implements ApiClient {
     });
     console.log('Check postAddInvitation res = ', res);
     // return res.data;
+  };
+
+  postFeedback = async (transactionId: number, data: FeedBackFormModel): Promise<void> => {
+    console.log(`Check postFeedback transactionId = ${transactionId}, data = `, data);
+    const res = await this.request<void>({
+      url: `/feed/transactions/${transactionId}/feedback`,
+      method: 'POST',
+      data,
+    });
+    console.log('Check postFeedback res = ', res);
   };
 
   async searchActivities(filter: ActivityFilterModel): Promise<[Activity[], number]> {

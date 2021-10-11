@@ -50,12 +50,9 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
   const { users } = useGetUsers(filter);
 
   useEffect(() => {
-    console.log('Check watchContent = ', watchContent);
     const startTagIndex = watchContent?.lastIndexOf('@');
-    console.log('Check startTagIndex = ', startTagIndex);
     if (startTagIndex !== -1) {
       const userTagName = watchContent?.substr(startTagIndex + 1);
-      console.log('Check userTagName = ', userTagName);
       setFilter({
         text: userTagName,
         pagination: INIT_PAGINATION,
@@ -173,6 +170,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
     EventEmitter.dispatch(EventName.SELECT_MENTION, user);
     if (onSelectUser) {
       onSelectUser(user);
+      onClose();
     }
   };
 

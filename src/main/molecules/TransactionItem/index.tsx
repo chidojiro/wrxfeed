@@ -67,7 +67,13 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
       .map((word) => {
         if (word.startsWith('@')) {
           // 6 is Harry user id, Matt is 8, harrymnc is 21
-          return `<mention userid="6" tagname="${word.replace('@', '')}"/>`;
+          // @usrId['Harry Kane'] say hello
+
+          // Value in put: @Harry Kane
+          // parse value mentionUsers: [{userId: 1, start: 1, end: 9}]
+
+          // Harry say hello
+          return `<mention userid="8" tagname="${word.replace('@', '')}"/>`;
         }
         return word;
       })
@@ -199,7 +205,11 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
             {confirmModal?.description}
           </Typography>
         </ConfirmModal>
-        <FeedBackModal open={isOpenFeedbackModal} onClose={() => openFeedbackModal(false)} />
+        <FeedBackModal
+          open={isOpenFeedbackModal}
+          onClose={() => openFeedbackModal(false)}
+          transactionId={transaction.id}
+        />
         <AttachmentModal
           transaction={transaction}
           open={!!attachFileComment}
