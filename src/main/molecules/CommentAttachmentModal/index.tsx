@@ -115,7 +115,12 @@ const CommentAttachmentModal: React.FC<AttachmentModalProps> = ({
           <Typography color={Gray[1]} fontWeight="bold" fontSize="14px" marginBottom="8px">
             Add a comment
           </Typography>
-          <CommentBox maxRows={3} showAttach={false} showSend={false} onChange={onChangeComment} />
+          <CommentBox
+            maxRows={3}
+            showAttach={false}
+            showSend={false}
+            onChangeText={onChangeComment}
+          />
         </Stack>
         {isUploading && <LinearProgress />}
         <Divider />

@@ -1,5 +1,5 @@
 import { Modal } from '@main/atoms';
-import { Stack, Typography, Divider, Button } from '@mui/material';
+import { Stack, Typography, Divider, Button, LinearProgress } from '@mui/material';
 import { Gray, Accent } from '@theme/colors';
 import React from 'react';
 import CommentBox from '@main/molecules/CommentBox';
@@ -19,8 +19,11 @@ const MAX_LENGTH_FEEDBACK = 200;
 const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose, transactionId }) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const [feedback, setFeedback] = React.useState<string>('');
-  const { postFeedback } = useFeedBack();
+  const onUploadSuccess = () => {
+    onClose();
+  };
 
+  const { isLoading, postFeedback } = useFeedBack({ onSuccess: onUploadSuccess });
   const isSendable = feedback.length > 0 && feedback.length <= MAX_LENGTH_FEEDBACK;
 
   React.useEffect(() => {
@@ -38,7 +41,6 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose, tr
       return;
     }
     postFeedback(transactionId, { content: feedback });
-    handleClose();
   };
 
   const isMax = feedback.length > MAX_LENGTH_FEEDBACK;
@@ -95,6 +97,7 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose, tr
           />
           {renderMaxCharacters()}
         </Stack>
+        {isLoading && <LinearProgress />}
         <Divider />
         <Stack
           paddingX="24px"

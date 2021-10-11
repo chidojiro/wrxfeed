@@ -5,13 +5,18 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { FeedBackFormModel } from '../../diary/types';
 
+interface FeelBackModalCallback {
+  onSuccess: () => void;
+  onError?: (error: unknown) => void;
+}
+
 interface FeedbackHookValues {
   isSent: boolean;
   isLoading: boolean;
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
 }
 
-export function useFeedBack(): FeedbackHookValues {
+export function useFeedBack(callback: FeelBackModalCallback): FeedbackHookValues {
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [isLoading, setLoading] = useState(false);
@@ -24,11 +29,14 @@ export function useFeedBack(): FeedbackHookValues {
       console.log({ res });
       setLoading(false);
       setSent(true);
+      callback.onSuccess();
       toast.success('Send your feedback successfully!');
     } catch (error) {
       setLoading(false);
       setSent(false);
-      if (isBadRequest(error)) {
+      if (callback.onError) {
+        callback.onError(error);
+      } else if (isBadRequest(error)) {
         toast.error('Can not send your feedback!');
       } else {
         await errorHandler(error);
