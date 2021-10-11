@@ -2,30 +2,20 @@ import { useApi } from '@api';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { Contact } from '@main/entity';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-interface CommentHookValues {
+interface InviteHookValues {
   isSent: boolean;
   isLoading: boolean;
   postAddInvitation: (contact: Contact) => Promise<void>;
 }
 
-export function useInvite(): CommentHookValues {
+export function useInvite(): InviteHookValues {
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [isLoading, setLoading] = useState(false);
   const [isSent, setSent] = useState(false);
-
-  useEffect(() => {
-    // fake send invite
-    const timer = setTimeout(() => {
-      setSent(true);
-    }, 5000);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [isLoading]);
 
   const postAddInvitation = async (contact: Contact) => {
     try {

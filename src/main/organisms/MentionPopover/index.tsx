@@ -18,6 +18,7 @@ export interface MentionPopoverProps extends PopoverProps {
   onSelectUser?: (user: User) => void;
   inputElement: HTMLFormElement | null;
   onClose: () => void;
+  watchContent: string;
 }
 
 export type MentionSelect = {
@@ -35,12 +36,12 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
   onSelectUser,
   inputElement,
   onClose,
+  watchContent,
   ...rest
 }) => {
   const [modalWidth, setModalWidth] = useState<string>(`${MENTION_MODAL_MIN_WIDTH}px`);
   const setInviteModal = useSetRecoilState(showInviteModalState);
   const [mentionSelect, setMentionSelect] = useState<MentionSelect>();
-  const [filterKeyword, setFilterKeyword] = useState('');
 
   const [filter, setFilter] = useState<GetUsersFilter>({
     text: '',
@@ -49,11 +50,15 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
   const { users } = useGetUsers(filter);
 
   useEffect(() => {
-    setFilter({
-      text: filterKeyword,
-      pagination: INIT_PAGINATION,
-    });
-  }, [filterKeyword]);
+    const startTagIndex = watchContent?.lastIndexOf('@');
+    if (startTagIndex !== -1) {
+      const userTagName = watchContent?.substr(startTagIndex + 1);
+      setFilter({
+        text: userTagName,
+        pagination: INIT_PAGINATION,
+      });
+    }
+  }, [watchContent]);
 
   useEffect(() => {
     console.log('Check new users = ', users);
@@ -75,57 +80,57 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
     console.log('Check new users = ', users);
   }, [users]);
 
-  const handleKeyDown = () => {
-    console.log('Check handleKeyDown');
-    if (!mentionSelect) {
-      if (users.length > 0) {
-        setMentionSelect({
-          index: 0,
-          user: users[0],
-        });
-      }
-      return;
-    }
-    if (users.length > mentionSelect?.index + 1) {
-      setMentionSelect({
-        user: users[mentionSelect?.index + 1],
-        index: mentionSelect?.index + 1,
-      });
-    }
-  };
+  // const handleKeyDown = () => {
+  //   console.log('Check handleKeyDown');
+  //   if (!mentionSelect) {
+  //     if (users.length > 0) {
+  //       setMentionSelect({
+  //         index: 0,
+  //         user: users[0],
+  //       });
+  //     }
+  //     return;
+  //   }
+  //   if (users.length > mentionSelect?.index + 1) {
+  //     setMentionSelect({
+  //       user: users[mentionSelect?.index + 1],
+  //       index: mentionSelect?.index + 1,
+  //     });
+  //   }
+  // };
 
-  const handleKeyUp = () => {
-    console.log('Check handleKeyUp');
-    if (!mentionSelect) {
-      if (users.length > 0) {
-        setMentionSelect({
-          index: 0,
-          user: users[0],
-        });
-      }
-      return;
-    }
-    if (mentionSelect?.index > 0) {
-      setMentionSelect({
-        user: users[mentionSelect?.index - 1],
-        index: mentionSelect?.index - 1,
-      });
-    }
-  };
+  // const handleKeyUp = () => {
+  //   console.log('Check handleKeyUp');
+  //   if (!mentionSelect) {
+  //     if (users.length > 0) {
+  //       setMentionSelect({
+  //         index: 0,
+  //         user: users[0],
+  //       });
+  //     }
+  //     return;
+  //   }
+  //   if (mentionSelect?.index > 0) {
+  //     setMentionSelect({
+  //       user: users[mentionSelect?.index - 1],
+  //       index: mentionSelect?.index - 1,
+  //     });
+  //   }
+  // };
 
-  useEffect(() => {
-    EventEmitter.subscribe(EventName.ON_KEY_UP, handleKeyUp);
-    return () => {
-      EventEmitter.unsubscribe(EventName.ON_KEY_UP, handleKeyUp);
-    };
-  }, []);
+  // useEffect(() => {
+  //   EventEmitter.subscribe(EventName.ON_KEY_UP, handleKeyUp);
+  //   return () => {
+  //     EventEmitter.unsubscribe(EventName.ON_KEY_UP, handleKeyUp);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    EventEmitter.subscribe(EventName.ON_KEY_DOWN, handleKeyDown);
-    return () => {
-      EventEmitter.unsubscribe(EventName.ON_KEY_DOWN, handleKeyDown);
-    };
-  }, []);
+  // useEffect(() => {
+  //   EventEmitter.subscribe(EventName.ON_KEY_DOWN, handleKeyDown);
+  //   return () => {
+  //     EventEmitter.unsubscribe(EventName.ON_KEY_DOWN, handleKeyDown);
+  //   };
+  // }, []);
 
   // const handleClick = (event: MouseEvent) => {
   //   setMentionState(event.currentTarget);
@@ -165,6 +170,7 @@ const MentionPopover: React.VFC<MentionPopoverProps> = ({
     EventEmitter.dispatch(EventName.SELECT_MENTION, user);
     if (onSelectUser) {
       onSelectUser(user);
+      onClose();
     }
   };
 

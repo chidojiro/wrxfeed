@@ -15,6 +15,7 @@ import {
   ActivityFormModel,
   Revenue,
   InviteFormModel,
+  FeedBackFormModel,
 } from '../diary/types';
 
 export interface ApiClient {
@@ -41,6 +42,7 @@ export interface ApiClient {
   postAddInvitation: (data: InviteFormModel) => Promise<void>;
   getUsers: (filter: GetUsersFilter) => Promise<User[]>;
   getContacts: (filter: GetContactsFilter) => Promise<Contact[]>;
+  postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
 
   searchActivities: (filter: ActivityFilterModel) => Promise<[Activity[], number]>;
   addActivity: (data: ActivityFormModel) => Promise<Activity>;

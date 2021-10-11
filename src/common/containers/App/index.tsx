@@ -19,7 +19,7 @@ import { ProtectedRoute } from '@identity';
 import { API_BASE_URL } from '@src/config';
 import { ConfirmProvider } from '@src/confirm';
 import { CookieProvider } from '@common/hooks/useCookie';
-import { TransactionModal, UploadCSVModal, InviteModal } from '@main/organisms';
+import { UploadCSVModal, InviteModal } from '@main/organisms';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -73,7 +73,6 @@ const App: React.FC = () => {
                           <NotFoundPage />
                         </Route>
                       </Switch>
-                      <TransactionModal />
                       <UploadCSVModal />
                       <InviteModal />
                     </Suspense>

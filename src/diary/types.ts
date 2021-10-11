@@ -50,3 +50,7 @@ export interface AttachmentFormModel {
 export interface InviteFormModel {
   email: string;
 }
+
+export interface FeedBackFormModel {
+  content: string;
+}
