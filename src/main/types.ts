@@ -1,5 +1,7 @@
+import { EditorState } from 'draft-js';
+
 export type CommentFormModel = {
-  content?: string;
+  content: EditorState;
   attachment?: string;
 };
 
@@ -15,3 +17,11 @@ export type GroupEmoji = {
   emojiRepresent: string | React.FC<React.SVGAttributes<SVGElement>>;
   name?: string;
 };
+
+export interface InviteFormModel {
+  email: string;
+}
+
+export interface FeedBackFormModel {
+  content: string;
+}

@@ -3,7 +3,7 @@ import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { FeedBackFormModel } from '../../diary/types';
+import { FeedBackFormModel } from '@main/types';
 
 interface FeelBackModalCallback {
   onSuccess: () => void;

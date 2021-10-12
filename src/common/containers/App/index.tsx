@@ -9,7 +9,10 @@ import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import 'emoji-mart/css/emoji-mart.css';
+import 'draft-js/dist/Draft.css';
+import '@draft-js-plugins/mention/lib/plugin.css';
 import '@src/styles.css';
+
 import LoadingFallback from '@common/atoms/LoadingFallback';
 import NotFoundPage from '@common/pages/NotFoundPage';
 import { ApiProvider } from '@api';
@@ -17,7 +20,6 @@ import { theme } from '@theme/theme';
 import routes from '@src/routes';
 import { ProtectedRoute } from '@identity';
 import { API_BASE_URL } from '@src/config';
-import { ConfirmProvider } from '@src/confirm';
 import { CookieProvider } from '@common/hooks/useCookie';
 import { UploadCSVModal, InviteModal } from '@main/organisms';
 
@@ -53,31 +55,29 @@ const App: React.FC = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <RecoilRoot>
               <ApiProvider baseUrl={API_BASE_URL}>
-                <ConfirmProvider>
-                  <Router key={Math.random()}>
-                    <Suspense fallback={<LoadingFallback />}>
-                      <Switch>
-                        {Object.values(routes).map((r) => (
-                          // Added property`key` to Router to fix warning
-                          // when hot reloading Route component
-                          <ProtectedRoute
-                            key={r.path}
-                            path={r.path}
-                            component={r.component}
-                            permissions={r.permissions}
-                            exact
-                          />
-                        ))}
-                        {/* 404 homepage */}
-                        <Route>
-                          <NotFoundPage />
-                        </Route>
-                      </Switch>
-                      <UploadCSVModal />
-                      <InviteModal />
-                    </Suspense>
-                  </Router>
-                </ConfirmProvider>
+                <Router key={Math.random()}>
+                  <Suspense fallback={<LoadingFallback />}>
+                    <Switch>
+                      {Object.values(routes).map((r) => (
+                        // Added property`key` to Router to fix warning
+                        // when hot reloading Route component
+                        <ProtectedRoute
+                          key={r.path}
+                          path={r.path}
+                          component={r.component}
+                          permissions={r.permissions}
+                          exact
+                        />
+                      ))}
+                      {/* 404 homepage */}
+                      <Route>
+                        <NotFoundPage />
+                      </Route>
+                    </Switch>
+                    <UploadCSVModal />
+                    <InviteModal />
+                  </Suspense>
+                </Router>
               </ApiProvider>
             </RecoilRoot>
           </LocalizationProvider>

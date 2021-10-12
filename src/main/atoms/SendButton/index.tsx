@@ -1,7 +1,10 @@
 import React from 'react';
 import { styled } from '@mui/system';
-import { useFormControl } from '@mui/material/FormControl';
 import { EssentialsSendIcon, EssentialsSendEnableIcon } from '@assets/index';
+
+interface SendButtonAirplaneProps {
+  disabled?: boolean;
+}
 
 const StyledButton = styled('button')(() => ({
   display: 'flex',
@@ -14,13 +17,11 @@ const StyledButton = styled('button')(() => ({
   padding: '0px 5px 0px 2px',
 }));
 
-const SendButtonAirplane: React.VFC = (props) => {
-  const { filled } = useFormControl() || {};
-
-  const SendIcon = filled ? <EssentialsSendEnableIcon /> : <EssentialsSendIcon />;
+const SendButtonAirplane: React.VFC<SendButtonAirplaneProps> = ({ disabled, ...rest }) => {
+  const SendIcon = disabled ? <EssentialsSendIcon /> : <EssentialsSendEnableIcon />;
 
   return (
-    <StyledButton type="submit" {...props}>
+    <StyledButton disabled={disabled} type="submit" {...rest}>
       {SendIcon}
     </StyledButton>
   );

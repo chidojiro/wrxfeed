@@ -5,6 +5,8 @@ import React from 'react';
 import CommentBox from '@main/molecules/CommentBox';
 import { useFeedBack } from '@main/hooks';
 import { toast } from 'react-toastify';
+import { EditorState } from 'draft-js';
+import { commentEditorRawParser } from '@main/utils';
 
 interface FeelBackModalProps {
   style?: React.CSSProperties;
@@ -49,6 +51,12 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose, tr
       ? `max ${MAX_LENGTH_FEEDBACK} characters`
       : `/${MAX_LENGTH_FEEDBACK} characters`;
 
+  const onChangeTextContent = (content?: EditorState): void => {
+    if (!content) return;
+    const rawText = commentEditorRawParser(content.getCurrentContent());
+    setFeedback(rawText);
+  };
+
   const renderMaxCharacters = () => {
     return (
       <Stack flexDirection="row" marginLeft="auto">
@@ -88,12 +96,8 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose, tr
             showAttach={false}
             showEmoji={false}
             showSend={false}
-            enableMention={false}
-            rows={6}
             alwaysFocus
-            onChangeText={(content: string | undefined) => {
-              setFeedback(content || '');
-            }}
+            onChange={onChangeTextContent}
           />
           {renderMaxCharacters()}
         </Stack>

@@ -1,13 +1,6 @@
-import React, {
-  ChangeEvent,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  FocusEventHandler,
-} from 'react';
+import React, { useEffect, useRef, useState, useCallback, FocusEventHandler } from 'react';
 import { makeStyles } from '@mui/styles';
-import FormControl, { useFormControl } from '@mui/material/FormControl';
+import FormControl from '@mui/material/FormControl';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Paper, { PaperProps } from '@mui/material/Paper';
@@ -19,12 +12,13 @@ import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel } from '@main/types';
 import EmojiPicker from '@main/molecules/EmojiPicker';
-import MentionPopover from '@main/organisms/MentionPopover';
 import CommentInput from '@main/atoms/CommentInput';
 import SendButton from '@main/atoms/SendButton';
 import { EmojiData } from 'emoji-mart';
-import { User } from '@main/entity';
 import SvgColorIcon from '@common/atoms/SvgColorIcon';
+import { EditorState, Modifier } from 'draft-js';
+import { MentionData } from '@draft-js-plugins/mention';
+import { UPLOAD_FILE_ACCEPT } from '@src/config';
 
 const useStyles = makeStyles({
   container: {
@@ -55,13 +49,12 @@ const useStyles = makeStyles({
   },
 });
 export interface ContainerProps extends PaperProps {
+  focused: boolean;
   alwaysFocus: boolean;
 }
 
-const Container: React.VFC<ContainerProps> = ({ children, alwaysFocus }) => {
+const Container: React.VFC<ContainerProps> = ({ children, focused, alwaysFocus }) => {
   const classes = useStyles();
-  const { focused } = useFormControl() || {};
-
   return (
     <Paper className={`${classes.container} ${(focused || alwaysFocus) && 'focus'}`} elevation={0}>
       {children}
@@ -70,6 +63,7 @@ const Container: React.VFC<ContainerProps> = ({ children, alwaysFocus }) => {
 };
 
 export interface CommentFormProps {
+  id?: string;
   onSubmit?: SubmitHandler<CommentFormModel>;
   showAttach?: boolean;
   showSend?: boolean;
@@ -82,22 +76,22 @@ export interface CommentFormProps {
   maxCharacter?: number;
   alwaysFocus?: boolean;
   onAttachFile?: (file: File) => void;
-  onChangeText?: (content?: string) => void;
+  onChange?: (content?: EditorState) => void;
+  mentionData?: MentionData[];
 }
 
 const CommentBox: React.VFC<CommentFormProps> = ({
+  id,
   onSubmit,
   showAttach = true,
   showSend = true,
   showEmoji = true,
-  enableMention = true,
   placeholder = '💬 Comment here…',
   style = {},
-  rows,
-  maxRows = 6,
   alwaysFocus = false,
   onAttachFile,
-  onChangeText,
+  onChange,
+  mentionData,
 }) => {
   const classes = useStyles();
   const emojiRef = useRef<HTMLDivElement>();
@@ -113,20 +107,30 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     formState: { isSubmitted },
   } = useForm<CommentFormModel>({
     defaultValues: {
-      content: '',
+      content: EditorState.createEmpty(),
     },
   });
-  const watchContent = watch('content', '');
+  const watchContent = watch('content', EditorState.createEmpty());
   const [isOpenEmojiPicker, openEmojiPicker] = useState(false);
-  const [isOpenMention, openMention] = useState(false);
-  const [inputElement, setInputElement] = useState<HTMLFormElement | null>(null);
+  const [focused, setFocused] = useState(false);
   // useCallback functions
   const onSelectEmoji = useCallback(
     (emoji: EmojiData) => {
       if ('native' in emoji) {
         const values = getValues();
-        setValue('content', values.content + emoji.native);
+        const currentEditorState = values.content as EditorState;
+        const currentContent = currentEditorState.getCurrentContent();
+        const selection = currentEditorState.getSelection();
+        const nextContent = Modifier.insertText(currentContent, selection, emoji.native);
+        const nextEditorState = EditorState.push(
+          currentEditorState,
+          nextContent,
+          'insert-characters',
+        );
+        setValue('content', nextEditorState);
       }
+      // Turn off emoji picker after picked
+      openEmojiPicker(false);
     },
     [getValues, setValue],
   );
@@ -138,43 +142,10 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   }, [isSubmitted, reset]);
 
   useEffect(() => {
-    if (onChangeText) {
-      onChangeText(watchContent);
+    if (onChange) {
+      onChange(watchContent);
     }
-  }, [onChangeText, watchContent]);
-
-  const handleMention = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    if (!enableMention) {
-      return;
-    }
-    const { value } = event.currentTarget;
-    if (value.slice(-1) === '@' && formRef.current) {
-      setInputElement(formRef.current);
-      openMention(true);
-    }
-    if (value.slice(-1) === ' ' && formRef.current) {
-      setInputElement(formRef.current);
-      openMention(false);
-    }
-  };
-
-  const onSelectUserMention = useCallback(
-    (user: User) => {
-      const values = getValues();
-      // setValue(
-      //   'content',
-      //   `${values.content}<mention userid="${user?.id}" tagname="${user?.fullName}"/>`,
-      // );
-      const newContent = values?.content?.substring(0, values?.content?.length - 1);
-      setValue('content', `${newContent}${user?.fullName}`);
-      // `<mention userid="6" tagname="${word.replace('@', '')}"/>`
-    },
-    [getValues, setValue],
-  );
-
-  const onCloseMention = () => {
-    openMention(false);
-  };
+  }, [onChange, watchContent]);
 
   const onOpenEmojiPicker = () => {
     // setFocus('content');
@@ -189,6 +160,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   const onFocusCommentInput: FocusEventHandler<HTMLTextAreaElement | HTMLInputElement> = (
     event,
   ) => {
+    setFocused(true);
     // Move the cursor to end of text
     if (typeof event.target.selectionStart === 'number') {
       // eslint-disable-next-line no-param-reassign
@@ -207,19 +179,23 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   return (
     <form onSubmit={onSubmit && handleSubmit(onSubmit)} style={{ ...style }} ref={formRef}>
       <FormControl sx={{ flexDirection: 'row', marginBottom: 0 }}>
-        <Container onSubmit={onSubmit && handleSubmit(onSubmit)} alwaysFocus={alwaysFocus}>
+        <Container
+          onSubmit={onSubmit && handleSubmit(onSubmit)}
+          focused={focused}
+          alwaysFocus={alwaysFocus}
+        >
           <Controller
             name="content"
             control={control}
             render={({ field }) => (
               <CommentInput
-                {...field}
+                onChange={field.onChange}
+                editorState={field.value as EditorState}
                 onFocus={onFocusCommentInput}
+                onBlur={() => setFocused(false)}
                 onEnterPress={onSubmit && handleSubmit(onSubmit)}
-                onMention={handleMention}
                 placeholder={placeholder}
-                rows={rows}
-                maxRows={maxRows}
+                mentions={mentionData}
               />
             )}
           />
@@ -244,8 +220,8 @@ const CommentBox: React.VFC<CommentFormProps> = ({
             {!!showAttach && (
               <UploadButton
                 className={classes.inputOption}
-                id="icon-button-file"
-                accept="image/*"
+                id={`button-file-${id}`}
+                accept={UPLOAD_FILE_ACCEPT}
                 onFileSelected={onFileSelected}
               >
                 <SvgColorIcon
@@ -258,19 +234,12 @@ const CommentBox: React.VFC<CommentFormProps> = ({
             {!!showSend && (
               <>
                 <Divider orientation="vertical" sx={{ height: '19px' }} />
-                <SendButton />
+                <SendButton disabled={!watchContent.getCurrentContent().hasText()} />
               </>
             )}
           </Stack>
         </Container>
       </FormControl>
-      <MentionPopover
-        open={isOpenMention}
-        onClose={onCloseMention}
-        onSelectUser={onSelectUserMention}
-        inputElement={inputElement}
-        watchContent={watchContent || ''}
-      />
     </form>
   );
 };
