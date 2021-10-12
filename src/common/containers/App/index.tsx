@@ -12,6 +12,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import 'draft-js/dist/Draft.css';
 import '@draft-js-plugins/mention/lib/plugin.css';
 import '@src/styles.css';
+
 import LoadingFallback from '@common/atoms/LoadingFallback';
 import NotFoundPage from '@common/pages/NotFoundPage';
 import { ApiProvider } from '@api';

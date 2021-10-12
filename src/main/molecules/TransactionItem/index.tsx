@@ -200,7 +200,11 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
             {confirmModal?.description}
           </Typography>
         </ConfirmModal>
-        <FeedBackModal open={isOpenFeedbackModal} onClose={() => openFeedbackModal(false)} />
+        <FeedBackModal
+          open={isOpenFeedbackModal}
+          onClose={() => openFeedbackModal(false)}
+          transactionId={transaction.id}
+        />
         <AttachmentModal
           transaction={transaction}
           open={!!attachFileComment}

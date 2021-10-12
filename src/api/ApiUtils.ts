@@ -18,6 +18,7 @@ import {
 } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { handleResponseFail } from '@api/utils';
+import { InviteFormModel, FeedBackFormModel } from '@main/types';
 
 export default class ApiUtils implements ApiClient {
   private client: AxiosInstance;
@@ -211,5 +212,26 @@ export default class ApiUtils implements ApiClient {
       data: fileData,
     });
     return res.data;
+  };
+
+  postAddInvitation = async (data: InviteFormModel): Promise<void> => {
+    console.log('Check postAddInvitation data = ', data);
+    const res = await this.request<void>({
+      url: '/inv/invitations',
+      method: 'POST',
+      data,
+    });
+    console.log('Check postAddInvitation res = ', res);
+    // return res.data;
+  };
+
+  postFeedback = async (transactionId: number, data: FeedBackFormModel): Promise<void> => {
+    console.log(`Check postFeedback transactionId = ${transactionId}, data = `, data);
+    const res = await this.request<void>({
+      url: `/feed/transactions/${transactionId}/feedback`,
+      method: 'POST',
+      data,
+    });
+    console.log('Check postFeedback res = ', res);
   };
 }

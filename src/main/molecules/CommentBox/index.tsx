@@ -142,10 +142,10 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   }, [isSubmitted, reset]);
 
   useEffect(() => {
-    if (onChange) {
-      onChange(watchContent);
+    if (onChangeText) {
+      onChangeText(watchContent);
     }
-  }, [onChange, watchContent]);
+  }, [onChangeText, watchContent]);
 
   const onOpenEmojiPicker = () => {
     // setFocus('content');

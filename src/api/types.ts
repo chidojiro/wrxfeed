@@ -8,6 +8,7 @@ import {
   ProfileFormModel,
 } from '@auth/types';
 import { Identity } from '@identity';
+import { InviteFormModel, FeedBackFormModel } from '@main/types';
 
 export interface ApiClient {
   // Authentication API
@@ -30,9 +31,10 @@ export interface ApiClient {
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
   // For Inbox/Discussion list
   getMentions: (pagination?: Pagination) => Promise<User[]>;
-  // postAddInvitation: (data: InviteFormModel) => Promise<void>;
+  postAddInvitation: (data: InviteFormModel) => Promise<void>;
   getUsers: (filter: GetUsersFilter) => Promise<User[]>;
   getContacts: (filter: GetContactsFilter) => Promise<Contact[]>;
+  postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
 }
 
 export interface AuthClient {
