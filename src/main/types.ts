@@ -17,3 +17,11 @@ export type GroupEmoji = {
   emojiRepresent: string | React.FC<React.SVGAttributes<SVGElement>>;
   name?: string;
 };
+
+export interface InviteFormModel {
+  email: string;
+}
+
+export interface FeedBackFormModel {
+  content: string;
+}
