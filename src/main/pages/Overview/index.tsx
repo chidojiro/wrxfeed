@@ -58,6 +58,7 @@ const OverviewPage: React.VFC = () => {
   };
 
   const onClickInviteUsers = () => setInviteModal(true);
+
   return (
     <MainLayout title={companyName}>
       <Grid container sx={{ height: '100%' }}>

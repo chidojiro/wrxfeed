@@ -10,6 +10,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'emoji-mart/css/emoji-mart.css';
 import '@src/styles.css';
+import 'tailwindcss/tailwind.css';
+
 import LoadingFallback from '@common/atoms/LoadingFallback';
 import NotFoundPage from '@common/pages/NotFoundPage';
 import { ApiProvider } from '@api';
