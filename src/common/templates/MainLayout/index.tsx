@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, CssBaseline, Drawer, Stack, Typography } from '@mui/material';
+import { EssentialsBellIcon } from '@assets/';
 import SideMenu from './SideMenu';
 
 const drawerWidth = 212;
@@ -12,15 +13,18 @@ export interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) => {
   return (
     <div className="flex flex-1" style={{ backgroundColor: 'red', height: '100vh' }}>
+      <div className="flex flex-row max-h-16">
+        <div className="flex text-white text-semibold">Bird</div>
+        <div className="flex flex-row">
+          <div p-3>
+            <EssentialsBellIcon />
+          </div>
+          <div className="bg-white" />
+        </div>
+      </div>
       <div className="flex flex-1" style={{ ...boxStyle, backgroundColor: 'blue' }}>
         {children}
       </div>
-      <button
-        type="button"
-        className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Button text
-      </button>
     </div>
   );
   // return (

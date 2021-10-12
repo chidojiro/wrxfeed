@@ -48,6 +48,7 @@
     "firebase": "^9.0.2",
     "lodash.clonedeep": "^4.5.0",
     "numeral": "^2.0.6",
+    "postcss": "^8.3.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-error-boundary": "^3.1.3",
