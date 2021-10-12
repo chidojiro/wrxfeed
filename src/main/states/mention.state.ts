@@ -1,7 +1,6 @@
 import { Pagination } from '@api/types';
-import { getApiClient } from '@api/utils';
-import { User } from '@main/entity';
-import { atom, selector } from 'recoil';
+import { atom } from 'recoil';
+import { MentionData } from '@draft-js-plugins/mention';
 
 export const mentionFilterState = atom<Pagination>({
   key: 'main/mentionFilter',
@@ -11,11 +10,12 @@ export const mentionFilterState = atom<Pagination>({
   },
 });
 
-export const mentionSelector = selector<User[]>({
+export const mentionsState = atom<MentionData[]>({
   key: 'main/mentions', // unique ID (with respect to other atoms/selectors)
-  get: async ({ get }) => {
-    const apiClient = await getApiClient();
-    const filter = get(mentionFilterState);
-    return apiClient?.getMentions(filter);
-  },
+  default: [],
+});
+
+export const mentionLoadingState = atom<boolean>({
+  key: 'main/mentionLoading', // unique ID (with respect to other atoms/selectors)
+  default: false,
 });

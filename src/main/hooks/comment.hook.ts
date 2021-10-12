@@ -1,10 +1,9 @@
 import { useApi } from '@api';
-import { OrderDirection, Pagination } from '@api/types';
+import { AddCommentParams, OrderDirection, Pagination } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { useIdentity } from '@identity/hooks';
 import { Comment, Transaction } from '@main/entity';
-import { CommentFormModel } from '@main/types';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -12,7 +11,7 @@ interface CommentHookValues {
   comments: Comment[];
   total: number;
   isLoading: boolean;
-  addComment: (comment: CommentFormModel) => Promise<void>;
+  addComment: (comment: AddCommentParams) => Promise<void>;
 }
 
 export function useComment(transaction: Transaction, pagination?: Pagination): CommentHookValues {
@@ -45,7 +44,7 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
     }
   }, [ApiClient, errorHandler, transaction.id, pagination]);
 
-  const addComment = async (comment: CommentFormModel) => {
+  const addComment = async (comment: AddCommentParams) => {
     try {
       const res = await ApiClient.addComment(transaction.id, comment);
       if (!res.user) {
