@@ -1,5 +1,7 @@
+import { EditorState } from 'draft-js';
+
 export type CommentFormModel = {
-  content?: string;
+  content: EditorState;
   attachment?: string;
 };
 

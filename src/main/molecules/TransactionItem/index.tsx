@@ -7,7 +7,7 @@ import { Box, Collapse, List, Stack, Typography } from '@mui/material';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentRemaining from '@main/atoms/CommentRemaining';
 import { TransitionGroup } from 'react-transition-group';
-import { useComment } from '@main/hooks';
+import { useComment, useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
@@ -17,6 +17,9 @@ import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/molecules/FeelBackModal';
 import AttachmentModal from '@main/molecules/CommentAttachmentModal';
+import { SubmitHandler } from 'react-hook-form';
+import { EditorState } from 'draft-js';
+import { commentEditorRawParser } from '@main/utils';
 
 const INITIAL_COMMENT_NUMBER = 2;
 const LOAD_MORE_LIMIT = 5;
@@ -49,6 +52,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
   const [isOpenMenu, openMenu] = useState(false);
   const [filter, setFilter] = useState<Pagination>({ offset: 0, limit: INITIAL_COMMENT_NUMBER });
   const { comments, total, isLoading, addComment } = useComment(transaction, filter);
+  const { mentions } = useMention();
   const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
   const [isHidden, setHidden] = useState(false);
   const [notifyMessage, setNotifyMessage] = useState('');
@@ -59,19 +63,11 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
 
-  const onSubmitComment = (values: CommentFormModel) => {
-    const isDirty = !!values?.content || !!values?.attachment;
+  const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
+    const contentState = values?.content as EditorState;
+    const isDirty = contentState.getCurrentContent().hasText() || !!values?.attachment;
     if (!isDirty) return;
-    const parsedContent = values.content
-      ?.split(' ')
-      .map((word) => {
-        if (word.startsWith('@')) {
-          // 6 is Harry user id, Matt is 8, harrymnc is 21
-          return `<mention userid="6" tagname="${word.replace('@', '')}"/>`;
-        }
-        return word;
-      })
-      .join(' ');
+    const parsedContent = commentEditorRawParser(contentState.getCurrentContent());
     addComment({ content: parsedContent, attachment: values.attachment }).then();
   };
 
@@ -178,7 +174,12 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
         )}
         {!isHidden && (
           <Box sx={{ pl: 6, pt: 0.5, pb: 1 }}>
-            <CommentBox onSubmit={onSubmitComment} onAttachFile={handleAttachFile} />
+            <CommentBox
+              id={transaction.id.toString()}
+              onSubmit={onSubmitComment}
+              onAttachFile={handleAttachFile}
+              mentionData={mentions}
+            />
           </Box>
         )}
         <ConfirmModal
@@ -204,6 +205,7 @@ const TransactionItem: React.VFC<TransactionItemProps> = ({
           transaction={transaction}
           open={!!attachFileComment}
           file={attachFileComment}
+          mentionData={mentions}
           uploadOptions={uploadFileOptions}
           onClose={() => setAttachFileComment(null)}
           onFileUploaded={onSubmitComment}

@@ -21,12 +21,12 @@ body {
 }
 
 .emoji-mart-anchors {
-  padding: 4px 12px 0px;
+  padding: 4px 12px 0;
 }
 
 .emoji-mart-search {
   margin-top: 16px;
-  padding: 0px 16px;
+  padding: 0 16px;
 }
 
 .emoji-mart-search > input {
@@ -41,6 +41,25 @@ body {
 
 .emoji-mart-scroll {
   margin-bottom: 16px;
-  padding: 0px 16px 6px;
+  padding: 0 16px 6px;
   height: 285px;
+}
+
+.editor {
+  box-sizing: border-box;
+  cursor: text;
+  margin: 0  8px;
+  flex: 1;
+  font-size: 0.875rem;
+  padding: 2px 0 3px;
+  max-height: 166px;
+  overflow: scroll;
+}
+
+.editor span {
+  transition: height 300ms ease-in-out;
+}
+
+.editor :global(.public-DraftEditor-content) {
+  min-height: 140px;
 }

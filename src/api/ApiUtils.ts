@@ -1,7 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
 import { Comment, Transaction, User, Discussion, Contact } from '@main/entity';
-import { CommentFormModel } from '@main/types';
 import { ApiError } from '@error';
 import { Identity } from '@identity';
 import {
@@ -15,18 +14,10 @@ import {
   UploadToken,
   GetUsersFilter,
   GetContactsFilter,
+  AddCommentParams,
 } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
-import { removeEmptyFields } from '@common/utils';
 import { handleResponseFail } from '@api/utils';
-import {
-  InviteFormModel,
-  Activity,
-  ActivityFilterModel,
-  ActivityFormModel,
-  Revenue,
-} from '../diary/types';
-import { getTimeRangeFromFilter } from '../diary/utils';
 
 export default class ApiUtils implements ApiClient {
   private client: AxiosInstance;
@@ -148,7 +139,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  addComment = async (transactionId: number, data: CommentFormModel): Promise<Comment> => {
+  addComment = async (transactionId: number, data: AddCommentParams): Promise<Comment> => {
     const res = await this.request<Comment>({
       url: `/feed/transactions/${transactionId}/comments`,
       method: 'POST',
@@ -221,89 +212,4 @@ export default class ApiUtils implements ApiClient {
     });
     return res.data;
   };
-
-  postAddInvitation = async (data: InviteFormModel): Promise<void> => {
-    console.log('Check postAddInvitation data = ', data);
-    const res = await this.request<void>({
-      url: '/inv/invitations',
-      method: 'POST',
-      data,
-    });
-    console.log('Check postAddInvitation res = ', res);
-    // return res.data;
-  };
-
-  async searchActivities(filter: ActivityFilterModel): Promise<[Activity[], number]> {
-    const [from, to] = getTimeRangeFromFilter(filter);
-    const resp = await this.request<Activity[]>({
-      url: '/diary/activities',
-      method: 'GET',
-      params: removeEmptyFields({
-        text: filter.text,
-        tags: filter.tags,
-        from: from?.toISOString(),
-        to: to?.toISOString(),
-        limit: filter.pageSize,
-        offset: (filter.page - 1) * filter.pageSize,
-      }),
-    });
-    const total = parseInt(resp.headers['x-total-count'], 10);
-    return [resp.data, Math.ceil(total / filter.pageSize)];
-  }
-
-  async addActivity(data: ActivityFormModel): Promise<Activity> {
-    const resp = await this.request<Activity>({
-      url: '/diary/activities',
-      method: 'POST',
-      data: removeEmptyFields(data),
-    });
-    return resp.data;
-  }
-
-  async updateActivity(id: string, data: ActivityFormModel): Promise<Activity> {
-    const resp = await this.request<Activity>({
-      url: `/diary/activities/${id}`,
-      method: 'PUT',
-      data: removeEmptyFields(data),
-    });
-    return resp.data;
-  }
-
-  async deleteActivity(id: string): Promise<void> {
-    await this.request<void>({
-      url: `/diary/activities/${id}`,
-      method: 'DELETE',
-    });
-  }
-
-  async getActivity(id: string): Promise<Activity> {
-    const resp = await this.request<Activity>({
-      url: `/diary/activities/${id}`,
-      method: 'GET',
-    });
-    return resp.data;
-  }
-
-  async getTags(): Promise<string[]> {
-    const resp = await this.request<string[]>({
-      url: '/diary/tags',
-      method: 'GET',
-    });
-    return resp.data;
-  }
-
-  async getRevenue(filter: ActivityFilterModel): Promise<Revenue> {
-    const [from, to] = getTimeRangeFromFilter(filter);
-    const resp = await this.request<Revenue>({
-      url: '/diary/stat/revenue',
-      method: 'GET',
-      params: {
-        text: filter.text || undefined,
-        tags: filter.tags || undefined,
-        from: from?.toISOString(),
-        to: to?.toISOString(),
-      },
-    });
-    return resp.data;
-  }
 }

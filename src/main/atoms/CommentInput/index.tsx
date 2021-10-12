@@ -1,74 +1,85 @@
-import React, { ChangeEvent, KeyboardEvent } from 'react';
-import { styled } from '@mui/system';
-import InputBase, { InputBaseProps } from '@mui/material/InputBase';
-import EventEmitter, { EventName } from '@main/EventEmitter';
+import React, { KeyboardEvent, useCallback, useMemo, useRef, useState } from 'react';
 
-interface CommentInputProps extends InputBaseProps {
-  onEnterPress?: (event: KeyboardEvent) => void;
-  onMention?: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  rows?: number;
-  maxRows?: number;
+import { DraftHandleValue, EditorProps, KeyBindingUtil } from 'draft-js';
+import Editor from '@draft-js-plugins/editor';
+import createMentionPlugin, {
+  defaultSuggestionsFilter,
+  MentionData,
+} from '@draft-js-plugins/mention';
+// import { MentionPopover } from '@main/organisms';
+import MentionEntry from '@main/atoms/MentionEntry';
+
+const { isSoftNewlineEvent } = KeyBindingUtil;
+
+interface CommentInputProps extends EditorProps {
+  onEnterPress?: () => void;
+  mentions?: MentionData[];
 }
 
-const StyledInput = styled(InputBase)<InputBaseProps>(({ theme }) => ({
-  marginLeft: theme.spacing(1),
-  marginRight: theme.spacing(1),
-  flex: 1,
-  fontSize: '0.875rem',
-  padding: '2px 0px 3px',
-  textarea: {
-    transition: 'height 300ms ease-in-out',
-  },
-}));
+const CommentInput: React.VFC<CommentInputProps> = ({ onEnterPress, mentions, ...rest }) => {
+  const editorRef = useRef<Editor>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState(mentions || []);
+  const { MentionSuggestions, plugins } = useMemo(() => {
+    const mentionPlugin = createMentionPlugin({
+      entityMutability: 'IMMUTABLE',
+      supportWhitespace: true,
+    });
+    return { plugins: [mentionPlugin], MentionSuggestions: mentionPlugin.MentionSuggestions };
+  }, []);
 
-const CommentInput: React.ForwardRefRenderFunction<HTMLInputElement, CommentInputProps> = (
-  { name, value, placeholder, onChange, onBlur, onFocus, onEnterPress, onMention, rows, maxRows },
-  ref,
-) => {
-  const handleKeyPress = (event: KeyboardEvent): boolean => {
-    // Enter without Shift Key
-    if (event.key === 'Enter' && !event.shiftKey) {
-      // Stops enter from creating a new line
-      event.preventDefault();
-      if (onEnterPress) {
-        onEnterPress(event);
+  const handleReturn = (event: KeyboardEvent): DraftHandleValue => {
+    if (event.key === 'Enter' && !isSoftNewlineEvent(event)) {
+      if (onEnterPress && !open) {
+        onEnterPress();
+        return 'handled';
       }
-      return true;
     }
-    return false;
+    return 'not-handled';
   };
 
-  const handleTextChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (onMention) {
-      onMention(event);
-    }
-    if (onChange) {
-      onChange(event);
-    }
-  };
+  const onOpenChange = useCallback((_open: boolean) => {
+    setOpen(_open);
+  }, []);
+  const onSearchChange = useCallback(
+    ({ value }: { value: string }) => {
+      setSuggestions(defaultSuggestionsFilter(value, mentions || []));
+    },
+    [mentions],
+  );
 
   return (
-    <StyledInput
-      inputRef={ref}
-      name={name}
-      value={value}
-      placeholder={placeholder}
-      inputProps={{ 'aria-label': 'comment here' }}
-      multiline
-      rows={rows}
-      maxRows={maxRows}
-      onKeyPress={handleKeyPress}
-      onChange={handleTextChange}
-      onBlur={onBlur}
-      onFocus={onFocus}
-      onKeyDown={() => {
-        EventEmitter.dispatch(EventName.ON_KEY_DOWN);
-      }}
-      onKeyUp={() => {
-        EventEmitter.dispatch(EventName.ON_KEY_UP);
-      }}
-    />
+    <div
+      ref={containerRef}
+      className="editor"
+      onClick={() => editorRef.current?.focus()}
+      aria-hidden="true"
+    >
+      <Editor
+        ref={editorRef}
+        handleReturn={handleReturn}
+        editorKey="editor"
+        plugins={plugins}
+        {...rest}
+      />
+      <MentionSuggestions
+        open={open}
+        onOpenChange={onOpenChange}
+        suggestions={suggestions}
+        onSearchChange={onSearchChange}
+        onAddMention={() => {
+          // get the mention object selected
+        }}
+        entryComponent={MentionEntry}
+        // popoverContainer={({ children }) => (
+        //   <MentionPopover inputElement={containerRef.current} open={open}>
+        //     {children}
+        //   </MentionPopover>
+        // )}
+      />
+    </div>
   );
 };
 
-export default React.forwardRef(CommentInput);
+export default React.memo(CommentInput);

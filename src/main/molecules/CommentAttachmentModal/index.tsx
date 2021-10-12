@@ -11,6 +11,8 @@ import { Transaction } from '@main/entity';
 import CircleAvatar from '@main/atoms/CircleAvatar';
 import ImageFilePreview from '@main/atoms/ImageFilePreview';
 import { CommentFormModel } from '@main/types';
+import { EditorState } from 'draft-js';
+import { MentionData } from '@draft-js-plugins/mention';
 
 const StyledModal = styled(ModalUnstyled)`
   position: fixed;
@@ -40,23 +42,28 @@ export type AttachmentModalProps = {
   transaction?: Transaction;
   open: boolean;
   file: File | null;
+  mentionData: MentionData[];
   uploadOptions?: GetUploadTokenBody;
   onFileUploaded: (data: CommentFormModel) => void;
   onClose: () => void;
 };
 
-const CommentAttachmentModal: React.FC<AttachmentModalProps> = ({
+const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
   style,
   transaction,
   open,
   file,
+  mentionData,
   uploadOptions,
   onFileUploaded,
   onClose,
 }) => {
-  const commentContent = useRef<string | undefined>('');
+  const commentContent = useRef<EditorState>();
   const onUploadSuccess = (url: string) => {
-    onFileUploaded({ attachment: url, content: commentContent.current });
+    onFileUploaded({
+      attachment: url,
+      content: commentContent.current || EditorState.createEmpty(),
+    });
     onClose();
   };
   const { isUploading, uploadFile } = useFileUploader({
@@ -69,7 +76,7 @@ const CommentAttachmentModal: React.FC<AttachmentModalProps> = ({
     }
   };
 
-  const onChangeComment = (content?: string) => {
+  const onChangeComment = (content?: EditorState) => {
     commentContent.current = content;
   };
   return (
@@ -115,7 +122,13 @@ const CommentAttachmentModal: React.FC<AttachmentModalProps> = ({
           <Typography color={Gray[1]} fontWeight="bold" fontSize="14px" marginBottom="8px">
             Add a comment
           </Typography>
-          <CommentBox maxRows={3} showAttach={false} showSend={false} onChange={onChangeComment} />
+          <CommentBox
+            id={transaction?.id.toString()}
+            showAttach={false}
+            showSend={false}
+            mentionData={mentionData}
+            onChange={onChangeComment}
+          />
         </Stack>
         {isUploading && <LinearProgress />}
         <Divider />
@@ -153,4 +166,4 @@ const CommentAttachmentModal: React.FC<AttachmentModalProps> = ({
   );
 };
 
-export default CommentAttachmentModal;
+export default React.memo(CommentAttachmentModal);

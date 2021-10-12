@@ -256,7 +256,6 @@ module.exports = {
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-filename-extension.md
     'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],
 
-    'react-hooks/exhaustive-deps': 'off',
     'react/jsx-wrap-multilines': ['error', { declaration: false, assignment: false }],
 
     'react-hooks/rules-of-hooks': 'error',
