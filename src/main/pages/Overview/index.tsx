@@ -69,7 +69,7 @@ const OverviewPage: React.VFC = () => {
                 {!!filterTitle && <ChevronLeftIcon onClick={clearFilter} />}
                 <Typography variant="h1">{filterTitle || 'All Company'}</Typography>
               </Stack>
-              <IconButton
+              {/* <IconButton
                 onClick={onClickInviteUsers}
                 startIcon={
                   <SvgColorIcon
@@ -82,7 +82,7 @@ const OverviewPage: React.VFC = () => {
                 }
               >
                 Invite Users
-              </IconButton>
+              </IconButton> */}
             </Stack>
             <Stack sx={{ position: 'relative', width: '100%' }} flexGrow={1}>
               <TransactionList

@@ -23,14 +23,14 @@ const TransactionList: React.VFC<TransactionListProps> = ({
 }) => {
   return (
     <InfiniteScroller
-      sx={{
+      style={{
         position: 'absolute',
         top: 0,
         bottom: 0,
         left: 0,
         right: 0,
         overflow: 'scroll',
-        mr: 2,
+        marginRight: 2,
       }}
       onLoadMore={onLoadMore}
       isLoading={isLoading}
