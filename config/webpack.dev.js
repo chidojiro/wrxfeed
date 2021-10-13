@@ -17,7 +17,7 @@ module.exports = (env) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: 'http://wrx-test-162708929.us-east-2.elb.amazonaws.com',
+          target: 'http://staging-api.gravitylabs.co',
         },
       },
     },

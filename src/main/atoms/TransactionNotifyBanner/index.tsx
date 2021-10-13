@@ -11,7 +11,7 @@ const DEFAULT_TIMEOUT = 1500;
 
 interface HiddenTransactionBannerProps extends StackProps {
   sx?: SxProps;
-  container?: Element;
+  container: Element | null;
   message: string;
   closeIn?: number;
 }

@@ -1,47 +1,31 @@
-import React from 'react';
-import { CircularProgress, Stack, Typography } from '@mui/material';
-import { Accent } from '@theme/colors';
+import React, { CSSProperties } from 'react';
 import { ReactComponent as MessageTextAltIcon } from '@assets/icons/solid/message-text-alt.svg';
-import SvgColorIcon from '@common/atoms/SvgColorIcon';
-import { SxProps } from '@mui/system';
+import Loading from '@common/atoms/Loading';
 
 export interface CommentRemainingProps {
   hiddenCount: number;
   onClick?: () => void;
-  sx?: SxProps;
+  style?: CSSProperties;
   loading?: boolean;
 }
 
-const CommentRemaining: React.VFC<CommentRemainingProps> = ({
-  hiddenCount,
-  onClick,
-  sx,
-  loading,
-}) => {
+const CommentRemaining: React.VFC<CommentRemainingProps> = ({ onClick, loading, style }) => {
   return (
-    <Stack
-      sx={{ cursor: 'pointer', ...sx }}
-      direction="row"
-      spacing={0.5}
-      alignItems="center"
+    <div
+      role="none"
+      style={style}
+      className="flex space-x-1 cursor-pointer items-center"
       onClick={onClick}
     >
-      <SvgColorIcon
-        sx={{ marginRight: '2px' }}
-        component={MessageTextAltIcon}
-        color="accent"
+      <MessageTextAltIcon
+        className="fill-current text-primary"
         width={17}
         height={17}
         viewBox="0 -2 16 18"
       />
-      <Typography color={Accent[2]} variant="body2" fontWeight={600}>
-        {hiddenCount}
-      </Typography>
-      <Typography color={Accent[2]} variant="body2" fontWeight={600}>
-        Show previous comments
-      </Typography>
-      {loading && <CircularProgress size={15} />}
-    </Stack>
+      <p className="text-sm font-semibold text-primary">View all comments</p>
+      {loading && <Loading width={15} height={15} />}
+    </div>
   );
 };
 

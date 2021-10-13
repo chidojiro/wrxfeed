@@ -1,10 +1,9 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import ListItem, { ListItemProps } from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import Typography from '@mui/material/Typography';
-import { Highlight, Gray } from '@theme/colors';
+import { Menu } from '@headlessui/react';
+import { classNames } from '@main/utils';
 
-interface PopoverMenuItemProps extends ListItemProps {
+interface PopoverMenuItemProps {
   value: string;
   label: string;
   onClick: () => void;
@@ -12,13 +11,20 @@ interface PopoverMenuItemProps extends ListItemProps {
 
 const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({ value, label, onClick, ...rest }) => {
   return (
-    <ListItem key={value} disablePadding {...rest}>
-      <ListItemButton sx={{ ':hover': { backgroundColor: Highlight } }} onClick={onClick}>
-        <Typography component="span" variant="h5" fontWeight={400} color={Gray[2]}>
-          {label}
-        </Typography>
-      </ListItemButton>
-    </ListItem>
+    <Menu.Item key={value} {...rest}>
+      {({ active }) => (
+        <a
+          href="#"
+          className={classNames(
+            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+            'flex px-4 py-2 text-sm',
+          )}
+          onClick={onClick}
+        >
+          <span>{label}</span>
+        </a>
+      )}
+    </Menu.Item>
   );
 };
 
