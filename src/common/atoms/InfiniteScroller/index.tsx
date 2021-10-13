@@ -21,7 +21,7 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
   isLoading,
   LoadingComponent,
 }) => {
-  const scrollerRef = useRef<HTMLDivElement>();
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
   const handleLoadMoreTrigger = useDebounce(onLoadMore, DEBOUNCE_WAIT, []);
   const handleScroll = useCallback(() => {
