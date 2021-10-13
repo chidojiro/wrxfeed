@@ -13,6 +13,9 @@ import { ReactComponent as EssentialsSendIcon } from '@assets/icons/outline/esse
 import { ReactComponent as EssentialsSendEnableIcon } from '@assets/icons/solid/essentials-send-enable.svg';
 import { ReactComponent as TickCircleIcon } from '@assets/icons/outline/tick-circle.svg';
 import { ReactComponent as EssentialsBellIcon } from '@assets/icons/outline/essentials-bell.svg';
+import { ReactComponent as DirectoryIcon } from '@assets/icons/solid/directoryIcon.svg';
+import { ReactComponent as FeedIcon } from '@assets/icons/solid/feedIcon.svg';
+import { ReactComponent as NotifyIcon } from '@assets/icons/outline/notify.svg';
 
 export {
   NextEmoji,
@@ -30,4 +33,7 @@ export {
   EssentialsSendEnableIcon,
   TickCircleIcon,
   EssentialsBellIcon,
+  DirectoryIcon,
+  FeedIcon,
+  NotifyIcon,
 };
