@@ -24,14 +24,14 @@ const TransactionList: React.VFC<TransactionListProps> = ({
 }) => {
   return (
     <InfiniteScroller
-      sx={{
+      style={{
         position: 'absolute',
         top: 0,
         bottom: 0,
         left: 0,
         right: 0,
         overflow: 'scroll',
-        mr: 2,
+        marginRight: 2,
       }}
       onLoadMore={onLoadMore}
       isLoading={isLoading}
@@ -39,13 +39,14 @@ const TransactionList: React.VFC<TransactionListProps> = ({
     >
       {transactions.map((transaction) => (
         <React.Fragment key={transaction.id}>
-          <Divider />
+          {/* <Divider /> */}
           <TransactionItem
             transaction={transaction}
             onClickVendor={(value) => onFilter && onFilter('vendor', value)}
             onClickDepartment={(value) => onFilter && onFilter('department', value)}
             onClickCategory={(value) => onFilter && onFilter('category', value)}
           />
+          <div className="h-4 w-full" />
         </React.Fragment>
       ))}
       {!isLoading && !hasMore && <TransactionListEnd />}

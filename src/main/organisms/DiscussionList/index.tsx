@@ -42,7 +42,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
 
   return (
     <InfiniteScroller
-      sx={{
+      style={{
         marginTop: '70px',
         width: '70%',
         minWidth: '712px',

@@ -21,7 +21,7 @@ export interface MainLayoutProps {
   boxStyle?: React.CSSProperties;
 }
 
-const navigation = [
+const leftTabs = [
   { name: 'Feed', href: '#', icon: HomeIcon, current: true },
   { name: 'Company', href: '#', icon: UsersIcon, current: false },
   { name: 'For you', href: '#', icon: InboxIcon, current: false },
@@ -94,7 +94,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
               </div>
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2 space-y-1">
-                  {navigation.map((item) => (
+                  {leftTabs.map((item) => (
                     <a
                       key={item.name}
                       href={item.href}
@@ -131,16 +131,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
 
   const LeftStaticSideBar = () => {
     return (
-      <div className="hidden md:flex md:flex-shrink-0" style={{ maxWidth: SIDEBAR_WIDTH }}>
-        <div className="flex flex-col w-64">
+      <div className="hidden md:flex md:flex-shrink-0">
+        <div className="flex flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex flex-col flex-grow pt-5 pb-4 bg-black-1 overflow-y-auto">
-            <div className="flex items-center flex-shrink-0 px-4 bg-black-1">
+          <div className="flex flex-1 flex-col overflow-y-auto">
+            <div className="flex bg-purple-1 h-16 items-center pl-44">
               <h1 className="flex text-white font-bold">Bird</h1>
             </div>
-            <div className="mt-5 flex-grow flex flex-col bg-white border-r border-gray-200">
-              <nav className="flex-1 px-2 bg-white space-y-1 mt-16">
-                {navigation.map((item) => (
+            <div className="mt-5 flex-grow flex flex-col border-r border-gray-300 w-56 ml-32">
+              <nav className="flex-1 px-2 space-y-1 mt-16">
+                {leftTabs.map((item) => (
                   <a
                     key={item.name}
                     href={item.href}
@@ -171,7 +171,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
 
   const HeaderWithSearchAndAvatar = () => {
     return (
-      <div className="relative z-10 flex-shrink-0 flex h-16 bg-black-1 shadow">
+      <div className="relative z-10 flex-shrink-0 flex h-16 bg-purple-1 shadow">
         <button
           type="button"
           className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
@@ -187,12 +187,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
                 Search
               </label>
               <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none bg-black-1">
+                <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none bg-purple-1">
                   <SearchIcon className="h-5 w-5 color-white" aria-hidden="true" />
                 </div>
                 <input
                   id="search-field"
-                  className="block w-full h-full pl-8 pr-3 py-2 border-transparent text-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm bg-black-1"
+                  className="block w-full h-full pl-8 pr-3 py-2 border-transparent text-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm bg-purple-1"
                   placeholder="Search ..."
                   type="search"
                   name="search"
@@ -203,16 +203,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
           <div className="ml-4 flex items-center md:ml-6">
             <button
               type="button"
-              className="bg-black-1 p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="bg-purple-1 p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <span className="sr-only">View notifications</span>
               <BellIcon className="h-6 w-6" aria-hidden="true" />
             </button>
 
             {/* Profile dropdown */}
-            <Menu as="div" className="ml-3 relative">
+            <Menu as="div" className="ml-3 relative mr-32">
               <div>
-                <Menu.Button className="max-w-xs bg-black-1 flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <Menu.Button className="max-w-xs bg-purple-1 flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <span className="sr-only">Open user menu</span>
                   <img
                     className="h-8 w-8 rounded-full"
@@ -261,11 +261,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
       <SideBarShowHideMobile />
       {/* Static sidebar for desktop */}
       <LeftStaticSideBar />
-
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
         <HeaderWithSearchAndAvatar />
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
-          <div className="flex flex-1 h-full" style={boxStyle}>
+          <div className="flex flex-1 h-full pl-4" style={boxStyle}>
             {children}
           </div>
         </main>

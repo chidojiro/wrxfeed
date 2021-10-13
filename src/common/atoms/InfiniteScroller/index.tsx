@@ -1,7 +1,5 @@
 import React, { ReactNode, useCallback, useRef, useState } from 'react';
-import { Box } from '@mui/material';
 import { useDebounce, useEventListener } from '@common/hooks';
-import { SxProps } from '@mui/system';
 import { ScrollToTopButton } from '@main/molecules';
 
 const DEFAULT_THRESHOLD = 150;
@@ -10,14 +8,14 @@ const DEBOUNCE_WAIT = 300; // 0.3s
 interface InfiniteScrollerProps {
   threshold?: number;
   onLoadMore: () => void;
-  sx?: SxProps;
+  style?: React.CSSProperties;
   isLoading?: boolean;
   LoadingComponent?: ReactNode;
 }
 
 const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
   children,
-  sx,
+  style,
   threshold,
   onLoadMore,
   isLoading,
@@ -47,10 +45,10 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
 
   return (
     <>
-      <Box ref={scrollerRef} sx={sx}>
+      <div ref={scrollerRef} style={style}>
         {children}
         {isLoading && LoadingComponent}
-      </Box>
+      </div>
       <ScrollToTopButton onClick={scrollToTop} visible={showScrollTop} />
     </>
   );
@@ -58,7 +56,7 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
 
 InfiniteScroller.defaultProps = {
   threshold: DEFAULT_THRESHOLD,
-  sx: undefined,
+  style: undefined,
   isLoading: false,
   LoadingComponent: null,
 };

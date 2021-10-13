@@ -64,12 +64,12 @@ const OverviewPage: React.VFC = () => {
       <Grid container sx={{ height: '100%' }}>
         <Grid item xs={9} sx={{ height: '100%' }}>
           <Stack sx={{ height: '100%' }}>
-            {/* <Stack sx={{ height: 106 }} direction="row" justifyContent="space-between">
+            <Stack sx={{ height: 106 }} direction="row" justifyContent="space-between">
               <Stack spacing={1.5}>
                 {!!filterTitle && <ChevronLeftIcon onClick={clearFilter} />}
                 <Typography variant="h1">{filterTitle || 'All Company'}</Typography>
               </Stack>
-              <IconButton
+              {/* <IconButton
                 onClick={onClickInviteUsers}
                 startIcon={
                   <SvgColorIcon
@@ -82,8 +82,8 @@ const OverviewPage: React.VFC = () => {
                 }
               >
                 Invite Users
-              </IconButton>
-            </Stack> */}
+              </IconButton> */}
+            </Stack>
             <Stack sx={{ position: 'relative', width: '100%' }} flexGrow={1}>
               <TransactionList
                 transactions={transactions}
