@@ -17,7 +17,7 @@ export const Accent = {
   3: '#DEE6FF',
 };
 
-export const LightBG = '#F6F7F3';
+export const LightBG = 'rgba(192, 191, 223, 0.1)';
 export const Highlight = '#DDFF55';
 export const Neutral = {
   Light: '#42526E',

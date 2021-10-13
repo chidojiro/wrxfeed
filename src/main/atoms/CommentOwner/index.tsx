@@ -1,8 +1,6 @@
 import React from 'react';
 import { User } from '@main/entity';
-import { Stack, Typography } from '@mui/material';
 import { formatDate } from '@common/utils';
-import { Gray } from '@theme/colors';
 
 export interface CommentOwnerProps {
   owner: User;
@@ -11,21 +9,15 @@ export interface CommentOwnerProps {
 
 const CommentOwner: React.VFC<CommentOwnerProps> = ({ owner, commentDate }) => {
   return (
-    <Stack direction="row" spacing={0.5} alignItems="center">
-      <Typography variant="h5" fontWeight={600}>
-        {owner.fullName}
-      </Typography>
+    <div className="flex space-x-1 items-center">
+      <p className="text-Gray-1 text-sm font-semibold">{owner.fullName}</p>
       {!!commentDate && (
         <>
-          <Typography color={Gray[3]} variant="body2">
-            •
-          </Typography>
-          <Typography color={Gray[3]} variant="body2">
-            {formatDate(commentDate)}
-          </Typography>
+          <p className="text-Gray-6 text-xs">•</p>
+          <p className="text-Gray-6 text-xs">{formatDate(commentDate)}</p>
         </>
       )}
-    </Stack>
+    </div>
   );
 };
 

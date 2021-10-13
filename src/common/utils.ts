@@ -89,3 +89,7 @@ export function formatDate(value: string | number | Date | undefined): string {
   }
   return format(date, DATE_FORMAT);
 }
+
+export const classNames = (classes: string[]): string => {
+  return classes.filter(Boolean).join(' ');
+};

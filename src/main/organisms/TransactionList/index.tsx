@@ -1,6 +1,5 @@
 import React from 'react';
-import { Divider } from '@mui/material';
-import TransactionItem from '@main/molecules/TransactionItem';
+import TransactionCard from '@main/molecules/TransactionCard';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Transaction } from '@main/entity';
 import { TransactionFilter } from '@api/types';
@@ -24,30 +23,32 @@ const TransactionList: React.VFC<TransactionListProps> = ({
 }) => {
   return (
     <InfiniteScroller
-      sx={{
+      style={{
         position: 'absolute',
         top: 0,
         bottom: 0,
         left: 0,
         right: 0,
         overflow: 'scroll',
-        mr: 2,
+        paddingTop: 52,
+        paddingBottom: 52,
+        marginRight: 2,
       }}
       onLoadMore={onLoadMore}
       isLoading={isLoading}
       LoadingComponent={<TransactionLoading />}
     >
-      {transactions.map((transaction) => (
-        <React.Fragment key={transaction.id}>
-          <Divider />
-          <TransactionItem
+      <ul className="space-y-4">
+        {transactions.map((transaction) => (
+          <TransactionCard
+            key={transaction.id}
             transaction={transaction}
             onClickVendor={(value) => onFilter && onFilter('vendor', value)}
             onClickDepartment={(value) => onFilter && onFilter('department', value)}
             onClickCategory={(value) => onFilter && onFilter('category', value)}
           />
-        </React.Fragment>
-      ))}
+        ))}
+      </ul>
       {!isLoading && !hasMore && <TransactionListEnd />}
     </InfiniteScroller>
   );

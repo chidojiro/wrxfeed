@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Stack, Box, Skeleton } from '@mui/material';
 import { useDiscussion } from '@main/hooks';
 import { Pagination } from '@api/types';
@@ -24,10 +24,6 @@ const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
     }));
   }, [hasMore, isLoading]);
 
-  // useEffect(() => {
-  //   console.log('Check new discussions = ', discussions);
-  // }, [discussions]);
-
   const renderLoadingSkeleton = () => (
     <Stack sx={{ ml: 1 }} direction="row">
       <Box sx={{ margin: 1 }}>
@@ -42,7 +38,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
 
   return (
     <InfiniteScroller
-      sx={{
+      style={{
         marginTop: '70px',
         width: '70%',
         minWidth: '712px',

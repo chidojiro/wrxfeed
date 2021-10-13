@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Skeleton from '@mui/material/Skeleton';
+import Loading from '@common/atoms/Loading';
 
 interface CommentImageProps {
   src: string;
@@ -8,18 +8,20 @@ interface CommentImageProps {
 const CommentImage: React.VFC<CommentImageProps> = ({ src }) => {
   const [imgLoaded, setImgLoaded] = useState(false);
   return (
-    <>
-      {!imgLoaded && (
-        <Skeleton variant="rectangular" sx={{ borderRadius: '4px' }} width="50%" height={118} />
-      )}
+    <div className="relative max-w-full min-w-[32px] min-h-[32px] flex items-center justify-center pt-2">
       <img
         alt="attachment"
         loading="lazy"
-        style={{ maxWidth: '50%', borderRadius: '4px' }}
+        style={{ maxWidth: '100%' }}
         src={src}
         onLoad={() => setImgLoaded(true)}
       />
-    </>
+      {!imgLoaded && (
+        <div className="absolute">
+          <Loading />
+        </div>
+      )}
+    </div>
   );
 };
 
