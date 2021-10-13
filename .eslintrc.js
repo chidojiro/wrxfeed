@@ -62,6 +62,16 @@ module.exports = {
       files: ['*.js'],
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
+        "jsx-a11y/label-has-associated-control": ["error", {
+          "required": {
+            "some": ["nesting", "id"]
+          }
+        }],
+        "jsx-a11y/label-has-for": ["error", {
+          "required": {
+            "some": ["nesting", "id"]
+          }
+        }]
       },
     },
     {
