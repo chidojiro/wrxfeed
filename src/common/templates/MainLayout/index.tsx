@@ -1,8 +1,8 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { Fragment, useState } from 'react';
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
   BellIcon,
-  CalendarIcon,
   ChartBarIcon,
   FolderIcon,
   HomeIcon,
@@ -12,9 +12,8 @@ import {
   XIcon,
 } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
+import { classNames } from '@main/utils';
 // import SideMenu from './SideMenu';
-
-const SIDEBAR_WIDTH = 212;
 
 export interface MainLayoutProps {
   title: string;
@@ -37,11 +36,7 @@ const userNavigation = [
   { name: 'Sign out', href: '#' },
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
-
-const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children, boxStyle }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const SideBarShowHideMobile = () => {
@@ -135,7 +130,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
         <div className="flex flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex flex-1 flex-col overflow-y-auto">
-            <div className="flex bg-purple-1 h-16 items-center pl-44">
+            <div className="flex bg-primary h-16 items-center pl-44">
               <h1 className="flex text-white font-bold">Bird</h1>
             </div>
             <div className="mt-5 flex-grow flex flex-col border-r border-gray-300 w-56 ml-32">
@@ -171,7 +166,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
 
   const HeaderWithSearchAndAvatar = () => {
     return (
-      <div className="relative z-10 flex-shrink-0 flex h-16 bg-purple-1 shadow">
+      <div className="relative z-10 flex-shrink-0 flex h-16 bg-primary shadow">
         <button
           type="button"
           className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
@@ -187,12 +182,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
                 Search
               </label>
               <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none bg-purple-1">
+                <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none bg-primary">
                   <SearchIcon className="h-5 w-5 color-white" aria-hidden="true" />
                 </div>
                 <input
                   id="search-field"
-                  className="block w-full h-full pl-8 pr-3 py-2 border-transparent text-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm bg-purple-1"
+                  className="block w-full h-full pl-8 pr-3 py-2 border-transparent text-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm bg-primary"
                   placeholder="Search ..."
                   type="search"
                   name="search"
@@ -203,7 +198,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
           <div className="ml-4 flex items-center md:ml-6">
             <button
               type="button"
-              className="bg-purple-1 p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="bg-primary p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               <span className="sr-only">View notifications</span>
               <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -212,7 +207,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
             {/* Profile dropdown */}
             <Menu as="div" className="ml-3 relative mr-32">
               <div>
-                <Menu.Button className="max-w-xs bg-purple-1 flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <Menu.Button className="max-w-xs bg-primary flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <span className="sr-only">Open user menu</span>
                   <img
                     className="h-8 w-8 rounded-full"

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Fragment, useCallback, useRef, useState } from 'react';
+import React, { Fragment, useCallback, useMemo, useRef, useState } from 'react';
 import { CommentFormModel } from '@main/types';
 import { Transaction } from '@main/entity';
 import CommentBox from '@main/molecules/CommentBox';
@@ -18,7 +18,7 @@ import FeedBackModal from '@main/molecules/FeelBackModal';
 import AttachmentModal from '@main/molecules/CommentAttachmentModal';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
-import { commentEditorRawParser } from '@main/utils';
+import { commentEditorRawParser, getDepartmentBgColor } from '@main/utils';
 // Tailwind components
 import { Menu } from '@headlessui/react';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
@@ -63,6 +63,10 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
   // Variables
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
+  const deptBgClass = useMemo(
+    () => getDepartmentBgColor(transaction.department || ''),
+    [transaction.department],
+  );
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
     const contentState = values?.content as EditorState;
@@ -129,7 +133,7 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
       <TransactionNotifyBanner message={notifyMessage} container={containerRef.current} />
       <li ref={containerRef} key={transaction.id} className="bg-white filter drop-shadow-md">
         <article className="flex" aria-labelledby={`question-title-${transaction.id}`}>
-          <div className="bg-dept-1 w-1/5 min-w-[94px] py-4 px-2.5">
+          <div style={{ backgroundColor: deptBgClass }} className="w-1/5 min-w-[94px] py-4 px-2.5">
             <h2 className="text-2xs font-semibold text-white py-2">
               <a
                 href="#"
@@ -145,7 +149,7 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-Gray-6">
                   <a href="#" className="hover:underline">
-                    {transaction.category}
+                    {transaction.department}
                   </a>
                 </p>
               </div>

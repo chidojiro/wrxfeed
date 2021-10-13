@@ -49,3 +49,38 @@ export function commentEditorRawParser(contentState: ContentState): string {
 export function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(' ');
 }
+
+/**
+ * Get department bg color based on name
+ */
+const DEPT_COLORS = [
+  '#254252',
+  '#14213D',
+  '#1F1A44',
+  '#2451BF',
+  '#4F46E5',
+  '#202898',
+  '#853BFF',
+  '#6B23DC',
+  '#43249E',
+  '#13B9B9',
+  '#0891B2',
+  '#066B64',
+  '#F3AA20',
+  '#DF6622',
+  '#F64C32',
+];
+export function getDepartmentBgColor(name: string): string {
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < name.length; i += 1) {
+    hash += name.charCodeAt(i);
+  }
+
+  // there are 15 pre-defined colors of department. Position starts from 1
+  const bgColorPos = hash % DEPT_COLORS.length;
+
+  return DEPT_COLORS[bgColorPos];
+}

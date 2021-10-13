@@ -10,7 +10,7 @@ const Loading: React.VFC<LoadingProps> = ({ width, height }) => {
     <div className=" flex justify-center items-center">
       <div
         style={{ width: width ?? 32, height: height ?? 32 }}
-        className="animate-spin rounded-full h-2 w-2 border-b-2 border-gray-900"
+        className="animate-spin rounded-full h-2 w-2 border-b-2 border-primary"
       />
     </div>
   );

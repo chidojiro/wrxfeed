@@ -18,12 +18,12 @@ const CommentRemaining: React.VFC<CommentRemainingProps> = ({ onClick, loading, 
       onClick={onClick}
     >
       <MessageTextAltIcon
-        className="fill-current text-primary"
+        className="fill-current text-purple-5 path-no-filled"
         width={17}
         height={17}
         viewBox="0 -2 16 18"
       />
-      <p className="text-sm font-semibold text-primary">View all comments</p>
+      <p className="text-sm font-semibold text-purple-6">View all comments</p>
       {loading && <Loading width={15} height={15} />}
     </div>
   );

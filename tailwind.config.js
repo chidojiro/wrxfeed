@@ -15,14 +15,14 @@ module.exports = {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
       colors: {
+        'primary': '#14142F',
+
         'Gray-1': '#0F0D15',
         'Gray-2': '#273240',
         'Gray-3': '#9EA0AA',
         'Gray-6': '#7D8490',
         'Gray-8': '#a5a3a9',
         'Gray-12': '#F3F3F7',
-
-        'purple-1': '#14142F',
 
         'Green-1': '#4A944E',
         'Green-12': '#D7F3D8',
@@ -38,6 +38,11 @@ module.exports = {
         'Neutral-4': '#797D6F',
         'Neutral-5': '#8D9183',
         'Neutral-10': '#ECEEE4',
+
+        'purple-5': '#7A3FEB',
+        'purple-6': '#8B5CF6',
+        'purple-7': '#C4B5FD',
+        'purple-8': '#EDE9FE',
 
         'dept-1': '#254252',
         'dept-2': '#14213D',
