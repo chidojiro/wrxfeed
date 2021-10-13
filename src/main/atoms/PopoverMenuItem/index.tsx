@@ -16,7 +16,7 @@ const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({ value, label, onClic
         <a
           href="#"
           className={classNames(
-            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+            active ? 'bg-purple-7 text-Gray-1' : 'text-Gray-1',
             'flex px-4 py-2 text-sm',
           )}
           onClick={onClick}
