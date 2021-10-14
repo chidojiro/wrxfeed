@@ -11,21 +11,26 @@ body {
 
 /* Emoji mart styles */
 .emoji-mart {
-  border-radius: 24px;
-  background-color: #f6f7f3;
+  border-radius: 2px;
+  border: 1px solid #d1d5db;
+  @apply bg-LightBG;
 }
 
 .emoji-mart-category-label > span {
-  background-color: #f6f7f3;
+  @apply bg-LightBG;
   padding: 8px 6px;
 }
 
 .emoji-mart-category .emoji-mart-emoji:hover:before {
-  background-color: #e8e8ea;
+  @apply bg-purple-8;
 }
 
 .emoji-mart-anchors {
   padding: 4px 12px 0;
+}
+
+.emoji-mart-anchor-icon > svg {
+  margin: auto;
 }
 
 .emoji-mart-search {
@@ -35,7 +40,7 @@ body {
 
 .emoji-mart-search > input {
   padding: 8px 25px 8px 10px;
-  background-color: #f6f7f3;
+  @apply bg-LightBG;
 }
 
 .emoji-mart-search-icon {
@@ -49,15 +54,21 @@ body {
   height: 285px;
 }
 
+/* Editor styles */
 .editor {
   box-sizing: border-box;
   cursor: text;
-  margin: 0  8px;
+  margin: 0 8px;
   flex: 1;
   font-size: 0.875rem;
-  padding: 2px 0 3px;
+  line-height: 1.25rem;
+  padding-bottom: 1px;
   max-height: 166px;
   overflow: scroll;
+}
+
+.public-DraftEditor-content {
+  @apply caret-purple-5;
 }
 
 .editor span {
@@ -69,13 +80,55 @@ body {
 }
 
 .mention {
-  background-color: #EDE9FE;
-  color: #8B5CF6;
-  border-radius: 4px;
+  @apply bg-purple-8 text-purple-5 rounded;
   padding: 1px 4px 2px;
   cursor: pointer;
 }
 
+.mention-suggestion-container {
+  @apply bg-LightBG;
+  min-width: 422px;
+  border-radius: 2px;
+  border: 1px solid #d1d5db;
+}
+
+.mention-suggestion-entry {
+  @apply flex items-center px-2 py-1 space-x-3;
+}
+
+.mention-suggestion-entry:active {
+  @apply bg-purple-5;
+}
+
+.mention-suggestion-entry--focused {
+  @apply flex items-center px-2 py-1 bg-purple-5;
+}
+
+.mention-suggestion-text {
+  @apply text-Gray-1 text-sm;
+}
+
+.mention-suggestion-text--focused {
+  @apply text-white text-sm;
+}
+
+/* Common styles */
 svg.path-no-filled > path {
   fill: inherit;
+}
+
+svg.path-no-stroke > path {
+  stroke: inherit;
+}
+
+.divider {
+  @apply bg-Gray-11;
+}
+
+.divider-horizontal {
+  height: 1px;
+}
+
+.divider-vertical {
+  width: 1px;
 }

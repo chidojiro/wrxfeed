@@ -1,29 +1,33 @@
-import React from 'react';
-import { styled } from '@mui/system';
+import React, { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 import { EssentialsSendIcon, EssentialsSendEnableIcon } from '@assets/index';
 
-interface SendButtonAirplaneProps {
-  disabled?: boolean;
-}
-
-const StyledButton = styled('button')(() => ({
-  display: 'flex',
-  backgroundColor: 'transparent',
-  borderRadius: '0px',
-  borderWidth: '0px',
-  flexDirection: 'row',
-  alignItems: 'center',
-  outline: 'none',
-  padding: '0px 5px 0px 2px',
-}));
-
-const SendButtonAirplane: React.VFC<SendButtonAirplaneProps> = ({ disabled, ...rest }) => {
-  const SendIcon = disabled ? <EssentialsSendIcon /> : <EssentialsSendEnableIcon />;
+const SendButtonAirplane: React.VFC<
+  DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
+> = ({ disabled, ...rest }) => {
+  const SendIcon = disabled ? (
+    <EssentialsSendIcon
+      className="fill-current text-gray-6 opacity-50 path-no-filled"
+      width={16}
+      height={16}
+      viewBox="0 0 17 17"
+    />
+  ) : (
+    <EssentialsSendEnableIcon
+      className="fill-current text-purple-5 path-no-filled"
+      width={16}
+      height={16}
+      viewBox="0 0 17 17"
+    />
+  );
 
   return (
-    <StyledButton disabled={disabled} type="submit" {...rest}>
+    <button
+      className="flex bg-transparent rounded-none border-0 items-center outline-none pr-[5px] pl-0.5"
+      type="submit"
+      {...rest}
+    >
       {SendIcon}
-    </StyledButton>
+    </button>
   );
 };
 

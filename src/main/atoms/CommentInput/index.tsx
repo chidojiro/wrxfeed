@@ -5,6 +5,7 @@ import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin, {
   defaultSuggestionsFilter,
   MentionData,
+  defaultTheme,
 } from '@draft-js-plugins/mention';
 // import { MentionPopover } from '@main/organisms';
 import MentionEntry from '@main/atoms/MentionEntry';
@@ -25,6 +26,17 @@ const CommentInput: React.VFC<CommentInputProps> = ({ onEnterPress, mentions, ..
     const mentionPlugin = createMentionPlugin({
       entityMutability: 'IMMUTABLE',
       supportWhitespace: true,
+      popperOptions: {
+        placement: 'top-end',
+      },
+      theme: {
+        ...defaultTheme,
+        mentionSuggestionsEntry: 'mention-suggestion-entry',
+        mentionSuggestionsEntryFocused: 'mention-suggestion-entry--focused',
+        mentionSuggestionsEntryText: 'mention-suggestion-text',
+        mentionSuggestionsEntryTextFocused: 'mention-suggestion-text--focused',
+        mentionSuggestions: 'mention-suggestion-container',
+      },
     });
     return { plugins: [mentionPlugin], MentionSuggestions: mentionPlugin.MentionSuggestions };
   }, []);
@@ -73,9 +85,7 @@ const CommentInput: React.VFC<CommentInputProps> = ({ onEnterPress, mentions, ..
         }}
         entryComponent={MentionEntry}
         // popoverContainer={({ children }) => (
-        //   <MentionPopover inputElement={containerRef.current} open={open}>
-        //     {children}
-        //   </MentionPopover>
+        //   <div className="mention-suggestion-container">{children}</div>
         // )}
       />
     </div>

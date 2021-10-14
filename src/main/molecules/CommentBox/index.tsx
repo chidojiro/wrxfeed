@@ -1,13 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback, FocusEventHandler } from 'react';
-import { makeStyles } from '@mui/styles';
-import FormControl from '@mui/material/FormControl';
-import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import Paper, { PaperProps } from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
 import { ReactComponent as AttachIcon } from '@assets/icons/outline/attach.svg';
 import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
-import { Highlight, Neutral } from '@theme/colors';
 import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel } from '@main/types';
@@ -15,55 +8,14 @@ import EmojiPicker from '@main/molecules/EmojiPicker';
 import CommentInput from '@main/atoms/CommentInput';
 import SendButton from '@main/atoms/SendButton';
 import { EmojiData } from 'emoji-mart';
-import SvgColorIcon from '@common/atoms/SvgColorIcon';
 import { EditorState, Modifier } from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
 import { UPLOAD_FILE_ACCEPT } from '@src/config';
-
-const useStyles = makeStyles({
-  container: {
-    display: 'flex',
-    flexGrow: 1,
-    minWidth: '70%',
-    backgroundColor: Neutral[10],
-    borderRadius: 8,
-    padding: '6px 6px 6px 8px',
-    alignItems: 'flex-end',
-    border: `1px solid ${Neutral[10]}`,
-    transition: 'all 300ms ease-in-out',
-    '&.focus': {
-      borderColor: Neutral[5],
-      backgroundColor: '#fff',
-    },
-  },
-  inputOption: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 25,
-    height: 25,
-    borderRadius: 12.5,
-    '&:hover': {
-      backgroundColor: Highlight,
-    },
-  },
-});
-export interface ContainerProps extends PaperProps {
-  focused: boolean;
-  alwaysFocus: boolean;
-}
-
-const Container: React.VFC<ContainerProps> = ({ children, focused, alwaysFocus }) => {
-  const classes = useStyles();
-  return (
-    <Paper className={`${classes.container} ${(focused || alwaysFocus) && 'focus'}`} elevation={0}>
-      {children}
-    </Paper>
-  );
-};
+import { classNames } from '@main/utils';
 
 export interface CommentFormProps {
   id?: string;
+  className?: string;
   onSubmit?: SubmitHandler<CommentFormModel>;
   showAttach?: boolean;
   showSend?: boolean;
@@ -82,6 +34,7 @@ export interface CommentFormProps {
 
 const CommentBox: React.VFC<CommentFormProps> = ({
   id,
+  className,
   onSubmit,
   showAttach = true,
   showSend = true,
@@ -93,14 +46,12 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   onChange,
   mentionData,
 }) => {
-  const classes = useStyles();
-  const emojiRef = useRef<HTMLDivElement>();
+  const emojiRef = useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const {
     control,
     handleSubmit,
     reset,
-    setFocus,
     setValue,
     getValues,
     watch,
@@ -113,6 +64,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   const watchContent = watch('content', EditorState.createEmpty());
   const [isOpenEmojiPicker, openEmojiPicker] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [hovered, setHovered] = useState(false);
   // useCallback functions
   const onSelectEmoji = useCallback(
     (emoji: EmojiData) => {
@@ -147,15 +99,11 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     }
   }, [onChange, watchContent]);
 
-  const onOpenEmojiPicker = () => {
-    // setFocus('content');
-    openEmojiPicker(true);
-    setFocus('content');
-  };
-
-  const onCloseEmojiPicker = () => {
-    openEmojiPicker(false);
-  };
+  useEffect(() => {
+    if (!(focused || hovered) && isOpenEmojiPicker) {
+      openEmojiPicker(false);
+    }
+  }, [focused, hovered, isOpenEmojiPicker]);
 
   const onFocusCommentInput: FocusEventHandler<HTMLTextAreaElement | HTMLInputElement> = (
     event,
@@ -178,68 +126,83 @@ const CommentBox: React.VFC<CommentFormProps> = ({
 
   return (
     <form onSubmit={onSubmit && handleSubmit(onSubmit)} style={{ ...style }} ref={formRef}>
-      <FormControl sx={{ flexDirection: 'row', marginBottom: 0 }}>
-        <Container
-          onSubmit={onSubmit && handleSubmit(onSubmit)}
-          focused={focused}
-          alwaysFocus={alwaysFocus}
+      <div
+        className={classNames(
+          focused || alwaysFocus ? 'border-purple-5 bg-white' : 'bg-purple-8 border-purple-8',
+          'group flex flex-grow min-w-[70%] items-end border transition-all rounded-[1px] py-1.5 pl-2 pr-1.5',
+          className ?? '',
+        )}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <Controller
+          name="content"
+          control={control}
+          render={({ field }) => (
+            <CommentInput
+              onChange={field.onChange}
+              editorState={field.value as EditorState}
+              onFocus={onFocusCommentInput}
+              onBlur={() => setFocused(false)}
+              onEnterPress={onSubmit && handleSubmit(onSubmit)}
+              placeholder={placeholder}
+              mentions={mentionData}
+            />
+          )}
+        />
+        <div
+          style={{ transform: focused || hovered ? 'scaleX(1)' : 'scaleX(0)' }}
+          className="flex h-full transform space-x-2 items-end scale-x-0 group-hover:scale-x-100 origin-right transition-all"
         >
-          <Controller
-            name="content"
-            control={control}
-            render={({ field }) => (
-              <CommentInput
-                onChange={field.onChange}
-                editorState={field.value as EditorState}
-                onFocus={onFocusCommentInput}
-                onBlur={() => setFocused(false)}
-                onEnterPress={onSubmit && handleSubmit(onSubmit)}
-                placeholder={placeholder}
-                mentions={mentionData}
-              />
-            )}
-          />
-          <Stack direction="row" spacing={1} alignItems="center">
-            {showEmoji && (
-              <>
-                <Box ref={emojiRef} className={classes.inputOption} onClick={onOpenEmojiPicker}>
-                  <SvgColorIcon
-                    component={SmileIcon}
-                    pathstyle={{ fill: Neutral[5] }}
-                    viewBox="0 0 17 17"
-                  />
-                </Box>
-                <EmojiPicker
-                  open={isOpenEmojiPicker}
-                  onClose={onCloseEmojiPicker}
-                  anchorEl={emojiRef.current}
-                  onSelectEmoji={onSelectEmoji}
-                />
-              </>
-            )}
-            {!!showAttach && (
-              <UploadButton
-                className={classes.inputOption}
-                id={`button-file-${id}`}
-                accept={UPLOAD_FILE_ACCEPT}
-                onFileSelected={onFileSelected}
+          {showEmoji && (
+            <>
+              <button
+                type="button"
+                ref={emojiRef}
+                className="flex justify-center items-center w-5 h-5 rounded-sm hover:bg-purple-8 transition-all"
+                onClick={() => openEmojiPicker((prevState) => !prevState)}
               >
-                <SvgColorIcon
-                  component={AttachIcon}
-                  pathstyle={{ stroke: Neutral[5], fill: 'none' }}
+                <span className="sr-only">Emoji picker</span>
+                <SmileIcon
+                  className="fill-current text-gray-6 opacity-50 hover:opacity-100 hover:text-purple-5 path-no-filled"
+                  width={14}
+                  height={14}
                   viewBox="0 0 17 17"
                 />
-              </UploadButton>
-            )}
-            {!!showSend && (
-              <>
-                <Divider orientation="vertical" sx={{ height: '19px' }} />
-                <SendButton disabled={!watchContent.getCurrentContent().hasText()} />
-              </>
-            )}
-          </Stack>
-        </Container>
-      </FormControl>
+              </button>
+              <EmojiPicker
+                open={isOpenEmojiPicker}
+                anchorEl={emojiRef?.current}
+                onSelectEmoji={onSelectEmoji}
+              />
+            </>
+          )}
+          {!!showAttach && (
+            <UploadButton
+              className="flex justify-center items-center w-5 h-5 rounded-sm hover:bg-purple-8"
+              id={`button-file-${id}`}
+              accept={UPLOAD_FILE_ACCEPT}
+              onFileSelected={onFileSelected}
+            >
+              <AttachIcon
+                className="stroke-current text-gray-6 opacity-50 hover:opacity-100 hover:text-purple-5 path-no-stroke"
+                width={14}
+                height={14}
+                viewBox="0 0 17 17"
+              />
+            </UploadButton>
+          )}
+          {!!showSend && (
+            <>
+              <hr className="divider divider-vertical h-5" />
+              <SendButton
+                className="w-5 h-5"
+                disabled={!watchContent.getCurrentContent().hasText()}
+              />
+            </>
+          )}
+        </div>
+      </div>
     </form>
   );
 };
