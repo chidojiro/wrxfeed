@@ -23,6 +23,7 @@ module.exports = {
         'Gray-6': '#7D8490',
         'Gray-8': '#a5a3a9',
         'Gray-12': '#F3F3F7',
+        'Gray-hover': '#F9F9F9',
 
         'Green-1': '#4A944E',
         'Green-12': '#D7F3D8',

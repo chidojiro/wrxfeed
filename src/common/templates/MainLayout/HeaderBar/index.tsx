@@ -56,6 +56,35 @@ const profileInfos = [
   },
 ];
 
+const notifies = [
+  {
+    id: 0,
+    title: 'Graham Miller mentioned you in',
+    post: 'Gusto Pay* Arrow',
+    content: 'Alex Sivilay looping you in.',
+    timestamp: '5 hours ago',
+  },
+  {
+    id: 1,
+    title: 'Matt Lock commented in',
+    post: 'Gusto Pay* Arrow',
+    content: 'Looping you in.',
+    timestamp: '5 hours ago',
+  },
+  {
+    id: 2,
+    title: 'Graham Miller mentioned you in',
+    content: 'Alex Sivilay yes that is correct.',
+    timestamp: '5 hours ago',
+  },
+  {
+    id: 3,
+    title: 'Alex Sivilay mentioned you in ',
+    content: 'Did you see this item?',
+    timestamp: '5 hours ago',
+  },
+];
+
 const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
   const ProfileDropdown = () => {
     return (
@@ -129,30 +158,32 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
           leaveTo="transform opacity-0 scale-95"
         >
           <div
-            style={{ width: '332px', height: '544px' }}
-            className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
+            style={{ width: '410px' }}
+            className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white-500 ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
           >
-            <div className="flex flex-row items-center h-16 w-full border-b-2 px-8">
-              <p className="flex text-gray-1 font-medium">Profile</p>
+            <div className="flex flex-row h-16 w-full border-b-2 px-8">
+              <p className="flex text-gray-1 font-medium self-center">Notifications</p>
+              <p className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-xs">Mark all as read</p>
             </div>
-            <div className="flex flex-1 flex-col">
-              <img
-                alt="user-avatar"
-                className="flex w-36 h-36 rounded-full self-center mt-6"
-                src={user.imageUrl}
-              />
-              <div className="flex flex-1 flex-col px-11 pt-4">
-                {profileInfos.map((item) => {
-                  return (
-                    <div key={`profileInfos${item.title}`} className="flex flex-col mt-2">
+            <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-3">
+              {notifies.map((item) => {
+                return (
+                  <div
+                    key={`profileInfos${item.title}`}
+                    className="flex flex-col mt-2 max-h-16 px-4 py-2 hover:bg-Gray-hover"
+                  >
+                    <div className="flex flex-row items-center">
                       <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
-                      <div className="flex flex-row items-center px-1 py-4 h-10">
-                        <p className="flex text-sm text-Gray-6">{item.content}</p>
+                      <div className="flex text-Gray-6 font-semibold text-xs ml-auto">
+                        {item.timestamp}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                    <div className="flex flex-row items-center mt-2">
+                      <p className="flex text-sm text-Gray-6">{item.content}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </Transition>
