@@ -3,6 +3,7 @@ import { GroupTab, LeftTab } from '@common/types';
 import { FeedIcon, DirectoryIcon } from '@assets/index';
 import LeftStaticSideBar from './LeftStaticSideBar';
 import HeaderBar from './HeaderBar';
+import RightPanel from './RightPanel';
 
 // const SIDEBAR_WIDTH = 212;
 
@@ -51,6 +52,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
             </div>
           </main>
         </div>
+        {/* <div className="grid">
+          <RightPanel />
+        </div> */}
       </div>
     </div>
   );
