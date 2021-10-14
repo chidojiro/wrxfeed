@@ -4,7 +4,7 @@ import { XIcon } from '@heroicons/react/outline';
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
 
-export interface SideBarMobile {
+export interface SideBarMobileProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   groupTabs: GroupTab[];
@@ -13,7 +13,7 @@ export interface SideBarMobile {
   setCurrentTab: (tab: LeftTab) => void;
 }
 
-export const SideBarMobile: React.VFC<SideBarMobile> = ({
+export const SideBarMobile: React.VFC<SideBarMobileProps> = ({
   sidebarOpen,
   setSidebarOpen,
   groupTabs,
