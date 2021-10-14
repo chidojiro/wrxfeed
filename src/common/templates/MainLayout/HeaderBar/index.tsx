@@ -59,27 +59,33 @@ const profileInfos = [
 const notifies = [
   {
     id: 0,
-    title: 'Graham Miller mentioned you in',
+    title: 'Graham Miller',
+    action: 'mentioned you in',
     post: 'Gusto Pay* Arrow',
     content: 'Alex Sivilay looping you in.',
     timestamp: '5 hours ago',
   },
   {
     id: 1,
-    title: 'Matt Lock commented in',
+    title: 'Matt Lock',
+    action: 'commented in',
     post: 'Gusto Pay* Arrow',
     content: 'Looping you in.',
     timestamp: '5 hours ago',
   },
   {
     id: 2,
-    title: 'Graham Miller mentioned you in',
+    title: 'Graham Miller',
+    action: 'mentioned you in',
+    post: 'Gusto Pay* Arrow',
     content: 'Alex Sivilay yes that is correct.',
     timestamp: '5 hours ago',
   },
   {
     id: 3,
-    title: 'Alex Sivilay mentioned you in ',
+    title: 'Alex Sivilay',
+    action: 'commented in',
+    post: 'Gusto Pay* Arrow',
     content: 'Did you see this item?',
     timestamp: '5 hours ago',
   },
@@ -141,7 +147,6 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
       <Menu as="div" className="flex-shrink-0 relative ml-5">
         <div>
           <Menu.Button className="mr-2 rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
-            <span className="sr-only">Open user menu</span>
             <span className="sr-only">View notifications</span>
             <div className="flex h-6 w-6 justify-center items-center">
               <NotifyIcon aria-hidden="true" />
@@ -158,12 +163,14 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
           leaveTo="transform opacity-0 scale-95"
         >
           <div
-            style={{ width: '410px' }}
+            style={{ minWidth: '430px' }}
             className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white-500 ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
           >
-            <div className="flex flex-row h-16 w-full border-b-2 px-8">
+            <div className="flex flex-row h-16 w-full border-b-2 pl-8">
               <p className="flex text-gray-1 font-medium self-center">Notifications</p>
-              <p className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-xs">Mark all as read</p>
+              <p className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-xs font-semibold">
+                Mark all as read
+              </p>
             </div>
             <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-3">
               {notifies.map((item) => {
@@ -173,13 +180,22 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
                     className="flex flex-col mt-2 max-h-16 px-4 py-2 hover:bg-Gray-hover"
                   >
                     <div className="flex flex-row items-center">
-                      <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
-                      <div className="flex text-Gray-6 font-semibold text-xs ml-auto">
+                      <div className="flex flex-row">
+                        <div className="flex text-xs text-gray-1 font-bold">{item.title}</div>
+                        <div className="flex text-xs text-gray-1 font-regular mx-1">
+                          {item.action}
+                        </div>
+                        <div className="flex text-xs text-gray-1 font-bold">{item.post}</div>
+                      </div>
+                      <div
+                        className="flex text-Gray-6 font-semibold ml-auto"
+                        style={{ fontSize: '10px' }}
+                      >
                         {item.timestamp}
                       </div>
                     </div>
                     <div className="flex flex-row items-center mt-2">
-                      <p className="flex text-sm text-Gray-6">{item.content}</p>
+                      <p className="flex text-xs text-Gray-2">{item.content}</p>
                     </div>
                   </div>
                 );

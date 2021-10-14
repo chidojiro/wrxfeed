@@ -50,7 +50,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
       {/* Static sidebar for desktop */}
       <LeftStaticSideBar
         groupTabs={groupTabs}
-        title={title}
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
       />
