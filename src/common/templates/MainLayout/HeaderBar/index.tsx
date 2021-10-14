@@ -37,6 +37,25 @@ const user = {
     'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 };
 
+const profileInfos = [
+  {
+    title: 'Name',
+    content: 'Steve Schnell',
+  },
+  {
+    title: 'Title',
+    content: 'Ceo',
+  },
+  {
+    title: 'Department',
+    content: 'Management',
+  },
+  {
+    title: 'Email',
+    content: 'steve@gravitylabs.co',
+  },
+];
+
 const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
   const ProfileDropdown = () => {
     return (
@@ -44,7 +63,7 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
         <div>
           <Menu.Button className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
             <span className="sr-only">Open user menu</span>
-            <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
+            <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="user.imageUrl" />
           </Menu.Button>
         </div>
         <Transition
@@ -56,23 +75,86 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none">
-            {userNavigation.map((item) => (
-              <Menu.Item key={item.name}>
-                {({ active }) => (
-                  <a
-                    href={item.href}
-                    className={classNames([
-                      active ? 'bg-gray-100' : '',
-                      'block py-2 px-4 text-sm text-gray-700',
-                    ])}
-                  >
-                    {item.name}
-                  </a>
-                )}
-              </Menu.Item>
-            ))}
-          </Menu.Items>
+          <div
+            style={{ width: '332px', height: '544px' }}
+            className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
+          >
+            <div className="flex flex-row items-center h-16 w-full border-b-2 px-8">
+              <p className="flex text-gray-1 font-medium">Profile</p>
+            </div>
+            <div className="flex flex-1 flex-col">
+              <img
+                alt="user-avatar"
+                className="flex w-36 h-36 rounded-full self-center mt-6"
+                src={user.imageUrl}
+              />
+              <div className="flex flex-1 flex-col px-11 pt-4">
+                {profileInfos.map((item) => {
+                  return (
+                    <div key={`profileInfos${item.title}`} className="flex flex-col mt-2">
+                      <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
+                      <div className="flex flex-row items-center px-1 py-4 h-10">
+                        <p className="flex text-sm text-Gray-6">{item.content}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </Menu>
+    );
+  };
+
+  const NotifyDropdown = () => {
+    return (
+      <Menu as="div" className="flex-shrink-0 relative ml-5">
+        <div>
+          <Menu.Button className="mr-2 rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
+            <span className="sr-only">Open user menu</span>
+            <span className="sr-only">View notifications</span>
+            <div className="flex h-6 w-6 justify-center items-center">
+              <NotifyIcon aria-hidden="true" />
+            </div>
+          </Menu.Button>
+        </div>
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-100"
+          enterFrom="transform opacity-0 scale-95"
+          enterTo="transform opacity-100 scale-100"
+          leave="transition ease-in duration-75"
+          leaveFrom="transform opacity-100 scale-100"
+          leaveTo="transform opacity-0 scale-95"
+        >
+          <div
+            style={{ width: '332px', height: '544px' }}
+            className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
+          >
+            <div className="flex flex-row items-center h-16 w-full border-b-2 px-8">
+              <p className="flex text-gray-1 font-medium">Profile</p>
+            </div>
+            <div className="flex flex-1 flex-col">
+              <img
+                alt="user-avatar"
+                className="flex w-36 h-36 rounded-full self-center mt-6"
+                src={user.imageUrl}
+              />
+              <div className="flex flex-1 flex-col px-11 pt-4">
+                {profileInfos.map((item) => {
+                  return (
+                    <div key={`profileInfos${item.title}`} className="flex flex-col mt-2">
+                      <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
+                      <div className="flex flex-row items-center px-1 py-4 h-10">
+                        <p className="flex text-sm text-Gray-6">{item.content}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </Transition>
       </Menu>
     );
@@ -113,21 +195,8 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
               </div>
               <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-4">
                 <div className="text-sm font-medium text-gray-900 hover:underline">Go Premium</div>
-                {/* <p className="ml-5 flex-shrink-0 bg-white rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </p> */}
-                <button
-                  type="button"
-                  className="p-1 mr-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <div className="flex h-6 w-6 justify-center items-center">
-                    <NotifyIcon aria-hidden="true" />
-                  </div>
-                </button>
+                <NotifyDropdown />
                 <div className="bg-white mx-2" style={{ width: '1px', height: '34px' }} />
-                {/* Profile dropdown */}
                 <ProfileDropdown />
                 <div className="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
                   New Post
@@ -136,6 +205,7 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
             </div>
           </div>
 
+          {/* for mobile */}
           <Popover.Panel as="nav" className="lg:hidden" aria-label="Global">
             <div className="max-w-3xl mx-auto px-2 pt-2 pb-3 space-y-1 sm:px-4">
               {navigation.map((item) => (
@@ -181,16 +251,9 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
                 ))}
               </div>
             </div>
-
             <div className="mt-6 max-w-3xl mx-auto px-4 sm:px-6">
               <div className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700">
                 New Post
-              </div>
-
-              <div className="mt-6 flex justify-center">
-                <div className="text-base font-medium text-gray-900 hover:underline">
-                  Go Premium
-                </div>
               </div>
             </div>
           </Popover.Panel>
