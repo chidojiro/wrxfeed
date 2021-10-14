@@ -18,10 +18,10 @@ const Template: Story<TransactionContentProps> = (args) => {
 export const Default = Template.bind({});
 const transaction: Transaction = {
   id: 1,
-  category: 'Professional Services',
+  category: { id: 1, name: 'Professional Services' },
   transDate: new Date().toISOString(),
   amount: 17000,
-  vendor: 'Vendor name',
+  vendor: { id: 1, name: 'Vendor name' },
   status: STATUS.NEW,
-};
+} as Transaction;
 Default.args = { transaction };
