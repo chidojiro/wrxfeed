@@ -29,9 +29,9 @@ const LOAD_MORE_LIMIT = 5;
 
 export interface TransactionItemProps {
   transaction: Transaction;
-  onClickDepartment?: (department?: string) => void;
-  onClickVendor?: (vendor?: string) => void;
-  onClickCategory?: (category?: string) => void;
+  onClickDepartment?: (department?: number) => void;
+  onClickVendor?: (vendor?: number) => void;
+  onClickCategory?: (category?: number) => void;
 }
 
 interface ConfirmModalProps {
@@ -64,8 +64,8 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
   const deptBgClass = useMemo(
-    () => getDepartmentBgColor(transaction.department || ''),
-    [transaction.department],
+    () => getDepartmentBgColor(transaction.department.name),
+    [transaction.department.name],
   );
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
@@ -138,9 +138,9 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
               <a
                 href="#"
                 className="hover:underline"
-                onClick={() => onClickDepartment && onClickDepartment(transaction.department)}
+                onClick={() => onClickDepartment && onClickDepartment(transaction.department.id)}
               >
-                {transaction.department}
+                {transaction.department.name}
               </a>
             </h2>
           </div>
@@ -149,7 +149,7 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-Gray-6">
                   <a href="#" className="hover:underline">
-                    {transaction.department}
+                    {transaction.department.name}
                   </a>
                 </p>
               </div>
@@ -197,18 +197,18 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
               <a
                 href="#"
                 className="hover:underline"
-                onClick={() => onClickCategory && onClickCategory(transaction.category)}
+                onClick={() => onClickCategory && onClickCategory(transaction.category.id)}
               >
-                {transaction.category}
+                {transaction.category.name}
               </a>
             </h2>
             <p className="text-xs text-Gray-6">
               <a
                 href="#"
                 className="hover:underline"
-                onClick={() => onClickVendor && onClickVendor(transaction.vendor)}
+                onClick={() => onClickVendor && onClickVendor(transaction.vendor.id)}
               >
-                {transaction.vendor}
+                {transaction.vendor.name}
               </a>
               {' • '}
               <time dateTime={transaction.transDate}>{formatDate(transaction.transDate)}</time>

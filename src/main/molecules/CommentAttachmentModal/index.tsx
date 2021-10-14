@@ -111,10 +111,10 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
                 size={20}
                 sx={{ ml: 0.5, mr: 0.5 }}
                 typographyProps={{ variant: 'h6', lineHeight: '0.875rem' }}
-                name={transaction?.department}
+                name={transaction.department.name}
                 initialLength={1}
               />
-              <span style={{ fontWeight: 600 }}>{transaction?.category ?? ''}</span>
+              <span style={{ fontWeight: 600 }}>{transaction.category.name ?? ''}</span>
             </Stack>
           </Typography>
         </Stack>
