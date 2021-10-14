@@ -1,5 +1,4 @@
 import React from 'react';
-import { styled } from '@mui/system';
 
 type UploadButtonProps = React.LabelHTMLAttributes<Element> & {
   id: string;
@@ -7,14 +6,6 @@ type UploadButtonProps = React.LabelHTMLAttributes<Element> & {
   accept?: string;
   onFileSelected: (file: File | null) => void;
 };
-
-const FileInput = styled('input')({
-  display: 'none',
-});
-
-const Label = styled('label')({
-  display: 'flex',
-});
 
 const UploadButton: React.VFC<UploadButtonProps> = ({
   children,
@@ -34,10 +25,10 @@ const UploadButton: React.VFC<UploadButtonProps> = ({
   };
 
   return (
-    <Label className={className} htmlFor={id}>
-      <FileInput accept={accept} id={id} type="file" onChange={handleFileInput} />
+    <label className={className} htmlFor={id}>
+      <input className="hidden" accept={accept} id={id} type="file" onChange={handleFileInput} />
       {children}
-    </Label>
+    </label>
   );
 };
 
