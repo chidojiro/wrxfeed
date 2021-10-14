@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Menu, Popover, Transition } from '@headlessui/react';
 // import { SearchIcon } from '@heroicons/react/solid';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 import { NotifyIcon } from '@assets/index';
 import {
   BellIcon,
@@ -219,8 +219,8 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
     >
       {({ open }) => (
         <>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="relative flex justify-between xl:grid xl:grid-cols-12 lg:gap-8">
+          <div className="max-w-8xl flex mx-36 px-4 sm:px-6 lg:px-8 py-4">
+            <div className="relative flex w-full justify-between xl:grid xl:grid-cols-12 lg:gap-8">
               <div className="flex md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-2">
                 <div className="flex-shrink-0 flex items-center">
                   <h1 className="text-xl font-bold text-white">{title}</h1>

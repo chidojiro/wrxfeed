@@ -10,7 +10,7 @@ import {
   StarIcon,
   ThumbUpIcon,
 } from '@heroicons/react/solid';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 
 export type Author = {
   name: string;
