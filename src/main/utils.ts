@@ -46,7 +46,7 @@ export function commentEditorRawParser(contentState: ContentState): string {
   return rawTextBlocks.join('\n');
 }
 
-export function classNames(...classes: string[]): string {
+export function classNames(classes: string[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
