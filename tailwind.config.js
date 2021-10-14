@@ -6,6 +6,9 @@ module.exports = {
     './public/**/*.html',
     './src/**/*.{js,jsx,ts,tsx,react}'
   ],
+  experimental: {
+    applyComplexClasses: true,
+  },
   theme: {
     extend: {
       fontSize: {
@@ -22,6 +25,7 @@ module.exports = {
         'Gray-3': '#9EA0AA',
         'Gray-6': '#7D8490',
         'Gray-8': '#a5a3a9',
+        'Gray-11': '#DFE1E6',
         'Gray-12': '#F3F3F7',
 
         'Green-1': '#4A944E',
@@ -31,7 +35,7 @@ module.exports = {
         'Accent-2': '#6565FB',
         'Accent-3': '#DEE6FF',
 
-        'LightBG': 'rgba(192, 191, 223, 0.1)',
+        'LightBG': '#F9FAFB',
         'Highlight': '#DDFF55',
 
         'Neutral-Light': '#42526E',

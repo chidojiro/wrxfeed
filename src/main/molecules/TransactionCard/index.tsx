@@ -1,9 +1,7 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Fragment, useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { CommentFormModel } from '@main/types';
 import { Transaction } from '@main/entity';
 import CommentBox from '@main/molecules/CommentBox';
-import { Box, Typography } from '@mui/material';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentRemaining from '@main/atoms/CommentRemaining';
 import { useComment, useMention } from '@main/hooks';
@@ -18,11 +16,12 @@ import FeedBackModal from '@main/molecules/FeelBackModal';
 import AttachmentModal from '@main/molecules/CommentAttachmentModal';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
-import { commentEditorRawParser, getDepartmentBgColor } from '@main/utils';
+import { commentEditorRawParser } from '@main/utils';
 // Tailwind components
 import { Menu } from '@headlessui/react';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { formatCurrency, formatDate } from '@common/utils';
+import DepartmentColorSection from '@main/atoms/DepartmentColorSection';
 
 const INITIAL_COMMENT_NUMBER = 2;
 const LOAD_MORE_LIMIT = 5;
@@ -63,10 +62,6 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
   // Variables
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
-  const deptBgClass = useMemo(
-    () => getDepartmentBgColor(transaction.department.name),
-    [transaction.department.name],
-  );
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
     const contentState = values?.content as EditorState;
@@ -94,7 +89,7 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
     setConfirmModal({
       title: 'Hide this from the entire company?',
       description:
-        'Only you will be able to see this transaction. Tagged members will not be able to see this.',
+        'Only you will be able to see this category. Other teammates will not be able to see this.',
       confirmAction: handleHideCategory,
       confirmLabel: 'Hide',
     });
@@ -133,24 +128,20 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
       <TransactionNotifyBanner message={notifyMessage} container={containerRef.current} />
       <li ref={containerRef} key={transaction.id} className="bg-white filter drop-shadow-md">
         <article className="flex" aria-labelledby={`question-title-${transaction.id}`}>
-          <div style={{ backgroundColor: deptBgClass }} className="w-1/5 min-w-[94px] py-4 px-2.5">
-            <h2 className="text-2xs font-semibold text-white py-2">
-              <a
-                href="#"
-                className="hover:underline"
-                onClick={() => onClickDepartment && onClickDepartment(transaction.department.id)}
-              >
-                {transaction.department.name}
-              </a>
-            </h2>
-          </div>
+          <DepartmentColorSection department={transaction.department.parent} />
           <div className="flex-grow w-4/5 p-5 border">
             <div className="flex items-center space-x-3">
               <div className="min-w-0 flex-1">
                 <p className="text-xs text-Gray-6">
-                  <a href="#" className="hover:underline">
+                  <button
+                    type="button"
+                    className="hover:underline"
+                    onClick={() => {
+                      return onClickDepartment && onClickDepartment(transaction.department.id);
+                    }}
+                  >
                     {transaction.department.name}
-                  </a>
+                  </button>
                 </p>
               </div>
               <div className="flex-shrink-0 self-center flex items-center">
@@ -194,34 +185,34 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
               id={`question-title-${transaction.id}`}
               className="mt-3 text-base font-semibold text-Gray-2"
             >
-              <a
-                href="#"
+              <button
+                type="button"
                 className="hover:underline"
                 onClick={() => onClickCategory && onClickCategory(transaction.category.id)}
               >
                 {transaction.category.name}
-              </a>
+              </button>
             </h2>
             <p className="text-xs text-Gray-6">
-              <a
-                href="#"
+              <button
+                type="button"
                 className="hover:underline"
                 onClick={() => onClickVendor && onClickVendor(transaction.vendor.id)}
               >
                 {transaction.vendor.name}
-              </a>
+              </button>
               {' • '}
               <time dateTime={transaction.transDate}>{formatDate(transaction.transDate)}</time>
             </p>
-            {hasComment && (
-              <div className="mt-8 mb-6 space-y-4">
-                {hiddenCommentCount > 0 && (
-                  <CommentRemaining
-                    hiddenCount={hiddenCommentCount}
-                    onClick={loadMoreComments}
-                    loading={isLoading}
-                  />
-                )}
+            <div className="mt-9 space-y-4">
+              {hiddenCommentCount > 0 && (
+                <CommentRemaining
+                  hiddenCount={hiddenCommentCount}
+                  onClick={loadMoreComments}
+                  loading={isLoading}
+                />
+              )}
+              {hasComment && (
                 <ul>
                   {comments?.map((comment) => (
                     <li key={comment.id}>
@@ -232,17 +223,16 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
                     </li>
                   ))}
                 </ul>
-              </div>
-            )}
+              )}
+            </div>
             {!isHidden && (
-              <Box sx={{ pb: 1 }}>
-                <CommentBox
-                  id={transaction.id.toString()}
-                  onSubmit={onSubmitComment}
-                  onAttachFile={handleAttachFile}
-                  mentionData={mentions}
-                />
-              </Box>
+              <CommentBox
+                id={transaction.id.toString()}
+                className="mt-6 mb-5"
+                onSubmit={onSubmitComment}
+                onAttachFile={handleAttachFile}
+                mentionData={mentions}
+              />
             )}
           </div>
         </article>
@@ -256,15 +246,9 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
         onCancel={() => setConfirmModal(undefined)}
         onOk={confirmModal?.confirmAction}
       >
-        <Typography
-          id="modal-modal-description"
-          variant="h5"
-          fontWeight={400}
-          component="p"
-          color={Gray[2]}
-        >
+        <p id="modal-modal-description" className="text-Gray-6 text-sm">
           {confirmModal?.description}
-        </Typography>
+        </p>
       </ConfirmModal>
       <FeedBackModal
         open={isOpenFeedbackModal}

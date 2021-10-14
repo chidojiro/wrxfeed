@@ -1,8 +1,7 @@
 import { MentionData, MentionPluginTheme } from '@draft-js-plugins/mention';
 import React, { MouseEventHandler } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
-import { Gray, Highlight } from '@theme/colors';
+import { classNames } from '@main/utils';
 
 export interface EntryComponentProps {
   className?: string;
@@ -22,23 +21,28 @@ const MentionEntry: React.VFC<EntryComponentProps> = (props) => {
   const { mention, theme, searchValue, isFocused, ...parentProps } = props;
 
   return (
-    <Box
-      component="div"
-      {...parentProps}
-      sx={{
-        padding: '0px',
-        justifyContent: 'left',
-        backgroundColor: isFocused ? Highlight : 'transparent',
-        borderRadius: '0px',
-      }}
-    >
-      <Stack direction="row" alignItems="center" paddingX="16px" paddingY="8px">
-        <AvatarIcon fill={isFocused ? Gray[1] : Gray[3]} />
-        <Typography fontSize="14px" marginLeft="8px" color={Gray[1]} fontWeight="600">
+    <div {...parentProps}>
+      <div className={theme?.mentionSuggestionsEntry}>
+        <AvatarIcon
+          width={15}
+          height={15}
+          viewBox="2 2 16 16"
+          className={classNames(
+            isFocused ? 'text-white opacity-100' : 'text-Gray-6 opacity-50',
+            'fill-current path-no-filled',
+          )}
+        />
+        <p
+          className={
+            isFocused
+              ? theme?.mentionSuggestionsEntryTextFocused
+              : theme?.mentionSuggestionsEntryText
+          }
+        >
           {mention.name}
-        </Typography>
-      </Stack>
-    </Box>
+        </p>
+      </div>
+    </div>
   );
 };
 
