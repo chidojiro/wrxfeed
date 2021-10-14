@@ -31,7 +31,7 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({
   return (
     <Grid container spacing={2}>
       <Grid item>
-        <CircleAvatar name={transaction.department} onClick={onClickDepartment} />
+        <CircleAvatar name={transaction.department.name} onClick={onClickDepartment} />
       </Grid>
       <Grid item xs={12} sm container>
         <Grid item xs container direction="column">
@@ -40,9 +40,9 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({
               <Typography
                 variant="h4"
                 component="a"
-                onClick={() => onClickCategory && onClickCategory(transaction.category)}
+                onClick={() => onClickCategory && onClickCategory(transaction.category.name)}
               >
-                {transaction.category}
+                {transaction.category.name}
               </Typography>
               <Typography color={Gray[3]} variant="body2">
                 •
@@ -70,7 +70,7 @@ const TransactionContent: React.VFC<TransactionContentProps> = ({
             <Typography
               sx={{ fontSize: '0.875rem' }}
               component="a"
-              onClick={() => onClickVendor && onClickVendor(transaction.vendor)}
+              onClick={() => onClickVendor && onClickVendor(transaction.vendor.name)}
             >
               {transaction.vendor}
             </Typography>

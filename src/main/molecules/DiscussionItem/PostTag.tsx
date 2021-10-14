@@ -64,7 +64,7 @@ const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
             margin: 0,
           }}
         >
-          {getPostAbbreviation(transaction?.department)}
+          {getPostAbbreviation(transaction.department.name)}
         </p>
       </div>
       <p
@@ -78,7 +78,7 @@ const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
           marginLeft: 4,
         }}
       >
-        {`${transaction?.department}`}
+        {`${transaction.department.name}`}
       </p>
     </div>
   );
