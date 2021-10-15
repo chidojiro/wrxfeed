@@ -68,6 +68,7 @@ export const EmojiPickerContainer: React.VFC = () => {
       ref={referenceElement}
       style={styles.popper}
       {...attributes.popper}
+      className="z-50"
       onMouseEnter={() => onHoverRef.current && onHoverRef.current(true)}
       onMouseLeave={() => onHoverRef.current && onHoverRef.current(false)}
     >

@@ -213,7 +213,7 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
       className={({ open }) => {
         return classNames([
           open ? 'fixed inset-0 z-40 overflow-y-auto' : '',
-          'bg-primary shadow-sm lg:static lg:overflow-y-visible',
+          'bg-primary z-40 shadow-sm lg:static lg:overflow-y-visible',
         ]);
       }}
     >

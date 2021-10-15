@@ -9,7 +9,6 @@ import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { Gray, LightBG } from '@theme/colors';
-import TransactionNotifyBanner from '@main/atoms/TransactionNotifyBanner';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/molecules/FeelBackModal';
@@ -23,6 +22,7 @@ import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-v
 import { formatCurrency, formatDate } from '@common/utils';
 import DepartmentColorSection from '@main/atoms/DepartmentColorSection';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
+import NotifyBanner from '@common/molecules/NotifyBanner';
 
 const INITIAL_COMMENT_NUMBER = 2;
 const LOAD_MORE_LIMIT = 5;
@@ -56,7 +56,6 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   const { mentions } = useMention();
   const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
   const [isHidden, setHidden] = useState(false);
-  const [notifyMessage, setNotifyMessage] = useState('');
   const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
   const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
   const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
@@ -83,7 +82,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   const handleHideCategory = () => {
     setConfirmModal(undefined);
     setHidden(true);
-    setNotifyMessage('You have hidden this transaction');
+    NotifyBanner.info('You have hidden this transaction');
   };
 
   const openHideCategoryConfirmation = () => {
@@ -96,17 +95,17 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     });
   };
 
-  const handleUnhideCategory = () => {
+  const handleShowCategory = () => {
     setConfirmModal(undefined);
     setHidden(false);
-    setNotifyMessage('You have unhidden this transaction');
+    NotifyBanner.info('You have unhidden this transaction');
   };
 
   const openShowCategoryConfirmation = () => {
     setConfirmModal({
       title: 'Unhide this category?',
       description: 'This will unhide the category and it will be visible to the entire company.',
-      confirmAction: handleUnhideCategory,
+      confirmAction: handleShowCategory,
       confirmLabel: 'Unhide',
     });
   };
@@ -126,7 +125,6 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
 
   return (
     <>
-      <TransactionNotifyBanner message={notifyMessage} container={containerRef.current} />
       <li ref={containerRef} key={transaction.id} className="bg-white filter drop-shadow-md">
         <article className="flex" aria-labelledby={`question-title-${transaction.id}`}>
           <DepartmentColorSection department={transaction.department.parent} />

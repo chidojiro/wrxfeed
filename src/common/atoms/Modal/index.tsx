@@ -2,7 +2,7 @@ import React, { Fragment, MutableRefObject, ReactElement } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 
 export interface ModalProps {
-  children: Element | ReactElement | null;
+  children?: Element | ReactElement | null;
   initialFocus?: MutableRefObject<HTMLElement | null>;
   open: boolean;
   onClose: () => void;
@@ -13,7 +13,7 @@ const Modal: React.FC<ModalProps> = ({ children, initialFocus, open, onClose }) 
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed z-10 inset-0 overflow-y-auto"
+        className="fixed z-50 inset-0 overflow-y-auto"
         initialFocus={initialFocus}
         onClose={onClose}
       >
@@ -41,7 +41,9 @@ const Modal: React.FC<ModalProps> = ({ children, initialFocus, open, onClose }) 
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            {children}
+            <div className="inline-block align-bottom bg-white rounded-sm text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle">
+              {children}
+            </div>
           </Transition.Child>
         </div>
       </Dialog>

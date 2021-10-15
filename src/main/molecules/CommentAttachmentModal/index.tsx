@@ -1,9 +1,6 @@
 import React, { useRef } from 'react';
-import { styled } from '@mui/system';
-import ModalUnstyled from '@mui/core/ModalUnstyled';
-import { Button, LinearProgress, Stack, Typography } from '@mui/material';
+import { LinearProgress } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { Gray } from '@theme/colors';
 import CommentBox from '@main/molecules/CommentBox';
 import { useFileUploader } from '@common/hooks/useFileUploader';
 import { GetUploadTokenBody } from '@api/types';
@@ -13,43 +10,18 @@ import ImageFilePreview from '@main/atoms/ImageFilePreview';
 import { CommentFormModel } from '@main/types';
 import { EditorState } from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
+import Modal, { ModalProps } from '@common/atoms/Modal';
 
-const StyledModal = styled(ModalUnstyled)`
-  position: fixed;
-  z-index: 1300;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Backdrop = styled('div')`
-  z-index: -1;
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  -webkit-tap-highlight-color: transparent;
-`;
-
-export type AttachmentModalProps = {
+export type AttachmentModalProps = ModalProps & {
   style?: React.CSSProperties;
   transaction?: Transaction;
-  open: boolean;
   file: File | null;
   mentionData: MentionData[];
   uploadOptions?: GetUploadTokenBody;
   onFileUploaded: (data: CommentFormModel) => void;
-  onClose: () => void;
 };
 
 const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
-  style,
   transaction,
   open,
   file,
@@ -59,6 +31,7 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
   onClose,
 }) => {
   const commentContent = useRef<EditorState>();
+  const isImage = file?.type.split('/')[0] === 'image';
   const onUploadSuccess = (url: string) => {
     onFileUploaded({
       attachment: url,
@@ -80,32 +53,15 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
     commentContent.current = content;
   };
   return (
-    <StyledModal
-      open={open}
-      onClose={onClose}
-      keepMounted={false}
-      BackdropComponent={Backdrop}
-      disableEscapeKeyDown
-      style={style}
-    >
-      <Stack
-        sx={{
-          display: 'flex',
-          width: '500px',
-          height: 'auto',
-          borderRadius: '24px',
-          backgroundColor: 'white',
-          borderWidth: '0px',
-          outline: 'none',
-        }}
-      >
-        <ImageFilePreview file={file} width={144} height={90} />
-        <Stack paddingX="24px" marginTop="14px">
-          <Typography color={Gray[1]} fontWeight="bold" fontSize="18px">
+    <Modal open={open} onClose={onClose}>
+      <div className="sm:max-w-[500px] sm:w-full">
+        {isImage && <ImageFilePreview className="mt-6 ml-6" file={file} width={144} height={90} />}
+        <div className="px-6 mt-3.5">
+          <p className="text-lg text-left font-bold text-Gray-1">
             {file?.name || '<unknown filename>'}
-          </Typography>
-          <Typography color={Gray[2]} marginTop="2px" fontSize="14px">
-            <Stack direction="row">
+          </p>
+          <p className="text-sm text-left text-Gray-2 mt-2">
+            <div className="flex">
               Upload to
               <CircleAvatar
                 size={20}
@@ -115,54 +71,42 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
                 initialLength={1}
               />
               <span style={{ fontWeight: 600 }}>{transaction?.category.name ?? ''}</span>
-            </Stack>
-          </Typography>
-        </Stack>
-        <Stack flex={1} padding="24px">
-          <Typography color={Gray[1]} fontWeight="bold" fontSize="14px" marginBottom="8px">
-            Add a comment
-          </Typography>
+            </div>
+          </p>
+        </div>
+        <div className="flex flex-col p-6">
+          <p className="text-sm text-left text-Gray-1 font-bold mb-2">Add a comment</p>
           <CommentBox
             id={transaction?.id.toString()}
             showAttach={false}
             showSend={false}
+            showEmoji={false}
             mentionData={mentionData}
             onChange={onChangeComment}
           />
-        </Stack>
+        </div>
         {isUploading && <LinearProgress />}
         <Divider />
-        <Stack
-          paddingX="24px"
-          paddingY="16px"
-          height="66px"
-          justifyContent="flex-end"
-          direction="row"
-        >
-          <Button
+        <div className="flex justify-end h-[66px] px-6 py-4">
+          <button
+            type="button"
             disabled={isUploading}
-            variant="text"
-            sx={{ borderRadius: '4px' }}
+            className="rounded text-sm font-bold text-Gray-2 px-5"
             onClick={onClose}
           >
-            <Typography fontSize="14px" fontWeight={600} color={Gray[2]}>
-              Cancel
-            </Typography>
-          </Button>
-          <Button
-            variant="contained"
-            color="accent"
-            sx={{ borderRadius: '4px', marginLeft: '4px' }}
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="bg-purple-5 rounded text-sm font-bold text-white ml-2 px-5"
             disabled={isUploading}
             onClick={handleFileUpload}
           >
-            <Typography fontSize="14px" fontWeight={600}>
-              Upload
-            </Typography>
-          </Button>
-        </Stack>
-      </Stack>
-    </StyledModal>
+            Upload
+          </button>
+        </div>
+      </div>
+    </Modal>
   );
 };
 

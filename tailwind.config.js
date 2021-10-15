@@ -49,6 +49,7 @@ module.exports = {
         'purple-6': '#8B5CF6',
         'purple-7': '#C4B5FD',
         'purple-8': '#EDE9FE',
+        'purple-9': '#F5F3FF',
 
         'system-alert': '#FF5F68',
       },

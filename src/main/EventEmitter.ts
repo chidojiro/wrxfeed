@@ -1,10 +1,7 @@
 export enum EventName {
-  EXAMPLE = 'EXAMPLE',
-  ON_KEY_DOWN = 'ON_KEY_DOWN',
-  ON_KEY_UP = 'ON_KEY_UP',
-  SELECT_MENTION = 'SELECT_MENTION',
   OPEN_EMOJI_PICKER = 'OPEN_EMOJI_PICKER',
   CLOSE_EMOJI_PICKER = 'CLOSE_EMOJI_PICKER',
+  OPEN_NOTIFY_BANNER = 'OPEN_NOTIFY_BANNER',
 }
 
 type Callback = (...args: unknown[]) => unknown;

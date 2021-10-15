@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import { SxProps } from '@mui/system';
+import { classNames } from '@main/utils';
 
 export type ImageFilePreviewProps = {
-  sx?: SxProps;
+  className?: string;
   width?: number;
   height?: number;
   file: File | null;
 };
 
-const ImageFilePreview: React.FC<ImageFilePreviewProps> = ({ sx, width, height, file }) => {
+const ImageFilePreview: React.FC<ImageFilePreviewProps> = ({ className, width, height, file }) => {
   const [previewSrc, setPreviewSrc] = useState<string>(
     'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png',
   );
@@ -22,7 +21,7 @@ const ImageFilePreview: React.FC<ImageFilePreviewProps> = ({ sx, width, height, 
   }, [file]);
 
   return (
-    <Box sx={{ mt: 3, ml: 3, outline: 'none', borderWidth: '0px', ...sx }}>
+    <div className={classNames('outline-none border-0', className ?? '')}>
       <img
         id="image_preview_upload"
         alt="alt_image_upload"
@@ -34,7 +33,7 @@ const ImageFilePreview: React.FC<ImageFilePreviewProps> = ({ sx, width, height, 
           objectFit: 'cover',
         }}
       />
-    </Box>
+    </div>
   );
 };
 

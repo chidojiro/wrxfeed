@@ -25,7 +25,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const cancelButtonRef = useRef(null);
   return (
     <Modal initialFocus={cancelButtonRef} open={open} onClose={onClose}>
-      <div className="inline-block align-bottom bg-white rounded-sm px-4 py-5 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-[400px] sm:w-full">
+      <div className=" px-4 py-5 sm:max-w-[400px] sm:w-full">
         <div className="flex items-center justify-between space-x-4">
           {icon || <ExclamationCircle />}
           <Dialog.Title as="h3" className="text-sm text-Gray-1 font-semibold flex-grow">
