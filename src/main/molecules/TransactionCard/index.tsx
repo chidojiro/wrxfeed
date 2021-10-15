@@ -16,17 +16,18 @@ import FeedBackModal from '@main/molecules/FeelBackModal';
 import AttachmentModal from '@main/molecules/CommentAttachmentModal';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
-import { commentEditorRawParser } from '@main/utils';
+import { classNames, commentEditorRawParser } from '@main/utils';
 // Tailwind components
 import { Menu } from '@headlessui/react';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { formatCurrency, formatDate } from '@common/utils';
 import DepartmentColorSection from '@main/atoms/DepartmentColorSection';
+import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
 
 const INITIAL_COMMENT_NUMBER = 2;
 const LOAD_MORE_LIMIT = 5;
 
-export interface TransactionItemProps {
+export interface TransactionCardProps {
   transaction: Transaction;
   onClickDepartment?: (department?: number) => void;
   onClickVendor?: (vendor?: number) => void;
@@ -40,7 +41,7 @@ interface ConfirmModalProps {
   confirmLabel: string;
 }
 
-const TransactionCard: React.VFC<TransactionItemProps> = ({
+const TransactionCard: React.VFC<TransactionCardProps> = ({
   transaction,
   onClickDepartment,
   onClickVendor,
@@ -101,7 +102,7 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
     setNotifyMessage('You have unhidden this transaction');
   };
 
-  const openUnhideCategoryConfirmation = () => {
+  const openShowCategoryConfirmation = () => {
     setConfirmModal({
       title: 'Unhide this category?',
       description: 'This will unhide the category and it will be visible to the entire company.',
@@ -129,9 +130,14 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
       <li ref={containerRef} key={transaction.id} className="bg-white filter drop-shadow-md">
         <article className="flex" aria-labelledby={`question-title-${transaction.id}`}>
           <DepartmentColorSection department={transaction.department.parent} />
-          <div className="flex-grow w-4/5 p-5 border">
+          <div
+            className={classNames(
+              isHidden ? 'bg-purple-8' : 'bg-white',
+              'flex-grow w-4/5 p-5 border',
+            )}
+          >
             <div className="flex items-center space-x-3">
-              <div className="min-w-0 flex-1">
+              <div className="flex min-w-0 flex-1">
                 <p className="text-xs text-Gray-6">
                   <button
                     type="button"
@@ -143,6 +149,15 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
                     {transaction.department.name}
                   </button>
                 </p>
+                {isHidden && (
+                  <>
+                    <EyeHideIcon
+                      viewBox="-2 -2 19 19"
+                      className="fill-current path-no-filled stroke-current path-no-stroke text-system-alert ml-3 mr-1"
+                    />
+                    <span className="text-xs text-Gray-6">Hidden</span>
+                  </>
+                )}
               </div>
               <div className="flex-shrink-0 self-center flex items-center">
                 <h2
@@ -161,9 +176,9 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
                   <PopoverMenu>
                     {isHidden ? (
                       <PopoverMenuItem
-                        value="unhide-category"
-                        label="Unhide Category"
-                        onClick={openUnhideCategoryConfirmation}
+                        value="show-category"
+                        label="Show Category"
+                        onClick={openShowCategoryConfirmation}
                       />
                     ) : (
                       <PopoverMenuItem
