@@ -3,7 +3,7 @@ import { styled } from '@mui/system';
 import ModalUnstyled from '@mui/core/ModalUnstyled';
 import { useRecoilState } from 'recoil';
 import { Stack } from '@mui/material';
-import TransactionItem from '@main/molecules/TransactionItem';
+import TransactionCard from '@main/molecules/TransactionCard';
 import { showTransactionModalState } from './states';
 
 const StyledModal = styled(ModalUnstyled)`
@@ -66,7 +66,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ style }) => {
         padding="24px"
         // overflow="scroll"
       >
-        {!!transaction && <TransactionItem transaction={transaction} />}
+        {!!transaction && <TransactionCard transaction={transaction} />}
       </Stack>
     </StyledModal>
   );

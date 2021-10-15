@@ -3,25 +3,30 @@ import { Meta, Story } from '@storybook/react/types-6-0';
 
 import { Transaction } from '@main/entity';
 import { STATUS } from '@common/atoms/StatusTag';
-import TransactionContent, { TransactionContentProps } from '.';
+import TransactionCard, { TransactionCardProps } from '.';
 
 export default {
-  title: 'Atoms/TransactionContent',
-  component: TransactionContent,
+  title: 'Molecules/TransactionCard',
+  component: TransactionCard,
 } as Meta;
 
-const Template: Story<TransactionContentProps> = (args) => {
+const Template: Story<TransactionCardProps> = (args) => {
   const { transaction } = args;
-  return <TransactionContent transaction={transaction} />;
+  return <TransactionCard transaction={transaction} />;
 };
 
 export const Default = Template.bind({});
 const transaction: Transaction = {
   id: 1,
   category: { id: 1, name: 'Professional Services' },
+  department: { id: 1, name: 'Department', parent: { id: 2, name: 'Parent Department' } },
+  vendor: { id: 1, name: 'Vendor' },
   transDate: new Date().toISOString(),
   amount: 17000,
-  vendor: { id: 1, name: 'Vendor name' },
+  currency: '$',
+  commentCount: 10,
   status: STATUS.NEW,
-} as Transaction;
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
 Default.args = { transaction };

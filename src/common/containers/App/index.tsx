@@ -22,6 +22,8 @@ import { ProtectedRoute } from '@identity';
 import { API_BASE_URL } from '@src/config';
 import { CookieProvider } from '@common/hooks/useCookie';
 import { UploadCSVModal, InviteModal } from '@main/organisms';
+import { EmojiPickerContainer } from '@common/molecules/EmojiPicker';
+import { NotifyBannerContainer } from '@common/molecules/NotifyBanner';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -82,6 +84,8 @@ const App: React.FC = () => {
             </RecoilRoot>
           </LocalizationProvider>
           <StyledToastContainer />
+          <EmojiPickerContainer />
+          <NotifyBannerContainer topOffset={70} />
         </ThemeProvider>
       </CookieProvider>
     </StyledEngineProvider>
