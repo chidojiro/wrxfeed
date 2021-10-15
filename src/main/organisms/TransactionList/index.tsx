@@ -49,6 +49,9 @@ const TransactionList: React.VFC<TransactionListProps> = ({
           />
         ))}
       </ul>
+      {!isLoading && !transactions.length && (
+        <div className="text-lg text-center text-Gray-6 mb-24">No Results</div>
+      )}
       {!isLoading && !hasMore && <TransactionListEnd />}
     </InfiniteScroller>
   );

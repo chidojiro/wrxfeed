@@ -9,6 +9,7 @@ interface DepartmentListProps {
   isLoading: boolean;
   onLoadMore: () => void;
   hasMore: boolean;
+  onSelect?: (dept: Department) => void;
 }
 
 const DepartmentList: React.VFC<DepartmentListProps> = ({
@@ -16,6 +17,7 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
   isLoading,
   onLoadMore,
   hasMore,
+  onSelect,
 }) => {
   return (
     <InfiniteScroller
@@ -36,8 +38,15 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
     >
       <ul className="divide-y divide-Gray-6">
         {departments.map((department) => (
-          <li key={department.id} className="py-4 flex bg-white">
-            <p className="ml-3 text-sm font-medium text-Gray-1">{department.name}</p>
+          <li key={department.id} className="flex bg-white">
+            <div
+              aria-hidden="true"
+              className="py-4 cursor-pointer w-full"
+              onClick={() => onSelect && onSelect(department)}
+              onKeyDown={() => onSelect && onSelect(department)}
+            >
+              <p className="ml-3 text-sm font-medium text-Gray-1">{department.name}</p>
+            </div>
           </li>
         ))}
       </ul>
