@@ -1,18 +1,14 @@
 import React, { ReactNode } from 'react';
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
+import { useLocation, Link as RouterLink } from 'react-router-dom';
 
 export interface LeftStaticSideBarProps {
   groupTabs: GroupTab[];
-  currentTab: LeftTab;
-  setCurrentTab: (tab: LeftTab) => void;
 }
 
-const LeftStaticSideBar: React.VFC<LeftStaticSideBarProps> = ({
-  groupTabs,
-  currentTab,
-  setCurrentTab,
-}) => {
+const LeftStaticSideBar: React.VFC<LeftStaticSideBarProps> = ({ groupTabs }) => {
+  const location = useLocation();
   return (
     <div className="hidden md:flex md:flex-shrink-0">
       <div className="flex flex-col">
@@ -42,22 +38,23 @@ const LeftStaticSideBar: React.VFC<LeftStaticSideBarProps> = ({
                       {groupTab.name}
                     </div>
                     {tabs.map((leftTab: LeftTab) => {
-                      const isCurrentTab = leftTab.name === currentTab.name;
+                      const isCurrentTab =
+                        leftTab.href === location.pathname ||
+                        (leftTab.isHome && location.pathname === '/');
                       return (
-                        <a
+                        <RouterLink
                           key={`tabs-${leftTab.name}`}
-                          href={leftTab.href}
+                          to={leftTab.href}
                           className={classNames([
                             isCurrentTab
                               ? 'bg-purple-5 text-white'
                               : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                             'group flex items-center px-2 py-2 text-base font-medium rounded-sm',
                           ])}
-                          onClick={() => setCurrentTab(leftTab)}
                         >
                           <div className="h-6 w-6 mr-4" />
                           {leftTab.name}
-                        </a>
+                        </RouterLink>
                       );
                     })}
                   </>

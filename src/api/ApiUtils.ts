@@ -1,6 +1,15 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserToken } from '@identity/types';
-import { Comment, Transaction, User, Discussion, Contact } from '@main/entity';
+import {
+  Comment,
+  Transaction,
+  User,
+  Discussion,
+  Contact,
+  Department,
+  Category,
+  Vendor,
+} from '@main/entity';
 import { ApiError } from '@error';
 import { Identity } from '@identity';
 import {
@@ -233,5 +242,33 @@ export default class ApiUtils implements ApiClient {
       data,
     });
     console.log('Check postFeedback res = ', res);
+  };
+
+  // DIRECTORY
+  getDepartments = async (pagination?: Pagination): Promise<Department[]> => {
+    const res = await this.request<Department[]>({
+      url: '/feed/departments',
+      method: 'GET',
+      params: pagination,
+    });
+    return res.data;
+  };
+
+  getCategories = async (pagination?: Pagination): Promise<Category[]> => {
+    const res = await this.request<Category[]>({
+      url: '/feed/categories',
+      method: 'GET',
+      params: pagination,
+    });
+    return res.data;
+  };
+
+  getVendors = async (pagination?: Pagination): Promise<Vendor[]> => {
+    const res = await this.request<Vendor[]>({
+      url: '/feed/vendors',
+      method: 'GET',
+      params: pagination,
+    });
+    return res.data;
   };
 }

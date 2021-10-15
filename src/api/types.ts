@@ -1,5 +1,14 @@
 import { UserToken } from '@identity/types';
-import { Comment, Transaction, Discussion, User, Contact } from '@main/entity';
+import {
+  Comment,
+  Transaction,
+  Discussion,
+  User,
+  Contact,
+  Department,
+  Category,
+  Vendor,
+} from '@main/entity';
 import {
   ChangePwdFormModel,
   ForgotPwdFormModel,
@@ -35,6 +44,10 @@ export interface ApiClient {
   getUsers: (filter: GetUsersFilter) => Promise<User[]>;
   getContacts: (filter: GetContactsFilter) => Promise<Contact[]>;
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
+  // Directory
+  getDepartments: (pagination?: Pagination) => Promise<Department[]>;
+  getCategories: (pagination?: Pagination) => Promise<Category[]>;
+  getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
 }
 
 export interface AuthClient {

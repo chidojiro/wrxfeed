@@ -38,6 +38,21 @@ const routes: Route = {
     component: lazy(() => import('@main/pages/Discussion')),
     permissions: ['admin'],
   },
+  Departments: {
+    path: '/departments',
+    component: lazy(() => import('@main/pages/Departments')),
+    permissions: ['admin'],
+  },
+  Categories: {
+    path: '/categories',
+    component: lazy(() => import('@main/pages/Categories')),
+    permissions: ['admin'],
+  },
+  Vendors: {
+    path: '/vendors',
+    component: lazy(() => import('@main/pages/Vendors')),
+    permissions: ['admin'],
+  },
 };
 
 export default routes;
