@@ -1,42 +1,16 @@
-import React, { ElementType } from 'react';
-import Box from '@mui/material/Box';
-import Modal, { ModalProps } from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
-import SvgIcon from '@mui/material/SvgIcon';
-import Stack from '@mui/material/Stack';
-
-import { SxProps, styled } from '@mui/system';
+import React, { ReactElement, useRef } from 'react';
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/close.svg';
-import { Accent, Gray, Neutral } from '@theme/colors';
+import { Dialog } from '@headlessui/react';
+import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
+import Modal, { ModalProps } from '@common/atoms/Modal';
 
 interface ConfirmModalProps extends ModalProps {
-  icon?: ElementType;
+  icon?: ReactElement | Element;
   title: string;
   cancelLabel?: string;
   okLabel?: string;
-  onCancel?: () => void;
   onOk?: () => void;
 }
-
-const style: SxProps = {
-  position: 'absolute' as const,
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: '#fff',
-  borderRadius: '3px',
-  boxShadow: 24,
-  padding: '20px 16px',
-};
-
-const DotDivider = styled(Box)`
-  width: 3px;
-  height: 3px;
-  flex-grow: 0;
-  border-radius: 1.5px;
-  background-color: ${Neutral.Light};
-`;
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
   children,
@@ -45,61 +19,42 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   title,
   cancelLabel,
   okLabel,
-  onCancel,
+  onClose,
   onOk,
-  ...rest
 }) => {
+  const cancelButtonRef = useRef(null);
   return (
-    <Modal
-      open={open}
-      onClose={onCancel}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      keepMounted={false}
-      {...rest}
-    >
-      <Box sx={style}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-          {icon && <SvgIcon sx={{ width: 24, height: 24 }} component={icon} />}
-          <Typography
-            id="modal-modal-title"
-            variant="h5"
-            fontWeight={600}
-            component="h5"
-            flexGrow={1}
-            color={Gray[2]}
-          >
+    <Modal initialFocus={cancelButtonRef} open={open} onClose={onClose}>
+      <div className=" px-4 py-5 sm:max-w-[400px] sm:w-full">
+        <div className="flex items-center justify-between space-x-4">
+          {icon || <ExclamationCircle />}
+          <Dialog.Title as="h3" className="text-sm text-Gray-1 font-semibold flex-grow">
             {title}
-          </Typography>
-          <CloseIcon onClick={onCancel} />
-        </Stack>
-        <Stack pl={5} pr={5} pt={0.5} spacing={1.5}>
+          </Dialog.Title>
+          <CloseIcon onClick={onClose} />
+        </div>
+        <div className="pl-10 pr-8 pt-1 space-y-3">
           {children}
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Typography
-              sx={{ cursor: 'pointer' }}
-              variant="h5"
-              fontWeight={600}
-              component="a"
-              color={Gray[3]}
-              onClick={onCancel}
+          <div className="flex items-center space-x-2">
+            <button
+              ref={cancelButtonRef}
+              type="button"
+              className="text-sm font-semibold text-Gray-6 hover:underline"
+              onClick={onClose}
             >
               {cancelLabel}
-            </Typography>
-            <DotDivider />
-            <Typography
-              sx={{ cursor: 'pointer' }}
-              variant="h5"
-              fontWeight={600}
-              component="a"
-              color={Accent[1]}
+            </button>
+            <div className="w-[3px] h-[3px] rounded-[1.5px] flex-grow-0 bg-Neutral-Light" />
+            <button
+              type="button"
+              className="text-sm font-semibold text-purple-6 hover:underline"
               onClick={onOk}
             >
               {okLabel}
-            </Typography>
-          </Stack>
-        </Stack>
-      </Box>
+            </button>
+          </div>
+        </div>
+      </div>
     </Modal>
   );
 };
@@ -108,7 +63,6 @@ ConfirmModal.defaultProps = {
   icon: undefined,
   cancelLabel: 'Cancel',
   okLabel: 'OK',
-  onCancel: () => undefined,
   onOk: () => undefined,
 };
 

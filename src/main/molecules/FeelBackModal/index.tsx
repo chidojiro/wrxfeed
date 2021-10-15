@@ -1,24 +1,21 @@
-import { Modal } from '@main/atoms';
-import { Stack, Typography, Divider, Button, LinearProgress } from '@mui/material';
-import { Gray, Accent } from '@theme/colors';
+import Modal from '@common/atoms/Modal';
+import { Divider, LinearProgress } from '@mui/material';
 import React from 'react';
 import CommentBox from '@main/molecules/CommentBox';
 import { useFeedBack } from '@main/hooks';
 import { toast } from 'react-toastify';
 import { EditorState } from 'draft-js';
-import { commentEditorRawParser } from '@main/utils';
+import { classNames, commentEditorRawParser } from '@main/utils';
 
 interface FeelBackModalProps {
-  style?: React.CSSProperties;
   open: boolean;
   onClose: () => void;
   transactionId: number;
 }
 
-const RED_COLOR = '#ff5f68';
 const MAX_LENGTH_FEEDBACK = 200;
 
-const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose, transactionId }) => {
+const FeelBackModal: React.VFC<FeelBackModalProps> = ({ open, onClose, transactionId }) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const [feedback, setFeedback] = React.useState<string>('');
   const onUploadSuccess = () => {
@@ -59,36 +56,26 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose, tr
 
   const renderMaxCharacters = () => {
     return (
-      <Stack flexDirection="row" marginLeft="auto">
+      <p className="mt-2 text-sm text-right text-Gray-3">
         {feedback.length !== 0 && (
-          <Typography
-            marginTop="8px"
-            marginLeft="auto"
-            color={isMax ? RED_COLOR : Gray[3]}
-            fontSize="14px"
-            marginX="0px"
-          >
-            {feedback.length}
-          </Typography>
+          <span className={isMax ? 'text-system-alert' : 'text-Gray-3'}>{feedback.length}</span>
         )}
-        <Typography marginTop="8px" color={Gray[3]} fontSize="14px" marginX="0px">
-          {maxLengthText}
-        </Typography>
-      </Stack>
+        {maxLengthText}
+      </p>
     );
   };
 
   return (
-    <Modal open={isOpen} customStyle={style} onClose={handleClose}>
-      <Stack width="442px" height="488px" borderRadius="24px" bgcolor="white">
-        <Stack paddingX="40px" flex={1}>
-          <Typography fontSize="24px" color={Gray[1]} marginTop="44px" fontWeight="bold">
+    <Modal open={isOpen} onClose={handleClose}>
+      <div className="sm:max-w-[442px]">
+        <div className="px-10 pb-10">
+          <p className="text-2xl text-Gray-1 font-bold mt-8">
             {'We’re working on\n improvements!'}
-          </Typography>
-          <Typography marginTop="12px" color={Gray[1]} fontSize="14px" fontWeight="normal">
-            The Wrxfeed team is always trying our best to improve our product and your feedback can
+          </p>
+          <p className="mt-3 text-Gray-1 text-sm">
+            The Gravity team is always trying our best to improve our product and your feedback can
             help us do that.
-          </Typography>
+          </p>
           <CommentBox
             placeholder="Your feedback here…"
             style={{ backgroundColor: 'white', marginTop: '32px' }}
@@ -100,37 +87,31 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ style, open, onClose, tr
             onChange={onChangeTextContent}
           />
           {renderMaxCharacters()}
-        </Stack>
+        </div>
         {isLoading && <LinearProgress />}
         <Divider />
-        <Stack
-          paddingX="24px"
-          paddingY="16px"
-          height="66px"
-          justifyContent="flex-end"
-          direction="row"
-        >
-          <Button variant="text" style={{ borderRadius: '4px' }} onClick={handleClose}>
-            <Typography fontSize="14px" fontWeight={600} color={Gray[2]}>
-              Cancel
-            </Typography>
-          </Button>
-          <Button
-            variant="contained"
-            style={{
-              backgroundColor: isSendable ? Accent[2] : Gray[3],
-              borderRadius: '4px',
-              marginLeft: '4px',
-              padding: '8px 16px 8px 16px',
-            }}
+        <div className="flex justify-end h-[66px] px-6 py-4">
+          <button
+            type="button"
+            disabled={isLoading}
+            className="rounded text-sm font-bold text-Gray-2 px-5"
+            onClick={handleClose}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className={classNames(
+              'rounded text-sm font-bold text-white ml-2 px-5',
+              isSendable ? 'bg-purple-5' : 'bg-Gray-3',
+            )}
+            disabled={isLoading}
             onClick={handleSubmit}
           >
-            <Typography fontSize="14px" fontWeight={600}>
-              Submit
-            </Typography>
-          </Button>
-        </Stack>
-      </Stack>
+            Submit
+          </button>
+        </div>
+      </div>
     </Modal>
   );
 };

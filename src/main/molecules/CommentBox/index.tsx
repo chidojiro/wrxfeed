@@ -4,7 +4,7 @@ import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.sv
 import UploadButton from '@common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { CommentFormModel } from '@main/types';
-import EmojiPicker from '@main/molecules/EmojiPicker';
+import EmojiPicker from '@common/molecules/EmojiPicker';
 import CommentInput from '@main/atoms/CommentInput';
 import SendButton from '@main/atoms/SendButton';
 import { EmojiData } from 'emoji-mart';
@@ -62,9 +62,9 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     },
   });
   const watchContent = watch('content', EditorState.createEmpty());
-  const [isOpenEmojiPicker, openEmojiPicker] = useState(false);
   const [focused, setFocused] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const [isEmojiHovering, setEmojiHovering] = useState(false);
   // useCallback functions
   const onSelectEmoji = useCallback(
     (emoji: EmojiData) => {
@@ -82,7 +82,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
         setValue('content', nextEditorState);
       }
       // Turn off emoji picker after picked
-      openEmojiPicker(false);
+      EmojiPicker.close();
     },
     [getValues, setValue],
   );
@@ -100,10 +100,10 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   }, [onChange, watchContent]);
 
   useEffect(() => {
-    if (!(focused || hovered) && isOpenEmojiPicker) {
-      openEmojiPicker(false);
+    if (!(focused || hovered || isEmojiHovering)) {
+      EmojiPicker.close();
     }
-  }, [focused, hovered, isOpenEmojiPicker]);
+  }, [focused, hovered, isEmojiHovering]);
 
   const onFocusCommentInput: FocusEventHandler<HTMLTextAreaElement | HTMLInputElement> = (
     event,
@@ -116,6 +116,14 @@ const CommentBox: React.VFC<CommentFormProps> = ({
       // eslint-disable-next-line no-param-reassign
       event.target.selectionEnd = event.target.value.length;
     }
+  };
+
+  const openEmojiPicker = () => {
+    EmojiPicker.open({
+      anchorEl: emojiRef.current,
+      onSelectEmoji,
+      onHover: setEmojiHovering,
+    });
   };
 
   const onFileSelected = (file: File | null) => {
@@ -151,7 +159,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
           )}
         />
         <div
-          style={{ transform: focused || hovered ? 'scaleX(1)' : 'scaleX(0)' }}
+          style={{ transform: focused || hovered || isEmojiHovering ? 'scaleX(1)' : 'scaleX(0)' }}
           className="flex h-full transform space-x-2 items-end scale-x-0 group-hover:scale-x-100 origin-right transition-all"
         >
           {showEmoji && (
@@ -160,7 +168,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
                 type="button"
                 ref={emojiRef}
                 className="flex justify-center items-center w-5 h-5 rounded-sm hover:bg-purple-8 transition-all"
-                onClick={() => openEmojiPicker((prevState) => !prevState)}
+                onClick={openEmojiPicker}
               >
                 <span className="sr-only">Emoji picker</span>
                 <SmileIcon
@@ -170,11 +178,6 @@ const CommentBox: React.VFC<CommentFormProps> = ({
                   viewBox="0 0 17 17"
                 />
               </button>
-              <EmojiPicker
-                open={isOpenEmojiPicker}
-                anchorEl={emojiRef?.current}
-                onSelectEmoji={onSelectEmoji}
-              />
             </>
           )}
           {!!showAttach && (
