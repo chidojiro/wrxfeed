@@ -10,7 +10,7 @@ interface TransactionListProps {
   transactions: Transaction[];
   isLoading: boolean;
   onLoadMore: () => void;
-  onFilter?: (key: keyof TransactionFilter, value?: string) => void;
+  onFilter?: (key: keyof TransactionFilter, value?: number) => void;
   hasMore: boolean;
 }
 
