@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useRef, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useDebounce, useEventListener } from '@common/hooks';
 import { ScrollToTopButton } from '@main/molecules';
 
@@ -42,6 +42,13 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
   const scrollToTop = () => {
     scrollerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    // In case list doesn't trigger scroller at the first load
+    if (scrollerRef.current?.scrollHeight === scrollerRef.current?.clientHeight) {
+      handleLoadMoreTrigger();
+    }
+  }, [handleLoadMoreTrigger]);
 
   return (
     <>
