@@ -36,7 +36,7 @@ const CategoryList: React.VFC<CategoryListProps> = ({
       isLoading={isLoading}
       LoadingComponent={<TransactionLoading />}
     >
-      <ul className="divide-y divide-Gray-6">
+      <ul className="pb-4 divide-y divide-Gray-6">
         {categories.map((category) => (
           <li key={category.id} className="flex bg-white">
             <div

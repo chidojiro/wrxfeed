@@ -36,7 +36,7 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
       isLoading={isLoading}
       LoadingComponent={<TransactionLoading />}
     >
-      <ul className="divide-y divide-Gray-6">
+      <ul className="pb-4 divide-y divide-Gray-6">
         {departments.map((department) => (
           <li key={department.id} className="flex bg-white">
             <div
