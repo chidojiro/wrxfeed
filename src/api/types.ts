@@ -79,9 +79,9 @@ export interface CommentFilters {
 }
 
 export interface TransactionFilter {
-  department?: string;
-  vendor?: string;
-  category?: string;
+  department?: number;
+  vendor?: number;
+  category?: number;
   pagination?: Pagination;
 }
 

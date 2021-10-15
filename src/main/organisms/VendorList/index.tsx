@@ -9,9 +9,16 @@ interface VendorListProps {
   isLoading: boolean;
   onLoadMore: () => void;
   hasMore: boolean;
+  onSelect?: (dept: Vendor) => void;
 }
 
-const VendorList: React.VFC<VendorListProps> = ({ vendors, isLoading, onLoadMore, hasMore }) => {
+const VendorList: React.VFC<VendorListProps> = ({
+  vendors,
+  isLoading,
+  onLoadMore,
+  hasMore,
+  onSelect,
+}) => {
   return (
     <InfiniteScroller
       style={{
@@ -31,8 +38,15 @@ const VendorList: React.VFC<VendorListProps> = ({ vendors, isLoading, onLoadMore
     >
       <ul className="divide-y divide-Gray-6">
         {vendors.map((vendor) => (
-          <li key={vendor.id} className="py-4 flex bg-white">
-            <p className="ml-3 text-sm font-medium text-Gray-1">{vendor.name}</p>
+          <li key={vendor.id} className="flex bg-white">
+            <div
+              aria-hidden="true"
+              className="py-4 cursor-pointer w-full"
+              onClick={() => onSelect && onSelect(vendor)}
+              onKeyDown={() => onSelect && onSelect(vendor)}
+            >
+              <p className="ml-3 text-sm font-medium text-Gray-1">{vendor.name}</p>
+            </div>
           </li>
         ))}
       </ul>
