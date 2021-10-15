@@ -103,8 +103,8 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
 
   const openUnhideCategoryConfirmation = () => {
     setConfirmModal({
-      title: 'Unhide this transaction??',
-      description: 'This will unhide the item and it will be visible to the entire company.',
+      title: 'Unhide this category?',
+      description: 'This will unhide the category and it will be visible to the entire company.',
       confirmAction: handleUnhideCategory,
       confirmLabel: 'Unhide',
     });
@@ -240,10 +240,10 @@ const TransactionCard: React.VFC<TransactionItemProps> = ({
 
       <ConfirmModal
         open={!!confirmModal}
-        icon={ExclamationCircle}
+        icon={<ExclamationCircle />}
         title={confirmModal?.title || ''}
         okLabel={confirmModal?.confirmLabel}
-        onCancel={() => setConfirmModal(undefined)}
+        onClose={() => setConfirmModal(undefined)}
         onOk={confirmModal?.confirmAction}
       >
         <p id="modal-modal-description" className="text-Gray-6 text-sm">

@@ -44,6 +44,7 @@ module.exports = {
         'Neutral-5': '#8D9183',
         'Neutral-10': '#ECEEE4',
 
+        'purple-4': '#6D28D9',
         'purple-5': '#7A3FEB',
         'purple-6': '#8B5CF6',
         'purple-7': '#C4B5FD',
