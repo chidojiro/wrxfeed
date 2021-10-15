@@ -8,6 +8,7 @@ export type LeftTab = {
   name: string;
   href: string;
   icon: ReactNode | null;
+  isHome?: boolean;
 };
 
 export type GroupTab = {

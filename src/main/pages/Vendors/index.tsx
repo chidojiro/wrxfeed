@@ -1,15 +1,8 @@
 import React, { useCallback, useState } from 'react';
-// import { Typography, Box, Grid, Stack } from '@mui/material';
-// import { useSetRecoilState } from 'recoil';
 import MainLayout from '@common/templates/MainLayout';
-import TransactionList from '@main/organisms/TransactionList';
-// import IconButton from '@main/atoms/IconButton';
-// import SvgColorIcon from '@common/atoms/SvgColorIcon';
-// import { showInviteModalState } from '@main/organisms/InviteModal/states';
-import { useTransaction } from '@main/hooks';
-import { TransactionFilter } from '@api/types';
-// import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus.svg';
-// import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import VendorList from '@main/organisms/VendorList';
+import { Pagination } from '@api/types';
+import { useVendor } from '@main/hooks/vendor.hook';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -17,41 +10,18 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const OverviewPage: React.VFC = () => {
+const CategoriesPage: React.VFC = () => {
   const companyName = 'Bird';
-  // const setInviteModal = useSetRecoilState(showInviteModalState);
-  // const [filterTitle, setFilterTitle] = useState('');
-  const [filter, setFilter] = useState<TransactionFilter>({
-    pagination: INIT_PAGINATION,
-  });
-  const { transactions, hasMore, isLoading } = useTransaction(filter);
-
-  // useEffect(() => {
-  //   const filterValue = Object.values(filter).find((value) => typeof value === 'string');
-  //   if (filterValue) {
-  //     setFilterTitle(filterValue);
-  //   } else {
-  //     setFilterTitle('');
-  //   }
-  // }, [filter]);
+  const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
+  const { vendors, hasMore, isLoading } = useVendor(filter);
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
     setFilter((prevFilter) => ({
       ...prevFilter,
-      pagination: {
-        limit: prevFilter?.pagination?.limit ?? 0,
-        offset: (prevFilter?.pagination?.offset ?? 0) + (prevFilter?.pagination?.limit ?? 0),
-      },
+      offset: (prevFilter?.offset ?? 0) + (prevFilter?.limit ?? 0),
     }));
   }, [hasMore, isLoading]);
-
-  const handleFilter = (key: keyof TransactionFilter, value?: number): void => {
-    setFilter({
-      pagination: INIT_PAGINATION,
-      [key]: value,
-    });
-  };
 
   // const clearFilter = (): void => {
   //   setFilter({ pagination: INIT_PAGINATION });
@@ -84,12 +54,11 @@ const OverviewPage: React.VFC = () => {
               </IconButton> */}
           {/* </Stack> */}
           <div className="relative h-full">
-            <TransactionList
-              transactions={transactions}
+            <VendorList
+              vendors={vendors}
               isLoading={isLoading}
               hasMore={hasMore}
               onLoadMore={handleLoadMore}
-              onFilter={handleFilter}
             />
           </div>
         </div>
@@ -99,4 +68,4 @@ const OverviewPage: React.VFC = () => {
   );
 };
 
-export default OverviewPage;
+export default CategoriesPage;
