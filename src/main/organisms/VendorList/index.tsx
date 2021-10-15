@@ -36,7 +36,7 @@ const VendorList: React.VFC<VendorListProps> = ({
       isLoading={isLoading}
       LoadingComponent={<TransactionLoading />}
     >
-      <ul className="pb-4 divide-y divide-Gray-6">
+      <ul className="pb-4 divide-y divide-Gray-8 rounded-sm">
         {vendors.map((vendor) => (
           <li key={vendor.id} className="flex bg-white">
             <div
