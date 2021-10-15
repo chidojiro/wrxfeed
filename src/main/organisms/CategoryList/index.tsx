@@ -9,6 +9,7 @@ interface CategoryListProps {
   isLoading: boolean;
   onLoadMore: () => void;
   hasMore: boolean;
+  onSelect?: (cat: Category) => void;
 }
 
 const CategoryList: React.VFC<CategoryListProps> = ({
@@ -16,6 +17,7 @@ const CategoryList: React.VFC<CategoryListProps> = ({
   isLoading,
   onLoadMore,
   hasMore,
+  onSelect,
 }) => {
   return (
     <InfiniteScroller
@@ -36,8 +38,15 @@ const CategoryList: React.VFC<CategoryListProps> = ({
     >
       <ul className="divide-y divide-Gray-6">
         {categories.map((category) => (
-          <li key={category.id} className="py-4 flex bg-white">
-            <p className="ml-3 text-sm font-medium text-Gray-1">{category.name}</p>
+          <li key={category.id} className="flex bg-white">
+            <div
+              aria-hidden="true"
+              className="py-4 cursor-pointer w-full"
+              onClick={() => onSelect && onSelect(category)}
+              onKeyDown={() => onSelect && onSelect(category)}
+            >
+              <p className="ml-3 text-sm font-medium text-Gray-1">{category.name}</p>
+            </div>
           </li>
         ))}
       </ul>
