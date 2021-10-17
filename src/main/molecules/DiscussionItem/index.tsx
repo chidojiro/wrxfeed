@@ -6,9 +6,9 @@ import CommentText from '@main/atoms/CommentText';
 import { formatDate } from '@common/utils';
 // import { useNavUtils } from '@common/hooks';
 // import Routes from '@src/routes';
-import { showTransactionModalState } from '@main/organisms/TransactionModal/states';
-import { useSetRecoilState } from 'recoil';
-import { toast } from 'react-toastify';
+// import { showTransactionModalState } from '@main/organisms/TransactionModal/states';
+// import { useSetRecoilState } from 'recoil';
+// import { toast } from 'react-toastify';
 import PostTag from './PostTag';
 
 export type TextBoldProps = {
@@ -31,7 +31,7 @@ export interface DiscussionItemProps {
 }
 
 const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) => {
-  const setTransactionModalState = useSetRecoilState(showTransactionModalState);
+  // const setTransactionModalState = useSetRecoilState(showTransactionModalState);
   // console.log('Check discussion = ', discussion);
   // const { redirect } = useNavUtils();
 
@@ -40,11 +40,11 @@ const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) =
 
   const onClickDiscussion = () => {
     // redirect(Routes.Overview.path); not now
-    if (!transaction) {
-      toast.error('Cannot show details of this transaction, please try it later!');
-      return;
-    }
-    setTransactionModalState({ transaction });
+    // if (!transaction) {
+    //   toast.error('Cannot show details of this transaction, please try it later!');
+    //   return;
+    // }
+    // setTransactionModalState({ transaction });
   };
 
   return (

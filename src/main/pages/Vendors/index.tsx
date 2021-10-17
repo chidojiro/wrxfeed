@@ -61,7 +61,7 @@ const CategoriesPage: React.VFC = () => {
   };
 
   return (
-    <MainLayout title={companyName}>
+    <MainLayout companyName={companyName}>
       <div className="w-full mx-auto sm:px-6 grid grid-cols-12 gap-8">
         <div className="col-span-9 h-full">
           {isFiltering && (

@@ -25,11 +25,19 @@ const trendingPosts = [
   // More posts...
 ];
 
-export interface RightPanelProps {
+export interface TargetRightPanelProps {
   title?: string;
 }
 
-const RightPanel: React.VFC<RightPanelProps> = ({ title = 'Who to follow' }) => {
+const TargetRightPanel: React.VFC<TargetRightPanelProps> = ({ title = 'Who to follow' }) => {
+  return (
+    <div className="flex flex-1 py-12">
+      <div className="flex w-72 bg-white ml-4 px-8 py-4 max-h-106" style={{ maxHeight: '613px' }}>
+        <div className="flex text-black text-xl font-medium">Target</div>
+      </div>
+    </div>
+  );
+
   return (
     <aside className="hidden xl:block xl:col-span-4">
       <div className="sticky top-4 space-y-4">
@@ -126,4 +134,4 @@ const RightPanel: React.VFC<RightPanelProps> = ({ title = 'Who to follow' }) => 
   );
 };
 
-export default RightPanel;
+export default TargetRightPanel;

@@ -9,7 +9,7 @@ export default {
 } as Meta;
 
 export const Default: React.VFC = () => (
-  <MainLayout title="Test Page">
+  <MainLayout companyName="Test Page">
     {[...new Array(12)]
       .map(
         () => `Cras mattis consectetur purus sit amet fermentum.

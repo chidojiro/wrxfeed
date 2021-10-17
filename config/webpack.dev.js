@@ -11,7 +11,7 @@ module.exports = (env) => {
     devServer: {
       contentBase: './dist',
       hot: true,
-      open: true,
+      open: false,
       historyApiFallback: true,
       host: 'localhost',
       port: 3000,

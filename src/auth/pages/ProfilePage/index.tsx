@@ -17,7 +17,7 @@ const ProfilePage: React.VFC = () => {
   );
 
   return (
-    <MainLayout title="Update Profile">
+    <MainLayout companyName="Update Profile">
       <ProfileEditForm onSubmit={handleSubmit} />
     </MainLayout>
   );

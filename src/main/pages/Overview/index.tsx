@@ -60,29 +60,9 @@ const OverviewPage: React.VFC = () => {
   // const onClickInviteUsers = () => setInviteModal(true);
 
   return (
-    <MainLayout title={companyName}>
+    <MainLayout companyName={companyName}>
       <div className="w-full mx-auto sm:px-6 grid grid-cols-12 gap-8">
         <div className="col-span-9 h-full">
-          {/* <Stack sx={{ height: 52 }} direction="row" justifyContent="space-between">
-            <Stack spacing={1.5}>
-              {!!filterTitle && <ChevronLeftIcon onClick={clearFilter} />} */}
-          {/* <Typography variant="h1">{filterTitle || 'All Company'}</Typography> */}
-          {/* </Stack> */}
-          {/* <IconButton
-                onClick={onClickInviteUsers}
-                startIcon={
-                  <SvgColorIcon
-                    component={UserPlusIcon}
-                    color="highlight"
-                    width={15}
-                    height={16}
-                    viewBox="0 0 16 16"
-                  />
-                }
-              >
-                Invite Users
-              </IconButton> */}
-          {/* </Stack> */}
           <div className="relative h-full">
             <TransactionList
               transactions={transactions}

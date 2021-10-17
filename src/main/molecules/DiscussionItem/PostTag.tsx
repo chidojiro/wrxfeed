@@ -25,15 +25,15 @@ export const getPostAbbreviation = (name?: string): string => {
 };
 
 const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
+  console.log('Check transaction = ', transaction);
   if (!transaction) {
     return (
       <p
+        className="flex m-0"
         style={{
-          display: 'flex',
           color: '#273240',
           fontSize: 14,
           lineHeight: '18px',
-          margin: 0,
         }}
       >
         a transaction
@@ -64,7 +64,7 @@ const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
             margin: 0,
           }}
         >
-          {getPostAbbreviation(transaction.department.name)}
+          {getPostAbbreviation(transaction?.department?.name)}
         </p>
       </div>
       <p
@@ -78,7 +78,7 @@ const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
           marginLeft: 4,
         }}
       >
-        {`${transaction.department.name}`}
+        {`${transaction?.department?.name}`}
       </p>
     </div>
   );

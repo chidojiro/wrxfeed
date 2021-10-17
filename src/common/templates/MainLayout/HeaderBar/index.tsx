@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Menu, Popover, Transition } from '@headlessui/react';
-// import { SearchIcon } from '@heroicons/react/solid';
+import { SearchIcon } from '@heroicons/react/solid';
 import { classNames } from '@common/utils';
 import { NotifyIcon } from '@assets/index';
 import {
@@ -12,9 +12,13 @@ import {
   UserGroupIcon,
   XIcon,
 } from '@heroicons/react/outline';
+// import { useProfile } from '@auth/containers/ProfileEditForm/hooks';
+import { useRecoilValue } from 'recoil';
+import { profileState } from '@auth/containers/ProfileEditForm/states';
 
 export interface HeaderBarProps {
-  title: string;
+  title?: string;
+  showSearchBar: boolean;
 }
 
 const navigation = [
@@ -91,53 +95,57 @@ const notifies = [
   },
 ];
 
-const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
+const HeaderBar: React.VFC<HeaderBarProps> = ({ showSearchBar = true }) => {
+  const profile = useRecoilValue(profileState);
+  console.log({ profile });
   const ProfileDropdown = () => {
     return (
       <Menu as="div" className="flex-shrink-0 relative ml-5">
-        <div>
-          <Menu.Button className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
-            <span className="sr-only">Open user menu</span>
-            <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="user.imageUrl" />
-          </Menu.Button>
-        </div>
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <div
-            style={{ width: '332px', height: '544px' }}
-            className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
+        <>
+          <div>
+            <Menu.Button className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
+              <span className="sr-only">Open user menu</span>
+              <img className="h-8 w-8 rounded-full" src={profile?.avatar} alt="user.imageUrl" />
+            </Menu.Button>
+          </div>
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
           >
-            <div className="flex flex-row items-center h-16 w-full border-b-2 px-8">
-              <p className="flex text-gray-1 font-medium">Profile</p>
-            </div>
-            <div className="flex flex-1 flex-col">
-              <img
-                alt="user-avatar"
-                className="flex w-36 h-36 rounded-full self-center mt-6"
-                src={user.imageUrl}
-              />
-              <div className="flex flex-1 flex-col px-11 pt-4">
-                {profileInfos.map((item) => {
-                  return (
-                    <div key={`profileInfos${item.title}`} className="flex flex-col mt-2">
-                      <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
-                      <div className="flex flex-row items-center px-1 py-4 h-10">
-                        <p className="flex text-sm text-Gray-6">{item.content}</p>
+            <div
+              style={{ width: '332px', height: '544px' }}
+              className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
+            >
+              <div className="flex flex-row items-center h-16 w-full border-b-2 px-8">
+                <p className="flex text-gray-1 font-medium">Profile</p>
+              </div>
+              <div className="flex flex-1 flex-col">
+                <img
+                  alt="user-avatar"
+                  className="flex w-36 h-36 rounded-full self-center mt-6"
+                  src={user.imageUrl}
+                />
+                <div className="flex flex-1 flex-col px-11 pt-4">
+                  {profileInfos.map((item) => {
+                    return (
+                      <div key={`profileInfos${item.title}`} className="flex flex-col mt-2">
+                        <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
+                        <div className="flex flex-row items-center px-1 py-4 h-10">
+                          <p className="flex text-sm text-Gray-6">{item.content}</p>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
-        </Transition>
+          </Transition>
+        </>
       </Menu>
     );
   };
@@ -207,6 +215,28 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
     );
   };
 
+  const SearchBar = () => {
+    return (
+      <div className="flex items-center px-6 py-1 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
+        <div className="w-full">
+          <div className="sr-only">Search</div>
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
+              <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+            </div>
+            <input
+              id="search"
+              name="search"
+              className="block w-full bg-white border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+              placeholder="Search"
+              type="search"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Popover
       as="header"
@@ -223,11 +253,12 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
             <div className="relative flex w-full justify-between xl:grid xl:grid-cols-12 lg:gap-8">
               <div className="flex md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-2">
                 <div className="flex-shrink-0 flex items-center">
-                  <h1 className="text-xl font-bold text-white">{title}</h1>
+                  <h1 className="text-xl font-bold text-white">{profile?.company}</h1>
                 </div>
               </div>
               <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
-                <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0" />
+                {/* <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0" /> */}
+                {!!showSearchBar && <SearchBar />}
               </div>
               <div className="flex items-center md:absolute md:right-0 md:inset-y-0 lg:hidden">
                 {/* Mobile menu button */}
@@ -241,7 +272,6 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
                 </Popover.Button>
               </div>
               <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-4">
-                <div className="text-sm font-medium text-gray-900 hover:underline">Go Premium</div>
                 <NotifyDropdown />
                 <div className="bg-white mx-2" style={{ width: '1px', height: '34px' }} />
                 <ProfileDropdown />

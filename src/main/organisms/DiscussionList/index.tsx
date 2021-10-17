@@ -40,7 +40,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
     <InfiniteScroller
       style={{
         marginTop: '70px',
-        width: '70%',
+        width: '90%',
         minWidth: '712px',
         overflow: 'scroll',
         paddingRight: 2,
