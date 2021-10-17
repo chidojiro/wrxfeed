@@ -9,6 +9,10 @@ export interface LeftStaticSideBarProps {
 
 const LeftStaticSideBar: React.VFC<LeftStaticSideBarProps> = ({ groupTabs }) => {
   const location = useLocation();
+  React.useEffect(() => {
+    console.log('Check location = ', location);
+  }, [location]);
+
   return (
     <div className="hidden md:flex md:flex-shrink-0">
       <div className="flex flex-col">

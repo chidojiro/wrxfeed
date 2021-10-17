@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Menu, Popover, Transition } from '@headlessui/react';
-// import { SearchIcon } from '@heroicons/react/solid';
+import { SearchIcon } from '@heroicons/react/solid';
 import { classNames } from '@common/utils';
 import { NotifyIcon } from '@assets/index';
 import {
@@ -12,6 +12,7 @@ import {
   UserGroupIcon,
   XIcon,
 } from '@heroicons/react/outline';
+// import { useProfile } from '@auth/containers/ProfileEditForm/hooks';
 
 export interface HeaderBarProps {
   title: string;
@@ -93,6 +94,8 @@ const notifies = [
 
 const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
   const ProfileDropdown = () => {
+    // const profile = useProfile();
+    // console.log('Check profile = ', profile);
     return (
       <Menu as="div" className="flex-shrink-0 relative ml-5">
         <div>
@@ -207,6 +210,30 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
     );
   };
 
+  const SearchBar = () => {
+    return (
+      <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
+        <div className="flex items-center px-6 py-1 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
+          <div className="w-full">
+            <div className="sr-only">Search</div>
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
+                <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              </div>
+              <input
+                id="search"
+                name="search"
+                className="block w-full bg-white border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm"
+                placeholder="Search"
+                type="search"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Popover
       as="header"
@@ -226,9 +253,10 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
                   <h1 className="text-xl font-bold text-white">{title}</h1>
                 </div>
               </div>
-              <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
+              {/* <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
                 <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0" />
-              </div>
+              </div> */}
+              <SearchBar />
               <div className="flex items-center md:absolute md:right-0 md:inset-y-0 lg:hidden">
                 {/* Mobile menu button */}
                 <Popover.Button className="-mx-2 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rose-500">
@@ -241,7 +269,6 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ title }) => {
                 </Popover.Button>
               </div>
               <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-4">
-                <div className="text-sm font-medium text-gray-900 hover:underline">Go Premium</div>
                 <NotifyDropdown />
                 <div className="bg-white mx-2" style={{ width: '1px', height: '34px' }} />
                 <ProfileDropdown />

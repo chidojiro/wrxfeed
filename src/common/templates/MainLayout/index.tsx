@@ -3,12 +3,12 @@ import { GroupTab } from '@common/types';
 import { FeedIcon, DirectoryIcon } from '@assets/index';
 import LeftStaticSideBar from './LeftStaticSideBar';
 import HeaderBar from './HeaderBar';
-// import RightPanel from './RightPanel';
+import TargetRightPanel from './TargetRightPanel';
 
 // const SIDEBAR_WIDTH = 212;
 
 export interface MainLayoutProps {
-  title: string;
+  companyName: string;
   boxStyle?: React.CSSProperties;
 }
 
@@ -18,7 +18,7 @@ const groupTabs: GroupTab[] = [
     icon: FeedIcon,
     tabs: [
       { name: 'Company', href: '/overview', icon: null, isHome: true },
-      { name: 'For you', href: '#', icon: null },
+      { name: 'For you', href: '/discussions', icon: null },
     ],
   },
   {
@@ -32,13 +32,15 @@ const groupTabs: GroupTab[] = [
   },
 ];
 
-const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ companyName, children, boxStyle }) => {
   // const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
+  console.log(`Check companyName = ${companyName}`);
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-gray-200">
-      <HeaderBar title={title} />
-      <div className="flex flex-1">
+      <HeaderBar title={companyName} />
+      <div className="flex flex-1 ">
         <LeftStaticSideBar groupTabs={groupTabs} />
         <div className="flex flex-col w-0 flex-1 overflow-hidden">
           <main className="flex-1 relative overflow-y-auto focus:outline-none">
@@ -47,9 +49,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ title, children, boxStyle }) =>
             </div>
           </main>
         </div>
-        {/* <div className="grid">
-          <RightPanel />
-        </div> */}
+        <div className="hidden xl:flex xl:flex-shrink-0" style={{ width: '360px' }}>
+          <TargetRightPanel />
+        </div>
       </div>
     </div>
   );
