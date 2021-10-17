@@ -32,7 +32,7 @@ export interface TargetRightPanelProps {
 const TargetRightPanel: React.VFC<TargetRightPanelProps> = ({ title = 'Who to follow' }) => {
   return (
     <div className="flex flex-1 py-12">
-      <div className="flex w-72 bg-white ml-4 px-8 py-4 max-h-106">
+      <div className="flex w-72 bg-white ml-4 px-8 py-4 max-h-106" style={{ maxHeight: '613px' }}>
         <div className="flex text-black text-xl font-medium">Target</div>
       </div>
     </div>

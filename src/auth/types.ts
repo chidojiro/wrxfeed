@@ -1,4 +1,5 @@
 export interface Profile {
+  company?: string;
   id: number;
   email: string;
   fullName: string;
