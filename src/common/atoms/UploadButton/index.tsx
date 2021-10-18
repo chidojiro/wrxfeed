@@ -15,7 +15,7 @@ const UploadButton: React.VFC<UploadButtonProps> = ({
   onFileSelected,
 }) => {
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // console.log('Check handleFileInput files = ', event.target.files);
+    console.log('Check handleFileInput files = ', event.target.files);
     if (!event?.target?.files) {
       return;
     }

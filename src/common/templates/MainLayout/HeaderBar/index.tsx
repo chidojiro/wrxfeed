@@ -12,7 +12,6 @@ import {
   UserGroupIcon,
   XIcon,
 } from '@heroicons/react/outline';
-// import { useProfile } from '@auth/containers/ProfileEditForm/hooks';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { profileState } from '@auth/containers/ProfileEditForm/states';
 import { showInviteModalState } from '@main/organisms/InviteModal/states';

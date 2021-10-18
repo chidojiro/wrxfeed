@@ -87,7 +87,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   };
 
   const renderAvatarEditable = () => {
-    if (isURL(profile?.avatar || 'self-center mt-6')) {
+    if (isURL(profile?.avatar || '')) {
       return (
         <UploadButton
           className="flex justify-center items-center w-5 h-5 rounded-sm hover:bg-purple-8"
@@ -100,10 +100,21 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
       );
     }
     const shortName = getNameAbbreviation(profile?.fullName);
+    // return (
+    //   <input
+    //     className="flex flex-1 bg-red-500"
+    //     accept={UPLOAD_FILE_ACCEPT}
+    //     id="Test-input-file"
+    //     type="file"
+    //     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+    //       console.log(event.target.files);
+    //     }}
+    //   />
+    // );
     return (
       <UploadButton
         className="flex h-36 w-36 rounded-full self-center mt-6 bg-green-500 justify-center items-center"
-        id="button-file-avatar-name-short"
+        id="button-file-avatar"
         accept={UPLOAD_FILE_ACCEPT}
         onFileSelected={onFileSelected}
       >
