@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import MainLayout from '@common/templates/MainLayout';
+import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import TransactionList from '@main/organisms/TransactionList';
 import { useTransaction } from '@main/hooks';
 import { TransactionFilter } from '@api/types';
+import TargetPanel from '@main/organisms/TargetPanel';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -45,6 +46,9 @@ const OverviewPage: React.VFC = () => {
         onLoadMore={handleLoadMore}
         onFilter={handleFilter}
       />
+      <MainRightSide>
+        <TargetPanel />
+      </MainRightSide>
     </MainLayout>
   );
 };

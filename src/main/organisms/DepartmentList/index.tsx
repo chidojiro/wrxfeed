@@ -22,13 +22,7 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
   return (
     <InfiniteScroller
       style={{
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
         overflow: 'scroll',
-        paddingTop: 52,
         paddingBottom: 52,
         marginRight: 2,
       }}

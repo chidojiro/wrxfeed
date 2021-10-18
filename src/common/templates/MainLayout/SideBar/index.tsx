@@ -13,19 +13,20 @@ const SideBar: React.VFC = () => {
         {MainMenu.map((menuItem: GroupTab) => {
           const { tabs, icon: IconView } = menuItem;
           return (
-            <>
+            <React.Fragment key={menuItem.name}>
               <div
                 key={`menuItems-${menuItem.name}`}
-                className={classNames([
-                  'group flex items-center px-2 py-2 text-base font-medium rounded-sm',
-                ])}
+                className="group flex items-center px-2 py-2 text-sm text-Gray-1 font-semibold rounded-sm"
               >
                 <div>
                   {IconView ? (
                     <IconView
                       style={{ width: '20px', height: '20px' }}
-                      className={classNames(['flex-shrink-0 h-6 w-6 mr-4'])}
+                      className="flex-shrink-0 h-6 w-6 mr-4"
                       aria-hidden="true"
+                      width={12}
+                      height={12}
+                      viewBox="0 -4 20 20"
                     />
                   ) : (
                     <div className="flex-shrink-0 h-6 w-6" />
@@ -44,8 +45,8 @@ const SideBar: React.VFC = () => {
                     className={classNames([
                       isCurrentTab
                         ? 'bg-purple-5 text-white'
-                        : 'text-gray-600 hover:bg-purple-8 hover:text-gray-900',
-                      'group flex items-center px-2 py-2 text-base font-medium rounded-sm',
+                        : 'text-Gray-6 hover:bg-purple-8 hover:text-Gray-2',
+                      'group flex items-center px-2 py-0.5 text-sm rounded-sm',
                     ])}
                   >
                     <div className="h-6 w-6 mr-4" />
@@ -53,7 +54,7 @@ const SideBar: React.VFC = () => {
                   </RouterLink>
                 );
               })}
-            </>
+            </React.Fragment>
           );
         })}
       </div>

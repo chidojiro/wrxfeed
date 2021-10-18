@@ -53,6 +53,9 @@ module.exports = {
 
         'system-alert': '#FF5F68',
       },
+      spacing: {
+        'navbar': '56px',
+      }
     },
   },
   variants: {},

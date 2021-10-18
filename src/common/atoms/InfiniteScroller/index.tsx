@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { useDebounce, useEventListener } from '@common/hooks';
+import { useDebounce, useEventListener, useIntersection } from '@common/hooks';
 import { ScrollToTopButton } from '@main/molecules';
 
 const DEFAULT_THRESHOLD = 150;
@@ -22,7 +22,9 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
   LoadingComponent,
 }) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const endAnchorRef = useRef<HTMLDivElement>(null);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
+  const isEndReached = useIntersection(endAnchorRef.current || undefined, `${DEFAULT_THRESHOLD}px`); // Trigger if 200px is visible from the element
   const loadMoreFunc = onLoadMore || (() => undefined);
   const handleLoadMoreTrigger = useDebounce(loadMoreFunc, DEBOUNCE_WAIT, []);
   const handleScroll = useCallback(() => {
@@ -46,10 +48,10 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
 
   useEffect(() => {
     // In case list doesn't trigger scroller at the first load
-    if (scrollerRef.current?.scrollHeight === scrollerRef.current?.clientHeight) {
+    if (isEndReached) {
       handleLoadMoreTrigger();
     }
-  }, [handleLoadMoreTrigger]);
+  }, [handleLoadMoreTrigger, isEndReached]);
 
   return (
     <>
@@ -58,6 +60,7 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
         {isLoading && LoadingComponent}
       </div>
       <ScrollToTopButton onClick={scrollToTop} visible={showScrollTop} />
+      <div ref={endAnchorRef} id="end-anchor" className="sr-only" />
     </>
   );
 };
