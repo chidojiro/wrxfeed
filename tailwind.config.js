@@ -54,6 +54,9 @@ module.exports = {
         'system-alert': '#FF5F68',
         'blue-upload': 'rgba(67, 36, 158, 0.44)',
       },
+      spacing: {
+        'navbar': '56px',
+      }
     },
   },
   variants: {},

@@ -16,7 +16,7 @@ export const useDebounce = <T extends (...args: unknown[]) => unknown>(
     latestCallback.current = callback;
   }, [callback, wait]);
 
-  return () => {
+  return (...args) => {
     // Clear lastest timeout if it's called again
     if (latestTimeout.current) {
       clearTimeout(latestTimeout.current);
@@ -25,7 +25,7 @@ export const useDebounce = <T extends (...args: unknown[]) => unknown>(
     // Re-assign lastestTimeout with latestCallback function
     latestTimeout.current = setTimeout(() => {
       if (typeof latestCallback.current === 'function') {
-        latestCallback.current();
+        latestCallback.current(...args);
       }
     }, wait);
   };

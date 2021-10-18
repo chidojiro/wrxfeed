@@ -1,3 +1,6 @@
+import { GroupTab } from '@common/types';
+import { FeedIcon, DirectoryIcon } from '@assets/index';
+
 export const Departments = {
   Administration: 'Administration',
   Marketing: 'Marketing',
@@ -12,3 +15,23 @@ export const Departments = {
   Treasury: 'Treasury',
   CorporateTax: 'Corporate tax',
 };
+
+export const MainMenu: GroupTab[] = [
+  {
+    name: 'Feed',
+    icon: FeedIcon,
+    tabs: [
+      { name: 'Company', href: '/overview', icon: null, isHome: true },
+      { name: 'For you', href: '/discussions', icon: null },
+    ],
+  },
+  {
+    name: 'Directory',
+    icon: DirectoryIcon,
+    tabs: [
+      { name: 'Departments', href: '/departments', icon: null },
+      { name: 'Categories', href: '/categories', icon: null },
+      { name: 'Vendors', href: '/vendors', icon: null },
+    ],
+  },
+];
