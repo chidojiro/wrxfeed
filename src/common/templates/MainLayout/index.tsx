@@ -5,8 +5,6 @@ import LeftStaticSideBar from './LeftStaticSideBar';
 import HeaderBar from './HeaderBar';
 import TargetRightPanel from './TargetRightPanel';
 
-// const SIDEBAR_WIDTH = 212;
-
 export interface MainLayoutProps {
   companyName: string;
   boxStyle?: React.CSSProperties;
@@ -33,13 +31,9 @@ const groupTabs: GroupTab[] = [
 ];
 
 const MainLayout: React.FC<MainLayoutProps> = ({ companyName, children, boxStyle }) => {
-  // const [sidebarOpen, setSidebarOpen] = React.useState(false);
-
-  console.log(`Check companyName = ${companyName}`);
-
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-gray-200">
-      <HeaderBar title={companyName} />
+      <HeaderBar title={companyName} showSearchBar />
       <div className="flex flex-1 ">
         <LeftStaticSideBar groupTabs={groupTabs} />
         <div className="flex flex-col w-0 flex-1 overflow-hidden">

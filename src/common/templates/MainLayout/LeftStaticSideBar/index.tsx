@@ -47,7 +47,7 @@ const LeftStaticSideBar: React.VFC<LeftStaticSideBarProps> = ({ groupTabs }) => 
                         (leftTab.isHome && location.pathname === '/');
                       return (
                         <RouterLink
-                          key={`tabs-${leftTab.name}`}
+                          key={`leftTab-${leftTab.href}`}
                           to={leftTab.href}
                           className={classNames([
                             isCurrentTab

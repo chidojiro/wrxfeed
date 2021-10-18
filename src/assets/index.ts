@@ -16,6 +16,7 @@ import { ReactComponent as EssentialsBellIcon } from '@assets/icons/outline/esse
 import { ReactComponent as DirectoryIcon } from '@assets/icons/solid/directoryIcon.svg';
 import { ReactComponent as FeedIcon } from '@assets/icons/solid/feedIcon.svg';
 import { ReactComponent as NotifyIcon } from '@assets/icons/outline/notify.svg';
+import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus-white.svg';
 
 export {
   NextEmoji,
@@ -36,4 +37,5 @@ export {
   DirectoryIcon,
   FeedIcon,
   NotifyIcon,
+  UserPlusIcon,
 };

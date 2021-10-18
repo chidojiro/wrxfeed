@@ -25,7 +25,7 @@ export const getPostAbbreviation = (name?: string): string => {
 };
 
 const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
-  console.log('Check transaction = ', transaction);
+  // console.log('Check transaction = ', transaction);
   if (!transaction) {
     return (
       <p
