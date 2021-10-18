@@ -160,7 +160,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   };
 
   return (
-    <Popover as="div" className="flex-shrink-0 relative ml-5" style={style}>
+    <Popover as="div" className="flex-shrink-0 relative" style={style}>
       <Popover.Button className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
         {renderAvatarIcon()}
       </Popover.Button>

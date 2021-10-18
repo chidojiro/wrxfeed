@@ -76,7 +76,7 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
 
               <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-3">
                 <NotifyPopover />
-                <div className="bg-white mx-2" style={{ width: '1px', height: '34px' }} />
+                <div className="bg-purple-9 w-[1px] h-[34px] ml-5 mr-7" />
                 <UserProfilePopover />
                 <button
                   type="button"
