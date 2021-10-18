@@ -7,7 +7,7 @@ const DEBOUNCE_WAIT = 300; // 0.3s
 
 interface InfiniteScrollerProps {
   threshold?: number;
-  onLoadMore: () => void;
+  onLoadMore?: () => void;
   style?: React.CSSProperties;
   isLoading?: boolean;
   LoadingComponent?: ReactNode;
@@ -23,7 +23,8 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
 }) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
-  const handleLoadMoreTrigger = useDebounce(onLoadMore, DEBOUNCE_WAIT, []);
+  const loadMoreFunc = onLoadMore || (() => undefined);
+  const handleLoadMoreTrigger = useDebounce(loadMoreFunc, DEBOUNCE_WAIT, []);
   const handleScroll = useCallback(() => {
     const winScroll = scrollerRef.current?.scrollTop ?? 0;
     const scrollDistance =
@@ -66,6 +67,7 @@ InfiniteScroller.defaultProps = {
   style: undefined,
   isLoading: false,
   LoadingComponent: null,
+  onLoadMore: () => undefined,
 };
 
 export default InfiniteScroller;

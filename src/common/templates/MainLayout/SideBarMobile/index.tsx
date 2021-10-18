@@ -3,11 +3,11 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
+import { MainMenu } from '@common/constants';
 
 export interface SideBarMobileProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
-  groupTabs: GroupTab[];
   title: string;
   currentTab: LeftTab;
   setCurrentTab: (tab: LeftTab) => void;
@@ -16,7 +16,6 @@ export interface SideBarMobileProps {
 export const SideBarMobile: React.VFC<SideBarMobileProps> = ({
   sidebarOpen,
   setSidebarOpen,
-  groupTabs,
   title,
   currentTab,
   setCurrentTab,
@@ -70,7 +69,7 @@ export const SideBarMobile: React.VFC<SideBarMobileProps> = ({
             </div>
             <div className="mt-5 flex-1 h-0 overflow-y-auto">
               <nav className="px-2 space-y-1">
-                {groupTabs.map((item: GroupTab) => {
+                {MainMenu.map((item: GroupTab) => {
                   const { tabs, icon: IconView } = item;
                   const isCurrentTab = currentTab.name === item.name;
                   return (

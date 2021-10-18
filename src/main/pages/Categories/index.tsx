@@ -63,36 +63,31 @@ const CategoriesPage: React.VFC = () => {
 
   return (
     <MainLayout companyName={companyName}>
-      <div className="w-full mx-auto sm:px-6 grid grid-cols-12 gap-8">
-        <div className="col-span-9 h-full">
-          {isFiltering && (
-            <div className="flex items-center space-x-4 p-5">
-              <ChevronLeftIcon onClick={clearFilter} />
-              <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
-            </div>
-          )}
-          <div className="relative h-full">
-            {!isFiltering ? (
-              <CategoryList
-                categories={categories}
-                isLoading={isLoading}
-                hasMore={hasMore}
-                onLoadMore={handleLoadMore}
-                onSelect={({ id }) => handleTransFilter('category', id)}
-              />
-            ) : (
-              <TransactionList
-                transactions={transactions}
-                isLoading={transLoading}
-                hasMore={hasMoreTrans}
-                onLoadMore={handleTransLoadMore}
-                // onFilter={handleTransFilter}
-              />
-            )}
-          </div>
+      <h1 className="sr-only">Category list</h1>
+      {isFiltering && (
+        <div className="flex items-center space-x-4 p-5">
+          <ChevronLeftIcon onClick={clearFilter} />
+          <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
         </div>
-        <aside className="col-span-3" />
-      </div>
+      )}
+      {!isFiltering ? (
+        <CategoryList
+          categories={categories}
+          isLoading={isLoading}
+          hasMore={hasMore}
+          onLoadMore={handleLoadMore}
+          onSelect={({ id }) => handleTransFilter('category', id)}
+        />
+      ) : (
+        <TransactionList
+          style={{ paddingTop: 72 }}
+          transactions={transactions}
+          isLoading={transLoading}
+          hasMore={hasMoreTrans}
+          onLoadMore={handleTransLoadMore}
+          // onFilter={handleTransFilter}
+        />
+      )}
     </MainLayout>
   );
 };
