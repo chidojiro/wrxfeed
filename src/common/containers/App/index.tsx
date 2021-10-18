@@ -85,7 +85,7 @@ const App: React.FC = () => {
           </LocalizationProvider>
           <StyledToastContainer />
           <EmojiPickerContainer />
-          <NotifyBannerContainer topOffset={70} />
+          <NotifyBannerContainer topOffset={56} />
         </ThemeProvider>
       </CookieProvider>
     </StyledEngineProvider>

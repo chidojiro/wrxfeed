@@ -69,7 +69,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   };
 
   return (
-    <Popover as="div" className="flex-shrink-0 relative ml-5">
+    <Popover as="div" className="flex-shrink-0 relative">
       <Popover.Button className="mr-2 rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
         {renderNotifyIconWithBell()}
       </Popover.Button>
