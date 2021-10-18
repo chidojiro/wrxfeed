@@ -1,5 +1,6 @@
 import { Transaction } from '@main/entity';
 import React from 'react';
+import { getNameAbbreviation } from '@main/utils';
 
 export type PostTagProps = {
   style?: React.CSSProperties;
@@ -12,72 +13,25 @@ export const getRandomPostPrimaryColor = (): string => {
   return colorSelect;
 };
 
-export const getPostAbbreviation = (name?: string): string => {
-  if (!name) return '';
-  const nameStr = name;
-  return nameStr
-    .replace(' &', '')
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .substring(0, 2)
-    .toUpperCase();
-};
-
 const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
-  console.log('Check transaction = ', transaction);
-  if (!transaction) {
-    return (
-      <p
-        className="flex m-0"
-        style={{
-          color: '#273240',
-          fontSize: 14,
-          lineHeight: '18px',
-        }}
-      >
-        a transaction
-      </p>
-    );
+  // console.log('Check transaction = ', transaction);
+  if (!transaction || !transaction.department) {
+    return <div className="flex m-0 text-v text-gray-700">a transaction</div>;
   }
   const avatarPostColor = getRandomPostPrimaryColor();
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', ...style }}>
+    <div className="flex flex-row items-center" style={style}>
       <div
+        className="flex w-5 h-5 rounded-full justify-center items-center"
         style={{
-          display: 'flex',
-          width: 20,
-          height: 20,
-          borderRadius: 20,
           backgroundColor: avatarPostColor,
-          justifyContent: 'center',
-          alignItems: 'center',
         }}
       >
-        <p
-          style={{
-            display: 'flex',
-            fontSize: 11,
-            lineHeight: '13px',
-            color: '#FFFFFF',
-            fontWeight: 'bold',
-            margin: 0,
-          }}
-        >
-          {getPostAbbreviation(transaction?.department?.name)}
+        <p className="flex text-xs text-white font-bold">
+          {getNameAbbreviation(transaction?.department?.name)}
         </p>
       </div>
-      <p
-        style={{
-          display: 'flex',
-          color: '#273240',
-          fontSize: 14,
-          fontWeight: 'bold',
-          lineHeight: '18px',
-          margin: 0,
-          marginLeft: 4,
-        }}
-      >
+      <p className="flex text-gray-700 text-sm font-bold ml-0.5">
         {`${transaction?.department?.name}`}
       </p>
     </div>

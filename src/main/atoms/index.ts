@@ -1,3 +1,4 @@
 import Modal from './Modal';
+import NotifyRow from './NotifyRow';
 
-export { Modal };
+export { Modal, NotifyRow };

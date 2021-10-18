@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import TransactionCard from '@main/molecules/TransactionCard';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Transaction } from '@main/entity';
@@ -7,14 +7,16 @@ import TransactionLoading from '@main/atoms/TransactionLoading';
 import TransactionListEnd from '@main/atoms/TransactionListEnd';
 
 interface TransactionListProps {
+  style?: CSSProperties;
   transactions: Transaction[];
   isLoading: boolean;
-  onLoadMore: () => void;
+  onLoadMore?: () => void;
   onFilter?: (key: keyof TransactionFilter, value?: number) => void;
   hasMore: boolean;
 }
 
 const TransactionList: React.VFC<TransactionListProps> = ({
+  style,
   transactions,
   isLoading,
   onLoadMore,
@@ -24,15 +26,10 @@ const TransactionList: React.VFC<TransactionListProps> = ({
   return (
     <InfiniteScroller
       style={{
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        overflow: 'scroll',
-        paddingTop: 52,
         paddingBottom: 52,
         marginRight: 2,
+        ...style,
+        // position: 'absolute',
       }}
       onLoadMore={onLoadMore}
       isLoading={isLoading}

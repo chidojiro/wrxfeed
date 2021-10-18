@@ -7,6 +7,9 @@ import { isBadRequest } from '@src/error';
 import { toast } from 'react-toastify';
 import { useRecoilState } from 'recoil';
 import { mentionLoadingState, mentionsState } from '@main/states';
+import debounce from 'lodash.debounce';
+
+const DEBOUNCE_REQUEST_WAIT = 300;
 
 interface MentionHookValues {
   mentions: MentionData[];
@@ -20,6 +23,11 @@ function mentionDataParser(users: User[]): MentionData[] {
     avatar: user.avatar,
   }));
 }
+
+const debounceRequest = debounce(
+  (request: (...args: unknown[]) => void) => request(),
+  DEBOUNCE_REQUEST_WAIT,
+);
 
 export function useMention(): MentionHookValues {
   const [mentions, setMentions] = useRecoilState(mentionsState);
@@ -45,7 +53,7 @@ export function useMention(): MentionHookValues {
 
   useEffect(() => {
     if (!mentions.length && !isLoading) {
-      getUsers().then();
+      debounceRequest(getUsers);
     }
   }, [getUsers, mentions, isLoading]);
   return { mentions, isLoading };
