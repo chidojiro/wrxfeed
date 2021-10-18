@@ -2,12 +2,15 @@ import React, { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { useRecoilValue } from 'recoil';
 import { profileState } from '@auth/containers/ProfileEditForm/states';
-import { getNameAbbreviation, isURL } from '@main/utils';
+import { getNameAbbreviation } from '@main/utils';
 import { useSetIdentity } from '@identity/hooks';
 import { useApi } from '@api';
 import UploadButton from '@common/atoms/UploadButton';
 import { UPLOAD_FILE_ACCEPT } from '@src/config';
 import { GetUploadTokenBody, UploadTypes } from '@api/types';
+import { useFileUploader } from '@common/hooks/useFileUploader';
+// import { useRefreshProfile } from '@auth/containers/ProfileEditForm/hooks';
+import { toast } from 'react-toastify';
 
 // export interface UploadableViewProps {
 //   className: string;
@@ -29,8 +32,9 @@ export interface UserProfilePopoverProps {
 
 const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const profile = useRecoilValue(profileState);
+  // const [flag, refresh] = useRefreshProfile();
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
-  const [attachFileComment, setAttachFileComment] = React.useState<File | null>(null);
+  const [userAvatar, setAvatar] = React.useState<string>('');
 
   const setIdentity = useSetIdentity();
   const apiClient = useApi();
@@ -59,8 +63,8 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   ];
 
   const renderAvatarIcon = () => {
-    if (isURL(profile?.avatar || '')) {
-      return <img className="h-8 w-8 rounded-full" src={profile?.avatar} alt="Ava" />;
+    if (userAvatar !== '') {
+      return <img className="h-8 w-8 rounded-full" src={userAvatar} alt="Ava" />;
     }
     const shortName = getNameAbbreviation(profile.fullName);
     return (
@@ -70,13 +74,33 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     );
   };
 
+  const onUploadSuccess = (url: string) => {
+    console.log(`Check onUploadSuccess url = ${url}`);
+    setAvatar(url);
+    toast.success('Upload image successfully!');
+    // const uriFull = url;
+    // refresh();
+  };
+
+  const { isUploading, uploadFile } = useFileUploader({
+    onSuccess: onUploadSuccess,
+  });
+
+  React.useEffect(() => {
+    console.log('Check new isUploading =', isUploading);
+  }, [isUploading]);
+
+  React.useEffect(() => {
+    setAvatar(profile?.avatar || '');
+  }, [profile]);
+
   const handleAttachFile = (file: File) => {
     setUploadFileOptions({
       filename: `${profile.id}-${Date.now()}-${file.name}`,
       contentType: file.type,
       uploadType: UploadTypes.Attachments,
     });
-    setAttachFileComment(file);
+    uploadFile(file, uploadFileOptions);
   };
 
   const onFileSelected = (file: File | null) => {
@@ -88,38 +112,39 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   };
 
   const renderAvatarEditable = () => {
-    if (isURL(profile?.avatar || '')) {
+    if (userAvatar !== '') {
       return (
         <UploadButton
-          className="flex justify-center items-center w-5 h-5 rounded-sm hover:bg-purple-8"
+          className="flex group relative h-36 w-36 rounded-full self-center mt-6 bg-green-500 justify-center items-center"
           id="button-file-avatar"
           accept={UPLOAD_FILE_ACCEPT}
           onFileSelected={onFileSelected}
         >
-          <img alt="user-avatar" className="flex w-36 h-36 rounded-full" src={profile?.avatar} />
+          <img alt="user-avatar" className="flex w-36 h-36 rounded-full" src={userAvatar} />
+          <div className="flex absolute group-hover:bg-blue-upload w-full h-full rounded-full justify-center items-center">
+            <div className="flex opacity-0 text-white group-hover:opacity-100 text-lg font-semibold">
+              Edit Photo
+            </div>
+          </div>
         </UploadButton>
       );
     }
     const shortName = getNameAbbreviation(profile?.fullName);
-    // return (
-    //   <input
-    //     className="flex flex-1 bg-red-500"
-    //     accept={UPLOAD_FILE_ACCEPT}
-    //     id="Test-input-file"
-    //     type="file"
-    //     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-    //       console.log(event.target.files);
-    //     }}
-    //   />
-    // );
     return (
       <UploadButton
-        className="flex h-36 w-36 rounded-full self-center mt-6 bg-green-500 justify-center items-center"
+        className="flex group relative h-36 w-36 rounded-full self-center mt-6 bg-green-500 justify-center items-center"
         id="button-file-avatar"
         accept={UPLOAD_FILE_ACCEPT}
         onFileSelected={onFileSelected}
       >
-        <div className="flex text-white font-semibold text-2xl">{shortName}</div>
+        <div className="flex text-white font-semibold text-2xl opacity-100 group-hover:opacity-0">
+          {shortName}
+        </div>
+        <div className="flex absolute group-hover:bg-blue-upload w-full h-full rounded-full justify-center items-center">
+          <div className="flex text-white opacity-0 group-hover:opacity-100 text-lg font-semibold">
+            Edit Photo
+          </div>
+        </div>
       </UploadButton>
     );
   };
