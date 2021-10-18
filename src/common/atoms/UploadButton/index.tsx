@@ -15,6 +15,7 @@ const UploadButton: React.VFC<UploadButtonProps> = ({
   onFileSelected,
 }) => {
   const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('Check handleFileInput files = ', event.target.files);
     if (!event?.target?.files) {
       return;
     }
@@ -26,7 +27,7 @@ const UploadButton: React.VFC<UploadButtonProps> = ({
 
   return (
     <label className={className} htmlFor={id}>
-      <input className="hidden" accept={accept} id={id} type="file" onChange={handleFileInput} />
+      <input className="w-0 h-0" accept={accept} id={id} type="file" onChange={handleFileInput} />
       {children}
     </label>
   );

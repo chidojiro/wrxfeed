@@ -4,5 +4,16 @@ import DiscussionItem from './DiscussionItem';
 import CommentBox from './CommentBox';
 import CommentItem from './CommentItem';
 import FeelBackModal from './FeelBackModal';
+import UserProfilePopover from './UserProfilePopover';
+import NotifyPopover from './NotifyPopover';
 
-export { ScrollToTopButton, SearchBox, DiscussionItem, CommentBox, CommentItem, FeelBackModal };
+export {
+  ScrollToTopButton,
+  SearchBox,
+  DiscussionItem,
+  CommentBox,
+  CommentItem,
+  FeelBackModal,
+  UserProfilePopover,
+  NotifyPopover,
+};

@@ -1,14 +1,7 @@
 import React from 'react';
 import { Discussion } from '@main/entity';
-import { Gray } from '@theme/colors';
-import { Stack, Typography, Divider } from '@mui/material';
 import CommentText from '@main/atoms/CommentText';
 import { formatDate } from '@common/utils';
-// import { useNavUtils } from '@common/hooks';
-// import Routes from '@src/routes';
-// import { showTransactionModalState } from '@main/organisms/TransactionModal/states';
-// import { useSetRecoilState } from 'recoil';
-// import { toast } from 'react-toastify';
 import PostTag from './PostTag';
 
 export type TextBoldProps = {
@@ -19,9 +12,9 @@ export type TextBoldProps = {
 const TextBold: React.FC<TextBoldProps> = ({ text, style }) => {
   if (!text) return null;
   return (
-    <Typography color={Gray[2]} fontSize="14px" fontWeight="bold" lineHeight="18px" style={style}>
+    <p className="flex text-gray-2 text-sm font-bold" style={style}>
       {`${text}`}
-    </Typography>
+    </p>
   );
 };
 
@@ -48,49 +41,30 @@ const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) =
   };
 
   return (
-    <div style={{ backgroundColor: interleaveBackground }}>
-      <Divider />
+    <div style={{ backgroundColor: interleaveBackground }} className="flex mb-4">
+      <div className="flex border-b-2" />
       <button
         onClick={onClickDiscussion}
         type="button"
-        style={{
-          display: 'flex',
-          flex: 1,
-          width: '100%',
-          borderRadius: '0px',
-          justifyContent: 'flex-start',
-          padding: '0px',
-          margin: '0px',
-          borderWidth: '0px',
-          outline: 'none',
-          backgroundColor: 'transparent',
-        }}
+        className="flex flex-1 w-full justify-start"
       >
-        <Stack flex={1} direction="column" minHeight="100px" padding="8px">
-          <Stack direction="row" alignItems="center">
+        <div className="flex flex-col min-h-24 p-2">
+          <div className="flex flex-row items-center">
             <TextBold text={user.fullName} />
-            <Typography color={Gray[2]} fontSize="14px" marginY="4px" marginX="4px" marginTop="4px">
-              {' mentioned you in '}
-            </Typography>
+            <div className="flex text-sm text-gray-1 my-1 mx-1">{' mentioned you in '}</div>
             <PostTag transaction={transaction} />
-          </Stack>
-          <Stack marginLeft="64px">
-            <Stack direction="row" alignItems="center" marginTop="8px">
-              <Typography color={Gray[1]} fontSize="14px" lineHeight="17px" fontWeight={600}>
-                {` ${user.fullName} `}
-              </Typography>
-              <Typography color={Gray[3]} variant="body2" marginX="4px">
-                {' • '}
-              </Typography>
-              <Typography color={Gray[3]} variant="body2">
-                {formatDate(createdAt)}
-              </Typography>
-            </Stack>
-            <Stack marginTop="8px" alignItems="left" style={{ textAlign: 'left' }}>
+          </div>
+          <div className="flex ml-20">
+            <div className="flex flex-row items-center mt-2">
+              <p className="flex text-sm font-semibold text-gray-1">{` ${user.fullName} `}</p>
+              <p className="flex mx-0.5 text-gray-3">{' • '}</p>
+              <p className="flex text-gray-3">{formatDate(createdAt)}</p>
+            </div>
+            <div className="flex mt-2 items-center text-center">
               <CommentText content={content} />
-            </Stack>
-          </Stack>
-        </Stack>
+            </div>
+          </div>
+        </div>
       </button>
     </div>
   );
