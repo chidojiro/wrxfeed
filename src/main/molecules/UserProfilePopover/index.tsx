@@ -70,20 +70,20 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     );
   };
 
-  const handleAttachFile = (file: File) => {
-    setUploadFileOptions({
-      filename: `${profile.id}-${Date.now()}-${file.name}`,
-      contentType: file.type,
-      uploadType: UploadTypes.Attachments,
-    });
-    setAttachFileComment(file);
-  };
+  // const handleAttachFile = (file: File) => {
+  //   setUploadFileOptions({
+  //     filename: `${profile.id}-${Date.now()}-${file.name}`,
+  //     contentType: file.type,
+  //     uploadType: UploadTypes.Attachments,
+  //   });
+  //   setAttachFileComment(file);
+  // };
 
   const onFileSelected = (file: File | null) => {
     // useFileUploader.tsx
     console.log('Check onFileSelected file = ', file);
     if (file) {
-      handleAttachFile(file);
+      // handleAttachFile(file);
     }
   };
 
