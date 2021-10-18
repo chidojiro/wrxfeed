@@ -14,14 +14,11 @@ const LIMIT = 5;
 
 const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
+  const [notifyNews, setNews] = React.useState<number>(3);
   const { discussions } = useDiscussion(filter);
 
-  React.useEffect(() => {
-    console.log('check new discussions = ', discussions);
-  }, [discussions]);
-
   const renderNotifyList = () => {
-    if (discussions.length === 0) {
+    if (!Array.isArray(discussions) || discussions.length === 0) {
       return (
         <div className="flex h-32 w-full justify-center items-center">
           <div className="flex text-gray-1 text-xl font-medium ">
@@ -40,19 +37,33 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   };
 
   const renderMarkAllAsRead = () => {
-    if (discussions.length === 0) return null;
+    if (discussions.length === 0 || notifyNews === 0) return null;
+    const onClickMarkAllAsRead = () => setNews(0);
     return (
-      <p className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-xs font-semibold">
+      <button
+        onClick={onClickMarkAllAsRead}
+        type="button"
+        className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-xs font-semibold"
+      >
         Mark all as read
-      </p>
+      </button>
     );
   };
 
   const renderNotifyIconWithBell = () => {
     return (
-      <div>
+      <div className="flex h-8 w-8 justify-center items-center">
         <NotifyIcon aria-hidden="true" />
-        {/* <div className="absolute bg-red-500">1</div> */}
+        {!!notifyNews && (
+          <div
+            className="absolute flex bg-red-500 top-0 right-1 justify-center items-center border-2 border-primary"
+            style={{ width: '18px', height: '18px', borderRadius: '15px', top: '1px' }}
+          >
+            <div className="flex text-white font-semibold" style={{ fontSize: '10px' }}>
+              {notifyNews}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -60,7 +71,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   return (
     <Popover as="div" className="flex-shrink-0 relative ml-5">
       <Popover.Button className="mr-2 rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
-        <div className="flex h-6 w-6 justify-center items-center">{renderNotifyIconWithBell()}</div>
+        {renderNotifyIconWithBell()}
       </Popover.Button>
       <Popover.Panel>
         <Transition
@@ -80,7 +91,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
               <p className="flex text-gray-1 font-medium self-center">Notifications</p>
               {renderMarkAllAsRead()}
             </div>
-            {/* {renderNotifyList()} */}
+            {renderNotifyList()}
           </div>
         </Transition>
       </Popover.Panel>

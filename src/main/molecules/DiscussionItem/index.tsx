@@ -41,7 +41,7 @@ const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) =
   };
 
   return (
-    <div style={{ backgroundColor: interleaveBackground }}>
+    <div style={{ backgroundColor: interleaveBackground }} className="flex mb-4">
       <div className="flex border-b-2" />
       <button
         onClick={onClickDiscussion}

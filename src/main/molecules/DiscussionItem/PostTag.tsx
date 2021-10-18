@@ -27,7 +27,7 @@ const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
           backgroundColor: avatarPostColor,
         }}
       >
-        <p className="flex text-sm text-white font-bold m-0">
+        <p className="flex text-xs text-white font-bold">
           {getNameAbbreviation(transaction?.department?.name)}
         </p>
       </div>
