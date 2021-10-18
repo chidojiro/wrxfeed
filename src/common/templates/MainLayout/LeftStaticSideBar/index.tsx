@@ -21,9 +21,8 @@ const LeftStaticSideBar: React.VFC<LeftStaticSideBarProps> = ({ groupTabs }) => 
                 const IconView: ReactNode =
                   icon || (() => <div className="flex-shrink-0 h-6 w-6" />);
                 return (
-                  <>
+                  <div key={`groupTabs-${groupTab.name}`}>
                     <div
-                      key={`groupTabs-${groupTab.name}`}
                       className={classNames([
                         'group flex items-center px-2 py-2 text-base font-medium rounded-sm',
                       ])}
@@ -57,7 +56,7 @@ const LeftStaticSideBar: React.VFC<LeftStaticSideBarProps> = ({ groupTabs }) => 
                         </RouterLink>
                       );
                     })}
-                  </>
+                  </div>
                 );
               })}
             </nav>

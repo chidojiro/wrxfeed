@@ -12,7 +12,7 @@ export type TextBoldProps = {
 const TextBold: React.FC<TextBoldProps> = ({ text, style }) => {
   if (!text) return null;
   return (
-    <p className="flex text-gray-2 text-base font-bold" style={style}>
+    <p className="flex text-gray-2 text-sm font-bold" style={style}>
       {`${text}`}
     </p>
   );
@@ -46,18 +46,7 @@ const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) =
       <button
         onClick={onClickDiscussion}
         type="button"
-        style={{
-          display: 'flex',
-          flex: 1,
-          width: '100%',
-          borderRadius: '0px',
-          justifyContent: 'flex-start',
-          padding: '0px',
-          margin: '0px',
-          borderWidth: '0px',
-          outline: 'none',
-          backgroundColor: 'transparent',
-        }}
+        className="flex flex-1 w-full justify-start"
       >
         <div className="flex flex-col min-h-24 p-2">
           <div className="flex flex-row items-center">
@@ -67,7 +56,7 @@ const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) =
           </div>
           <div className="flex ml-20">
             <div className="flex flex-row items-center mt-2">
-              <p className="flex text-base font-semibold text-gray-1">{` ${user.fullName} `}</p>
+              <p className="flex text-sm font-semibold text-gray-1">{` ${user.fullName} `}</p>
               <p className="flex mx-0.5 text-gray-3">{' • '}</p>
               <p className="flex text-gray-3">{formatDate(createdAt)}</p>
             </div>

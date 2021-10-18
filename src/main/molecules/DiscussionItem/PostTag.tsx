@@ -15,8 +15,8 @@ export const getRandomPostPrimaryColor = (): string => {
 
 const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
   // console.log('Check transaction = ', transaction);
-  if (!transaction) {
-    return <div className="flex m-0 text-lg text-gray-700">a transaction</div>;
+  if (!transaction || !transaction.department) {
+    return <div className="flex m-0 text-v text-gray-700">a transaction</div>;
   }
   const avatarPostColor = getRandomPostPrimaryColor();
   return (
@@ -27,11 +27,11 @@ const PostTag: React.FC<PostTagProps> = ({ style, transaction }) => {
           backgroundColor: avatarPostColor,
         }}
       >
-        <p className="flex text-base text-white font-bold m-0">
+        <p className="flex text-sm text-white font-bold m-0">
           {getNameAbbreviation(transaction?.department?.name)}
         </p>
       </div>
-      <p className="flex text-gray-700 text-lg font-bold ml-0.5">
+      <p className="flex text-gray-700 text-sm font-bold ml-0.5">
         {`${transaction?.department?.name}`}
       </p>
     </div>

@@ -3,6 +3,25 @@ import { Popover, Transition } from '@headlessui/react';
 import { useRecoilValue } from 'recoil';
 import { profileState } from '@auth/containers/ProfileEditForm/states';
 import { getNameAbbreviation, isURL } from '@main/utils';
+import { useSetIdentity } from '@identity/hooks';
+import { useApi } from '@api';
+import UploadButton from '@common/atoms/UploadButton';
+import { UPLOAD_FILE_ACCEPT } from '@src/config';
+import { GetUploadTokenBody, UploadTypes } from '@api/types';
+
+// export interface UploadableViewProps {
+//   className: string;
+// }
+// const UploadableView: React.FC<UploadableViewProps> = ({ children, className }) => {
+//   const onClickChangeAva = () => {
+//     console.log('Check in onPressChangeAva');
+//   };
+//   return (
+//     <button className={className} type="button" onClick={onClickChangeAva}>
+//       {children}
+//     </button>
+//   );
+// };
 
 export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
@@ -10,27 +29,32 @@ export interface UserProfilePopoverProps {
 
 const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const profile = useRecoilValue(profileState);
+  const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
+  const [attachFileComment, setAttachFileComment] = React.useState<File | null>(null);
 
-  React.useEffect(() => {
-    console.log('Check profile = ', profile);
-  }, [profile]);
+  const setIdentity = useSetIdentity();
+  const apiClient = useApi();
+  const logout = React.useCallback(async () => {
+    apiClient.logout();
+    setIdentity(undefined);
+  }, [setIdentity, apiClient]);
 
   const profileForms = [
     {
       title: 'Name',
-      content: profile.fullName,
+      content: profile?.fullName || 'Update now',
     },
     {
       title: 'Title',
-      content: profile.title,
+      content: profile?.title || 'Update now',
     },
     {
       title: 'Department',
-      content: profile.department,
+      content: profile?.department || 'Update now',
     },
     {
       title: 'Email',
-      content: profile.email,
+      content: profile?.email || 'Update now',
     },
   ];
 
@@ -46,20 +70,54 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     );
   };
 
+  const handleAttachFile = (file: File) => {
+    setUploadFileOptions({
+      filename: `${profile.id}-${Date.now()}-${file.name}`,
+      contentType: file.type,
+      uploadType: UploadTypes.Attachments,
+    });
+    setAttachFileComment(file);
+  };
+
+  const onFileSelected = (file: File | null) => {
+    console.log('Check onFileSelected file = ', file);
+    if (file) {
+      handleAttachFile(file);
+    }
+  };
+
   const renderAvatarEditable = () => {
-    if (isURL(profile?.avatar || '')) {
+    if (isURL(profile?.avatar || 'self-center mt-6')) {
       return (
-        <img
-          alt="user-avatar"
-          className="flex w-36 h-36 rounded-full self-center mt-6"
-          src={profile?.avatar}
-        />
+        <UploadButton
+          className="flex justify-center items-center w-5 h-5 rounded-sm hover:bg-purple-8"
+          id="button-file-avatar"
+          accept={UPLOAD_FILE_ACCEPT}
+          onFileSelected={onFileSelected}
+        >
+          <img alt="user-avatar" className="flex w-36 h-36 rounded-full" src={profile?.avatar} />
+        </UploadButton>
       );
     }
     const shortName = getNameAbbreviation(profile?.fullName);
     return (
-      <div className="flex h-36 w-36 rounded-full self-center mt-6 bg-green-500 justify-center items-center">
+      <UploadButton
+        className="flex h-36 w-36 rounded-full self-center mt-6 bg-green-500 justify-center items-center"
+        id="button-file-avatar-name-short"
+        accept={UPLOAD_FILE_ACCEPT}
+        onFileSelected={onFileSelected}
+      >
         <div className="flex text-white font-semibold text-2xl">{shortName}</div>
+      </UploadButton>
+    );
+  };
+
+  const renderLogout = () => {
+    return (
+      <div className="flex py-4 items-center flex-col">
+        <button type="button" className="flex text-red-500 font-medium" onClick={logout}>
+          Logout
+        </button>
       </div>
     );
   };
@@ -80,7 +138,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
           leaveTo="transform opacity-0 scale-95"
         >
           <div
-            style={{ width: '332px', height: '544px' }}
+            style={{ width: '332px' }}
             className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
           >
             <div className="flex flex-row items-center h-16 w-full border-b-2 px-8">
@@ -101,6 +159,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
                 })}
               </div>
             </div>
+            {renderLogout()}
           </div>
         </Transition>
       </Popover.Panel>
