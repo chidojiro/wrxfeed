@@ -48,12 +48,19 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
     );
   };
 
+  const renderNotifyIconWithBell = () => {
+    return (
+      <div>
+        <NotifyIcon aria-hidden="true" />
+        {/* <div className="absolute bg-red-500">1</div> */}
+      </div>
+    );
+  };
+
   return (
     <Popover as="div" className="flex-shrink-0 relative ml-5">
       <Popover.Button className="mr-2 rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
-        <div className="flex h-6 w-6 justify-center items-center">
-          <NotifyIcon aria-hidden="true" />
-        </div>
+        <div className="flex h-6 w-6 justify-center items-center">{renderNotifyIconWithBell()}</div>
       </Popover.Button>
       <Popover.Panel>
         <Transition
@@ -73,7 +80,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
               <p className="flex text-gray-1 font-medium self-center">Notifications</p>
               {renderMarkAllAsRead()}
             </div>
-            {renderNotifyList()}
+            {/* {renderNotifyList()} */}
           </div>
         </Transition>
       </Popover.Panel>

@@ -80,6 +80,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   };
 
   const onFileSelected = (file: File | null) => {
+    // useFileUploader.tsx
     console.log('Check onFileSelected file = ', file);
     if (file) {
       handleAttachFile(file);

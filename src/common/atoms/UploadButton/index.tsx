@@ -27,7 +27,7 @@ const UploadButton: React.VFC<UploadButtonProps> = ({
 
   return (
     <label className={className} htmlFor={id}>
-      <input className="hidden" accept={accept} id={id} type="file" onChange={handleFileInput} />
+      <input className="w-0 h-0" accept={accept} id={id} type="file" onChange={handleFileInput} />
       {children}
     </label>
   );
