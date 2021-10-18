@@ -17,7 +17,6 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { profileState } from '@auth/containers/ProfileEditForm/states';
 import { showInviteModalState } from '@main/organisms/InviteModal/states';
 import { UserProfilePopover, NotifyPopover } from '@main/molecules';
-// import MyPopover from './TestPopover';
 
 export interface HeaderBarProps {
   title?: string;
@@ -79,7 +78,6 @@ const HeaderBar: React.VFC<HeaderBarProps> = ({ showSearchBar = true }) => {
     <Popover
       as="header"
       className={({ open }) => {
-        console.log('Check open = ', open);
         return classNames([
           open ? 'fixed inset-0 z-40 overflow-y-auto' : '',
           'bg-primary z-40 shadow-sm lg:static lg:overflow-y-visible',

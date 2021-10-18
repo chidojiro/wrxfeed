@@ -3,7 +3,7 @@ import { GroupTab } from '@common/types';
 import { FeedIcon, DirectoryIcon } from '@assets/index';
 import LeftStaticSideBar from './LeftStaticSideBar';
 import HeaderBar from './HeaderBar';
-import TargetRightPanel from './TargetRightPanel';
+import TargetPanel from './TargetPanel';
 
 export interface MainLayoutProps {
   companyName: string;
@@ -44,7 +44,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ companyName, children, boxStyle
           </main>
         </div>
         <div className="hidden xl:flex xl:flex-shrink-0" style={{ width: '360px' }}>
-          <TargetRightPanel />
+          <TargetPanel />
         </div>
       </div>
     </div>

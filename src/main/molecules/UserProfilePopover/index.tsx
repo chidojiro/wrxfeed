@@ -1,34 +1,8 @@
 import React, { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
-// import { useProfile } from '@auth/containers/ProfileEditForm/hooks';
 import { useRecoilValue } from 'recoil';
 import { profileState } from '@auth/containers/ProfileEditForm/states';
-
-const user = {
-  name: 'Chelsea Hagon',
-  email: 'chelseahagon@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-};
-
-const profileInfos = [
-  {
-    title: 'Name',
-    content: 'Steve Schnell',
-  },
-  {
-    title: 'Title',
-    content: 'Ceo',
-  },
-  {
-    title: 'Department',
-    content: 'Management',
-  },
-  {
-    title: 'Email',
-    content: 'steve@gravitylabs.co',
-  },
-];
+import { getNameAbbreviation, isURL } from '@main/utils';
 
 export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
@@ -36,10 +10,64 @@ export interface UserProfilePopoverProps {
 
 const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const profile = useRecoilValue(profileState);
+
+  React.useEffect(() => {
+    console.log('Check profile = ', profile);
+  }, [profile]);
+
+  const profileForms = [
+    {
+      title: 'Name',
+      content: profile.fullName,
+    },
+    {
+      title: 'Title',
+      content: profile.title,
+    },
+    {
+      title: 'Department',
+      content: profile.department,
+    },
+    {
+      title: 'Email',
+      content: profile.email,
+    },
+  ];
+
+  const renderAvatarIcon = () => {
+    if (isURL(profile?.avatar || '')) {
+      return <img className="h-8 w-8 rounded-full" src={profile?.avatar} alt="Ava" />;
+    }
+    const shortName = getNameAbbreviation(profile.fullName);
+    return (
+      <div className="flex h-8 w-8 rounded-full bg-green-500 justify-center items-center">
+        <div className="flex text-white font-semibold">{shortName}</div>
+      </div>
+    );
+  };
+
+  const renderAvatarEditable = () => {
+    if (isURL(profile?.avatar || '')) {
+      return (
+        <img
+          alt="user-avatar"
+          className="flex w-36 h-36 rounded-full self-center mt-6"
+          src={profile?.avatar}
+        />
+      );
+    }
+    const shortName = getNameAbbreviation(profile?.fullName);
+    return (
+      <div className="flex h-36 w-36 rounded-full self-center mt-6 bg-green-500 justify-center items-center">
+        <div className="flex text-white font-semibold text-2xl">{shortName}</div>
+      </div>
+    );
+  };
+
   return (
     <Popover as="div" className="flex-shrink-0 relative ml-5" style={style}>
       <Popover.Button className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
-        <img className="h-8 w-8 rounded-full" src={profile?.avatar} alt="Ava" />
+        {renderAvatarIcon()}
       </Popover.Button>
       <Popover.Panel className="absolute z-50">
         <Transition
@@ -58,14 +86,10 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
             <div className="flex flex-row items-center h-16 w-full border-b-2 px-8">
               <p className="flex text-gray-1 font-medium">Profile</p>
             </div>
+            {renderAvatarEditable()}
             <div className="flex flex-1 flex-col">
-              <img
-                alt="user-avatar"
-                className="flex w-36 h-36 rounded-full self-center mt-6"
-                src={user.imageUrl}
-              />
               <div className="flex flex-1 flex-col px-11 pt-4">
-                {profileInfos.map((item) => {
+                {profileForms.map((item) => {
                   return (
                     <div key={`profileInfos${item.title}`} className="flex flex-col mt-2">
                       <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>

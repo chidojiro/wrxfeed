@@ -25,11 +25,11 @@ const trendingPosts = [
   // More posts...
 ];
 
-export interface TargetRightPanelProps {
+export interface TargetPanelProps {
   title?: string;
 }
 
-const TargetRightPanel: React.VFC<TargetRightPanelProps> = ({ title = 'Who to follow' }) => {
+const TargetPanel: React.VFC<TargetPanelProps> = ({ title = 'Who to follow' }) => {
   return (
     <div className="flex flex-1 py-12">
       <div className="flex w-72 bg-white ml-4 px-8 py-4 max-h-106" style={{ maxHeight: '613px' }}>
@@ -134,4 +134,4 @@ const TargetRightPanel: React.VFC<TargetRightPanelProps> = ({ title = 'Who to fo
   );
 };
 
-export default TargetRightPanel;
+export default TargetPanel;
