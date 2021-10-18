@@ -65,7 +65,7 @@ const DepartmentsPage: React.VFC = () => {
     <MainLayout companyName={companyName}>
       <h1 className="sr-only">Department list</h1>
       {isFiltering && (
-        <div className="flex items-center space-x-4 p-5">
+        <div className="flex items-center space-x-4 pb-8">
           <ChevronLeftIcon onClick={clearFilter} />
           <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
         </div>
@@ -80,7 +80,6 @@ const DepartmentsPage: React.VFC = () => {
         />
       ) : (
         <TransactionList
-          style={{ paddingTop: 72 }}
           transactions={transactions}
           isLoading={transLoading}
           hasMore={hasMoreTrans}
