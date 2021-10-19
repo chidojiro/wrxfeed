@@ -14,14 +14,18 @@ const LIMIT = 5;
 
 const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
-  const [notifyNews, setNews] = React.useState<number>(3);
   const { discussions } = useDiscussion(filter);
+  const [notifyNews, setNews] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    setNews(discussions.length);
+  }, [discussions]);
 
   const renderNotifyList = () => {
     if (!Array.isArray(discussions) || discussions.length === 0) {
       return (
         <div className="flex h-32 w-full justify-center items-center">
-          <div className="flex text-gray-1 text-xl font-medium ">
+          <div className="flex text-gray-1 text-lg font-medium ">
             {'You currently have no notifications! \n 🔔'}
           </div>
         </div>
