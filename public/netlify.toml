@@ -1,6 +1,6 @@
 [build]
   publish = "dist/"
-  command = "sed -i \"s|API_PLACEHOLDER|${API_REDIRECT_URL}|g\" netlify.toml && npm run build"
+  command = "sed -i \"s|API_PLACEHOLDER|${API_REDIRECT_URL}|g\" public/netlify.toml && npm run build"
 
 [[redirects]]
   from = "/api/*"
