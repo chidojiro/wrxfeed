@@ -125,7 +125,9 @@ Website will be deployed automatically via Netlify. Check deploy status above **
 
 - TypeScript v4.3
 - React v17.0, React Hook
-- Tailwind
+- State management: Recoil, React Context
+- UI libs: Tailwind, MUI5, headless UI, draft-js, popperjs, emoji-mart
 - Storybook
 - ESLint
 - Github Actions (CI/CD)
+- Webpack (module bundler)
