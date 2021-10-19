@@ -27,7 +27,7 @@ const OnboardPage: React.VFC = () => {
 
   useEffect(() => {
     if (identity?.token && identity?.lastLoginAt) {
-      redirect(Routes.Home.path);
+      redirect(Routes.Overview.path);
     }
   }, [redirect, identity]);
 
@@ -52,7 +52,7 @@ const OnboardPage: React.VFC = () => {
           lastLoginAt,
         });
       }
-      redirect(Routes.Home.path);
+      redirect(Routes.Overview.path);
     } catch (error: unknown) {
       await errorHandler(error);
     }
