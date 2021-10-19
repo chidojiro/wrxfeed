@@ -29,6 +29,7 @@ export interface ApiClient {
   changePassword: (data: ChangePasswordDto) => Promise<void>;
   forgotPassword: (data: ForgotPwdFormModel) => Promise<void>;
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
+  acceptInvitation: (id: string) => Promise<void>;
   // Transaction API
   getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;

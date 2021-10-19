@@ -121,6 +121,14 @@ export default class ApiUtils implements ApiClient {
     });
   }
 
+  acceptInvitation = async (id: string): Promise<void> => {
+    const resp = await this.request<void>({
+      url: `/inv/invitations/${id}`,
+      method: 'PATCH',
+    });
+    return resp.data;
+  };
+
   getTransactions = async (filter?: TransactionFilter): Promise<Transaction[]> => {
     const params = {
       ...filter?.pagination,
