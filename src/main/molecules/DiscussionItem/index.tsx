@@ -20,16 +20,16 @@ const TextBold: React.FC<TextBoldProps> = ({ text, style }) => {
 
 export interface DiscussionItemProps {
   discussion: Discussion;
-  index: number;
+  index?: number;
 }
 
-const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) => {
+const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion }) => {
   // const setTransactionModalState = useSetRecoilState(showTransactionModalState);
   // console.log('Check discussion = ', discussion);
   // const { redirect } = useNavUtils();
 
   const { content, createdAt, user, transaction } = discussion;
-  const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';
+  // const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';
 
   const onClickDiscussion = () => {
     // redirect(Routes.Overview.path); not now
@@ -41,7 +41,7 @@ const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) =
   };
 
   return (
-    <div style={{ backgroundColor: interleaveBackground }} className="flex mb-4">
+    <div className="flex mb-4 bg-white">
       <div className="flex border-b-2" />
       <button
         onClick={onClickDiscussion}
