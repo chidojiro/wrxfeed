@@ -24,6 +24,8 @@ import {
   GetUsersFilter,
   GetContactsFilter,
   AddCommentParams,
+  MentionsFilters,
+  OrderDirection,
 } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { handleResponseFail } from '@api/utils';
@@ -135,6 +137,7 @@ export default class ApiUtils implements ApiClient {
       dep: filter?.department,
       ven: filter?.vendor,
       cat: filter?.category,
+      // order: OrderDirection.DESC,
     };
     const res = await this.request<Transaction[]>({
       url: '/feed/transactions',
@@ -170,7 +173,10 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<User[]>({
       url: '/user/me/mentions',
       method: 'GET',
-      params: pagination,
+      params: {
+        ...pagination,
+        order: OrderDirection.ASC,
+      },
     });
     // console.log('Check res = ', res);
     return res.data;

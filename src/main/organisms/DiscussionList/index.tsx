@@ -39,11 +39,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
   return (
     <InfiniteScroller
       style={{
-        marginTop: '70px',
-        width: '90%',
-        minWidth: '712px',
         overflow: 'scroll',
-        paddingRight: 2,
         ...style,
       }}
       onLoadMore={handleLoadMore}

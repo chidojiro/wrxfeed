@@ -72,6 +72,11 @@ export enum OrderDirection {
   DESC = 'DESC',
 }
 
+export interface MentionsFilters {
+  order?: OrderDirection;
+  pagination?: Pagination;
+}
+
 export interface CommentFilters {
   transactionId: number;
   order?: OrderDirection;

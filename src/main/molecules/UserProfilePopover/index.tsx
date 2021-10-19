@@ -9,22 +9,8 @@ import UploadButton from '@common/atoms/UploadButton';
 import { UPLOAD_FILE_ACCEPT } from '@src/config';
 import { GetUploadTokenBody, UploadTypes } from '@api/types';
 import { useFileUploader } from '@common/hooks/useFileUploader';
-// import { useRefreshProfile } from '@auth/containers/ProfileEditForm/hooks';
 import { toast } from 'react-toastify';
-
-// export interface UploadableViewProps {
-//   className: string;
-// }
-// const UploadableView: React.FC<UploadableViewProps> = ({ children, className }) => {
-//   const onClickChangeAva = () => {
-//     console.log('Check in onPressChangeAva');
-//   };
-//   return (
-//     <button className={className} type="button" onClick={onClickChangeAva}>
-//       {children}
-//     </button>
-//   );
-// };
+import Loading from '@common/atoms/Loading';
 
 export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
@@ -32,7 +18,6 @@ export interface UserProfilePopoverProps {
 
 const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const profile = useRecoilValue(profileState);
-  // const [flag, refresh] = useRefreshProfile();
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
   const [userAvatar, setAvatar] = React.useState<string>('');
 
@@ -75,7 +60,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   };
 
   const onUploadSuccess = (url: string) => {
-    console.log(`Check onUploadSuccess url = ${url}`);
+    // console.log(`Check onUploadSuccess url = ${url}`);
     setAvatar(url);
     toast.success('Upload image successfully!');
     // const uriFull = url;
@@ -85,10 +70,6 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const { isUploading, uploadFile } = useFileUploader({
     onSuccess: onUploadSuccess,
   });
-
-  React.useEffect(() => {
-    console.log('Check new isUploading =', isUploading);
-  }, [isUploading]);
 
   React.useEffect(() => {
     setAvatar(profile?.avatar || '');
@@ -122,9 +103,12 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
         >
           <img alt="user-avatar" className="flex w-36 h-36 rounded-full" src={userAvatar} />
           <div className="flex absolute group-hover:bg-blue-upload w-full h-full rounded-full justify-center items-center">
-            <div className="flex opacity-0 text-white group-hover:opacity-100 text-lg font-semibold">
-              Edit Photo
-            </div>
+            {!isUploading && (
+              <div className="flex opacity-0 text-white group-hover:opacity-100 text-lg font-semibold">
+                Edit Photo
+              </div>
+            )}
+            {isUploading ? <Loading width={25} height={25} className="border-white" /> : null}
           </div>
         </UploadButton>
       );
@@ -141,9 +125,12 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
           {shortName}
         </div>
         <div className="flex absolute group-hover:bg-blue-upload w-full h-full rounded-full justify-center items-center">
-          <div className="flex text-white opacity-0 group-hover:opacity-100 text-lg font-semibold">
-            Edit Photo
-          </div>
+          {!isUploading && (
+            <div className="flex text-white opacity-0 group-hover:opacity-100 text-lg font-semibold">
+              Edit Photo
+            </div>
+          )}
+          {isUploading ? <Loading width={25} height={25} className="border-white" /> : null}
         </div>
       </UploadButton>
     );
@@ -189,7 +176,10 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
                     <div key={`profileInfos${item.title}`} className="flex flex-col mt-2">
                       <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
                       <div className="flex flex-row items-center px-1 py-4 h-10">
-                        <p className="flex text-sm text-Gray-6">{item.content}</p>
+                        <input
+                          className="flex text-sm text-Gray-6 border-none outline-none"
+                          defaultValue={item.content}
+                        />
                       </div>
                     </div>
                   );

@@ -18,6 +18,8 @@ import { ReactComponent as FeedIcon } from '@assets/icons/solid/feedIcon.svg';
 import { ReactComponent as NotifyIcon } from '@assets/icons/outline/notify.svg';
 import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus-white.svg';
 import { ReactComponent as UserAvaDefaultIcon } from '@assets/icons/solid/userAvaDefault.png';
+import { ReactComponent as BasicsEditCircle } from '@assets/icons/solid/basics-edit-circle.svg';
+import { ReactComponent as BasicsDownSmall } from '@assets/icons/outline/basics-down-small.svg';
 
 export {
   NextEmoji,
@@ -40,4 +42,6 @@ export {
   NotifyIcon,
   UserPlusIcon,
   UserAvaDefaultIcon,
+  BasicsEditCircle,
+  BasicsDownSmall,
 };
