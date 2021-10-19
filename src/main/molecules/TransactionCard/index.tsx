@@ -11,8 +11,8 @@ import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclama
 import { Gray, LightBG } from '@theme/colors';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
-import FeedBackModal from '@main/molecules/FeelBackModal';
-import AttachmentModal from '@main/molecules/CommentAttachmentModal';
+import FeedBackModal from '@main/organisms/FeelBackModal';
+import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import { classNames, commentEditorRawParser } from '@main/utils';

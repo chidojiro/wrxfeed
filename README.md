@@ -116,15 +116,18 @@ Application version is stored in `package.json`. The version number is updated a
 yarn release
 ```
 
-## Deploy manually
+## Deploy Automatically
 
-To deploy application to any environments, follow this [guide](https://support.atlassian.com/bitbucket-cloud/docs/pipeline-triggers/#Run-pipelines-steps-manually), the pipeline to run are `deploy-to-test`, `deploy-to-production`.
+Website will be deployed automatically via Netlify. Check deploy status above **Netlify deploy status**
 
 
 ## Technologies
 
-- TypeScript 3.9
-- React 16.13, React Hook
-- Bootstrap 4, CSS Module
+- TypeScript v4.3
+- React v17.0, React Hook
+- State management: Recoil, React Context
+- UI libs: Tailwind, MUI5, headless UI, draft-js, popperjs, emoji-mart
 - Storybook
-- TypeDI
+- ESLint
+- Github Actions (CI/CD)
+- Webpack (module bundler)

@@ -7,7 +7,6 @@ import createMentionPlugin, {
   MentionData,
   defaultTheme,
 } from '@draft-js-plugins/mention';
-// import { MentionPopover } from '@main/organisms';
 import MentionEntry from '@main/atoms/MentionEntry';
 
 const { isSoftNewlineEvent } = KeyBindingUtil;
