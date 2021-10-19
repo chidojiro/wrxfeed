@@ -22,7 +22,7 @@ const LoginPage: React.VFC = () => {
 
   useEffect(() => {
     if (identity?.token && identity?.lastLoginAt) {
-      redirect(Routes.Home.path);
+      redirect(Routes.Overview.path);
     }
     if (identity?.token && !identity?.lastLoginAt) {
       redirect(Routes.Onboard.path);

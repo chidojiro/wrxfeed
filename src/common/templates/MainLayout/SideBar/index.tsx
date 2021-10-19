@@ -35,9 +35,7 @@ const SideBar: React.VFC = () => {
                 {menuItem.name}
               </div>
               {tabs.map((leftTab: LeftTab) => {
-                const isCurrentTab =
-                  leftTab.href === location.pathname ||
-                  (leftTab.isHome && location.pathname === '/');
+                const isCurrentTab = leftTab.href === location.pathname;
                 return (
                   <RouterLink
                     key={`tabs-${leftTab.name}`}

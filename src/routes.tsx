@@ -13,6 +13,10 @@ export interface Route {
 
 const routes: Route = {
   // Public pages
+  Home: {
+    path: '/',
+    component: lazy(() => import('@main/pages/Landing')),
+  },
   Login: {
     path: '/login',
     component: lazy(() => import('@auth/pages/LoginPage')),
@@ -25,11 +29,6 @@ const routes: Route = {
   Onboard: {
     path: '/onboarding',
     component: lazy(() => import('@auth/pages/OnboardPage')),
-    permissions: ['admin'],
-  },
-  Home: {
-    path: '/',
-    component: lazy(() => import('@main/pages/Overview')),
     permissions: ['admin'],
   },
   Overview: {
