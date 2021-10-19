@@ -68,8 +68,8 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     }
     const shortName = getNameAbbreviation(profile.fullName);
     return (
-      <div className="flex h-8 w-8 rounded-full bg-green-500 justify-center items-center">
-        <div className="flex text-white font-semibold">{shortName}</div>
+      <div className="flex h-8 w-8 rounded-full bg-purple-5 justify-center items-center">
+        <div className="flex text-white text-xs font-semibold">{shortName}</div>
       </div>
     );
   };
@@ -115,7 +115,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     if (userAvatar !== '') {
       return (
         <UploadButton
-          className="flex group relative h-36 w-36 rounded-full self-center mt-6 bg-green-500 justify-center items-center"
+          className="flex group relative h-36 w-36 rounded-full self-center mt-6 bg-purple-5 justify-center items-center"
           id="button-file-avatar"
           accept={UPLOAD_FILE_ACCEPT}
           onFileSelected={onFileSelected}
@@ -132,7 +132,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     const shortName = getNameAbbreviation(profile?.fullName);
     return (
       <UploadButton
-        className="flex group relative h-36 w-36 rounded-full self-center mt-6 bg-green-500 justify-center items-center"
+        className="flex group relative h-36 w-36 rounded-full self-center mt-6 bg-purple-5 justify-center items-center"
         id="button-file-avatar"
         accept={UPLOAD_FILE_ACCEPT}
         onFileSelected={onFileSelected}
