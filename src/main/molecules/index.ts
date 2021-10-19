@@ -3,7 +3,7 @@ import SearchBox from './SearchBox';
 import DiscussionItem from './DiscussionItem';
 import CommentBox from './CommentBox';
 import CommentItem from './CommentItem';
-import FeelBackModal from './FeelBackModal';
+import FeelBackModal from '../organisms/FeelBackModal';
 import UserProfilePopover from './UserProfilePopover';
 import NotifyPopover from './NotifyPopover';
 

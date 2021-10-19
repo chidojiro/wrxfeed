@@ -1,6 +1,5 @@
 import TransactionModal from './TransactionModal';
-import MentionPopover from './MentionPopover';
-import InviteModal from './InviteModal';
 import UploadCSVModal from './UploadCSVModal';
+import InviteModal from './InviteModal';
 
-export { TransactionModal, MentionPopover, InviteModal, UploadCSVModal };
+export { TransactionModal, InviteModal, UploadCSVModal };

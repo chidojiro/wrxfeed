@@ -1,6 +1,7 @@
 import { DependencyList, useCallback, useEffect, useRef } from 'react';
 
-export const useDebounce = <T extends (...args: unknown[]) => unknown>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const useDebounce = <T extends (...args: any[]) => any>(
   effect: T,
   wait: number,
   deps: DependencyList,

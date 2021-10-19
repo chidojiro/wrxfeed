@@ -1,7 +1,7 @@
-  
+
 [[redirects]]
   from = "/api/*"
-  to = "http://wrx-test-162708929.us-east-2.elb.amazonaws.com/api/:splat"
+  to = "http://staging-api.gravitylabs.co/api/:splat"
   status = 200
   force = true
 
@@ -9,4 +9,4 @@
   from = "/*"
   to = "/index.html"
   status = 200
-  
+
