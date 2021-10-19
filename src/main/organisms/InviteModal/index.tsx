@@ -8,6 +8,7 @@ import ContactItem from '@main/molecules/ContactItem';
 import InviteTagInput from '@main/atoms/InviteTagInput/InviteTagInput';
 import { useDebounce } from '@common/hooks';
 import { useInvite } from '@main/hooks';
+import Banner from '@common/atoms/Banner';
 
 const DEBOUNCE_WAIT = 300;
 
@@ -33,6 +34,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
   const { contacts } = useGetContacts(filter);
   const { sendInvitation } = useInvite();
   const [isLoading, setLoading] = useState(false);
+  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
 
   const onSearchContact = useCallback(
     (value: string) => {
@@ -49,6 +51,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
     setLoading(true);
     await Promise.all(emails.map((email) => sendInvitation({ email })));
     setLoading(false);
+    setShowSuccessBanner(true);
   };
 
   return (
@@ -60,16 +63,20 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
             Invited users will see everything in the company except for comp data.
           </p>
         </div>
-        <div className="divider divider-horizontal w-full my-5" />
+        <hr className="divider divider-horizontal my-5 w-full" />
         <div className="flex flex-col pb-12">
           <div className="px-12 pb-7">
-            <InviteTagInput
-              ref={tagInputRef}
-              placeholder="Enter name or email address"
-              loading={isLoading}
-              onTextChange={debounceSearchRequest}
-              onInvite={sendMultipleInvites}
-            />
+            {showSuccessBanner ? (
+              <Banner message="Invite Sent" onClose={() => setShowSuccessBanner(false)} />
+            ) : (
+              <InviteTagInput
+                ref={tagInputRef}
+                placeholder="Enter name or email address"
+                loading={isLoading}
+                onTextChange={debounceSearchRequest}
+                onInvite={sendMultipleInvites}
+              />
+            )}
           </div>
           <div className="h-[320px] overflow-scroll pb-5">
             <ul className="space-y-4">

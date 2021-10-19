@@ -51,6 +51,7 @@ module.exports = {
         'purple-8': '#EDE9FE',
         'purple-9': '#F5F3FF',
 
+        'system-success': '#5DC258',
         'system-alert': '#FF5F68',
         'blue-upload': 'rgba(67, 36, 158, 0.44)',
       },
