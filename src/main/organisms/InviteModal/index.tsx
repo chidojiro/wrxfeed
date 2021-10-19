@@ -1,43 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { styled } from '@mui/system';
-import ModalUnstyled from '@mui/core/ModalUnstyled';
-import { useRecoilState } from 'recoil';
-import { Stack, Typography } from '@mui/material';
-import { Gray } from '@theme/colors';
-import SearchBox from '@main/molecules/SearchBox';
+import React, { useState, useCallback, useRef } from 'react';
 import { Contact } from '@main/entity/contact.entity';
 // import CommentBox from '@main/molecules/CommentBox';
 import { GetContactsFilter } from '@api/types';
 import { useGetContacts } from '@main/hooks/contact.hook';
-import InviteContactItem from '@main/molecules/InviteContactItem';
-import { showInviteModalState } from './states';
+import Modal from '@common/atoms/Modal';
+import ContactItem from '@main/molecules/ContactItem';
+import InviteTagInput from '@main/atoms/InviteTagInput/InviteTagInput';
+import { useDebounce } from '@common/hooks';
+import { useInvite } from '@main/hooks';
+import Banner from '@common/atoms/Banner';
 
-const StyledModal = styled(ModalUnstyled)`
-  position: fixed;
-  z-index: 1300;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Backdrop = styled('div')`
-  z-index: -1;
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  -webkit-tap-highlight-color: transparent;
-`;
+const DEBOUNCE_WAIT = 300;
 
 export type InviteModalProps = {
-  style?: React.CSSProperties;
-  open?: boolean;
+  open: boolean;
+  onClose: () => void;
 };
 
 const LIMIT = 20;
@@ -46,76 +23,77 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const InviteModal: React.FC<InviteModalProps> = ({ style, open = false }) => {
-  const [isOpen, setIsOpen] = useRecoilState(showInviteModalState);
-  const handleClose = () => setIsOpen(false);
-  const [filterKeyword, setFilterKeyword] = useState('');
+type InviteTagInputHandler = React.ElementRef<typeof InviteTagInput>;
 
+const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
+  const tagInputRef = useRef<InviteTagInputHandler>(null);
   const [filter, setFilter] = useState<GetContactsFilter>({
     text: '',
     pagination: INIT_PAGINATION,
   });
   const { contacts } = useGetContacts(filter);
+  const { sendInvitation } = useInvite();
+  const [isLoading, setLoading] = useState(false);
+  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
 
-  useEffect(() => {
-    setFilter({
-      text: filterKeyword,
-      pagination: INIT_PAGINATION,
-    });
-  }, [filterKeyword]);
+  const onSearchContact = useCallback(
+    (value: string) => {
+      setFilter({
+        text: value,
+        pagination: INIT_PAGINATION,
+      });
+    },
+    [setFilter],
+  );
+  const debounceSearchRequest = useDebounce(onSearchContact, DEBOUNCE_WAIT, [onSearchContact]);
 
-  // useEffect(() => {
-  //   console.log('Check contacts = ', contacts);
-  // }, [contacts]);
-
-  useEffect(() => {
-    setIsOpen(open);
-  }, [open]);
+  const sendMultipleInvites = async (emails: string[]) => {
+    setLoading(true);
+    await Promise.all(emails.map((email) => sendInvitation({ email })));
+    setLoading(false);
+    setShowSuccessBanner(true);
+  };
 
   return (
-    <StyledModal
-      open={isOpen}
-      onClose={handleClose}
-      BackdropComponent={Backdrop}
-      onBackdropClick={handleClose}
-      style={style}
-    >
-      <Stack
-        style={{
-          display: 'flex',
-          width: '620px',
-          height: '630px',
-          borderRadius: '24px',
-          backgroundColor: 'white',
-          borderWidth: '0px',
-          outline: 'none',
-        }}
-      >
-        <Stack paddingTop="44px" paddingX="40px" alignItems="center">
-          <Typography color={Gray[1]} fontWeight="bold" fontSize="24px">
-            Invite collaborators
-          </Typography>
-          <Typography color={Gray[2]} marginTop="6px" fontSize="14px">
-            Collaborators will get an email that gives them access to the workspace.
-          </Typography>
-        </Stack>
-        <Stack flex={1} overflow="scroll">
-          <Stack width="430px" height="56px" alignSelf="center" marginY="30px">
-            <SearchBox
-              onSubmit={() => undefined}
-              onSearch={(text: string) => setFilterKeyword(text)}
-            />
-          </Stack>
-          <Stack flex={1} alignItems="center" overflow="scroll">
-            {contacts.map((contact: Contact, index: number) => (
-              <React.Fragment key={contact?.email}>
-                <InviteContactItem contact={contact} index={index} />
-              </React.Fragment>
-            ))}
-          </Stack>
-        </Stack>
-      </Stack>
-    </StyledModal>
+    <Modal open={open} onClose={onClose}>
+      <div className="flex flex-col w-[523px] h-[524px] outline-none">
+        <div className="flex flex-col px-12 pt-8">
+          <h3 className="text-base text-Gray-1 font-semibold">Add Co-Workers</h3>
+          <p className="text-xs text-Gray-6">
+            Invited users will see everything in the company except for comp data.
+          </p>
+        </div>
+        <hr className="divider divider-horizontal my-5 w-full" />
+        <div className="flex flex-col pb-12">
+          <div className="px-12 pb-7">
+            {showSuccessBanner ? (
+              <Banner message="Invite Sent" onClose={() => setShowSuccessBanner(false)} />
+            ) : (
+              <InviteTagInput
+                ref={tagInputRef}
+                placeholder="Enter name or email address"
+                loading={isLoading}
+                onTextChange={debounceSearchRequest}
+                onInvite={sendMultipleInvites}
+              />
+            )}
+          </div>
+          <div className="h-[320px] overflow-scroll pb-5">
+            <ul className="space-y-4">
+              {contacts.map((contact: Contact) => (
+                <React.Fragment key={contact.email}>
+                  <ContactItem
+                    className="px-12"
+                    contact={contact}
+                    onSelect={(selected) => tagInputRef.current?.addItem(selected.email)}
+                  />
+                </React.Fragment>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </Modal>
   );
 };
 

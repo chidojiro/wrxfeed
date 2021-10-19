@@ -93,3 +93,13 @@ export function formatDate(value: string | number | Date | undefined): string {
 export const classNames = (classes: string[]): string => {
   return classes.filter(Boolean).join(' ');
 };
+
+export const EmailRegex = /[\w\d\\.-]+@[\w\d\\.-]+\.[\w\d\\.-]+/;
+
+export const isEmail = (email: string): boolean => {
+  return EmailRegex.test(email);
+};
+
+export const emailMatches = (text: string): RegExpMatchArray | null => {
+  return text?.match(EmailRegex);
+};

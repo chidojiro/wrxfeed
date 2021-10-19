@@ -17,6 +17,10 @@ const routes: Route = {
     path: '/login',
     component: lazy(() => import('@auth/pages/LoginPage')),
   },
+  AcceptInvitation: {
+    path: '/accept-invitation',
+    component: lazy(() => import('@auth/pages/AcceptInvitation')),
+  },
   // Protected pages
   Onboard: {
     path: '/onboarding',

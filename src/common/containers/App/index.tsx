@@ -21,7 +21,7 @@ import routes from '@src/routes';
 import { ProtectedRoute } from '@identity';
 import { API_BASE_URL } from '@src/config';
 import { CookieProvider } from '@common/hooks/useCookie';
-import { UploadCSVModal, InviteModal } from '@main/organisms';
+import { UploadCSVModal } from '@main/organisms';
 import { EmojiPickerContainer } from '@common/molecules/EmojiPicker';
 import { NotifyBannerContainer } from '@common/molecules/NotifyBanner';
 
@@ -77,7 +77,6 @@ const App: React.FC = () => {
                       </Route>
                     </Switch>
                     <UploadCSVModal />
-                    <InviteModal />
                   </Suspense>
                 </Router>
               </ApiProvider>

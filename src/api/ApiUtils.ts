@@ -121,6 +121,14 @@ export default class ApiUtils implements ApiClient {
     });
   }
 
+  acceptInvitation = async (id: string): Promise<void> => {
+    const resp = await this.request<void>({
+      url: `/inv/invitations/${id}`,
+      method: 'PATCH',
+    });
+    return resp.data;
+  };
+
   getTransactions = async (filter?: TransactionFilter): Promise<Transaction[]> => {
     const params = {
       ...filter?.pagination,
@@ -223,25 +231,22 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  postAddInvitation = async (data: InviteFormModel): Promise<void> => {
-    console.log('Check postAddInvitation data = ', data);
+  sendInvitation = async (data: InviteFormModel): Promise<void> => {
     const res = await this.request<void>({
       url: '/inv/invitations',
       method: 'POST',
       data,
     });
-    console.log('Check postAddInvitation res = ', res);
-    // return res.data;
+    return res.data;
   };
 
   postFeedback = async (transactionId: number, data: FeedBackFormModel): Promise<void> => {
-    console.log(`Check postFeedback transactionId = ${transactionId}, data = `, data);
     const res = await this.request<void>({
       url: `/feed/transactions/${transactionId}/feedback`,
       method: 'POST',
       data,
     });
-    console.log('Check postFeedback res = ', res);
+    return res.data;
   };
 
   // DIRECTORY

@@ -79,7 +79,7 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ open, onClose, transacti
           <CommentBox
             placeholder="Your feedback here…"
             style={{ backgroundColor: 'white', marginTop: '32px' }}
-            onSubmit={({ content }) => console.log({ content })}
+            // onSubmit={({ content }) => console.log({ content })}
             showAttach={false}
             showEmoji={false}
             showSend={false}

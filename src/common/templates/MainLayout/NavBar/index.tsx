@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Popover } from '@headlessui/react';
 import { classNames } from '@main/utils';
 import { useIdentity } from '@identity/hooks';
 import { UserProfilePopover, NotifyPopover } from '@main/molecules';
-import { useSetRecoilState } from 'recoil';
-import { showInviteModalState } from '@main/organisms/InviteModal/states';
+import { InviteModal } from '@main/organisms';
 import { UserPlusIcon } from '@assets/index';
 import SearchBar from '@common/molecules/SearchBar';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
@@ -29,11 +28,10 @@ const user = {
 
 const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
   const identity = useIdentity();
-  const setInviteModal = useSetRecoilState(showInviteModalState);
+  const [isOpenInviteModal, openInviteModal] = useState(false);
 
-  const onClickInvite = () => {
-    setInviteModal(true);
-    return true;
+  const onClickInviteButton = () => {
+    openInviteModal(true);
   };
 
   return (
@@ -80,7 +78,7 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
                 <UserProfilePopover />
                 <button
                   type="button"
-                  onClick={onClickInvite}
+                  onClick={onClickInviteButton}
                   className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
                 >
                   <UserPlusIcon className="flex mr-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500" />
@@ -125,6 +123,7 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
               </div>
             </div>
           </Popover.Panel>
+          <InviteModal open={isOpenInviteModal} onClose={() => openInviteModal(false)} />
         </>
       )}
     </Popover>
