@@ -33,17 +33,16 @@ export interface ApiClient {
   getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: AddCommentParams) => Promise<Comment>;
-
-  getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
   // For Inbox/Discussion list
   getMentions: (pagination?: Pagination) => Promise<User[]>;
-  postAddInvitation: (data: InviteFormModel) => Promise<void>;
+  sendInvitation: (data: InviteFormModel) => Promise<void>;
   getUsers: (filter: GetUsersFilter) => Promise<User[]>;
   getContacts: (filter: GetContactsFilter) => Promise<Contact[]>;
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
+  getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
   // Directory
   getDepartments: (pagination?: Pagination) => Promise<Department[]>;
   getCategories: (pagination?: Pagination) => Promise<Category[]>;
@@ -106,7 +105,7 @@ export interface GetUsersFilter {
 }
 
 export interface GetContactsFilter {
-  text: string;
+  text?: string;
   pagination?: Pagination;
 }
 
