@@ -4,7 +4,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "API_PLACEHOLDER"
+  to = API_PLACEHOLDER
   status = 200
   force = true
 
