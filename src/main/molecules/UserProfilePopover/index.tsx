@@ -170,15 +170,16 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
             </div>
             {renderAvatarEditable()}
             <div className="flex flex-1 flex-col">
-              <div className="flex flex-1 flex-col px-11 pt-4">
+              <div className="flex flex-1 flex-col px-8 pt-4">
                 {profileForms.map((item) => {
                   return (
                     <div key={`profileInfos${item.title}`} className="flex flex-col mt-2">
                       <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
-                      <div className="flex flex-row items-center px-1 py-4 h-10">
+                      <div className="flex flex-row items-center py-4 h-10">
                         <input
-                          className="flex text-sm text-Gray-6 border-none outline-none"
+                          className="flex text-sm text-Gray-6 border-none outline-none placeholder-gray-300"
                           defaultValue={item.content}
+                          placeholder={item.content}
                         />
                       </div>
                     </div>

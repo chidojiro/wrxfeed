@@ -1,4 +1,4 @@
-import { BasicsDownSmall, BasicsEditCircle } from '@assets/';
+import { BasicsDownSmall, BasicsEditCircle } from '@assets';
 import React from 'react';
 
 export interface TargetPanelProps {
@@ -79,7 +79,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   // min-h-[80vh]
   return (
     <div className="flex flex-1 pt-12">
-      <div className="flex flex-col w-72 bg-white pt-6 pb-2 max-h-106">
+      <div className="flex flex-col w-72 bg-white pt-6 pb-2 max-h-106 drop-shadow-md">
         <div className="flex text-Gray-2 text-lg font-semibold px-6">Monthly Targets</div>
         <div className="flex mt-2 flex-col bg-red-500">{targets.map(renderTargetBox)}</div>
         {renderBottomDownIcon()}

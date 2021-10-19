@@ -25,7 +25,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
     if (!Array.isArray(discussions) || discussions.length === 0) {
       return (
         <div className="flex h-32 w-full justify-center items-center">
-          <div className="flex text-gray-1 text-xl font-medium ">
+          <div className="flex text-gray-1 text-lg font-medium ">
             {'You currently have no notifications! \n 🔔'}
           </div>
         </div>
