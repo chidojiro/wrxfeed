@@ -2,7 +2,7 @@ import { useApi } from '@api';
 import { TransactionFilter } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
-import { Transaction } from '@main/entity';
+import { Category, Transaction } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -10,10 +10,11 @@ interface TransactionHookValues {
   transactions: Transaction[];
   hasMore: boolean;
   isLoading: boolean;
+  updateCategory: (category: Partial<Category>) => Promise<void>;
 }
 
 export function useTransaction(filter: TransactionFilter): TransactionHookValues {
-  const [transactions, setTransaction] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const ApiClient = useApi();
@@ -24,13 +25,13 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
       setLoading(true);
       // Reset list if new filter coming
       if (!filter.pagination?.offset) {
-        setTransaction([]);
+        setTransactions([]);
       }
       const res = await ApiClient.getTransactions(filter);
       if (filter.pagination?.offset) {
-        setTransaction((prevTrans) => [...prevTrans, ...res]);
+        setTransactions((prevTrans) => [...prevTrans, ...res]);
       } else {
-        setTransaction(res);
+        setTransactions(res);
       }
       setHasMore(!!res.length);
     } catch (error) {
@@ -44,8 +45,37 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
     }
   }, [ApiClient, errorHandler, filter]);
 
+  const updateCategory = useCallback(
+    async (category: Partial<Category>) => {
+      try {
+        await ApiClient.updateCategory(category);
+        // Update current transactions
+        setTransactions((prevTrans) => {
+          const newTransactions = prevTrans.map((trans) => {
+            if (trans.category.id !== category.id) return trans;
+            return {
+              ...trans,
+              category: {
+                ...trans.category,
+                ...category,
+              },
+            };
+          });
+          return newTransactions;
+        });
+      } catch (error) {
+        if (isBadRequest(error)) {
+          toast.error('Can not update category');
+        } else {
+          await errorHandler(error);
+        }
+      }
+    },
+    [ApiClient, errorHandler],
+  );
+
   useEffect(() => {
     getTransactions().then();
   }, [getTransactions]);
-  return { transactions, hasMore, isLoading };
+  return { transactions, hasMore, isLoading, updateCategory };
 }

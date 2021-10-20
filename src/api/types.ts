@@ -48,11 +48,7 @@ export interface ApiClient {
   getDepartments: (pagination?: Pagination) => Promise<Department[]>;
   getCategories: (pagination?: Pagination) => Promise<Category[]>;
   getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
-}
-
-export interface AuthClient {
-  signOut: () => Promise<void>;
-  signInWithGoogle: () => Promise<UserToken>;
+  updateCategory: (data?: Partial<Category>) => Promise<void>;
 }
 
 export type ChangePasswordDto = Omit<ChangePwdFormModel, 'confirmPassword'>;

@@ -26,6 +26,7 @@ const DepartmentsPage: React.VFC = () => {
     transactions,
     hasMore: hasMoreTrans,
     isLoading: transLoading,
+    updateCategory,
   } = useTransaction(transFilter);
   // Variables
   const isFiltering = !!transFilter.department;
@@ -85,6 +86,7 @@ const DepartmentsPage: React.VFC = () => {
           hasMore={hasMoreTrans}
           onLoadMore={handleTransLoadMore}
           // onFilter={handleTransFilter}
+          updateCategory={updateCategory}
         />
       )}
     </MainLayout>

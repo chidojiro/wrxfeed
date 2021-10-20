@@ -16,7 +16,7 @@ const OverviewPage: React.VFC = () => {
   const [filter, setFilter] = useState<TransactionFilter>({
     pagination: INIT_PAGINATION,
   });
-  const { transactions, hasMore, isLoading } = useTransaction(filter);
+  const { transactions, hasMore, isLoading, updateCategory } = useTransaction(filter);
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -45,6 +45,7 @@ const OverviewPage: React.VFC = () => {
         hasMore={hasMore}
         onLoadMore={handleLoadMore}
         onFilter={handleFilter}
+        updateCategory={updateCategory}
       />
       <MainRightSide>
         <TargetPanel />

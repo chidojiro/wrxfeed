@@ -25,6 +25,7 @@ const CategoriesPage: React.VFC = () => {
     transactions,
     hasMore: hasMoreTrans,
     isLoading: transLoading,
+    updateCategory,
   } = useTransaction(transFilter);
   // Variables
   const isFiltering = !!transFilter.vendor;
@@ -84,6 +85,7 @@ const CategoriesPage: React.VFC = () => {
           hasMore={hasMoreTrans}
           onLoadMore={handleTransLoadMore}
           // onFilter={handleTransFilter}
+          updateCategory={updateCategory}
         />
       )}
     </MainLayout>

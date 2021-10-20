@@ -1,3 +1,8 @@
+export enum Visibility {
+  VISIBLE = 'VISIBLE',
+  HIDDEN = 'HIDDEN',
+}
+
 export type Department = {
   id: number;
   name: string;
@@ -7,6 +12,7 @@ export type Department = {
 export type Category = {
   id: number;
   name: string;
+  visibility: Visibility;
 };
 
 export type Vendor = {
