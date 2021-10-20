@@ -10,7 +10,7 @@ export type DiscussionListProps = {
   style?: React.CSSProperties;
 };
 
-const LIMIT = 10;
+const LIMIT = 20;
 
 const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
   const [filter, setFilter] = useState<Pagination>({ offset: 0, limit: LIMIT });

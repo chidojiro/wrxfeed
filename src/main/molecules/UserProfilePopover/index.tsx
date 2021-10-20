@@ -20,6 +20,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const profile = useRecoilValue(profileState);
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
   const [userAvatar, setAvatar] = React.useState<string>('');
+  const { updateProfile } = useApi();
 
   const setIdentity = useSetIdentity();
   const apiClient = useApi();
@@ -59,12 +60,23 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     );
   };
 
-  const onUploadSuccess = (url: string) => {
-    // console.log(`Check onUploadSuccess url = ${url}`);
-    setAvatar(url);
+  const updateAvatar = async (avatarUri: string) => {
+    const updates = {
+      companyName: profile.company || '',
+      title: profile.title || '',
+      department: profile.department || '',
+      bio: profile.bio || '',
+      lastLoginAt: profile.lastLoginAt || '',
+      avatar: avatarUri,
+    };
+    const updateRes = await updateProfile(updates);
+    console.log('updateRes = ', updateRes);
     toast.success('Upload image successfully!');
-    // const uriFull = url;
-    // refresh();
+  };
+
+  const onUploadSuccess = (url: string) => {
+    setAvatar(url);
+    updateAvatar(url);
   };
 
   const { isUploading, uploadFile } = useFileUploader({
@@ -85,8 +97,6 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   };
 
   const onFileSelected = (file: File | null) => {
-    // useFileUploader.tsx
-    console.log('Check onFileSelected file = ', file);
     if (file) {
       handleAttachFile(file);
     }

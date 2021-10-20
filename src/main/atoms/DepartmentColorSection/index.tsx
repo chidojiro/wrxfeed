@@ -23,10 +23,12 @@ const DepartmentColorSection: React.VFC<DepartmentColorSectionProps> = ({
   };
   return (
     <div style={{ backgroundColor: deptBgClass }} className="w-1/5 min-w-[94px] py-4 px-2.5">
-      <h2 className="text-xs font-semibold text-white py-2">
-        <button type="button" aria-hidden="true" className="hover:underline" onClick={handleClick}>
-          {department?.name ?? 'unknown'}
-        </button>
+      <h2
+        aria-hidden="true"
+        className="text-xs text-left font-semibold text-white py-2"
+        onClick={handleClick}
+      >
+        {department?.name ?? 'unknown'}
       </h2>
     </div>
   );

@@ -45,7 +45,7 @@ export interface ApiClient {
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
   getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
   // Directory
-  getDepartments: (pagination?: Pagination) => Promise<Department[]>;
+  getDepartments: (filter?: DepartmentFilter) => Promise<Department[]>;
   getCategories: (pagination?: Pagination) => Promise<Category[]>;
   getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
   updateCategory: (data?: Partial<Category>) => Promise<void>;
@@ -114,4 +114,8 @@ export interface GetContactsFilter {
 export interface AddCommentParams {
   content?: string;
   attachment?: string;
+}
+
+export interface DepartmentFilter extends Pagination {
+  parent?: number;
 }
