@@ -14,7 +14,6 @@ const INIT_PAGINATION = Object.freeze({
 });
 
 const CategoriesPage: React.VFC = () => {
-  const companyName = 'Bird';
   // Category states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { categories, hasMore, isLoading } = useCategory(filter);
@@ -63,7 +62,7 @@ const CategoriesPage: React.VFC = () => {
   };
 
   return (
-    <MainLayout companyName={companyName}>
+    <MainLayout>
       <h1 className="sr-only">Category list</h1>
       {isFiltering && (
         <div className="flex items-center space-x-4 pb-8">
