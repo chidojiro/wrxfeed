@@ -25,6 +25,7 @@ import {
   GetContactsFilter,
   AddCommentParams,
   OrderDirection,
+  DepartmentFilter,
 } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { handleResponseFail } from '@api/utils';
@@ -255,11 +256,11 @@ export default class ApiUtils implements ApiClient {
   };
 
   // DIRECTORY
-  getDepartments = async (pagination?: Pagination): Promise<Department[]> => {
+  getDepartments = async (filter?: DepartmentFilter): Promise<Department[]> => {
     const res = await this.request<Department[]>({
       url: '/feed/departments',
       method: 'GET',
-      params: pagination,
+      params: filter,
     });
     return res.data;
   };

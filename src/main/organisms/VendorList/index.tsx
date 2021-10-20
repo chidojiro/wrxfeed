@@ -21,29 +21,27 @@ const VendorList: React.VFC<VendorListProps> = ({
 }) => {
   return (
     <InfiniteScroller
-      style={{
-        overflow: 'scroll',
-        paddingBottom: 52,
-        marginRight: 2,
-      }}
+      className="pb-14 mr-0.5 space-y-10 overflow-scroll"
       onLoadMore={onLoadMore}
       isLoading={isLoading}
       LoadingComponent={<TransactionLoading />}
     >
-      <ul className="pb-4 divide-y divide-Gray-8 rounded-sm">
-        {vendors.map((vendor) => (
-          <li key={vendor.id} className="flex bg-white">
-            <div
-              aria-hidden="true"
-              className="py-4 cursor-pointer w-full"
-              onClick={() => onSelect && onSelect(vendor)}
-              onKeyDown={() => onSelect && onSelect(vendor)}
-            >
-              <p className="ml-3 text-sm font-medium text-Gray-1">{vendor.name}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="bg-white shadow overflow-hidden sm:rounded-sm">
+        <ul className="divide-y divide-gray-200">
+          {vendors.map((vendor) => (
+            <li key={vendor.id} className="px-4 py-4 sm:px-6">
+              <div
+                aria-hidden="true"
+                className="cursor-pointer w-full"
+                onClick={() => onSelect && onSelect(vendor)}
+                onKeyDown={() => onSelect && onSelect(vendor)}
+              >
+                <p className="ml-3 text-sm font-medium text-Gray-1">{vendor.name}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
       {!isLoading && !hasMore && <TransactionListEnd />}
     </InfiniteScroller>
   );
