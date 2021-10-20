@@ -33,7 +33,7 @@ const targets: Target[] = [
     color: '#2451bf',
   },
   {
-    id: 3,
+    id: 4,
     title: 'Vehicle',
     color: '#df6622',
   },
@@ -56,7 +56,10 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
 
   const renderTargetBox = (item: Target) => {
     return (
-      <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
+      <div
+        key={`renderTargetBox-${item.title}`}
+        className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col"
+      >
         <div className="flex flex-row items-center">
           <div className="flex text-Gray-4 font-medium text-sm font-regular">{item.title}</div>
           {renderEditButton()}
