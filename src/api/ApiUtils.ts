@@ -137,7 +137,6 @@ export default class ApiUtils implements ApiClient {
       dep: filter?.department,
       ven: filter?.vendor,
       cat: filter?.category,
-      // order: OrderDirection.DESC,
     };
     const res = await this.request<Transaction[]>({
       url: '/feed/transactions',
@@ -178,7 +177,7 @@ export default class ApiUtils implements ApiClient {
         order: OrderDirection.ASC,
       },
     });
-    // console.log('Check res = ', res);
+    console.log(`Check getMentions data = ${JSON.stringify(res.data)}`);
     return res.data;
   };
 
@@ -212,7 +211,10 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<Discussion[]>({
       url: '/user/me/mentions',
       method: 'GET',
-      params: pagination,
+      params: {
+        ...pagination,
+        order: OrderDirection.DESC,
+      },
     });
     return res.data;
   };
