@@ -18,7 +18,6 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const [notifyNews, setNews] = React.useState<number>(0);
 
   React.useEffect(() => {
-    // console.log(`Check new discussions = ${JSON.stringify(discussions)}`);
     setNews(discussions.length);
   }, [discussions]);
 
