@@ -125,7 +125,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
 
   return (
     <>
-      <li ref={containerRef} key={transaction.id} className="bg-white filter drop-shadow-md">
+      <li ref={containerRef} key={transaction.id} className="bg-white filter shadow-md">
         <article className="flex" aria-labelledby={`question-title-${transaction.id}`}>
           <DepartmentColorSection department={transaction.department.parent} />
           <div
@@ -136,7 +136,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
           >
             <div className="flex items-center space-x-3">
               <div className="flex min-w-0 flex-1">
-                <p className="text-xs text-Gray-6">
+                <p className="text-sm text-Gray-6">
                   <button
                     type="button"
                     className="hover:underline"
@@ -195,18 +195,14 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
               </div>
             </div>
             <h2
+              aria-hidden="true"
               id={`question-title-${transaction.id}`}
-              className="mt-3 text-base font-semibold text-Gray-2"
+              className="mt-3 text-base font-semibold text-Gray-2 hover:underline"
+              onClick={() => onClickCategory && onClickCategory(transaction.category.id)}
             >
-              <button
-                type="button"
-                className="hover:underline"
-                onClick={() => onClickCategory && onClickCategory(transaction.category.id)}
-              >
-                {transaction.category.name}
-              </button>
+              {transaction.category.name}
             </h2>
-            <p className="text-xs text-Gray-6">
+            <p className="mt-1 text-xs text-Gray-6">
               <button
                 type="button"
                 className="hover:underline"

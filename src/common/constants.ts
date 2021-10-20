@@ -21,7 +21,7 @@ export const MainMenu: GroupTab[] = [
     name: 'Feed',
     icon: FeedIcon,
     tabs: [
-      { name: 'Company', href: '/overview', icon: null, isHome: true },
+      { name: 'Company', href: '/overview', icon: null },
       { name: 'For you', href: '/discussions', icon: null },
     ],
   },

@@ -9,30 +9,30 @@ const SideBar: React.VFC = () => {
 
   return (
     <nav aria-label="Sidebar" className="sticky top-24 divide-y divide-gray-300">
-      <div className="pb-8 space-y-1">
+      <div className="pb-8 space-y-8">
         {MainMenu.map((menuItem: GroupTab) => {
           const { tabs, icon: IconView } = menuItem;
           return (
-            <React.Fragment key={menuItem.name}>
+            <div key={menuItem.name}>
               <div
-                key={`menuItems-${menuItem.name}`}
-                className="group flex items-center px-2 py-2 text-sm text-Gray-1 font-semibold rounded-sm"
+                key={`${menuItem.name}-headline`}
+                className="px-3 py-3 flex flex-row items-center"
               >
-                <div>
-                  {IconView ? (
-                    <IconView
-                      style={{ width: '20px', height: '20px' }}
-                      className="flex-shrink-0 h-6 w-6 mr-4"
-                      aria-hidden="true"
-                      width={12}
-                      height={12}
-                      viewBox="0 -4 20 20"
-                    />
-                  ) : (
-                    <div className="flex-shrink-0 h-6 w-6" />
-                  )}
-                </div>
-                {menuItem.name}
+                {IconView ? (
+                  <IconView
+                    style={{ width: '24px', height: '24px' }}
+                    className="flex-shrink-0 -ml-1 mr-3 h-6 w-6"
+                    aria-hidden="true"
+                    width={12}
+                    height={12}
+                    viewBox="0 -2 18 18"
+                  />
+                ) : (
+                  <div className="flex-shrink-0 -ml-1 mr-3 h-6 w-6" />
+                )}
+                <h3 className="text-xs font-semibold text-Gray-1 uppercase tracking-wider">
+                  {menuItem.name}
+                </h3>
               </div>
               {tabs.map((leftTab: LeftTab) => {
                 const isCurrentTab = leftTab.href === location.pathname;
@@ -41,18 +41,16 @@ const SideBar: React.VFC = () => {
                     key={`tabs-${leftTab.name}`}
                     to={leftTab.href}
                     className={classNames([
-                      isCurrentTab
-                        ? 'bg-purple-5 text-white'
-                        : 'text-Gray-6 hover:bg-purple-8 hover:text-Gray-2',
-                      'group flex items-center px-2 py-0.5 text-sm rounded-sm',
+                      isCurrentTab ? 'bg-Gray-11 text-Gray-1' : 'text-Gray-6 hover:bg-gray-50',
+                      'group flex items-center px-3 py-2 text-sm font-medium rounded-sm',
                     ])}
                   >
-                    <div className="h-6 w-6 mr-4" />
-                    {leftTab.name}
+                    <div className="flex-shrink-0 -ml-1 mr-3 h-6 w-6" />
+                    <span className="truncate">{leftTab.name}</span>
                   </RouterLink>
                 );
               })}
-            </React.Fragment>
+            </div>
           );
         })}
       </div>
