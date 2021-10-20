@@ -56,9 +56,9 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ open, onClose, transacti
 
   const renderMaxCharacters = () => {
     return (
-      <p className="mt-2 text-sm text-right text-Gray-3">
+      <p className="mt-2 text-sm text-right text-Gray-4">
         {feedback.length !== 0 && (
-          <span className={isMax ? 'text-system-alert' : 'text-Gray-3'}>{feedback.length}</span>
+          <span className={isMax ? 'text-system-alert' : 'text-Gray-4'}>{feedback.length}</span>
         )}
         {maxLengthText}
       </p>
@@ -103,7 +103,7 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ open, onClose, transacti
             type="button"
             className={classNames(
               'rounded text-sm font-bold text-white ml-2 px-5',
-              isSendable ? 'bg-purple-5' : 'bg-Gray-3',
+              isSendable ? 'bg-purple-5' : 'bg-Gray-4',
             )}
             disabled={isLoading}
             onClick={handleSubmit}

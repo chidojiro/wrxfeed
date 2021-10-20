@@ -49,7 +49,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
         className="flex flex-row ml-auto opacity-0 group-hover:opacity-100"
       >
         <BasicsEditCircle />
-        <div className="flex text-xs text-Gray-3 font-semibold ml-1">Edit</div>
+        <div className="flex text-xs text-Gray-4 font-semibold ml-1">Edit</div>
       </button>
     );
   };
@@ -58,7 +58,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
-          <div className="flex text-Gray-3 font-medium text-sm font-regular">{item.title}</div>
+          <div className="flex text-Gray-4 font-medium text-sm font-regular">{item.title}</div>
           {renderEditButton()}
         </div>
         <div className="flex mt-1 w-full h-1" style={{ backgroundColor: item.color }} />

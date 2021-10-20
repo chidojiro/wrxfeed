@@ -53,7 +53,7 @@ const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) =
             <TextBold text={user.fullName} />
             <div className="flex text-xs text-Gray-1 my-1 mx-1">{' mentioned you in '}</div>
             <PostTag transaction={transaction} index={index} />
-            <p className="flex text-xs text-Gray-3 ml-auto">{formatDate(discussion.createdAt)}</p>
+            <p className="flex text-xs text-Gray-4 ml-auto">{formatDate(discussion.createdAt)}</p>
           </div>
           <div className="flex mt-2">
             {/* <div className="flex flex-row items-top mt-2">

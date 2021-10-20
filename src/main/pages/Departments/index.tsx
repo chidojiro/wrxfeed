@@ -14,7 +14,6 @@ const INIT_PAGINATION = Object.freeze({
 });
 
 const DepartmentsPage: React.VFC = () => {
-  const companyName = 'Bird';
   // Deparment states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { departments, hasMore, isLoading } = useDepartment(filter);
@@ -26,6 +25,7 @@ const DepartmentsPage: React.VFC = () => {
     transactions,
     hasMore: hasMoreTrans,
     isLoading: transLoading,
+    updateCategory,
   } = useTransaction(transFilter);
   // Variables
   const isFiltering = !!transFilter.department;
@@ -62,7 +62,7 @@ const DepartmentsPage: React.VFC = () => {
   };
 
   return (
-    <MainLayout companyName={companyName}>
+    <MainLayout>
       <h1 className="sr-only">Department list</h1>
       {isFiltering && (
         <div className="flex items-center space-x-4 pb-8">
@@ -85,6 +85,7 @@ const DepartmentsPage: React.VFC = () => {
           hasMore={hasMoreTrans}
           onLoadMore={handleTransLoadMore}
           // onFilter={handleTransFilter}
+          updateCategory={updateCategory}
         />
       )}
     </MainLayout>

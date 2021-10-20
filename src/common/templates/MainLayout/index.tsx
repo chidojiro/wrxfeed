@@ -3,12 +3,7 @@ import ReactDOM from 'react-dom';
 import SideBar from './SideBar';
 import NavBar from './NavBar';
 
-export interface MainLayoutProps {
-  companyName: string;
-  boxStyle?: React.CSSProperties;
-}
-
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+const MainLayout: React.FC = ({ children }) => {
   return (
     <div className="relative">
       <NavBar />

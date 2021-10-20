@@ -24,7 +24,6 @@ import {
   GetUsersFilter,
   GetContactsFilter,
   AddCommentParams,
-  MentionsFilters,
   OrderDirection,
 } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
@@ -279,6 +278,15 @@ export default class ApiUtils implements ApiClient {
       url: '/feed/vendors',
       method: 'GET',
       params: pagination,
+    });
+    return res.data;
+  };
+
+  updateCategory = async (data?: Partial<Category>): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feed/categories/${data?.id}`,
+      method: 'PATCH',
+      data,
     });
     return res.data;
   };
