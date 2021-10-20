@@ -24,6 +24,8 @@ import {
   GetUsersFilter,
   GetContactsFilter,
   AddCommentParams,
+  OrderDirection,
+  DepartmentFilter,
 } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { handleResponseFail } from '@api/utils';
@@ -170,9 +172,12 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<User[]>({
       url: '/user/me/mentions',
       method: 'GET',
-      params: pagination,
+      params: {
+        ...pagination,
+        order: OrderDirection.ASC,
+      },
     });
-    // console.log('Check res = ', res);
+    console.log(`Check getMentions data = ${JSON.stringify(res.data)}`);
     return res.data;
   };
 
@@ -206,7 +211,10 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<Discussion[]>({
       url: '/user/me/mentions',
       method: 'GET',
-      params: pagination,
+      params: {
+        ...pagination,
+        order: OrderDirection.DESC,
+      },
     });
     return res.data;
   };
@@ -250,11 +258,11 @@ export default class ApiUtils implements ApiClient {
   };
 
   // DIRECTORY
-  getDepartments = async (pagination?: Pagination): Promise<Department[]> => {
+  getDepartments = async (filter?: DepartmentFilter): Promise<Department[]> => {
     const res = await this.request<Department[]>({
       url: '/feed/departments',
       method: 'GET',
-      params: pagination,
+      params: filter,
     });
     return res.data;
   };
@@ -273,6 +281,15 @@ export default class ApiUtils implements ApiClient {
       url: '/feed/vendors',
       method: 'GET',
       params: pagination,
+    });
+    return res.data;
+  };
+
+  updateCategory = async (data?: Partial<Category>): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feed/categories/${data?.id}`,
+      method: 'PATCH',
+      data,
     });
     return res.data;
   };

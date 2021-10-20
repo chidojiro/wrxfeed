@@ -10,7 +10,7 @@ export type DiscussionListProps = {
   style?: React.CSSProperties;
 };
 
-const LIMIT = 10;
+const LIMIT = 20;
 
 const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
   const [filter, setFilter] = useState<Pagination>({ offset: 0, limit: LIMIT });
@@ -39,11 +39,7 @@ const DiscussionList: React.FC<DiscussionListProps> = ({ style, children }) => {
   return (
     <InfiniteScroller
       style={{
-        marginTop: '70px',
-        width: '90%',
-        minWidth: '712px',
         overflow: 'scroll',
-        paddingRight: 2,
         ...style,
       }}
       onLoadMore={handleLoadMore}

@@ -17,13 +17,14 @@ export interface LoginFormModel {
 }
 
 export interface ProfileFormModel {
-  firstName: string;
-  lastName: string;
-  companyName: string;
-  title: string;
-  department: string;
+  firstName?: string;
+  lastName?: string;
+  companyName?: string;
+  title?: string;
+  department?: string;
   bio: string;
   lastLoginAt: string;
+  avatar?: string;
 }
 
 export interface ChangePwdFormModel {

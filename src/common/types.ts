@@ -8,11 +8,10 @@ export type LeftTab = {
   name: string;
   href: string;
   icon: FunctionComponent<SVGAttributes<SVGElement>> | null;
-  isHome?: boolean;
 };
 
 export type GroupTab = {
   name: string;
-  icon: FunctionComponent<SVGAttributes<SVGElement>>;
+  icon: FunctionComponent<SVGAttributes<SVGElement>> | null;
   tabs: LeftTab[];
 };

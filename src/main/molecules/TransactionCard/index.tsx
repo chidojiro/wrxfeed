@@ -1,28 +1,29 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { CommentFormModel } from '@main/types';
-import { Transaction } from '@main/entity';
+import { Category, Transaction, Visibility } from '@main/entity';
+import { useComment, useMention } from '@main/hooks';
+import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
+import { Gray, LightBG } from '@theme/colors';
+import { SubmitHandler } from 'react-hook-form';
+import { EditorState } from 'draft-js';
+import { classNames, commentEditorRawParser } from '@main/utils';
+import { formatCurrency, formatDate } from '@common/utils';
+// Tailwind components
+import { Menu } from '@headlessui/react';
+import DepartmentColorSection from '@main/atoms/DepartmentColorSection';
+import NotifyBanner from '@common/molecules/NotifyBanner';
 import CommentBox from '@main/molecules/CommentBox';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentRemaining from '@main/atoms/CommentRemaining';
-import { useComment, useMention } from '@main/hooks';
-import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
-import ConfirmModal from '@main/atoms/ConfirmModal';
-import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
-import { Gray, LightBG } from '@theme/colors';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/organisms/FeelBackModal';
 import AttachmentModal from '@main/organisms/CommentAttachmentModal';
-import { SubmitHandler } from 'react-hook-form';
-import { EditorState } from 'draft-js';
-import { classNames, commentEditorRawParser } from '@main/utils';
-// Tailwind components
-import { Menu } from '@headlessui/react';
+import ConfirmModal from '@main/atoms/ConfirmModal';
+// Icons
+import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
-import { formatCurrency, formatDate } from '@common/utils';
-import DepartmentColorSection from '@main/atoms/DepartmentColorSection';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
-import NotifyBanner from '@common/molecules/NotifyBanner';
 
 const INITIAL_COMMENT_NUMBER = 2;
 const LOAD_MORE_LIMIT = 5;
@@ -32,6 +33,7 @@ export interface TransactionCardProps {
   onClickDepartment?: (department?: number) => void;
   onClickVendor?: (vendor?: number) => void;
   onClickCategory?: (category?: number) => void;
+  updateCategory?: (category: Partial<Category>) => Promise<void>;
 }
 
 interface ConfirmModalProps {
@@ -46,22 +48,24 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   onClickDepartment,
   onClickVendor,
   onClickCategory,
+  updateCategory,
 }) => {
   // Recoil states
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
   const [filter, setFilter] = useState<Pagination>({ offset: 0, limit: INITIAL_COMMENT_NUMBER });
-  const { comments, total, isLoading, addComment } = useComment(transaction, filter);
-  const { mentions } = useMention();
   const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
-  const [isHidden, setHidden] = useState(false);
   const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
   const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
   const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
+  // Data hooks
+  const { comments, total, isLoading, addComment } = useComment(transaction, filter);
+  const { mentions } = useMention();
   // Variables
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
+  const isHidden = transaction.category.visibility === Visibility.HIDDEN;
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
     const contentState = values?.content as EditorState;
@@ -79,9 +83,11 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     }));
   }, [isLoading]);
 
-  const handleHideCategory = () => {
+  const handleHideCategory = async () => {
     setConfirmModal(undefined);
-    setHidden(true);
+    if (updateCategory) {
+      await updateCategory({ id: transaction.category.id, visibility: Visibility.HIDDEN });
+    }
     NotifyBanner.info('You have hidden this transaction');
   };
 
@@ -95,9 +101,11 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     });
   };
 
-  const handleShowCategory = () => {
+  const handleShowCategory = async () => {
     setConfirmModal(undefined);
-    setHidden(false);
+    if (updateCategory) {
+      await updateCategory({ id: transaction.category.id, visibility: Visibility.VISIBLE });
+    }
     NotifyBanner.info('You have unhidden this transaction');
   };
 
@@ -125,7 +133,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
 
   return (
     <>
-      <li ref={containerRef} key={transaction.id} className="bg-white filter drop-shadow-md">
+      <li ref={containerRef} key={transaction.id} className="bg-white filter shadow-md">
         <article className="flex" aria-labelledby={`question-title-${transaction.id}`}>
           <DepartmentColorSection department={transaction.department.parent} />
           <div
@@ -135,7 +143,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
             )}
           >
             <div className="flex items-center space-x-3">
-              <div className="flex min-w-0 flex-1">
+              <div className="flex items-center min-w-0 flex-1">
                 <p className="text-xs text-Gray-6">
                   <button
                     type="button"
@@ -195,18 +203,14 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
               </div>
             </div>
             <h2
+              aria-hidden="true"
               id={`question-title-${transaction.id}`}
-              className="mt-3 text-base font-semibold text-Gray-2"
+              className="mt-3 text-base font-semibold text-Gray-2 hover:underline"
+              onClick={() => onClickCategory && onClickCategory(transaction.category.id)}
             >
-              <button
-                type="button"
-                className="hover:underline"
-                onClick={() => onClickCategory && onClickCategory(transaction.category.id)}
-              >
-                {transaction.category.name}
-              </button>
+              {transaction.category.name}
             </h2>
-            <p className="text-xs text-Gray-6">
+            <p className="mt-1 text-xs text-Gray-6">
               <button
                 type="button"
                 className="hover:underline"

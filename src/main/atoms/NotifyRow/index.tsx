@@ -25,7 +25,7 @@ const NotifyRow: React.VFC<NotifyRowProps> = ({ item }) => {
   };
 
   return (
-    <div className="flex flex-col mt-2 max-h-16 px-4 py-2 hover:bg-Gray-hover">
+    <div className="flex flex-col mt-2 min-h-16 px-4 py-2 hover:bg-Gray-hover">
       <div className="flex flex-row items-center">
         <div className="flex flex-row">
           <div className="flex text-xs text-gray-1 font-bold">{item?.user?.fullName}</div>

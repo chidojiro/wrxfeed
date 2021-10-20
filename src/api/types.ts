@@ -45,14 +45,10 @@ export interface ApiClient {
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
   getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
   // Directory
-  getDepartments: (pagination?: Pagination) => Promise<Department[]>;
+  getDepartments: (filter?: DepartmentFilter) => Promise<Department[]>;
   getCategories: (pagination?: Pagination) => Promise<Category[]>;
   getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
-}
-
-export interface AuthClient {
-  signOut: () => Promise<void>;
-  signInWithGoogle: () => Promise<UserToken>;
+  updateCategory: (data?: Partial<Category>) => Promise<void>;
 }
 
 export type ChangePasswordDto = Omit<ChangePwdFormModel, 'confirmPassword'>;
@@ -70,6 +66,11 @@ export interface Pagination {
 export enum OrderDirection {
   ASC = 'ASC',
   DESC = 'DESC',
+}
+
+export interface MentionsFilters {
+  order?: OrderDirection;
+  pagination?: Pagination;
 }
 
 export interface CommentFilters {
@@ -113,4 +114,8 @@ export interface GetContactsFilter {
 export interface AddCommentParams {
   content?: string;
   attachment?: string;
+}
+
+export interface DepartmentFilter extends Pagination {
+  parent?: number;
 }
