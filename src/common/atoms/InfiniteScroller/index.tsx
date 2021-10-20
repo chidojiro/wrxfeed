@@ -6,9 +6,10 @@ const DEFAULT_THRESHOLD = 150;
 const DEBOUNCE_WAIT = 300; // 0.3s
 
 interface InfiniteScrollerProps {
+  style?: React.CSSProperties;
+  className?: string;
   threshold?: number;
   onLoadMore?: () => void;
-  style?: React.CSSProperties;
   isLoading?: boolean;
   LoadingComponent?: ReactNode;
 }
@@ -16,6 +17,7 @@ interface InfiniteScrollerProps {
 const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
   children,
   style,
+  className,
   threshold,
   onLoadMore,
   isLoading,
@@ -55,7 +57,7 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
 
   return (
     <>
-      <div ref={scrollerRef} style={style}>
+      <div ref={scrollerRef} className={className} style={style}>
         {children}
         {isLoading && LoadingComponent}
       </div>
@@ -68,6 +70,7 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
 InfiniteScroller.defaultProps = {
   threshold: DEFAULT_THRESHOLD,
   style: undefined,
+  className: '',
   isLoading: false,
   LoadingComponent: null,
   onLoadMore: () => undefined,
