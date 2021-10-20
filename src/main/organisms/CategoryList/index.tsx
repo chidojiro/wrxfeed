@@ -21,29 +21,27 @@ const CategoryList: React.VFC<CategoryListProps> = ({
 }) => {
   return (
     <InfiniteScroller
-      style={{
-        overflow: 'scroll',
-        paddingBottom: 52,
-        marginRight: 2,
-      }}
+      className="pb-14 mr-0.5 space-y-10 overflow-scroll"
       onLoadMore={onLoadMore}
       isLoading={isLoading}
       LoadingComponent={<TransactionLoading />}
     >
-      <ul className="pb-4 divide-y divide-Gray-8 rounded-sm">
-        {categories.map((category) => (
-          <li key={category.id} className="flex bg-white">
-            <div
-              aria-hidden="true"
-              className="py-4 cursor-pointer w-full"
-              onClick={() => onSelect && onSelect(category)}
-              onKeyDown={() => onSelect && onSelect(category)}
-            >
-              <p className="ml-3 text-sm font-medium text-Gray-1">{category.name}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="bg-white shadow overflow-hidden sm:rounded-sm">
+        <ul className="divide-y divide-gray-200">
+          {categories.map((category) => (
+            <li key={category.id} className="px-4 py-4 sm:px-6">
+              <div
+                aria-hidden="true"
+                className="cursor-pointer w-full"
+                onClick={() => onSelect && onSelect(category)}
+                onKeyDown={() => onSelect && onSelect(category)}
+              >
+                <p className="ml-3 text-sm font-medium text-Gray-1">{category.name}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
       {!isLoading && !hasMore && <TransactionListEnd />}
     </InfiniteScroller>
   );
