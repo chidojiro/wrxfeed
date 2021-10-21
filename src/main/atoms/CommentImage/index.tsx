@@ -31,7 +31,7 @@ const CommentImage: React.VFC<CommentImageProps> = ({ src }) => {
   return (
     <div
       aria-hidden="true"
-      style={{ minHeight: hasPortionView ? PORTION_HEIGHT : 'unset' }}
+      style={{ minHeight: hasPortionView || !imgLoaded ? PORTION_HEIGHT : 'unset' }}
       className="block relative max-w-full my-2"
       onClick={togglePortionView}
     >
