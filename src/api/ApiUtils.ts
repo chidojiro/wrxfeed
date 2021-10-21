@@ -9,6 +9,7 @@ import {
   Department,
   Category,
   Vendor,
+  Notification,
 } from '@main/entity';
 import { ApiError } from '@error';
 import { Identity } from '@identity';
@@ -290,6 +291,25 @@ export default class ApiUtils implements ApiClient {
       url: `/feed/categories/${data?.id}`,
       method: 'PATCH',
       data,
+    });
+    return res.data;
+  };
+
+  getNotifications = async (page?: Pagination): Promise<Notification[]> => {
+    const res = await this.request<Notification[]>({
+      url: '/noti/notifications',
+      method: 'GET',
+      params: {
+        ...page,
+      },
+    });
+    return res.data;
+  };
+
+  patchNotification = async (id: number): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/noti/notifications/${id}`,
+      method: 'PATCH',
     });
     return res.data;
   };

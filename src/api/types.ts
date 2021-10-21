@@ -8,6 +8,7 @@ import {
   Department,
   Category,
   Vendor,
+  Notification,
 } from '@main/entity';
 import {
   ChangePwdFormModel,
@@ -49,6 +50,9 @@ export interface ApiClient {
   getCategories: (pagination?: Pagination) => Promise<Category[]>;
   getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
   updateCategory: (data?: Partial<Category>) => Promise<void>;
+  // Notification
+  getNotifications: (page?: Pagination) => Promise<Notification[]>;
+  patchNotification: (id: number) => Promise<void>;
 }
 
 export type ChangePasswordDto = Omit<ChangePwdFormModel, 'confirmPassword'>;
