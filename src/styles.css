@@ -133,3 +133,7 @@ svg.path-no-stroke > path {
 .divider-vertical {
   width: 1px;
 }
+
+.image-clip {
+  clip: rect(0, auto, 140px, 0)
+}

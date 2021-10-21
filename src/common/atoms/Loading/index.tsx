@@ -9,13 +9,10 @@ interface LoadingProps {
 
 const Loading: React.VFC<LoadingProps> = ({ width, height, className = '' }) => {
   return (
-    <div className=" flex justify-center items-center">
+    <div className={classNames('flex justify-center items-center', className)}>
       <div
         style={{ width: width ?? 32, height: height ?? 32 }}
-        className={classNames(
-          'animate-spin rounded-full h-2 w-2 border-b-2 border-primary',
-          className,
-        )}
+        className="animate-spin rounded-full h-2 w-2 border-b-2 border-primary"
       />
     </div>
   );
