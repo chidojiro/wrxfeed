@@ -17,7 +17,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({ className, comment, ...rest 
   const attachmentName = comment.attachment?.split('/').slice(-1) ?? '';
 
   const renderAttachment = () =>
-    IMAGE_EXT.includes(attachmentType) ? (
+    IMAGE_EXT.includes(attachmentType.toLowerCase()) ? (
       <CommentImage src={comment.attachment ?? ''} />
     ) : (
       <a href={comment.attachment} download>

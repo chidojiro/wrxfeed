@@ -1,28 +1,46 @@
 import React, { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { NotifyIcon } from '@assets';
-import { useDiscussion } from '@main/hooks';
+import { useNotification } from '@main/hooks';
 import { Pagination } from '@api/types';
-import { Discussion } from '@main/entity';
+import { Notification } from '@main/entity';
 import { NotifyRow } from '@main/atoms';
+import Loading from '@common/atoms/Loading';
 
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;
 }
 
-const LIMIT = 5;
+const LIMIT = 10;
+
+export enum NotifyStatus {
+  UNREAD = 'UNREAD',
+}
 
 const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
-  const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
-  const { discussions } = useDiscussion(filter);
+  const [filter, setFilter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
+  const { notifications, isLoading, patchNotification, clear } = useNotification(filter);
+  const [notifies, setNotifies] = React.useState<Notification[]>([]);
   const [notifyNews, setNews] = React.useState<number>(0);
 
   React.useEffect(() => {
-    setNews(discussions.length);
-  }, [discussions]);
+    // console.log('Check new notifications = ', notifications);
+    const notifyUnseen = notifications.filter((item) => item.status === NotifyStatus.UNREAD);
+    setNotifies(notifyUnseen);
+    // console.log(`Check newNotifyCount = ${newNotifyCount}`);
+    setNews(notifyUnseen.length);
+  }, [notifications]);
 
   const renderNotifyList = () => {
-    if (!Array.isArray(discussions) || discussions.length === 0) {
+    if (isLoading) {
+      return (
+        <div className="flex h-32 w-full justify-center items-center">
+          <Loading />
+        </div>
+      );
+    }
+
+    if (!Array.isArray(notifies) || notifies.length === 0) {
       return (
         <div className="flex h-32 w-full justify-center items-center">
           <div className="flex text-gray-1 text-lg font-medium ">
@@ -32,16 +50,32 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
       );
     }
     return (
-      <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-3">
-        {discussions.map((item: Discussion, index: number) => {
-          return <NotifyRow key={`notify-row-${item.id}`} item={item} index={index} />;
+      <div className="flex flex-1 flex-col pb-4 pt-3 overflow-scroll">
+        {notifies.map((item: Notification, index: number) => {
+          return (
+            <NotifyRow
+              key={`notify-row-${item.content}`}
+              item={item}
+              index={index}
+              onClickNotifyAndSeen={() => {
+                patchNotification(item.id);
+                // clear();
+                setTimeout(() => {
+                  setFilter({
+                    offset: 0,
+                    limit: LIMIT,
+                  });
+                }, 500);
+              }}
+            />
+          );
         })}
       </div>
     );
   };
 
   const renderMarkAllAsRead = () => {
-    if (discussions.length === 0 || notifyNews === 0) return null;
+    if (notifications.length === 0 || notifyNews === 0) return null;
     const onClickMarkAllAsRead = () => setNews(0);
     return (
       <button
