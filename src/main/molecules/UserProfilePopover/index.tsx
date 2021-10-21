@@ -26,7 +26,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
   const [userAvatar, setAvatar] = React.useState<string>('');
   const [changeData, setChangeData] = React.useState<boolean>(false);
-  const [profileChanges, setProfileChanges] = React.useState<ProfileChanges[]>([]);
+  // const [profileChanges, setProfileChanges] = React.useState<ProfileChanges[]>([]);
   const { updateProfile } = useApi();
 
   const setIdentity = useSetIdentity();
