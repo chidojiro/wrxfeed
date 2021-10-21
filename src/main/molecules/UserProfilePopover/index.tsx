@@ -16,10 +16,17 @@ export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
 }
 
+export type ProfileChanges = {
+  key: string;
+  value: string;
+};
+
 const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const profile = useRecoilValue(profileState);
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
   const [userAvatar, setAvatar] = React.useState<string>('');
+  const [changeData, setChangeData] = React.useState<boolean>(false);
+  const [profileChanges, setProfileChanges] = React.useState<ProfileChanges[]>([]);
   const { updateProfile } = useApi();
 
   const setIdentity = useSetIdentity();
@@ -146,7 +153,22 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     );
   };
 
+  const onClickSaveChange = () => {};
+
   const renderLogout = () => {
+    if (changeData) {
+      return (
+        <div className="flex py-4 items-center flex-col">
+          <button
+            type="button"
+            className="flex text-blue-500 font-medium"
+            onClick={onClickSaveChange}
+          >
+            Save changes
+          </button>
+        </div>
+      );
+    }
     return (
       <div className="flex py-4 items-center flex-col">
         <button type="button" className="flex text-red-500 font-medium" onClick={logout}>
@@ -190,6 +212,11 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
                           className="flex text-sm text-Gray-6 border-none outline-none placeholder-gray-300"
                           defaultValue={item.content}
                           placeholder={item.content}
+                          onChange={() => {
+                            setChangeData(true);
+                            // setProfileChanges()
+                            // profileChanges[profileChanges.]
+                          }}
                         />
                       </div>
                     </div>
