@@ -24,10 +24,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
     try {
       const res = await ApiClient.patchNotification(id);
       console.log({ res });
-      console.log({ notifications });
-      console.log(`Check id = ${id}`);
-      const newNotifies = notifications.filter((item) => item.data.commentId !== id);
-      console.log({ newNotifies });
+      const newNotifies = notifications.filter((item) => item.id !== id);
       setNotifications(newNotifies);
     } catch (error) {
       if (isBadRequest(error)) {
