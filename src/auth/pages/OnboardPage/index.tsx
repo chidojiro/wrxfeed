@@ -62,13 +62,13 @@ const OnboardPage: React.VFC = () => {
       <OnboardTemplate
         title="Tell us a bit about yourself."
         description="Let’s start by getting your name and company info"
-        formComponent={<BasicUserInfoForm sx={{ mb: 5 }} onSubmit={handleSubmitBasicInfo} />}
+        formComponent={<BasicUserInfoForm className="mb-10" onSubmit={handleSubmitBasicInfo} />}
         visible={step === InputStep.BasicInfo}
       />
       <OnboardTemplate
         title="Let’s get some highlights."
         description="What’s your role at the company?"
-        formComponent={<UserRoleForm sx={{ mb: 5 }} onSubmit={handleSubmitRole} />}
+        formComponent={<UserRoleForm className="mb-10" onSubmit={handleSubmitRole} />}
         visible={step === InputStep.Role}
       />
     </BlankLayout>

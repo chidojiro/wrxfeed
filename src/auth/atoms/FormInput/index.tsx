@@ -1,10 +1,4 @@
-import React, {
-  ChangeEventHandler,
-  DetailedHTMLProps,
-  FocusEventHandler,
-  InputHTMLAttributes,
-  useState,
-} from 'react';
+import React, { DetailedHTMLProps, InputHTMLAttributes } from 'react';
 import { classNames } from '@main/utils';
 
 interface FormInputProps
@@ -14,44 +8,16 @@ interface FormInputProps
 }
 
 const FormInput: React.ForwardRefRenderFunction<HTMLInputElement, FormInputProps> = (
-  { className, error, onChange, onFocus, onBlur, ...rest },
+  { className, error, ...rest },
   ref,
 ) => {
-  const [focused, setFocused] = useState(false);
-  const [filled, setFilled] = useState(false);
-
-  const handleOnChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setFilled(!!event.target?.value);
-    if (onChange) {
-      onChange(event);
-    }
-  };
-
-  const handleFocus: FocusEventHandler<HTMLInputElement> = (event) => {
-    setFocused(true);
-    if (onFocus) {
-      onFocus(event);
-    }
-  };
-
-  const handleBlur: FocusEventHandler<HTMLInputElement> = (event) => {
-    setFocused(false);
-    if (onBlur) {
-      onBlur(event);
-    }
-  };
-
   return (
     <input
       ref={ref}
       className={classNames(
-        focused || filled ? 'bg-white' : 'bg-transparent',
-        'flex flex-1 py-[11px] px-6',
+        'shadow-sm focus:outline-none focus:border-purple-4 focus:bg-white block w-full sm:text-sm border border-purple-7 bg-Gray-12 rounded-sm py-[11px] px-6',
         className ?? '',
       )}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      onChange={handleOnChange}
       aria-invalid={error}
       {...rest}
     />
