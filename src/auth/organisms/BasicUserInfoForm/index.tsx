@@ -1,15 +1,12 @@
 import React from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import FormControl from '@mui/material/FormControl';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { ProfileFormModel } from '@auth/types';
 import LoadingButton from '@common/atoms/LoadingButton';
 import FormInput from '@auth/atoms/FormInput';
-import { Stack } from '@mui/material';
-import { Gray } from '@theme/colors';
 import { ReactComponent as ArrowRightIcon } from '@assets/icons/outline/arrow-right.svg';
-import { SxProps } from '@mui/system';
+import { classNames } from '@main/utils';
 
 const schema = yup.object({
   firstName: yup.string().required('This field is required'),
@@ -19,10 +16,10 @@ const schema = yup.object({
 
 export interface BasicUserInfoFormProps {
   onSubmit: SubmitHandler<ProfileFormModel>;
-  sx: SxProps;
+  className?: string;
 }
 
-const BasicUserInfoForm: React.VFC<BasicUserInfoFormProps> = ({ sx, onSubmit }) => {
+const BasicUserInfoForm: React.VFC<BasicUserInfoFormProps> = ({ className, onSubmit }) => {
   const {
     control,
     handleSubmit,
@@ -38,7 +35,7 @@ const BasicUserInfoForm: React.VFC<BasicUserInfoFormProps> = ({ sx, onSubmit }) 
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack sx={sx} width={433} spacing={2.25}>
+      <div className={classNames('w-[433px] space-y-5', className ?? '')}>
         <Controller
           name="firstName"
           control={control}
@@ -78,29 +75,15 @@ const BasicUserInfoForm: React.VFC<BasicUserInfoFormProps> = ({ sx, onSubmit }) 
             />
           )}
         />
-        <FormControl>
-          <LoadingButton
-            loading={isSubmitting}
-            type="submit"
-            variant="contained"
-            color="highlight"
-            size="large"
-            sx={{
-              marginTop: '2px',
-              boxShadow: 'none',
-              color: Gray[1],
-              fontSize: '1.125rem',
-              justifyContent: 'space-between',
-              height: 60,
-              pr: 5,
-            }}
-            fullWidth
-            endIcon={<ArrowRightIcon />}
-          >
-            Next
-          </LoadingButton>
-        </FormControl>
-      </Stack>
+        <LoadingButton
+          loading={isSubmitting}
+          type="submit"
+          className="justify-between w-full h-[56px] px-8 mt-5 text-base font-semibold"
+        >
+          Next
+          <ArrowRightIcon className="stroke-current path-no-stroke text-white" />
+        </LoadingButton>
+      </div>
     </form>
   );
 };

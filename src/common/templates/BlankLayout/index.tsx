@@ -1,26 +1,21 @@
-import React from 'react';
-import { Box, BoxProps } from '@mui/material';
+import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import { classNames } from '@main/utils';
 
-const BlankLayout: React.VFC<BoxProps> = ({ children, sx, ...rest }) => {
+const BlankLayout: React.FC<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>> = ({
+  children,
+  className,
+  ...rest
+}) => {
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        m: 3,
-        p: 3,
-        borderRadius: 6,
-        backgroundColor: '#fff',
-        overflow: 'scroll',
-        ...sx,
-      }}
+    <div
+      className={classNames(
+        'fixed inset-0 m-6 p-6 rounded-md bg-white overflow-scroll',
+        className ?? '',
+      )}
       {...rest}
     >
       {children}
-    </Box>
+    </div>
   );
 };
 

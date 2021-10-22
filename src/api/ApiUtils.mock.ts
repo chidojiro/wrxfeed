@@ -2,30 +2,29 @@ import { UserToken } from '@identity/types';
 import { Comment, Transaction } from '@main/entity';
 import { Identity } from '@identity';
 import { sleep } from '@common/utils';
+import { Profile } from '@auth/types';
 
 export const fakeApiUtils = {
-  login: async () => {
-    const fakeIdenity: Identity = {
+  login: async (): Promise<Identity> => {
+    return {
       id: 1,
       fullName: 'Admin',
       token: '',
       expireAt: new Date().toISOString(),
       email: '',
     };
-    return fakeIdenity;
   },
 
-  signInWithGoogle: async () => {
-    const userToken: UserToken = {
+  signInWithGoogle: async (): Promise<UserToken> => {
+    return {
       token: '',
       expireAt: new Date().toISOString(),
     };
-    return userToken;
   },
 
-  logout: async () => undefined,
+  logout: async (): Promise<void> => undefined,
 
-  getProfile: async () => {
+  getProfile: async (): Promise<Profile> => {
     await sleep(1000);
     return {
       id: 1,
@@ -37,22 +36,7 @@ export const fakeApiUtils = {
     };
   },
 
-  updateProfile: async () => {
-    return {
-      id: 1,
-      email: 'antran@gmail.com',
-      fullName: 'An Tran',
-      title: 'Admin',
-      department: 'Dev',
-      signupDate: new Date().toISOString(),
-    };
-  },
-
-  changePassword: async () => undefined,
-
-  forgotPassword: async () => undefined,
-
-  resetPassword: async () => undefined,
+  resetPassword: async (): Promise<void> => undefined,
 
   async getTransactions(): Promise<Transaction[]> {
     return [];

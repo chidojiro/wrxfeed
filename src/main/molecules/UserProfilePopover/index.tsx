@@ -11,6 +11,7 @@ import { GetUploadTokenBody, UploadTypes } from '@api/types';
 import { useFileUploader } from '@common/hooks/useFileUploader';
 import { toast } from 'react-toastify';
 import Loading from '@common/atoms/Loading';
+import { Profile } from '@auth/types';
 
 export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
@@ -23,12 +24,17 @@ export type ProfileChanges = {
 
 const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const profile = useRecoilValue(profileState);
+  const [profileUser, setProfile] = React.useState<Profile>(profile);
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
   const [userAvatar, setAvatar] = React.useState<string>('');
   const [changeData, setChangeData] = React.useState<boolean>(false);
+  const [name, setName] = React.useState<string>('');
+  const [title, setTitle] = React.useState<string>('');
+  const [department, setDepartment] = React.useState<string>('');
+  const [loading, setLoading] = React.useState<boolean>(false);
+  // const [email, setEmail] = React.useState<string>('');
   // const [profileChanges, setProfileChanges] = React.useState<ProfileChanges[]>([]);
   const { updateProfile } = useApi();
-
   const setIdentity = useSetIdentity();
   const apiClient = useApi();
   const logout = React.useCallback(async () => {
@@ -39,19 +45,33 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const profileForms = [
     {
       title: 'Name',
-      content: profile?.fullName || 'Update now',
+      content: profileUser?.fullName || 'Update now',
+      onChange: (text: string) => {
+        setName(text);
+      },
+      editable: false,
     },
     {
       title: 'Title',
-      content: profile?.title || 'Update now',
+      content: profileUser?.title || 'Update now',
+      onChange: (text: string) => {
+        setTitle(text);
+      },
+      editable: true,
     },
     {
       title: 'Department',
-      content: profile?.department || 'Update now',
+      content: profileUser?.department || 'Update now',
+      onChange: (text: string) => {
+        setDepartment(text);
+      },
+      editable: true,
     },
     {
       title: 'Email',
-      content: profile?.email || 'Update now',
+      content: profileUser?.email || 'Update now',
+      onChange: () => {},
+      editable: false,
     },
   ];
 
@@ -59,7 +79,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     if (userAvatar !== '') {
       return <img className="h-8 w-8 rounded-full" src={userAvatar} alt="Ava" />;
     }
-    const shortName = getNameAbbreviation(profile.fullName);
+    const shortName = getNameAbbreviation(profileUser.fullName);
     return (
       <div className="flex h-8 w-8 rounded-full bg-purple-5 justify-center items-center">
         <div className="flex text-white text-xs font-semibold">{shortName}</div>
@@ -69,11 +89,11 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
 
   const updateAvatar = async (avatarUri: string) => {
     const updates = {
-      companyName: profile.company || '',
-      title: profile.title || '',
-      department: profile.department || '',
-      bio: profile.bio || '',
-      lastLoginAt: profile.lastLoginAt || '',
+      companyName: profileUser.company || '',
+      title: profileUser.title || '',
+      department: profileUser.department || '',
+      bio: profileUser.bio || '',
+      lastLoginAt: profileUser.lastLoginAt || '',
       avatar: avatarUri,
     };
     const updateRes = await updateProfile(updates);
@@ -91,12 +111,12 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   });
 
   React.useEffect(() => {
-    setAvatar(profile?.avatar || '');
-  }, [profile]);
+    setAvatar(profileUser?.avatar || '');
+  }, [profileUser]);
 
   const handleAttachFile = (file: File) => {
     setUploadFileOptions({
-      filename: `${profile.id}-${Date.now()}-${file.name}`,
+      filename: `${profileUser.id}-${Date.now()}-${file.name}`,
       contentType: file.type,
       uploadType: UploadTypes.Attachments,
     });
@@ -153,27 +173,50 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     );
   };
 
-  const onClickSaveChange = () => {};
+  const onClickSaveChange = async () => {
+    setLoading(true);
+    const updates = {
+      companyName: profileUser.company || '',
+      title: title || profileUser.title,
+      department: department || profileUser.department,
+      bio: profileUser.bio || '',
+      lastLoginAt: profileUser.lastLoginAt || '',
+    };
+    const updateRes = await updateProfile(updates);
+    console.log({ updateRes });
+    setLoading(false);
+    toast.success("Update your's profile info successfully!");
+    setChangeData(false);
+
+    const userProfile = await apiClient.getProfile();
+    console.log({ userProfile });
+    setProfile(userProfile);
+  };
 
   const renderLogout = () => {
     if (changeData) {
       return (
-        <div className="flex py-4 items-center flex-col">
-          <button
-            type="button"
-            className="flex text-blue-500 font-medium"
-            onClick={onClickSaveChange}
-          >
-            Save changes
-          </button>
+        <div className="flex py-4 items-center flex-row self-center">
+          <div className="px-6 py-2 rounded-full hover:bg-gray-100">
+            <button
+              type="button"
+              className="flex text-blue-500 font-medium"
+              onClick={onClickSaveChange}
+            >
+              Save changes
+            </button>
+          </div>
+          {!!loading && <Loading width={25} height={25} className="border-white mx-4" />}
         </div>
       );
     }
     return (
-      <div className="flex py-4 items-center flex-col">
-        <button type="button" className="flex text-red-500 font-medium" onClick={logout}>
-          Logout
-        </button>
+      <div className="flex py-4 flex-col items-center">
+        <div className="px-6 py-2 rounded-full hover:bg-gray-100">
+          <button type="button" className="flex text-red-500 font-medium" onClick={logout}>
+            Logout
+          </button>
+        </div>
       </div>
     );
   };
@@ -184,49 +227,56 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
         {renderAvatarIcon()}
       </Popover.Button>
       <Popover.Panel className="absolute z-50">
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <div
-            style={{ width: '332px' }}
-            className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
-          >
-            <div className="flex flex-row items-center h-16 w-full border-b-2 px-8">
-              <p className="flex text-gray-1 font-medium">Profile</p>
-            </div>
-            {renderAvatarEditable()}
-            <div className="flex flex-1 flex-col">
-              <div className="flex flex-1 flex-col px-8 pt-4">
-                {profileForms.map((item) => {
-                  return (
-                    <div key={`profileInfos${item.title}`} className="flex flex-col mt-2">
-                      <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
-                      <div className="flex flex-row items-center py-4 h-10">
-                        <input
-                          className="flex text-sm text-Gray-6 border-none outline-none placeholder-gray-300"
-                          defaultValue={item.content}
-                          placeholder={item.content}
-                          onChange={() => {
-                            setChangeData(true);
-                            // setProfileChanges()
-                            // profileChanges[profileChanges.]
-                          }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+        {({ open }) => {
+          console.log(`Check new open = ${open}`);
+          return (
+            <Transition
+              as={Fragment}
+              show={open}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <div
+                style={{ width: '332px' }}
+                className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
+              >
+                <div className="flex flex-row items-center h-16 w-full border-b-2 px-8">
+                  <p className="flex text-gray-1 font-medium">Profile</p>
+                </div>
+                {renderAvatarEditable()}
+                <div className="flex flex-1 flex-col">
+                  <div className="flex flex-1 flex-col px-8 pt-4">
+                    {profileForms.map((item) => {
+                      const { onChange, editable } = item;
+                      return (
+                        <div key={`profileInfos-${item.title}`} className="flex flex-col mt-2">
+                          <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
+                          <div className="flex flex-row items-center py-4 h-10">
+                            <input
+                              className="flex text-sm text-Gray-6 border-none outline-none placeholder-gray-300 bg-transparent"
+                              defaultValue={item.content}
+                              disabled={!editable}
+                              placeholder={item.content}
+                              onChange={(event) => {
+                                setChangeData(true);
+                                onChange(event?.target?.value);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                {renderLogout()}
               </div>
-            </div>
-            {renderLogout()}
-          </div>
-        </Transition>
+            </Transition>
+          );
+        }}
       </Popover.Panel>
     </Popover>
   );

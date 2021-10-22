@@ -1,16 +1,12 @@
 import React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import Typography, { TypographyProps } from '@mui/material/Typography';
-import { stringAvatar } from '@common/utils';
-import { SxProps } from '@mui/system';
+import { stringToColor } from '@common/utils';
+import { classNames } from '@main/utils';
 
 const DEFAULT_SIZE = 32;
 
 export interface CircleAvatarProps {
   size?: number;
-  typographyProps?: TypographyProps;
-  sx?: SxProps;
+  className?: string;
   name?: string;
   initialLength?: number;
   onClick?: (value?: string) => void;
@@ -18,27 +14,30 @@ export interface CircleAvatarProps {
 
 const CircleAvatar: React.VFC<CircleAvatarProps> = ({
   size,
-  typographyProps,
-  sx,
+  className,
   name,
   initialLength,
   onClick,
 }) => {
   // Variables
-  const avatarProps = stringAvatar(name || '', initialLength);
+  const initials = name?.slice(0, initialLength ?? 3) ?? '';
+  const bgColor = stringToColor(name ?? '');
 
   return (
-    <Tooltip title={name || ''}>
-      <Avatar
-        sx={{ width: size ?? DEFAULT_SIZE, height: size ?? DEFAULT_SIZE, ...avatarProps.sx, ...sx }}
-        onClick={() => onClick && onClick(name)}
-      >
-        <Typography variant="h5" {...typographyProps}>
-          {avatarProps.children}
-        </Typography>
-      </Avatar>
-    </Tooltip>
+    <div
+      aria-hidden="true"
+      className={classNames('flex justify-center items-center', className ?? '')}
+      style={{
+        width: size ?? DEFAULT_SIZE,
+        height: size ?? DEFAULT_SIZE,
+        borderRadius: (size ?? DEFAULT_SIZE) / 2,
+        backgroundColor: bgColor,
+      }}
+      onClick={() => onClick && onClick(name)}
+    >
+      <h5 className="text-xs font-semibold text-white">{initials}</h5>
+    </div>
   );
 };
 
-export default CircleAvatar;
+export default React.memo(CircleAvatar);

@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import BlankLayout from '@common/templates/BlankLayout';
 import BasicUserInfoForm from '@auth/organisms/BasicUserInfoForm';
-import { LightBG } from '@theme/colors';
 import UserRoleForm from '@auth/organisms/UserRoleForm';
 import { ProfileFormModel } from '@auth/types';
 import OnboardTemplate from '@auth/templates/OnboardTemplate';
@@ -59,17 +58,17 @@ const OnboardPage: React.VFC = () => {
   };
 
   return (
-    <BlankLayout sx={{ backgroundColor: LightBG, display: 'flex' }}>
+    <BlankLayout className="flex bg-LightBG">
       <OnboardTemplate
         title="Tell us a bit about yourself."
         description="Let’s start by getting your name and company info"
-        formComponent={<BasicUserInfoForm sx={{ mb: 5 }} onSubmit={handleSubmitBasicInfo} />}
+        formComponent={<BasicUserInfoForm className="mb-10" onSubmit={handleSubmitBasicInfo} />}
         visible={step === InputStep.BasicInfo}
       />
       <OnboardTemplate
         title="Let’s get some highlights."
         description="What’s your role at the company?"
-        formComponent={<UserRoleForm sx={{ mb: 5 }} onSubmit={handleSubmitRole} />}
+        formComponent={<UserRoleForm className="mb-10" onSubmit={handleSubmitRole} />}
         visible={step === InputStep.Role}
       />
     </BlankLayout>
