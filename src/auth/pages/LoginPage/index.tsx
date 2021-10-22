@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavUtils } from '@common/hooks';
 import BlankLayout from '@common/templates/BlankLayout';
-import { Box, Stack, Typography } from '@mui/material';
 import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
 import WrxfeedStar from '@auth/atoms/WrxfeedStar';
 import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@src/config';
@@ -69,32 +68,13 @@ const LoginPage: React.VFC = () => {
 
   return (
     <BlankLayout>
-      <Stack
-        justifyContent="center"
-        alignItems="center"
-        alignSelf="center"
-        marginTop="6vh"
-        spacing={5}
-      >
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          alignSelf="center"
-        >
+      <div className="flex flex-col justify-center items-center mt-[6vh] space-y-10">
+        <div className="flex flex-col justify-center items-center">
           <WrxfeedStar />
-          <Typography
-            fontSize="87px"
-            fontWeight={600}
-            whiteSpace="pre-line"
-            textAlign="center"
-            lineHeight="90px"
-            marginTop="-24px"
-          >
+          <p className="text-[87px] font-bold whitespace-pre-line text-center -mt-6 leading-[90px]">
             {'Reach your\nfinancial goal↗'}
-          </Typography>
-        </Box>
+          </p>
+        </div>
         <GoogleLogin
           clientId={GOOGLE_CLIENT_ID}
           scope={GOOGLE_SCOPES}
@@ -110,7 +90,7 @@ const LoginPage: React.VFC = () => {
             </SocialAuthButton>
           )}
         />
-      </Stack>
+      </div>
     </BlankLayout>
   );
 };
