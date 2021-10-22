@@ -1,23 +1,28 @@
-import React from 'react';
-import Button, { ButtonProps } from '@mui/material/Button';
-// import CircularProgress from '@mui/material/CircularProgress';
+import React, { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
+import Loading from '@common/atoms/Loading';
 
-export interface LoadingButtonProps extends ButtonProps {
+export interface LoadingButtonProps
+  extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
   loading?: boolean;
   loadingIndicator?: React.ReactNode;
 }
 
 const LoadingButton: React.FC<LoadingButtonProps> = ({
+  children,
   loading = false,
   loadingIndicator,
   ...rest
 }) => {
-  // const indicator = loadingIndicator || <CircularProgress color="inherit" size={16} />;
+  const indicator = loadingIndicator || <Loading width={16} height={16} />;
   const btnProps = {
     disabled: loading,
     ...rest,
   };
-  return <Button {...btnProps} />;
+  return (
+    <button type="button" {...btnProps}>
+      {loading ? indicator : children}
+    </button>
+  );
 };
 
 export default LoadingButton;

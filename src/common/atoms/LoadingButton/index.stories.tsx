@@ -18,13 +18,7 @@ const Template: Story<LoadingButtonProps> = (args) => {
   };
 
   return (
-    <LoadingButton
-      loading={isLoading}
-      variant="contained"
-      color="primary"
-      size="large"
-      onClick={handleClick}
-    >
+    <LoadingButton loading={isLoading} onClick={handleClick}>
       Submit
     </LoadingButton>
   );

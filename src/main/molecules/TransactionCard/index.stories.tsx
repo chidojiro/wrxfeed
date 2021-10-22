@@ -2,7 +2,6 @@ import React from 'react';
 import { Meta, Story } from '@storybook/react/types-6-0';
 
 import { Transaction, Visibility } from '@main/entity';
-import { STATUS } from '@common/atoms/StatusTag';
 import TransactionCard, { TransactionCardProps } from '.';
 
 export default {
@@ -25,7 +24,6 @@ const transaction: Transaction = {
   amount: 17000,
   currency: '$',
   commentCount: 10,
-  status: STATUS.NEW,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };
