@@ -9,7 +9,7 @@ export default {
 } as Meta;
 
 export const Default: React.VFC = () => (
-  <BlankLayout title="Test Page">
+  <BlankLayout>
     {[...new Array(12)]
       .map(
         () => `Cras mattis consectetur purus sit amet fermentum.

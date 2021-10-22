@@ -1,34 +1,40 @@
-import React, { ChangeEvent, Ref, useState } from 'react';
-import { styled, SxProps } from '@mui/system';
-import { Input, InputProps } from '@mui/material';
+import React, {
+  ChangeEventHandler,
+  DetailedHTMLProps,
+  FocusEventHandler,
+  InputHTMLAttributes,
+  useState,
+} from 'react';
+import { classNames } from '@main/utils';
 
-const StyledFormInput = styled(Input)<InputProps>(() => ({
-  flex: 1,
-  padding: '11px 24px',
-}));
+interface FormInputProps
+  extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+  className?: string;
+  error?: boolean;
+}
 
-const FormInput: React.ForwardRefRenderFunction<Ref<unknown>, InputProps & { sx?: SxProps }> = (
-  { sx, onChange, onFocus, onBlur, ...rest },
+const FormInput: React.ForwardRefRenderFunction<HTMLInputElement, FormInputProps> = (
+  { className, error, onChange, onFocus, onBlur, ...rest },
   ref,
 ) => {
   const [focused, setFocused] = useState(false);
   const [filled, setFilled] = useState(false);
 
-  const handleOnChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleOnChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setFilled(!!event.target?.value);
     if (onChange) {
       onChange(event);
     }
   };
 
-  const handleFocus = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleFocus: FocusEventHandler<HTMLInputElement> = (event) => {
     setFocused(true);
     if (onFocus) {
       onFocus(event);
     }
   };
 
-  const handleBlur = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleBlur: FocusEventHandler<HTMLInputElement> = (event) => {
     setFocused(false);
     if (onBlur) {
       onBlur(event);
@@ -36,12 +42,17 @@ const FormInput: React.ForwardRefRenderFunction<Ref<unknown>, InputProps & { sx?
   };
 
   return (
-    <StyledFormInput
+    <input
       ref={ref}
-      sx={{ backgroundColor: focused || filled ? '#fff' : 'transparent', ...sx }}
+      className={classNames(
+        focused || filled ? 'bg-white' : 'bg-transparent',
+        'flex flex-1 py-[11px] px-6',
+        className ?? '',
+      )}
       onFocus={handleFocus}
       onBlur={handleBlur}
       onChange={handleOnChange}
+      aria-invalid={error}
       {...rest}
     />
   );
