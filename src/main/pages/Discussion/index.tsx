@@ -6,7 +6,7 @@ import DiscussionList from '../../organisms/DiscussionList';
 
 const DiscussionPage: React.VFC = () => {
   return (
-    <MainLayout companyName="Bird" boxStyle={{ overflowY: 'scroll' }}>
+    <MainLayout>
       {/* <Typography variant="h1">For you</Typography> */}
       <DiscussionList />
       <TransactionModal />

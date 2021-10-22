@@ -13,4 +13,4 @@ const Template: Story<CommentOwnerProps> = (args) => {
 };
 
 export const Default = Template.bind({});
-Default.args = { owner: { name: 'An Tran' }, commentDate: Date.now() };
+Default.args = { owner: { fullName: 'An Tran' }, commentDate: Date.now().toString() };

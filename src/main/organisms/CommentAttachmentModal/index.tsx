@@ -65,8 +65,7 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
               Upload to
               <CircleAvatar
                 size={20}
-                sx={{ ml: 0.5, mr: 0.5 }}
-                typographyProps={{ variant: 'h6', lineHeight: '0.875rem' }}
+                className="mx-1"
                 name={transaction?.department.name}
                 initialLength={1}
               />

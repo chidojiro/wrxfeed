@@ -1,5 +1,5 @@
-import React, { ReactNode, useState } from 'react';
-import { Slide, SlideProps, Stack, Typography } from '@mui/material';
+import React, { Fragment, ReactNode } from 'react';
+import { Transition } from '@headlessui/react';
 
 interface OnboardTemplateProps {
   title: string;
@@ -14,49 +14,23 @@ const OnboardTemplate: React.VFC<OnboardTemplateProps> = ({
   formComponent,
   visible,
 }) => {
-  const [direction, setDirection] = useState<SlideProps['direction']>('left');
   return (
-    <Slide
-      direction={direction}
-      in={visible}
-      mountOnEnter
-      unmountOnExit
-      onEntered={() => setDirection('right')}
+    <Transition
+      as={Fragment}
+      show={visible}
+      enter="transition-opacity ease-in-out duration-250"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
+      leave="transition-opacity ease-in-out duration-500"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
     >
-      <Stack
-        justifyContent="center"
-        alignItems="center"
-        alignSelf="center"
-        marginBottom={5}
-        spacing={5}
-        position="absolute"
-        left={0}
-        top={0}
-        right={0}
-        bottom={0}
-      >
-        <Typography
-          fontSize="48px"
-          fontWeight={600}
-          textAlign="center"
-          lineHeight="58px"
-          color="#000"
-          marginBottom={5}
-        >
-          {title}
-        </Typography>
-        <Typography
-          fontSize="18px"
-          fontWeight={600}
-          textAlign="center"
-          lineHeight="21.78px"
-          color="#000"
-        >
-          {description}
-        </Typography>
+      <div className="absolute inset-0 flex flex-col justify-center items-center mb-[5px] space-y-10">
+        <p className="text-5xl font-bold text-center mb-[5px] text-Gray-1">{title}</p>
+        <p className="text-lg font-semibold text-center text-Gray-1">{description}</p>
         {formComponent}
-      </Stack>
-    </Slide>
+      </div>
+    </Transition>
   );
 };
 
