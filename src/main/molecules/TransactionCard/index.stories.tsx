@@ -1,8 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react/types-6-0';
 
-import { Transaction } from '@main/entity';
-import { STATUS } from '@common/atoms/StatusTag';
+import { Transaction, Visibility } from '@main/entity';
 import TransactionCard, { TransactionCardProps } from '.';
 
 export default {
@@ -18,14 +17,13 @@ const Template: Story<TransactionCardProps> = (args) => {
 export const Default = Template.bind({});
 const transaction: Transaction = {
   id: 1,
-  category: { id: 1, name: 'Professional Services' },
+  category: { id: 1, name: 'Professional Services', visibility: Visibility.VISIBLE },
   department: { id: 1, name: 'Department', parent: { id: 2, name: 'Parent Department' } },
   vendor: { id: 1, name: 'Vendor' },
   transDate: new Date().toISOString(),
   amount: 17000,
   currency: '$',
   commentCount: 10,
-  status: STATUS.NEW,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };

@@ -1,51 +1,42 @@
-import React from 'react';
-import { ButtonProps, SvgIcon, Button } from '@mui/material';
+import React, { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 import { ReactComponent as GoogleLogo } from '@assets/icons/google-logo.svg';
-import { Gray } from '@theme/colors';
 
 export enum AuthProvider {
   GOOGLE = 'GOOGLE',
 }
 
-export interface SocialAuthButtonProps extends ButtonProps {
+export interface SocialAuthButtonProps
+  extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
   provider: AuthProvider;
 }
 
 function getAuthProviderIcon(provider: AuthProvider) {
   switch (provider) {
     case AuthProvider.GOOGLE: {
-      return <SvgIcon component={GoogleLogo} width={23} height={23} sx={{ mr: 1 }} />;
+      return <GoogleLogo width={23} height={23} className="mr-2" />;
     }
     default: {
-      return <SvgIcon component={GoogleLogo} />;
+      return <></>;
     }
   }
 }
 
 const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
+  children,
   provider = AuthProvider.GOOGLE,
-  sx,
   ...rest
 }) => {
   const socialIcon = getAuthProviderIcon(provider);
 
   return (
-    <Button
-      startIcon={socialIcon}
-      variant="outlined"
-      sx={{
-        borderRadius: 2,
-        textTransform: 'none',
-        borderColor: Gray[1],
-        color: Gray[1],
-        fontSize: '1.5em',
-        fontWeight: 400,
-        width: 459,
-        height: 72,
-        ...sx,
-      }}
+    <button
+      type="button"
+      className="flex justify-center items-center text-2xl w-[459px] h-[72px] text-Gray-1 border border-Gray-1 rounded-sm disabled:opacity-50"
       {...rest}
-    />
+    >
+      {socialIcon}
+      {children}
+    </button>
   );
 };
 

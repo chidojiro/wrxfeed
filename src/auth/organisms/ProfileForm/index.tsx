@@ -2,24 +2,17 @@ import React from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
 import { Link as RouterLink } from 'react-router-dom';
+import FormInput from '@auth/atoms/FormInput';
 import { ProfileFormModel } from '../../types';
-import ActionButtons from '../../../common/atoms/ActionButtons';
 import { useFormErrorHandler } from '../../../error';
-import LoadingButton from '../../../common/atoms/LoadingButton';
 
 const schema = yup.object({
   displayName: yup.string().required('This field is required'),
 });
 
 export interface ProfileFormProps {
-  defaultValues: ProfileFormModel;
+  defaultValues: Partial<ProfileFormModel>;
   onSubmit: SubmitHandler<ProfileFormModel>;
 }
 
@@ -47,51 +40,20 @@ const ProfileForm: React.VFC<ProfileFormProps> = ({ defaultValues, onSubmit }) =
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Controller
-            name="displayName"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                label="Name"
-                required
-                error={!!errors.displayName}
-                helperText={errors.displayName?.message}
-                {...field}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField label="Email" type="email" disabled />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label="Password"
-            value="******"
-            type="password"
-            InputProps={{
-              readOnly: true,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton size="small" component={RouterLink} to="/profile/change-pwd">
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Grid>
-      </Grid>
-      <ActionButtons>
-        <Button variant="contained" component={RouterLink} to="/">
-          Cancel
-        </Button>
-        <LoadingButton loading={isSubmitting} type="submit" variant="contained" color="primary">
+      <Controller
+        name="firstName"
+        control={control}
+        render={({ field }) => (
+          <FormInput placeholder="Name" required error={!!errors.firstName} {...field} />
+        )}
+      />
+      <FormInput placeholder="Password" value="******" type="password" contentEditable={false} />
+      <div>
+        <RouterLink to="/">Cancel</RouterLink>
+        <button disabled={isSubmitting} type="submit">
           Submit
-        </LoadingButton>
-      </ActionButtons>
+        </button>
+      </div>
     </form>
   );
 };
