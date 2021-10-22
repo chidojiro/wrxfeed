@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react/types-6-0';
 
-import { Transaction } from '@main/entity';
+import { Transaction, Visibility } from '@main/entity';
 import { STATUS } from '@common/atoms/StatusTag';
 import TransactionCard, { TransactionCardProps } from '.';
 
@@ -18,7 +18,7 @@ const Template: Story<TransactionCardProps> = (args) => {
 export const Default = Template.bind({});
 const transaction: Transaction = {
   id: 1,
-  category: { id: 1, name: 'Professional Services' },
+  category: { id: 1, name: 'Professional Services', visibility: Visibility.VISIBLE },
   department: { id: 1, name: 'Department', parent: { id: 2, name: 'Parent Department' } },
   vendor: { id: 1, name: 'Vendor' },
   transDate: new Date().toISOString(),

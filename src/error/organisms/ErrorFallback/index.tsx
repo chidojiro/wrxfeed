@@ -3,12 +3,9 @@ import WarningIcon from '@mui/icons-material/Warning';
 import SearchIcon from '@mui/icons-material/Search';
 import BlockIcon from '@mui/icons-material/Block';
 import CloudOffIcon from '@mui/icons-material/CloudOff';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { FallbackProps } from 'react-error-boundary';
-import ActionButtons from '../../../common/atoms/ActionButtons';
-import { ApiErrorCode } from '../../types';
-import { isApiError } from '../../utils';
+import { ApiErrorCode, isApiError } from '@src/error';
 
 const ErrorFallback: React.VFC<FallbackProps> = ({ error, resetErrorBoundary }) => {
   let message = 'An error occurred in the app.';
@@ -50,11 +47,11 @@ const ErrorFallback: React.VFC<FallbackProps> = ({ error, resetErrorBoundary }) 
       <Typography align="center" paragraph component="div">
         {message}
       </Typography>
-      <ActionButtons>
-        <Button color="primary" variant="contained" onClick={resetErrorBoundary}>
+      <div>
+        <button type="button" onClick={resetErrorBoundary}>
           Try again
-        </Button>
-      </ActionButtons>
+        </button>
+      </div>
     </div>
   );
 };

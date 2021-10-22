@@ -16,7 +16,6 @@ const Template: Story<ProfileFormProps> = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   defaultValues: {
-    displayName: 'John Doe',
-    email: 'john@example.com',
+    firstName: 'John Doe',
   },
 };
