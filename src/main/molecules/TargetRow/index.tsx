@@ -135,7 +135,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   if (!isActive) {
     return (
-      <div className="flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
+      <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
           <div className="flex text-Gray-4 font-medium text-sm font-regular">
             {target?.department?.name}
@@ -148,7 +148,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   }
 
   return (
-    <div className="flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
+    <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
       <div className="flex flex-row items-center">
         <div className="flex text-Gray-4 font-medium text-sm font-regular">
           {target?.department?.name}
