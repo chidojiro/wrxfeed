@@ -1,4 +1,3 @@
-import { AvatarProps } from '@mui/material';
 import { format, isToday, isYesterday, parseISO } from 'date-fns';
 import numeral from 'numeral';
 import { FieldValues } from 'react-hook-form';
@@ -56,20 +55,6 @@ export function stringToColor(string: string): string {
   /* eslint-enable no-bitwise */
 
   return color;
-}
-
-/**
- * Get avatar props with color based on name for MUI Avatar
- */
-export function stringAvatar(name: string, initialLength?: number): AvatarProps {
-  const initials = name.slice(0, initialLength ?? 3);
-  return {
-    sx: {
-      bgcolor: stringToColor(name),
-      color: 'white',
-    },
-    children: initials,
-  };
 }
 
 const isoDateFormat =

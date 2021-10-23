@@ -1,47 +1,24 @@
-import React, { ChangeEvent, Ref, useState } from 'react';
-import { styled, SxProps } from '@mui/system';
-import { Input, InputProps } from '@mui/material';
+import React, { DetailedHTMLProps, InputHTMLAttributes } from 'react';
+import { classNames } from '@main/utils';
 
-const StyledFormInput = styled(Input)<InputProps>(() => ({
-  flex: 1,
-  padding: '11px 24px',
-}));
+interface FormInputProps
+  extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+  className?: string;
+  error?: boolean;
+}
 
-const FormInput: React.ForwardRefRenderFunction<Ref<unknown>, InputProps & { sx?: SxProps }> = (
-  { sx, onChange, onFocus, onBlur, ...rest },
+const FormInput: React.ForwardRefRenderFunction<HTMLInputElement, FormInputProps> = (
+  { className, error, ...rest },
   ref,
 ) => {
-  const [focused, setFocused] = useState(false);
-  const [filled, setFilled] = useState(false);
-
-  const handleOnChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFilled(!!event.target?.value);
-    if (onChange) {
-      onChange(event);
-    }
-  };
-
-  const handleFocus = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFocused(true);
-    if (onFocus) {
-      onFocus(event);
-    }
-  };
-
-  const handleBlur = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFocused(false);
-    if (onBlur) {
-      onBlur(event);
-    }
-  };
-
   return (
-    <StyledFormInput
+    <input
       ref={ref}
-      sx={{ backgroundColor: focused || filled ? '#fff' : 'transparent', ...sx }}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      onChange={handleOnChange}
+      className={classNames(
+        'shadow-sm focus:outline-none focus:border-purple-4 focus:bg-white block w-full sm:text-sm border border-purple-7 bg-Gray-12 rounded-sm py-[11px] px-6',
+        className ?? '',
+      )}
+      aria-invalid={error}
       {...rest}
     />
   );

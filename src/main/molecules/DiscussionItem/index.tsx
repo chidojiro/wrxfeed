@@ -28,7 +28,7 @@ const DiscussionItem: React.VFC<DiscussionItemProps> = ({ discussion, index }) =
   // console.log('Check discussion = ', discussion);
   // const { redirect } = useNavUtils();
 
-  const { content, createdAt, user, transaction } = discussion;
+  const { content, user, transaction } = discussion;
   // console.log('Check createdAt = ', createdAt);
   // const interleaveBackground = index % 2 === 0 ? '#f9f9f9' : '#ffffff';
 
