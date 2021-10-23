@@ -28,7 +28,6 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
   const [userAvatar, setAvatar] = React.useState<string>('');
   const [changeData, setChangeData] = React.useState<boolean>(false);
-  const [name, setName] = React.useState<string>('');
   const [title, setTitle] = React.useState<string>('');
   const [department, setDepartment] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -46,9 +45,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     {
       title: 'Name',
       content: profileUser?.fullName || 'Update now',
-      onChange: (text: string) => {
-        setName(text);
-      },
+      onChange: () => {},
       editable: false,
     },
     {
@@ -57,7 +54,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
       onChange: (text: string) => {
         setTitle(text);
       },
-      editable: true,
+      editable: false,
     },
     {
       title: 'Department',
@@ -65,7 +62,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
       onChange: (text: string) => {
         setDepartment(text);
       },
-      editable: true,
+      editable: false,
     },
     {
       title: 'Email',
@@ -228,7 +225,6 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
       </Popover.Button>
       <Popover.Panel className="absolute z-50">
         {({ open }) => {
-          console.log(`Check new open = ${open}`);
           return (
             <Transition
               as={Fragment}

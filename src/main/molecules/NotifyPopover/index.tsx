@@ -11,7 +11,7 @@ export interface NotifyPopoverProps {
   style?: React.CSSProperties;
 }
 
-const LIMIT = 10;
+const LIMIT = 15;
 
 export enum NotifyStatus {
   UNREAD = 'UNREAD',
@@ -44,13 +44,13 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
       return (
         <div className="flex h-32 w-full justify-center items-center">
           <div className="flex text-gray-1 text-lg font-medium ">
-            {'You currently have no notifications! \n 🔔'}
+            {'You have no new notifications! \n 🔔'}
           </div>
         </div>
       );
     }
     return (
-      <div className="flex flex-1 flex-col pb-4 pt-3 overflow-scroll">
+      <div className="flex flex-1 flex-col pb-4 pt-3 overflow-scroll max-h-96">
         {notifies.map((item: Notification, index: number) => {
           return (
             <NotifyRow

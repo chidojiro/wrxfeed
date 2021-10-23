@@ -9,6 +9,7 @@ import {
   Category,
   Vendor,
   Notification,
+  Target,
 } from '@main/entity';
 import {
   ChangePwdFormModel,
@@ -53,6 +54,10 @@ export interface ApiClient {
   // Notification
   getNotifications: (page?: Pagination) => Promise<Notification[]>;
   patchNotification: (id: number) => Promise<void>;
+  // targets
+  getTargets: (filter?: TargetFilter) => Promise<Target[]>;
+  postTarget: (data: PostTargetParams) => Promise<void>;
+  putTarget: (id: number, data: PutTargetParams) => Promise<void>;
 }
 
 export type ChangePasswordDto = Omit<ChangePwdFormModel, 'confirmPassword'>;
@@ -122,4 +127,20 @@ export interface AddCommentParams {
 
 export interface DepartmentFilter extends Pagination {
   parent?: number;
+}
+
+export interface TargetFilter extends Pagination {
+  year: number;
+  month: number;
+}
+
+export interface PutTargetParams {
+  amount: number;
+}
+
+export interface PostTargetParams {
+  month: number;
+  year: number;
+  amount: number;
+  departmentId: number;
 }
