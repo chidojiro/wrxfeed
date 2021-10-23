@@ -3,6 +3,7 @@ import { Target } from '@main/entity';
 import { BasicsEditCircle, BasicsXSmall } from '@assets';
 import { PostTargetParams, PutTargetParams } from '@api/types';
 import Loading from '@common/atoms/Loading';
+// import { formatCurrency } from '@common/utils';
 
 export interface TargetRowProps {
   target: Target;
@@ -23,7 +24,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   isPostTarget,
 }) => {
   const [isEdit, setEdit] = React.useState<boolean>(false);
-  const [amount, setAmount] = React.useState<number>(0);
+  const [amount, setAmount] = React.useState<string>('0');
   const [loading, setLoading] = React.useState<boolean>(true);
 
   React.useEffect(() => {
@@ -66,24 +67,29 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     if (event.key === 'Enter') {
       if (isActive) {
         setLoading(true);
-        handlePutTarget(amount);
+        handlePutTarget(parseInt(amount, 10));
       } else {
         setLoading(true);
-        handlePostTarget(amount);
+        handlePostTarget(parseInt(amount, 10));
       }
     }
   };
 
   const handleClickClearButton = () => {
-    setAmount(0);
+    if (amount === '0') {
+      setEdit(false);
+      return;
+    }
+    setAmount('0');
   };
 
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(parseFloat(event.target.value));
+    setAmount(event.target.value);
+    // setAmount(formatCurrency(parseFloat(event.target.value)));
   };
 
   const onBlurInput = () => {
-    setEdit(false);
+    // setEdit(false);
   };
 
   // const onMouseLeaveInput = () => {
@@ -123,6 +129,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
               // onMouseLeave={onMouseLeaveInput}
               onPointerOut={onPointerOutInput}
               onChange={onChangeInput}
+              value={amount}
             />
             <button type="button" onClick={handleClickClearButton}>
               <BasicsXSmall className="flex w-5 h-5" />

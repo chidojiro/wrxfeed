@@ -109,7 +109,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const renderActiveTargets = () => {
     if (isGetTargets) {
       return (
-        <div className="flex w-full justify-center items-center">
+        <div className="flex h-32 w-full justify-center items-center">
           <Loading width={15} height={15} />
         </div>
       );

@@ -330,7 +330,7 @@ export default class ApiUtils implements ApiClient {
   };
 
   postTarget = async (data: PostTargetParams): Promise<void> => {
-    // console.log(`Check postTarget data = ${JSON.stringify(data)}`);
+    console.log(`Check postTarget data = ${JSON.stringify(data)}`);
     const res = await this.request<Target[]>({
       url: '/target/targets',
       method: 'POST',
@@ -342,7 +342,7 @@ export default class ApiUtils implements ApiClient {
   };
 
   putTarget = async (id: number, data: PutTargetParams): Promise<void> => {
-    // console.log(`Check putTarget data = ${JSON.stringify(data)}`);
+    console.log(`Check putTarget data = ${JSON.stringify(data)}`);
     const res = await this.request<Target[]>({
       url: `/target/targets/${id}`,
       method: 'PUT',

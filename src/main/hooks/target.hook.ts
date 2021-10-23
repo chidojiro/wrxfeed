@@ -52,7 +52,7 @@ export function useTarget(filter: TargetFilter): TargetHookValues {
     } catch (error) {
       setPostTarget(false);
       if (isBadRequest(error)) {
-        toast.error('Can not get comments');
+        toast.error('Can not create new target!');
       } else {
         await errorHandler(error);
       }
@@ -69,7 +69,7 @@ export function useTarget(filter: TargetFilter): TargetHookValues {
     } catch (error) {
       setPutTarget(false);
       if (isBadRequest(error)) {
-        toast.error('Can not get comments');
+        toast.error('Can not update target!');
       } else {
         await errorHandler(error);
       }
