@@ -318,7 +318,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getTargets = async (filter: TargetFilter): Promise<Target[]> => {
+  getTargets = async (filter?: TargetFilter): Promise<Target[]> => {
     const res = await this.request<Target[]>({
       url: '/api/target/targets',
       method: 'GET',
@@ -330,24 +330,24 @@ export default class ApiUtils implements ApiClient {
   };
 
   postTarget = async (data: PostTargetParams): Promise<void> => {
-    const res = await this.request<Target[]>({
+    await this.request<Target[]>({
       url: '/api/target/targets',
       method: 'GET',
       data: {
         ...data,
       },
     });
-    console.log(`Check postTarget res.data = ${JSON.stringify(res.data)}`);
+    // console.log(`Check postTarget res.data = ${JSON.stringify(res.data)}`);
   };
 
   putTarget = async (id: number, data: PutTargetParams): Promise<void> => {
-    const res = await this.request<Target[]>({
+    await this.request<Target[]>({
       url: `/api/target/targets/${id}`,
       method: 'GET',
       data: {
         ...data,
       },
     });
-    console.log(`Check putTarget res.data = ${JSON.stringify(res.data)}`);
+    // console.log(`Check putTarget res.data = ${JSON.stringify(res.data)}`);
   };
 }

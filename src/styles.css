@@ -135,5 +135,20 @@ svg.path-no-stroke > path {
 }
 
 .image-clip {
-  clip: rect(0, auto, 140px, 0)
+  clip: rect(0, auto, 140px, 0);
+}
+
+/* .input-hide-arrows {
+
+} */
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
