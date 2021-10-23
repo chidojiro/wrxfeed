@@ -10,6 +10,7 @@ import {
   Category,
   Vendor,
   Notification,
+  Target,
 } from '@main/entity';
 import { ApiError } from '@error';
 import { Identity } from '@identity';
@@ -27,6 +28,9 @@ import {
   AddCommentParams,
   OrderDirection,
   DepartmentFilter,
+  TargetFilter,
+  PostTargetParams,
+  PutTargetParams,
 } from '@api/types';
 import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
 import { handleResponseFail } from '@api/utils';
@@ -312,5 +316,38 @@ export default class ApiUtils implements ApiClient {
       method: 'PATCH',
     });
     return res.data;
+  };
+
+  getTargets = async (filter: TargetFilter): Promise<Target[]> => {
+    const res = await this.request<Target[]>({
+      url: '/api/target/targets',
+      method: 'GET',
+      params: {
+        ...filter,
+      },
+    });
+    return res.data;
+  };
+
+  postTarget = async (data: PostTargetParams): Promise<void> => {
+    const res = await this.request<Target[]>({
+      url: '/api/target/targets',
+      method: 'GET',
+      data: {
+        ...data,
+      },
+    });
+    console.log(`Check postTarget res.data = ${JSON.stringify(res.data)}`);
+  };
+
+  putTarget = async (id: number, data: PutTargetParams): Promise<void> => {
+    const res = await this.request<Target[]>({
+      url: `/api/target/targets/${id}`,
+      method: 'GET',
+      data: {
+        ...data,
+      },
+    });
+    console.log(`Check putTarget res.data = ${JSON.stringify(res.data)}`);
   };
 }
