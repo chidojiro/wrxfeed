@@ -1,4 +1,4 @@
-import { Pagination, TargetFilter } from '@api/types';
+import { Pagination, PostTargetParams, PutTargetParams, TargetFilter } from '@api/types';
 import { BasicsDownSmall } from '@assets';
 import Loading from '@common/atoms/Loading';
 import { Department, Target } from '@main/entity';
@@ -19,8 +19,8 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const [filter] = React.useState<TargetFilter>({
     offset: 0,
     limit: GET_TARGETS_LIMIT,
-    year: 2021,
-    month: 10,
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
   });
   const [pageDepartment] = React.useState<Pagination>({
     offset: 0,
@@ -28,9 +28,14 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   });
 
   const [isExpanded, setExpanded] = React.useState<boolean>(false);
-  const { targets, isGetTargets } = useTarget(filter);
+  const { targets, isGetTargets, postTarget, putTarget, isPostTarget, isPutTarget } =
+    useTarget(filter);
   const { departments, isLoading: isLoadingInactive } = useDepartment(pageDepartment);
   const [inactiveTargets, setInactiveTargets] = React.useState<Target[]>([]);
+
+  // React.useEffect(() => {
+  //   console.log(`Check new active targets = ${JSON.stringify(targets)}`);
+  // }, [targets]);
 
   React.useEffect(() => {
     const newInactive: Target[] = departments.map((item: Department) => {
@@ -46,6 +51,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   }, [departments]);
 
   const handleClickExpand = () => {
+    if (isLoadingInactive) return;
     setExpanded(!isExpanded);
   };
 
@@ -63,18 +69,38 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     );
   };
 
+  const handlePostTarget = (data: PostTargetParams) => {
+    postTarget(data);
+  };
+
+  const handlePutTarget = (id: number, data: PutTargetParams) => {
+    putTarget(id, data);
+  };
+
   const renderInactiveTargets = () => {
     if (isLoadingInactive) {
-      return (
-        <div className="flex h-32 w-full justify-center items-center">
-          <Loading width={15} height={15} />
-        </div>
-      );
+      if (!isGetTargets) {
+        return (
+          <div className="flex h-32 w-full justify-center items-center">
+            <Loading width={15} height={15} />
+          </div>
+        );
+      }
+      return null;
     }
     return (
       <div>
         {inactiveTargets.map((item: Target, index: number) => (
-          <TargetRow key={`renderTargetRow-${item.department.name}`} target={item} index={index} />
+          <TargetRow
+            key={`renderTargetRow-${item.department.name}`}
+            target={item}
+            index={index}
+            isActive={false}
+            onPostTarget={handlePostTarget}
+            onPutTarget={handlePutTarget}
+            isPostTarget={isPostTarget}
+            isPutTarget={isPutTarget}
+          />
         ))}
       </div>
     );
@@ -83,7 +109,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const renderActiveTargets = () => {
     if (isGetTargets) {
       return (
-        <div className="flex h-32 w-full justify-center items-center">
+        <div className="flex w-full justify-center items-center">
           <Loading width={15} height={15} />
         </div>
       );
@@ -97,9 +123,22 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     //     </div>
     //   );
     // }
-    return targets.map((item: Target, index: number) => (
-      <TargetRow key={`renderTargetRow-${item.department.name}`} target={item} index={index} />
-    ));
+    return (
+      <div className="flex flex-col">
+        {targets.map((item: Target, index: number) => (
+          <TargetRow
+            key={`renderTargetRow-${item.department.name}`}
+            target={item}
+            index={index}
+            isActive
+            onPostTarget={handlePostTarget}
+            onPutTarget={handlePutTarget}
+            isPostTarget={isPostTarget}
+            isPutTarget={isPutTarget}
+          />
+        ))}
+      </div>
+    );
   };
 
   const renderListTargets = () => {

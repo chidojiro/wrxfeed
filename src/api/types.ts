@@ -139,8 +139,8 @@ export interface PutTargetParams {
 }
 
 export interface PostTargetParams {
-  month: 9;
-  year: 2021;
-  amount: 400;
-  departmentId: 30;
+  month: number;
+  year: number;
+  amount: number;
+  departmentId: number;
 }

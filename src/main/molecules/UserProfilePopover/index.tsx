@@ -225,7 +225,6 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
       </Popover.Button>
       <Popover.Panel className="absolute z-50">
         {({ open }) => {
-          console.log(`Check new open = ${open}`);
           return (
             <Transition
               as={Fragment}

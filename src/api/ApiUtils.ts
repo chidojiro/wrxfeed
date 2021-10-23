@@ -320,7 +320,7 @@ export default class ApiUtils implements ApiClient {
 
   getTargets = async (filter?: TargetFilter): Promise<Target[]> => {
     const res = await this.request<Target[]>({
-      url: '/api/target/targets',
+      url: '/target/targets',
       method: 'GET',
       params: {
         ...filter,
@@ -330,24 +330,26 @@ export default class ApiUtils implements ApiClient {
   };
 
   postTarget = async (data: PostTargetParams): Promise<void> => {
-    await this.request<Target[]>({
-      url: '/api/target/targets',
-      method: 'GET',
+    // console.log(`Check postTarget data = ${JSON.stringify(data)}`);
+    const res = await this.request<Target[]>({
+      url: '/target/targets',
+      method: 'POST',
       data: {
         ...data,
       },
     });
-    // console.log(`Check postTarget res.data = ${JSON.stringify(res.data)}`);
+    console.log(`Check postTarget res.data = ${JSON.stringify(res.data)}`);
   };
 
   putTarget = async (id: number, data: PutTargetParams): Promise<void> => {
-    await this.request<Target[]>({
-      url: `/api/target/targets/${id}`,
-      method: 'GET',
+    // console.log(`Check putTarget data = ${JSON.stringify(data)}`);
+    const res = await this.request<Target[]>({
+      url: `/target/targets/${id}`,
+      method: 'PUT',
       data: {
         ...data,
       },
     });
-    // console.log(`Check putTarget res.data = ${JSON.stringify(res.data)}`);
+    console.log(`Check putTarget res.data = ${JSON.stringify(res.data)}`);
   };
 }
