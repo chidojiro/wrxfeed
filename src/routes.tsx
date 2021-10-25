@@ -11,49 +11,60 @@ export interface Route {
   [index: string]: RouteItem<ComponentType>;
 }
 
+// Pages
+const Home = lazy(() => import('@main/pages/Landing'));
+const Login = lazy(() => import('@auth/pages/LoginPage'));
+const AcceptInvitation = lazy(() => import('@auth/pages/AcceptInvitation'));
+const Onboard = lazy(() => import('@auth/pages/OnboardPage'));
+const Overview = lazy(() => import('@main/pages/Overview'));
+const Discussions = lazy(() => import('@main/pages/Discussion'));
+const Departments = lazy(() => import('@main/pages/Departments'));
+const Categories = lazy(() => import('@main/pages/Categories'));
+const Vendors = lazy(() => import('@main/pages/Vendors'));
+
 const routes: Route = {
   // Public pages
   Home: {
     path: '/',
-    component: lazy(() => import('@main/pages/Landing')),
+    component: Home,
   },
   Login: {
     path: '/login',
-    component: lazy(() => import('@auth/pages/LoginPage')),
+    component: Login,
   },
   AcceptInvitation: {
     path: '/accept-invitation',
-    component: lazy(() => import('@auth/pages/AcceptInvitation')),
+    component: AcceptInvitation,
   },
   // Protected pages
   Onboard: {
     path: '/onboarding',
-    component: lazy(() => import('@auth/pages/OnboardPage')),
+    component: Onboard,
     permissions: ['admin'],
   },
   Overview: {
     path: '/overview',
-    component: lazy(() => import('@main/pages/Overview')),
+    component: Overview,
     permissions: ['admin'],
   },
   Discussions: {
     path: '/discussions',
-    component: lazy(() => import('@main/pages/Discussion')),
+    component: Discussions,
     permissions: ['admin'],
   },
   Departments: {
     path: '/departments',
-    component: lazy(() => import('@main/pages/Departments')),
+    component: Departments,
     permissions: ['admin'],
   },
   Categories: {
     path: '/categories',
-    component: lazy(() => import('@main/pages/Categories')),
+    component: Categories,
     permissions: ['admin'],
   },
   Vendors: {
     path: '/vendors',
-    component: lazy(() => import('@main/pages/Vendors')),
+    component: Vendors,
     permissions: ['admin'],
   },
 };
