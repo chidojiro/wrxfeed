@@ -25,7 +25,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   isPostTarget,
 }) => {
   const [isEdit, setEdit] = React.useState<boolean>(false);
-  const [amount, setAmount] = React.useState<string>('0');
+  const [amount, setAmount] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(true);
 
   React.useEffect(() => {
@@ -147,6 +147,14 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   }
 
   if (!isActive) {
+    const inactiveColor = '#d1d5db';
+    const currentDemoInactive = 7000;
+    const amountDemoInactive = 10000;
+
+    const percent = (currentDemoInactive / amountDemoInactive) * 100;
+    const percentLength = `${percent}%`;
+    const currentCurrency = `$${Math.round((currentDemoInactive / 1000) * 10) / 10}K`;
+    const totalAmountCurrency = `$${Math.round((amountDemoInactive / 1000) * 10) / 10}K(est)`;
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
@@ -155,7 +163,21 @@ const TargetRow: React.VFC<TargetRowProps> = ({
           </div>
           {renderEditButton()}
         </div>
-        <div className="flex mt-1 w-full h-1" style={{ backgroundColor: '#d1d5db' }} />
+        <div className="flex flex-row">
+          <div className="flex flex-col" style={{ width: percentLength }}>
+            <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveColor }} />
+            <div className="flex text-Gray-3 text-xs mt-1 font-bold ml-auto">{currentCurrency}</div>
+          </div>
+          <div className="flex flex-col flex-1">
+            <div
+              className="flex mt-1 w-full h-1 opacity-30"
+              style={{ backgroundColor: inactiveColor }}
+            />
+            <div className="flex text-Gray-6 text-xs mt-1 font-bold ml-auto">
+              {totalAmountCurrency}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
