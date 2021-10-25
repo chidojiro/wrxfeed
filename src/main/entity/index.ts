@@ -6,3 +6,4 @@ export * from './discussion.entity';
 export * from './user.entity';
 export * from './mention.entity';
 export * from './contact.entity';
+export * from './target.entity';

@@ -1,7 +1,7 @@
 import React from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Vendor } from '@main/entity';
-import TransactionLoading from '@main/atoms/TransactionLoading';
+import ListLoading from '@main/atoms/ListLoading';
 import TransactionListEnd from '@main/atoms/TransactionListEnd';
 
 interface VendorListProps {
@@ -24,7 +24,7 @@ const VendorList: React.VFC<VendorListProps> = ({
       className="pb-14 mr-0.5 space-y-10 overflow-scroll"
       onLoadMore={onLoadMore}
       isLoading={isLoading}
-      LoadingComponent={<TransactionLoading />}
+      LoadingComponent={<ListLoading />}
     >
       <div className="bg-white shadow overflow-hidden sm:rounded-sm">
         <ul className="divide-y divide-gray-200">

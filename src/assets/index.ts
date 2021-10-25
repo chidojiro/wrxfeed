@@ -20,6 +20,7 @@ import { ReactComponent as UserPlusIcon } from '@assets/icons/outline/user-plus-
 import { ReactComponent as UserAvaDefaultIcon } from '@assets/icons/solid/userAvaDefault.png';
 import { ReactComponent as BasicsEditCircle } from '@assets/icons/solid/basics-edit-circle.svg';
 import { ReactComponent as BasicsDownSmall } from '@assets/icons/outline/basics-down-small.svg';
+import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
 
 export {
   NextEmoji,
@@ -44,4 +45,5 @@ export {
   UserAvaDefaultIcon,
   BasicsEditCircle,
   BasicsDownSmall,
+  BasicsXSmall,
 };

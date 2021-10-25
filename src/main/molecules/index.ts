@@ -5,6 +5,7 @@ import CommentItem from './CommentItem';
 import FeelBackModal from '../organisms/FeelBackModal';
 import UserProfilePopover from './UserProfilePopover';
 import NotifyPopover from './NotifyPopover';
+import TargetRow from './TargetRow';
 
 export {
   ScrollToTopButton,
@@ -14,4 +15,5 @@ export {
   FeelBackModal,
   UserProfilePopover,
   NotifyPopover,
+  TargetRow,
 };

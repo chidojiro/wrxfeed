@@ -9,9 +9,10 @@ module.exports = (env) => {
     mode: 'production',
     devtool: 'hidden-source-map',
     output: {
-      filename: '[chunkhash].js',
+      filename: 'static/js/[chunkhash].js',
       publicPath: '/',
       sourceMapFilename: '[file].map',
+      chunkFilename: 'static/js/[chunkhash].chunk.js'
     },
     optimization: {
       minimizer: [new CssMinimizerPlugin()],
@@ -21,8 +22,8 @@ module.exports = (env) => {
       new MiniCssExtractPlugin({
         // Options similar to the same options in webpackOptions.output
         // both options are optional
-        filename: '[hash].css',
-        chunkFilename: '[id].[hash].css',
+        filename: 'css/[name].[hash].css',
+        chunkFilename: 'css/[name].chunk.css',
       }),
     ],
   });

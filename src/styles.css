@@ -7,7 +7,18 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  @apply font-sans;
+  @apply font-sans text-Gray-1;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
 }
 
 /* Emoji mart styles */
@@ -135,5 +146,74 @@ svg.path-no-stroke > path {
 }
 
 .image-clip {
-  clip: rect(0, auto, 140px, 0)
+  clip: rect(0, auto, 140px, 0);
+}
+
+.linear-progress {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  height: 4px;
+  z-index: 0;
+  @apply bg-Gray-8;
+}
+
+.linear-progress__bar1 {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  -webkit-transition: -webkit-transform 0.2s linear;
+  transition: transform 0.2s linear;
+  transform-origin: left;
+  @apply bg-Gray-2;
+  width: auto;
+  -webkit-animation: fill-bar1 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+  animation: fill-bar1 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+
+.linear-progress__bar2 {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  -webkit-transition: -webkit-transform 0.2s linear;
+  transition: transform 0.2s linear;
+  transform-origin: left;
+  @apply bg-Gray-2;
+  width: auto;
+  -webkit-animation: fill-bar2 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite;
+  animation: fill-bar2 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite;
+}
+
+@keyframes fill-bar1 {
+  0% {
+    left: -35%;
+    right: 100%;
+  }
+  60% {
+    left: 100%;
+    right: -90%;
+  }
+  100% {
+    left: 100%;
+    right: -90%;
+  }
+}
+
+@keyframes fill-bar2 {
+  0% {
+    left: -200%;
+    right: 100%;
+  }
+  60% {
+    left: 107%;
+    right: -8%;
+  }
+  100% {
+    left: 107%;
+    right: -8%;
+  }
 }

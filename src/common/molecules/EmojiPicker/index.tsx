@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { EmojiData, Picker } from 'emoji-mart';
-import { Gray } from '@theme/colors';
 import { Transition } from '@headlessui/react';
 import { usePopper } from 'react-popper';
 import EventEmitter, { EventName } from '@main/EventEmitter';
@@ -85,7 +84,7 @@ export const EmojiPickerContainer: React.VFC = () => {
           showPreview={false}
           showSkinTones={false}
           emoji=""
-          color={Gray[1]}
+          color="#0F0D15"
           style={{ width: 358 }}
           onSelect={callbackRef.current}
           title="Pick your emoji…"
