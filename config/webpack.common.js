@@ -33,8 +33,16 @@ module.exports = (env) => {
       // Automatically generate an HTML5 file for you that includes all your webpack bundles
       new HtmlWebpackPlugin({
         title: 'Gravity',
+        hash: false,
         favicon: path.resolve('public/favicon.svg'),
         template: path.resolve('public/index.html'),
+        inject: true,
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true
       }),
       new CopyPlugin({
         patterns: [
