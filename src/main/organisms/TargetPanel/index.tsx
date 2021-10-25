@@ -38,7 +38,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   // }, [targets]);
 
   React.useEffect(() => {
-    const newInactive: Target[] = departments.map((item: Department) => {
+    const allDepartments: Target[] = departments.map((item: Department) => {
       return {
         month: 0,
         year: 0,
@@ -47,8 +47,16 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
         department: item,
       };
     });
-    setInactiveTargets(newInactive);
-  }, [departments]);
+    // console.log({ allDepartments });
+    const removeActiveTargets = allDepartments.filter(
+      (item: Target) =>
+        !(
+          targets.filter((target: Target) => target.department.id === item.department.id).length > 0
+        ),
+    );
+    // console.log({ removeActiveTargets });
+    setInactiveTargets(removeActiveTargets);
+  }, [departments, targets]);
 
   const handleClickExpand = () => {
     if (isLoadingInactive) return;

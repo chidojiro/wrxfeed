@@ -3,6 +3,7 @@ import { Target } from '@main/entity';
 import { BasicsEditCircle, BasicsXSmall } from '@assets';
 import { PostTargetParams, PutTargetParams } from '@api/types';
 import Loading from '@common/atoms/Loading';
+import { getDepartmentBgColor } from '@main/utils';
 // import { formatCurrency } from '@common/utils';
 
 export interface TargetRowProps {
@@ -33,6 +34,11 @@ const TargetRow: React.VFC<TargetRowProps> = ({
       setEdit(false);
     }
   }, [isPutTarget, isPostTarget]);
+
+  const deptBgClass = React.useMemo(
+    () => getDepartmentBgColor(target?.department?.name ?? ''),
+    [target?.department?.name],
+  );
 
   const renderEditButton = () => {
     const onClickEdit = () => setEdit(!isEdit);
@@ -154,6 +160,14 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
+  const { current: currentTarget = 0 } = target;
+
+  // Math.round(number * 10) / 10;
+  const percent = (currentTarget / target.amount) * 100;
+  const percentLength = `${percent}%`;
+  const currentCurrency = `$${Math.round((currentTarget / 1000) * 10) / 10}K`;
+  const totalAmountCurrency = `$${Math.round((target.amount / 1000) * 10) / 10}K`;
+
   return (
     <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
       <div className="flex flex-row items-center">
@@ -162,7 +176,21 @@ const TargetRow: React.VFC<TargetRowProps> = ({
         </div>
         {renderEditButton()}
       </div>
-      <div className="flex mt-1 w-full h-1" style={{ backgroundColor: '#13b9b9' }} />
+      <div className="flex flex-row">
+        <div className="flex flex-col" style={{ width: percentLength }}>
+          <div className="flex mt-1 w-full h-1" style={{ backgroundColor: deptBgClass }} />
+          <div className="flex text-Gray-3 text-xs mt-1 font-bold ml-auto">{currentCurrency}</div>
+        </div>
+        <div className="flex flex-col flex-1">
+          <div
+            className="flex mt-1 w-full h-1 opacity-30"
+            style={{ backgroundColor: deptBgClass }}
+          />
+          <div className="flex text-Gray-6 text-xs mt-1 font-bold ml-auto">
+            {totalAmountCurrency}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
