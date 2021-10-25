@@ -132,6 +132,7 @@ export interface DepartmentFilter extends Pagination {
 export interface TargetFilter extends Pagination {
   year: number;
   month: number;
+  timestamp?: number;
 }
 
 export interface PutTargetParams {

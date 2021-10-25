@@ -6,6 +6,10 @@ import { Target } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
+interface TargetCallback {
+  onSuccess: () => void;
+  onError?: (error: unknown) => void;
+}
 interface TargetHookValues {
   targets: Target[];
   hasMore: boolean;
@@ -15,7 +19,11 @@ interface TargetHookValues {
   isPostTarget: boolean;
   isPutTarget: boolean;
 }
-export function useTarget(filter: TargetFilter): TargetHookValues {
+export function useTarget(
+  filter: TargetFilter,
+  cbPost: TargetCallback,
+  cbPut: TargetCallback,
+): TargetHookValues {
   const [targets, setTargets] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isGetTargets, setGetTargets] = useState<boolean>(false);
@@ -28,7 +36,15 @@ export function useTarget(filter: TargetFilter): TargetHookValues {
     try {
       setGetTargets(true);
       const res = await ApiClient.getTargets(filter);
-      setTargets((prevTrans) => [...prevTrans, ...res]);
+      // console.log({ res });
+      const merged = targets.concat(res);
+      const targetMap = new Map();
+      merged.forEach((target) => {
+        targetMap.set(target.id, target);
+      });
+      const newTargets = [...targetMap.values()];
+      console.log({ newTargets });
+      setTargets(newTargets);
       setHasMore(!!res.length);
       setGetTargets(false);
     } catch (error) {
@@ -46,12 +62,16 @@ export function useTarget(filter: TargetFilter): TargetHookValues {
     if (isPostTarget) return;
     try {
       setPostTarget(true);
-      const res = await ApiClient.postTarget(data);
+      await ApiClient.postTarget(data);
+      // console.log({ res });
       setPostTarget(false);
-      console.log({ res });
+      cbPost.onSuccess();
+      // getTargets();
     } catch (error) {
       setPostTarget(false);
-      if (isBadRequest(error)) {
+      if (cbPost.onError) {
+        cbPost.onError(error);
+      } else if (isBadRequest(error)) {
         toast.error('Can not create new target!');
       } else {
         await errorHandler(error);
@@ -63,12 +83,16 @@ export function useTarget(filter: TargetFilter): TargetHookValues {
     if (isPutTarget) return;
     try {
       setPutTarget(true);
-      const res = await ApiClient.putTarget(id, data);
+      await ApiClient.putTarget(id, data);
+      // console.log({ res });
       setPutTarget(false);
-      console.log({ res });
+      cbPut.onSuccess();
+      // getTargets();
     } catch (error) {
       setPutTarget(false);
-      if (isBadRequest(error)) {
+      if (cbPut.onError) {
+        cbPut.onError(error);
+      } else if (isBadRequest(error)) {
         toast.error('Can not update target!');
       } else {
         await errorHandler(error);

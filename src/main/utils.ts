@@ -109,3 +109,16 @@ export const getNameAbbreviation = (name?: string): string => {
     .substring(0, 2)
     .toUpperCase();
 };
+
+export const nFormatter = (num: number, withCurrency = '$'): string => {
+  if (num >= 1000000000) {
+    return `${withCurrency}${(num / 1000000000).toFixed(1).replace(/\.0$/, '')}G`;
+  }
+  if (num >= 1000000) {
+    return `${withCurrency}${(num / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+  }
+  if (num >= 1000) {
+    return `${withCurrency}${(num / 1000).toFixed(1).replace(/\.0$/, '')}K`;
+  }
+  return `${withCurrency}${num}`;
+};
