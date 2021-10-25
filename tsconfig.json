@@ -25,7 +25,6 @@
       "@identity/*": ["src/identity/*"],
       "@auth/*": ["src/auth/*"],
       "@main/*": ["src/main/*"],
-      "@theme/*": ["src/theme/*"],
       "@*": ["./src/*/index"],
       "@src/*": ["src/*"],
     },

@@ -1,7 +1,7 @@
 import React from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Department } from '@main/entity';
-import TransactionLoading from '@main/atoms/TransactionLoading';
+import ListLoading from '@main/atoms/ListLoading';
 import TransactionListEnd from '@main/atoms/TransactionListEnd';
 import { DepartmentSection } from '@main/hooks/department.hook';
 
@@ -57,7 +57,7 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
       className="pb-14 mr-0.5 overflow-scroll"
       onLoadMore={onLoadMore}
       isLoading={isLoading}
-      LoadingComponent={<TransactionLoading />}
+      LoadingComponent={<ListLoading />}
     >
       <div className="overflow-hidden space-y-6 pb-5">{departments.map(renderDeptSection)}</div>
       {!isLoading && !hasMore && <TransactionListEnd />}

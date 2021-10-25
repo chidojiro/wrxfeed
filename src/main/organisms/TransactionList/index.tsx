@@ -3,7 +3,7 @@ import TransactionCard from '@main/molecules/TransactionCard';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Category, Transaction } from '@main/entity';
 import { TransactionFilter } from '@api/types';
-import TransactionLoading from '@main/atoms/TransactionLoading';
+import ListLoading from '@main/atoms/ListLoading';
 import TransactionListEnd from '@main/atoms/TransactionListEnd';
 
 interface TransactionListProps {
@@ -56,7 +56,7 @@ const TransactionList: React.VFC<TransactionListProps> = ({
       }}
       onLoadMore={onLoadMore}
       isLoading={isLoading}
-      LoadingComponent={<TransactionLoading />}
+      LoadingComponent={<ListLoading />}
     >
       <ul className="pb-5 space-y-4">
         {transactions.map((transaction) => (

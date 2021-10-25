@@ -3,7 +3,6 @@ import { CommentFormModel } from '@main/types';
 import { Category, Transaction, Visibility } from '@main/entity';
 import { useComment, useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
-import { Gray, LightBG } from '@theme/colors';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import { classNames, commentEditorRawParser } from '@main/utils';
@@ -234,7 +233,9 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                   {comments?.map((comment) => (
                     <li key={comment.id}>
                       <CommentItem
-                        style={{ backgroundColor: isHidden ? Gray[12] : LightBG }}
+                        style={{
+                          backgroundColor: isHidden ? '#F3F3F7' : 'rgba(192, 191, 223, 0.1)',
+                        }}
                         comment={comment}
                       />
                     </li>
