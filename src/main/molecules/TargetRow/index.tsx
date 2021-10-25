@@ -4,7 +4,6 @@ import { BasicsEditCircle, BasicsXSmall } from '@assets';
 import { PostTargetParams, PutTargetParams } from '@api/types';
 import Loading from '@common/atoms/Loading';
 import { classNames, getDepartmentBgColor, nFormatter } from '@main/utils';
-import { System } from '@theme/colors';
 // import { formatCurrency } from '@common/utils';
 
 const parseMoneyInput = (value: string, currency = '$') => {
@@ -18,6 +17,8 @@ const parseMoneyInput = (value: string, currency = '$') => {
 const replaceAll = (str: string, find: string, replace: string): string => {
   return str.replace(new RegExp(find, 'g'), replace);
 };
+
+const SystemAlertColor = '#ff5f68';
 
 export interface TargetRowProps {
   target: Target;
@@ -215,7 +216,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     const percentLength = `${percent}%`;
     const styleTotal = isExceeds ? '' : 'opacity-30';
     const currentColor = deptBgClass;
-    const totalColor = isExceeds ? System.Alert : deptBgClass;
+    const totalColor = isExceeds ? SystemAlertColor : deptBgClass;
 
     if (isExceeds) {
       return (
@@ -234,7 +235,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
           <div className="flex flex-row">
             <div
               className="flex text-Gray-3 text-xs mt-1 font-bold ml-auto"
-              style={{ color: System.Alert }}
+              style={{ color: SystemAlertColor }}
             >
               {currentCurrency}
             </div>
