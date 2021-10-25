@@ -31,8 +31,6 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const [title, setTitle] = React.useState<string>('');
   const [department, setDepartment] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
-  // const [email, setEmail] = React.useState<string>('');
-  // const [profileChanges, setProfileChanges] = React.useState<ProfileChanges[]>([]);
   const { updateProfile } = useApi();
   const setIdentity = useSetIdentity();
   const apiClient = useApi();

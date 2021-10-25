@@ -330,26 +330,22 @@ export default class ApiUtils implements ApiClient {
   };
 
   postTarget = async (data: PostTargetParams): Promise<void> => {
-    console.log(`Check postTarget data = ${JSON.stringify(data)}`);
-    const res = await this.request<Target[]>({
+    await this.request<void>({
       url: '/target/targets',
       method: 'POST',
       data: {
         ...data,
       },
     });
-    console.log(`Check postTarget res.data = ${JSON.stringify(res.data)}`);
   };
 
   putTarget = async (id: number, data: PutTargetParams): Promise<void> => {
-    console.log(`Check putTarget data = ${JSON.stringify(data)}`);
-    const res = await this.request<Target[]>({
+    await this.request<void>({
       url: `/target/targets/${id}`,
       method: 'PUT',
       data: {
         ...data,
       },
     });
-    console.log(`Check putTarget res.data = ${JSON.stringify(res.data)}`);
   };
 }
