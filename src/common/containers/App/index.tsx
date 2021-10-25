@@ -1,8 +1,4 @@
 import React, { Suspense } from 'react';
-// import DateFnsUtils from '@date-io/date-fns';
-import { ThemeProvider, Theme, StyledEngineProvider } from '@mui/material/styles';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import { ToastContainer } from 'react-toastify';
@@ -16,7 +12,6 @@ import '@src/styles.css';
 import LoadingFallback from '@common/atoms/LoadingFallback';
 import NotFoundPage from '@common/pages/NotFoundPage';
 import { ApiProvider } from '@api';
-import { theme } from '@theme/theme';
 import routes from '@src/routes';
 import { ProtectedRoute } from '@identity';
 import { API_BASE_URL } from '@src/config';
@@ -24,16 +19,6 @@ import { CookieProvider } from '@common/hooks/useCookie';
 import { UploadCSVModal } from '@main/organisms';
 import { EmojiPickerContainer } from '@common/molecules/EmojiPicker';
 import { NotifyBannerContainer } from '@common/molecules/NotifyBanner';
-
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
-
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
 
 const StyledToastContainer = () => (
   <ToastContainer
@@ -51,43 +36,37 @@ const StyledToastContainer = () => (
 
 const App: React.FC = () => {
   return (
-    <StyledEngineProvider injectFirst>
-      <CookieProvider>
-        <ThemeProvider theme={theme}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <RecoilRoot>
-              <ApiProvider baseUrl={API_BASE_URL}>
-                <Router key={Math.random()}>
-                  <Suspense fallback={<LoadingFallback />}>
-                    <Switch>
-                      {Object.values(routes).map((r) => (
-                        // Added property`key` to Router to fix warning
-                        // when hot reloading Route component
-                        <ProtectedRoute
-                          key={r.path}
-                          path={r.path}
-                          component={r.component}
-                          permissions={r.permissions}
-                          exact
-                        />
-                      ))}
-                      {/* 404 homepage */}
-                      <Route>
-                        <NotFoundPage />
-                      </Route>
-                    </Switch>
-                    <UploadCSVModal />
-                  </Suspense>
-                </Router>
-              </ApiProvider>
-            </RecoilRoot>
-          </LocalizationProvider>
+    <CookieProvider>
+      <RecoilRoot>
+        <ApiProvider baseUrl={API_BASE_URL}>
+          <Router key={Math.random()}>
+            <Suspense fallback={<LoadingFallback />}>
+              <Switch>
+                {Object.values(routes).map((r) => (
+                  // Added property`key` to Router to fix warning
+                  // when hot reloading Route component
+                  <ProtectedRoute
+                    key={r.path}
+                    path={r.path}
+                    component={r.component}
+                    permissions={r.permissions}
+                    exact
+                  />
+                ))}
+                {/* 404 homepage */}
+                <Route>
+                  <NotFoundPage />
+                </Route>
+              </Switch>
+            </Suspense>
+          </Router>
+          <UploadCSVModal />
           <StyledToastContainer />
           <EmojiPickerContainer />
           <NotifyBannerContainer topOffset={56} />
-        </ThemeProvider>
-      </CookieProvider>
-    </StyledEngineProvider>
+        </ApiProvider>
+      </RecoilRoot>
+    </CookieProvider>
   );
 };
 
