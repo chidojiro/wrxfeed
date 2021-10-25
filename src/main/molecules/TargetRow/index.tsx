@@ -119,7 +119,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
           {/* <Loading width={15} height={15} className="flex mt-1" /> */}
         </div>
         <div className="flex ml-auto flex-col">
-          <div className="flex w-32 ml-auto text-right text-xs text-Gray-6 font-semibold">
+          <div className="flex w-32 ml-auto text-right text-xs text-Gray-3 font-semibold">
             Edit target amount
           </div>
           <div

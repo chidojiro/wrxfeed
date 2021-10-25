@@ -36,14 +36,12 @@ export function useTarget(
     try {
       setGetTargets(true);
       const res = await ApiClient.getTargets(filter);
-      // console.log({ res });
       const merged = targets.concat(res);
       const targetMap = new Map();
       merged.forEach((target) => {
         targetMap.set(target.id, target);
       });
       const newTargets = [...targetMap.values()];
-      console.log({ newTargets });
       setTargets(newTargets);
       setHasMore(!!res.length);
       setGetTargets(false);
@@ -63,7 +61,6 @@ export function useTarget(
     try {
       setPostTarget(true);
       await ApiClient.postTarget(data);
-      // console.log({ res });
       setPostTarget(false);
       cbPost.onSuccess();
       // getTargets();
@@ -84,7 +81,6 @@ export function useTarget(
     try {
       setPutTarget(true);
       await ApiClient.putTarget(id, data);
-      // console.log({ res });
       setPutTarget(false);
       cbPut.onSuccess();
       // getTargets();

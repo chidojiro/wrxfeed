@@ -182,7 +182,6 @@ export default class ApiUtils implements ApiClient {
         order: OrderDirection.ASC,
       },
     });
-    console.log(`Check getMentions data = ${JSON.stringify(res.data)}`);
     return res.data;
   };
 

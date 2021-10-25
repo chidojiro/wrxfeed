@@ -25,8 +25,7 @@ export function useFeedBack(callback: FeelBackModalCallback): FeedbackHookValues
   const postFeedback = async (transactionId: number, data: FeedBackFormModel) => {
     try {
       setLoading(true);
-      const res = await ApiClient.postFeedback(transactionId, data);
-      console.log({ res });
+      await ApiClient.postFeedback(transactionId, data);
       setLoading(false);
       setSent(true);
       callback.onSuccess();
