@@ -27,15 +27,22 @@ module.exports = (env) => {
         '@identity': path.resolve('src/identity'),
         '@auth': path.resolve('src/auth'),
         '@main': path.resolve('src/main'),
-        '@theme': path.resolve('src/theme'),
       },
     },
     plugins: [
       // Automatically generate an HTML5 file for you that includes all your webpack bundles
       new HtmlWebpackPlugin({
         title: 'Gravity',
+        hash: false,
         favicon: path.resolve('public/favicon.svg'),
         template: path.resolve('public/index.html'),
+        inject: true,
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true
       }),
       new CopyPlugin({
         patterns: [

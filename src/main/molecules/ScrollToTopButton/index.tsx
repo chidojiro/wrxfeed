@@ -1,55 +1,32 @@
-import { ArrowUpIcon } from '@assets/index';
-import { Fab } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import { LightBG } from '@theme/colors';
-import React from 'react';
+import { Transition } from '@headlessui/react';
+import { ChevronDoubleUpIcon } from '@heroicons/react/outline';
+import React, { Fragment } from 'react';
 
 interface ScrollToTopButtonProps {
-  style?: React.CSSProperties;
   onClick: () => void;
   visible: boolean;
 }
 
-const useStyles = makeStyles(() => ({
-  container: () => ({
-    backgroundColor: LightBG,
-    width: '48px',
-    height: '48px',
-    borderRadius: '24px',
-    position: 'absolute',
-    right: '16px',
-    bottom: '16px',
-    padding: '0px',
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    boxShadow: '0px 3px 5px rgba(9, 30, 66, 0.2), 0px 0px 1px rgba(9, 30, 66, 0.31)',
-    '&.fadeOut': {
-      opacity: 0,
-      width: '0px',
-      height: '0px',
-      transition: 'width 0.5s 0.5s, height 0.5s 0.5s, opacity 0.5s',
-    },
-    '&.fadeIn': {
-      opacity: 1,
-      width: '48px',
-      height: '48px',
-      transition: 'width 0.5s, height 0.5s, opacity 0.5s 0.5s',
-    },
-  }),
-}));
-
-const ScrollToTopButton: React.VFC<ScrollToTopButtonProps> = ({ style, onClick, visible }) => {
-  const classes = useStyles();
+const ScrollToTopButton: React.VFC<ScrollToTopButtonProps> = ({ onClick, visible }) => {
   return (
-    <Fab
-      className={`${classes.container} ${visible ? 'fadeIn' : 'fadeOut'}`}
-      onClick={onClick}
-      style={{
-        ...style,
-      }}
+    <Transition
+      as={Fragment}
+      show={visible}
+      enter="transition-opacity ease-in-out duration-250"
+      enterFrom="opacity-0"
+      enterTo="opacity-100"
+      leave="transition-opacity ease-in-out duration-500"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
     >
-      <ArrowUpIcon />
-    </Fab>
+      <button
+        type="button"
+        className="inline-flex items-center p-3 border border-transparent rounded-full shadow-sm text-white bg-purple-6 hover:bg-purple-5 focus:outline-none"
+        onClick={onClick}
+      >
+        <ChevronDoubleUpIcon className="h-6 w-6" aria-hidden="true" />
+      </button>
+    </Transition>
   );
 };
 

@@ -1,11 +1,11 @@
 import Modal from '@common/atoms/Modal';
-import { Divider, LinearProgress } from '@mui/material';
 import React from 'react';
 import CommentBox from '@main/molecules/CommentBox';
 import { useFeedBack } from '@main/hooks';
 import { toast } from 'react-toastify';
 import { EditorState } from 'draft-js';
 import { classNames, commentEditorRawParser } from '@main/utils';
+import LinearProgress from '@common/atoms/LinearProgress';
 
 interface FeelBackModalProps {
   open: boolean;
@@ -89,7 +89,7 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ open, onClose, transacti
           {renderMaxCharacters()}
         </div>
         {isLoading && <LinearProgress />}
-        <Divider />
+        <hr className="divider divider-horizontal" />
         <div className="flex justify-end h-[66px] px-6 py-4">
           <button
             type="button"
