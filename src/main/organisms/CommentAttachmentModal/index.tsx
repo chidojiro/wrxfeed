@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
-import { LinearProgress } from '@mui/material';
-import Divider from '@mui/material/Divider';
+import LinearProgress from '@common/atoms/LinearProgress';
 import CommentBox from '@main/molecules/CommentBox';
 import { useFileUploader } from '@common/hooks/useFileUploader';
 import { GetUploadTokenBody } from '@api/types';
@@ -54,7 +53,7 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
   };
   return (
     <Modal open={open} onClose={onClose}>
-      <div className="sm:max-w-[500px] sm:w-full">
+      <div className="sm:min-w-[30rem] min-w-[90vw]">
         {isImage && <ImageFilePreview className="mt-6 ml-6" file={file} width={144} height={90} />}
         <div className="px-6 mt-3.5">
           <p className="text-lg text-left font-bold text-Gray-1">
@@ -85,7 +84,7 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
           />
         </div>
         {isUploading && <LinearProgress />}
-        <Divider />
+        <hr className="divider divider-horizontal" />
         <div className="flex justify-end h-[66px] px-6 py-4">
           <button
             type="button"
