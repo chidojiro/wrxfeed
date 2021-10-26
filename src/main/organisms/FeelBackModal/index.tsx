@@ -11,11 +11,17 @@ interface FeelBackModalProps {
   open: boolean;
   onClose: () => void;
   transactionId: number;
+  enableMaxChar?: boolean;
+  maxChar?: number;
 }
 
-const MAX_LENGTH_FEEDBACK = 200;
-
-const FeelBackModal: React.VFC<FeelBackModalProps> = ({ open, onClose, transactionId }) => {
+const FeelBackModal: React.VFC<FeelBackModalProps> = ({
+  open,
+  onClose,
+  transactionId,
+  enableMaxChar = false,
+  maxChar = 20000,
+}) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const [feedback, setFeedback] = React.useState<string>('');
   const onUploadSuccess = () => {
@@ -23,7 +29,7 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ open, onClose, transacti
   };
 
   const { isLoading, postFeedback } = useFeedBack({ onSuccess: onUploadSuccess });
-  const isSendable = feedback.length > 0 && feedback.length <= MAX_LENGTH_FEEDBACK;
+  const isSendable = feedback.length > 0 && feedback.length <= maxChar;
 
   React.useEffect(() => {
     setOpen(open);
@@ -35,18 +41,13 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ open, onClose, transacti
   };
 
   const handleSubmit = () => {
+    if (feedback.length === 0) return;
     if (!isSendable) {
-      toast.error('Exceeded the maximum word count for a feedback!');
+      toast.error('Invalid feedback content!');
       return;
     }
     postFeedback(transactionId, { content: feedback });
   };
-
-  const isMax = feedback.length > MAX_LENGTH_FEEDBACK;
-  const maxLengthText =
-    feedback.length === 0
-      ? `max ${MAX_LENGTH_FEEDBACK} characters`
-      : `/${MAX_LENGTH_FEEDBACK} characters`;
 
   const onChangeTextContent = (content?: EditorState): void => {
     if (!content) return;
@@ -55,6 +56,10 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({ open, onClose, transacti
   };
 
   const renderMaxCharacters = () => {
+    if (!enableMaxChar) return null;
+    const isMax = feedback.length > maxChar;
+    const maxLengthText =
+      feedback.length === 0 ? `max ${maxChar} characters` : `/${maxChar} characters`;
     return (
       <p className="mt-2 text-sm text-right text-Gray-4">
         {feedback.length !== 0 && (

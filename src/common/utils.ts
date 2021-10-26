@@ -89,7 +89,7 @@ export const emailMatches = (text: string): RegExpMatchArray | null => {
   return text?.match(EmailRegex);
 };
 
-export const parseMoneyInput = (value: string, currency = '$') => {
+export const parseMoneyInput = (value: string, currency = '$'): string => {
   return `${currency}${value
     .replace(/(?!\.)\D/g, '')
     .replace(/(?<=\..*)\./g, '')
