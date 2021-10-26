@@ -325,6 +325,7 @@ export default class ApiUtils implements ApiClient {
         ...filter,
       },
     });
+    console.log(`Check getTargets = ${JSON.stringify(res.data)}`);
     return res.data;
   };
 

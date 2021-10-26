@@ -63,9 +63,10 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
         id: index,
         month: 0,
         year: 0,
-        amount: 0,
-        current: 0,
+        amount: '0',
         department: item,
+        total: '0',
+        depId: 0,
       };
     });
     // console.log({ allDepartments });

@@ -201,17 +201,18 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
-  const { current: currentTarget = 0, amount: total } = target;
+  let { total: currentTarget = '0' } = target;
+  const { amount: maxTarget } = target;
+  if (currentTarget === null) currentTarget = '0';
 
-  // Math.round(number * 10) / 10;
-  let percent = (currentTarget / total) * 100;
-  const currentCurrency = nFormatter(currentTarget);
-  const totalAmountCurrency = nFormatter(total);
-  const isExceeds = currentTarget > total;
+  let percent = (parseFloat(currentTarget) / parseFloat(maxTarget)) * 100;
+  const currentCurrency = nFormatter(parseFloat(currentTarget));
+  const totalAmountCurrency = nFormatter(parseFloat(maxTarget));
+  const isExceeds = parseFloat(currentTarget) > parseFloat(maxTarget);
 
   const renderCurrentPerTotalBar = () => {
     if (isExceeds) {
-      percent = (total / currentTarget) * 100;
+      percent = (parseFloat(maxTarget) / parseFloat(currentTarget)) * 100;
     }
     const percentLength = `${percent}%`;
     const styleTotal = isExceeds ? '' : 'opacity-30';
@@ -266,14 +267,14 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   const renderAlertText = () => {
     if (!isExceeds) return null;
-    const exceedNumber = currentTarget - total;
+    const exceedNumber = parseFloat(maxTarget) - parseFloat(currentTarget);
     const exceedNumberCurrency = nFormatter(exceedNumber);
     return (
       <div
         className="flex text-system-alert font-bold font-regular group-hover:hidden ml-auto"
         style={{ fontSize: '10px' }}
       >
-        {`Exceeds target by $${exceedNumberCurrency}`}
+        {`Exceeds target by ${exceedNumberCurrency}`}
       </div>
     );
   };
