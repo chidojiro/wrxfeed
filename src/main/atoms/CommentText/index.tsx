@@ -9,7 +9,7 @@ export interface CommentTextProps {
 
 const CommentText: React.VFC<CommentTextProps> = ({ content }) => {
   const tokenizedContent = tokenizeComment(content);
-  return <TokenizedText>{tokenizedContent}</TokenizedText>;
+  return <TokenizedText className="whitespace-pre-wrap">{tokenizedContent}</TokenizedText>;
 };
 
 export default CommentText;
