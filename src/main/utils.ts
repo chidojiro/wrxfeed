@@ -1,11 +1,14 @@
 import { ContentState, convertToRaw, RawDraftContentBlock, RawDraftEntity } from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
 
-const MentionRegex = /<mention userid=['"][a-zA-Z0-9]+['"] tagname=['"][a-zA-Z0-9\s]+['"]\/>/gi;
+const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
+const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
+const MentionRegex =
+  /<mention userid=['"][a-zA-Z0-9]+['"] tagname=['"][\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+['"]\/>/gi;
 
 export function tagReplacer(tag: string): string {
-  const idMatches = tag.match(/userid="([a-zA-Z0-9]+)"/gi);
-  const nameMatches = tag.match(/tagname="([a-zA-Z0-9\s]+)"/gi);
+  const idMatches = tag.match(UserIdRegex);
+  const nameMatches = tag.match(TagNameRegex);
   if (!idMatches?.length || !nameMatches?.length) return tag;
 
   return `<span id='${idMatches[0].split('"')[1]}' class='mention'>${
