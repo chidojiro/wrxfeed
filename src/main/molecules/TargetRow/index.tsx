@@ -4,22 +4,9 @@ import { BasicsEditCircle, BasicsXSmall } from '@assets';
 import { PostTargetParams, PutTargetParams } from '@api/types';
 import Loading from '@common/atoms/Loading';
 import { classNames, getDepartmentBgColor, nFormatter } from '@main/utils';
-// import { formatCurrency } from '@common/utils';
-
-const parseMoneyInput = (value: string, currency = '$') => {
-  return `${currency}${value
-    .replace(/(?!\.)\D/g, '')
-    .replace(/(?<=\..*)\./g, '')
-    .replace(/(?<=\.\d\d).*/g, '')
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
-};
-
-const replaceAll = (str: string, find: string, replace: string): string => {
-  return str.replace(new RegExp(find, 'g'), replace);
-};
+import { parseMoneyInput, replaceAll } from '@common/utils';
 
 const SystemAlertColor = '#ff5f68';
-
 export interface TargetRowProps {
   target: Target;
   index: number;
@@ -128,7 +115,6 @@ const TargetRow: React.VFC<TargetRowProps> = ({
           >
             <div className="text-xs text-Gray-6">$</div>
             <input
-              // type="number"
               onKeyDown={handleKeyDown}
               placeholder="10,000.00"
               className="flex flex-1 mx-2 text-sm outline-none border-none"
@@ -138,9 +124,6 @@ const TargetRow: React.VFC<TargetRowProps> = ({
               onPointerOut={onPointerOutInput}
               onChange={onChangeInput}
               value={amount}
-              // min="0.00"
-              // step="0.01"
-              // max="1000000000"
             />
             <button type="button" onClick={handleClickClearButton}>
               <BasicsXSmall className="flex w-5 h-5" />
