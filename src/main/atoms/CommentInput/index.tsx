@@ -1,6 +1,6 @@
 import React, { KeyboardEvent, useCallback, useMemo, useRef, useState } from 'react';
 
-import { DraftHandleValue, EditorProps, KeyBindingUtil } from 'draft-js';
+import { convertToRaw, DraftHandleValue, EditorProps, EditorState, KeyBindingUtil } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin, {
   defaultSuggestionsFilter,
@@ -16,17 +16,29 @@ interface CommentInputProps extends EditorProps {
   mentions?: MentionData[];
 }
 
-const CommentInput: React.VFC<CommentInputProps> = ({ onEnterPress, mentions, ...rest }) => {
+const CommentInput: React.VFC<CommentInputProps> = ({
+  onEnterPress,
+  mentions,
+  onChange,
+  ...rest
+}) => {
   const editorRef = useRef<Editor>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions || []);
+  const [mentioned, setMentioned] = useState<MentionData[]>([]);
   const { MentionSuggestions, plugins } = useMemo(() => {
     const mentionPlugin = createMentionPlugin({
       entityMutability: 'IMMUTABLE',
       supportWhitespace: true,
       popperOptions: {
-        placement: 'top-end',
+        placement: 'top-start',
+        modifiers: [
+          {
+            name: 'offset',
+            options: { offset: [0, 5] },
+          },
+        ],
       },
       theme: {
         ...defaultTheme,
@@ -55,10 +67,21 @@ const CommentInput: React.VFC<CommentInputProps> = ({ onEnterPress, mentions, ..
   }, []);
   const onSearchChange = useCallback(
     ({ value }: { value: string }) => {
-      setSuggestions(defaultSuggestionsFilter(value, mentions || []));
+      // exclude mentioned items
+      const availableMentions = mentions?.filter(
+        (mention) => !mentioned.some((item) => item.id === mention.id),
+      );
+      setSuggestions(defaultSuggestionsFilter(value, availableMentions || []));
     },
-    [mentions],
+    [mentions, mentioned],
   );
+
+  const handleEditorChange = (state: EditorState) => {
+    const { entityMap } = convertToRaw(state.getCurrentContent());
+    const mentionedData = Object.values(entityMap).map((entity) => entity.data[entity.type]) ?? [];
+    setMentioned(mentionedData);
+    onChange(state);
+  };
 
   return (
     <div
@@ -72,6 +95,7 @@ const CommentInput: React.VFC<CommentInputProps> = ({ onEnterPress, mentions, ..
         handleReturn={handleReturn}
         editorKey="editor"
         plugins={plugins}
+        onChange={handleEditorChange}
         {...rest}
       />
       <MentionSuggestions
@@ -79,9 +103,6 @@ const CommentInput: React.VFC<CommentInputProps> = ({ onEnterPress, mentions, ..
         onOpenChange={onOpenChange}
         suggestions={suggestions}
         onSearchChange={onSearchChange}
-        onAddMention={() => {
-          // get the mention object selected
-        }}
         entryComponent={MentionEntry}
         // popoverContainer={({ children }) => (
         //   <div className="mention-suggestion-container">{children}</div>
