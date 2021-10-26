@@ -1,12 +1,13 @@
 import React from 'react';
 import { FallbackProps } from 'react-error-boundary';
-import { ApiErrorCode, isApiError } from '@src/error';
 import {
   BanIcon,
   DocumentSearchIcon,
   ExclamationCircleIcon,
   StatusOfflineIcon,
 } from '@heroicons/react/outline';
+import { ApiErrorCode } from '../../types';
+import { isApiError } from '../../utils';
 
 const ErrorFallback: React.VFC<FallbackProps> = ({ error, resetErrorBoundary }) => {
   let message = 'An error occurred in the app.';

@@ -65,7 +65,7 @@ const InviteTagInput: ForwardRefRenderFunction<InviteTagInputHandler, InviteTagI
   }));
 
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
-    if (['Enter', 'Tab', ','].includes(event.key)) {
+    if (['Enter', 'Tab', ',', ' '].includes(event.key)) {
       event.preventDefault();
 
       const currentValue = value.trim();
