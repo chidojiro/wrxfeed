@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavUtils } from '@common/hooks';
 import BlankLayout from '@common/templates/BlankLayout';
 import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
@@ -11,6 +11,7 @@ import { useApi } from '@api';
 import { toast } from 'react-toastify';
 import { ProviderName } from '@main/entity';
 import { useErrorHandler } from '@src/error';
+import NotInvited from '@auth/molecules/NotInvited';
 
 const LoginPage: React.VFC = () => {
   const { signInWithGoogle, getProfile } = useApi();
@@ -18,6 +19,7 @@ const LoginPage: React.VFC = () => {
   const identity = useIdentity();
   const setIdentity = useSetIdentity();
   const errorHandler = useErrorHandler();
+  const [notInvited, setNotInvited] = useState(false);
 
   useEffect(() => {
     if (identity?.token && identity?.lastLoginAt) {
@@ -55,6 +57,7 @@ const LoginPage: React.VFC = () => {
       }
     } catch (error: unknown) {
       await errorHandler(error);
+      setNotInvited(true);
     }
   };
 
@@ -66,7 +69,9 @@ const LoginPage: React.VFC = () => {
     }
   };
 
-  return (
+  return notInvited ? (
+    <NotInvited />
+  ) : (
     <BlankLayout>
       <div className="flex flex-col justify-center items-center mt-[6vh] space-y-10">
         <div className="flex flex-col justify-center items-center">
