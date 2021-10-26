@@ -10,7 +10,7 @@ import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 're
 import { useApi } from '@api';
 import { toast } from 'react-toastify';
 import { ProviderName } from '@main/entity';
-import { useErrorHandler } from '@src/error';
+import { useErrorHandler, isApiError, ApiErrorCode } from '@src/error';
 import NotInvited from '@auth/molecules/NotInvited';
 
 const LoginPage: React.VFC = () => {
@@ -56,8 +56,13 @@ const LoginPage: React.VFC = () => {
         });
       }
     } catch (error: unknown) {
-      await errorHandler(error);
-      setNotInvited(true);
+      if (isApiError(error)) {
+        if (error.code === ApiErrorCode.Unauthenticated) {
+          setNotInvited(true);
+        } else {
+          await errorHandler(error);
+        }
+      }
     }
   };
 
