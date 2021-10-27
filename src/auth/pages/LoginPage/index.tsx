@@ -25,7 +25,7 @@ const LoginPage: React.VFC = () => {
   const errorHandler = useErrorHandler();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
-  const { fromInvite, message } = location.state as LocationState;
+  const { fromInvite, message } = (location.state ?? {}) as LocationState;
 
   useEffect(() => {
     if (message) {

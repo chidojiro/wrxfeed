@@ -16,6 +16,7 @@ export interface Route {
 const Home = lazy(() => import('@main/pages/Landing'));
 const Login = lazy(() => import('@auth/pages/LoginPage'));
 const AcceptInvitation = lazy(() => import('@auth/pages/AcceptInvitation'));
+
 const Onboard = lazy(() => import('@auth/pages/OnboardPage'));
 const Overview = lazy(() => import('@main/pages/Overview'));
 const Discussions = lazy(() => import('@main/pages/Discussion'));
