@@ -5,8 +5,8 @@ import { useComment, useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
-import { classNames, commentEditorRawParser } from '@main/utils';
-import { formatCurrency, formatDate } from '@common/utils';
+import { commentEditorRawParser } from '@main/utils';
+import { classNames, formatCurrency, formatDate } from '@common/utils';
 // Tailwind components
 import { Menu } from '@headlessui/react';
 import DepartmentColorSection from '@main/atoms/DepartmentColorSection';

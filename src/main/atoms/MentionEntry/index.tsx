@@ -1,7 +1,7 @@
 import { MentionData, MentionPluginTheme } from '@draft-js-plugins/mention';
 import React, { MouseEventHandler } from 'react';
 import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 
 export interface EntryComponentProps {
   className?: string;
