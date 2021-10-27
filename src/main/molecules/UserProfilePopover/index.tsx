@@ -35,7 +35,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const setIdentity = useSetIdentity();
   const apiClient = useApi();
   const logout = React.useCallback(async () => {
-    apiClient.logout();
+    await apiClient.logout();
     setIdentity(undefined);
   }, [setIdentity, apiClient]);
 
