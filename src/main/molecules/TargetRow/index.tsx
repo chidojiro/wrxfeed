@@ -184,9 +184,8 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
-  let { total: currentTarget = '0' } = target;
+  const currentTarget = target?.total ?? '0';
   const { amount: maxTarget } = target;
-  if (currentTarget === null) currentTarget = '0';
 
   let percent = (parseFloat(currentTarget) / parseFloat(maxTarget)) * 100;
   const currentCurrency = nFormatter(parseFloat(currentTarget));
