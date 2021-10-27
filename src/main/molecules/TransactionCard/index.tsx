@@ -23,6 +23,8 @@ import ConfirmModal from '@main/atoms/ConfirmModal';
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
+import { usePermission } from '@identity/hooks';
+import { ProtectedFeatures } from '@identity/constants';
 
 const INITIAL_COMMENT_NUMBER = 2;
 const LOAD_MORE_LIMIT = 5;
@@ -61,10 +63,12 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   // Data hooks
   const { comments, total, isLoading, addComment } = useComment(transaction, filter);
   const { mentions } = useMention();
+  const { checkPermission } = usePermission();
   // Variables
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
   const isHidden = transaction.category.visibility === Visibility.HIDDEN;
+  const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
     const contentState = values?.content as EditorState;
@@ -130,6 +134,38 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     setAttachFileComment(file);
   };
 
+  const renderMenuItems = () => {
+    const items = [];
+    if (hideCategoryPermission) {
+      items.push(
+        isHidden ? (
+          <PopoverMenuItem
+            key="show-category"
+            value="show-category"
+            label="Show Category"
+            onClick={openShowCategoryConfirmation}
+          />
+        ) : (
+          <PopoverMenuItem
+            key="hide-category"
+            value="hide-category"
+            label="Hide Category"
+            onClick={openHideCategoryConfirmation}
+          />
+        ),
+      );
+    }
+    items.push(
+      <PopoverMenuItem
+        key="share-feedback"
+        value="share-feedback"
+        label="Share Feedback"
+        onClick={handleShareFeedback}
+      />,
+    );
+    return items;
+  };
+
   return (
     <>
       <li ref={containerRef} key={transaction.id} className="bg-white filter shadow-md">
@@ -178,26 +214,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                       <MoreVerticalIcon aria-hidden="true" viewBox="0 0 15 15" />
                     </Menu.Button>
                   </div>
-                  <PopoverMenu>
-                    {isHidden ? (
-                      <PopoverMenuItem
-                        value="show-category"
-                        label="Show Category"
-                        onClick={openShowCategoryConfirmation}
-                      />
-                    ) : (
-                      <PopoverMenuItem
-                        value="hide-category"
-                        label="Hide Category"
-                        onClick={openHideCategoryConfirmation}
-                      />
-                    )}
-                    <PopoverMenuItem
-                      value="share-feedback"
-                      label="Share Feedback"
-                      onClick={handleShareFeedback}
-                    />
-                  </PopoverMenu>
+                  <PopoverMenu>{renderMenuItems()}</PopoverMenu>
                 </Menu>
               </div>
             </div>

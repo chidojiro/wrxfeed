@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { UserRole } from '@identity/constants';
 import { ComponentType, lazy, LazyExoticComponent } from 'react';
 
 export interface RouteItem<T extends ComponentType> {
@@ -40,32 +41,32 @@ const routes: Route = {
   Onboard: {
     path: '/onboarding',
     component: Onboard,
-    permissions: ['admin'],
+    permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Overview: {
     path: '/overview',
     component: Overview,
-    permissions: ['admin'],
+    permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Discussions: {
     path: '/discussions',
     component: Discussions,
-    permissions: ['admin'],
+    permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Departments: {
     path: '/departments',
     component: Departments,
-    permissions: ['admin'],
+    permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Categories: {
     path: '/categories',
     component: Categories,
-    permissions: ['admin'],
+    permissions: [UserRole.ADMIN],
   },
   Vendors: {
     path: '/vendors',
     component: Vendors,
-    permissions: ['admin'],
+    permissions: [UserRole.ADMIN, UserRole.USER],
   },
 };
 
