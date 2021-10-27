@@ -11,7 +11,7 @@ import { EmojiData } from 'emoji-mart';
 import { EditorState, Modifier } from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
 import { UPLOAD_FILE_ACCEPT } from '@src/config';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 
 export interface CommentFormProps {
   id?: string;

@@ -3,23 +3,10 @@ import { Target } from '@main/entity';
 import { BasicsEditCircle, BasicsXSmall } from '@assets';
 import { PostTargetParams, PutTargetParams } from '@api/types';
 import Loading from '@common/atoms/Loading';
-import { classNames, getDepartmentBgColor, nFormatter } from '@main/utils';
-// import { formatCurrency } from '@common/utils';
-
-const parseMoneyInput = (value: string, currency = '$') => {
-  return `${currency}${value
-    .replace(/(?!\.)\D/g, '')
-    .replace(/(?<=\..*)\./g, '')
-    .replace(/(?<=\.\d\d).*/g, '')
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
-};
-
-const replaceAll = (str: string, find: string, replace: string): string => {
-  return str.replace(new RegExp(find, 'g'), replace);
-};
+import { getDepartmentBgColor, nFormatter } from '@main/utils';
+import { classNames, parseMoneyInput, replaceAll } from '@common/utils';
 
 const SystemAlertColor = '#ff5f68';
-
 export interface TargetRowProps {
   target: Target;
   index: number;
@@ -128,7 +115,6 @@ const TargetRow: React.VFC<TargetRowProps> = ({
           >
             <div className="text-xs text-Gray-6">$</div>
             <input
-              // type="number"
               onKeyDown={handleKeyDown}
               placeholder="10,000.00"
               className="flex flex-1 mx-2 text-sm outline-none border-none"
@@ -138,9 +124,6 @@ const TargetRow: React.VFC<TargetRowProps> = ({
               onPointerOut={onPointerOutInput}
               onChange={onChangeInput}
               value={amount}
-              // min="0.00"
-              // step="0.01"
-              // max="1000000000"
             />
             <button type="button" onClick={handleClickClearButton}>
               <BasicsXSmall className="flex w-5 h-5" />
@@ -201,17 +184,17 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
-  const { current: currentTarget = 0, amount: total } = target;
+  const currentTarget = target?.total ?? '0';
+  const { amount: maxTarget } = target;
 
-  // Math.round(number * 10) / 10;
-  let percent = (currentTarget / total) * 100;
-  const currentCurrency = nFormatter(currentTarget);
-  const totalAmountCurrency = nFormatter(total);
-  const isExceeds = currentTarget > total;
+  let percent = (parseFloat(currentTarget) / parseFloat(maxTarget)) * 100;
+  const currentCurrency = nFormatter(parseFloat(currentTarget));
+  const totalAmountCurrency = nFormatter(parseFloat(maxTarget));
+  const isExceeds = parseFloat(currentTarget) > parseFloat(maxTarget);
 
   const renderCurrentPerTotalBar = () => {
     if (isExceeds) {
-      percent = (total / currentTarget) * 100;
+      percent = (parseFloat(maxTarget) / parseFloat(currentTarget)) * 100;
     }
     const percentLength = `${percent}%`;
     const styleTotal = isExceeds ? '' : 'opacity-30';
@@ -266,14 +249,14 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   const renderAlertText = () => {
     if (!isExceeds) return null;
-    const exceedNumber = currentTarget - total;
+    const exceedNumber = parseFloat(maxTarget) - parseFloat(currentTarget);
     const exceedNumberCurrency = nFormatter(exceedNumber);
     return (
       <div
         className="flex text-system-alert font-bold font-regular group-hover:hidden ml-auto"
         style={{ fontSize: '10px' }}
       >
-        {`Exceeds target by $${exceedNumberCurrency}`}
+        {`Exceeds target by ${exceedNumberCurrency}`}
       </div>
     );
   };

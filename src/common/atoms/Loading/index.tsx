@@ -1,4 +1,4 @@
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 import React from 'react';
 
 interface LoadingProps {

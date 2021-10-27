@@ -4,7 +4,8 @@ import CommentBox from '@main/molecules/CommentBox';
 import { useFeedBack } from '@main/hooks';
 import { toast } from 'react-toastify';
 import { EditorState } from 'draft-js';
-import { classNames, commentEditorRawParser } from '@main/utils';
+import { commentEditorRawParser } from '@main/utils';
+import { classNames } from '@common/utils';
 import LinearProgress from '@common/atoms/LinearProgress';
 
 interface FeelBackModalProps {

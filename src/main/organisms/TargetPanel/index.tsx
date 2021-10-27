@@ -5,7 +5,7 @@ import { Department, Target } from '@main/entity';
 import { useTarget } from '@main/hooks';
 import { useDepartment } from '@main/hooks/department.hook';
 import { TargetRow } from '@main/molecules';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 import React from 'react';
 
 export interface TargetPanelProps {
@@ -63,9 +63,10 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
         id: index,
         month: 0,
         year: 0,
-        amount: 0,
-        current: 0,
+        amount: '0',
         department: item,
+        total: '0',
+        depId: 0,
       };
     });
     // console.log({ allDepartments });

@@ -12,6 +12,7 @@ import {
   Target,
 } from '@main/entity';
 import {
+  AuthProfile,
   ChangePwdFormModel,
   ForgotPwdFormModel,
   LoginFormModel,
@@ -27,6 +28,7 @@ export interface ApiClient {
   logout: () => Promise<void>;
   signInWithGoogle: (accessToken: string) => Promise<UserToken>;
   getProfile: () => Promise<Profile>;
+  getAuthProfile: () => Promise<AuthProfile>;
   updateProfile: (data: ProfileFormModel) => Promise<Profile>;
   changePassword: (data: ChangePasswordDto) => Promise<void>;
   forgotPassword: (data: ForgotPwdFormModel) => Promise<void>;
