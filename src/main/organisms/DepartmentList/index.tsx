@@ -20,7 +20,7 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
 }) => {
   const renderEmptyList = () => (
     <div className="text-left">
-      <h3 className="mt-2 text-sm text-Gray-3">No departments</h3>
+      <h3 className="mt-2 text-sm text-Gray-3">No teams</h3>
     </div>
   );
 
