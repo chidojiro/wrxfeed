@@ -42,17 +42,15 @@ const App: React.FC = () => {
           <Router key={Math.random()}>
             <Suspense fallback={<LoadingFallback />}>
               <Switch>
-                {Object.values(routes).map((r) => (
-                  // Added property`key` to Router to fix warning
-                  // when hot reloading Route component
-                  <ProtectedRoute
-                    key={r.path}
-                    path={r.path}
-                    component={r.component}
-                    permissions={r.permissions}
-                    exact
-                  />
-                ))}
+                {Object.values(routes).map((route) =>
+                  route.permissions?.length ? (
+                    // Added property`key` to Router to fix warning
+                    // when hot reloading Route component
+                    <ProtectedRoute key={route.path} exact {...route} />
+                  ) : (
+                    <Route key={route.path} exact {...route} />
+                  ),
+                )}
                 {/* 404 homepage */}
                 <Route>
                   <NotFoundPage />

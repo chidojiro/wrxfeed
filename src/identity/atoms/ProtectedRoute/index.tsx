@@ -1,3 +1,4 @@
+import NoPermission from '@common/pages/NoPermission';
 import { useIdentity, usePermission } from '@identity/hooks';
 import routes from '@src/routes';
 import React from 'react';
@@ -22,11 +23,18 @@ const ProtectedRoute: React.VFC<ProtectedRouteProps> = ({
     pathname: loginUrl,
     state: { from: location },
   };
-  return identity?.token && isAccessable ? (
-    <Route path={path} component={component} exact />
-  ) : (
-    <Redirect to={dst} />
-  );
+
+  // Check token for authentication => if not => redirect to Login page
+  if (!identity?.token) {
+    return <Redirect to={dst} />;
+  }
+
+  // Check permission to access resource
+  if (!isAccessable) {
+    return <NoPermission />;
+  }
+
+  return <Route path={path} component={component} exact />;
 };
 
 export default ProtectedRoute;
