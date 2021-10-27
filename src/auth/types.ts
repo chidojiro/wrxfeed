@@ -11,6 +11,11 @@ export interface Profile {
   avatar?: string;
 }
 
+export interface AuthProfile {
+  googleLoginId: string;
+  roles: string[];
+}
+
 export interface LoginFormModel {
   email: string;
   password: string;

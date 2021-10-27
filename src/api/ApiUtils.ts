@@ -32,7 +32,13 @@ import {
   PostTargetParams,
   PutTargetParams,
 } from '@api/types';
-import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
+import {
+  AuthProfile,
+  ForgotPwdFormModel,
+  LoginFormModel,
+  Profile,
+  ProfileFormModel,
+} from '@auth/types';
 import { handleResponseFail } from '@api/utils';
 import { InviteFormModel, FeedBackFormModel } from '@main/types';
 
@@ -85,6 +91,14 @@ export default class ApiUtils implements ApiClient {
       url: '/auth/access-tokens/mine',
       method: 'DELETE',
     });
+  };
+
+  getAuthProfile = async (): Promise<AuthProfile> => {
+    const resp = await this.request<AuthProfile>({
+      url: '/auth/me',
+      method: 'GET',
+    });
+    return resp.data;
   };
 
   getProfile = async (): Promise<Profile> => {

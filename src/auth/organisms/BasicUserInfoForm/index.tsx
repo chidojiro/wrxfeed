@@ -6,7 +6,7 @@ import { ProfileFormModel } from '@auth/types';
 import LoadingButton from '@common/atoms/LoadingButton';
 import FormInput from '@auth/atoms/FormInput';
 import { ReactComponent as ArrowRightIcon } from '@assets/icons/outline/arrow-right.svg';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 
 const schema = yup.object({
   firstName: yup.string().required('This field is required'),

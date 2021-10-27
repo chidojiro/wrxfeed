@@ -2,7 +2,7 @@ import React from 'react';
 import { useRecoilState } from 'recoil';
 import TransactionCard from '@main/molecules/TransactionCard';
 import Modal from '@common/atoms/Modal';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 import { showTransactionModalState } from './states';
 
 export type TransactionModalProps = {

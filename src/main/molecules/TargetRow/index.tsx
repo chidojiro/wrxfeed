@@ -3,8 +3,8 @@ import { Target } from '@main/entity';
 import { BasicsEditCircle, BasicsXSmall } from '@assets';
 import { PostTargetParams, PutTargetParams } from '@api/types';
 import Loading from '@common/atoms/Loading';
-import { classNames, getDepartmentBgColor, nFormatter } from '@main/utils';
-import { parseMoneyInput, replaceAll } from '@common/utils';
+import { getDepartmentBgColor, nFormatter } from '@main/utils';
+import { classNames, parseMoneyInput, replaceAll } from '@common/utils';
 
 const SystemAlertColor = '#ff5f68';
 export interface TargetRowProps {
@@ -184,9 +184,8 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
-  let { total: currentTarget = '0' } = target;
+  const currentTarget = target?.total ?? '0';
   const { amount: maxTarget } = target;
-  if (currentTarget === null) currentTarget = '0';
 
   let percent = (parseFloat(currentTarget) / parseFloat(maxTarget)) * 100;
   const currentCurrency = nFormatter(parseFloat(currentTarget));

@@ -52,7 +52,6 @@ export function stringToColor(string: string): string {
     const value = (hash >> (i * 8)) & 0xff;
     color += `00${value.toString(16)}`.substr(-2);
   }
-  /* eslint-enable no-bitwise */
 
   return color;
 }
@@ -75,9 +74,12 @@ export function formatDate(value: string | number | Date | undefined): string {
   return format(date, DATE_FORMAT);
 }
 
-export const classNames = (classes: string[]): string => {
+/**
+ * Join multiple classNames
+ */
+export function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(' ');
-};
+}
 
 export const EmailRegex = /[\w\d\\.-]+@[\w\d\\.-]+\.[\w\d\\.-]+/;
 
