@@ -9,7 +9,7 @@
     "start": "webpack serve --config config/webpack.dev.js",
     "dev": "webpack serve --config config/webpack.dev.js",
     "build": "webpack --env production --config config/webpack.prod.js",
-    "preversion": "git-branch-is -r \"^(feature|fix|hotfix)/[a-z\\-\\d\\.]+$\" && echo Preversion checks passed. Your branch name is correct format.",
+    "preversion": "git-branch-is -r \"^(feature|fix|hotfix)/[\\w\\-\\d\\.]+$\" && echo Preversion checks passed. Your branch name is correct format.",
     "test": "jest --coverage --errorOnDeprecated",
     "testw": "jest --watch",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet  --fix",

@@ -5,7 +5,7 @@ import { Department, Target } from '@main/entity';
 import { useTarget } from '@main/hooks';
 import { useDepartment } from '@main/hooks/department.hook';
 import { TargetRow } from '@main/molecules';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 import React from 'react';
 
 export interface TargetPanelProps {

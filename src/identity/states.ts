@@ -1,4 +1,6 @@
-import { atom, AtomEffect } from 'recoil';
+import { getApiClient } from '@api/utils';
+import { AuthProfile } from '@auth/types';
+import { atom, AtomEffect, selector } from 'recoil';
 import { Identity } from './types';
 
 const localStorageEffect: AtomEffect<Identity | undefined> = ({ setSelf, onSet }) => {
@@ -21,4 +23,13 @@ export const identityState = atom<Identity | undefined>({
   key: 'common/identity', // unique ID (with respect to other atoms/selectors)
   default: undefined, // default value (aka initial value)
   effects_UNSTABLE: [localStorageEffect],
+});
+
+export const authProfileState = selector<AuthProfile>({
+  key: 'admin/authProfile',
+  get: async ({ get }) => {
+    get(identityState);
+    const apiClient = await getApiClient();
+    return apiClient.getAuthProfile();
+  },
 });
