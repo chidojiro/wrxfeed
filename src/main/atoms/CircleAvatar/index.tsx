@@ -1,6 +1,5 @@
 import React from 'react';
-import { stringToColor } from '@common/utils';
-import { classNames } from '@main/utils';
+import { stringToColor, classNames } from '@common/utils';
 
 const DEFAULT_SIZE = 32;
 

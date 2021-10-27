@@ -3,8 +3,8 @@ import { Target } from '@main/entity';
 import { BasicsEditCircle, BasicsXSmall } from '@assets';
 import { PostTargetParams, PutTargetParams } from '@api/types';
 import Loading from '@common/atoms/Loading';
-import { classNames, getDepartmentBgColor, nFormatter } from '@main/utils';
-// import { formatCurrency } from '@common/utils';
+import { getDepartmentBgColor, nFormatter } from '@main/utils';
+import { classNames } from '@common/utils';
 
 const parseMoneyInput = (value: string, currency = '$') => {
   return `${currency}${value
