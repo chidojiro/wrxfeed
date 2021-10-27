@@ -24,10 +24,8 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const [notifyNews, setNews] = React.useState<number>(0);
 
   React.useEffect(() => {
-    console.log('Check new notifications = ', notifications);
     const notifyUnseen = notifications.filter((item) => item.status === NotifyStatus.UNREAD);
     setNotifies(notifyUnseen);
-    console.log(`Check notifyUnseen = ${notifyUnseen}`);
     setNews(notifyUnseen.length);
   }, [notifications]);
 
