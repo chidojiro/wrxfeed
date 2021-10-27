@@ -61,7 +61,7 @@ const routes: Route = {
   Categories: {
     path: '/categories',
     component: Categories,
-    permissions: [UserRole.ADMIN],
+    permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Vendors: {
     path: '/vendors',
