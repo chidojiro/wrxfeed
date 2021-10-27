@@ -1,11 +1,9 @@
 import React from 'react';
 
 const TransactionListEnd: React.VFC = () => {
-  // AP-319: Directory footer - get rid of "You're all caught up" and "that's all for now"
-  // => just show nothing
   return (
     <>
-      {/* <div className="mt-8 mb-10 flex flex-row items-center">
+      <div className="mt-8 mb-10 flex flex-row items-center">
         <hr className="divider divider-horizontal flex-1" />
         <div className="flex flex-row flex-shrink justify-center items-center h-[30px] px-4 pb-0.5 m-auto rounded-2xl border border-Gray-8">
           <p className="text-sm text-Gray-3">You’re all caught up</p>
@@ -18,7 +16,7 @@ const TransactionListEnd: React.VFC = () => {
           {' '}
           🚀
         </span>
-      </p> */}
+      </p>
     </>
   );
 };

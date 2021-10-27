@@ -2,7 +2,6 @@ import React from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Vendor } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
-import TransactionListEnd from '@main/atoms/TransactionListEnd';
 
 interface VendorListProps {
   vendors: Vendor[];
@@ -12,13 +11,7 @@ interface VendorListProps {
   onSelect?: (dept: Vendor) => void;
 }
 
-const VendorList: React.VFC<VendorListProps> = ({
-  vendors,
-  isLoading,
-  onLoadMore,
-  hasMore,
-  onSelect,
-}) => {
+const VendorList: React.VFC<VendorListProps> = ({ vendors, isLoading, onLoadMore, onSelect }) => {
   return (
     <InfiniteScroller
       className="pb-14 mr-0.5 space-y-10 overflow-scroll"
@@ -42,7 +35,6 @@ const VendorList: React.VFC<VendorListProps> = ({
           ))}
         </ul>
       </div>
-      {!isLoading && !hasMore && <TransactionListEnd />}
     </InfiniteScroller>
   );
 };

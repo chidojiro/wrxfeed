@@ -2,7 +2,6 @@ import React from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Department } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
-import TransactionListEnd from '@main/atoms/TransactionListEnd';
 import { DepartmentSection } from '@main/hooks/department.hook';
 
 interface DepartmentListProps {
@@ -17,7 +16,6 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
   departments,
   isLoading,
   onLoadMore,
-  hasMore,
   onSelect,
 }) => {
   const renderEmptyList = () => (
@@ -60,7 +58,6 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
       LoadingComponent={<ListLoading />}
     >
       <div className="overflow-hidden space-y-6 pb-5">{departments.map(renderDeptSection)}</div>
-      {!isLoading && !hasMore && <TransactionListEnd />}
     </InfiniteScroller>
   );
 };
