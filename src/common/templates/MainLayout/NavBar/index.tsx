@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Popover } from '@headlessui/react';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 import { useIdentity } from '@identity/hooks';
 import { UserProfilePopover, NotifyPopover } from '@main/molecules';
 import { InviteModal } from '@main/organisms';

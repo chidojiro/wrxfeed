@@ -1,11 +1,14 @@
 import { ContentState, convertToRaw, RawDraftContentBlock, RawDraftEntity } from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
 
-const MentionRegex = /<mention userid=['"][a-zA-Z0-9]+['"] tagname=['"][a-zA-Z0-9\s]+['"]\/>/gi;
+const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
+const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
+const MentionRegex =
+  /<mention userid=['"][a-zA-Z0-9]+['"] tagname=['"][\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+['"]\/>/gi;
 
 export function tagReplacer(tag: string): string {
-  const idMatches = tag.match(/userid="([a-zA-Z0-9]+)"/gi);
-  const nameMatches = tag.match(/tagname="([a-zA-Z0-9\s]+)"/gi);
+  const idMatches = tag.match(UserIdRegex);
+  const nameMatches = tag.match(TagNameRegex);
   if (!idMatches?.length || !nameMatches?.length) return tag;
 
   return `<span id='${idMatches[0].split('"')[1]}' class='mention'>${
@@ -44,10 +47,6 @@ export function commentEditorRawParser(contentState: ContentState): string {
     [],
   );
   return rawTextBlocks.join('\n');
-}
-
-export function classNames(...classes: string[]): string {
-  return classes.filter(Boolean).join(' ');
 }
 
 /**
@@ -108,4 +107,17 @@ export const getNameAbbreviation = (name?: string): string => {
     .join('')
     .substring(0, 2)
     .toUpperCase();
+};
+
+export const nFormatter = (num: number, withCurrency = '$'): string => {
+  if (num >= 1000000000) {
+    return `${withCurrency}${(num / 1000000000).toFixed(1).replace(/\.0$/, '')}G`;
+  }
+  if (num >= 1000000) {
+    return `${withCurrency}${(num / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+  }
+  if (num >= 1000) {
+    return `${withCurrency}${(num / 1000).toFixed(1).replace(/\.0$/, '')}K`;
+  }
+  return `${withCurrency}${num}`;
 };

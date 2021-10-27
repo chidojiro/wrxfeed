@@ -2,7 +2,6 @@ import React from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Category } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
-import TransactionListEnd from '@main/atoms/TransactionListEnd';
 
 interface CategoryListProps {
   categories: Category[];
@@ -16,7 +15,6 @@ const CategoryList: React.VFC<CategoryListProps> = ({
   categories,
   isLoading,
   onLoadMore,
-  hasMore,
   onSelect,
 }) => {
   return (
@@ -42,7 +40,6 @@ const CategoryList: React.VFC<CategoryListProps> = ({
           ))}
         </ul>
       </div>
-      {!isLoading && !hasMore && <TransactionListEnd />}
     </InfiniteScroller>
   );
 };

@@ -1,19 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const NotFoundPage: React.VFC = () => {
+const NoPermission: React.VFC = () => {
   return (
     <div className="bg-white min-h-screen px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8">
       <div className="max-w-max mx-auto">
         <main className="sm:flex">
-          <p className="text-4xl font-extrabold text-primary sm:text-5xl">404</p>
+          <p className="text-4xl font-extrabold text-primary sm:text-5xl">401</p>
           <div className="sm:ml-6">
             <div className="sm:border-l sm:border-gray-200 sm:pl-6">
               <h1 className="text-4xl font-extrabold text-Gray-2 tracking-tight sm:text-5xl">
-                Page not found
+                No Permission
               </h1>
               <p className="mt-1 text-base text-Gray-6">
-                Please check the URL in the address bar and try again.
+                You do not have permission to access this resource.
               </p>
             </div>
             <div className="mt-10 flex space-x-3 sm:border-l sm:border-transparent sm:pl-6">
@@ -31,4 +31,4 @@ const NotFoundPage: React.VFC = () => {
   );
 };
 
-export default NotFoundPage;
+export default NoPermission;

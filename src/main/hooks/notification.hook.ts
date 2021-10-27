@@ -22,8 +22,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
 
   const patchNotification = async (id: number) => {
     try {
-      const res = await ApiClient.patchNotification(id);
-      console.log({ res });
+      await ApiClient.patchNotification(id);
       const newNotifies = notifications.filter((item) => item.id !== id);
       setNotifications(newNotifies);
     } catch (error) {

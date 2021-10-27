@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import { Menu } from '@headlessui/react';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 
 interface PopoverMenuItemProps {
   value: string;

@@ -31,6 +31,8 @@ module.exports = {
         'Gray-hover': '#F9F9F9',
 
         'Green-1': '#4A944E',
+        'Green-2': '#13b9b9',
+        'Green-3': 'rgba(19, 185, 185, 0.3)',
         'Green-12': '#D7F3D8',
 
         'Accent-1': '#3363FF',

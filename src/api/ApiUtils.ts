@@ -32,7 +32,13 @@ import {
   PostTargetParams,
   PutTargetParams,
 } from '@api/types';
-import { ForgotPwdFormModel, LoginFormModel, Profile, ProfileFormModel } from '@auth/types';
+import {
+  AuthProfile,
+  ForgotPwdFormModel,
+  LoginFormModel,
+  Profile,
+  ProfileFormModel,
+} from '@auth/types';
 import { handleResponseFail } from '@api/utils';
 import { InviteFormModel, FeedBackFormModel } from '@main/types';
 
@@ -85,6 +91,14 @@ export default class ApiUtils implements ApiClient {
       url: '/auth/access-tokens/mine',
       method: 'DELETE',
     });
+  };
+
+  getAuthProfile = async (): Promise<AuthProfile> => {
+    const resp = await this.request<AuthProfile>({
+      url: '/auth/me',
+      method: 'GET',
+    });
+    return resp.data;
   };
 
   getProfile = async (): Promise<Profile> => {
@@ -182,7 +196,6 @@ export default class ApiUtils implements ApiClient {
         order: OrderDirection.ASC,
       },
     });
-    console.log(`Check getMentions data = ${JSON.stringify(res.data)}`);
     return res.data;
   };
 
@@ -330,26 +343,22 @@ export default class ApiUtils implements ApiClient {
   };
 
   postTarget = async (data: PostTargetParams): Promise<void> => {
-    console.log(`Check postTarget data = ${JSON.stringify(data)}`);
-    const res = await this.request<Target[]>({
+    await this.request<void>({
       url: '/target/targets',
       method: 'POST',
       data: {
         ...data,
       },
     });
-    console.log(`Check postTarget res.data = ${JSON.stringify(res.data)}`);
   };
 
   putTarget = async (id: number, data: PutTargetParams): Promise<void> => {
-    console.log(`Check putTarget data = ${JSON.stringify(data)}`);
-    const res = await this.request<Target[]>({
+    await this.request<void>({
       url: `/target/targets/${id}`,
       method: 'PUT',
       data: {
         ...data,
       },
     });
-    console.log(`Check putTarget res.data = ${JSON.stringify(res.data)}`);
   };
 }

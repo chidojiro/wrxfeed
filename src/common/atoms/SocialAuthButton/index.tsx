@@ -13,7 +13,7 @@ export interface SocialAuthButtonProps
 function getAuthProviderIcon(provider: AuthProvider) {
   switch (provider) {
     case AuthProvider.GOOGLE: {
-      return <GoogleLogo width={23} height={23} className="mr-2" />;
+      return <GoogleLogo width={23} height={23} />;
     }
     default: {
       return <></>;
@@ -31,11 +31,11 @@ const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
   return (
     <button
       type="button"
-      className="flex justify-center items-center text-2xl w-[459px] h-[72px] text-Gray-1 border border-Gray-1 rounded-sm disabled:opacity-50"
+      className="flex justify-center items-center space-x-3 px-6 sm:w-[23rem] h-16 bg-Gray-3 text-xl text-white rounded-sm disabled:opacity-50"
       {...rest}
     >
       {socialIcon}
-      {children}
+      <div>{children}</div>
     </button>
   );
 };

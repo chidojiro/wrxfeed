@@ -5,7 +5,7 @@ import { Department, Target } from '@main/entity';
 import { useTarget } from '@main/hooks';
 import { useDepartment } from '@main/hooks/department.hook';
 import { TargetRow } from '@main/molecules';
-import { classNames } from '@main/utils';
+import { classNames } from '@common/utils';
 import React from 'react';
 
 export interface TargetPanelProps {
@@ -15,21 +15,41 @@ export interface TargetPanelProps {
 const GET_TARGETS_LIMIT = 10;
 const GET_DEPARTMENT_LIMIT = 10;
 
+const initFilter = {
+  offset: 0,
+  limit: GET_TARGETS_LIMIT,
+  year: new Date().getFullYear(),
+  month: new Date().getMonth() + 1,
+  timestamp: Date.now(),
+};
+
 const TargetPanel: React.VFC<TargetPanelProps> = () => {
-  const [filter] = React.useState<TargetFilter>({
-    offset: 0,
-    limit: GET_TARGETS_LIMIT,
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
-  });
+  const [filter, setFilter] = React.useState<TargetFilter>(initFilter);
   const [pageDepartment] = React.useState<Pagination>({
     offset: 0,
     limit: GET_DEPARTMENT_LIMIT,
   });
 
   const [isExpanded, setExpanded] = React.useState<boolean>(false);
-  const { targets, isGetTargets, postTarget, putTarget, isPostTarget, isPutTarget } =
-    useTarget(filter);
+  const onPostSuccess = () => {
+    setFilter({
+      ...initFilter,
+      timestamp: Date.now(),
+    });
+  };
+  const onPostError = () => {};
+  const onPutSuccess = () => {
+    setFilter({
+      ...initFilter,
+      timestamp: Date.now(),
+    });
+  };
+  const onPutError = () => {};
+  const { targets, isGetTargets, postTarget, putTarget, isPostTarget, isPutTarget } = useTarget(
+    filter,
+    { onSuccess: onPostSuccess, onError: onPostError },
+    { onSuccess: onPutSuccess, onError: onPutError },
+  );
   const { departments, isLoading: isLoadingInactive } = useDepartment(pageDepartment);
   const [inactiveTargets, setInactiveTargets] = React.useState<Target[]>([]);
 
@@ -38,17 +58,27 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   // }, [targets]);
 
   React.useEffect(() => {
-    const newInactive: Target[] = departments.map((item: Department) => {
+    const allDepartments: Target[] = departments.map((item: Department, index: number) => {
       return {
+        id: index,
         month: 0,
         year: 0,
-        amount: 0,
-        current: 0,
+        amount: '0',
         department: item,
+        total: '0',
+        depId: 0,
       };
     });
-    setInactiveTargets(newInactive);
-  }, [departments]);
+    // console.log({ allDepartments });
+    const removeActiveTargets = allDepartments.filter(
+      (item: Target) =>
+        !(
+          targets.filter((target: Target) => target.department.id === item.department.id).length > 0
+        ),
+    );
+    // console.log({ removeActiveTargets });
+    setInactiveTargets(removeActiveTargets);
+  }, [departments, targets]);
 
   const handleClickExpand = () => {
     if (isLoadingInactive) return;
