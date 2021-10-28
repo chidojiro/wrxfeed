@@ -28,6 +28,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   const [isEdit, setEdit] = React.useState<boolean>(false);
   const [amount, setAmount] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(true);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (!isPutTarget || !isPostTarget) {
@@ -84,16 +85,18 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   };
 
   const onBlurInput = () => {
-    // setEdit(false);
+    setEdit(false);
+    setAmount('0');
   };
 
-  // const onMouseLeaveInput = () => {
-  //   setEdit(false);
-  //   console.log('Check onMouseLeaveInput');
-  // };
+  const onMouseLeaveInput = () => {
+    setEdit(false);
+    setAmount('0');
+  };
 
   const onPointerOutInput = () => {
-    // setEdit(false);
+    setEdit(false);
+    setAmount('0');
     // console.log('Check onPointerOutInput');
   };
 
@@ -112,15 +115,17 @@ const TargetRow: React.VFC<TargetRowProps> = ({
           <div className="flex flex-1 w-[120px] max-w-lg flex-row items-center mt-1 py-2 border-b border-Gray-11">
             <div className="text-xs text-Gray-6">$</div>
             <input
+              ref={inputRef}
               onKeyDown={handleKeyDown}
               placeholder="10,000.00"
               className="flex flex-1 mx-2 text-sm outline-none border-none w-[76px]"
               style={{ color: 'rgba 125 132 144, 0.5' }}
               onBlur={onBlurInput}
-              // onMouseLeave={onMouseLeaveInput}
+              onMouseLeave={onMouseLeaveInput}
               onPointerOut={onPointerOutInput}
               onChange={onChangeInput}
               value={amount}
+              // autoFocus
             />
             <button type="button" onClick={handleClickClearButton}>
               <BasicsXSmall className="flex w-5 h-5" />
@@ -132,7 +137,14 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   }
 
   const renderEditButton = () => {
-    const onClickEdit = () => setEdit(!isEdit);
+    const onClickEdit = () => {
+      setTimeout(() => {
+        if (!isEdit) {
+          inputRef.current?.focus();
+        }
+      }, 500);
+      setEdit(!isEdit);
+    };
     return (
       <button
         type="button"
