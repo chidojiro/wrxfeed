@@ -1,6 +1,7 @@
 import { ContentState, convertToRaw, RawDraftContentBlock, RawDraftEntity } from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
+import { Match } from 'linkify-it';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -21,17 +22,20 @@ export function linkReplacer(link: string): string {
   return `<a class='hyperlink' href=${link} target='_blank' rel='noopener noreferrer'>${link}</a>`;
 }
 
+export function extractHyperlinks(text: string): Match[] | null {
+  const linkSchemas = ['http:', 'https:'];
+  const linkMatches = extractLinks(text);
+  return linkMatches?.filter((match) => linkSchemas.includes(match.schema)) || null;
+}
+
 export function tokenizeComment(text: string): string {
   if (!text) return text;
   // Replace mentions
   let tokenizedText = text.replace(MentionRegex, tagReplacer);
   // Linkify
-  const linkSchemas = ['http:', 'https:'];
-  const linkMatches = extractLinks(tokenizedText);
+  const linkMatches = extractHyperlinks(tokenizedText);
   linkMatches?.forEach((linkMatch) => {
-    if (linkSchemas.includes(linkMatch.schema)) {
-      tokenizedText = tokenizedText.replace(linkMatch.raw, linkReplacer);
-    }
+    tokenizedText = tokenizedText.replace(linkMatch.raw, linkReplacer);
   });
   return tokenizedText;
 }

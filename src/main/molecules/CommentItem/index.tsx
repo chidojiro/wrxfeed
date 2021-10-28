@@ -4,6 +4,8 @@ import CommentOwner from '@main/atoms/CommentOwner';
 import CommentText from '@main/atoms/CommentText';
 import CommentImage from '@main/atoms/CommentImage';
 import { DocumentDownloadIcon } from '@heroicons/react/outline';
+import Microlink from '@microlink/react';
+import { extractHyperlinks } from '@main/utils';
 
 const IMAGE_EXT = 'jpg,png,jpeg,gif';
 
@@ -21,6 +23,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({ className, comment, ...rest 
     .split('-')
     .slice(3, attachmentName.split('-').length)
     .join('-');
+  const hyperlinks = extractHyperlinks(comment.content);
 
   const renderAttachment = () =>
     IMAGE_EXT.includes(attachmentType.toLowerCase()) ? (
@@ -33,11 +36,14 @@ const CommentItem: React.VFC<CommentItemProps> = ({ className, comment, ...rest 
         </a>
       </div>
     );
+  const renderLinkPreview = () =>
+    hyperlinks && <Microlink style={{ margin: '8px 0 6px' }} url={hyperlinks[0].url} />;
   return (
     <div className={`bg-LightBG py-2 px-3.5 space-y-1 ${className}`} {...rest}>
       <CommentOwner owner={comment.user} commentDate={comment.createdAt} />
       <CommentText content={comment.content} />
       {!!comment.attachment && renderAttachment()}
+      {!!hyperlinks?.length && renderLinkPreview()}
     </div>
   );
 };

@@ -102,6 +102,7 @@ input[type='number'] {
   min-width: 422px;
   border-radius: 2px;
   border: 1px solid #d1d5db;
+  z-index: 10;
 }
 
 .mention-suggestion-entry {
