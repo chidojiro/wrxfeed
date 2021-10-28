@@ -1283,6 +1283,15 @@
     immutable "~3.7.4"
     prop-types "^15.5.8"
 
+"@draft-js-plugins/linkify@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/linkify/-/linkify-4.1.1.tgz#dcf2a4dcfa2b58ae717932bfb6c95e94f3b606ba"
+  integrity sha512-AT2RCGzploVooUPbtz5vB2ZpzJdd5jwaHvY/vibtAHy/XR6uU3S0eHcwJ5u/pYWmdvkOuGIjx878Qhzl8dbpxw==
+  dependencies:
+    clsx "^1.0.4"
+    linkify-it "^3.0.2"
+    tlds "^1.221.1"
+
 "@draft-js-plugins/mention@^4.6.1":
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/@draft-js-plugins/mention/-/mention-4.6.1.tgz#8492dda869b7776700d09e5a3d3ac43140bec59b"
@@ -9730,6 +9739,13 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.npmjs.org/lines-and-columns/-/lines-and-columns-1.1.6.tgz"
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
+linkify-it@^3.0.2:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-3.0.3.tgz#a98baf44ce45a550efb4d49c769d07524cc2fa2e"
+  integrity sha512-ynTsyrFSdE5oZ/O9GEf00kPngmOfVwazR5GKDq6EYfhlpFug3J2zybX56a2PRRpc9P+FuSoGNAwjlbDs9jJBPQ==
+  dependencies:
+    uc.micro "^1.0.1"
+
 lint-staged@^10.2.11:
   version "10.5.4"
   resolved "https://registry.npmjs.org/lint-staged/-/lint-staged-10.5.4.tgz"
@@ -13925,6 +13941,11 @@ tinycolor2@^1.4.1:
   resolved "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.4.2.tgz"
   integrity sha512-vJhccZPs965sV/L2sU4oRQVAos0pQXwsvTLkWYdqJ+a8Q5kPFzJTuOFwy7UniPli44NKQGAglksjvOcpo95aZA==
 
+tlds@^1.221.1:
+  version "1.224.0"
+  resolved "https://registry.yarnpkg.com/tlds/-/tlds-1.224.0.tgz#dc9a5b0bda0708af0302114f6e24458770c5af01"
+  integrity sha512-Jgdc8SEijbDFUsmCn6Wk/f7E6jBLFZOG3U1xK0amGSfEH55Xx97ItUS/d2NngsuApjn11UeWCWj8Um3VRhseZQ==
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.npmjs.org/tmp/-/tmp-0.0.33.tgz"
@@ -14171,6 +14192,11 @@ ua-parser-js@^0.7.18:
   version "0.7.28"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
   integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
+
+uc.micro@^1.0.1:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/uc.micro/-/uc.micro-1.0.6.tgz#9c411a802a409a91fc6cf74081baba34b24499ac"
+  integrity sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==
 
 unbox-primitive@^1.0.1:
   version "1.0.1"
