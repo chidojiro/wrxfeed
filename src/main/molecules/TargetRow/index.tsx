@@ -109,16 +109,13 @@ const TargetRow: React.VFC<TargetRowProps> = ({
           <div className="flex w-32 ml-auto text-right text-xs text-Gray-3 font-semibold">
             Edit target amount
           </div>
-          <div
-            className="flex flex-1 w-24 max-w-lg flex-row items-center mt-1 py-2 border-b border-Gray-11"
-            style={{ width: '120px' }}
-          >
+          <div className="flex flex-1 w-[120px] max-w-lg flex-row items-center mt-1 py-2 border-b border-Gray-11">
             <div className="text-xs text-Gray-6">$</div>
             <input
               onKeyDown={handleKeyDown}
               placeholder="10,000.00"
-              className="flex flex-1 mx-2 text-sm outline-none border-none"
-              style={{ color: 'rgba 125 132 144, 0.5', width: '76px' }}
+              className="flex flex-1 mx-2 text-sm outline-none border-none w-[76px]"
+              style={{ color: 'rgba 125 132 144, 0.5' }}
               onBlur={onBlurInput}
               // onMouseLeave={onMouseLeaveInput}
               onPointerOut={onPointerOutInput}
