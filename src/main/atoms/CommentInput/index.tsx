@@ -16,7 +16,7 @@ const linkifyPlugin = createLinkifyPlugin({
   target: '_blank',
   rel: 'noopener noreferrer',
   component(props) {
-    // eslint-disable-next-line no-alert, jsx-a11y/anchor-has-content
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
     return <a {...props} aria-hidden="true" onClick={() => window.open(props.href, '_blank')} />;
   },
 });

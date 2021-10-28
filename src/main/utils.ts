@@ -1,5 +1,6 @@
 import { ContentState, convertToRaw, RawDraftContentBlock, RawDraftEntity } from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
+import { extractLinks } from '@draft-js-plugins/linkify';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -16,9 +17,23 @@ export function tagReplacer(tag: string): string {
   }</span>`;
 }
 
+export function linkReplacer(link: string): string {
+  return `<a class='hyperlink' href=${link} target='_blank' rel='noopener noreferrer'>${link}</a>`;
+}
+
 export function tokenizeComment(text: string): string {
   if (!text) return text;
-  return text.replace(MentionRegex, tagReplacer);
+  // Replace mentions
+  let tokenizedText = text.replace(MentionRegex, tagReplacer);
+  // Linkify
+  const linkSchemas = ['http:', 'https:'];
+  const linkMatches = extractLinks(tokenizedText);
+  linkMatches?.forEach((linkMatch) => {
+    if (linkSchemas.includes(linkMatch.schema)) {
+      tokenizedText = tokenizedText.replace(linkMatch.raw, linkReplacer);
+    }
+  });
+  return tokenizedText;
 }
 
 export function mentionTagCreator(id: number, name: string): string {
