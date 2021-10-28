@@ -7,18 +7,16 @@ export interface CommentTextProps {
   content: string;
   showTagSymbol?: boolean;
   className?: string;
-  useWhitespacePreWrap?: boolean;
+  style?: React.CSSProperties;
 }
 
-const CommentText: React.VFC<CommentTextProps> = ({
-  content,
-  className = '',
-  useWhitespacePreWrap = true,
-}) => {
+const CommentText: React.VFC<CommentTextProps> = ({ content, className = '', style }) => {
   const tokenizedContent = tokenizeComment(content);
-  const wrapStyle = useWhitespacePreWrap ? 'whitespace-pre-wrap' : '';
   return (
-    <TokenizedText className={classNames('break-words', wrapStyle, className)}>
+    <TokenizedText
+      className={classNames('whitespace-pre-wrap break-words', className)}
+      style={style}
+    >
       {tokenizedContent}
     </TokenizedText>
   );
