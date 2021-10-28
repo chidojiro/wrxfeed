@@ -86,7 +86,7 @@ const CommentInput: React.VFC<CommentInputProps> = ({
   return (
     <div
       ref={containerRef}
-      className="editor"
+      className="editor hide-scrollbar"
       onClick={() => editorRef.current?.focus()}
       aria-hidden="true"
     >

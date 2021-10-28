@@ -149,6 +149,16 @@ svg.path-no-stroke > path {
   clip: rect(0, auto, 140px, 0);
 }
 
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Linear progress bar */
 .linear-progress {
   position: relative;
   overflow: hidden;
