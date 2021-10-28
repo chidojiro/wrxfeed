@@ -59,7 +59,7 @@ export function stringToColor(string: string): string {
 const isoDateFormat =
   /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)((-(\d{2}):(\d{2})|Z)?)$/;
 
-const DATE_FORMAT = 'M/dd/yyyy';
+const DATE_FORMAT = 'M/dd/yy';
 export function formatDate(value: string | number | Date | undefined): string {
   if (!value) return 'Invalid Date';
   const isISODate = value === 'string' && isoDateFormat.test(value);
