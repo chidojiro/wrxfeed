@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'emoji-mart/css/emoji-mart.css';
 import 'draft-js/dist/Draft.css';
 import '@draft-js-plugins/mention/lib/plugin.css';
+import '@draft-js-plugins/linkify/lib/plugin.css';
 import '@src/styles.css';
 
 import LoadingFallback from '@common/atoms/LoadingFallback';
