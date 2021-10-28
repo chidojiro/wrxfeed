@@ -39,7 +39,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   showAttach = true,
   showSend = true,
   showEmoji = true,
-  placeholder = '💬 Comment here…',
+  placeholder = '💬 Add a comment',
   style = {},
   alwaysFocus = false,
   onAttachFile,
