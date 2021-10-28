@@ -7,9 +7,19 @@ import createMentionPlugin, {
   MentionData,
   defaultTheme,
 } from '@draft-js-plugins/mention';
+import createLinkifyPlugin from '@draft-js-plugins/linkify';
 import MentionEntry from '@main/atoms/MentionEntry';
 
 const { isSoftNewlineEvent } = KeyBindingUtil;
+
+const linkifyPlugin = createLinkifyPlugin({
+  target: '_blank',
+  rel: 'noopener noreferrer',
+  component(props) {
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
+    return <a {...props} aria-hidden="true" onClick={() => window.open(props.href, '_blank')} />;
+  },
+});
 
 interface CommentInputProps extends EditorProps {
   onEnterPress?: () => void;
@@ -49,7 +59,10 @@ const CommentInput: React.VFC<CommentInputProps> = ({
         mentionSuggestions: 'mention-suggestion-container',
       },
     });
-    return { plugins: [mentionPlugin], MentionSuggestions: mentionPlugin.MentionSuggestions };
+    return {
+      plugins: [mentionPlugin, linkifyPlugin],
+      MentionSuggestions: mentionPlugin.MentionSuggestions,
+    };
   }, []);
 
   const handleReturn = (event: KeyboardEvent): DraftHandleValue => {
@@ -86,7 +99,7 @@ const CommentInput: React.VFC<CommentInputProps> = ({
   return (
     <div
       ref={containerRef}
-      className="editor"
+      className="editor hide-scrollbar"
       onClick={() => editorRef.current?.focus()}
       aria-hidden="true"
     >

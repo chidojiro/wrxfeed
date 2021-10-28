@@ -247,7 +247,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   const renderAlertText = () => {
     if (!isExceeds) return null;
     const exceedNumber = parseFloat(maxTarget) - parseFloat(currentTarget);
-    const exceedNumberCurrency = nFormatter(exceedNumber);
+    const exceedNumberCurrency = nFormatter(Math.round(exceedNumber * 100) / 100);
     return (
       <div
         className="flex text-system-alert font-bold font-regular group-hover:hidden ml-auto"
