@@ -45,4 +45,5 @@ export type Notification = {
   type: string;
   status: string;
   data: NotificationData;
+  createdAt: string;
 };

@@ -24,10 +24,8 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const [notifyNews, setNews] = React.useState<number>(0);
 
   React.useEffect(() => {
-    // console.log('Check new notifications = ', notifications);
     const notifyUnseen = notifications.filter((item) => item.status === NotifyStatus.UNREAD);
     setNotifies(notifyUnseen);
-    // console.log(`Check newNotifyCount = ${newNotifyCount}`);
     setNews(notifyUnseen.length);
   }, [notifications]);
 
@@ -119,7 +117,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
           leaveTo="transform opacity-0 scale-95"
         >
           <div
-            style={{ minWidth: '430px', ...style }}
+            style={{ minWidth: '450px', maxWidth: '600px', ...style }}
             className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white-500 ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
           >
             <div className="flex flex-row h-16 w-full border-b-2 pl-8">
