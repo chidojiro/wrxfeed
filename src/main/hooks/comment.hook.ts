@@ -12,6 +12,7 @@ interface CommentHookValues {
   total: number;
   isLoading: boolean;
   addComment: (comment: AddCommentParams) => Promise<void>;
+  showLessComments: (keep: number) => void;
 }
 
 export function useComment(transaction: Transaction, pagination?: Pagination): CommentHookValues {
@@ -32,7 +33,11 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
       });
       // Comments're shown from bottom to top => need to reverse it;
       const reverse = res.reverse();
-      setComments((prevComments) => [...reverse, ...prevComments]);
+      if (pagination?.offset !== 0) {
+        setComments((prevComments) => [...reverse, ...prevComments]);
+      } else {
+        setComments([...reverse]);
+      }
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');
@@ -64,10 +69,14 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
     }
   };
 
+  const showLessComments = (keep: number): void => {
+    setComments((prevComments) => prevComments.slice(-keep));
+  };
+
   // invalidate list when component is unmounted
   useEffect(() => {
     getComments().then();
   }, [getComments]);
 
-  return { comments, total, isLoading, addComment };
+  return { comments, total, isLoading, addComment, showLessComments };
 }

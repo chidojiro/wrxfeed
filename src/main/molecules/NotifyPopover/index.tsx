@@ -118,7 +118,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
         >
           <div
             style={{ minWidth: '450px', maxWidth: '600px', ...style }}
-            className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg bg-white-500 ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
+            className="flex flex-col origin-top-right absolute z-10 right-0 mt-2 shadow-xl bg-white-500 ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
           >
             <div className="flex flex-row h-16 w-full border-b-2 pl-8">
               <p className="flex text-gray-1 font-medium self-center">Notifications</p>
