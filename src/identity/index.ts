@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 export { useIdentity, useSetIdentity } from './hooks';
 export { identityState } from './states';
 export { default as withAuth } from './hocs';

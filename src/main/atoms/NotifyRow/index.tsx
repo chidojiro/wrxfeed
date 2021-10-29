@@ -17,13 +17,19 @@ const NotifyRow: React.VFC<NotifyRowProps> = ({ item, onClickNotifyAndSeen }) =>
       onClick={onClickNotifyAndSeen}
       className="flex flex-col mt-2 min-h-16 px-4 py-2 hover:bg-Gray-hover"
     >
-      <div className="flex flex-1 w-full flex-row text-left">
-        <CommentText content={item.content} className="w-full" style={{ whiteSpace: 'normal' }} />
-        <div
-          className="flex text-Gray-6 font-semibold ml-auto w-40 text-right"
-          style={{ fontSize: '10px' }}
-        >
-          {formatDate(item?.createdAt)}
+      <div className="flex flex-1 w-full flex-row">
+        <CommentText
+          content={item.content}
+          className="w-full text-left"
+          style={{ whiteSpace: 'normal' }}
+        />
+        <div className="flex w-40">
+          <div
+            className="flex text-Gray-6 font-semibold ml-auto text-right"
+            style={{ fontSize: '10px' }}
+          >
+            {formatDate(item?.createdAt)}
+          </div>
         </div>
       </div>
     </button>

@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import MainLayout from '@common/templates/MainLayout';
+import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import CategoryList from '@main/organisms/CategoryList';
 import { Pagination, TransactionFilter } from '@api/types';
 import { useCategory } from '@main/hooks/category.hook';
 import TransactionList from '@main/organisms/TransactionList';
 import { useTransaction } from '@main/hooks';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import TargetPanel from '@main/organisms/TargetPanel';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -88,6 +89,9 @@ const CategoriesPage: React.VFC = () => {
           updateCategory={updateCategory}
         />
       )}
+      <MainRightSide>
+        <TargetPanel />
+      </MainRightSide>
     </MainLayout>
   );
 };

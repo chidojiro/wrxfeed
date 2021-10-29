@@ -94,7 +94,7 @@ input[type='number'] {
 .mention {
   @apply bg-purple-8 text-purple-5 rounded;
   padding: 1px 4px 2px;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .mention-suggestion-container {
