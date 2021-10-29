@@ -19,7 +19,7 @@ export enum NotifyStatus {
 
 const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
-  const { notifications, isLoading, patchNotification } = useNotification(filter);
+  const { notifications, isLoading, patchNotification, markAllAsRead } = useNotification(filter);
   const [notifies, setNotifies] = React.useState<Notification[]>([]);
   const [notifyNews, setNews] = React.useState<number>(0);
 
@@ -68,9 +68,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const renderMarkAllAsRead = () => {
     if (notifications.length === 0 || notifyNews === 0) return null;
     const onClickMarkAllAsRead = () => {
-      for (let i = 0; i < notifies.length; i += 1) {
-        patchNotification(notifies[i].id);
-      }
+      markAllAsRead();
     };
     return (
       <button
