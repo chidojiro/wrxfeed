@@ -55,6 +55,7 @@ export interface ApiClient {
   // Notification
   getNotifications: (page?: Pagination) => Promise<Notification[]>;
   patchNotification: (id: number) => Promise<void>;
+  patchAllNotification: () => Promise<void>;
   // targets
   getTargets: (filter?: TargetFilter) => Promise<Target[]>;
   postTarget: (data: PostTargetParams) => Promise<void>;

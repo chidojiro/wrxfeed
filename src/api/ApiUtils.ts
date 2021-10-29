@@ -330,6 +330,14 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
+  patchAllNotification = async (): Promise<void> => {
+    const res = await this.request<void>({
+      url: '/noti/notifications',
+      method: 'PATCH',
+    });
+    return res.data;
+  };
+
   getTargets = async (filter?: TargetFilter): Promise<Target[]> => {
     const res = await this.request<Target[]>({
       url: '/target/targets',

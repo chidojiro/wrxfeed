@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useApi } from '@api';
 import { TargetFilter, PostTargetParams, PutTargetParams } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
@@ -32,6 +33,14 @@ export function useTarget(
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
+  // Monthly targets - stack targets by the largest monthly spend
+  const stackTargetsByTheLargestMonthlySpend = (data: Target[]): Target[] => {
+    const targetStacked = data.sort(
+      (a: Target, b: Target) => parseFloat(b?.total || '0') - parseFloat(a?.total || '0'),
+    );
+    return targetStacked;
+  };
+
   const getTargets = useCallback(async () => {
     try {
       setGetTargets(true);
@@ -42,12 +51,12 @@ export function useTarget(
         targetMap.set(target.id, target);
       });
       const newTargets = [...targetMap.values()];
-      setTargets(newTargets);
+      setTargets(stackTargetsByTheLargestMonthlySpend(newTargets));
       setHasMore(!!res.length);
       setGetTargets(false);
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error('Can not get targets');
+        toast.error('Can not get monthly targets!');
       } else {
         await errorHandler(error);
       }
@@ -89,7 +98,7 @@ export function useTarget(
       if (cbPut.onError) {
         cbPut.onError(error);
       } else if (isBadRequest(error)) {
-        toast.error('Can not update target!');
+        toast.error('Can not update this target!');
       } else {
         await errorHandler(error);
       }
