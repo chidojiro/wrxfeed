@@ -9,7 +9,12 @@ export interface CommentRemainingProps {
   loading?: boolean;
 }
 
-const CommentRemaining: React.VFC<CommentRemainingProps> = ({ onClick, loading, style }) => {
+const CommentRemaining: React.VFC<CommentRemainingProps> = ({
+  hiddenCount,
+  onClick,
+  loading,
+  style,
+}) => {
   return (
     <div
       role="none"
@@ -23,7 +28,9 @@ const CommentRemaining: React.VFC<CommentRemainingProps> = ({ onClick, loading, 
         height={17}
         viewBox="0 -2 16 18"
       />
-      <p className="text-sm font-semibold text-purple-6">Show more comments</p>
+      <p className="text-sm font-semibold text-purple-6">
+        {hiddenCount ? 'Show more comments' : 'Show less comments'}
+      </p>
       {loading && <Loading width={15} height={15} />}
     </div>
   );

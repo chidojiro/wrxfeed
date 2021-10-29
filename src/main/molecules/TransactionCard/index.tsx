@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { CommentFormModel } from '@main/types';
 import { Category, Department, Transaction, Vendor, Visibility } from '@main/entity';
 import { useComment, useMention } from '@main/hooks';
@@ -61,12 +61,16 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
   const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
   // Data hooks
-  const { comments, total, isLoading, addComment } = useComment(transaction, filter);
+  const { comments, total, isLoading, addComment, showLessComments } = useComment(
+    transaction,
+    filter,
+  );
   const { mentions } = useMention();
   const { checkPermission } = usePermission();
   // Variables
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
+  const canCollapseComments = total > INITIAL_COMMENT_NUMBER;
   const isHidden = transaction.category.visibility === Visibility.HIDDEN;
   const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
 
@@ -78,13 +82,23 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     addComment({ content: parsedContent, attachment: values.attachment }).then();
   };
 
-  const loadMoreComments = useCallback(() => {
+  const loadMoreComments = () => {
     if (isLoading) return;
-    setFilter((prevFilter) => ({
-      limit: LOAD_MORE_LIMIT,
-      offset: prevFilter.offset + prevFilter.limit,
-    }));
-  }, [isLoading]);
+    if (hiddenCommentCount > 0) {
+      // Load more
+      setFilter((prevFilter) => ({
+        limit: LOAD_MORE_LIMIT,
+        offset: prevFilter.offset + prevFilter.limit,
+      }));
+    } else {
+      // Show less
+      showLessComments(INITIAL_COMMENT_NUMBER);
+      setFilter({
+        limit: INITIAL_COMMENT_NUMBER,
+        offset: 0,
+      });
+    }
+  };
 
   const handleHideCategory = async () => {
     setConfirmModal(undefined);
@@ -238,7 +252,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
               <time dateTime={transaction.transDate}>{formatDate(transaction.transDate)}</time>
             </p>
             <div className="mt-9 space-y-4">
-              {hiddenCommentCount > 0 && (
+              {(hiddenCommentCount > 0 || canCollapseComments) && (
                 <CommentRemaining
                   hiddenCount={hiddenCommentCount}
                   onClick={loadMoreComments}
