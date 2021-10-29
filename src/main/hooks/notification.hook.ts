@@ -12,11 +12,14 @@ interface NotificationHookValues {
   isLoading: boolean;
   patchNotification: (id: number) => Promise<void>;
   clear: () => void;
+  markAllAsRead: () => void;
+  isMarkAll: boolean;
 }
 export function useNotification(page: Pagination): NotificationHookValues {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [isMarkAll, setMarkAll] = useState<boolean>(false);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
@@ -55,8 +58,24 @@ export function useNotification(page: Pagination): NotificationHookValues {
     setNotifications([]);
   }, []);
 
+  const markAllAsRead = async () => {
+    try {
+      setMarkAll(true);
+      await ApiClient.patchAllNotification();
+      setMarkAll(false);
+      setNotifications([]);
+      toast.success('Mark all notify as read successfully!');
+    } catch (error) {
+      if (isBadRequest(error)) {
+        toast.error("Can't mark all notify as read!");
+      } else {
+        await errorHandler(error);
+      }
+    }
+  };
+
   useEffect(() => {
     getTransactions().then();
   }, [getTransactions]);
-  return { notifications, hasMore, isLoading, patchNotification, clear };
+  return { notifications, hasMore, isLoading, patchNotification, clear, markAllAsRead, isMarkAll };
 }
