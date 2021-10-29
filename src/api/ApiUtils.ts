@@ -335,7 +335,6 @@ export default class ApiUtils implements ApiClient {
       url: '/noti/notifications',
       method: 'PATCH',
     });
-    console.log(`Check patchAllNotification res.data = ${JSON.stringify(res.data)}`);
     return res.data;
   };
 

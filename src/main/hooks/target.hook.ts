@@ -35,12 +35,9 @@ export function useTarget(
 
   // Monthly targets - stack targets by the largest monthly spend
   const stackTargetsByTheLargestMonthlySpend = (data: Target[]): Target[] => {
-    console.log(`Check data = ${JSON.stringify(data)}`);
     const targetStacked = data.sort(
       (a: Target, b: Target) => parseFloat(b?.total || '0') - parseFloat(a?.total || '0'),
     );
-    console.log({ data });
-    console.log({ targetStacked });
     return targetStacked;
   };
 
