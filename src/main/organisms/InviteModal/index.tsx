@@ -52,6 +52,8 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
     await Promise.all(emails.map((email) => sendInvitation({ email })));
     setLoading(false);
     setShowSuccessBanner(true);
+    // Close banner after 3s
+    setTimeout(() => setShowSuccessBanner(false), 3000);
   };
 
   return (

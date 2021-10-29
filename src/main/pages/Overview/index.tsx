@@ -1,11 +1,14 @@
-import React, { useCallback, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useEffect, useState } from 'react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import TransactionList from '@main/organisms/TransactionList';
 import { useTransaction } from '@main/hooks';
 import { TransactionFilter } from '@api/types';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import { Transaction } from '@main/entity';
+import { useQuery } from '@common/hooks';
+import { useHistory } from 'react-router-dom';
+import { Department, Vendor, Category } from '@main/entity';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -14,21 +17,16 @@ const INIT_PAGINATION = Object.freeze({
 });
 
 const FilterKeys: string[] = ['department', 'category', 'vendor'];
-const getKeyValue = <T, K extends keyof T>(obj: T, key: K): T[K] => obj[key];
 
 const OverviewPage: React.VFC = () => {
+  const query = useQuery();
+  const history = useHistory();
   const [filter, setFilter] = useState<TransactionFilter>({
     pagination: INIT_PAGINATION,
   });
+  const [filterTitle, setFilterTitle] = useState('');
   const { transactions, hasMore, isLoading, updateCategory } = useTransaction(filter);
-  const filterKey = Object.keys(filter).find((key) => FilterKeys.includes(key));
-  const filterTitle =
-    filterKey && !!transactions.length
-      ? getKeyValue(
-          transactions[0],
-          filterKey as keyof Pick<Transaction, 'department' | 'vendor' | 'category'>,
-        )?.name
-      : '';
+  const filterKey = FilterKeys.find((key) => query.get(key));
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -41,15 +39,33 @@ const OverviewPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  const handleFilter = (key: keyof TransactionFilter, value?: number): void => {
-    setFilter({
-      pagination: INIT_PAGINATION,
-      [key]: value,
+  useEffect(() => {
+    if (filterKey) {
+      setFilter({
+        pagination: INIT_PAGINATION,
+        [filterKey]: query.get(filterKey),
+      });
+    } else {
+      setFilter({
+        pagination: INIT_PAGINATION,
+      });
+    }
+  }, [setFilter, filterKey]);
+
+  const handleFilter = (
+    key: keyof TransactionFilter,
+    value?: Department | Category | Vendor,
+  ): void => {
+    const queryString = `?${key}=${value?.id}`;
+    history.push({
+      pathname: history.location.pathname,
+      search: queryString,
     });
+    setFilterTitle(value?.name ?? '');
   };
 
   const clearFilter = (): void => {
-    setFilter({ pagination: INIT_PAGINATION });
+    history.goBack();
   };
 
   return (

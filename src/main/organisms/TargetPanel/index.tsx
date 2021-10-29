@@ -183,7 +183,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
 
   // min-h-[80vh]
   // max-h-[80vh]
-  const heightExpand = isExpanded ? 'max-h-[80vh]' : 'max-h-[40vh]';
+  const heightExpand = isExpanded ? 'max-h-[80vh]' : 'max-h-[450px]';
   return (
     <div className={classNames('flex flex-1 pt-12', heightExpand)} style={{ width: '330px' }}>
       <div className="flex flex-col w-72 bg-white pt-6 pb-2 max-h-106 drop-shadow-md">
