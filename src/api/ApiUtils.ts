@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { UserToken } from '@identity/types';
+import { UserToken, Identity } from '@identity/types';
 import {
   Comment,
   Transaction,
@@ -13,7 +13,6 @@ import {
   Target,
 } from '@main/entity';
 import { ApiError } from '@error';
-import { Identity } from '@identity';
 import {
   ApiClient,
   ChangePasswordDto,
