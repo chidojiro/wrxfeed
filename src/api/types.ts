@@ -1,4 +1,4 @@
-import { UserToken } from '@identity/types';
+import { UserToken, Identity } from '@identity/types';
 import {
   Comment,
   Transaction,
@@ -19,7 +19,6 @@ import {
   Profile,
   ProfileFormModel,
 } from '@auth/types';
-import { Identity } from '@identity';
 import { InviteFormModel, FeedBackFormModel } from '@main/types';
 
 export interface ApiClient {

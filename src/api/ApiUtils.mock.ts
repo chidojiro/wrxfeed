@@ -1,6 +1,5 @@
-import { UserToken } from '@identity/types';
+import { UserToken, Identity } from '@identity/types';
 import { Comment, Transaction } from '@main/entity';
-import { Identity } from '@identity';
 import { sleep } from '@common/utils';
 import { Profile } from '@auth/types';
 

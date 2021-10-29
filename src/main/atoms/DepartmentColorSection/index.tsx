@@ -25,7 +25,7 @@ const DepartmentColorSection: React.VFC<DepartmentColorSectionProps> = ({
     <div style={{ backgroundColor: deptBgClass }} className="w-1/5 min-w-[94px] py-4 px-2.5">
       <h2
         aria-hidden="true"
-        className="text-xs text-left font-semibold text-white py-2"
+        className="text-base text-left font-semibold text-white py-2"
         onClick={handleClick}
       >
         {department?.name ?? 'unknown'}
