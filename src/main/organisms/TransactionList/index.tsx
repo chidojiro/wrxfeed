@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 import TransactionCard from '@main/molecules/TransactionCard';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
-import { Category, Transaction } from '@main/entity';
+import { Category, Department, Transaction, Vendor } from '@main/entity';
 import { TransactionFilter } from '@api/types';
 import ListLoading from '@main/atoms/ListLoading';
 import TransactionListEnd from '@main/atoms/TransactionListEnd';
@@ -12,7 +12,7 @@ interface TransactionListProps {
   isLoading: boolean;
   hasMore: boolean;
   onLoadMore?: () => void;
-  onFilter?: (key: keyof TransactionFilter, value?: number) => void;
+  onFilter?: (key: keyof TransactionFilter, value?: Department | Category | Vendor) => void;
   updateCategory?: (category: Partial<Category>) => Promise<void>;
 }
 

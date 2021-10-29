@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { CommentFormModel } from '@main/types';
-import { Category, Transaction, Visibility } from '@main/entity';
+import { Category, Department, Transaction, Vendor, Visibility } from '@main/entity';
 import { useComment, useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import { SubmitHandler } from 'react-hook-form';
@@ -31,9 +31,9 @@ const LOAD_MORE_LIMIT = 5;
 
 export interface TransactionCardProps {
   transaction: Transaction;
-  onClickDepartment?: (department?: number) => void;
-  onClickVendor?: (vendor?: number) => void;
-  onClickCategory?: (category?: number) => void;
+  onClickDepartment?: (department?: Department) => void;
+  onClickVendor?: (vendor?: Vendor) => void;
+  onClickCategory?: (category?: Category) => void;
   updateCategory?: (category: Partial<Category>) => Promise<void>;
 }
 
@@ -184,7 +184,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                     type="button"
                     className="hover:underline"
                     onClick={() => {
-                      return onClickDepartment && onClickDepartment(transaction.department.id);
+                      return onClickDepartment && onClickDepartment(transaction.department);
                     }}
                   >
                     {transaction.department.name}
@@ -222,7 +222,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
               aria-hidden="true"
               id={`question-title-${transaction.id}`}
               className="mt-3 text-base font-semibold text-Gray-2 hover:underline"
-              onClick={() => onClickCategory && onClickCategory(transaction.category.id)}
+              onClick={() => onClickCategory && onClickCategory(transaction.category)}
             >
               {transaction.category.name}
             </h2>
@@ -230,7 +230,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
               <button
                 type="button"
                 className="hover:underline"
-                onClick={() => onClickVendor && onClickVendor(transaction.vendor.id)}
+                onClick={() => onClickVendor && onClickVendor(transaction.vendor)}
               >
                 {transaction.vendor.name}
               </button>
