@@ -94,6 +94,7 @@ export interface TransactionFilter {
   department?: number;
   vendor?: number;
   category?: number;
+  rootDepartment?: number;
   pagination?: Pagination;
 }
 

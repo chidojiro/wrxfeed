@@ -7,6 +7,7 @@ import { useTransaction } from '@main/hooks';
 import TransactionList from '@main/organisms/TransactionList';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import TargetPanel from '@main/organisms/TargetPanel';
+import { Department } from '@main/entity';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -22,6 +23,7 @@ const DepartmentsPage: React.VFC = () => {
   const [transFilter, setTransFilter] = useState<TransactionFilter>({
     pagination: INIT_PAGINATION,
   });
+  const [filterTitle, setFilterTitle] = useState('');
   const {
     transactions,
     hasMore: hasMoreTrans,
@@ -29,8 +31,7 @@ const DepartmentsPage: React.VFC = () => {
     updateCategory,
   } = useTransaction(transFilter);
   // Variables
-  const isFiltering = !!transFilter.department;
-  const filterTitle = departments.find((dept) => dept.id === transFilter.department)?.name;
+  const isFiltering = !!transFilter.department || !!transFilter.rootDepartment;
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -51,11 +52,12 @@ const DepartmentsPage: React.VFC = () => {
     }));
   }, [hasMoreTrans, transLoading]);
 
-  const handleTransFilter = (key: keyof TransactionFilter, value?: number): void => {
+  const handleTransFilter = (key: keyof TransactionFilter, dept?: Department): void => {
     setTransFilter({
       pagination: INIT_PAGINATION,
-      [key]: value,
+      [key]: dept?.id,
     });
+    setFilterTitle(dept?.name || '');
   };
 
   const clearFilter = (): void => {
@@ -77,7 +79,8 @@ const DepartmentsPage: React.VFC = () => {
           isLoading={isLoading}
           hasMore={hasMore}
           onLoadMore={handleLoadMore}
-          onSelect={({ id }) => handleTransFilter('department', id)}
+          onSelect={(dept) => handleTransFilter('department', dept)}
+          onSelectRoot={(dept) => handleTransFilter('rootDepartment', dept)}
         />
       ) : (
         <TransactionList
