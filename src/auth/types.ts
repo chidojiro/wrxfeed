@@ -1,5 +1,7 @@
+import { Company } from '@main/entity';
+
 export interface Profile {
-  company?: string;
+  company?: Company;
   id: number;
   email: string;
   fullName: string;

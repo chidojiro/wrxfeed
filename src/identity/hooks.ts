@@ -13,7 +13,7 @@ export function useSetIdentity(): SetterOrUpdater<Identity | undefined> {
   return useSetRecoilState(identityState);
 }
 
-interface PermissionHookValues extends AuthProfile {
+interface PermissionHookValues extends Partial<AuthProfile> {
   checkPermission: (feature: ProtectedFeatures) => boolean;
 }
 
