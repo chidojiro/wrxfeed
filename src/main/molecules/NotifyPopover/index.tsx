@@ -74,7 +74,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
       <button
         onClick={onClickMarkAllAsRead}
         type="button"
-        className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-xs font-semibold"
+        className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-2xs font-semibold"
       >
         Mark all as read
       </button>
@@ -101,7 +101,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
 
   return (
     <Popover as="div" className="flex-shrink-0 relative">
-      <Popover.Button className="mr-2 rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
+      <Popover.Button className="mr-2 rounded-full flex focus:outline-none">
         {renderNotifyIconWithBell()}
       </Popover.Button>
       <Popover.Panel>
@@ -116,7 +116,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
         >
           <div
             style={{ minWidth: '450px', maxWidth: '600px', ...style }}
-            className="flex flex-col origin-top-right absolute z-10 right-0 mt-2 shadow-xl bg-white-500 ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
+            className="flex flex-col origin-top-right absolute z-10 right-0 mt-2 shadow-dropdown bg-white-50 py-1 focus:outline-none bg-white"
           >
             <div className="flex flex-row h-16 w-full border-b-2 pl-8">
               <p className="flex text-gray-1 font-medium self-center">Notifications</p>
