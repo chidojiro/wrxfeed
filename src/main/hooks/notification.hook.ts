@@ -5,6 +5,7 @@ import { isBadRequest } from '@error/utils';
 import { Notification } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { Transaction } from '../entity/transaction.entity';
 
 interface NotificationHookValues {
   notifications: Notification[];
@@ -14,14 +15,34 @@ interface NotificationHookValues {
   clear: () => void;
   markAllAsRead: () => void;
   isMarkAll: boolean;
+  getTransactionById: (id: number) => Promise<Transaction | undefined>;
+  isGetTran: boolean;
 }
 export function useNotification(page: Pagination): NotificationHookValues {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isMarkAll, setMarkAll] = useState<boolean>(false);
+  const [isGetTran, setIsGetTran] = useState<boolean>(false);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
+
+  const getTransactionById = async (id: number) => {
+    try {
+      setIsGetTran(true);
+      const trans = await ApiClient.getTransactionById(id);
+      return trans;
+      setIsGetTran(false);
+    } catch (error) {
+      setIsGetTran(false);
+      if (isBadRequest(error)) {
+        toast.error('Can not patch notification!');
+      } else {
+        await errorHandler(error);
+      }
+      return undefined;
+    }
+  };
 
   const patchNotification = async (id: number) => {
     try {
@@ -37,7 +58,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
     }
   };
 
-  const getTransactions = useCallback(async () => {
+  const getNotifications = useCallback(async () => {
     try {
       setLoading(true);
       const res = await ApiClient.getNotifications(page);
@@ -75,7 +96,17 @@ export function useNotification(page: Pagination): NotificationHookValues {
   };
 
   useEffect(() => {
-    getTransactions().then();
-  }, [getTransactions]);
-  return { notifications, hasMore, isLoading, patchNotification, clear, markAllAsRead, isMarkAll };
+    getNotifications().then();
+  }, [getNotifications]);
+  return {
+    notifications,
+    hasMore,
+    isLoading,
+    patchNotification,
+    clear,
+    markAllAsRead,
+    isMarkAll,
+    getTransactionById,
+    isGetTran,
+  };
 }
