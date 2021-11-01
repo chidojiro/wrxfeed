@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { NotifyIcon } from '@assets';
 import { useNotification } from '@main/hooks';
@@ -28,7 +28,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const [itemSelect, setSelect] = React.useState<Notification>();
   const [transSelect, setTransSelect] = React.useState<Transaction | undefined>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const notifyUnseen = notifications.filter((item) => item.status === NotifyStatus.UNREAD);
     setNotifies(notifyUnseen);
     setNews(notifyUnseen.length);
