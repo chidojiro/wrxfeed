@@ -42,7 +42,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
     } catch (error) {
       setIsGetTran(false);
       if (isBadRequest(error)) {
-        toast.error('Can not patch notification!');
+        toast.error('Can not get this transaction 🤦!');
       } else {
         await errorHandler(error);
       }
@@ -57,7 +57,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
       setNotifications(newNotifies);
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error('Can not patch notification!');
+        toast.error('Can not patch notification 🤦!');
       } else {
         await errorHandler(error);
       }
@@ -72,7 +72,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
       setHasMore(!!res.length);
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error('Can not get notifications');
+        toast.error('Can not get notifications 🤦!');
       } else {
         await errorHandler(error);
       }
@@ -109,10 +109,10 @@ export function useNotification(page: Pagination): NotificationHookValues {
       await ApiClient.patchAllNotification();
       setMarkAll(false);
       setNotifications([]);
-      toast.success('Mark all notify as read successfully!');
+      toast.success('Mark all notify as read successfully 🙌!');
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error("Can't mark all notify as read!");
+        toast.error("Can't mark all notify as read 😤!");
       } else {
         await errorHandler(error);
       }
