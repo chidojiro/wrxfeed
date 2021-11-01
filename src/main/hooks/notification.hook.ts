@@ -5,6 +5,12 @@ import { isBadRequest } from '@error/utils';
 import { Notification } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { NOTI_SSE_ENDPOINT } from '@src/config';
+
+enum NotiTypes {
+  MENTION = 'MENTION',
+  COMMENT = 'COMMENT',
+}
 
 interface NotificationHookValues {
   notifications: Notification[];
@@ -58,6 +64,24 @@ export function useNotification(page: Pagination): NotificationHookValues {
     setNotifications([]);
   }, []);
 
+  const getRealtimeNoti = useCallback(
+    (data: Notification) => {
+      switch (data?.type) {
+        case NotiTypes.MENTION: {
+          setNotifications((prev) => [data, ...prev]);
+          break;
+        }
+        case NotiTypes.COMMENT: {
+          setNotifications((prev) => [data, ...prev]);
+          break;
+        }
+        default:
+          break;
+      }
+    },
+    [setNotifications],
+  );
+
   const markAllAsRead = async () => {
     try {
       setMarkAll(true);
@@ -73,6 +97,18 @@ export function useNotification(page: Pagination): NotificationHookValues {
       }
     }
   };
+
+  // Listen EventStream
+  useEffect(() => {
+    const sse = new EventSource(NOTI_SSE_ENDPOINT, { withCredentials: true });
+    sse.onmessage = (e) => getRealtimeNoti(JSON.parse(e.data));
+    sse.onerror = () => {
+      sse.close();
+    };
+    return () => {
+      sse.close();
+    };
+  }, [getRealtimeNoti]);
 
   useEffect(() => {
     getTransactions().then();
