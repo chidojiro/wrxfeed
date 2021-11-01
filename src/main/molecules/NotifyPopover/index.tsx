@@ -6,6 +6,7 @@ import { Pagination } from '@api/types';
 import { Notification } from '@main/entity';
 import { NotifyRow } from '@main/atoms';
 import Loading from '@common/atoms/Loading';
+import NotifyDetails from '../NotifyDetails';
 
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;
@@ -22,6 +23,8 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const { notifications, isLoading, patchNotification, markAllAsRead } = useNotification(filter);
   const [notifies, setNotifies] = React.useState<Notification[]>([]);
   const [notifyNews, setNews] = React.useState<number>(0);
+  const [isOpenDetails, setIsOpenDetails] = React.useState<boolean>(false);
+  const [itemSelect, setSelect] = React.useState<Notification>();
 
   React.useEffect(() => {
     const notifyUnseen = notifications.filter((item) => item.status === NotifyStatus.UNREAD);
@@ -56,6 +59,8 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
               item={item}
               index={index}
               onClickNotifyAndSeen={() => {
+                setSelect(item);
+                setIsOpenDetails(true);
                 patchNotification(item.id);
               }}
             />
@@ -100,33 +105,40 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   };
 
   return (
-    <Popover as="div" className="flex-shrink-0 relative">
-      <Popover.Button className="mr-2 rounded-full flex focus:outline-none">
-        {renderNotifyIconWithBell()}
-      </Popover.Button>
-      <Popover.Panel>
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <div
-            style={{ minWidth: '450px', maxWidth: '600px', ...style }}
-            className="flex flex-col origin-top-right absolute z-10 right-0 mt-2 shadow-dropdown bg-white-50 py-1 focus:outline-none bg-white"
+    <>
+      <Popover as="div" className="flex-shrink-0 relative">
+        <Popover.Button className="mr-2 rounded-full flex focus:outline-none">
+          {renderNotifyIconWithBell()}
+        </Popover.Button>
+        <Popover.Panel>
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
           >
-            <div className="flex flex-row h-16 w-full border-b-2 pl-8">
-              <p className="flex text-gray-1 font-medium self-center">Notifications</p>
-              {renderMarkAllAsRead()}
+            <div
+              style={{ minWidth: '450px', maxWidth: '600px', ...style }}
+              className="flex flex-col origin-top-right absolute z-10 right-0 mt-2 shadow-dropdown bg-white-50 py-1 focus:outline-none bg-white"
+            >
+              <div className="flex flex-row h-16 w-full border-b-2 pl-8">
+                <p className="flex text-gray-1 font-medium self-center">Notifications</p>
+                {renderMarkAllAsRead()}
+              </div>
+              {renderNotifyList()}
             </div>
-            {renderNotifyList()}
-          </div>
-        </Transition>
-      </Popover.Panel>
-    </Popover>
+          </Transition>
+        </Popover.Panel>
+      </Popover>
+      <NotifyDetails
+        isOpen={isOpenDetails}
+        notify={itemSelect}
+        onClose={() => setIsOpenDetails(false)}
+      />
+    </>
   );
 };
 

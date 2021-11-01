@@ -135,7 +135,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
           <img alt="user-avatar" className="flex w-36 h-36 rounded-full" src={userAvatar} />
           <div className="flex absolute group-hover:bg-blue-upload w-full h-full rounded-full justify-center items-center">
             {!isUploading && (
-              <div className="flex opacity-0 text-white group-hover:opacity-100 text-lg font-semibold">
+              <div className="flex opacity-0 text-white group-hover:opacity-100 text-sm font-semibold">
                 Edit Photo
               </div>
             )}
@@ -157,7 +157,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
         </div>
         <div className="flex absolute group-hover:bg-blue-upload w-full h-full rounded-full justify-center items-center">
           {!isUploading && (
-            <div className="flex text-white opacity-0 group-hover:opacity-100 text-lg font-semibold">
+            <div className="flex text-white opacity-0 group-hover:opacity-100 text-sm font-semibold">
               Edit Photo
             </div>
           )}
