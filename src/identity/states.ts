@@ -25,11 +25,15 @@ export const identityState = atom<Identity | undefined>({
   effects_UNSTABLE: [localStorageEffect],
 });
 
-export const authProfileState = selector<AuthProfile>({
+export const authProfileState = selector<AuthProfile | null>({
   key: 'admin/authProfile',
   get: async ({ get }) => {
     get(identityState);
-    const apiClient = await getApiClient();
-    return apiClient.getAuthProfile();
+    try {
+      const apiClient = await getApiClient();
+      return await apiClient.getAuthProfile();
+    } catch {
+      return null;
+    }
   },
 });
