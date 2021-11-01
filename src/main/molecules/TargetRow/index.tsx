@@ -109,11 +109,11 @@ const TargetRow: React.VFC<TargetRowProps> = ({
           {/* <Loading width={15} height={15} className="flex mt-1" /> */}
         </div>
         <div className="flex ml-auto flex-col">
-          <div className="flex w-32 ml-auto text-right text-xs text-Gray-3 font-semibold">
+          <div className="flex w-32 ml-auto text-right text-sm text-Gray-3 font-semibold">
             Edit target amount
           </div>
           <div className="flex flex-1 w-[120px] max-w-lg flex-row items-center mt-1 py-2 border-b border-Gray-11">
-            <div className="text-xs text-Gray-6">$</div>
+            <div className="text-sm text-Gray-6">$</div>
             <input
               ref={inputRef}
               onKeyDown={handleKeyDown}
@@ -159,7 +159,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   if (!isActive) {
     const inactiveColor = '#d1d5db';
-    const currentDemoInactive = 7000;
+    const currentDemoInactive = 8000;
     const amountDemoInactive = 10000;
 
     const percent = (currentDemoInactive / amountDemoInactive) * 100;
@@ -177,14 +177,16 @@ const TargetRow: React.VFC<TargetRowProps> = ({
         <div className="flex flex-row">
           <div className="flex flex-col" style={{ width: percentLength }}>
             <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveColor }} />
-            <div className="flex text-Gray-3 text-xs mt-1 font-bold ml-auto">{currentCurrency}</div>
+            <div className="flex text-Gray-3 text-2xs mt-1 font-bold ml-auto">
+              {currentCurrency}
+            </div>
           </div>
           <div className="flex flex-col flex-1">
             <div
               className="flex mt-1 w-full h-1 opacity-30"
               style={{ backgroundColor: inactiveColor }}
             />
-            <div className="flex text-Gray-6 text-xs mt-1 font-bold ml-auto">
+            <div className="flex text-Gray-6 text-2xs mt-1 font-bold ml-auto">
               {totalAmountCurrency}
             </div>
           </div>
@@ -198,7 +200,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   let percent = (parseFloat(currentTarget) / parseFloat(maxTarget)) * 100;
   const currentCurrency = nFormatter(parseFloat(currentTarget));
-  const totalAmountCurrency = nFormatter(parseFloat(maxTarget));
+  const totalAmountCurrency = nFormatter(Math.abs(parseFloat(maxTarget)));
   const isExceeds = parseFloat(currentTarget) > parseFloat(maxTarget);
 
   const renderCurrentPerTotalBar = () => {
@@ -226,12 +228,12 @@ const TargetRow: React.VFC<TargetRowProps> = ({
           </div>
           <div className="flex flex-row">
             <div
-              className="flex text-Gray-3 text-xs mt-1 font-bold ml-auto"
+              className="flex text-Gray-3 text-2xs mt-1 font-bold ml-auto"
               style={{ color: SystemAlertColor }}
             >
               {currentCurrency}
             </div>
-            <div className="flex text-Gray-6 text-xs mt-1 font-bold">{`/${totalAmountCurrency}`}</div>
+            <div className="flex text-Gray-6 text-2xs mt-1 font-bold">{`/${totalAmountCurrency}`}</div>
           </div>
         </div>
       );
@@ -241,14 +243,14 @@ const TargetRow: React.VFC<TargetRowProps> = ({
       <div className="flex flex-row">
         <div className="flex flex-col" style={{ width: percentLength }}>
           <div className="flex mt-1 w-full h-1" style={{ backgroundColor: currentColor }} />
-          <div className="flex text-Gray-3 text-xs mt-1 font-bold ml-auto">{currentCurrency}</div>
+          <div className="flex text-Gray-3 text-2xs mt-1 font-bold ml-auto">{currentCurrency}</div>
         </div>
         <div className="flex flex-col flex-1">
           <div
             className={classNames('flex mt-1 w-full h-1', styleTotal)}
             style={{ backgroundColor: totalColor }}
           />
-          <div className="flex text-Gray-6 text-xs mt-1 font-bold ml-auto">
+          <div className="flex text-Gray-6 text-2xs mt-1 font-bold ml-auto">
             {totalAmountCurrency}
           </div>
         </div>
@@ -274,7 +276,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
       <div className="flex flex-row items-center">
         <div
-          className="flex text-Gray-4 font-medium text-xs font-regular"
+          className="flex text-Gray-4 font-medium text-2xs font-regular"
           style={{ fontSize: '14px' }}
         >
           {target?.department?.name}
