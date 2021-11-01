@@ -70,7 +70,9 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = fa
               {/* Left space */}
               <div className="flex justify-center md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-2">
                 <div className="flex-shrink-0 flex items-center">
-                  <h1 className="text-lg font-bold text-white">{identity?.company || 'Gravity'}</h1>
+                  <h1 className="text-lg font-bold text-white">
+                    {identity?.company?.name || 'Gravity'}
+                  </h1>
                 </div>
               </div>
               {/* Center space */}
