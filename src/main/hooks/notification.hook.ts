@@ -5,7 +5,7 @@ import { isBadRequest } from '@error/utils';
 import { Notification } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { NOTI_SSE_ENDPOINT } from '@src/config';
+import { SSE_NOTI_ENDPOINT } from '@src/config';
 import { Transaction } from '../entity/transaction.entity';
 
 enum NotiTypes {
@@ -121,7 +121,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
 
   // Listen EventStream
   useEffect(() => {
-    const sse = new EventSource(NOTI_SSE_ENDPOINT, { withCredentials: true });
+    const sse = new EventSource(SSE_NOTI_ENDPOINT, { withCredentials: true });
     sse.onmessage = (e) => getRealtimeNoti(JSON.parse(e.data));
     sse.onerror = () => {
       sse.close();

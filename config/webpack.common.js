@@ -4,8 +4,43 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const CopyPlugin = require('copy-webpack-plugin');
+const dotenv = require('dotenv');
+const fs = require('fs');
 
 module.exports = (env) => {
+  // Get the root path
+  const currentPath = path.resolve('.');
+
+  // Create the fallback path (the production .env)
+  const basePath = currentPath + '/.env';
+
+  // We're concatenating the environment name to our filename to specify the correct env file!
+  const envPath = basePath + '.' + env.NODE_ENV;
+
+  // Check if the file exists, otherwise fall back to the production .env
+  const finalPath = fs.existsSync(envPath) ? envPath : basePath;
+
+  // Set the path parameter in the dotenv config
+  let fileEnv = dotenv.config({ path: finalPath }).parsed;
+
+  // In case env is not defined, use params from node process. This is for Netlify setting
+  if (!fileEnv || typeof fileEnv !== 'object') {
+    // Get env variables from example file
+    const envExample = basePath + '.example';
+    fileEnv = dotenv.config({ path: envExample }).parsed;
+    // Assign env value from node process
+    fileEnv = Object.keys(fileEnv).reduce((prev, next) => {
+      prev[next] = process.env[next];
+      return prev;
+    }, {});
+  }
+
+  // reduce it to a nice object, the same as before (but with the variables from the file)
+  const envKeys = Object.keys(fileEnv).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(fileEnv[next]);
+    return prev;
+  }, {});
+
   return {
     entry: path.resolve('src/index.tsx'),
     output: {
@@ -42,7 +77,7 @@ module.exports = (env) => {
         removeRedundantAttributes: true,
         removeScriptTypeAttributes: true,
         removeStyleLinkTypeAttributes: true,
-        useShortDoctype: true
+        useShortDoctype: true,
       }),
       new CopyPlugin({
         patterns: [
@@ -52,9 +87,10 @@ module.exports = (env) => {
         ],
       }),
       // Create global constants which can be configured at compile time
-      new webpack.DefinePlugin({
-        'process.env.VERSION': JSON.stringify(process.env.npm_package_version),
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
       }),
+      new webpack.DefinePlugin(envKeys),
 
       new WebpackPwaManifest({
         name: 'Gravity',
@@ -110,7 +146,7 @@ module.exports = (env) => {
           test: /\.css$/,
           use: [
             // extract CSS into separate files
-            env.production ? MiniCssExtractPlugin.loader : 'style-loader',
+            env.NODE_ENV === 'production' ? MiniCssExtractPlugin.loader : 'style-loader',
             {
               loader: 'css-loader',
               options: {
@@ -122,7 +158,7 @@ module.exports = (env) => {
               options: {
                 sourceMap: true,
               },
-            }
+            },
           ],
         },
         {
