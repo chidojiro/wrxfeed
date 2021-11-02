@@ -20,12 +20,12 @@ const NotifyRow: React.VFC<NotifyRowProps> = ({ item, onClickNotifyAndSeen }) =>
       <div className="flex flex-1 w-full flex-row">
         <CommentText
           content={item.content}
-          className="w-full text-left"
+          className="w-full text-left leading-6 break-all"
           style={{ whiteSpace: 'normal' }}
         />
         <div className="flex w-40">
           <div
-            className="flex text-Gray-6 font-semibold ml-auto text-right"
+            className="flex text-Gray-6 font-semibold ml-auto text-right text-2xs mt-1"
             style={{ fontSize: '10px' }}
           >
             {formatDate(item?.createdAt)}

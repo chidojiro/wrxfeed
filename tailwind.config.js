@@ -60,6 +60,12 @@ module.exports = {
       },
       spacing: {
         'navbar': '56px',
+      },
+      shadow: {
+
+      },
+      boxShadow: {
+        dropdown: '0 1px 1px 0 rgba(9, 30, 66, 0.31), 0 3px 5px 0 rgba(9, 30, 66, 0.2)',
       }
     },
   },

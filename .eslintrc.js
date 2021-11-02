@@ -40,7 +40,7 @@ module.exports = {
       webpack: {
         config: './config/webpack.common.js',
         env: {
-          production: true,
+          NODE_ENV: 'production',
         },
       },
     },

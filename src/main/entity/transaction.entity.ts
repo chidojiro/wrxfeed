@@ -37,6 +37,7 @@ export type Transaction = {
 
 export type NotificationData = {
   commentId: number;
+  transactionId: number;
 };
 
 export type Notification = {

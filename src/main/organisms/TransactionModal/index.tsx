@@ -13,12 +13,6 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ className }) => {
   const [transactionState, setTransactionModalState] = useRecoilState(showTransactionModalState);
   const handleClose = () => setTransactionModalState({ transaction: null });
   const { transaction } = transactionState;
-  // React.useEffect(() => {
-  //   console.log(`Check new transactionState = ${JSON.stringify(transactionState)}`);
-  // }, [transactionState]);
-
-  // if (!transactionState.transaction) return null;
-
   return (
     <Modal open={transaction !== null} onClose={handleClose}>
       <div

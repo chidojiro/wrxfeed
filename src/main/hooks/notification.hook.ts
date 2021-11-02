@@ -5,7 +5,8 @@ import { isBadRequest } from '@error/utils';
 import { Notification } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { NOTI_SSE_ENDPOINT } from '@src/config';
+import { SSE_NOTI_ENDPOINT } from '@src/config';
+import { Transaction } from '../entity/transaction.entity';
 
 enum NotiTypes {
   MENTION = 'MENTION',
@@ -20,14 +21,34 @@ interface NotificationHookValues {
   clear: () => void;
   markAllAsRead: () => void;
   isMarkAll: boolean;
+  getTransactionById: (id: number) => Promise<Transaction | undefined>;
+  isGetTran: boolean;
 }
 export function useNotification(page: Pagination): NotificationHookValues {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isMarkAll, setMarkAll] = useState<boolean>(false);
+  const [isGetTran, setIsGetTran] = useState<boolean>(false);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
+
+  const getTransactionById = async (id: number) => {
+    try {
+      setIsGetTran(true);
+      const trans = await ApiClient.getTransactionById(id);
+      return trans;
+      setIsGetTran(false);
+    } catch (error) {
+      setIsGetTran(false);
+      if (isBadRequest(error)) {
+        toast.error('Can not get this transaction 🤦!');
+      } else {
+        await errorHandler(error);
+      }
+      return undefined;
+    }
+  };
 
   const patchNotification = async (id: number) => {
     try {
@@ -36,14 +57,14 @@ export function useNotification(page: Pagination): NotificationHookValues {
       setNotifications(newNotifies);
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error('Can not patch notification!');
+        toast.error('Can not patch notification 🤦!');
       } else {
         await errorHandler(error);
       }
     }
   };
 
-  const getTransactions = useCallback(async () => {
+  const getNotifications = useCallback(async () => {
     try {
       setLoading(true);
       const res = await ApiClient.getNotifications(page);
@@ -51,7 +72,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
       setHasMore(!!res.length);
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error('Can not get notifications');
+        toast.error('Can not get notifications 🤦!');
       } else {
         await errorHandler(error);
       }
@@ -88,10 +109,10 @@ export function useNotification(page: Pagination): NotificationHookValues {
       await ApiClient.patchAllNotification();
       setMarkAll(false);
       setNotifications([]);
-      toast.success('Mark all notify as read successfully!');
+      toast.success('Mark all notify as read successfully 🙌!');
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error("Can't mark all notify as read!");
+        toast.error("Can't mark all notify as read 😤!");
       } else {
         await errorHandler(error);
       }
@@ -100,7 +121,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
 
   // Listen EventStream
   useEffect(() => {
-    const sse = new EventSource(NOTI_SSE_ENDPOINT, { withCredentials: true });
+    const sse = new EventSource(SSE_NOTI_ENDPOINT, { withCredentials: true });
     sse.onmessage = (e) => getRealtimeNoti(JSON.parse(e.data));
     sse.onerror = () => {
       sse.close();
@@ -111,7 +132,17 @@ export function useNotification(page: Pagination): NotificationHookValues {
   }, [getRealtimeNoti]);
 
   useEffect(() => {
-    getTransactions().then();
-  }, [getTransactions]);
-  return { notifications, hasMore, isLoading, patchNotification, clear, markAllAsRead, isMarkAll };
+    getNotifications().then();
+  }, [getNotifications]);
+  return {
+    notifications,
+    hasMore,
+    isLoading,
+    patchNotification,
+    clear,
+    markAllAsRead,
+    isMarkAll,
+    getTransactionById,
+    isGetTran,
+  };
 }

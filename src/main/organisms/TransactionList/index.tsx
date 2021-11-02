@@ -66,6 +66,7 @@ const TransactionList: React.VFC<TransactionListProps> = ({
             onClickVendor={(value) => onFilter && onFilter('vendor', value)}
             onClickDepartment={(value) => onFilter && onFilter('department', value)}
             onClickCategory={(value) => onFilter && onFilter('category', value)}
+            onClickRootDept={(value) => onFilter && onFilter('rootDepartment', value)}
             updateCategory={updateCategory}
           />
         ))}

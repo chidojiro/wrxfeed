@@ -155,6 +155,7 @@ export default class ApiUtils implements ApiClient {
       dep: filter?.department,
       ven: filter?.vendor,
       cat: filter?.category,
+      rootDep: filter?.rootDepartment,
     };
     const res = await this.request<Transaction[]>({
       url: '/feed/transactions',
@@ -367,5 +368,13 @@ export default class ApiUtils implements ApiClient {
         ...data,
       },
     });
+  };
+
+  getTransactionById = async (id: number): Promise<Transaction> => {
+    const res = await this.request<Transaction>({
+      url: `/feed/transactions/${id}`,
+      method: 'GET',
+    });
+    return res.data;
   };
 }
