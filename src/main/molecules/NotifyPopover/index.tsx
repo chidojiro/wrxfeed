@@ -3,10 +3,10 @@ import { Popover, Transition } from '@headlessui/react';
 import { NotifyIcon } from '@assets';
 import { useNotification } from '@main/hooks';
 import { Pagination } from '@api/types';
-import { Notification, Transaction } from '@main/entity';
+import { Notification } from '@main/entity';
 import { NotifyRow } from '@main/atoms';
 import Loading from '@common/atoms/Loading';
-import NotifyDetails from '../NotifyDetails';
+// import NotifyDetails from '../NotifyDetails';
 
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;
@@ -20,13 +20,12 @@ export enum NotifyStatus {
 
 const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
-  const { notifications, isLoading, patchNotification, markAllAsRead, getTransactionById } =
-    useNotification(filter);
+  const { notifications, isLoading, patchNotification, markAllAsRead } = useNotification(filter);
   const [notifies, setNotifies] = React.useState<Notification[]>([]);
   const [notifyNews, setNews] = React.useState<number>(0);
-  const [isOpenDetails, setIsOpenDetails] = React.useState<boolean>(false);
-  const [itemSelect, setSelect] = React.useState<Notification>();
-  const [transSelect, setTransSelect] = React.useState<Transaction | undefined>();
+  // const [isOpenDetails, setIsOpenDetails] = React.useState<boolean>(false);
+  // const [itemSelect, setSelect] = React.useState<Notification>();
+  // const [transSelect, setTransSelect] = React.useState<Transaction | undefined>();
 
   useEffect(() => {
     const notifyUnseen = notifications.filter((item) => item.status === NotifyStatus.UNREAD);
@@ -54,7 +53,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
     }
 
     return (
-      <div className="flex flex-1 flex-col pb-4 pt-3 overflow-scroll max-h-96">
+      <div className="flex flex-1 flex-col pb-4 pt-3 overflow-y-scroll max-h-96">
         {notifies.map((item: Notification, index: number) => {
           return (
             <NotifyRow
@@ -62,10 +61,10 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
               item={item}
               index={index}
               onClickNotifyAndSeen={async () => {
-                const trans = await getTransactionById(item.data.transactionId);
-                setSelect(item);
-                setIsOpenDetails(true);
-                setTransSelect(trans);
+                // const trans = await getTransactionById(item.data.transactionId);
+                // setSelect(item);
+                // setIsOpenDetails(true);
+                // setTransSelect(trans);
                 patchNotification(item.id);
               }}
             />
@@ -126,7 +125,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
             leaveTo="transform opacity-0 scale-95"
           >
             <div
-              style={{ minWidth: '450px', maxWidth: '600px', ...style }}
+              style={{ width: '450px', ...style }}
               className="flex flex-col origin-top-right absolute z-10 right-0 mt-2 shadow-dropdown bg-white-50 py-1 focus:outline-none bg-white"
             >
               <div className="flex flex-row h-16 w-full border-b-2 pl-8">
@@ -138,12 +137,6 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
           </Transition>
         </Popover.Panel>
       </Popover>
-      <NotifyDetails
-        isOpen={isOpenDetails}
-        notify={itemSelect}
-        transaction={transSelect}
-        onClose={() => setIsOpenDetails(false)}
-      />
     </>
   );
 };
