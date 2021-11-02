@@ -6,7 +6,8 @@ import { Pagination } from '@api/types';
 import { Notification } from '@main/entity';
 import { NotifyRow } from '@main/atoms';
 import Loading from '@common/atoms/Loading';
-// import NotifyDetails from '../NotifyDetails';
+import Routes from '@src/routes';
+import { useHistory } from 'react-router-dom';
 
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;
@@ -23,9 +24,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
   const { notifications, isLoading, patchNotification, markAllAsRead } = useNotification(filter);
   const [notifies, setNotifies] = React.useState<Notification[]>([]);
   const [notifyNews, setNews] = React.useState<number>(0);
-  // const [isOpenDetails, setIsOpenDetails] = React.useState<boolean>(false);
-  // const [itemSelect, setSelect] = React.useState<Notification>();
-  // const [transSelect, setTransSelect] = React.useState<Transaction | undefined>();
+  const history = useHistory();
 
   useEffect(() => {
     const notifyUnseen = notifications.filter((item) => item.status === NotifyStatus.UNREAD);
@@ -61,10 +60,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
               item={item}
               index={index}
               onClickNotifyAndSeen={async () => {
-                // const trans = await getTransactionById(item.data.transactionId);
-                // setSelect(item);
-                // setIsOpenDetails(true);
-                // setTransSelect(trans);
+                history.push(`${Routes.Feed.path.replace(':id', `${item.data.transactionId}`)}`);
                 patchNotification(item.id);
               }}
             />
