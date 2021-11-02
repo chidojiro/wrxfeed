@@ -19,7 +19,6 @@ module.exports = (env) => {
 
   // Check if the file exists, otherwise fall back to the production .env
   const finalPath = fs.existsSync(envPath) ? envPath : basePath;
-  console.log(finalPath);
 
   // Set the path parameter in the dotenv config
   const fileEnv = dotenv.config({ path: finalPath }).parsed;
@@ -29,6 +28,7 @@ module.exports = (env) => {
     prev[`process.env.${next}`] = JSON.stringify(fileEnv[next]);
     return prev;
   }, {}) : {};
+  console.log(envKeys);
 
   return {
     entry: path.resolve('src/index.tsx'),
