@@ -23,7 +23,6 @@ const Discussions = lazy(() => import('@main/pages/Discussion'));
 const Departments = lazy(() => import('@main/pages/Departments'));
 const Categories = lazy(() => import('@main/pages/Categories'));
 const Vendors = lazy(() => import('@main/pages/Vendors'));
-
 const Feed = lazy(() => import('@main/pages/Feed'));
 
 const routes: Route = {

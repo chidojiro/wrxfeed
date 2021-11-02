@@ -43,7 +43,7 @@ const FeedPage: React.VFC = () => {
   }, [transactionId]);
 
   const onClickGoBack = (): void => {
-    history.goBack();
+    history.push('/overview');
   };
 
   const renderFeed = () => {
