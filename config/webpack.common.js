@@ -16,7 +16,6 @@ module.exports = (env) => {
 
   // We're concatenating the environment name to our filename to specify the correct env file!
   const envPath = basePath + '.' + env.NODE_ENV;
-  console.log(basePath);
 
   // Check if the file exists, otherwise fall back to the production .env
   const finalPath = fs.existsSync(envPath) ? envPath : basePath;
