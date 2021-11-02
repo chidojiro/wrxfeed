@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
@@ -18,22 +19,22 @@ const FeedPage: React.VFC = () => {
   const ApiClient = useApi();
   const { id: transactionId } = useParams<{ id: string }>();
   const [transSelect, setTransSelect] = React.useState<Transaction | undefined>();
-  const [isGetTran, setIsGetTran] = React.useState<boolean>(false);
+  const [isLoading, setLoading] = React.useState<boolean>(false);
   const errorHandler = useErrorHandler();
 
   const getTrans = async (id: number) => {
     try {
-      setIsGetTran(true);
+      setLoading(true);
       const trans = await ApiClient.getTransactionById(id);
       setTransSelect(trans);
-      setIsGetTran(false);
     } catch (error) {
-      setIsGetTran(false);
       if (isBadRequest(error)) {
         toast.error('Can not get this transaction 🤦!');
       } else {
-        await errorHandler(error);
+        errorHandler(error);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,7 +47,7 @@ const FeedPage: React.VFC = () => {
   };
 
   const renderFeed = () => {
-    if (isGetTran) {
+    if (isLoading) {
       return (
         <div className="flex flex-1 w-full h-[300px] justify-center items-center">
           <Loading width={60} height={60} />
@@ -54,7 +55,18 @@ const FeedPage: React.VFC = () => {
       );
     }
 
-    if (!transSelect) return null;
+    if (!transSelect) {
+      return (
+        <div className="flex flex-1 w-full h-[300px] justify-center items-center px-16">
+          <span className="flex text-2xl text-Gray-1 font-semibold text-center">
+            An error occurred loading this item 😞
+            <br />
+            please try again later!
+          </span>
+        </div>
+      );
+    }
+
     return (
       <div className="w-full h-full overflow-scroll">
         <ul>
