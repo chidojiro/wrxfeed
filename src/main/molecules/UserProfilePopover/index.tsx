@@ -135,7 +135,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
           <img alt="user-avatar" className="flex w-36 h-36 rounded-full" src={userAvatar} />
           <div className="flex absolute group-hover:bg-blue-upload w-full h-full rounded-full justify-center items-center">
             {!isUploading && (
-              <div className="flex opacity-0 text-white group-hover:opacity-100 text-lg font-semibold">
+              <div className="flex opacity-0 text-white group-hover:opacity-100 text-sm font-semibold">
                 Edit Photo
               </div>
             )}
@@ -157,7 +157,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
         </div>
         <div className="flex absolute group-hover:bg-blue-upload w-full h-full rounded-full justify-center items-center">
           {!isUploading && (
-            <div className="flex text-white opacity-0 group-hover:opacity-100 text-lg font-semibold">
+            <div className="flex text-white opacity-0 group-hover:opacity-100 text-sm font-semibold">
               Edit Photo
             </div>
           )}
@@ -215,7 +215,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
 
   return (
     <Popover as="div" className="flex-shrink-0 relative" style={style}>
-      <Popover.Button className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
+      <Popover.Button className="bg-white rounded-full flex focus:outline-none">
         {renderAvatarIcon()}
       </Popover.Button>
       <Popover.Panel className="absolute z-50">
@@ -233,7 +233,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
             >
               <div
                 style={{ width: '332px' }}
-                className="flex flex-col origin-top-right absolute z-10 right-0 mt-4 shadow-lg ring-1 ring-black ring-opacity-5 py-1 focus:outline-none bg-white"
+                className="flex flex-col origin-top-left absolute z-10 -right-8 mt-3 shadow-dropdown py-1 focus:outline-none bg-white"
               >
                 <div className="flex flex-row items-center h-16 w-full border-b-2 px-8">
                   <p className="flex text-gray-1 font-medium">Profile</p>

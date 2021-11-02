@@ -368,4 +368,12 @@ export default class ApiUtils implements ApiClient {
       },
     });
   };
+
+  getTransactionById = async (id: number): Promise<Transaction> => {
+    const res = await this.request<Transaction>({
+      url: `/feed/transactions/${id}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
 }
