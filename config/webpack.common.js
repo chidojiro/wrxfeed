@@ -24,10 +24,10 @@ module.exports = (env) => {
   const fileEnv = dotenv.config({ path: finalPath }).parsed;
 
   // reduce it to a nice object, the same as before (but with the variables from the file)
-  const envKeys = Object.keys(fileEnv).reduce((prev, next) => {
+  const envKeys = typeof fileEnv === 'object' ? Object.keys(fileEnv).reduce((prev, next) => {
     prev[`process.env.${next}`] = JSON.stringify(fileEnv[next]);
     return prev;
-  }, {});
+  }, {}) : {};
 
   return {
     entry: path.resolve('src/index.tsx'),
