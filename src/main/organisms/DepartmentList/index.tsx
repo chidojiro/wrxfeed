@@ -21,12 +21,6 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
   onSelect,
   onSelectRoot,
 }) => {
-  const renderEmptyList = () => (
-    <div className="text-left">
-      <h3 className="mt-2 text-sm text-Gray-3">No teams</h3>
-    </div>
-  );
-
   const renderDeptSection = (dept: DepartmentSection) => {
     const deptBgColor = getDepartmentBgColor(dept?.name ?? '');
     return (
@@ -40,7 +34,7 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
         >
           <h3 className="text-sm text-white uppercase font-semibold">{dept.name || 'Unknown'}</h3>
         </div>
-        {dept.children.length ? (
+        {!!dept.children.length && (
           <div className="bg-white shadow overflow-hidden sm:rounded-sm">
             <ul className="divide-y divide-gray-200">
               {dept.children.map((child) => (
@@ -57,8 +51,6 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
               ))}
             </ul>
           </div>
-        ) : (
-          renderEmptyList()
         )}
       </div>
     );
@@ -71,7 +63,7 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}
     >
-      <div className="overflow-hidden space-y-6 pb-5">{departments.map(renderDeptSection)}</div>
+      <div className="overflow-hidden space-y-3 pb-5">{departments.map(renderDeptSection)}</div>
     </InfiniteScroller>
   );
 };
