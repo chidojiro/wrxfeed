@@ -33,6 +33,7 @@ module.exports = (env) => {
           prev[`process.env.${next}`] = JSON.stringify(fileEnv[next]);
           return prev;
         }, {});
+  console.log(envKeys);
 
   return {
     entry: path.resolve('src/index.tsx'),
