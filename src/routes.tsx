@@ -23,7 +23,6 @@ const Discussions = lazy(() => import('@main/pages/Discussion'));
 const Departments = lazy(() => import('@main/pages/Departments'));
 const Categories = lazy(() => import('@main/pages/Categories'));
 const Vendors = lazy(() => import('@main/pages/Vendors'));
-
 const Feed = lazy(() => import('@main/pages/Feed'));
 
 const routes: Route = {
@@ -40,11 +39,12 @@ const routes: Route = {
     path: '/accept-invitation',
     component: AcceptInvitation,
   },
+  // Protected pages
   Feed: {
     path: '/feed/:id',
     component: Feed,
+    permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  // Protected pages
   Onboard: {
     path: '/onboarding',
     component: Onboard,
