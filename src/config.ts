@@ -8,3 +8,4 @@ export const UPLOAD_FILE_ACCEPT =
   'image/*,application/pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel';
 // eslint-disable-next-line prefer-destructuring
 export const SSE_NOTI_ENDPOINT = process.env.SSE_NOTI_ENDPOINT || '';
+export const MICRO_LINK_API_KEY = process.env.MICRO_LINK_API_KEY || '';
