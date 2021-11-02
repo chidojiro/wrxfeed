@@ -34,6 +34,7 @@ export interface TransactionCardProps {
   onClickDepartment?: (department?: Department) => void;
   onClickVendor?: (vendor?: Vendor) => void;
   onClickCategory?: (category?: Category) => void;
+  onClickRootDept?: (rootDept?: Department) => void;
   updateCategory?: (category: Partial<Category>) => Promise<void>;
 }
 
@@ -49,6 +50,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   onClickDepartment,
   onClickVendor,
   onClickCategory,
+  onClickRootDept,
   updateCategory,
 }) => {
   // Recoil states
@@ -184,7 +186,10 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     <>
       <li ref={containerRef} key={transaction.id} className="bg-white filter shadow-md">
         <article className="flex" aria-labelledby={`question-title-${transaction.id}`}>
-          <DepartmentColorSection department={transaction.department.parent} />
+          <DepartmentColorSection
+            department={transaction.department.parent}
+            onClick={onClickRootDept}
+          />
           <div
             className={classNames(
               isHidden ? 'bg-purple-8' : 'bg-white',
