@@ -84,7 +84,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
 
   const updateAvatar = async (avatarUri: string) => {
     const updates = {
-      companyName: profileUser.company || '',
+      companyName: profileUser.company?.name || '',
       title: profileUser.title || '',
       department: profileUser.department || '',
       bio: profileUser.bio || '',
@@ -170,7 +170,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const onClickSaveChange = async () => {
     setLoading(true);
     const updates = {
-      companyName: profileUser.company || '',
+      companyName: profileUser.company?.name || '',
       title: title || profileUser.title,
       department: department || profileUser.department,
       bio: profileUser.bio || '',

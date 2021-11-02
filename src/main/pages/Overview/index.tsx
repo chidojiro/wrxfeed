@@ -16,7 +16,7 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const FilterKeys: string[] = ['department', 'category', 'vendor'];
+const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
 const OverviewPage: React.VFC = () => {
   const query = useQuery();
@@ -73,7 +73,7 @@ const OverviewPage: React.VFC = () => {
       <h1 className="sr-only">Transaction list</h1>
       {!!filterKey && (
         <div className="flex items-center space-x-4 pb-8">
-          <ChevronLeftIcon onClick={clearFilter} />
+          <ChevronLeftIcon className="cursor-pointer" onClick={clearFilter} />
           <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
         </div>
       )}
