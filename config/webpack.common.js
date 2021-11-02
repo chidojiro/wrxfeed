@@ -25,14 +25,21 @@ module.exports = (env) => {
 
   // In case env is not defined, use params from node process. This is for Netlify setting
   if (!fileEnv || typeof fileEnv !== 'object') {
-    fileEnv = process.env;
+    // Get env variables from example file
+    const envExample = basePath + '.example';
+    fileEnv = dotenv.config({ path: envExample }).parsed;
+    // Assign env value from node process
+    fileEnv = Object.keys(fileEnv).reduce((prev, next) => {
+      prev[next] = process.env[next];
+      return prev;
+    }, {});
   }
 
   // reduce it to a nice object, the same as before (but with the variables from the file)
   const envKeys = Object.keys(fileEnv).reduce((prev, next) => {
-          prev[`process.env.${next}`] = JSON.stringify(fileEnv[next]);
-          return prev;
-        }, {});
+    prev[`process.env.${next}`] = JSON.stringify(fileEnv[next]);
+    return prev;
+  }, {});
 
   return {
     entry: path.resolve('src/index.tsx'),
