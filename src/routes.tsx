@@ -24,6 +24,8 @@ const Departments = lazy(() => import('@main/pages/Departments'));
 const Categories = lazy(() => import('@main/pages/Categories'));
 const Vendors = lazy(() => import('@main/pages/Vendors'));
 
+const Feed = lazy(() => import('@main/pages/Feed'));
+
 const routes: Route = {
   // Public pages
   Home: {
@@ -37,6 +39,10 @@ const routes: Route = {
   AcceptInvitation: {
     path: '/accept-invitation',
     component: AcceptInvitation,
+  },
+  Feed: {
+    path: '/feed/:id',
+    component: Feed,
   },
   // Protected pages
   Onboard: {
