@@ -6,7 +6,6 @@ import { Notification } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { SSE_NOTI_ENDPOINT } from '@src/config';
-import { Transaction } from '../entity/transaction.entity';
 
 enum NotiTypes {
   MENTION = 'MENTION',
@@ -21,34 +20,14 @@ interface NotificationHookValues {
   clear: () => void;
   markAllAsRead: () => void;
   isMarkAll: boolean;
-  getTransactionById: (id: number) => Promise<Transaction | undefined>;
-  isGetTran: boolean;
 }
 export function useNotification(page: Pagination): NotificationHookValues {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isMarkAll, setMarkAll] = useState<boolean>(false);
-  const [isGetTran, setIsGetTran] = useState<boolean>(false);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
-
-  const getTransactionById = async (id: number) => {
-    try {
-      setIsGetTran(true);
-      const trans = await ApiClient.getTransactionById(id);
-      return trans;
-      setIsGetTran(false);
-    } catch (error) {
-      setIsGetTran(false);
-      if (isBadRequest(error)) {
-        toast.error('Can not get this transaction 🤦!');
-      } else {
-        await errorHandler(error);
-      }
-      return undefined;
-    }
-  };
 
   const patchNotification = async (id: number) => {
     try {
@@ -142,7 +121,5 @@ export function useNotification(page: Pagination): NotificationHookValues {
     clear,
     markAllAsRead,
     isMarkAll,
-    getTransactionById,
-    isGetTran,
   };
 }
