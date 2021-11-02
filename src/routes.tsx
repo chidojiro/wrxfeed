@@ -40,11 +40,12 @@ const routes: Route = {
     path: '/accept-invitation',
     component: AcceptInvitation,
   },
+  // Protected pages
   Feed: {
     path: '/feed/:id',
     component: Feed,
+    permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  // Protected pages
   Onboard: {
     path: '/onboarding',
     component: Onboard,
