@@ -72,7 +72,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     putTarget(id, data);
   };
 
-  const renderActiveTargets = () => {
+  const renderTargets = () => {
     if (isGetTargets) {
       return (
         <div className="flex h-32 w-full justify-center items-center">
@@ -96,7 +96,6 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
             key={`target-${item?.name}`}
             target={item}
             index={index}
-            isActive
             onPostTarget={handlePostTarget}
             onPutTarget={handlePutTarget}
             isPostTarget={isPostTarget}
@@ -109,12 +108,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
 
   const renderListTargets = () => {
     const overflow = isExpanded ? 'overflow-y-scroll' : 'overflow-hidden';
-    return (
-      <div className={classNames('flex mt-2 flex-col', overflow)}>
-        {renderActiveTargets()}
-        {/* {renderInactiveTargets()} */}
-      </div>
-    );
+    return <div className={classNames('flex mt-2 flex-col', overflow)}>{renderTargets()}</div>;
   };
 
   // min-h-[80vh]

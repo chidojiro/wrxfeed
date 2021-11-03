@@ -9,8 +9,7 @@ import { classNames, parseMoneyInput, replaceAll } from '@common/utils';
 const SystemAlertColor = '#ff5f68';
 export interface TargetRowProps {
   target: Target;
-  index: number;
-  isActive: boolean;
+  index?: number;
   onPostTarget: (data: PostTargetParams) => void;
   onPutTarget: (id: number, data: PutTargetParams) => void;
   isPutTarget: boolean;
@@ -19,7 +18,6 @@ export interface TargetRowProps {
 
 const TargetRow: React.VFC<TargetRowProps> = ({
   target,
-  isActive = false,
   onPostTarget,
   onPutTarget,
   isPutTarget,
@@ -38,6 +36,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   }, [isPutTarget, isPostTarget]);
 
   const deptBgClass = React.useMemo(() => getDepartmentBgColor(target?.name ?? ''), [target?.name]);
+  const isActive = target?.total !== null;
 
   const handlePostTarget = (amountInput: number) => {
     onPostTarget({
@@ -154,9 +153,10 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   };
 
+  const inactiveColor = '#d1d5db';
+
   if (!isActive) {
-    const inactiveColor = '#d1d5db';
-    const currentDemoInactive = 8000;
+    const currentDemoInactive = target?.total ?? 0;
     const amountDemoInactive = 10000;
 
     const percent = (currentDemoInactive / amountDemoInactive) * 100;
@@ -190,7 +190,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
-  const currentTarget: number = target?.total ?? 0;
+  const currentTarget = target?.total ?? 0;
   const maxTarget: number = target?.amount ?? 0;
 
   let percent = (currentTarget / maxTarget) * 100;
@@ -202,10 +202,17 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     if (isExceeds) {
       percent = (maxTarget / currentTarget) * 100;
     }
-    const percentLength = `${percent}%`;
+    const percentLength = percent ? `${percent}%` : '0%';
     const styleTotal = isExceeds ? '' : 'opacity-30';
     const currentColor = deptBgClass;
-    const totalColor = isExceeds ? SystemAlertColor : deptBgClass;
+    let totalColor = deptBgClass;
+
+    if (!isActive) {
+      totalColor = inactiveColor;
+    }
+    if (isExceeds) {
+      totalColor = SystemAlertColor;
+    }
 
     if (isExceeds) {
       return (
