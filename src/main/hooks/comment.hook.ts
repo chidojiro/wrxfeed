@@ -11,8 +11,10 @@ interface CommentHookValues {
   comments: Comment[];
   total: number;
   isLoading: boolean;
-  addComment: (comment: AddCommentParams) => Promise<void>;
   showLessComments: (keep: number) => void;
+  addComment: (comment: AddCommentParams) => Promise<void>;
+  editComment: (comment: Comment) => Promise<void>;
+  deleteComment: (comment: Comment) => Promise<void>;
 }
 
 export function useComment(transaction: Transaction, pagination?: Pagination): CommentHookValues {
@@ -49,6 +51,10 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
     }
   }, [ApiClient, errorHandler, transaction.id, pagination]);
 
+  const showLessComments = (keep: number): void => {
+    setComments((prevComments) => prevComments.slice(-keep));
+  };
+
   const addComment = async (comment: AddCommentParams) => {
     try {
       const res = await ApiClient.addComment(transaction.id, comment);
@@ -69,8 +75,15 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
     }
   };
 
-  const showLessComments = (keep: number): void => {
-    setComments((prevComments) => prevComments.slice(-keep));
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const editComment = async (comment: Comment) => {
+    // TODO: integrate API to update comment
+  };
+
+  const deleteComment = async (comment: Comment) => {
+    // TODO: integrate API to delete comment
+    // Remove comment from current list
+    setComments((prevComments) => prevComments.filter((cmt) => cmt.id !== comment.id));
   };
 
   // invalidate list when component is unmounted
@@ -78,5 +91,5 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
     getComments().then();
   }, [getComments]);
 
-  return { comments, total, isLoading, addComment, showLessComments };
+  return { comments, total, isLoading, showLessComments, addComment, editComment, deleteComment };
 }
