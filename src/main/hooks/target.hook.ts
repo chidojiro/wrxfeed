@@ -35,9 +35,7 @@ export function useTarget(
 
   // Monthly targets - stack targets by the largest monthly spend
   const stackTargetsByTheLargestMonthlySpend = (data: Target[]): Target[] => {
-    const targetStacked = data.sort(
-      (a: Target, b: Target) => parseFloat(b?.total || '0') - parseFloat(a?.total || '0'),
-    );
+    const targetStacked = data.sort((a: Target, b: Target) => (b?.total ?? 0) - (a?.total ?? 0));
     return targetStacked;
   };
 
@@ -48,7 +46,7 @@ export function useTarget(
       const merged = targets.concat(res);
       const targetMap = new Map();
       merged.forEach((target) => {
-        targetMap.set(target.id, target);
+        targetMap.set(target?.depId, target);
       });
       const newTargets = [...targetMap.values()];
       setTargets(stackTargetsByTheLargestMonthlySpend(newTargets));
@@ -70,11 +68,9 @@ export function useTarget(
     try {
       setPostTarget(true);
       await ApiClient.postTarget(data);
-      setPostTarget(false);
       cbPost.onSuccess();
       // getTargets();
     } catch (error) {
-      setPostTarget(false);
       if (cbPost.onError) {
         cbPost.onError(error);
       } else if (isBadRequest(error)) {
@@ -82,6 +78,8 @@ export function useTarget(
       } else {
         await errorHandler(error);
       }
+    } finally {
+      setPostTarget(false);
     }
   };
 
@@ -90,11 +88,9 @@ export function useTarget(
     try {
       setPutTarget(true);
       await ApiClient.putTarget(id, data);
-      setPutTarget(false);
       cbPut.onSuccess();
       // getTargets();
     } catch (error) {
-      setPutTarget(false);
       if (cbPut.onError) {
         cbPut.onError(error);
       } else if (isBadRequest(error)) {
@@ -102,6 +98,8 @@ export function useTarget(
       } else {
         await errorHandler(error);
       }
+    } finally {
+      setPutTarget(false);
     }
   };
 
@@ -109,5 +107,6 @@ export function useTarget(
   useEffect(() => {
     getTargets().then();
   }, [getTargets]);
+
   return { targets, hasMore, isGetTargets, postTarget, putTarget, isPostTarget, isPutTarget };
 }
