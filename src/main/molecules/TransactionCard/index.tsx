@@ -190,12 +190,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
             department={transaction.department.parent}
             onClick={onClickRootDept}
           />
-          <div
-            className={classNames(
-              isHidden ? 'bg-purple-8' : 'bg-white',
-              'flex-grow w-4/5 p-5 border',
-            )}
-          >
+          <div className={classNames(isHidden ? 'bg-purple-8' : 'bg-white', 'flex-grow w-4/5 p-5')}>
             <div className="flex items-center space-x-3">
               <div className="flex items-center min-w-0 flex-1">
                 <p className="text-xs text-Gray-6">
