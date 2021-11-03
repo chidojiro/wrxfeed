@@ -8,6 +8,7 @@ import { NotifyRow } from '@main/atoms';
 import Loading from '@common/atoms/Loading';
 import Routes from '@src/routes';
 import { useHistory } from 'react-router-dom';
+import { classNames } from '@common/utils';
 
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;
@@ -104,34 +105,52 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
     );
   };
 
+  const onBlurIconButton = () => {
+    console.log('Check in onBlurIconButton');
+  };
+
+  const onBlurCapture = () => {
+    console.log('onBlurCapture');
+  };
+
   return (
     <>
-      <Popover as="div" className="flex-shrink-0 relative">
-        <Popover.Button className="mr-2 rounded-full flex focus:outline-none">
-          {renderNotifyIconWithBell()}
-        </Popover.Button>
-        <Popover.Panel>
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <div
-              style={{ width: '450px', ...style }}
-              className="flex flex-col origin-top-right absolute z-10 right-0 mt-2 shadow-dropdown bg-white-50 py-1 focus:outline-none bg-white"
+      <Popover onBlurCapture={onBlurCapture} as="div" className="flex-shrink-0 relative">
+        {({ open }) => (
+          <>
+            <Popover.Button
+              onBlur={onBlurIconButton}
+              className={classNames(
+                'mr-2 rounded-full flex focus:outline-none',
+                open ? 'ring-2 ring-offset-2 ring-rose-500' : '',
+              )}
             >
-              <div className="flex flex-row h-16 w-full border-b-2 pl-8">
-                <p className="flex text-gray-1 font-medium self-center">Notifications</p>
-                {renderMarkAllAsRead()}
-              </div>
-              {renderNotifyList()}
-            </div>
-          </Transition>
-        </Popover.Panel>
+              {renderNotifyIconWithBell()}
+            </Popover.Button>
+            <Popover.Panel>
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
+              >
+                <div
+                  style={{ width: '450px', ...style }}
+                  className="flex flex-col origin-top-right absolute z-10 right-0 mt-2 shadow-dropdown bg-white-50 py-1 focus:outline-none bg-white"
+                >
+                  <div className="flex flex-row h-16 w-full border-b-2 pl-8">
+                    <p className="flex text-gray-1 font-medium self-center">Notifications</p>
+                    {renderMarkAllAsRead()}
+                  </div>
+                  {renderNotifyList()}
+                </div>
+              </Transition>
+            </Popover.Panel>
+          </>
+        )}
       </Popover>
     </>
   );
