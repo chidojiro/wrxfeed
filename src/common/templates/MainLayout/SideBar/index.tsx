@@ -41,10 +41,9 @@ const SideBar: React.VFC = () => {
                     to={leftTab.href}
                     className={classNames(
                       isCurrentTab ? 'bg-Gray-5 text-Gray-3' : 'text-Gray-6 hover:bg-gray-50',
-                      'group flex items-center px-3 h-6 text-sm font-medium rounded-sm my-[2px]',
+                      'group flex items-center px-3 h-6 text-sm font-medium rounded-sm my-0.5 ml-8',
                     )}
                   >
-                    <div className="flex-shrink-0 -ml-1 mr-3 h-6 w-6" />
                     <span className="truncate">{leftTab.name}</span>
                   </RouterLink>
                 );
