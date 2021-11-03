@@ -16,6 +16,7 @@ import { classNames } from '@common/utils';
 export interface CommentFormProps {
   id?: string;
   className?: string;
+  defaultContent?: EditorState;
   onSubmit?: SubmitHandler<CommentFormModel>;
   showAttach?: boolean;
   showSend?: boolean;
@@ -35,6 +36,7 @@ export interface CommentFormProps {
 const CommentBox: React.VFC<CommentFormProps> = ({
   id,
   className,
+  defaultContent,
   onSubmit,
   showAttach = true,
   showSend = true,
@@ -58,7 +60,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     formState: { isSubmitted },
   } = useForm<CommentFormModel>({
     defaultValues: {
-      content: EditorState.createEmpty(),
+      content: defaultContent ?? EditorState.createEmpty(),
     },
   });
   const watchContent = watch('content', EditorState.createEmpty());
@@ -136,7 +138,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     <form onSubmit={onSubmit && handleSubmit(onSubmit)} style={{ ...style }} ref={formRef}>
       <div
         className={classNames(
-          focused || alwaysFocus ? 'border-purple-5 bg-white' : ' border-purple-8',
+          focused || alwaysFocus ? 'border-purple-5 bg-white' : ' border-Gray-11',
           'group flex flex-grow min-w-[70%] items-end border transition-all rounded-[1px] py-1.5 pl-2 pr-1.5',
           className ?? '',
         )}
@@ -148,6 +150,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
           control={control}
           render={({ field }) => (
             <CommentInput
+              autoFocus={alwaysFocus}
               onChange={field.onChange}
               editorState={field.value as EditorState}
               onFocus={onFocusCommentInput}

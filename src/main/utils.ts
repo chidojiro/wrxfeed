@@ -1,4 +1,11 @@
-import { ContentState, convertToRaw, RawDraftContentBlock, RawDraftEntity } from 'draft-js';
+import {
+  ContentState,
+  convertFromRaw,
+  convertToRaw,
+  RawDraftContentBlock,
+  RawDraftEntity,
+  RawDraftEntityRange,
+} from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
@@ -8,7 +15,10 @@ const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
 const MentionRegex =
   /<mention userid=['"][a-zA-Z0-9]+['"] tagname=['"][\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+['"]\/>/gi;
 
-export function tagReplacer(tag: string): string {
+/**
+ * Replace mention tag (<mention />) with HTML <span />
+ */
+export function mentionUIReplacer(tag: string): string {
   const idMatches = tag.match(UserIdRegex);
   const nameMatches = tag.match(TagNameRegex);
   if (!idMatches?.length || !nameMatches?.length) return tag;
@@ -18,20 +28,56 @@ export function tagReplacer(tag: string): string {
   }</span>`;
 }
 
+/**
+ * Replace mention tag (<mention />) with user name
+ */
+export function mentionNameReplacer(tag: string): string {
+  const nameMatches = tag.match(TagNameRegex);
+  if (!nameMatches?.length) return tag;
+
+  return nameMatches[0].split('"')[1];
+}
+
+/**
+ * Replace hyperlink with UI html <a />
+ */
 export function linkReplacer(link: string): string {
   return `<a class='hyperlink' href=${link} target='_blank' rel='noopener noreferrer'>${link}</a>`;
 }
 
+/**
+ * Create mention RawDraftEntity from mention tag (<mention />)
+ */
+export function rawMentionEntityCreator(tag: string): RawDraftEntity | null {
+  const idMatches = tag.match(UserIdRegex);
+  const nameMatches = tag.match(TagNameRegex);
+  if (!idMatches?.length || !nameMatches?.length) return null;
+
+  return {
+    type: 'mention',
+    mutability: 'IMMUTABLE',
+    data: {
+      mention: { id: parseInt(idMatches[0].split('"')[1], 10), name: nameMatches[0].split('"')[1] },
+    },
+  };
+}
+
+/**
+ * Extract hyperlinks matches from text
+ */
 export function extractHyperlinks(text: string): Match[] | null {
   const linkSchemas = ['http:', 'https:'];
   const linkMatches = extractLinks(text);
   return linkMatches?.filter((match) => linkSchemas.includes(match.schema)) || null;
 }
 
+/**
+ * Convert comment content to HTML
+ */
 export function tokenizeComment(text: string): string {
   if (!text) return text;
   // Replace mentions
-  let tokenizedText = text.replace(MentionRegex, tagReplacer);
+  let tokenizedText = text.replace(MentionRegex, mentionUIReplacer);
   // Linkify
   const linkMatches = extractHyperlinks(tokenizedText);
   linkMatches?.forEach((linkMatch) => {
@@ -40,10 +86,16 @@ export function tokenizeComment(text: string): string {
   return tokenizedText;
 }
 
+/**
+ * Create a mention tag from id and name
+ */
 export function mentionTagCreator(id: number, name: string): string {
   return `<mention userid="${id}" tagname="${name}"/>`;
 }
 
+/**
+ * Convert content blocks inlcudes entities of ContentState to text
+ */
 export function contentBlockParser(
   block: RawDraftContentBlock,
   entityMap: { [p: string]: RawDraftEntity<{ [p: string]: unknown }> },
@@ -59,6 +111,9 @@ export function contentBlockParser(
   }, block.text);
 }
 
+/**
+ * Convert ContentState of editor to text
+ */
 export function commentEditorRawParser(contentState: ContentState): string {
   const { blocks, entityMap } = convertToRaw(contentState);
   const rawTextBlocks = blocks.reduce<string[]>(
@@ -66,6 +121,88 @@ export function commentEditorRawParser(contentState: ContentState): string {
     [],
   );
   return rawTextBlocks.join('\n');
+}
+
+/**
+ * Get Indices for entity ranges
+ */
+const getIndicesOf = (searchStr: string, str: string, caseSensitive?: boolean) => {
+  let tempStr = str;
+  let tempSearchStr = searchStr;
+  const searchStrLen = tempSearchStr.length;
+  if (searchStrLen === 0) {
+    return [];
+  }
+  let startIndex = 0;
+  let index;
+  const indices = [];
+  if (!caseSensitive) {
+    tempStr = tempStr.toLowerCase();
+    tempSearchStr = tempSearchStr.toLowerCase();
+  }
+
+  index = tempStr.indexOf(tempSearchStr, startIndex);
+  while (index > -1) {
+    indices.push(index);
+    startIndex = index + searchStrLen;
+    index = tempStr.indexOf(tempSearchStr, startIndex);
+  }
+  return indices;
+};
+
+/**
+ * Get entity ranges of mention in text
+ */
+const getMentionEntityRanges = (text: string, mentionName: string, mentionKey: number) => {
+  const indices = getIndicesOf(mentionName, text);
+  if (indices.length > 0) {
+    return indices.map((offset) => ({
+      key: mentionKey,
+      length: mentionName.length,
+      offset,
+    }));
+  }
+
+  return null;
+};
+
+/**
+ * Convert a comment text to Draftjs ContentState
+ */
+export function commentTextToContentState(text: string): ContentState {
+  const mentionMatches = text.match(MentionRegex);
+  const rawText = text.replace(MentionRegex, mentionNameReplacer);
+  if (mentionMatches?.length) {
+    // Create content state with mention entities
+    const rawContent = convertToRaw(ContentState.createFromText(rawText));
+    // Create mention draft raw entities
+    const rawMentionState = mentionMatches.reduce<{ [key: string]: RawDraftEntity }>(
+      (map, tag, idx) => {
+        const entity = rawMentionEntityCreator(tag);
+        if (!entity) return map;
+        return { ...map, [idx]: entity };
+      },
+      {},
+    );
+    rawContent.entityMap = rawMentionState;
+    // Map mention entities to content blocks
+    rawContent.blocks = rawContent.blocks.map((block) => {
+      const ranges: RawDraftEntityRange[] = [];
+      Object.keys(rawMentionState).forEach((key) => {
+        const entityRanges = getMentionEntityRanges(
+          block.text,
+          rawMentionState[key].data.mention.name,
+          parseInt(key, 10),
+        );
+        if (entityRanges) {
+          ranges.push(...entityRanges);
+        }
+      });
+      return { ...block, entityRanges: ranges };
+    });
+    return convertFromRaw(rawContent);
+  }
+  return ContentState.createFromText(text);
 }
 
 /**

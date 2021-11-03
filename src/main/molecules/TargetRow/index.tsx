@@ -36,7 +36,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   }, [isPutTarget, isPostTarget]);
 
   const deptBgClass = React.useMemo(() => getDepartmentBgColor(target?.name ?? ''), [target?.name]);
-  const isActive = target?.total !== null;
+  const isActive = (target?.amount ?? 0) > 0 && target?.id !== null;
 
   const handlePostTarget = (amountInput: number) => {
     onPostTarget({
@@ -154,14 +154,16 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   };
 
   const inactiveColor = '#d1d5db';
+  const inactiveTarget = 'rgba(209,213,219,0.3)';
 
   if (!isActive) {
+    // inactive target
     const currentDemoInactive = target?.total ?? 0;
     const amountDemoInactive = 10000;
 
     const percent = (currentDemoInactive / amountDemoInactive) * 100;
     const percentLength = `${percent}%`;
-    const currentCurrency = `$${Math.round((currentDemoInactive / 1000) * 10) / 10}K`;
+    const currentCurrency = nFormatter(currentDemoInactive);
     const totalAmountCurrency = `$${Math.round((amountDemoInactive / 1000) * 10) / 10}K(est)`;
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
@@ -177,10 +179,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
             </div>
           </div>
           <div className="flex flex-col flex-1">
-            <div
-              className="flex mt-1 w-full h-1 opacity-30"
-              style={{ backgroundColor: inactiveColor }}
-            />
+            <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveTarget }} />
             <div className="flex text-Gray-6 text-2xs mt-1 font-bold ml-auto">
               {totalAmountCurrency}
             </div>

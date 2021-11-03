@@ -8,7 +8,7 @@ const MainLayout: React.FC = ({ children }) => {
     <div className="relative">
       <NavBar />
       <div className="pt-navbar pb-10">
-        <div className="min-h-screen max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-5">
+        <div className="min-h-screen max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12">
           <div className="relative hidden lg:block lg:col-span-2 xl:col-span-2">
             <SideBar />
           </div>
@@ -17,7 +17,7 @@ const MainLayout: React.FC = ({ children }) => {
             {children}
           </main>
 
-          <aside className="hidden xl:block xl:col-span-3">
+          <aside className="hidden xl:block xl:col-span-3 lg:pl-5">
             <div id="main-right-side" className="sticky top-14" />
           </aside>
         </div>

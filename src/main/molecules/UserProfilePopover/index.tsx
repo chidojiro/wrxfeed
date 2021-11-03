@@ -12,6 +12,7 @@ import { useFileUploader } from '@common/hooks/useFileUploader';
 import { toast } from 'react-toastify';
 import Loading from '@common/atoms/Loading';
 import { Profile } from '@auth/types';
+import { classNames } from '@common/utils';
 
 export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
@@ -215,15 +216,19 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
 
   return (
     <Popover as="div" className="flex-shrink-0 relative" style={style}>
-      <Popover.Button className="bg-white rounded-full flex focus:outline-none">
-        {renderAvatarIcon()}
-      </Popover.Button>
-      <Popover.Panel className="absolute z-50">
-        {({ open }) => {
-          return (
+      {({ open }) => (
+        <>
+          <Popover.Button
+            className={classNames(
+              'bg-white rounded-full flex focus:outline-none',
+              open ? 'ring-2 ring-offset-2 ring-rose-500' : '',
+            )}
+          >
+            {renderAvatarIcon()}
+          </Popover.Button>
+          <Popover.Panel className="absolute z-50">
             <Transition
               as={Fragment}
-              show={open}
               enter="transition ease-out duration-100"
               enterFrom="transform opacity-0 scale-95"
               enterTo="transform opacity-100 scale-100"
@@ -266,9 +271,9 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
                 {renderLogout()}
               </div>
             </Transition>
-          );
-        }}
-      </Popover.Panel>
+          </Popover.Panel>
+        </>
+      )}
     </Popover>
   );
 };
