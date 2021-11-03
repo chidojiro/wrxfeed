@@ -9,8 +9,7 @@ import { classNames, parseMoneyInput, replaceAll } from '@common/utils';
 const SystemAlertColor = '#ff5f68';
 export interface TargetRowProps {
   target: Target;
-  index: number;
-  isActive: boolean;
+  index?: number;
   onPostTarget: (data: PostTargetParams) => void;
   onPutTarget: (id: number, data: PutTargetParams) => void;
   isPutTarget: boolean;
@@ -19,7 +18,6 @@ export interface TargetRowProps {
 
 const TargetRow: React.VFC<TargetRowProps> = ({
   target,
-  isActive = false,
   onPostTarget,
   onPutTarget,
   isPutTarget,
@@ -37,17 +35,15 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     }
   }, [isPutTarget, isPostTarget]);
 
-  const deptBgClass = React.useMemo(
-    () => getDepartmentBgColor(target?.department?.name ?? ''),
-    [target?.department?.name],
-  );
+  const deptBgClass = React.useMemo(() => getDepartmentBgColor(target?.name ?? ''), [target?.name]);
+  const isActive = target?.total !== null;
 
   const handlePostTarget = (amountInput: number) => {
     onPostTarget({
       month: new Date().getMonth() + 1, // Get the month (0-11)
       year: new Date().getFullYear(),
       amount: amountInput,
-      departmentId: target?.department?.id,
+      departmentId: target?.depId,
     });
   };
 
@@ -104,7 +100,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     return (
       <div className="flex flex-row py-3 px-6 mb-4">
         <div className="flex flex-col">
-          <div className="flex text-xs text-Gray-6 font-normal">{target?.department?.name}</div>
+          <div className="flex text-xs text-Gray-6 font-normal">{target?.name}</div>
           {!!loading && <Loading width={15} height={15} className="flex mt-1" />}
           {/* <Loading width={15} height={15} className="flex mt-1" /> */}
         </div>
@@ -157,9 +153,10 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   };
 
+  const inactiveColor = '#d1d5db';
+
   if (!isActive) {
-    const inactiveColor = '#d1d5db';
-    const currentDemoInactive = 8000;
+    const currentDemoInactive = target?.total ?? 0;
     const amountDemoInactive = 10000;
 
     const percent = (currentDemoInactive / amountDemoInactive) * 100;
@@ -169,7 +166,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
-          <div className="flex text-Gray-6 font-regular text-sm">{target?.department?.name}</div>
+          <div className="flex text-Gray-6 font-regular text-sm">{target?.name}</div>
           {renderEditButton()}
         </div>
         <div className="flex flex-row">
@@ -193,22 +190,29 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
-  const currentTarget = target?.total ?? '0';
-  const { amount: maxTarget } = target;
+  const currentTarget = target?.total ?? 0;
+  const maxTarget: number = target?.amount ?? 0;
 
-  let percent = (parseFloat(currentTarget) / parseFloat(maxTarget)) * 100;
-  const currentCurrency = nFormatter(parseFloat(currentTarget));
-  const totalAmountCurrency = nFormatter(Math.abs(parseFloat(maxTarget)));
-  const isExceeds = parseFloat(currentTarget) > parseFloat(maxTarget);
+  let percent = (currentTarget / maxTarget) * 100;
+  const currentCurrency = nFormatter(currentTarget);
+  const totalAmountCurrency = nFormatter(Math.abs(maxTarget));
+  const isExceeds = currentTarget > maxTarget;
 
   const renderCurrentPerTotalBar = () => {
     if (isExceeds) {
-      percent = (parseFloat(maxTarget) / parseFloat(currentTarget)) * 100;
+      percent = (maxTarget / currentTarget) * 100;
     }
-    const percentLength = `${percent}%`;
+    const percentLength = percent ? `${percent}%` : '0%';
     const styleTotal = isExceeds ? '' : 'opacity-30';
     const currentColor = deptBgClass;
-    const totalColor = isExceeds ? SystemAlertColor : deptBgClass;
+    let totalColor = deptBgClass;
+
+    if (!isActive) {
+      totalColor = inactiveColor;
+    }
+    if (isExceeds) {
+      totalColor = SystemAlertColor;
+    }
 
     if (isExceeds) {
       return (
@@ -258,7 +262,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   const renderAlertText = () => {
     if (!isExceeds) return null;
-    const exceedNumber = parseFloat(maxTarget) - parseFloat(currentTarget);
+    const exceedNumber = maxTarget - currentTarget;
     const exceedNumberCurrency = nFormatter(Math.round(exceedNumber * 100) / 100);
     return (
       <div
@@ -273,7 +277,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   return (
     <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
       <div className="flex flex-row items-center">
-        <div className="flex text-Gray-6 font-regular text-sm">{target?.department?.name}</div>
+        <div className="flex text-Gray-6 font-regular text-sm">{target?.name}</div>
         {renderAlertText()}
         {renderEditButton()}
       </div>
