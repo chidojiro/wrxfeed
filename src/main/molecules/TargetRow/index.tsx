@@ -37,17 +37,14 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     }
   }, [isPutTarget, isPostTarget]);
 
-  const deptBgClass = React.useMemo(
-    () => getDepartmentBgColor(target?.department?.name ?? ''),
-    [target?.department?.name],
-  );
+  const deptBgClass = React.useMemo(() => getDepartmentBgColor(target?.name ?? ''), [target?.name]);
 
   const handlePostTarget = (amountInput: number) => {
     onPostTarget({
       month: new Date().getMonth() + 1, // Get the month (0-11)
       year: new Date().getFullYear(),
       amount: amountInput,
-      departmentId: target?.department?.id,
+      departmentId: target?.depId,
     });
   };
 
@@ -104,7 +101,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     return (
       <div className="flex flex-row py-3 px-6 mb-4">
         <div className="flex flex-col">
-          <div className="flex text-xs text-Gray-6 font-normal">{target?.department?.name}</div>
+          <div className="flex text-xs text-Gray-6 font-normal">{target?.name}</div>
           {!!loading && <Loading width={15} height={15} className="flex mt-1" />}
           {/* <Loading width={15} height={15} className="flex mt-1" /> */}
         </div>
@@ -169,7 +166,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
-          <div className="flex text-Gray-6 font-regular text-sm">{target?.department?.name}</div>
+          <div className="flex text-Gray-6 font-regular text-sm">{target?.name}</div>
           {renderEditButton()}
         </div>
         <div className="flex flex-row">
@@ -193,17 +190,17 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
-  const currentTarget = target?.total ?? '0';
-  const { amount: maxTarget } = target;
+  const currentTarget: number = target?.total ?? 0;
+  const maxTarget: number = target?.amount ?? 0;
 
-  let percent = (parseFloat(currentTarget) / parseFloat(maxTarget)) * 100;
-  const currentCurrency = nFormatter(parseFloat(currentTarget));
-  const totalAmountCurrency = nFormatter(Math.abs(parseFloat(maxTarget)));
-  const isExceeds = parseFloat(currentTarget) > parseFloat(maxTarget);
+  let percent = (currentTarget / maxTarget) * 100;
+  const currentCurrency = nFormatter(currentTarget);
+  const totalAmountCurrency = nFormatter(Math.abs(maxTarget));
+  const isExceeds = currentTarget > maxTarget;
 
   const renderCurrentPerTotalBar = () => {
     if (isExceeds) {
-      percent = (parseFloat(maxTarget) / parseFloat(currentTarget)) * 100;
+      percent = (maxTarget / currentTarget) * 100;
     }
     const percentLength = `${percent}%`;
     const styleTotal = isExceeds ? '' : 'opacity-30';
@@ -258,7 +255,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   const renderAlertText = () => {
     if (!isExceeds) return null;
-    const exceedNumber = parseFloat(maxTarget) - parseFloat(currentTarget);
+    const exceedNumber = maxTarget - currentTarget;
     const exceedNumberCurrency = nFormatter(Math.round(exceedNumber * 100) / 100);
     return (
       <div
@@ -273,7 +270,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   return (
     <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
       <div className="flex flex-row items-center">
-        <div className="flex text-Gray-6 font-regular text-sm">{target?.department?.name}</div>
+        <div className="flex text-Gray-6 font-regular text-sm">{target?.name}</div>
         {renderAlertText()}
         {renderEditButton()}
       </div>
