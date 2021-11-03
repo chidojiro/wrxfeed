@@ -24,6 +24,7 @@ module.exports = {
         'Gray-2': '#273240',
         'Gray-3': '#374151',
         'Gray-4': '#9EA0AA',
+        'Gray-5': '#d1d5db',
         'Gray-6': '#7D8490',
         'Gray-8': '#a5a3a9',
         'Gray-11': '#DFE1E6',
@@ -53,6 +54,9 @@ module.exports = {
         'purple-7': '#C4B5FD',
         'purple-8': '#EDE9FE',
         'purple-9': '#F5F3FF',
+        'purple-10': '#F2F2F8',
+        'purple-11': '#F3F3F7',
+        'purple-12': '#F9F9FC',
 
         'system-success': '#5DC258',
         'system-alert': '#FF5F68',
