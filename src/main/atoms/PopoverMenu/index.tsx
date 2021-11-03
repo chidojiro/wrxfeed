@@ -1,7 +1,7 @@
 import React, { Fragment, ReactElement } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 
-const PopoverMenu: React.FC<{ children: ReactElement[] }> = ({ children }) => {
+const PopoverMenu: React.FC<{ children: ReactElement | ReactElement[] }> = ({ children }) => {
   return (
     <Transition
       as={Fragment}

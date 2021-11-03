@@ -6,10 +6,17 @@ import { classNames } from '@common/utils';
 interface PopoverMenuItemProps {
   value: string;
   label: string;
-  onClick: () => void;
+  labelClassName?: string;
+  onClick?: () => void;
 }
 
-const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({ value, label, onClick, ...rest }) => {
+const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({
+  value,
+  label,
+  labelClassName,
+  onClick,
+  ...rest
+}) => {
   return (
     <Menu.Item key={value} {...rest}>
       {({ active }) => (
@@ -18,6 +25,7 @@ const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({ value, label, onClic
           className={classNames(
             active ? 'bg-purple-7 text-Gray-1' : 'text-Gray-1',
             'flex px-4 py-2 text-sm',
+            labelClassName ?? '',
           )}
           onClick={onClick}
         >

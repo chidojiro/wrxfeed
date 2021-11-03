@@ -1,22 +1,44 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useCallback, useEffect, useMemo, useState } from 'react';
+import { MentionData } from '@draft-js-plugins/mention';
+import { EditorState } from 'draft-js';
 import { Comment } from '@main/entity';
+import { classNames } from '@common/utils';
 import CommentOwner from '@main/atoms/CommentOwner';
 import CommentText from '@main/atoms/CommentText';
 import CommentImage from '@main/atoms/CommentImage';
 import { DocumentDownloadIcon } from '@heroicons/react/outline';
 import Microlink from '@microlink/react';
-import { extractHyperlinks } from '@main/utils';
+import { extractHyperlinks, commentTextToContentState } from '@main/utils';
 import { MICRO_LINK_API_KEY } from '@src/config';
+import { Menu } from '@headlessui/react';
+import PopoverMenu from '@main/atoms/PopoverMenu';
+import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
+import CommentBox from '@main/molecules/CommentBox';
+// Icons
+import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
+import { ReactComponent as XCircleIcon } from '@assets/icons/outline/x-circle.svg';
 
 const IMAGE_EXT = 'jpg,png,jpeg,gif';
 
 export interface CommentItemProps {
   comment: Comment;
+  mentionData?: MentionData[];
   className?: string;
   style?: CSSProperties;
+  onEdit?: (comment: Comment) => void;
+  onDelete?: (comment: Comment) => void;
 }
 
-const CommentItem: React.VFC<CommentItemProps> = ({ className, comment, ...rest }) => {
+const CommentItem: React.VFC<CommentItemProps> = ({
+  className,
+  comment,
+  mentionData,
+  onEdit,
+  onDelete,
+  ...rest
+}) => {
+  const [isHover, setHover] = useState(false);
+  const [isEditing, setEditing] = useState(false);
   const attachmentType = comment.attachment?.split('.').slice(-1)[0] ?? '';
   const attachmentName = comment.attachment?.split('/').slice(-1)[0] ?? '';
   // Remove prefix to get original name (format: <time>-<id>-<time>-<originalName>.ext)
@@ -25,6 +47,24 @@ const CommentItem: React.VFC<CommentItemProps> = ({ className, comment, ...rest 
     .slice(3, attachmentName.split('-').length)
     .join('-');
   const hyperlinks = extractHyperlinks(comment.content);
+  const contentState = useMemo(() => {
+    return commentTextToContentState(comment.content);
+  }, [comment.content]);
+
+  const escFunction = useCallback((event) => {
+    if (event.keyCode === 27) {
+      // Do whatever when esc is pressed
+      setEditing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('keydown', escFunction, false);
+
+    return () => {
+      document.removeEventListener('keydown', escFunction, false);
+    };
+  }, [escFunction]);
 
   const renderAttachment = () =>
     IMAGE_EXT.includes(attachmentType.toLowerCase()) ? (
@@ -45,12 +85,64 @@ const CommentItem: React.VFC<CommentItemProps> = ({ className, comment, ...rest 
         url={hyperlinks[0].url}
       />
     );
-  return (
-    <div className={`bg-LightBG py-2 px-3.5 space-y-1 ${className}`} {...rest}>
-      <CommentOwner owner={comment.user} commentDate={comment.createdAt} />
+  return !isEditing ? (
+    <div
+      className={classNames(
+        'group bg-purple-10 py-2 px-3.5 space-y-1 hover:bg-purple-12',
+        className ?? '',
+      )}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      {...rest}
+    >
+      <div className="flex flex-row justify-between itmes-center">
+        <CommentOwner owner={comment.user} commentDate={comment.createdAt} />
+        {isHover && (
+          <Menu as="div" className="relative inline-block text-left invisible group-hover:visible">
+            <div>
+              <Menu.Button className="-mr-3 px-2 py-[2.5px] rounded-full flex items-center text-gray-400 hover:text-gray-600">
+                <span className="sr-only">comment options</span>
+                <MoreVerticalIcon aria-hidden="true" viewBox="0 0 15 15" />
+              </Menu.Button>
+            </div>
+            <PopoverMenu>
+              <PopoverMenuItem
+                key="edit-comment"
+                value="edit-comment"
+                label="Edit"
+                onClick={() => setEditing(true)}
+              />
+              <PopoverMenuItem
+                key="delete-comment"
+                labelClassName="text-system-alert"
+                value="delete-comment"
+                label="Delete"
+                onClick={() => onDelete && onDelete(comment)}
+              />
+            </PopoverMenu>
+          </Menu>
+        )}
+      </div>
       <CommentText content={comment.content} />
       {!!comment.attachment && renderAttachment()}
       {!!hyperlinks?.length && renderLinkPreview()}
+    </div>
+  ) : (
+    <div className="py-2 space-y-2">
+      <CommentBox
+        alwaysFocus
+        mentionData={mentionData}
+        defaultContent={EditorState.createWithContent(contentState)}
+      />
+      <div className="flex justify-end items-center w-full space-x-1">
+        <XCircleIcon
+          width={13}
+          height={13}
+          viewBox="0 0 17 17"
+          className="stroke-current path-no-stroke text-Gray-6"
+        />
+        <span className="text-xs text-Gray-6 align-middle">Esc to Cancel</span>
+      </div>
     </div>
   );
 };

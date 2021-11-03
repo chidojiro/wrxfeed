@@ -63,10 +63,8 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
   const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
   // Data hooks
-  const { comments, total, isLoading, addComment, showLessComments } = useComment(
-    transaction,
-    filter,
-  );
+  const { comments, total, isLoading, addComment, editComment, deleteComment, showLessComments } =
+    useComment(transaction, filter);
   const { mentions } = useMention();
   const { checkPermission } = usePermission();
   // Variables
@@ -264,10 +262,11 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                   {comments?.map((comment) => (
                     <li key={comment.id}>
                       <CommentItem
-                        style={{
-                          backgroundColor: isHidden ? '#F3F3F7' : 'rgba(192, 191, 223, 0.1)',
-                        }}
+                        className={isHidden ? 'bg-purple-11' : 'bg-purple-10'}
                         comment={comment}
+                        mentionData={mentions}
+                        onEdit={editComment}
+                        onDelete={deleteComment}
                       />
                     </li>
                   ))}

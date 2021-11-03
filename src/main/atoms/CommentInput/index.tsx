@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useCallback, useMemo, useRef, useState } from 'react';
+import React, { KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { convertToRaw, DraftHandleValue, EditorProps, EditorState, KeyBindingUtil } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
@@ -24,12 +24,14 @@ const linkifyPlugin = createLinkifyPlugin({
 interface CommentInputProps extends EditorProps {
   onEnterPress?: () => void;
   mentions?: MentionData[];
+  autoFocus?: boolean;
 }
 
 const CommentInput: React.VFC<CommentInputProps> = ({
   onEnterPress,
   mentions,
   onChange,
+  autoFocus,
   ...rest
 }) => {
   const editorRef = useRef<Editor>(null);
@@ -57,6 +59,7 @@ const CommentInput: React.VFC<CommentInputProps> = ({
         mentionSuggestionsEntryText: 'mention-suggestion-text',
         mentionSuggestionsEntryTextFocused: 'mention-suggestion-text--focused',
         mentionSuggestions: 'mention-suggestion-container',
+        mention: 'mention',
       },
     });
     return {
@@ -64,6 +67,13 @@ const CommentInput: React.VFC<CommentInputProps> = ({
       MentionSuggestions: mentionPlugin.MentionSuggestions,
     };
   }, []);
+
+  useEffect(() => {
+    if (editorRef.current && autoFocus) {
+      // Waiting for initializing mentions
+      setTimeout(editorRef.current.focus, 200);
+    }
+  }, [autoFocus]);
 
   const handleReturn = (event: KeyboardEvent): DraftHandleValue => {
     if (event.key === 'Enter' && !isSoftNewlineEvent(event)) {
