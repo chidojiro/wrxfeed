@@ -40,8 +40,8 @@ const SideBar: React.VFC = () => {
                     key={`tabs-${leftTab.name}`}
                     to={leftTab.href}
                     className={classNames(
-                      isCurrentTab ? 'bg-Gray-11 text-Gray-3' : 'text-Gray-6 hover:bg-gray-50',
-                      'group flex items-center px-3 h-6 text-sm font-medium rounded-sm',
+                      isCurrentTab ? 'bg-Gray-5 text-Gray-3' : 'text-Gray-6 hover:bg-gray-50',
+                      'group flex items-center px-3 h-6 text-sm font-medium rounded-sm my-[2px]',
                     )}
                   >
                     <div className="flex-shrink-0 -ml-1 mr-3 h-6 w-6" />
