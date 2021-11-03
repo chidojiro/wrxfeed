@@ -20,7 +20,6 @@ const SideBar: React.VFC = () => {
               >
                 {IconView ? (
                   <IconView
-                    style={{ width: '24px', height: '24px' }}
                     className="flex-shrink-0 -ml-1 mr-3 h-6 w-6"
                     aria-hidden="true"
                     width={12}
