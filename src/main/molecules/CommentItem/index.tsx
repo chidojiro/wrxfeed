@@ -14,9 +14,11 @@ import { Menu } from '@headlessui/react';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import CommentBox from '@main/molecules/CommentBox';
+import ConfirmModal from '@main/atoms/ConfirmModal';
 // Icons
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as XCircleIcon } from '@assets/icons/outline/x-circle.svg';
+import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 
 const IMAGE_EXT = 'jpg,png,jpeg,gif';
 
@@ -29,6 +31,13 @@ export interface CommentItemProps {
   onDelete?: (comment: Comment) => void;
 }
 
+interface ConfirmModalProps {
+  title: string;
+  description: string;
+  confirmAction: () => void;
+  confirmLabel: string;
+}
+
 const CommentItem: React.VFC<CommentItemProps> = ({
   className,
   comment,
@@ -37,8 +46,11 @@ const CommentItem: React.VFC<CommentItemProps> = ({
   onDelete,
   ...rest
 }) => {
+  // Local states
   const [isHover, setHover] = useState(false);
   const [isEditing, setEditing] = useState(false);
+  const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
+  // Variables
   const attachmentType = comment.attachment?.split('.').slice(-1)[0] ?? '';
   const attachmentName = comment.attachment?.split('/').slice(-1)[0] ?? '';
   // Remove prefix to get original name (format: <time>-<id>-<time>-<originalName>.ext)
@@ -66,6 +78,15 @@ const CommentItem: React.VFC<CommentItemProps> = ({
     };
   }, [escFunction]);
 
+  const onDeleteComment = () => {
+    setConfirmModal({
+      title: 'Delete this comment?',
+      description: 'Are you sure you want to delete this comment?',
+      confirmAction: () => onDelete && onDelete(comment),
+      confirmLabel: 'Delete',
+    });
+  };
+
   const renderAttachment = () =>
     IMAGE_EXT.includes(attachmentType.toLowerCase()) ? (
       <CommentImage src={comment.attachment ?? ''} />
@@ -86,47 +107,64 @@ const CommentItem: React.VFC<CommentItemProps> = ({
       />
     );
   return !isEditing ? (
-    <div
-      className={classNames(
-        'group bg-purple-10 py-2 px-3.5 space-y-1 hover:bg-purple-12',
-        className ?? '',
-      )}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      {...rest}
-    >
-      <div className="flex flex-row justify-between itmes-center">
-        <CommentOwner owner={comment.user} commentDate={comment.createdAt} />
-        {isHover && (
-          <Menu as="div" className="relative inline-block text-left invisible group-hover:visible">
-            <div>
-              <Menu.Button className="-mr-3 px-2 py-[2.5px] rounded-full flex items-center text-gray-400 hover:text-gray-600">
-                <span className="sr-only">comment options</span>
-                <MoreVerticalIcon aria-hidden="true" viewBox="0 0 15 15" />
-              </Menu.Button>
-            </div>
-            <PopoverMenu>
-              <PopoverMenuItem
-                key="edit-comment"
-                value="edit-comment"
-                label="Edit"
-                onClick={() => setEditing(true)}
-              />
-              <PopoverMenuItem
-                key="delete-comment"
-                labelClassName="text-system-alert"
-                value="delete-comment"
-                label="Delete"
-                onClick={() => onDelete && onDelete(comment)}
-              />
-            </PopoverMenu>
-          </Menu>
+    <>
+      <div
+        className={classNames(
+          'group bg-purple-10 py-2 px-3.5 space-y-1 hover:bg-purple-12',
+          className ?? '',
         )}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        {...rest}
+      >
+        <div className="flex flex-row justify-between itmes-center">
+          <CommentOwner owner={comment.user} commentDate={comment.createdAt} />
+          {isHover && (
+            <Menu
+              as="div"
+              className="relative inline-block z-50 text-left invisible group-hover:visible"
+            >
+              <div>
+                <Menu.Button className="-mr-3 px-2 py-[2.5px] rounded-full flex items-center text-gray-400 hover:text-gray-600">
+                  <span className="sr-only">comment options</span>
+                  <MoreVerticalIcon aria-hidden="true" viewBox="0 0 15 15" />
+                </Menu.Button>
+              </div>
+              <PopoverMenu>
+                <PopoverMenuItem
+                  key="edit-comment"
+                  value="edit-comment"
+                  label="Edit"
+                  onClick={() => setEditing(true)}
+                />
+                <PopoverMenuItem
+                  key="delete-comment"
+                  labelClassName="text-system-alert"
+                  value="delete-comment"
+                  label="Delete"
+                  onClick={onDeleteComment}
+                />
+              </PopoverMenu>
+            </Menu>
+          )}
+        </div>
+        <CommentText content={comment.content} />
+        {!!comment.attachment && renderAttachment()}
+        {!!hyperlinks?.length && renderLinkPreview()}
       </div>
-      <CommentText content={comment.content} />
-      {!!comment.attachment && renderAttachment()}
-      {!!hyperlinks?.length && renderLinkPreview()}
-    </div>
+      <ConfirmModal
+        open={!!confirmModal}
+        icon={<ExclamationCircle />}
+        title={confirmModal?.title || ''}
+        okLabel={confirmModal?.confirmLabel}
+        onClose={() => setConfirmModal(undefined)}
+        onOk={confirmModal?.confirmAction}
+      >
+        <p id="modal-modal-description" className="text-Gray-6 text-sm">
+          {confirmModal?.description}
+        </p>
+      </ConfirmModal>
+    </>
   ) : (
     <div className="py-2 space-y-2">
       <CommentBox
