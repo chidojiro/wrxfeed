@@ -53,7 +53,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
     }
 
     return (
-      <div className="flex flex-1 flex-col pb-4 pt-3 overflow-y-scroll max-h-96">
+      <div className="flex flex-1 flex-col pb-4 pt-3 overflow-hidden overflow-y-auto max-h-96">
         {notifies.map((item: Notification, index: number) => {
           return (
             <NotifyRow

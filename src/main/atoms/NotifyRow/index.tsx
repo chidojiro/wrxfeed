@@ -2,6 +2,9 @@ import { Notification } from '@main/entity';
 import React from 'react';
 import { formatDate } from '@common/utils';
 import CommentText from '@main/atoms/CommentText';
+// import dayjs from 'dayjs';
+
+// import relativeTime from 'dayjs/plugin/relativeTime';
 
 export interface NotifyRowProps {
   item: Notification;
@@ -9,6 +12,8 @@ export interface NotifyRowProps {
   style?: React.CSSProperties;
   onClickNotifyAndSeen: () => void;
 }
+
+// dayjs.extend(relativeTime);
 
 const NotifyRow: React.VFC<NotifyRowProps> = ({ item, onClickNotifyAndSeen }) => {
   return (
@@ -29,6 +34,8 @@ const NotifyRow: React.VFC<NotifyRowProps> = ({ item, onClickNotifyAndSeen }) =>
             style={{ fontSize: '10px' }}
           >
             {formatDate(item?.createdAt)}
+            {/* {dayjs(item?.createdAt).format('DD/MM/YYYY | hh:mm')} */}
+            {/* {dayjs(item?.createdAt).fromNow(true)} */}
           </div>
         </div>
       </div>

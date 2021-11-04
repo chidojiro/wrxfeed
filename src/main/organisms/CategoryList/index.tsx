@@ -19,7 +19,7 @@ const CategoryList: React.VFC<CategoryListProps> = ({
 }) => {
   return (
     <InfiniteScroller
-      className="pb-14 mr-0.5 space-y-10 overflow-scroll"
+      className="pb-14 mr-0.5 space-y-10 overflow-hidden"
       onLoadMore={onLoadMore}
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}
