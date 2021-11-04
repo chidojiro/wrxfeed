@@ -89,7 +89,7 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
       setTotal(total - 1);
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error('Can not delete comments');
+        toast.error('Fail to delete this comment');
       } else {
         await errorHandler(error);
       }
