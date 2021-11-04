@@ -81,9 +81,21 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
   };
 
   const deleteComment = async (comment: Comment) => {
-    // TODO: integrate API to delete comment
-    // Remove comment from current list
-    setComments((prevComments) => prevComments.filter((cmt) => cmt.id !== comment.id));
+    try {
+      setLoading(true);
+      await ApiClient.deleteComment(comment.id);
+      // Remove comment from current list
+      setComments((prevComments) => prevComments.filter((cmt) => cmt.id !== comment.id));
+      setTotal(total - 1);
+    } catch (error) {
+      if (isBadRequest(error)) {
+        toast.error('Can not delete comments');
+      } else {
+        await errorHandler(error);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   // invalidate list when component is unmounted

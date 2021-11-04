@@ -2,7 +2,7 @@ import { Transaction } from './transaction.entity';
 import { User } from './user.entity';
 
 export type Comment = {
-  id: number | string;
+  id: number;
   content: string;
   attachment?: string;
   user: User;
