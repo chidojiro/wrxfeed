@@ -86,10 +86,10 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     if (isLoading) return;
     if (hiddenCommentCount > 0) {
       // Load more
-      setFilter((prevFilter) => ({
+      setFilter({
         limit: LOAD_MORE_LIMIT,
-        offset: prevFilter.offset + prevFilter.limit,
-      }));
+        offset: comments?.length ?? 0,
+      });
     } else {
       // Show less
       showLessComments(INITIAL_COMMENT_NUMBER);

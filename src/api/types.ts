@@ -37,6 +37,7 @@ export interface ApiClient {
   getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: AddCommentParams) => Promise<Comment>;
+  deleteComment: (commentId: number) => Promise<void>;
   getTransactionById: (id: number) => Promise<Transaction>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
