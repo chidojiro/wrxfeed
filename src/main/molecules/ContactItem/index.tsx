@@ -20,7 +20,21 @@ const ContactItem: VFC<ContactItemProps> = ({ className, contact, onSelect }) =>
       onKeyDown={() => onSelect && onSelect(contact)}
     >
       <div>
-        <p className="text-xs text-Gray-1 font-semibold">{contact.name ?? '<unknown>'}</p>
+        <div className="flex flex-row space-x-1">
+          <p className="text-xs text-Gray-1 font-semibold">{contact.name ?? '<unknown>'}</p>
+          {contact.title && (
+            <p className="text-xs text-Gray-1">
+              <span className="text-Gray-6">• </span>
+              {contact.title}
+            </p>
+          )}
+          {contact.department && (
+            <p className="text-xs text-Gray-1">
+              <span className="text-Gray-6">• </span>
+              {contact.department}
+            </p>
+          )}
+        </div>
         <p className="text-xs text-Gray-6 font-semibold">{contact.email}</p>
       </div>
     </li>
