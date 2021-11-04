@@ -100,7 +100,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
 
   // Listen EventStream
   useEffect(() => {
-    const sse = new EventSource(SSE_NOTI_ENDPOINT, { withCredentials: true });
+    const sse = new EventSource(SSE_NOTI_ENDPOINT, { withCredentials: false });
     sse.onmessage = (e) => getRealtimeNoti(JSON.parse(e.data));
     sse.onerror = () => {
       sse.close();
