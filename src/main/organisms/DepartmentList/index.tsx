@@ -58,7 +58,7 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
 
   return (
     <InfiniteScroller
-      className="pb-14 mr-0.5 overflow-scroll"
+      className="pb-14 mr-0.5 overflow-hidden"
       onLoadMore={onLoadMore}
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}

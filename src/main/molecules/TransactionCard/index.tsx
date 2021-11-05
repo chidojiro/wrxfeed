@@ -23,7 +23,7 @@ import ConfirmModal from '@main/atoms/ConfirmModal';
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
-import { usePermission } from '@identity/hooks';
+import { useIdentity, usePermission } from '@identity/hooks';
 import { ProtectedFeatures } from '@identity/constants';
 
 const INITIAL_COMMENT_NUMBER = 2;
@@ -63,6 +63,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
   const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
   // Data hooks
+  const identity = useIdentity();
   const { comments, total, isLoading, addComment, editComment, deleteComment, showLessComments } =
     useComment(transaction, filter);
   const { mentions } = useMention();
@@ -265,6 +266,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                         className={isHidden ? 'bg-purple-11' : 'bg-purple-10'}
                         comment={comment}
                         mentionData={mentions}
+                        editable={identity?.id === comment.user.id}
                         onEdit={editComment}
                         onDelete={deleteComment}
                       />

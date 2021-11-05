@@ -29,7 +29,7 @@ const SideBar: React.VFC = () => {
                 ) : (
                   <div className="flex-shrink-0 -ml-1 mr-3 h-6 w-6" />
                 )}
-                <h3 className="text-xs font-semibold text-Gray-1 uppercase tracking-wider">
+                <h3 className="text-sm font-semibold text-Gray-3 tracking-wider">
                   {menuItem.name}
                 </h3>
               </div>
