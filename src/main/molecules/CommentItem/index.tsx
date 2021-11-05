@@ -25,6 +25,7 @@ const IMAGE_EXT = 'jpg,png,jpeg,gif';
 export interface CommentItemProps {
   comment: Comment;
   mentionData?: MentionData[];
+  editable?: boolean;
   className?: string;
   style?: CSSProperties;
   onEdit?: (comment: Comment) => void;
@@ -42,6 +43,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
   className,
   comment,
   mentionData,
+  editable,
   onEdit,
   onDelete,
   ...rest
@@ -119,7 +121,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
       >
         <div className="flex flex-row justify-between itmes-center">
           <CommentOwner owner={comment.user} commentDate={comment.createdAt} />
-          {isHover && (
+          {editable && isHover && (
             <Menu
               as="div"
               className="relative inline-block z-50 text-left invisible group-hover:visible"
