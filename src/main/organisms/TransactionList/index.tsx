@@ -52,7 +52,6 @@ const TransactionList: React.VFC<TransactionListProps> = ({
         paddingBottom: 52,
         marginRight: 2,
         ...style,
-        // position: 'absolute',
       }}
       onLoadMore={onLoadMore}
       isLoading={isLoading}
