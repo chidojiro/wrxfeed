@@ -1,6 +1,7 @@
 import React, { CSSProperties, useCallback, useEffect, useMemo, useState } from 'react';
 import { MentionData } from '@draft-js-plugins/mention';
 import { EditorState } from 'draft-js';
+import { SubmitHandler } from 'react-hook-form';
 import { Comment } from '@main/entity';
 import { classNames } from '@common/utils';
 import CommentOwner from '@main/atoms/CommentOwner';
@@ -8,7 +9,7 @@ import CommentText from '@main/atoms/CommentText';
 import CommentImage from '@main/atoms/CommentImage';
 import { DocumentDownloadIcon } from '@heroicons/react/outline';
 import Microlink from '@microlink/react';
-import { extractHyperlinks, commentTextToContentState } from '@main/utils';
+import { extractHyperlinks, commentTextToContentState, commentEditorRawParser } from '@main/utils';
 import { MICRO_LINK_API_KEY } from '@src/config';
 import { Menu } from '@headlessui/react';
 import PopoverMenu from '@main/atoms/PopoverMenu';
@@ -19,6 +20,7 @@ import ConfirmModal from '@main/atoms/ConfirmModal';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as XCircleIcon } from '@assets/icons/outline/x-circle.svg';
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
+import { CommentFormModel } from '@main/types';
 
 const IMAGE_EXT = 'jpg,png,jpeg,gif';
 
@@ -87,6 +89,24 @@ const CommentItem: React.VFC<CommentItemProps> = ({
       confirmAction: () => onDelete && onDelete(comment),
       confirmLabel: 'Delete',
     });
+  };
+
+  const onSubmitEdit: SubmitHandler<CommentFormModel> = (values) => {
+    if (!onEdit) {
+      setEditing(false);
+      return;
+    }
+    const newContentState = values?.content as EditorState;
+    const isDirty = newContentState.getCurrentContent().hasText() || !!values?.attachment;
+    if (!isDirty) {
+      // Trigger delete comment
+      onDeleteComment();
+      setEditing(false);
+      return;
+    }
+    const parsedContent = commentEditorRawParser(newContentState.getCurrentContent());
+    onEdit({ ...comment, content: parsedContent });
+    setEditing(false);
   };
 
   const renderAttachment = () =>
@@ -173,6 +193,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
         alwaysFocus
         mentionData={mentionData}
         defaultContent={EditorState.createWithContent(contentState)}
+        onSubmit={onSubmitEdit}
       />
       <div className="flex justify-end items-center w-full space-x-1">
         <XCircleIcon

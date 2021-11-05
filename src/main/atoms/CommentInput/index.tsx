@@ -71,7 +71,7 @@ const CommentInput: React.VFC<CommentInputProps> = ({
   useEffect(() => {
     if (editorRef.current && autoFocus) {
       // Waiting for initializing mentions
-      setTimeout(editorRef.current.focus, 200);
+      setTimeout(() => editorRef.current?.focus(), 200);
     }
   }, [autoFocus]);
 
