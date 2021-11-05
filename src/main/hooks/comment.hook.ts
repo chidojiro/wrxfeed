@@ -60,6 +60,7 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
       const res = await ApiClient.addComment(transaction.id, comment);
       if (!res.user) {
         res.user = {
+          id: identity?.id,
           email: identity?.email || '',
           fullName: identity?.fullName || identity?.email || '',
         };
@@ -78,6 +79,15 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const editComment = async (comment: Comment) => {
     // TODO: integrate API to update comment
+    // Replace old comment
+    const oldIdx = comments.findIndex((cmt) => cmt.id === comment.id);
+    if (oldIdx > -1) {
+      setComments((prevComments) => {
+        const newComments = [...prevComments];
+        newComments.splice(oldIdx, 1, comment);
+        return newComments;
+      });
+    }
   };
 
   const deleteComment = async (comment: Comment) => {
