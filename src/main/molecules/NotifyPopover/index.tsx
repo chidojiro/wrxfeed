@@ -105,13 +105,9 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
     );
   };
 
-  const onBlurIconButton = () => {
-    console.log('Check in onBlurIconButton');
-  };
+  const onBlurIconButton = () => undefined;
 
-  const onBlurCapture = () => {
-    console.log('onBlurCapture');
-  };
+  const onBlurCapture = () => undefined;
 
   return (
     <>
