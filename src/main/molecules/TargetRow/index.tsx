@@ -4,7 +4,7 @@ import { BasicsEditCircle, BasicsXSmall } from '@assets';
 import { PostTargetParams, PutTargetParams } from '@api/types';
 import Loading from '@common/atoms/Loading';
 import { getDepartmentBgColor, nFormatter } from '@main/utils';
-import { classNames, parseMoneyInput, replaceAll } from '@common/utils';
+import { classNames, formatToCurrency, replaceAll } from '@common/utils';
 
 const SystemAlertColor = '#ff5f68';
 export interface TargetRowProps {
@@ -77,7 +77,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(event.target.value);
     // setAmount(formatCurrency(parseFloat(event.target.value)));
-    setAmount(parseMoneyInput(event.target.value, ''));
+    setAmount(formatToCurrency(event.target.value, ''));
   };
 
   const onBlurInput = () => {
