@@ -96,13 +96,6 @@ export const replaceAll = (str: string, find: string, replace: string): string =
 };
 
 export const formatToCurrency = (value: string, currency = '$'): string => {
-  const result = replaceAll(value, ',', '');
-  const result2 = `${result.replace(new RegExp(/[^0-9]+/, 'g'), ',')}`;
-  return `${currency}${result2.replace(new RegExp(/\B(?=(\d{3})+(?!\d))/, 'g'), ',')}`;
+  const result = replaceAll(value, ',', '').replace(new RegExp(/[^0-9]+/, 'g'), ',');
+  return `${currency}${result.replace(new RegExp(/\B(?=(\d{3})+(?!\d))/, 'g'), ',')}`;
 };
-
-// return `${currency}${value
-//   .replace(/(?!\.)\D/g, '')
-//   .replace(/(?<=\..*)\./g, '')
-//   .replace(/(?<=\.\d\d).*/g, '')
-//   .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
