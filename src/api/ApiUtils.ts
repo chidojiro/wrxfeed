@@ -195,6 +195,15 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
+  editComment = async (commentId: number, data: AddCommentParams): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feed/comments/${commentId}`,
+      method: 'PUT',
+      data,
+    });
+    return res.data;
+  };
+
   getMentions = async (pagination?: Pagination): Promise<User[]> => {
     const res = await this.request<User[]>({
       url: '/user/me/mentions',

@@ -78,15 +78,27 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const editComment = async (comment: Comment) => {
-    // TODO: integrate API to update comment
-    // Replace old comment
-    const oldIdx = comments.findIndex((cmt) => cmt.id === comment.id);
-    if (oldIdx > -1) {
-      setComments((prevComments) => {
-        const newComments = [...prevComments];
-        newComments.splice(oldIdx, 1, comment);
-        return newComments;
-      });
+    try {
+      setLoading(true);
+      // Request API to update
+      await ApiClient.editComment(comment.id, comment);
+      // Replace old comment
+      const oldIdx = comments.findIndex((cmt) => cmt.id === comment.id);
+      if (oldIdx > -1) {
+        setComments((prevComments) => {
+          const newComments = [...prevComments];
+          newComments.splice(oldIdx, 1, comment);
+          return newComments;
+        });
+      }
+    } catch (error) {
+      if (isBadRequest(error)) {
+        toast.error('Fail to update this comment');
+      } else {
+        await errorHandler(error);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
