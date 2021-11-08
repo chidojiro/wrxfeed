@@ -2,6 +2,7 @@ import React from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Category } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
+import DirectoryItem from '@main/molecules/DirectoryItem';
 
 interface CategoryListProps {
   categories: Category[];
@@ -28,14 +29,7 @@ const CategoryList: React.VFC<CategoryListProps> = ({
         <ul className="divide-y divide-gray-200">
           {categories.map((category) => (
             <li key={category.id} className="px-4 py-4 sm:px-6">
-              <div
-                aria-hidden="true"
-                className="cursor-pointer w-full"
-                onClick={() => onSelect && onSelect(category)}
-                onKeyDown={() => onSelect && onSelect(category)}
-              >
-                <p className="ml-3 text-sm font-medium text-Gray-1">{category.name}</p>
-              </div>
+              <DirectoryItem item={category} onClick={() => onSelect && onSelect(category)} />
             </li>
           ))}
         </ul>
