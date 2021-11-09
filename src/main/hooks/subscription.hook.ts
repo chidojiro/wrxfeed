@@ -24,6 +24,11 @@ export function useSubscription(): SubscriptionHookValues {
             name: channel.name,
             href: `${key}/${channel.id}`,
             icon: null,
+            subscription: {
+              type: key as keyof Subscription,
+              item: channel,
+            },
+            removable: true,
           }),
         ) || []),
       ],
