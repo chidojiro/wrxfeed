@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 import { MainMenu } from '@common/constants';
+import { useSubscription } from '@main/hooks/subscription.hook';
+import cloneDeep from 'lodash.clonedeep';
+import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
 
 const SideBar: React.VFC = () => {
   const location = useLocation();
+  const { subscriptionMenuRoutes, unsubscribe } = useSubscription();
+  const dynamicMenu: GroupTab[] = useMemo(() => {
+    const menu = cloneDeep(MainMenu);
+    menu[0].tabs.push(...subscriptionMenuRoutes);
+    return menu;
+  }, [subscriptionMenuRoutes]);
 
   return (
-    <nav aria-label="Sidebar" className="sticky top-24 divide-y divide-gray-300">
-      <div className="pb-8 space-y-8">
-        {MainMenu.map((menuItem: GroupTab) => {
+    <nav aria-label="Sidebar" className="divide-y divide-gray-300">
+      <div className="py-8 space-y-8 max-h-[calc(60vh-56px)] lg:max-h-[calc(100vh-56px)] overflow-scroll">
+        {dynamicMenu.map((menuItem: GroupTab) => {
           const { tabs, icon: IconView } = menuItem;
           return (
             <div key={menuItem.name}>
@@ -41,10 +50,28 @@ const SideBar: React.VFC = () => {
                     to={leftTab.href}
                     className={classNames(
                       isCurrentTab ? 'bg-Gray-5 text-Gray-3' : 'text-Gray-6 hover:bg-gray-50',
-                      'group flex items-center px-3 h-6 text-sm font-medium rounded-sm my-0.5 ml-8',
+                      'group flex justify-between items-center px-3 h-6 text-sm rounded-sm my-0.5 ml-8',
                     )}
                   >
-                    <span className="truncate">{leftTab.name}</span>
+                    <span className="flex-1 truncate">{leftTab.name}</span>
+                    {leftTab.removable && (
+                      <span
+                        aria-hidden="true"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          if (leftTab.subscription) {
+                            unsubscribe(leftTab.subscription.type, leftTab.subscription.item);
+                          }
+                        }}
+                      >
+                        <CloseIcon
+                          className="group-hover:visible invisible"
+                          width={16}
+                          height={16}
+                          viewBox="0 0 18 18"
+                        />
+                      </span>
+                    )}
                   </RouterLink>
                 );
               })}
