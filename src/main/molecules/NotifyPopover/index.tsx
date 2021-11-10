@@ -95,7 +95,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style, showNumberNotify 
       <div className="flex h-8 w-8 justify-center items-center">
         <NotifyIcon aria-hidden="true" />
         {!!notifyNews && (
-          <div className="absolute flex bg-red-500 top-0 right-1 justify-center items-center border-2 border-primary w-4 h-4 rounded-full">
+          <div className="absolute flex bg-red-500 top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
             {showNumberNotify && (
               <div className="flex text-white font-semibold" style={{ fontSize: '10px' }}>
                 {notifyNews}

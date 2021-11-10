@@ -5,7 +5,6 @@ import TransactionList from '@main/organisms/TransactionList';
 import { useTransaction } from '@main/hooks';
 import { TransactionFilter } from '@api/types';
 import TargetPanel from '@main/organisms/TargetPanel';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { useQuery } from '@common/hooks';
 import { useHistory } from 'react-router-dom';
 import { Department, Vendor, Category } from '@main/entity';
@@ -24,7 +23,6 @@ const DiscussionPage: React.VFC = () => {
   const [filter, setFilter] = useState<TransactionFilter>({
     pagination: INIT_PAGINATION,
   });
-  const [filterTitle, setFilterTitle] = useState('For you');
   const { transactions, hasMore, isLoading, updateCategory } = useTransaction(filter);
   const filterKey = FilterKeys.find((key) => query.get(key));
 
@@ -61,12 +59,8 @@ const DiscussionPage: React.VFC = () => {
       pathname: history.location.pathname,
       search: queryString,
     });
-    setFilterTitle(value?.name ?? '');
   };
 
-  const clearFilter = (): void => {
-    history.goBack();
-  };
   return (
     <MainLayout>
       <h1 className="sr-only">For you feed</h1>

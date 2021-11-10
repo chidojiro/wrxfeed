@@ -27,7 +27,7 @@ const user = {
     'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 };
 
-const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = false }) => {
+const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite }) => {
   const identity = useIdentity();
   const [isOpenInviteModal, openInviteModal] = useState(false);
 
@@ -94,7 +94,7 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = fa
               </div>
 
               <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-3">
-                <NotifyPopover />
+                <NotifyPopover showNumberNotify />
                 <div className="bg-purple-9 w-[1px] h-[34px] ml-5 mr-7" />
                 <UserProfilePopover />
                 {renderInviteButton()}
