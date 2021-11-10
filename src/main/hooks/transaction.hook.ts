@@ -27,13 +27,17 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
       if (!filter.pagination?.offset) {
         setTransactions([]);
       }
-      const res = await ApiClient.getTransactions(filter);
-      if (filter.pagination?.offset) {
-        setTransactions((prevTrans) => [...prevTrans, ...res]);
+      if (filter.pagination?.limit) {
+        const res = await ApiClient.getTransactions(filter);
+        if (filter.pagination?.offset) {
+          setTransactions((prevTrans) => [...prevTrans, ...res]);
+        } else {
+          setTransactions(res);
+        }
+        setHasMore(!!res.length);
       } else {
-        setTransactions(res);
+        setHasMore(false);
       }
-      setHasMore(!!res.length);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get transactions');

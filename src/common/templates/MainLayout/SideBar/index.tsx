@@ -15,6 +15,10 @@ const SideBar: React.VFC = () => {
     menu[0].tabs.push(...subscriptionMenuRoutes);
     return menu;
   }, [subscriptionMenuRoutes]);
+  const currentTab = dynamicMenu.reduce<LeftTab | null>((cur, root) => {
+    if (cur) return cur;
+    return root.tabs.find((tab) => location.pathname.startsWith(tab.href)) ?? null;
+  }, null);
 
   return (
     <nav aria-label="Sidebar" className="divide-y divide-gray-300">
@@ -43,14 +47,14 @@ const SideBar: React.VFC = () => {
                 </h3>
               </div>
               {tabs.map((leftTab: LeftTab) => {
-                const isCurrentTab = leftTab.href === location.pathname;
+                const isCurrentTab = currentTab?.href === leftTab.href;
                 return (
                   <RouterLink
                     key={`tabs-${leftTab.name}`}
                     to={leftTab.href}
                     className={classNames(
                       isCurrentTab ? 'bg-Gray-5 text-Gray-3' : 'text-Gray-6 hover:bg-gray-50',
-                      'group flex justify-between items-center px-3 h-6 text-sm rounded-sm my-0.5 ml-8',
+                      'group flex justify-between items-center px-3 h-6 text-sm my-0.5 ml-8',
                     )}
                   >
                     <span className="flex-1 truncate">{leftTab.name}</span>

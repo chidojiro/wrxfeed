@@ -3,7 +3,7 @@ import { UserRole } from '@identity/constants';
 import { ComponentType, lazy, LazyExoticComponent } from 'react';
 
 export interface RouteItem<T extends ComponentType> {
-  path: string;
+  path: string | readonly string[];
   component: LazyExoticComponent<T>;
   permissions?: string[];
 }
@@ -21,6 +21,7 @@ const Onboard = lazy(() => import('@auth/pages/OnboardPage'));
 const Overview = lazy(() => import('@main/pages/Overview'));
 const Discussions = lazy(() => import('@main/pages/Discussion'));
 const Departments = lazy(() => import('@main/pages/Departments'));
+// const DepartmentItem = lazy(() => import('@main/pages/DepartmentItem'));
 const Categories = lazy(() => import('@main/pages/Categories'));
 const Vendors = lazy(() => import('@main/pages/Vendors'));
 const Feed = lazy(() => import('@main/pages/Feed'));
@@ -61,17 +62,17 @@ const routes: Route = {
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Departments: {
-    path: '/departments',
+    path: ['/departments', '/departments/:id'],
     component: Departments,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Categories: {
-    path: '/categories',
+    path: ['/categories', '/categories/:id'],
     component: Categories,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Vendors: {
-    path: '/vendors',
+    path: ['/vendors', '/vendors/:id'],
     component: Vendors,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
