@@ -21,6 +21,7 @@ const Onboard = lazy(() => import('@auth/pages/OnboardPage'));
 const Overview = lazy(() => import('@main/pages/Overview'));
 const Discussions = lazy(() => import('@main/pages/Discussion'));
 const Departments = lazy(() => import('@main/pages/Departments'));
+// const DepartmentItem = lazy(() => import('@main/pages/DepartmentItem'));
 const Categories = lazy(() => import('@main/pages/Categories'));
 const Vendors = lazy(() => import('@main/pages/Vendors'));
 const Feed = lazy(() => import('@main/pages/Feed'));
@@ -62,6 +63,21 @@ const routes: Route = {
   },
   Departments: {
     path: '/departments',
+    component: Departments,
+    permissions: [UserRole.ADMIN, UserRole.USER],
+  },
+  DepartmentItem: {
+    path: '/departments/:id',
+    component: Departments,
+    permissions: [UserRole.ADMIN, UserRole.USER],
+  },
+  CategoriesItem: {
+    path: '/categories/:id',
+    component: Departments,
+    permissions: [UserRole.ADMIN, UserRole.USER],
+  },
+  VendorsItem: {
+    path: '/vendors/:id',
     component: Departments,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },

@@ -8,10 +8,7 @@ import TransactionList from '@main/organisms/TransactionList';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { Department } from '@main/entity';
-import { useSubscription } from '@main/hooks/subscription.hook';
-import Button from '@common/atoms/Button';
-import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
-import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
+import { useParams } from 'react-router-dom';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -19,12 +16,16 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const DepartmentsPage: React.VFC = () => {
+const DepartmentItem: React.VFC = () => {
+  const { id: departmentId } = useParams<{ id: string }>();
+
+  React.useEffect(() => {
+    console.log(`Check new departmentId = ${departmentId}`);
+  }, [departmentId]);
+
   // Department states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { departments, hasMore, isLoading } = useDepartment(filter);
-  const [isFollow, setFollow] = useState<boolean>(false);
-  const { isFollowing } = useSubscription();
   // Transaction states
   const [transFilter, setTransFilter] = useState<TransactionFilter>({
     pagination: INIT_PAGINATION,
@@ -63,20 +64,12 @@ const DepartmentsPage: React.VFC = () => {
       pagination: INIT_PAGINATION,
       [key]: dept?.id,
     });
-
     setFilterTitle(dept?.name || '');
-    if (dept) {
-      console.log('Check setFollow');
-      setFollow(isFollowing('departments', dept));
-    }
   };
 
   const clearFilter = (): void => {
     setTransFilter({ pagination: INIT_PAGINATION });
   };
-
-  const handleUnfollow = () => undefined;
-  const handleFollow = () => undefined;
 
   return (
     <MainLayout>
@@ -84,30 +77,7 @@ const DepartmentsPage: React.VFC = () => {
       {isFiltering && (
         <div className="flex items-center space-x-4 pb-8">
           <ChevronLeftIcon onClick={clearFilter} />
-          <div className="flex flex-row justify-between w-full">
-            <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
-            {isFollow ? (
-              <Button onClick={handleUnfollow}>
-                <TickIcon
-                  width={16}
-                  height={16}
-                  className="stroke-current path-no-stroke text-Gray-3"
-                  viewBox="0 0 15 15"
-                />
-                <span className="text-Gray-3">Following</span>
-              </Button>
-            ) : (
-              <Button onClick={handleFollow}>
-                <AddIcon
-                  width={16}
-                  height={16}
-                  className="stroke-current path-no-stroke text-Gray-3"
-                  viewBox="0 0 15 15"
-                />
-                <span className="text-Gray-3">Follow</span>
-              </Button>
-            )}
-          </div>
+          <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
         </div>
       )}
       {!isFiltering ? (
@@ -136,4 +106,4 @@ const DepartmentsPage: React.VFC = () => {
   );
 };
 
-export default DepartmentsPage;
+export default DepartmentItem;

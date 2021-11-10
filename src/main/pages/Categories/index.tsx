@@ -52,6 +52,7 @@ const CategoriesPage: React.VFC = () => {
   }, [hasMoreTrans, transLoading]);
 
   const handleTransFilter = (key: keyof TransactionFilter, value?: number): void => {
+    console.log('Check handleTransFilter ');
     setTransFilter({
       pagination: INIT_PAGINATION,
       [key]: value,

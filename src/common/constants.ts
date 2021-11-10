@@ -26,7 +26,7 @@ export const MainMenu: GroupTab[] = [
     name: 'Directory',
     icon: DirectoryIcon,
     tabs: [
-      { name: 'Departments', href: '/departments', icon: null },
+      { name: 'Teams', href: '/departments', icon: null },
       { name: 'Categories', href: '/categories', icon: null },
       { name: 'Vendors', href: '/vendors', icon: null },
     ],
