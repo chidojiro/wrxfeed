@@ -30,6 +30,8 @@ import {
   TargetFilter,
   PostTargetParams,
   PutTargetParams,
+  SubsParams,
+  SubscriptionResponse,
 } from '@api/types';
 import {
   AuthProfile,
@@ -391,6 +393,24 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<Transaction>({
       url: `/feed/transactions/${id}`,
       method: 'GET',
+    });
+    return res.data;
+  };
+
+  patchSubsMine = async (data: SubsParams): Promise<SubscriptionResponse> => {
+    const res = await this.request<SubscriptionResponse>({
+      url: '/subs/subscriptions/mine',
+      method: 'PATCH',
+      data,
+    });
+    return res.data;
+  };
+
+  deleteSubsMine = async (data: SubsParams): Promise<SubscriptionResponse> => {
+    const res = await this.request<SubscriptionResponse>({
+      url: '/subs/subscriptions/mine',
+      method: 'DELETE',
+      data,
     });
     return res.data;
   };

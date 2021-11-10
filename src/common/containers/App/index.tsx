@@ -43,13 +43,13 @@ const App: React.FC = () => {
           <Router key={Math.random()}>
             <Suspense fallback={<LoadingFallback />}>
               <Switch>
-                {Object.values(routes).map((route) =>
+                {Object.entries(routes).map(([key, route]) =>
                   route.permissions?.length ? (
                     // Added property`key` to Router to fix warning
                     // when hot reloading Route component
-                    <ProtectedRoute key={route.path} exact {...route} />
+                    <ProtectedRoute key={key} exact {...route} />
                   ) : (
-                    <Route key={route.path} exact {...route} />
+                    <Route key={key} exact {...route} />
                   ),
                 )}
                 {/* 404 homepage */}

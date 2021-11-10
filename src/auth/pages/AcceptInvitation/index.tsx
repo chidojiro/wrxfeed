@@ -42,7 +42,7 @@ const AcceptInvitation: VFC = () => {
       try {
         await acceptInvitation(inviteId);
         // Redirect to login
-        router.replace(Routes.Login.path, {
+        router.replace(Routes.Login.path as string, {
           fromInvite: true,
           message: 'Your account has been created successfully',
         });

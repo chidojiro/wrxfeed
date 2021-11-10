@@ -19,6 +19,8 @@ interface DepartmentHookValues {
   departments: DepartmentSection[];
   hasMore: boolean;
   isLoading: boolean;
+  findDepartmentById: (id: number) => Department | null;
+  isRootDepartment: (id: number) => boolean;
 }
 export function useDepartment(pagination: Pagination): DepartmentHookValues {
   const [departments, setDepartments] = useState<DepartmentSection[]>([]);
@@ -54,8 +56,33 @@ export function useDepartment(pagination: Pagination): DepartmentHookValues {
     }
   }, [ApiClient, errorHandler, pagination]);
 
+  const findDepartmentById = useCallback(
+    (id: number): Department | null => {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const rootDept of departments) {
+        if (rootDept.id === id) {
+          return rootDept;
+        }
+        const childDept = rootDept.children.find((child) => child.id === id);
+        if (childDept) {
+          return childDept;
+        }
+      }
+      return null;
+    },
+    [departments],
+  );
+
+  const isRootDepartment = useCallback(
+    (id: number): boolean => {
+      return departments.some((root) => root.id === id);
+    },
+    [departments],
+  );
+
   useEffect(() => {
     getDepartments().then();
   }, [getDepartments]);
-  return { departments, hasMore, isLoading };
+
+  return { departments, hasMore, isLoading, findDepartmentById, isRootDepartment };
 }

@@ -1,4 +1,6 @@
-import React, { useCallback, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import VendorList from '@main/organisms/VendorList';
 import { Pagination, TransactionFilter } from '@api/types';
@@ -7,6 +9,11 @@ import TransactionList from '@main/organisms/TransactionList';
 import { useTransaction } from '@main/hooks';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import TargetPanel from '@main/organisms/TargetPanel';
+import { useSubscription } from '@main/hooks/subscription.hook';
+import Button from '@common/atoms/Button';
+// Icons
+import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
+import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -15,21 +22,59 @@ const INIT_PAGINATION = Object.freeze({
 });
 
 const CategoriesPage: React.VFC = () => {
+  const history = useHistory();
+  const { id: vendorId } = useParams<{ id?: string }>();
+  // Vendor state
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { vendors, hasMore, isLoading } = useVendor(filter);
   // Transaction states
-  const [transFilter, setTransFilter] = useState<TransactionFilter>({
-    pagination: INIT_PAGINATION,
-  });
+  const [transFilter, setTransFilter] = useState<TransactionFilter>(
+    vendorId
+      ? {
+          pagination: INIT_PAGINATION,
+          category: parseInt(vendorId, 10),
+        }
+      : {
+          pagination: { offset: 0, limit: 0 }, // Don't load transaction at the first launch
+        },
+  );
   const {
     transactions,
     hasMore: hasMoreTrans,
     isLoading: transLoading,
     updateCategory,
   } = useTransaction(transFilter);
+  // Subscription
+  const { subscribe, unsubscribe, isFollowing } = useSubscription();
+  // Variables
   // Variables
   const isFiltering = !!transFilter.vendor;
-  const filterTitle = vendors.find((vendor) => vendor.id === transFilter.vendor)?.name;
+  const vendor = useMemo(() => {
+    if (!isFiltering || !transactions.length) return null;
+    if (transactions[0].vendor.id === transFilter.vendor) {
+      return transactions[0].vendor;
+    }
+    return null;
+  }, [isFiltering, transactions]);
+  const isFollow = vendor && isFollowing('vendors', vendor);
+
+  const filterByRoute = useCallback(() => {
+    if (vendorId) {
+      const idNum = parseInt(vendorId, 10);
+      if (idNum !== transFilter.vendor) {
+        setTransFilter({
+          pagination: INIT_PAGINATION,
+          vendor: idNum,
+        });
+      }
+    } else {
+      setTransFilter({ pagination: { offset: 0, limit: 0 } }); // Clean up transaction
+    }
+  }, [vendorId, transFilter.vendor]);
+
+  useEffect(() => {
+    filterByRoute();
+  }, [filterByRoute]);
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -51,23 +96,43 @@ const CategoriesPage: React.VFC = () => {
   }, [hasMoreTrans, transLoading]);
 
   const handleTransFilter = (key: keyof TransactionFilter, value?: number): void => {
-    setTransFilter({
-      pagination: INIT_PAGINATION,
-      [key]: value,
-    });
+    history.push(`/vendors/${value?.toString()}`);
   };
 
   const clearFilter = (): void => {
-    setTransFilter({ pagination: INIT_PAGINATION });
+    history.push('/vendors');
   };
 
   return (
     <MainLayout>
       <h1 className="sr-only">Department list</h1>
       {isFiltering && (
-        <div className="flex items-center space-x-4 pb-8">
-          <ChevronLeftIcon onClick={clearFilter} />
-          <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
+        <div className="flex items-center justify-between space-x-4 pb-8">
+          <div className="flex flex-1 items-center space-x-4">
+            <ChevronLeftIcon onClick={clearFilter} />
+            <h1 className="text-Gray-1 text-xl font-bold">{vendor?.name}</h1>
+          </div>
+          {isFollow ? (
+            <Button onClick={() => vendor && unsubscribe('vendors', vendor)}>
+              <TickIcon
+                width={16}
+                height={16}
+                className="stroke-current path-no-stroke text-Gray-3"
+                viewBox="0 0 15 15"
+              />
+              <span className="text-Gray-3">Following</span>
+            </Button>
+          ) : (
+            <Button onClick={() => vendor && subscribe('vendors', vendor)}>
+              <AddIcon
+                width={16}
+                height={16}
+                className="stroke-current path-no-stroke text-Gray-3"
+                viewBox="0 0 15 15"
+              />
+              <span className="text-Gray-3">Follow</span>
+            </Button>
+          )}
         </div>
       )}
       {!isFiltering ? (
@@ -81,10 +146,9 @@ const CategoriesPage: React.VFC = () => {
       ) : (
         <TransactionList
           transactions={transactions}
-          isLoading={transLoading}
+          isLoading={transLoading || isLoading}
           hasMore={hasMoreTrans}
           onLoadMore={handleTransLoadMore}
-          // onFilter={handleTransFilter}
           updateCategory={updateCategory}
         />
       )}
