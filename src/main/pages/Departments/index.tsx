@@ -12,6 +12,7 @@ import { useSubscription } from '@main/hooks/subscription.hook';
 import Button from '@common/atoms/Button';
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
+import { MouseEventHandler } from 'react-router/node_modules/@types/react';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -24,7 +25,8 @@ const DepartmentsPage: React.VFC = () => {
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { departments, hasMore, isLoading } = useDepartment(filter);
   const [isFollow, setFollow] = useState<boolean>(false);
-  const { isFollowing } = useSubscription();
+  const [deptSelect, setDeptSelect] = useState<Department>();
+  const { subscribe, unsubscribe, isFollowing } = useSubscription();
   // Transaction states
   const [transFilter, setTransFilter] = useState<TransactionFilter>({
     pagination: INIT_PAGINATION,
@@ -66,7 +68,7 @@ const DepartmentsPage: React.VFC = () => {
 
     setFilterTitle(dept?.name || '');
     if (dept) {
-      console.log('Check setFollow');
+      setDeptSelect(dept);
       setFollow(isFollowing('departments', dept));
     }
   };
@@ -75,8 +77,18 @@ const DepartmentsPage: React.VFC = () => {
     setTransFilter({ pagination: INIT_PAGINATION });
   };
 
-  const handleUnfollow = () => undefined;
-  const handleFollow = () => undefined;
+  // const onFollow = subscribe('departments', dept);
+  // const onUnfollow = () => unsubscribe('departments', dept);
+
+  const handleFollow: MouseEventHandler<HTMLButtonElement> = () => {
+    if (deptSelect) subscribe('departments', deptSelect);
+    setFollow(true);
+  };
+
+  const handleUnfollow: MouseEventHandler<HTMLButtonElement> = () => {
+    if (deptSelect) unsubscribe('departments', deptSelect);
+    setFollow(false);
+  };
 
   return (
     <MainLayout>
