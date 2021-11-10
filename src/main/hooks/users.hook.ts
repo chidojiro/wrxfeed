@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useApi } from '@api';
 import { GetUsersFilter } from '@api/types';
 import { useErrorHandler } from '@error/hooks';

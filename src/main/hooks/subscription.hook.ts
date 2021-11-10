@@ -21,7 +21,7 @@ export function useSubscription(): SubscriptionHookValues {
         ...list,
         ...(subscription[key as keyof Subscription]?.map(
           (channel: Department | Category | Vendor) => {
-            const newHref = `${key}/${channel.id}`;
+            const newHref = `/${key}/${channel.id}`;
             return {
               name: channel.name,
               href: newHref,

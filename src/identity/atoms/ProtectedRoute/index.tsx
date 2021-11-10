@@ -12,7 +12,7 @@ export interface ProtectedRouteProps extends RouteProps {
 const ProtectedRoute: React.VFC<ProtectedRouteProps> = ({
   path,
   component,
-  loginUrl = routes.Login.path,
+  loginUrl = routes.Login.path as string,
   permissions = [],
 }) => {
   const identity = useIdentity();

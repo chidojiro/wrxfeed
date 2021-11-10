@@ -3,7 +3,7 @@ import { UserRole } from '@identity/constants';
 import { ComponentType, lazy, LazyExoticComponent } from 'react';
 
 export interface RouteItem<T extends ComponentType> {
-  path: string;
+  path: string | readonly string[];
   component: LazyExoticComponent<T>;
   permissions?: string[];
 }
@@ -62,32 +62,17 @@ const routes: Route = {
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Departments: {
-    path: '/departments',
-    component: Departments,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  DepartmentItem: {
-    path: '/departments/:id',
-    component: Departments,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  CategoriesItem: {
-    path: '/categories/:id',
-    component: Departments,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  VendorsItem: {
-    path: '/vendors/:id',
+    path: ['/departments', '/departments/:id'],
     component: Departments,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Categories: {
-    path: '/categories',
+    path: ['/categories', '/categories/:id'],
     component: Categories,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Vendors: {
-    path: '/vendors',
+    path: ['/vendors', '/vendors/:id'],
     component: Vendors,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },

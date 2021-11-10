@@ -39,10 +39,10 @@ const LoginPage: React.VFC = () => {
 
   useEffect(() => {
     if (identity?.token && identity?.lastLoginAt) {
-      redirect(Routes.Overview.path);
+      redirect(Routes.Overview.path as string);
     }
     if (identity?.token && !identity?.lastLoginAt) {
-      redirect(Routes.Onboard.path);
+      redirect(Routes.Onboard.path as string);
     }
   }, [redirect, identity]);
 
