@@ -63,6 +63,9 @@ export interface ApiClient {
   getTargets: (filter?: TargetFilter) => Promise<Target[]>;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  // Subscription
+  patchSubsMine: (data: SubsParams) => Promise<SubscriptionResponse>;
+  deleteSubsMine: (data: SubsParams) => Promise<SubscriptionResponse>;
 }
 
 export type ChangePasswordDto = Omit<ChangePwdFormModel, 'confirmPassword'>;
@@ -151,3 +154,14 @@ export interface PostTargetParams {
   amount: number;
   departmentId: number;
 }
+
+export interface SubsParams {
+  departments: string[];
+  vendors: string[];
+  categories: string[];
+}
+export type SubscriptionResponse = {
+  category_ids: string[];
+  department_ids: string[];
+  vendor_ids: string[];
+};

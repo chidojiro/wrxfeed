@@ -14,18 +14,23 @@ import { useErrorHandler, isApiError, ApiErrorCode } from '@src/error';
 import NotInvited from '@auth/molecules/NotInvited';
 import { useLocation } from 'react-router-dom';
 import NotifyBanner from '@common/molecules/NotifyBanner';
-import { LocationState } from '../AcceptInvitation';
+
+export interface LocationState {
+  fromInvite?: boolean;
+  message?: string;
+  from?: Location;
+}
 
 const LoginPage: React.VFC = () => {
   const { signInWithGoogle, getProfile } = useApi();
   const { redirect } = useNavUtils();
-  const location = useLocation();
+  const location = useLocation<LocationState>();
   const identity = useIdentity();
   const setIdentity = useSetIdentity();
   const errorHandler = useErrorHandler();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
-  const { fromInvite, message } = (location.state ?? {}) as LocationState;
+  const { fromInvite, message, from } = location.state ?? {};
 
   useEffect(() => {
     if (message) {
@@ -39,12 +44,13 @@ const LoginPage: React.VFC = () => {
 
   useEffect(() => {
     if (identity?.token && identity?.lastLoginAt) {
-      redirect(Routes.Overview.path);
+      const callbackUrl = from?.pathname || (Routes.Overview.path as string);
+      redirect(callbackUrl);
     }
     if (identity?.token && !identity?.lastLoginAt) {
-      redirect(Routes.Onboard.path);
+      redirect(Routes.Onboard.path as string);
     }
-  }, [redirect, identity]);
+  }, [redirect, identity, from]);
 
   const handleResponseSuccess = async (
     response: GoogleLoginResponse | GoogleLoginResponseOffline,

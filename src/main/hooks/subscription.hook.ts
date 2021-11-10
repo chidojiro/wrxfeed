@@ -20,16 +20,19 @@ export function useSubscription(): SubscriptionHookValues {
       (list, key) => [
         ...list,
         ...(subscription[key as keyof Subscription]?.map(
-          (channel: Department | Category | Vendor) => ({
-            name: channel.name,
-            href: `${key}/${channel.id}`,
-            icon: null,
-            subscription: {
-              type: key as keyof Subscription,
-              item: channel,
-            },
-            removable: true,
-          }),
+          (channel: Department | Category | Vendor) => {
+            const newHref = `/${key}/${channel.id}`;
+            return {
+              name: channel.name,
+              href: newHref,
+              icon: null,
+              subscription: {
+                type: key as keyof Subscription,
+                item: channel,
+              },
+              removable: true,
+            };
+          },
         ) || []),
       ],
       [],
@@ -37,56 +40,56 @@ export function useSubscription(): SubscriptionHookValues {
   }, [subscription]);
 
   function subscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
-    const newSubsciption: Subscription = cloneDeep(subscription);
+    const newSubscription: Subscription = cloneDeep(subscription);
     switch (type) {
       case 'departments':
-        if (newSubsciption.departments) {
-          newSubsciption.departments.push(channel as Department);
+        if (newSubscription.departments) {
+          newSubscription.departments.push(channel as Department);
         } else {
-          newSubsciption.departments = [channel];
+          newSubscription.departments = [channel];
         }
         break;
       case 'categories':
-        if (newSubsciption.categories) {
-          newSubsciption.categories.push(channel as Category);
+        if (newSubscription.categories) {
+          newSubscription.categories.push(channel as Category);
         } else {
-          newSubsciption.categories = [channel as Category];
+          newSubscription.categories = [channel as Category];
         }
         break;
       case 'vendors':
-        if (newSubsciption.vendors) {
-          newSubsciption.vendors.push(channel as Vendor);
+        if (newSubscription.vendors) {
+          newSubscription.vendors.push(channel as Vendor);
         } else {
-          newSubsciption.vendors = [channel];
+          newSubscription.vendors = [channel];
         }
         break;
       default:
         return;
     }
-    setSubscription(newSubsciption);
+    setSubscription(newSubscription);
   }
 
   function unsubscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
     if (!subscription[type]?.length) return;
-    const newSubsciption: Subscription = cloneDeep(subscription);
+    const newSubscription: Subscription = cloneDeep(subscription);
     switch (type) {
       case 'departments':
-        newSubsciption.departments = newSubsciption.departments?.filter(
+        newSubscription.departments = newSubscription.departments?.filter(
           (sub) => sub.id !== channel.id,
         );
         break;
       case 'categories':
-        newSubsciption.categories = newSubsciption.categories?.filter(
+        newSubscription.categories = newSubscription.categories?.filter(
           (sub) => sub.id !== channel.id,
         );
         break;
       case 'vendors':
-        newSubsciption.vendors = newSubsciption.vendors?.filter((sub) => sub.id !== channel.id);
+        newSubscription.vendors = newSubscription.vendors?.filter((sub) => sub.id !== channel.id);
         break;
       default:
         return;
     }
-    setSubscription(newSubsciption);
+    setSubscription(newSubscription);
   }
 
   function isFollowing(type: keyof Subscription, channel: Department | Category | Vendor): boolean {
