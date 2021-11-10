@@ -12,6 +12,7 @@ import { classNames } from '@common/utils';
 
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;
+  showNumberNotify?: boolean;
 }
 
 const LIMIT = 15;
@@ -20,7 +21,7 @@ export enum NotifyStatus {
   UNREAD = 'UNREAD',
 }
 
-const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
+const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style, showNumberNotify = false }) => {
   const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
   const { notifications, isLoading, patchNotification, markAllAsRead } = useNotification(filter);
   const [notifies, setNotifies] = React.useState<Notification[]>([]);
@@ -94,13 +95,12 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style }) => {
       <div className="flex h-8 w-8 justify-center items-center">
         <NotifyIcon aria-hidden="true" />
         {!!notifyNews && (
-          <div
-            className="absolute flex bg-red-500 top-0 right-1 justify-center items-center border-2 border-primary"
-            style={{ width: '18px', height: '18px', borderRadius: '15px', top: '1px' }}
-          >
-            <div className="flex text-white font-semibold" style={{ fontSize: '10px' }}>
-              {notifyNews}
-            </div>
+          <div className="absolute flex bg-red-500 top-0 right-1 justify-center items-center border-2 border-primary w-4 h-4 rounded-full">
+            {showNumberNotify && (
+              <div className="flex text-white font-semibold" style={{ fontSize: '10px' }}>
+                {notifyNews}
+              </div>
+            )}
           </div>
         )}
       </div>
