@@ -22,11 +22,6 @@ interface Error {
   message: string;
 }
 
-export interface LocationState {
-  fromInvite?: boolean;
-  message?: string;
-}
-
 const AcceptInvitation: VFC = () => {
   const { acceptInvitation } = useApi();
   const query = useQuery();
