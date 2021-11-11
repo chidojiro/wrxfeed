@@ -68,7 +68,7 @@ const FeedPage: React.VFC = () => {
     }
 
     return (
-      <div className="w-full h-full overflow-scroll">
+      <div className="w-full h-full overflow-hidden">
         <ul>
           <TransactionCard transaction={transSelect} />
         </ul>
