@@ -1,4 +1,4 @@
-import DiscussionPage from './Discussion';
+import ForYouPage from './ForYou';
 import OverviewPage from './Overview';
 
-export { DiscussionPage, OverviewPage };
+export { ForYouPage, OverviewPage };

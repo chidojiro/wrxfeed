@@ -17,7 +17,7 @@ const INIT_PAGINATION = Object.freeze({
 
 const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
-const DiscussionPage: React.VFC = () => {
+const ForYouPage: React.VFC = () => {
   const query = useQuery();
   const history = useHistory();
   const [filter, setFilter] = useState<TransactionFilter>({
@@ -88,4 +88,4 @@ const DiscussionPage: React.VFC = () => {
   );
 };
 
-export default DiscussionPage;
+export default ForYouPage;
