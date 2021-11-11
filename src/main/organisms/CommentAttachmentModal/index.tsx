@@ -75,7 +75,7 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
         <div className="flex flex-col p-6">
           <p className="text-sm text-left text-Gray-1 font-bold mb-2">Add a comment</p>
           <CommentBox
-            id={transaction?.id.toString()}
+            id={`attachment-${transaction?.id.toString()}`}
             showAttach={false}
             showSend={false}
             showEmoji={false}
