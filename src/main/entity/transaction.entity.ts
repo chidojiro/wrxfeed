@@ -12,7 +12,7 @@ export type Department = {
 export type Category = {
   id: number;
   name: string;
-  visibility: Visibility;
+  visibility?: Visibility;
 };
 
 export type Vendor = {
