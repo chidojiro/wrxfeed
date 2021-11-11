@@ -107,7 +107,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   };
 
   const renderListTargets = () => {
-    const overflow = isExpanded ? 'overflow-hidden' : 'overflow-hidden';
+    const overflow = isExpanded ? 'overflow-scroll hide-scrollbar' : 'overflow-hidden';
     return <ul className={classNames('flex mt-2 flex-col', overflow)}>{renderTargets()}</ul>;
   };
 
