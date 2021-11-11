@@ -22,7 +22,7 @@ export const MainMenu: GroupTab[] = [
     icon: FeedIcon,
     tabs: [
       { name: 'Company', href: '/overview', icon: null },
-      { name: 'For you', href: '/for-you', icon: null },
+      { name: 'For you', href: '/for-you', icon: null, isShowCounter: true },
     ],
   },
   {

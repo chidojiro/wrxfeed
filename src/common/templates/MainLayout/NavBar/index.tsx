@@ -27,7 +27,7 @@ const user = {
     'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 };
 
-const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite }) => {
+const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = true }) => {
   const identity = useIdentity();
   const [isOpenInviteModal, openInviteModal] = useState(false);
 
@@ -41,11 +41,15 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite }) =
         <div className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm" />
       );
     }
+    const hoverStyle = isOpenInviteModal ? 'ring-2' : '';
     return (
       <button
         type="button"
         onClick={onClickInviteButton}
-        className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
+        className={classNames(
+          hoverStyle,
+          'ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-offset-2 focus:ring-rose-500',
+        )}
       >
         <UserPlusIcon className="flex mr-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500" />
         Invite

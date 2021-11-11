@@ -14,6 +14,7 @@ export type LeftTab = {
     item: Department | Category | Vendor;
   };
   removable?: boolean;
+  isShowCounter?: boolean;
 };
 
 export type GroupTab = {
