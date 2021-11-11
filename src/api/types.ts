@@ -10,6 +10,7 @@ import {
   Vendor,
   Notification,
   Target,
+  Subscription,
 } from '@main/entity';
 import {
   AuthProfile,
@@ -63,6 +64,10 @@ export interface ApiClient {
   getTargets: (filter?: TargetFilter) => Promise<Target[]>;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  // Subscription
+  getSubscriptions: () => Promise<Subscription>;
+  updateSubscriptions: (data: SubscriptionParams) => Promise<Subscription>;
+  deleteSubscriptions: (data: SubscriptionParams) => Promise<Subscription>;
 }
 
 export type ChangePasswordDto = Omit<ChangePwdFormModel, 'confirmPassword'>;
@@ -150,4 +155,10 @@ export interface PostTargetParams {
   year: number;
   amount: number;
   departmentId: number;
+}
+
+export interface SubscriptionParams {
+  departments?: string[];
+  vendors?: string[];
+  categories?: string[];
 }

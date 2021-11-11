@@ -5,6 +5,7 @@ import ListLoading from '@main/atoms/ListLoading';
 import { DepartmentSection } from '@main/hooks/department.hook';
 import DirectoryItem from '@main/molecules/DirectoryItem';
 import RootDepartmentHeader from '@main/molecules/RootDepartmentHeader';
+import { useSubscription } from '@main/hooks/subscription.hook';
 
 interface DepartmentListProps {
   departments: DepartmentSection[];
@@ -22,15 +23,29 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
   onSelect,
   onSelectRoot,
 }) => {
+  const { subscribe, unsubscribe, isFollowing } = useSubscription();
+
   const renderDeptSection = (dept: DepartmentSection) => (
     <div className="shadow-md" key={dept.id}>
-      <RootDepartmentHeader item={dept} onClick={() => onSelectRoot && onSelectRoot(dept)} />
+      <RootDepartmentHeader
+        item={dept}
+        isFollowing={isFollowing('departments', dept)}
+        onClick={() => onSelectRoot && onSelectRoot(dept)}
+        onFollow={() => subscribe('departments', dept)}
+        onUnfollow={() => unsubscribe('departments', dept)}
+      />
       {!!dept.children.length && (
         <div className="bg-white overflow-hidden sm:rounded-sm">
           <ul className="divide-y divide-gray-200">
             {dept.children.map((child) => (
               <li key={child.id} className="px-4 py-4 sm:pl-16">
-                <DirectoryItem item={child} onClick={() => onSelect && onSelect(child)} />
+                <DirectoryItem
+                  item={child}
+                  isFollowing={isFollowing('departments', child)}
+                  onClick={() => onSelect && onSelect(child)}
+                  onFollow={() => subscribe('departments', child)}
+                  onUnfollow={() => unsubscribe('departments', child)}
+                />
               </li>
             ))}
           </ul>

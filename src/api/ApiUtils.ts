@@ -11,6 +11,7 @@ import {
   Vendor,
   Notification,
   Target,
+  Subscription,
 } from '@main/entity';
 import { ApiError } from '@error';
 import {
@@ -30,6 +31,7 @@ import {
   TargetFilter,
   PostTargetParams,
   PutTargetParams,
+  SubscriptionParams,
 } from '@api/types';
 import {
   AuthProfile,
@@ -391,6 +393,32 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<Transaction>({
       url: `/feed/transactions/${id}`,
       method: 'GET',
+    });
+    return res.data;
+  };
+
+  getSubscriptions = async (): Promise<Subscription> => {
+    const res = await this.request<Subscription>({
+      url: '/subs/subscriptions/mine',
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  updateSubscriptions = async (data: SubscriptionParams): Promise<Subscription> => {
+    const res = await this.request<Subscription>({
+      url: '/subs/subscriptions/mine',
+      method: 'PATCH',
+      data,
+    });
+    return res.data;
+  };
+
+  deleteSubscriptions = async (data: SubscriptionParams): Promise<Subscription> => {
+    const res = await this.request<Subscription>({
+      url: '/subs/subscriptions/mine',
+      method: 'DELETE',
+      data,
     });
     return res.data;
   };

@@ -20,13 +20,16 @@ export const MainMenu: GroupTab[] = [
   {
     name: 'Feed',
     icon: FeedIcon,
-    tabs: [{ name: 'Company', href: '/overview', icon: null }],
+    tabs: [
+      { name: 'Company', href: '/overview', icon: null },
+      { name: 'For you', href: '/for-you', icon: null, isShowCounter: true },
+    ],
   },
   {
     name: 'Directory',
     icon: DirectoryIcon,
     tabs: [
-      { name: 'Departments', href: '/departments', icon: null },
+      { name: 'Teams', href: '/departments', icon: null },
       { name: 'Categories', href: '/categories', icon: null },
       { name: 'Vendors', href: '/vendors', icon: null },
     ],

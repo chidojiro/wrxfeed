@@ -3,7 +3,7 @@ import MainLayout from '@common/templates/MainLayout';
 import { TransactionModal } from '@main/organisms';
 import DiscussionList from '../../organisms/DiscussionList';
 
-const DiscussionPage: React.VFC = () => {
+const Notifications: React.VFC = () => {
   return (
     <MainLayout>
       <DiscussionList />
@@ -12,4 +12,4 @@ const DiscussionPage: React.VFC = () => {
   );
 };
 
-export default DiscussionPage;
+export default Notifications;

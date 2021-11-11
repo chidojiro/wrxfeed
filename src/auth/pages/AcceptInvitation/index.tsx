@@ -22,11 +22,6 @@ interface Error {
   message: string;
 }
 
-export interface LocationState {
-  fromInvite?: boolean;
-  message?: string;
-}
-
 const AcceptInvitation: VFC = () => {
   const { acceptInvitation } = useApi();
   const query = useQuery();
@@ -42,7 +37,7 @@ const AcceptInvitation: VFC = () => {
       try {
         await acceptInvitation(inviteId);
         // Redirect to login
-        router.replace(Routes.Login.path, {
+        router.replace(Routes.Login.path as string, {
           fromInvite: true,
           message: 'Your account has been created successfully',
         });
