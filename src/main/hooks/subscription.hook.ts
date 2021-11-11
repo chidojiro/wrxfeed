@@ -17,7 +17,7 @@ export function useSubscription(): SubscriptionHookValues {
 
   function unsubscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
     // Call API to unsubscribe follow data
-    ApiClient.updateSubscriptions({ [type]: [channel.id] })
+    ApiClient.deleteSubscriptions({ [type]: [channel.id] })
       .then(() => {
         const newSubscription: Subscription = cloneDeep(subscription);
         switch (type) {
