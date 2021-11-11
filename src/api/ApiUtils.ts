@@ -11,6 +11,7 @@ import {
   Vendor,
   Notification,
   Target,
+  Subscription,
 } from '@main/entity';
 import { ApiError } from '@error';
 import {
@@ -30,8 +31,7 @@ import {
   TargetFilter,
   PostTargetParams,
   PutTargetParams,
-  SubsParams,
-  SubscriptionResponse,
+  SubscriptionParams,
 } from '@api/types';
 import {
   AuthProfile,
@@ -397,8 +397,16 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  patchSubsMine = async (data: SubsParams): Promise<SubscriptionResponse> => {
-    const res = await this.request<SubscriptionResponse>({
+  getSubscriptions = async (): Promise<Subscription> => {
+    const res = await this.request<Subscription>({
+      url: '/subs/subscriptions/mine',
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  updateSubscriptions = async (data: SubscriptionParams): Promise<Subscription> => {
+    const res = await this.request<Subscription>({
       url: '/subs/subscriptions/mine',
       method: 'PATCH',
       data,
@@ -406,8 +414,8 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  deleteSubsMine = async (data: SubsParams): Promise<SubscriptionResponse> => {
-    const res = await this.request<SubscriptionResponse>({
+  deleteSubscriptions = async (data: SubscriptionParams): Promise<Subscription> => {
+    const res = await this.request<Subscription>({
       url: '/subs/subscriptions/mine',
       method: 'DELETE',
       data,

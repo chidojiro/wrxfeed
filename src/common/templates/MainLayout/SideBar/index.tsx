@@ -1,21 +1,17 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
-import { MainMenu } from '@common/constants';
 import { useSubscription } from '@main/hooks/subscription.hook';
-import cloneDeep from 'lodash.clonedeep';
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
+import { useRecoilValue } from 'recoil';
+import { menuItemsValue } from '@main/states/sidemenu.state';
 
 const SideBar: React.VFC = () => {
   const location = useLocation();
-  const { subscriptionMenuRoutes, unsubscribe } = useSubscription();
-  const dynamicMenu: GroupTab[] = useMemo(() => {
-    const menu = cloneDeep(MainMenu);
-    menu[0].tabs.push(...subscriptionMenuRoutes);
-    return menu;
-  }, [subscriptionMenuRoutes]);
-  const currentTab = dynamicMenu.reduce<LeftTab | null>((cur, root) => {
+  const { unsubscribe } = useSubscription();
+  const menuItems: GroupTab[] = useRecoilValue(menuItemsValue);
+  const currentTab = menuItems.reduce<LeftTab | null>((cur, root) => {
     if (cur) return cur;
     return root.tabs.find((tab) => location.pathname.startsWith(tab.href)) ?? null;
   }, null);
@@ -23,7 +19,7 @@ const SideBar: React.VFC = () => {
   return (
     <nav aria-label="Sidebar" className="divide-y divide-gray-300">
       <div className="py-8 space-y-8 max-h-[calc(60vh-56px)] lg:max-h-[calc(100vh-56px)] overflow-scroll">
-        {dynamicMenu.map((menuItem: GroupTab) => {
+        {menuItems.map((menuItem: GroupTab) => {
           const { tabs, icon: IconView } = menuItem;
           return (
             <div key={menuItem.name}>
