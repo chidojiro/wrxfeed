@@ -90,7 +90,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
       );
     }
     return (
-      <div className="flex flex-col">
+      <ul className="flex flex-col">
         {targets.map((item: Target, index: number) => (
           <TargetRow
             key={`target-${item?.name}`}
@@ -102,13 +102,13 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
             isPutTarget={isPutTarget}
           />
         ))}
-      </div>
+      </ul>
     );
   };
 
   const renderListTargets = () => {
-    const overflow = isExpanded ? 'overflow-y-scroll' : 'overflow-hidden';
-    return <div className={classNames('flex mt-2 flex-col', overflow)}>{renderTargets()}</div>;
+    const overflow = isExpanded ? 'overflow-scroll hide-scrollbar' : 'overflow-hidden';
+    return <ul className={classNames('flex mt-2 flex-col', overflow)}>{renderTargets()}</ul>;
   };
 
   // min-h-[80vh]
@@ -116,7 +116,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const heightExpand = isExpanded ? 'max-h-[80vh]' : 'max-h-[450px]';
   return (
     <div className={classNames('flex flex-1 pt-12 w-[330px]', heightExpand)}>
-      <div className="flex flex-col w-full bg-white pt-6 pb-2 max-h-106 drop-shadow-md">
+      <div className="flex flex-col w-full bg-white pt-6 pb-2 max-h-106 drop-shadow-md overflow-auto">
         <div className="flex text-Gray-2 text-base font-semibold px-6">Monthly Targets</div>
         {renderListTargets()}
         {renderExpandedIcon()}

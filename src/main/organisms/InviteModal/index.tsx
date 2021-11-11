@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { Contact } from '@main/entity/contact.entity';
-// import CommentBox from '@main/molecules/CommentBox';
 import { GetContactsFilter } from '@api/types';
 import { useGetContacts } from '@main/hooks/contact.hook';
 import Modal from '@common/atoms/Modal';
@@ -80,7 +79,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
               />
             )}
           </div>
-          <div className="h-[320px] overflow-scroll pb-5">
+          <div className="h-[320px] overflow-auto pb-5">
             <ul className="space-y-4">
               {contacts.map((contact: Contact) => (
                 <React.Fragment key={contact.email}>
