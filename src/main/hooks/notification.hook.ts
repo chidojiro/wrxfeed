@@ -17,7 +17,6 @@ interface NotificationHookValues {
   hasMore: boolean;
   isLoading: boolean;
   patchNotification: (id: number) => Promise<void>;
-  clear: () => void;
   markAllAsRead: () => void;
   isMarkAll: boolean;
 }
@@ -45,10 +44,21 @@ export function useNotification(page: Pagination): NotificationHookValues {
 
   const getNotifications = useCallback(async () => {
     try {
+      console.log(`Check hasMore = ${JSON.stringify(hasMore)}`);
       setLoading(true);
-      const res = await ApiClient.getNotifications(page);
-      setNotifications((prevTrans) => [...prevTrans, ...res]);
-      setHasMore(!!res.length);
+      console.log(`Check page = ${JSON.stringify(page)}`);
+      if (page?.limit) {
+        const res = await ApiClient.getNotifications(page);
+        console.log(`Check res = ${JSON.stringify(res)}`);
+        if (page?.offset) {
+          setNotifications((prevTrans) => [...prevTrans, ...res]);
+        } else {
+          setNotifications(res);
+        }
+        setHasMore(!!res.length);
+      } else {
+        setHasMore(false);
+      }
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get notifications 🤦!');
@@ -59,10 +69,6 @@ export function useNotification(page: Pagination): NotificationHookValues {
       setLoading(false);
     }
   }, [ApiClient, errorHandler, page]);
-
-  const clear = useCallback(async () => {
-    setNotifications([]);
-  }, []);
 
   const getRealtimeNoti = useCallback(
     (data: Notification) => {
@@ -118,7 +124,6 @@ export function useNotification(page: Pagination): NotificationHookValues {
     hasMore,
     isLoading,
     patchNotification,
-    clear,
     markAllAsRead,
     isMarkAll,
   };
