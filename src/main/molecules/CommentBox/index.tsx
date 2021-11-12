@@ -135,7 +135,12 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   };
 
   return (
-    <form onSubmit={onSubmit && handleSubmit(onSubmit)} style={{ ...style }} ref={formRef}>
+    <form
+      id={`form-${id}`}
+      onSubmit={onSubmit && handleSubmit(onSubmit)}
+      style={{ ...style }}
+      ref={formRef}
+    >
       <div
         className={classNames(
           focused || alwaysFocus ? 'border-purple-5 bg-white' : ' border-Gray-11',

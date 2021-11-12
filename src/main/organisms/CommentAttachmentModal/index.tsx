@@ -29,6 +29,7 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
   onFileUploaded,
   onClose,
 }) => {
+  const cancelButtonRef = useRef(null);
   const commentContent = useRef<EditorState>();
   const isImage = file?.type.split('/')[0] === 'image';
   const onUploadSuccess = (url: string) => {
@@ -52,14 +53,14 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
     commentContent.current = content;
   };
   return (
-    <Modal open={open} onClose={onClose}>
-      <div className="sm:min-w-[30rem] min-w-[90vw]">
+    <Modal initialFocus={cancelButtonRef} open={open} onClose={onClose}>
+      <div className="sm:min-w-[30rem] lg:max-w-[60vw] min-w-[90vw] max-w-full">
         {isImage && <ImageFilePreview className="mt-6 ml-6" file={file} width={144} height={90} />}
         <div className="px-6 mt-3.5">
           <p className="text-lg text-left font-bold text-Gray-1">
             {file?.name || '<unknown filename>'}
           </p>
-          <p className="text-sm text-left text-Gray-2 mt-2">
+          <div className="text-sm text-left text-Gray-2 mt-2">
             <div className="flex">
               Upload to
               <CircleAvatar
@@ -70,12 +71,12 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
               />
               <span style={{ fontWeight: 600 }}>{transaction?.category.name ?? ''}</span>
             </div>
-          </p>
+          </div>
         </div>
         <div className="flex flex-col p-6">
           <p className="text-sm text-left text-Gray-1 font-bold mb-2">Add a comment</p>
           <CommentBox
-            id={transaction?.id.toString()}
+            id={`attachment-${transaction?.id.toString()}`}
             showAttach={false}
             showSend={false}
             showEmoji={false}
@@ -87,6 +88,7 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
         <hr className="divider divider-horizontal" />
         <div className="flex justify-end h-[66px] px-6 py-4">
           <button
+            ref={cancelButtonRef}
             type="button"
             disabled={isUploading}
             className="rounded text-sm font-bold text-Gray-2 px-5"
