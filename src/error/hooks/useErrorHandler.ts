@@ -13,6 +13,12 @@ export default function useErrorHandler(): ErrorHandler {
         return;
       }
 
+      // Check internet connection first
+      if (!window.navigator.onLine) {
+        toast.error('Please check your internet connection.');
+        return;
+      }
+
       switch (error.code) {
         case ApiErrorCode.NetworkError:
           toast.error('Please check your internet connection.');
