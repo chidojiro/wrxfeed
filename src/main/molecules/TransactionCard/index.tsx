@@ -275,15 +275,13 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                 </ul>
               )}
             </div>
-            {!isHidden && (
-              <CommentBox
-                id={transaction.id.toString()}
-                className="mt-6 mb-5"
-                onSubmit={onSubmitComment}
-                onAttachFile={handleAttachFile}
-                mentionData={mentions}
-              />
-            )}
+            <CommentBox
+              id={transaction.id.toString()}
+              className="mt-6 mb-5 bg-white"
+              onSubmit={onSubmitComment}
+              onAttachFile={handleAttachFile}
+              mentionData={mentions}
+            />
           </div>
         </article>
       </li>
