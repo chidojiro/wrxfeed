@@ -1,6 +1,6 @@
 export type Contact = {
   email: string;
-  name?: string;
+  fullName?: string;
   title?: string;
   supervisor?: string;
   officeLocation?: string;
