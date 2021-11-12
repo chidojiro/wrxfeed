@@ -48,3 +48,8 @@ export type Notification = {
   data: NotificationData;
   createdAt: string;
 };
+
+export enum NotifyStatus {
+  UNREAD = 'UNREAD',
+  READ = 'READ',
+}

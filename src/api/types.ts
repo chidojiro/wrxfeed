@@ -162,8 +162,3 @@ export interface SubscriptionParams {
   vendors?: string[];
   categories?: string[];
 }
-
-export enum NotifyStatus {
-  UNREAD = 'UNREAD',
-  READ = 'READ',
-}

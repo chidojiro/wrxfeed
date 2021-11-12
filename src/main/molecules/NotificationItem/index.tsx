@@ -1,44 +1,44 @@
-import { Notification } from '@main/entity';
+import { Notification, NotifyStatus } from '@main/entity';
 import React from 'react';
 import { classNames } from '@common/utils';
 import CommentText from '@main/atoms/CommentText';
 import { getDepartmentBgColor } from '@main/utils';
 import { formatDistance } from 'date-fns';
-import { NotifyStatus } from '@api/types';
 
-export interface NotificationCardProps {
+export interface NotificationItemProps {
   item: Notification;
   index?: number;
   style?: React.CSSProperties;
   onClick: (item: Notification) => void;
 }
 
-const NotificationCard: React.VFC<NotificationCardProps> = ({ item, onClick }) => {
-  const deptBgClass = React.useMemo(
+const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) => {
+  const avatarBgColor = React.useMemo(
     () => getDepartmentBgColor(item?.content ?? ''),
     [item?.content],
   );
   const isNew = item.status === NotifyStatus.UNREAD;
-  const styleDotNewOrOld = isNew ? 'bg-system-success' : 'bg-transparent';
-  const styleCardNewOrOld = isNew ? 'bg-white' : 'bg-Gray-18';
   return (
     <button
       type="button"
       onClick={() => {
         onClick(item);
       }}
-      className={classNames('flex flex-row min-h-16 pl-3 pr-5 py-4 w-full', styleCardNewOrOld)}
+      className={classNames(
+        'flex flex-row min-h-16 pl-3 pr-5 py-4 w-full',
+        isNew ? 'bg-white' : 'bg-Gray-18',
+      )}
     >
       <div className="flex flex-row items-center">
         <div
           className={classNames(
             'flex self-center w-1.5 h-1.5 rounded-full mr-1.5',
-            styleDotNewOrOld,
+            isNew ? 'bg-system-success' : 'bg-transparent',
           )}
         />
         <div
           className="flex flex-row items-center w-10 h-10 rounded-full"
-          style={{ backgroundColor: deptBgClass }}
+          style={{ backgroundColor: avatarBgColor }}
         >
           {/* <img className="flex w-10 h-10 rounded-full" alt="avatar-who-mention" /> */}
         </div>
@@ -57,4 +57,4 @@ const NotificationCard: React.VFC<NotificationCardProps> = ({ item, onClick }) =
   );
 };
 
-export default NotificationCard;
+export default NotificationItem;

@@ -44,12 +44,9 @@ export function useNotification(page: Pagination): NotificationHookValues {
 
   const getNotifications = useCallback(async () => {
     try {
-      console.log(`Check hasMore = ${JSON.stringify(hasMore)}`);
       setLoading(true);
-      console.log(`Check page = ${JSON.stringify(page)}`);
       if (page?.limit) {
         const res = await ApiClient.getNotifications(page);
-        console.log(`Check res = ${JSON.stringify(res)}`);
         if (page?.offset) {
           setNotifications((prevTrans) => [...prevTrans, ...res]);
         } else {

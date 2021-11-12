@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import NotificationCard from '@main/molecules/NotificationCard';
+import NotificationItem from '@main/molecules/NotificationItem';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Notification } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
@@ -53,7 +53,7 @@ const NotificationList: React.VFC<NotificationListProps> = ({
     >
       <ul className="pb-5 space-y-0.5">
         {notifications.map((item) => (
-          <NotificationCard key={item.id} item={item} onClick={onClickNotification} />
+          <NotificationItem key={item.id} item={item} onClick={onClickNotification} />
         ))}
       </ul>
       {!isLoading && !notifications.length && renderEmptyList()}
