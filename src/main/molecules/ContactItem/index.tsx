@@ -21,7 +21,7 @@ const ContactItem: VFC<ContactItemProps> = ({ className, contact, onSelect }) =>
     >
       <div>
         <div className="flex flex-row space-x-1">
-          <p className="text-xs text-Gray-1 font-semibold">{contact.name ?? '<unknown>'}</p>
+          <p className="text-xs text-Gray-1 font-semibold">{contact.fullName ?? '<unknown>'}</p>
           {contact.title && (
             <p className="text-xs text-Gray-1">
               <span className="text-Gray-6">• </span>
