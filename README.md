@@ -1,10 +1,14 @@
 # Gravity Web
 
-Web UI for Gravity fintech.
+Web UI for Gravity.
 
 ## Netlify deploy status
 
+**Staging**
 [![Netlify Status](https://api.netlify.com/api/v1/badges/bf53b711-3921-47e7-b1c0-e53f9995e189/deploy-status)](https://app.netlify.com/sites/wrxfeed/deploys)
+
+**Production**
+[![Netlify Status](https://api.netlify.com/api/v1/badges/20904708-afb2-4f6d-ae97-975ad5f96c53/deploy-status)](https://app.netlify.com/sites/gravity-prod/deploys)
 
 ## Requirements
 
@@ -77,21 +81,13 @@ Runs the app in the development mode.
 
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-### `yarn start:dev`
+### `yarn dev`
 
 Same as `yarn start` but in watch mode.
-
-### `yarn start:prod`
-
-Runs the app in the production mode.
 
 ### `yarn test`
 
 Launch unit test runner with coverage information. Minimum coverage threshold is also configured for the test to pass.
-
-### `yarn test:e2e`
-
-Launch end to end test.
 
 ### `yarn test:watch`
 
@@ -107,18 +103,19 @@ Your app is ready to be deployed!
 
 Launches the linter that analyzes source code to flag programming errors, bugs.
 
+### `yarn storybook`
 
-## Release and deploy
-
-Application version is stored in `package.json`. The version number is updated automatically every time a new release is created. To create a new release and deploy to **test** environment automatically, run this command:
-
-```sh
-yarn release
-```
+Runs the storybook of components.
 
 ## Deploy Automatically
 
-Website will be deployed automatically via Netlify. Check deploy status above **Netlify deploy status**
+Website will be deployed via Netlify.
+
+**For Staging:** Whenever there is a new commit to `staging` branch, Netlify will trigger to build and deploy a new staging version automatically.
+
+**For Production:** Whenever there is a new commit to `main` branch, Netlify will trigger to build a new production version automatically. For deploy a production version, you need to access Netlify and deploy manually in [Gravity-prod](https://app.netlify.com/sites/gravity-prod/overview)
+
+Check deploy status above **Netlify deploy status**
 
 
 ## Technologies
