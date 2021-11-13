@@ -3,7 +3,7 @@ import { Popover, Transition } from '@headlessui/react';
 import { NotifyIcon } from '@assets';
 import { useNotification } from '@main/hooks';
 import { Pagination } from '@api/types';
-import { Notification } from '@main/entity';
+import { Notification, NotifyStatus } from '@main/entity';
 import { NotifyRow } from '@main/atoms';
 import Loading from '@common/atoms/Loading';
 import Routes from '@src/routes';
@@ -13,15 +13,16 @@ import { classNames } from '@common/utils';
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;
   showNumberNotify?: boolean;
+  useDropDown?: boolean;
 }
 
 const LIMIT = 15;
 
-export enum NotifyStatus {
-  UNREAD = 'UNREAD',
-}
-
-const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style, showNumberNotify = false }) => {
+const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
+  style,
+  showNumberNotify = false,
+  useDropDown = true,
+}) => {
   const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
   const { notifications, isLoading, patchNotification, markAllAsRead } = useNotification(filter);
   const [notifies, setNotifies] = React.useState<Notification[]>([]);
@@ -95,7 +96,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style, showNumberNotify 
       <div className="flex h-8 w-8 justify-center items-center">
         <NotifyIcon aria-hidden="true" />
         {!!notifyNews && (
-          <div className="absolute flex bg-red-500 top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
+          <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
             {showNumberNotify && (
               <div className="flex text-white font-semibold" style={{ fontSize: '10px' }}>
                 {notifyNews}
@@ -110,6 +111,24 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({ style, showNumberNotify 
   const onBlurIconButton = () => undefined;
 
   const onBlurCapture = () => undefined;
+
+  const onClickNotifications = () => {
+    history.push('/notifications');
+  };
+
+  if (!useDropDown) {
+    return (
+      <button
+        onClick={onClickNotifications}
+        type="button"
+        className={classNames(
+          'rounded-full flex-shrink-0 relative w-10 h-10 focus:outline-none hover:ring-2 ring-offset-2 ring-rose-500',
+        )}
+      >
+        {renderNotifyIconWithBell()}
+      </button>
+    );
+  }
 
   return (
     <>

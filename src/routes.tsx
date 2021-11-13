@@ -24,6 +24,7 @@ const Departments = lazy(() => import('@main/pages/Departments'));
 const Categories = lazy(() => import('@main/pages/Categories'));
 const Vendors = lazy(() => import('@main/pages/Vendors'));
 const Feed = lazy(() => import('@main/pages/Feed'));
+const Notifications = lazy(() => import('@main/pages/Notifications'));
 
 const routes: Route = {
   // Public pages
@@ -58,6 +59,11 @@ const routes: Route = {
   ForYou: {
     path: '/for-you',
     component: ForYou,
+    permissions: [UserRole.ADMIN, UserRole.USER],
+  },
+  Notifications: {
+    path: '/notifications',
+    component: Notifications,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Departments: {
