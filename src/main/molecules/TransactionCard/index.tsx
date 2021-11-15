@@ -234,7 +234,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
             <h2
               aria-hidden="true"
               id={`question-title-${transaction.id}`}
-              className="mt-3 text-base font-semibold text-Gray-2 hover:underline"
+              className="mt-1 text-base font-semibold text-Gray-2 hover:underline"
               onClick={() => onClickCategory && onClickCategory(transaction.category)}
             >
               {transaction.category.name}
