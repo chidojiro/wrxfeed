@@ -30,6 +30,7 @@ const VendorList: React.VFC<VendorListProps> = ({ vendors, isLoading, onLoadMore
               <DirectoryItem
                 item={vendor}
                 onClick={() => onSelect && onSelect(vendor)}
+                disableFollow
                 isFollowing={isFollowing('vendors', vendor)}
                 onFollow={() => subscribe('vendors', vendor)}
                 onUnfollow={() => unsubscribe('vendors', vendor)}
