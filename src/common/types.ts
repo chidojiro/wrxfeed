@@ -7,7 +7,7 @@ export interface HOC<T> {
 
 export type LeftTab = {
   name: string;
-  href: string;
+  location: Partial<Omit<Location, 'pathname'>> & { pathname: string };
   icon: FunctionComponent<SVGAttributes<SVGElement>> | null;
   subscription?: {
     type: keyof Subscription;
@@ -15,6 +15,7 @@ export type LeftTab = {
   };
   removable?: boolean;
   isShowCounter?: boolean;
+  strict?: boolean; // When true, Left tab is marked as selected only if route equals to left tab location.
 };
 
 export type GroupTab = {
