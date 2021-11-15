@@ -67,11 +67,11 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   };
 
   const handleClickClearButton = () => {
-    if (amount === '0') {
+    if (amount === '') {
       setEdit(false);
       return;
     }
-    setAmount('0');
+    setAmount('');
   };
 
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,18 +82,17 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   const onBlurInput = () => {
     setEdit(false);
-    setAmount('0');
+    setAmount('');
   };
 
   const onMouseLeaveInput = () => {
-    setEdit(false);
-    setAmount('0');
+    // setEdit(false);
+    // setAmount('');
   };
 
   const onPointerOutInput = () => {
-    setEdit(false);
-    setAmount('0');
-    // console.log('Check onPointerOutInput');
+    // setEdit(false);
+    // setAmount('');
   };
 
   if (isEdit) {
@@ -262,7 +261,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   const renderAlertText = () => {
     if (!isExceeds) return null;
     const exceedNumber = maxTarget - currentTarget;
-    const exceedNumberCurrency = nFormatter(Math.round(exceedNumber * 100) / 100);
+    const exceedNumberCurrency = nFormatter(Math.round(Math.abs(exceedNumber) * 100) / 100);
     return (
       <div
         className="flex text-system-alert font-bold font-regular group-hover:hidden ml-auto"
