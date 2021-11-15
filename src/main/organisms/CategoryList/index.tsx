@@ -35,6 +35,7 @@ const CategoryList: React.VFC<CategoryListProps> = ({
               <DirectoryItem
                 item={category}
                 onClick={() => onSelect && onSelect(category)}
+                disableFollow
                 isFollowing={isFollowing('categories', category)}
                 onFollow={() => subscribe('categories', category)}
                 onUnfollow={() => unsubscribe('categories', category)}

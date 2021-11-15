@@ -9,11 +9,6 @@ import TransactionList from '@main/organisms/TransactionList';
 import { useTransaction } from '@main/hooks';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import TargetPanel from '@main/organisms/TargetPanel';
-import { useSubscription } from '@main/hooks/subscription.hook';
-import Button from '@common/atoms/Button';
-// Icons
-import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
-import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -44,9 +39,6 @@ const CategoriesPage: React.VFC = () => {
     isLoading: transLoading,
     updateCategory,
   } = useTransaction(transFilter);
-  // Subscription
-  const { subscribe, unsubscribe, isFollowing } = useSubscription();
-  // Variables
   // Variables
   const isFiltering = !!transFilter.vendor;
   const vendor = useMemo(() => {
@@ -56,7 +48,6 @@ const CategoriesPage: React.VFC = () => {
     }
     return null;
   }, [isFiltering, transactions]);
-  const isFollow = vendor && isFollowing('vendors', vendor);
 
   const filterByRoute = useCallback(() => {
     if (vendorId) {
@@ -112,27 +103,6 @@ const CategoriesPage: React.VFC = () => {
             <ChevronLeftIcon onClick={clearFilter} />
             <h1 className="text-Gray-1 text-xl font-bold">{vendor?.name}</h1>
           </div>
-          {isFollow ? (
-            <Button onClick={() => vendor && unsubscribe('vendors', vendor)}>
-              <TickIcon
-                width={16}
-                height={16}
-                className="stroke-current path-no-stroke text-Gray-3"
-                viewBox="0 0 15 15"
-              />
-              <span className="text-Gray-3">Following</span>
-            </Button>
-          ) : (
-            <Button onClick={() => vendor && subscribe('vendors', vendor)}>
-              <AddIcon
-                width={16}
-                height={16}
-                className="stroke-current path-no-stroke text-Gray-3"
-                viewBox="0 0 15 15"
-              />
-              <span className="text-Gray-3">Follow</span>
-            </Button>
-          )}
         </div>
       )}
       {!isFiltering ? (
