@@ -1,4 +1,4 @@
-import { MainMenu } from '@common/constants';
+import { MainGroups, MainMenu } from '@common/constants';
 import { GroupTab, LeftTab } from '@common/types';
 import { Category, Department, Subscription, Vendor } from '@main/entity';
 import cloneDeep from 'lodash.clonedeep';
@@ -13,15 +13,19 @@ export const menuItemsValue = selector<GroupTab[]>({
       (list, key) => [
         ...list,
         ...(subscription[key as keyof Subscription]?.map(
-          (channel: Department | Category | Vendor) => ({
+          (channel: Department | Category | Vendor): LeftTab => ({
             name: channel.name,
-            href: `/${key}/${channel.id}`,
+            location: {
+              pathname: `/${key}/${channel.id}`,
+              search: `?route=${MainGroups.Feeds}`,
+            },
             icon: null,
             subscription: {
               type: key as keyof Subscription,
               item: channel,
             },
             removable: true,
+            strict: true,
           }),
         ) || []),
       ],

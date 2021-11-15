@@ -1,19 +1,26 @@
 import React from 'react';
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
-import { useLocation, Link as RouterLink } from 'react-router-dom';
+import { useLocation, Link as RouterLink, useHistory } from 'react-router-dom';
 import { useSubscription } from '@main/hooks/subscription.hook';
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
 import { useRecoilValue } from 'recoil';
 import { menuItemsValue } from '@main/states/sidemenu.state';
 
 const SideBar: React.VFC = () => {
+  const history = useHistory();
   const location = useLocation();
   const { unsubscribe } = useSubscription();
   const menuItems: GroupTab[] = useRecoilValue(menuItemsValue);
   const currentTab = menuItems.reduce<LeftTab | null>((cur, root) => {
     if (cur) return cur;
-    return root.tabs.find((tab) => location.pathname.startsWith(tab.href)) ?? null;
+    return (
+      root.tabs.find((tab) =>
+        tab.strict
+          ? location.pathname === tab.location.pathname && location.search === tab.location.search
+          : location.pathname.startsWith(tab.location.pathname),
+      ) ?? null
+    );
   }, null);
   const forYouCounterNumber = 23;
 
@@ -58,11 +65,11 @@ const SideBar: React.VFC = () => {
                 </h3>
               </div>
               {tabs.map((leftTab: LeftTab) => {
-                const isCurrentTab = currentTab?.href === leftTab.href;
+                const isCurrentTab = currentTab?.location.pathname === leftTab.location.pathname;
                 return (
                   <RouterLink
                     key={`tabs-${leftTab.name}`}
-                    to={leftTab.href}
+                    to={leftTab.location}
                     className={classNames(
                       isCurrentTab ? 'bg-Gray-5 text-Gray-3' : 'text-Gray-6 hover:bg-Gray-16',
                       'group flex justify-between items-center pl-3 h-8 text-sm ml-8',
@@ -76,6 +83,7 @@ const SideBar: React.VFC = () => {
                           event.preventDefault();
                           if (leftTab.subscription) {
                             unsubscribe(leftTab.subscription.type, leftTab.subscription.item);
+                            history.replace(leftTab.location.pathname); // Remove Feeds from search query
                           }
                         }}
                       >
