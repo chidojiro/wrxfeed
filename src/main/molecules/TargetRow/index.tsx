@@ -76,7 +76,6 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(event.target.value);
-    // setAmount(formatCurrency(parseFloat(event.target.value)));
     setAmount(formatToCurrency(event.target.value, ''));
   };
 
@@ -176,12 +175,12 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
-  const currentTarget = target?.total ?? 0;
-  const maxTarget: number = target?.amount ?? 0;
+  const currentTarget = Math.abs(target?.total ?? 0);
+  const maxTarget = Math.abs(target?.amount ?? 0);
 
   let percent = (currentTarget / maxTarget) * 100;
   const currentCurrency = nFormatter(currentTarget);
-  const totalAmountCurrency = nFormatter(Math.abs(maxTarget));
+  const totalAmountCurrency = nFormatter(maxTarget);
   const isExceeds = currentTarget > maxTarget;
 
   const renderCurrentPerTotalBar = () => {
