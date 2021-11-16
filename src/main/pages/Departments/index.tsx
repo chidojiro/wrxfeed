@@ -130,14 +130,15 @@ const DepartmentsPage: React.VFC = () => {
             <h1 className="text-Gray-1 text-xl font-bold">{deptSelect?.name ?? ''}</h1>
           </div>
           {isFollow ? (
-            <Button onClick={handleUnfollow}>
+            <Button onClick={handleUnfollow} className="group block relative">
               <TickIcon
                 width={16}
                 height={16}
-                className="stroke-current path-no-stroke text-Gray-3"
+                className="stroke-current path-no-stroke text-Gray-3 flex group-hover:hidden"
                 viewBox="0 0 15 15"
               />
-              <span className="text-Gray-3">Following</span>
+              <span className="flex group-hover:hidden">Following</span>
+              <span className="group-hover:flex hidden">Unfollow</span>
             </Button>
           ) : (
             <Button onClick={handleFollow}>
