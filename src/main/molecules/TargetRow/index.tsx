@@ -85,16 +85,6 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     setAmount('');
   };
 
-  const onMouseLeaveInput = () => {
-    // setEdit(false);
-    // setAmount('');
-  };
-
-  const onPointerOutInput = () => {
-    // setEdit(false);
-    // setAmount('');
-  };
-
   if (isEdit) {
     return (
       <div className="flex flex-row py-3 px-6 mb-4">
@@ -116,8 +106,6 @@ const TargetRow: React.VFC<TargetRowProps> = ({
               className="flex flex-1 mx-2 text-sm outline-none border-none w-[76px]"
               style={{ color: 'rgba 125 132 144, 0.5' }}
               onBlur={onBlurInput}
-              onMouseLeave={onMouseLeaveInput}
-              onPointerOut={onPointerOutInput}
               onChange={onChangeInput}
               value={amount}
               // autoFocus
