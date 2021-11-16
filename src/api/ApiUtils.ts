@@ -151,16 +151,17 @@ export default class ApiUtils implements ApiClient {
     return resp.data;
   };
 
-  getTransactions = async (filter?: TransactionFilter): Promise<Transaction[]> => {
+  getTransactions = async (filters?: TransactionFilter): Promise<Transaction[]> => {
     const params = {
-      ...filter?.pagination,
-      dep: filter?.department,
-      ven: filter?.vendor,
-      cat: filter?.category,
-      rootDep: filter?.rootDepartment,
+      ...filters?.pagination,
+      dep: filters?.department,
+      ven: filters?.vendor,
+      cat: filters?.category,
+      rootDep: filters?.rootDepartment,
     };
+    const url = filters?.forYou ? '/feed/transactions/for-you' : '/feed/transactions';
     const res = await this.request<Transaction[]>({
-      url: '/feed/transactions',
+      url,
       method: 'GET',
       params,
     });
@@ -218,10 +219,10 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getUsers = async (filter: GetUsersFilter): Promise<User[]> => {
+  getUsers = async (filters: GetUsersFilter): Promise<User[]> => {
     const params = {
-      text: filter?.text,
-      ...filter.pagination,
+      text: filters?.text,
+      ...filters.pagination,
     };
     const res = await this.request<User[]>({
       url: '/user/users',
@@ -231,10 +232,10 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getContacts = async (filter: GetContactsFilter): Promise<Contact[]> => {
+  getContacts = async (filters: GetContactsFilter): Promise<Contact[]> => {
     const params = {
-      text: filter.text,
-      ...filter.pagination,
+      text: filters.text,
+      ...filters.pagination,
     };
     const res = await this.request<Contact[]>({
       url: '/inv/contacts',
@@ -295,11 +296,11 @@ export default class ApiUtils implements ApiClient {
   };
 
   // DIRECTORY
-  getDepartments = async (filter?: DepartmentFilter): Promise<Department[]> => {
+  getDepartments = async (filters?: DepartmentFilter): Promise<Department[]> => {
     const res = await this.request<Department[]>({
       url: '/feed/departments',
       method: 'GET',
-      params: filter,
+      params: filters,
     });
     return res.data;
   };
@@ -358,12 +359,12 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getTargets = async (filter?: TargetFilter): Promise<Target[]> => {
+  getTargets = async (filters?: TargetFilter): Promise<Target[]> => {
     const res = await this.request<Target[]>({
       url: '/target/targets',
       method: 'GET',
       params: {
-        ...filter,
+        ...filters,
       },
     });
     return res.data;

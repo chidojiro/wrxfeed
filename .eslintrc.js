@@ -276,5 +276,6 @@ module.exports = {
       },
     ],
     'eol-last': ["error", "always"],
+    'import/no-cycle': 'off',
   },
 };

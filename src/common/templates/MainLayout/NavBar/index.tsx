@@ -98,8 +98,8 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = tr
               </div>
 
               <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-3">
-                <NotifyPopover showNumberNotify />
-                <div className="bg-purple-9 w-[1px] h-[34px] ml-5 mr-7" />
+                <NotifyPopover showNumberNotify useDropDown={false} />
+                <div className="bg-purple-9 w-[1px] h-[34px] ml-2.5 mr-4" />
                 <UserProfilePopover />
                 {renderInviteButton()}
               </div>

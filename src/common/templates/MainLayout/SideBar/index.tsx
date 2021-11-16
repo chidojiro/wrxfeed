@@ -1,33 +1,43 @@
 import React from 'react';
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
-import { useLocation, Link as RouterLink } from 'react-router-dom';
+import { useLocation, Link as RouterLink, useHistory } from 'react-router-dom';
 import { useSubscription } from '@main/hooks/subscription.hook';
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
 import { useRecoilValue } from 'recoil';
-import { menuItemsValue } from '@main/states/sidemenu.state';
+import { menuItemsValue, newFeedCountState } from '@main/states/sidemenu.state';
 
 const SideBar: React.VFC = () => {
+  const history = useHistory();
   const location = useLocation();
   const { unsubscribe } = useSubscription();
   const menuItems: GroupTab[] = useRecoilValue(menuItemsValue);
+  const newFeedCount = useRecoilValue(newFeedCountState);
   const currentTab = menuItems.reduce<LeftTab | null>((cur, root) => {
     if (cur) return cur;
-    return root.tabs.find((tab) => location.pathname.startsWith(tab.href)) ?? null;
-  }, null);
-  const forYouCounterNumber = 23;
-
-  const renderCounter = (isSelect: boolean, counter: number) => {
-    const selectStyle = isSelect ? 'bg-Gray-12' : 'bg-Gray-11';
     return (
-      <div
-        className={classNames(
-          'flex px-1.5 h-[18px] rounded-full mr-2 justify-center items-center',
-          selectStyle,
-        )}
-      >
-        <p className="flex text-Gray-3 text-xs font-semibold">{counter}</p>
-      </div>
+      root.tabs.find((tab) =>
+        tab.strict
+          ? location.pathname === tab.location.pathname && location.search === tab.location.search
+          : location.pathname.startsWith(tab.location.pathname),
+      ) ?? null
+    );
+  }, null);
+
+  const renderCounter = (item: LeftTab) => {
+    const isCurrentTab = currentTab?.location.pathname === item.location.pathname;
+    const counter = newFeedCount[item.location.pathname] ?? 0;
+    return (
+      !!counter && (
+        <div
+          className={classNames(
+            'flex px-1.5 h-[18px] rounded-full mr-2 justify-center items-center',
+            isCurrentTab ? 'bg-Gray-12' : 'bg-Gray-11',
+          )}
+        >
+          <p className="flex text-Gray-3 text-xs font-semibold">{counter}</p>
+        </div>
+      )
     );
   };
 
@@ -58,11 +68,11 @@ const SideBar: React.VFC = () => {
                 </h3>
               </div>
               {tabs.map((leftTab: LeftTab) => {
-                const isCurrentTab = currentTab?.href === leftTab.href;
+                const isCurrentTab = currentTab?.location.pathname === leftTab.location.pathname;
                 return (
                   <RouterLink
                     key={`tabs-${leftTab.name}`}
-                    to={leftTab.href}
+                    to={leftTab.location}
                     className={classNames(
                       isCurrentTab ? 'bg-Gray-5 text-Gray-3' : 'text-Gray-6 hover:bg-Gray-16',
                       'group flex justify-between items-center pl-3 h-8 text-sm ml-8',
@@ -76,6 +86,7 @@ const SideBar: React.VFC = () => {
                           event.preventDefault();
                           if (leftTab.subscription) {
                             unsubscribe(leftTab.subscription.type, leftTab.subscription.item);
+                            history.replace(leftTab.location.pathname); // Remove Feeds from search query
                           }
                         }}
                       >
@@ -87,7 +98,7 @@ const SideBar: React.VFC = () => {
                         />
                       </span>
                     )}
-                    {leftTab?.isShowCounter && renderCounter(isCurrentTab, forYouCounterNumber)}
+                    {leftTab?.isShowCounter && renderCounter(leftTab)}
                   </RouterLink>
                 );
               })}

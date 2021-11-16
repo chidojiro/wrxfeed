@@ -1,15 +1,12 @@
-import { useApi } from '@api';
+/* eslint-disable react-hooks/exhaustive-deps */
 import { MentionData } from '@draft-js-plugins/mention';
 import { useErrorHandler } from '@error/hooks';
 import { User } from '@main/entity';
-import { useCallback, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { isBadRequest } from '@src/error';
 import { toast } from 'react-toastify';
-import { useRecoilState } from 'recoil';
-import { mentionLoadingState, mentionsState } from '@main/states';
-import debounce from 'lodash.debounce';
-
-const DEBOUNCE_REQUEST_WAIT = 300;
+import { useRecoilValueLoadable } from 'recoil';
+import { membersState } from '@main/states/member.state';
 
 interface MentionHookValues {
   mentions: MentionData[];
@@ -24,37 +21,38 @@ function mentionDataParser(users: User[]): MentionData[] {
   }));
 }
 
-const debounceRequest = debounce(
-  (request: (...args: unknown[]) => void) => request(),
-  DEBOUNCE_REQUEST_WAIT,
-);
-
 export function useMention(): MentionHookValues {
-  const [mentions, setMentions] = useRecoilState(mentionsState);
-  const [isLoading, setLoading] = useRecoilState(mentionLoadingState);
-  const ApiClient = useApi();
+  const membersLoadable = useRecoilValueLoadable<User[]>(membersState);
+  const [mentions, setMentions] = useState<MentionData[]>([]);
+  const [isLoading, setLoading] = useState(false);
   const errorHandler = useErrorHandler();
 
-  const getUsers = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await ApiClient.getUsers({ pagination: { offset: 0, limit: 50 } });
-      setMentions(mentionDataParser(res));
-    } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Can not get users by text');
-      } else {
-        await errorHandler(error);
-      }
-    } finally {
-      setLoading(false);
+  const handleMentionLoadable = async () => {
+    switch (membersLoadable.state) {
+      case 'hasValue':
+        setLoading(false);
+        setMentions(mentionDataParser(membersLoadable.contents));
+        break;
+      case 'loading':
+        setLoading(true);
+        break;
+      case 'hasError':
+        setLoading(false);
+        if (isBadRequest(membersLoadable.contents)) {
+          toast.error('Can not get users');
+        } else {
+          await errorHandler(membersLoadable.contents);
+        }
+        break;
+      default:
+        setLoading(false);
+        break;
     }
-  }, [ApiClient, errorHandler, setMentions, setLoading]);
+  };
 
   useEffect(() => {
-    if (!mentions.length && !isLoading) {
-      debounceRequest(getUsers);
-    }
-  }, [getUsers, mentions, isLoading]);
+    handleMentionLoadable();
+  }, [membersLoadable]);
+
   return { mentions, isLoading };
 }

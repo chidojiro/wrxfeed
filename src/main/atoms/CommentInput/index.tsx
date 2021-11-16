@@ -127,9 +127,6 @@ const CommentInput: React.VFC<CommentInputProps> = ({
         suggestions={suggestions}
         onSearchChange={onSearchChange}
         entryComponent={MentionEntry}
-        // popoverContainer={({ children }) => (
-        //   <div className="mention-suggestion-container">{children}</div>
-        // )}
       />
     </div>
   );

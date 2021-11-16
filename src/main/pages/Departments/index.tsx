@@ -15,6 +15,8 @@ import Button from '@common/atoms/Button';
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
 import { MouseEventHandler } from 'react-router/node_modules/@types/react';
+import { MainGroups } from '@common/constants';
+import { useQuery } from '@common/hooks';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -25,6 +27,7 @@ const INIT_PAGINATION = Object.freeze({
 const DepartmentsPage: React.VFC = () => {
   const history = useHistory();
   const { id: deptId } = useParams<{ id?: string }>();
+  const query = useQuery();
   // Department states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { departments, hasMore, isLoading } = useDepartment(filter);
@@ -59,6 +62,7 @@ const DepartmentsPage: React.VFC = () => {
     return null;
   }, [isFiltering, transactions]);
   const isFollow = deptSelect && isFollowing('departments', deptSelect);
+  const isBackSupported = query.get('route') !== MainGroups.Feeds; // Only show Back button when the filter list is in Directories
 
   const filterByRoute = useCallback(() => {
     if (deptId) {
@@ -98,7 +102,10 @@ const DepartmentsPage: React.VFC = () => {
   }, [hasMoreTrans, transLoading]);
 
   const handleTransFilter = (key: keyof TransactionFilter, dept?: Department): void => {
-    history.push(`/departments/${dept?.id.toString()}`);
+    history.push({
+      pathname: `/departments/${dept?.id.toString()}`,
+      search: `?route=${MainGroups.Directories}`,
+    });
   };
 
   const clearFilter = (): void => {
@@ -119,18 +126,19 @@ const DepartmentsPage: React.VFC = () => {
       {isFiltering && (
         <div className="flex items-center justify-between space-x-4 pb-8">
           <div className="flex flex-1 items-center space-x-4">
-            <ChevronLeftIcon onClick={clearFilter} />
+            {isBackSupported && <ChevronLeftIcon onClick={clearFilter} />}
             <h1 className="text-Gray-1 text-xl font-bold">{deptSelect?.name ?? ''}</h1>
           </div>
           {isFollow ? (
-            <Button onClick={handleUnfollow}>
+            <Button onClick={handleUnfollow} className="group block relative">
               <TickIcon
                 width={16}
                 height={16}
-                className="stroke-current path-no-stroke text-Gray-3"
+                className="stroke-current path-no-stroke text-Gray-3 flex group-hover:hidden"
                 viewBox="0 0 15 15"
               />
-              <span className="text-Gray-3">Following</span>
+              <span className="flex group-hover:hidden">Following</span>
+              <span className="group-hover:flex hidden">Unfollow</span>
             </Button>
           ) : (
             <Button onClick={handleFollow}>

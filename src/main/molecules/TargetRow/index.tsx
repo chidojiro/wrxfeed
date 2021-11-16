@@ -67,33 +67,21 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   };
 
   const handleClickClearButton = () => {
-    if (amount === '0') {
+    if (amount === '') {
       setEdit(false);
       return;
     }
-    setAmount('0');
+    setAmount('');
   };
 
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(event.target.value);
-    // setAmount(formatCurrency(parseFloat(event.target.value)));
     setAmount(formatToCurrency(event.target.value, ''));
   };
 
   const onBlurInput = () => {
     setEdit(false);
-    setAmount('0');
-  };
-
-  const onMouseLeaveInput = () => {
-    setEdit(false);
-    setAmount('0');
-  };
-
-  const onPointerOutInput = () => {
-    setEdit(false);
-    setAmount('0');
-    // console.log('Check onPointerOutInput');
+    setAmount('');
   };
 
   if (isEdit) {
@@ -117,8 +105,6 @@ const TargetRow: React.VFC<TargetRowProps> = ({
               className="flex flex-1 mx-2 text-sm outline-none border-none w-[76px]"
               style={{ color: 'rgba 125 132 144, 0.5' }}
               onBlur={onBlurInput}
-              onMouseLeave={onMouseLeaveInput}
-              onPointerOut={onPointerOutInput}
               onChange={onChangeInput}
               value={amount}
               // autoFocus
@@ -189,12 +175,12 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
-  const currentTarget = target?.total ?? 0;
-  const maxTarget: number = target?.amount ?? 0;
+  const currentTarget = Math.abs(target?.total ?? 0);
+  const maxTarget = Math.abs(target?.amount ?? 0);
 
   let percent = (currentTarget / maxTarget) * 100;
   const currentCurrency = nFormatter(currentTarget);
-  const totalAmountCurrency = nFormatter(Math.abs(maxTarget));
+  const totalAmountCurrency = nFormatter(maxTarget);
   const isExceeds = currentTarget > maxTarget;
 
   const renderCurrentPerTotalBar = () => {
@@ -262,7 +248,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   const renderAlertText = () => {
     if (!isExceeds) return null;
     const exceedNumber = maxTarget - currentTarget;
-    const exceedNumberCurrency = nFormatter(Math.round(exceedNumber * 100) / 100);
+    const exceedNumberCurrency = nFormatter(Math.round(Math.abs(exceedNumber) * 100) / 100);
     return (
       <div
         className="flex text-system-alert font-bold font-regular group-hover:hidden ml-auto"

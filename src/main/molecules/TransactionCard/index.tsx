@@ -234,7 +234,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
             <h2
               aria-hidden="true"
               id={`question-title-${transaction.id}`}
-              className="mt-3 text-base font-semibold text-Gray-2 hover:underline"
+              className="mt-1 text-base font-semibold text-Gray-2 hover:underline"
               onClick={() => onClickCategory && onClickCategory(transaction.category)}
             >
               {transaction.category.name}
@@ -275,15 +275,13 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                 </ul>
               )}
             </div>
-            {!isHidden && (
-              <CommentBox
-                id={transaction.id.toString()}
-                className="mt-6 mb-5"
-                onSubmit={onSubmitComment}
-                onAttachFile={handleAttachFile}
-                mentionData={mentions}
-              />
-            )}
+            <CommentBox
+              id={transaction.id.toString()}
+              className="mt-6 mb-5 bg-white"
+              onSubmit={onSubmitComment}
+              onAttachFile={handleAttachFile}
+              mentionData={mentions}
+            />
           </div>
         </article>
       </li>
