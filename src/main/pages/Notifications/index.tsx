@@ -1,6 +1,5 @@
 import React from 'react';
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
-import TargetPanel from '@main/organisms/TargetPanel';
+import MainLayout from '@common/templates/MainLayout';
 import { Pagination } from '@api/types';
 import { useNotification } from '@main/hooks';
 import Routes from '@src/routes';
@@ -45,9 +44,6 @@ const Notifications: React.VFC = () => {
         onLoadMore={handleLoadMore}
         onClickNotification={onClickNotification}
       />
-      <MainRightSide>
-        <TargetPanel />
-      </MainRightSide>
     </MainLayout>
   );
 };
