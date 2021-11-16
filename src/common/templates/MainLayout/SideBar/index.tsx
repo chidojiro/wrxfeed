@@ -5,13 +5,14 @@ import { useLocation, Link as RouterLink, useHistory } from 'react-router-dom';
 import { useSubscription } from '@main/hooks/subscription.hook';
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
 import { useRecoilValue } from 'recoil';
-import { menuItemsValue } from '@main/states/sidemenu.state';
+import { menuItemsValue, newFeedCountState } from '@main/states/sidemenu.state';
 
 const SideBar: React.VFC = () => {
   const history = useHistory();
   const location = useLocation();
   const { unsubscribe } = useSubscription();
   const menuItems: GroupTab[] = useRecoilValue(menuItemsValue);
+  const newFeedCount = useRecoilValue(newFeedCountState);
   const currentTab = menuItems.reduce<LeftTab | null>((cur, root) => {
     if (cur) return cur;
     return (
@@ -22,19 +23,21 @@ const SideBar: React.VFC = () => {
       ) ?? null
     );
   }, null);
-  const forYouCounterNumber = 23;
 
-  const renderCounter = (isSelect: boolean, counter: number) => {
-    const selectStyle = isSelect ? 'bg-Gray-12' : 'bg-Gray-11';
+  const renderCounter = (item: LeftTab) => {
+    const isCurrentTab = currentTab?.location.pathname === item.location.pathname;
+    const counter = newFeedCount[item.location.pathname] ?? 0;
     return (
-      <div
-        className={classNames(
-          'flex px-1.5 h-[18px] rounded-full mr-2 justify-center items-center',
-          selectStyle,
-        )}
-      >
-        <p className="flex text-Gray-3 text-xs font-semibold">{counter}</p>
-      </div>
+      !!counter && (
+        <div
+          className={classNames(
+            'flex px-1.5 h-[18px] rounded-full mr-2 justify-center items-center',
+            isCurrentTab ? 'bg-Gray-12' : 'bg-Gray-11',
+          )}
+        >
+          <p className="flex text-Gray-3 text-xs font-semibold">{counter}</p>
+        </div>
+      )
     );
   };
 
@@ -95,7 +98,7 @@ const SideBar: React.VFC = () => {
                         />
                       </span>
                     )}
-                    {leftTab?.isShowCounter && renderCounter(isCurrentTab, forYouCounterNumber)}
+                    {leftTab?.isShowCounter && renderCounter(leftTab)}
                   </RouterLink>
                 );
               })}
