@@ -1,30 +1,29 @@
 /* eslint-disable import/no-cycle */
 import { UserRole } from '@identity/constants';
-import { ComponentType, lazy, LazyExoticComponent } from 'react';
+import { ComponentType } from 'react';
+// Pages
+import Home from '@main/pages/Landing';
+import Login from '@auth/pages/LoginPage';
+import AcceptInvitation from '@auth/pages/AcceptInvitation';
 
-export interface RouteItem<T extends ComponentType> {
+import Onboard from '@auth/pages/OnboardPage';
+import Overview from '@main/pages/Overview';
+import ForYou from '@main/pages/ForYou';
+import Departments from '@main/pages/Departments';
+import Categories from '@main/pages/Categories';
+import Vendors from '@main/pages/Vendors';
+import Feed from '@main/pages/Feed';
+import Notifications from '@main/pages/Notifications';
+
+export interface RouteItem<T> {
   path: string | readonly string[];
-  component: LazyExoticComponent<T>;
+  component: T;
   permissions?: string[];
 }
 
 export interface Route {
   [index: string]: RouteItem<ComponentType>;
 }
-
-// Pages
-const Home = lazy(() => import('@main/pages/Landing'));
-const Login = lazy(() => import('@auth/pages/LoginPage'));
-const AcceptInvitation = lazy(() => import('@auth/pages/AcceptInvitation'));
-
-const Onboard = lazy(() => import('@auth/pages/OnboardPage'));
-const Overview = lazy(() => import('@main/pages/Overview'));
-const ForYou = lazy(() => import('@main/pages/ForYou'));
-const Departments = lazy(() => import('@main/pages/Departments'));
-const Categories = lazy(() => import('@main/pages/Categories'));
-const Vendors = lazy(() => import('@main/pages/Vendors'));
-const Feed = lazy(() => import('@main/pages/Feed'));
-const Notifications = lazy(() => import('@main/pages/Notifications'));
 
 const routes: Route = {
   // Public pages
