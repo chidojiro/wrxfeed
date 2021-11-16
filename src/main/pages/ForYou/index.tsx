@@ -8,11 +8,16 @@ import TargetPanel from '@main/organisms/TargetPanel';
 import { useQuery } from '@common/hooks';
 import { useHistory } from 'react-router-dom';
 import { Department, Vendor, Category } from '@main/entity';
+import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
   offset: 0,
   limit: LIMIT,
+});
+const INIT_FILTERS = Object.freeze({
+  forYou: true,
+  pagination: INIT_PAGINATION,
 });
 
 const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
@@ -20,9 +25,8 @@ const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartmen
 const ForYouPage: React.VFC = () => {
   const query = useQuery();
   const history = useHistory();
-  const [filter, setFilter] = useState<TransactionFilter>({
-    pagination: INIT_PAGINATION,
-  });
+  const [filter, setFilter] = useState<TransactionFilter>(INIT_FILTERS);
+  const [filterTitle, setFilterTitle] = useState('');
   const { transactions, hasMore, isLoading, updateCategory } = useTransaction(filter);
   const filterKey = FilterKeys.find((key) => query.get(key));
 
@@ -40,13 +44,11 @@ const ForYouPage: React.VFC = () => {
   useEffect(() => {
     if (filterKey) {
       setFilter({
-        pagination: INIT_PAGINATION,
+        ...INIT_FILTERS,
         [filterKey]: query.get(filterKey),
       });
     } else {
-      setFilter({
-        pagination: INIT_PAGINATION,
-      });
+      setFilter(INIT_FILTERS);
     }
   }, [setFilter, filterKey]);
 
@@ -59,6 +61,11 @@ const ForYouPage: React.VFC = () => {
       pathname: history.location.pathname,
       search: queryString,
     });
+    setFilterTitle(value?.name ?? '');
+  };
+
+  const clearFilter = (): void => {
+    history.goBack();
   };
 
   return (
@@ -67,6 +74,12 @@ const ForYouPage: React.VFC = () => {
       <div className="flex items-center space-x-4 pb-8">
         <h1 className="text-Gray-3 text-xl font-semibold">For you</h1>
       </div>
+      {!!filterKey && (
+        <div className="flex items-center space-x-4 pb-8">
+          <ChevronLeftIcon className="cursor-pointer" onClick={clearFilter} />
+          <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
+        </div>
+      )}
       <TransactionList
         transactions={transactions}
         isLoading={isLoading}
