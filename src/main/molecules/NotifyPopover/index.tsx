@@ -92,10 +92,11 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   };
 
   const renderNotifyIconWithBell = () => {
+    const isShowNumber = notifyNews !== 0;
     return (
       <div className="flex h-8 w-8 justify-center items-center">
         <NotifyIcon aria-hidden="true" />
-        {!!notifyNews && (
+        {isShowNumber && (
           <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
             {showNumberNotify && (
               <div className="flex text-white font-semibold" style={{ fontSize: '10px' }}>
@@ -109,7 +110,6 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   };
 
   const onBlurIconButton = () => undefined;
-
   const onBlurCapture = () => undefined;
 
   const onClickNotifications = () => {
@@ -122,7 +122,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
         onClick={onClickNotifications}
         type="button"
         className={classNames(
-          'rounded-full flex-shrink-0 relative w-10 h-10 focus:outline-none hover:ring-2 ring-offset-2 ring-rose-500',
+          'rounded-full flex-shrink-0 flex relative w-10 h-10 justify-center items-center focus:outline-none hover:ring-2 ring-offset-2 ring-rose-500',
         )}
       >
         {renderNotifyIconWithBell()}
