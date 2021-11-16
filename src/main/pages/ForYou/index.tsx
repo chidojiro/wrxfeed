@@ -72,7 +72,7 @@ const ForYouPage: React.VFC = () => {
     <MainLayout>
       <h1 className="sr-only">For you feed</h1>
       <div className="flex items-center space-x-4 pb-8">
-        <h1 className="text-Gray-3 text-xl font-semibold">For you</h1>
+        <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>
       </div>
       {!!filterKey && (
         <div className="flex items-center space-x-4 pb-8">

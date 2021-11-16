@@ -2,7 +2,7 @@ import { Notification, NotifyStatus } from '@main/entity';
 import React from 'react';
 import { classNames } from '@common/utils';
 import CommentText from '@main/atoms/CommentText';
-import { getDepartmentBgColor } from '@main/utils';
+import { getDepartmentBgColor, getNameAbbreviation, getUsernameFromComment } from '@main/utils';
 import { formatDistance } from 'date-fns';
 
 export interface NotificationItemProps {
@@ -18,6 +18,22 @@ const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) =
     [item?.content],
   );
   const isNew = item.status === NotifyStatus.UNREAD;
+
+  const renderAvatarOrShortname = () => {
+    const username = getUsernameFromComment(item.content);
+    const shortName = getNameAbbreviation(username);
+    const isHaveAvatar = false;
+    return (
+      <div
+        className="flex flex-row justify-center items-center w-10 h-10 rounded-full"
+        style={{ backgroundColor: avatarBgColor }}
+      >
+        {isHaveAvatar && <img className="flex w-10 h-10 rounded-full" alt="avatar-who-mention" />}
+        {!isHaveAvatar && <p className="text-sm font-bold text-white">{shortName}</p>}
+      </div>
+    );
+  };
+
   return (
     <button
       type="button"
@@ -36,12 +52,7 @@ const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) =
             isNew ? 'bg-system-success' : 'bg-transparent',
           )}
         />
-        <div
-          className="flex flex-row items-center w-10 h-10 rounded-full"
-          style={{ backgroundColor: avatarBgColor }}
-        >
-          {/* <img className="flex w-10 h-10 rounded-full" alt="avatar-who-mention" /> */}
-        </div>
+        {renderAvatarOrShortname()}
       </div>
       <CommentText
         content={item.content}
