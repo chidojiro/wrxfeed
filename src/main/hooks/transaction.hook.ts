@@ -3,20 +3,25 @@ import { TransactionFilter } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { Category, Transaction } from '@main/entity';
+import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useRecoilState } from 'recoil';
 
 interface TransactionHookValues {
   transactions: Transaction[];
+  newFeedCount: FeedCount | null;
   hasMore: boolean;
   isLoading: boolean;
   updateCategory: (category: Partial<Category>) => Promise<void>;
+  upsertNewFeedCount: (key: string, count: number) => void;
 }
 
 export function useTransaction(filter: TransactionFilter): TransactionHookValues {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [newFeedCount, setNewFeedCount] = useRecoilState<FeedCount>(newFeedCountState);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
@@ -78,8 +83,23 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
     [ApiClient, errorHandler],
   );
 
+  const upsertNewFeedCount = (key: string, value: number) => {
+    setNewFeedCount({
+      ...newFeedCount,
+      [key]: value,
+    });
+  };
+
   useEffect(() => {
     getTransactions().then();
   }, [getTransactions]);
-  return { transactions, hasMore, isLoading, updateCategory };
+
+  return {
+    transactions,
+    hasMore,
+    isLoading,
+    newFeedCount,
+    upsertNewFeedCount,
+    updateCategory,
+  };
 }
