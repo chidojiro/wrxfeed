@@ -47,12 +47,12 @@ export interface ApiClient {
   // For Inbox/Discussion list
   getMentions: (pagination?: Pagination) => Promise<User[]>;
   sendInvitation: (data: InviteFormModel) => Promise<void>;
-  getUsers: (filter: GetUsersFilter) => Promise<User[]>;
-  getContacts: (filter: GetContactsFilter) => Promise<Contact[]>;
+  getUsers: (filters: GetUsersFilter) => Promise<User[]>;
+  getContacts: (filters: GetContactsFilter) => Promise<Contact[]>;
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
   getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
   // Directory
-  getDepartments: (filter?: DepartmentFilter) => Promise<Department[]>;
+  getDepartments: (filters?: DepartmentFilter) => Promise<Department[]>;
   getCategories: (pagination?: Pagination) => Promise<Category[]>;
   getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
   updateCategory: (data?: Partial<Category>) => Promise<void>;
@@ -61,7 +61,7 @@ export interface ApiClient {
   patchNotification: (id: number) => Promise<void>;
   patchAllNotification: () => Promise<void>;
   // targets
-  getTargets: (filter?: TargetFilter) => Promise<Target[]>;
+  getTargets: (filters?: TargetFilter) => Promise<Target[]>;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
   // Subscription
@@ -103,6 +103,7 @@ export interface TransactionFilter {
   vendor?: number;
   category?: number;
   rootDepartment?: number;
+  forYou?: boolean;
   pagination?: Pagination;
 }
 
