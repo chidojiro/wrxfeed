@@ -79,8 +79,8 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({
             {'We’re working on\n improvements!'}
           </p>
           <p className="mt-3 text-Gray-1 text-sm">
-            The Gravity team is always trying our best to improve our product and your feedback can
-            help us do that.
+            Please describe the specific issue with this item. Ex: Data is mapped to the wrong
+            category.
           </p>
           <CommentBox
             placeholder="Your feedback here…"
