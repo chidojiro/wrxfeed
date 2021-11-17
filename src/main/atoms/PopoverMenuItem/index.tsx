@@ -24,7 +24,7 @@ const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({
           aria-hidden="true"
           className={classNames(
             active ? 'bg-purple-7 text-Gray-1' : 'text-Gray-1',
-            'flex px-4 py-2 text-sm',
+            'flex px-4 py-2 text-sm cursor-pointer',
             labelClassName ?? '',
           )}
           onClick={onClick}
