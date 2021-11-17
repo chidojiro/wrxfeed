@@ -9,7 +9,7 @@ import { useTransaction } from '@main/hooks';
 import TransactionList from '@main/organisms/TransactionList';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import TargetPanel from '@main/organisms/TargetPanel';
-import { Department } from '@main/entity';
+import { Category, Department, Vendor } from '@main/entity';
 import { useSubscription } from '@main/hooks/subscription.hook';
 import Button from '@common/atoms/Button';
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
@@ -17,6 +17,7 @@ import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
 import { MouseEventHandler } from 'react-router/node_modules/@types/react';
 import { MainGroups } from '@common/constants';
 import { useQuery } from '@common/hooks';
+import routes from '@src/routes';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -62,7 +63,7 @@ const DepartmentsPage: React.VFC = () => {
     return null;
   }, [isFiltering, transactions]);
   const isFollow = deptSelect && isFollowing('departments', deptSelect);
-  const isBackSupported = query.get('route') !== MainGroups.Feeds; // Only show Back button when the filter list is in Directories
+  const inDirectoryList = query.get('route') !== MainGroups.Feeds; // Only show Back button when the filter list is in Directories
 
   const filterByRoute = useCallback(() => {
     if (deptId) {
@@ -79,6 +80,13 @@ const DepartmentsPage: React.VFC = () => {
   }, [deptId, transFilter.rootDepartment]);
 
   useEffect(() => {
+    // Scroll to top
+    if (window.scrollY > 0) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
     filterByRoute();
   }, [filterByRoute]);
 
@@ -101,10 +109,23 @@ const DepartmentsPage: React.VFC = () => {
     }));
   }, [hasMoreTrans, transLoading]);
 
-  const handleTransFilter = (key: keyof TransactionFilter, dept?: Department): void => {
+  const handleTransFilter = (
+    key: keyof TransactionFilter,
+    value?: Department | Category | Vendor,
+  ): void => {
+    if (inDirectoryList) {
+      history.push({
+        pathname: `/departments/${value?.id.toString()}`,
+        search: `?route=${MainGroups.Directories}`,
+      });
+      return;
+    }
+
+    // Push back to overview if page is feed list
+    const queryString = `?${key}=${value?.id}`;
     history.push({
-      pathname: `/departments/${dept?.id.toString()}`,
-      search: `?route=${MainGroups.Directories}`,
+      pathname: routes.Overview.path as string,
+      search: queryString,
     });
   };
 
@@ -124,9 +145,9 @@ const DepartmentsPage: React.VFC = () => {
     <MainLayout>
       <h1 className="sr-only">Department list</h1>
       {isFiltering && (
-        <div className="flex items-center justify-between space-x-4 pb-8">
+        <div className="flex px-4 sm:px-0 items-center justify-between space-x-4 pb-8">
           <div className="flex flex-1 items-center space-x-4">
-            {isBackSupported && <ChevronLeftIcon onClick={clearFilter} />}
+            {inDirectoryList && <ChevronLeftIcon onClick={clearFilter} />}
             <h1 className="text-Gray-1 text-xl font-bold">{deptSelect?.name ?? ''}</h1>
           </div>
           {isFollow ? (
@@ -168,6 +189,7 @@ const DepartmentsPage: React.VFC = () => {
           isLoading={transLoading || isLoading}
           hasMore={hasMoreTrans}
           onLoadMore={handleTransLoadMore}
+          onFilter={inDirectoryList ? undefined : handleTransFilter}
           updateCategory={updateCategory}
         />
       )}

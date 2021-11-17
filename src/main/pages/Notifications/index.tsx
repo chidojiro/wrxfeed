@@ -1,6 +1,5 @@
 import React from 'react';
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
-import TargetPanel from '@main/organisms/TargetPanel';
+import MainLayout from '@common/templates/MainLayout';
 import { Pagination } from '@api/types';
 import { useNotification } from '@main/hooks';
 import Routes from '@src/routes';
@@ -37,7 +36,7 @@ const Notifications: React.VFC = () => {
     <MainLayout>
       <h1 className="sr-only">Notifications feed</h1>
       <div className="flex items-center space-x-4 pb-6">
-        <h1 className="text-Gray-3 text-xl font-semibold">Notifications</h1>
+        <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">Notifications</h1>
       </div>
       <NotificationList
         notifications={notifications}
@@ -45,9 +44,6 @@ const Notifications: React.VFC = () => {
         onLoadMore={handleLoadMore}
         onClickNotification={onClickNotification}
       />
-      <MainRightSide>
-        <TargetPanel />
-      </MainRightSide>
     </MainLayout>
   );
 };

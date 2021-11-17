@@ -7,6 +7,10 @@ import { InviteModal } from '@main/organisms';
 import { UserPlusIcon } from '@assets/index';
 import SearchBar from '@common/molecules/SearchBar';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+import { Profile } from '@auth/types';
+import { useRecoilValue } from 'recoil';
+import { profileState } from '@auth/containers/ProfileEditForm/states';
+import { useHistory } from 'react-router-dom';
 import SideBar from '../SideBar';
 
 interface NavBarProps {
@@ -15,24 +19,23 @@ interface NavBarProps {
 }
 
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Notifications', href: '#' },
+  { name: 'Notifications', href: '/notifications' },
   { name: 'Sign out', href: '#' },
 ];
-
-const user = {
-  name: 'Chelsea Hagon',
-  email: 'chelseahagon@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-};
 
 const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = true }) => {
   const identity = useIdentity();
   const [isOpenInviteModal, openInviteModal] = useState(false);
+  const profile = useRecoilValue(profileState);
+  const [profileUser] = React.useState<Profile>(profile);
+  const history = useHistory();
 
   const onClickInviteButton = () => {
     openInviteModal(true);
+  };
+
+  const onClickNotification = () => {
+    history.push('/notifications');
   };
 
   const renderInviteButton = () => {
@@ -85,8 +88,14 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = tr
                   {showSearchBar && <SearchBar />}
                 </div>
               </div>
+              <div className="hidden sm:flex items-center lg:justify-end xl:col-span-3 mr-0 md:mr-16 lg:mr-2">
+                <NotifyPopover showNumberNotify useDropDown={false} />
+                <div className="bg-purple-9 w-[1px] h-[34px] ml-2.5 mr-4" />
+                <UserProfilePopover />
+                {renderInviteButton()}
+              </div>
+              {/* Mobile menu button */}
               <div className="flex items-center md:absolute md:right-0 md:inset-y-0 lg:hidden">
-                {/* Mobile menu button */}
                 <Popover.Button className="-mx-2 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rose-500">
                   <span className="sr-only">Open menu</span>
                   {open ? (
@@ -95,13 +104,6 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = tr
                     <MenuIcon className="block h-6 w-6" aria-hidden="true" />
                   )}
                 </Popover.Button>
-              </div>
-
-              <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-3">
-                <NotifyPopover showNumberNotify useDropDown={false} />
-                <div className="bg-purple-9 w-[1px] h-[34px] ml-2.5 mr-4" />
-                <UserProfilePopover />
-                {renderInviteButton()}
               </div>
             </div>
           </div>
@@ -114,14 +116,15 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = tr
             <div className="border-t border-gray-200 pt-4">
               <div className="max-w-3xl mx-auto px-4 flex items-center sm:px-6">
                 <div className="flex-shrink-0">
-                  <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
+                  <img className="h-10 w-10 rounded-full" src={profileUser?.avatar} alt="" />
                 </div>
                 <div className="ml-3">
-                  <div className="text-base font-medium text-gray-800">{user.name}</div>
-                  <div className="text-sm font-medium text-gray-500">{user.email}</div>
+                  <div className="text-base font-medium text-gray-800">{profileUser?.fullName}</div>
+                  <div className="text-sm font-medium text-gray-500">{profileUser?.email}</div>
                 </div>
                 <button
                   type="button"
+                  onClick={onClickNotification}
                   className="ml-auto flex-shrink-0 bg-white rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
                 >
                   <span className="sr-only">View notifications</span>
