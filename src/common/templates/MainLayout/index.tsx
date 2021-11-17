@@ -4,6 +4,15 @@ import SideBar from './SideBar';
 import NavBar from './NavBar';
 
 const MainLayout: React.FC = ({ children }) => {
+  useEffect(() => {
+    // Scroll to top
+    if (window.scrollY > 0) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+  }, []);
   return (
     <div className="relative">
       <NavBar />

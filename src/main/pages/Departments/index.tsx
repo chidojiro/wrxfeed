@@ -80,6 +80,13 @@ const DepartmentsPage: React.VFC = () => {
   }, [deptId, transFilter.rootDepartment]);
 
   useEffect(() => {
+    // Scroll to top
+    if (window.scrollY > 0) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
     filterByRoute();
   }, [filterByRoute]);
 
