@@ -277,11 +277,3 @@ export const nFormatter = (num: number, withCurrency = '$'): string => {
   }
   return `${withCurrency}${num}`;
 };
-
-export const getUserIdFromComment = (content: string): number => {
-  const matches = content.match(UserIdRegex);
-  if (matches) {
-    return parseInt(matches[0].split('"')[1], 10);
-  }
-  return -1;
-};
