@@ -143,8 +143,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   const inactiveTarget = 'rgba(209,213,219,0.3)';
 
   if (!isActive) {
-    // inactive target
-    const currentDemoInactive = target?.total ?? 0;
+    const currentDemoInactive = Math.abs(target?.total ?? 0);
     const amountDemoInactive = 10000;
 
     const percent = (currentDemoInactive / amountDemoInactive) * 100;

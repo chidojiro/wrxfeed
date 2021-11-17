@@ -111,9 +111,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     return <ul className={classNames('flex mt-2 flex-col', overflow)}>{renderTargets()}</ul>;
   };
 
-  // min-h-[80vh]
-  // max-h-[80vh]
-  const heightExpand = isExpanded ? 'max-h-[80vh]' : 'max-h-[450px]';
+  const heightExpand = isExpanded ? 'max-h-[85vh]' : 'max-h-[450px]';
   return (
     <div className={classNames('flex flex-1 pt-12 w-[330px]', heightExpand)}>
       <div className="flex flex-col w-full bg-white pt-6 pb-2 max-h-106 drop-shadow-md overflow-auto">
