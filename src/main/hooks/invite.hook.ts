@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 interface InviteHookValues {
   isSent: boolean;
   isLoading: boolean;
-  sendInvitation: (contact: Contact) => Promise<void>;
+  sendInvitation: (contact: Partial<Contact>) => Promise<void>;
 }
 
 export function useInvite(): InviteHookValues {
@@ -17,10 +17,10 @@ export function useInvite(): InviteHookValues {
   const [isLoading, setLoading] = useState(false);
   const [isSent, setSent] = useState(false);
 
-  const sendInvitation = async (contact: Contact) => {
+  const sendInvitation = async (contact: Partial<Contact>) => {
     try {
       setLoading(true);
-      await ApiClient.sendInvitation({ email: contact.email });
+      await ApiClient.sendInvitation({ email: contact.email ?? '' });
       setLoading(false);
       setSent(true);
     } catch (error) {

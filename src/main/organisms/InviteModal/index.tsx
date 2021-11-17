@@ -82,7 +82,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
           <div className="h-[320px] overflow-auto pb-5">
             <ul className="space-y-4">
               {contacts.map((contact: Contact) => (
-                <React.Fragment key={contact.email}>
+                <React.Fragment key={contact.id}>
                   <ContactItem
                     className="px-12"
                     contact={contact}
