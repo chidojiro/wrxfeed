@@ -285,12 +285,3 @@ export const getUserIdFromComment = (content: string): number => {
   }
   return -1;
 };
-
-const CommentInRegex = /(\w+)\s(\w+)/;
-export const getUsernameFromComment = (content: string): string => {
-  const commentMatches = content.match(CommentInRegex);
-  if (commentMatches) {
-    return commentMatches[0];
-  }
-  return '';
-};

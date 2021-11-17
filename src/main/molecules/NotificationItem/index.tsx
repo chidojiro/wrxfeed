@@ -2,7 +2,7 @@ import { Notification, NotifyStatus } from '@main/entity';
 import React from 'react';
 import { classNames } from '@common/utils';
 import CommentText from '@main/atoms/CommentText';
-import { getDepartmentBgColor, getNameAbbreviation, getUsernameFromComment } from '@main/utils';
+import { getDepartmentBgColor, getNameAbbreviation } from '@main/utils';
 import { formatDistance } from 'date-fns';
 
 export interface NotificationItemProps {
@@ -20,7 +20,7 @@ const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) =
   const isNew = item.status === NotifyStatus.UNREAD;
 
   const renderAvatarOrShortname = () => {
-    const username = getUsernameFromComment(item.content);
+    const username = '';
     const shortName = getNameAbbreviation(username);
     const isHaveAvatar = false;
     return (
