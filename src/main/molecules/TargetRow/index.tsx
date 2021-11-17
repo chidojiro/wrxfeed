@@ -148,7 +148,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     const amountDemoInactive = 10000;
 
     const percent = (currentDemoInactive / amountDemoInactive) * 100;
-    const percentLength = `${percent}%`;
+    const percentLength = percent < 80 ? `${percent}%` : '80%';
     const currentCurrency = nFormatter(currentDemoInactive);
     const totalAmountCurrency = `$${Math.round((amountDemoInactive / 1000) * 10) / 10}K(est)`;
     return (
@@ -164,7 +164,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
               {currentCurrency}
             </div>
           </div>
-          <div className="flex flex-col flex-1">
+          <div className="flex flex-col flex-1 min-w-[60px]">
             <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveTarget }} />
             <div className="flex text-Gray-6 text-2xs mt-1 font-bold ml-auto">
               {totalAmountCurrency}

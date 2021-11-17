@@ -124,7 +124,7 @@ const DepartmentsPage: React.VFC = () => {
     <MainLayout>
       <h1 className="sr-only">Department list</h1>
       {isFiltering && (
-        <div className="flex items-center justify-between space-x-4 pb-8">
+        <div className="flex px-4 sm:px-0 items-center justify-between space-x-4 pb-8">
           <div className="flex flex-1 items-center space-x-4">
             {isBackSupported && <ChevronLeftIcon onClick={clearFilter} />}
             <h1 className="text-Gray-1 text-xl font-bold">{deptSelect?.name ?? ''}</h1>
