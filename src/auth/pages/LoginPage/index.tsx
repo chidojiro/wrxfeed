@@ -106,9 +106,9 @@ const LoginPage: React.VFC = () => {
         </h2>
       ) : (
         <div className="flex flex-col justify-center items-center">
-          <WrxfeedStar />
+          //* <WrxfeedStar /> *//
           <p className="text-[87px] font-bold whitespace-pre-line text-center -mt-6 leading-[90px]">
-            {'Reach your\nfinancial goal↗'}
+            {'Join your team on Gravity.'}
           </p>
         </div>
       )}
