@@ -36,7 +36,7 @@ const CommentInput: React.VFC<CommentInputProps> = ({
 }) => {
   const editorRef = useRef<Editor>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState(false);
+  const [openMention, setOpenMention] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions || []);
   const [mentioned, setMentioned] = useState<MentionData[]>([]);
   const { MentionSuggestions, plugins } = useMemo(() => {
@@ -77,7 +77,8 @@ const CommentInput: React.VFC<CommentInputProps> = ({
 
   const handleReturn = (event: KeyboardEvent): DraftHandleValue => {
     if (event.key === 'Enter' && !isSoftNewlineEvent(event)) {
-      if (onEnterPress && !open) {
+      const isMentionOpen = openMention && suggestions.length > 0;
+      if (onEnterPress && !isMentionOpen) {
         onEnterPress();
         return 'handled';
       }
@@ -86,7 +87,7 @@ const CommentInput: React.VFC<CommentInputProps> = ({
   };
 
   const onOpenChange = useCallback((_open: boolean) => {
-    setOpen(_open);
+    setOpenMention(_open);
   }, []);
   const onSearchChange = useCallback(
     ({ value }: { value: string }) => {
@@ -122,7 +123,7 @@ const CommentInput: React.VFC<CommentInputProps> = ({
         {...rest}
       />
       <MentionSuggestions
-        open={open}
+        open={openMention}
         onOpenChange={onOpenChange}
         suggestions={suggestions}
         onSearchChange={onSearchChange}
