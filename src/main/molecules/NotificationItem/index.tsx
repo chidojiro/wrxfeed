@@ -3,7 +3,30 @@ import React from 'react';
 import { classNames } from '@common/utils';
 import CommentText from '@main/atoms/CommentText';
 import { getDepartmentBgColor, getNameAbbreviation } from '@main/utils';
-import { formatDistance } from 'date-fns';
+import dayjs from 'dayjs';
+import updateLocale from 'dayjs/plugin/updateLocale';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(updateLocale);
+dayjs.extend(relativeTime);
+
+dayjs.updateLocale('en', {
+  relativeTime: {
+    future: 'in %s',
+    past: '%s ago',
+    s: 'a few seconds',
+    m: '1m',
+    mm: '%dm',
+    h: '1h',
+    hh: '%dh',
+    d: '1d',
+    dd: '%dd',
+    M: '1mo',
+    MM: '%dm',
+    y: '1y',
+    yy: '%dy',
+  },
+});
 
 export interface NotificationItemProps {
   item: Notification;
@@ -61,7 +84,7 @@ const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) =
       />
       <div className="flex w-40 ml-auto">
         <div className="flex text-Gray-6 font-regular ml-auto text-right text-xs">
-          {formatDistance(new Date(item?.createdAt), new Date(), { addSuffix: true })}
+          {dayjs(item?.createdAt).fromNow()}
         </div>
       </div>
     </button>
