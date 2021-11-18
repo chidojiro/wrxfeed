@@ -6,7 +6,8 @@ import Loading from '@common/atoms/Loading';
 import { getDepartmentBgColor, nFormatter } from '@main/utils';
 import { classNames, formatToCurrency, replaceAll } from '@common/utils';
 
-const SystemAlertColor = '#ff5f68';
+const SYSTEM_ALERT_COLOR = '#ff5f68';
+const TARGET_PLACEHOLDER = 10000;
 export interface TargetRowProps {
   target: Target;
   index?: number;
@@ -85,6 +86,10 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   };
 
   if (isEdit) {
+    const currentTargetAsPlaceHolder = formatToCurrency(
+      `${target?.amount ? Math.abs(target?.amount) : TARGET_PLACEHOLDER}`,
+      '',
+    );
     return (
       <div className="flex flex-row py-3 px-6 mb-4">
         <div className="flex flex-col">
@@ -101,13 +106,12 @@ const TargetRow: React.VFC<TargetRowProps> = ({
             <input
               ref={inputRef}
               onKeyDown={handleKeyDown}
-              placeholder="10,000.00"
+              placeholder={currentTargetAsPlaceHolder}
               className="flex flex-1 mx-2 text-sm outline-none border-none w-[76px]"
               style={{ color: 'rgba 125 132 144, 0.5' }}
               onBlur={onBlurInput}
               onChange={onChangeInput}
               value={amount}
-              // autoFocus
             />
             <button type="button" onClick={handleClickClearButton}>
               <BasicsXSmall className="flex w-5 h-5" />
@@ -144,12 +148,11 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   if (!isActive) {
     const currentDemoInactive = Math.abs(target?.total ?? 0);
-    const amountDemoInactive = 10000;
 
-    const percent = (currentDemoInactive / amountDemoInactive) * 100;
+    const percent = (currentDemoInactive / TARGET_PLACEHOLDER) * 100;
     const percentLength = percent < 80 ? `${percent}%` : '80%';
     const currentCurrency = nFormatter(currentDemoInactive);
-    const totalAmountCurrency = `$${Math.round((amountDemoInactive / 1000) * 10) / 10}K(est)`;
+    const totalAmountCurrency = `$${Math.round((TARGET_PLACEHOLDER / 1000) * 10) / 10}K(est)`;
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
@@ -195,7 +198,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
       totalColor = inactiveColor;
     }
     if (isExceeds) {
-      totalColor = SystemAlertColor;
+      totalColor = SYSTEM_ALERT_COLOR;
     }
 
     if (isExceeds) {
@@ -213,10 +216,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
             </div>
           </div>
           <div className="flex flex-row">
-            <div
-              className="flex text-Gray-3 text-2xs mt-1 font-bold ml-auto"
-              style={{ color: SystemAlertColor }}
-            >
+            <div className="flex text-2xs mt-1 font-bold ml-auto text-system-alert">
               {currentCurrency}
             </div>
             <div className="flex text-Gray-6 text-2xs mt-1 font-bold">{`/${totalAmountCurrency}`}</div>
