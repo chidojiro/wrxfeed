@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavUtils } from '@common/hooks';
 import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
-import WrxfeedStar from '@auth/atoms/WrxfeedStar';
 import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@src/config';
 import Routes from '@src/routes';
 import { useIdentity, useSetIdentity } from '@identity/hooks';
@@ -106,9 +105,8 @@ const LoginPage: React.VFC = () => {
         </h2>
       ) : (
         <div className="flex flex-col justify-center items-center">
-          <WrxfeedStar />
           <p className="text-[87px] font-bold whitespace-pre-line text-center -mt-6 leading-[90px]">
-            {'Reach your\nfinancial goal↗'}
+            Join your team on Gravity.
           </p>
         </div>
       )}
