@@ -147,12 +147,15 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   const inactiveTarget = 'rgba(209,213,219,0.3)';
 
   if (!isActive) {
-    const currentDemoInactive = Math.abs(target?.total ?? 0);
-
-    const percent = (currentDemoInactive / TARGET_PLACEHOLDER) * 100;
+    const totalSpent = Math.abs(target?.total ?? 0);
+    let targetAmount = TARGET_PLACEHOLDER;
+    const percent = (totalSpent / targetAmount) * 100;
     const percentLength = percent < 80 ? `${percent}%` : '80%';
-    const currentCurrency = nFormatter(currentDemoInactive);
-    const totalAmountCurrency = `$${Math.round((TARGET_PLACEHOLDER / 1000) * 10) / 10}K(est)`;
+    const totalSpentCurrency = nFormatter(totalSpent);
+    if (totalSpent > targetAmount) {
+      targetAmount = totalSpent * 1.2;
+    }
+    const targetAmountCurrency = `$${Math.round((targetAmount / 1000) * 10) / 10}K(est)`;
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
@@ -163,13 +166,13 @@ const TargetRow: React.VFC<TargetRowProps> = ({
           <div className="flex flex-col" style={{ width: percentLength }}>
             <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveColor }} />
             <div className="flex text-Gray-3 text-2xs mt-1 font-bold ml-auto">
-              {currentCurrency}
+              {totalSpentCurrency}
             </div>
           </div>
           <div className="flex flex-col flex-1 min-w-[60px]">
             <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveTarget }} />
             <div className="flex text-Gray-6 text-2xs mt-1 font-bold ml-auto">
-              {totalAmountCurrency}
+              {targetAmountCurrency}
             </div>
           </div>
         </div>
@@ -177,17 +180,17 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     );
   }
 
-  const currentTarget = Math.abs(target?.total ?? 0);
-  const maxTarget = Math.abs(target?.amount ?? 0);
+  const totalSpent = Math.abs(target?.total ?? 0);
+  const targetAmount = Math.abs(target?.amount ?? 0);
 
-  let percent = (currentTarget / maxTarget) * 100;
-  const currentCurrency = nFormatter(currentTarget);
-  const totalAmountCurrency = nFormatter(maxTarget);
-  const isExceeds = currentTarget > maxTarget;
+  let percent = (totalSpent / targetAmount) * 100;
+  const currentCurrency = nFormatter(totalSpent);
+  const totalAmountCurrency = nFormatter(targetAmount);
+  const isExceeds = totalSpent > targetAmount;
 
   const renderCurrentPerTotalBar = () => {
     if (isExceeds) {
-      percent = (maxTarget / currentTarget) * 100;
+      percent = (targetAmount / totalSpent) * 100;
     }
     const percentLength = percent ? `${percent}%` : '0%';
     const styleTotal = isExceeds ? '' : 'opacity-30';
@@ -246,7 +249,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
 
   const renderAlertText = () => {
     if (!isExceeds) return null;
-    const exceedNumber = maxTarget - currentTarget;
+    const exceedNumber = targetAmount - totalSpent;
     const exceedNumberCurrency = nFormatter(Math.round(Math.abs(exceedNumber) * 100) / 100);
     return (
       <div
