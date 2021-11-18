@@ -29,7 +29,7 @@ const LoginPage: React.VFC = () => {
   const errorHandler = useErrorHandler();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
-  const { fromInvite, message, from } = location.state ?? {};
+  const { message, from } = location.state ?? {};
 
   useEffect(() => {
     if (message) {
@@ -99,17 +99,9 @@ const LoginPage: React.VFC = () => {
     <NotInvited />
   ) : (
     <div className="flex flex-col justify-center items-center min-h-screen my-auto space-y-10">
-      {fromInvite ? (
-        <h2 className="text-4xl text-primary text-center font-bold mb-3">
-          Join your team on Gravity.
-        </h2>
-      ) : (
-        <div className="flex flex-col justify-center items-center">
-          <p className="text-[87px] font-bold whitespace-pre-line text-center -mt-6 leading-[90px]">
-            Join your team on Gravity.
-          </p>
-        </div>
-      )}
+      <h2 className="text-4xl text-primary text-center font-bold mb-3">
+        Join your team on Gravity.
+      </h2>
       <GoogleLogin
         clientId={GOOGLE_CLIENT_ID}
         scope={GOOGLE_SCOPES}

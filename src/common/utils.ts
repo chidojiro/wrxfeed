@@ -1,8 +1,36 @@
-import { format, isToday, isYesterday, parseISO } from 'date-fns';
+import dayjs from 'dayjs';
+import isToday from 'dayjs/plugin/isToday';
+import isYesterday from 'dayjs/plugin/isYesterday';
+import updateLocale from 'dayjs/plugin/updateLocale';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import numeral from 'numeral';
 import { FieldValues } from 'react-hook-form';
 import * as yup from 'yup';
 import { LazyBuilder } from 'yup/lib/Lazy';
+
+// Dayjs plugins
+dayjs.extend(isToday);
+dayjs.extend(isYesterday);
+dayjs.extend(updateLocale);
+dayjs.extend(relativeTime);
+
+dayjs.updateLocale('en', {
+  relativeTime: {
+    future: 'in %s',
+    past: '%s ago',
+    s: 'a few seconds',
+    m: '1m',
+    mm: '%dm',
+    h: '1h',
+    hh: '%dh',
+    d: '1d',
+    dd: '%dd',
+    M: '1mo',
+    MM: '%dm',
+    y: '1y',
+    yy: '%dy',
+  },
+});
 
 export function formatCurrency(n?: number): string {
   return n ? numeral(n).format('0,0.00') : '0.00';
@@ -56,22 +84,27 @@ export function stringToColor(string: string): string {
   return color;
 }
 
-const isoDateFormat =
-  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)((-(\d{2}):(\d{2})|Z)?)$/;
-
-const DATE_FORMAT = 'M/dd/yy';
-export function formatDate(value: string | number | Date | undefined): string {
-  if (!value) return 'Invalid Date';
-  const isISODate = value === 'string' && isoDateFormat.test(value);
-  const date = isISODate ? parseISO(value) : new Date(value);
-  if (isToday(date)) {
-    return `Today at ${format(date, 'K:mm a')}`;
+const DATE_FORMAT = 'MM/DD/YYYY';
+const HOUR_FORMAT = 'h:mm A';
+export function formatDate(value?: string | number | Date | dayjs.Dayjs): string {
+  if (!dayjs(value).isValid()) return 'Invalid Date';
+  const date = dayjs(value);
+  if (date.isToday()) {
+    return `Today at ${date.format(HOUR_FORMAT)}`;
   }
 
-  if (isYesterday(date)) {
-    return `Yesterday at ${format(date, 'K:mm a')}`;
+  if (date.isYesterday()) {
+    return `Yesterday at ${date.format(HOUR_FORMAT)}`;
   }
-  return format(date, DATE_FORMAT);
+  return date.format(DATE_FORMAT);
+}
+
+/**
+ * Return the distance between the given date and now in words.
+ */
+export function distanceToNow(value?: string | number | Date | dayjs.Dayjs): string {
+  if (!dayjs(value).isValid()) return 'Invalid Date';
+  return dayjs(value).fromNow();
 }
 
 /**
