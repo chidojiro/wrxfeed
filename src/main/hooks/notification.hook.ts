@@ -58,7 +58,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
       }
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error('Can not get notifications 🤦!');
+        toast.error("Can't get notifications 🤦!");
       } else {
         await errorHandler(error);
       }

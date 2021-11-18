@@ -1,9 +1,8 @@
 import { Notification, NotifyStatus } from '@main/entity';
 import React from 'react';
-import { classNames } from '@common/utils';
+import { classNames, distanceToNow } from '@common/utils';
 import CommentText from '@main/atoms/CommentText';
 import { getDepartmentBgColor, getNameAbbreviation } from '@main/utils';
-import { formatDistance } from 'date-fns';
 
 export interface NotificationItemProps {
   item: Notification;
@@ -61,7 +60,7 @@ const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) =
       />
       <div className="flex w-40 ml-auto">
         <div className="flex text-Gray-6 font-regular ml-auto text-right text-xs">
-          {formatDistance(new Date(item?.createdAt), new Date(), { addSuffix: true })}
+          {distanceToNow(item?.createdAt)}
         </div>
       </div>
     </button>
