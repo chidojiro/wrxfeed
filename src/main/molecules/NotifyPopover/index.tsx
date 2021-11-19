@@ -24,15 +24,14 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   useDropDown = true,
 }) => {
   const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
-  const { notifications, isLoading, patchNotification, markAllAsRead } = useNotification(filter);
+  const { notifications, isLoading, patchNotification, markAllAsRead, unreadCount } =
+    useNotification(filter);
   const [notifies, setNotifies] = React.useState<Notification[]>([]);
-  const [notifyNews, setNews] = React.useState<number>(0);
   const history = useHistory();
 
   useEffect(() => {
     const notifyUnseen = notifications.filter((item) => item.status === NotifyStatus.UNREAD);
     setNotifies(notifyUnseen);
-    setNews(notifyUnseen.length);
   }, [notifications]);
 
   const renderNotifyList = () => {
@@ -76,7 +75,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   };
 
   const renderMarkAllAsRead = () => {
-    if (notifications.length === 0 || notifyNews === 0) return null;
+    if (notifications.length === 0 || unreadCount === 0) return null;
     const onClickMarkAllAsRead = () => {
       markAllAsRead();
     };
@@ -92,7 +91,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   };
 
   const renderNotifyIconWithBell = () => {
-    const isShowNumber = notifyNews !== 0;
+    const isShowNumber = unreadCount !== 0;
     return (
       <div className="flex h-8 w-8 justify-center items-center">
         <NotifyIcon aria-hidden="true" />
@@ -100,7 +99,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
           <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
             {showNumberNotify && (
               <div className="flex text-white font-semibold" style={{ fontSize: '10px' }}>
-                {notifyNews}
+                {unreadCount}
               </div>
             )}
           </div>

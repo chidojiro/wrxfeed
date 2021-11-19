@@ -57,7 +57,7 @@ export interface ApiClient {
   getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
   updateCategory: (data?: Partial<Category>) => Promise<void>;
   // Notification
-  getNotifications: (page?: Pagination) => Promise<Notification[]>;
+  getNotifications: (page?: Pagination) => Promise<NotificationsResponse>;
   patchNotification: (id: number) => Promise<void>;
   patchAllNotification: () => Promise<void>;
   // targets
@@ -162,4 +162,9 @@ export interface SubscriptionParams {
   departments?: string[];
   vendors?: string[];
   categories?: string[];
+}
+
+export interface NotificationsResponse {
+  notifications: Notification[];
+  unreadCount: number;
 }

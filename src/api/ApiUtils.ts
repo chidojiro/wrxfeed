@@ -32,6 +32,7 @@ import {
   PostTargetParams,
   PutTargetParams,
   SubscriptionParams,
+  NotificationsResponse,
 } from '@api/types';
 import {
   AuthProfile,
@@ -332,7 +333,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getNotifications = async (page?: Pagination): Promise<Notification[]> => {
+  getNotifications = async (page?: Pagination): Promise<NotificationsResponse> => {
     const res = await this.request<Notification[]>({
       url: '/noti/notifications',
       method: 'GET',
@@ -340,7 +341,10 @@ export default class ApiUtils implements ApiClient {
         ...page,
       },
     });
-    return res.data;
+    return {
+      notifications: res.data,
+      unreadCount: res.headers['x-unread-count'],
+    };
   };
 
   patchNotification = async (id: number): Promise<void> => {
