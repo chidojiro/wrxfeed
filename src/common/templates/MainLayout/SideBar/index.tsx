@@ -18,7 +18,8 @@ const SideBar: React.VFC = () => {
     return (
       root.tabs.find((tab) =>
         tab.strict
-          ? location.pathname === tab.location.pathname && location.search === tab.location.search
+          ? location.pathname === tab.location.pathname &&
+            location.search.includes(tab.location.search ?? '')
           : location.pathname.startsWith(tab.location.pathname),
       ) ?? null
     );

@@ -1,14 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import VendorList from '@main/organisms/VendorList';
 import { Pagination, TransactionFilter } from '@api/types';
 import { useVendor } from '@main/hooks/vendor.hook';
 import TransactionList from '@main/organisms/TransactionList';
-import { useTransaction } from '@main/hooks';
+import { FilterKeys, useTransaction } from '@main/hooks';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import TargetPanel from '@main/organisms/TargetPanel';
+import { Category, Department, Vendor } from '@main/entity';
+import { MainGroups } from '@common/constants';
+import { useQuery } from '@common/hooks';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -19,6 +22,8 @@ const INIT_PAGINATION = Object.freeze({
 const CategoriesPage: React.VFC = () => {
   const history = useHistory();
   const { id: vendorId } = useParams<{ id?: string }>();
+  const query = useQuery();
+  const location = useLocation();
   // Vendor state
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { vendors, hasMore, isLoading } = useVendor(filter);
@@ -52,16 +57,20 @@ const CategoriesPage: React.VFC = () => {
   const filterByRoute = useCallback(() => {
     if (vendorId) {
       const idNum = parseInt(vendorId, 10);
-      if (idNum !== transFilter.vendor) {
-        setTransFilter({
-          pagination: INIT_PAGINATION,
-          vendor: idNum,
-        });
-      }
+      const newFilter: { [key: string]: string | number | Pagination | null } = {
+        pagination: INIT_PAGINATION,
+        vendor: idNum,
+      };
+      FilterKeys.forEach((key) => {
+        if (query.get(key)) {
+          newFilter[key] = query.get(key);
+        }
+      });
+      setTransFilter(newFilter);
     } else {
       setTransFilter({ pagination: { offset: 0, limit: 0 } }); // Clean up transaction
     }
-  }, [vendorId, transFilter.vendor]);
+  }, [vendorId, query.toString(), transFilter.vendor]);
 
   useEffect(() => {
     filterByRoute();
@@ -86,8 +95,22 @@ const CategoriesPage: React.VFC = () => {
     }));
   }, [hasMoreTrans, transLoading]);
 
-  const handleTransFilter = (key: keyof TransactionFilter, value?: number): void => {
-    history.push(`/vendors/${value?.toString()}`);
+  const handleVendorSelect = (value?: Vendor): void => {
+    history.push({
+      pathname: `/vendors/${value?.id.toString()}`,
+      search: `?route=${MainGroups.Directories}`,
+    });
+  };
+
+  const handleTransFilter = (
+    key: keyof TransactionFilter,
+    value?: Department | Category | Vendor,
+  ): void => {
+    query.set(key, value?.id.toString() ?? '');
+    history.push({
+      pathname: location.pathname,
+      search: query.toString(),
+    });
   };
 
   const clearFilter = (): void => {
@@ -111,7 +134,7 @@ const CategoriesPage: React.VFC = () => {
           isLoading={isLoading}
           hasMore={hasMore}
           onLoadMore={handleLoadMore}
-          onSelect={({ id }) => handleTransFilter('vendor', id)}
+          onSelect={handleVendorSelect}
         />
       ) : (
         <TransactionList
@@ -119,6 +142,7 @@ const CategoriesPage: React.VFC = () => {
           isLoading={transLoading || isLoading}
           hasMore={hasMoreTrans}
           onLoadMore={handleTransLoadMore}
+          onFilter={handleTransFilter}
           updateCategory={updateCategory}
         />
       )}

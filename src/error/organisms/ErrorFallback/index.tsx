@@ -24,7 +24,7 @@ const ErrorFallback: React.VFC<FallbackProps> = ({ error, resetErrorBoundary }) 
         icon = <DocumentSearchIcon width={80} height={80} />;
         break;
 
-      case ApiErrorCode.Unauthorized:
+      case ApiErrorCode.Forbidden:
         message = 'Your cannot access this section right now.';
         icon = <BanIcon width={80} height={80} />;
         break;

@@ -48,7 +48,7 @@ export default class ApiUtils implements ApiClient {
 
   constructor(endpoint: string) {
     this.client = axios.create({ baseURL: endpoint });
-    this.client.interceptors.request.use((response) => response, handleResponseFail);
+    this.client.interceptors.response.use((response) => response, handleResponseFail);
   }
 
   request = async <T, R = AxiosResponse<T>>(config: AxiosRequestConfig): Promise<R> => {
