@@ -19,12 +19,14 @@ interface NotificationHookValues {
   patchNotification: (id: number) => Promise<void>;
   markAllAsRead: () => void;
   isMarkAll: boolean;
+  unreadCount: number;
 }
 export function useNotification(page: Pagination): NotificationHookValues {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isMarkAll, setMarkAll] = useState<boolean>(false);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
@@ -47,12 +49,13 @@ export function useNotification(page: Pagination): NotificationHookValues {
       setLoading(true);
       if (page?.limit) {
         const res = await ApiClient.getNotifications(page);
+        setUnreadCount(res.unreadCount);
         if (page?.offset) {
-          setNotifications((prevTrans) => [...prevTrans, ...res]);
+          setNotifications((prevTrans) => [...prevTrans, ...res.notifications]);
         } else {
-          setNotifications(res);
+          setNotifications(res.notifications);
         }
-        setHasMore(!!res.length);
+        setHasMore(!!res.notifications.length);
       } else {
         setHasMore(false);
       }
@@ -123,5 +126,6 @@ export function useNotification(page: Pagination): NotificationHookValues {
     patchNotification,
     markAllAsRead,
     isMarkAll,
+    unreadCount,
   };
 }
