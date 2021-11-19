@@ -5,7 +5,7 @@ import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import DepartmentList from '@main/organisms/DepartmentList';
 import { Pagination, TransactionFilter } from '@api/types';
 import { useDepartment } from '@main/hooks/department.hook';
-import { useTransaction } from '@main/hooks';
+import { FilterKeys, useTransaction } from '@main/hooks';
 import TransactionList from '@main/organisms/TransactionList';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import TargetPanel from '@main/organisms/TargetPanel';
@@ -23,7 +23,6 @@ const INIT_PAGINATION = Object.freeze({
   offset: 0,
   limit: LIMIT,
 });
-const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
 const DepartmentsPage: React.VFC = () => {
   const history = useHistory();
@@ -71,7 +70,7 @@ const DepartmentsPage: React.VFC = () => {
   const filterByRoute = useCallback(() => {
     if (deptId) {
       const idNum = parseInt(deptId, 10);
-      const newFilter: any = {
+      const newFilter: { [key: string]: string | number | Pagination | null } = {
         pagination: INIT_PAGINATION,
         rootDepartment: idNum,
       };

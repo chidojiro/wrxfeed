@@ -17,6 +17,8 @@ interface TransactionHookValues {
   upsertNewFeedCount: (key: string, count: number) => void;
 }
 
+export const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
+
 export function useTransaction(filter: TransactionFilter): TransactionHookValues {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
