@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import TransactionList from '@main/organisms/TransactionList';
-import { useTransaction } from '@main/hooks';
+import { FilterKeys, useTransaction } from '@main/hooks';
 import { TransactionFilter } from '@api/types';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
@@ -15,8 +15,6 @@ const INIT_PAGINATION = Object.freeze({
   offset: 0,
   limit: LIMIT,
 });
-
-const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
 const OverviewPage: React.VFC = () => {
   const query = useQuery();
