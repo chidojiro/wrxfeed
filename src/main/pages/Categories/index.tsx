@@ -5,10 +5,13 @@ import CategoryList from '@main/organisms/CategoryList';
 import { Pagination, TransactionFilter } from '@api/types';
 import { useCategory } from '@main/hooks/category.hook';
 import TransactionList from '@main/organisms/TransactionList';
-import { useTransaction } from '@main/hooks';
+import { FilterKeys, useTransaction } from '@main/hooks';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import TargetPanel from '@main/organisms/TargetPanel';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { Category, Department, Vendor } from '@main/entity';
+import { MainGroups } from '@common/constants';
+import { useQuery } from '@common/hooks';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -19,6 +22,8 @@ const INIT_PAGINATION = Object.freeze({
 const CategoriesPage: React.VFC = () => {
   const history = useHistory();
   const { id: catId } = useParams<{ id?: string }>();
+  const query = useQuery();
+  const location = useLocation();
   // Category states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { categories, hasMore, isLoading } = useCategory(filter);
@@ -52,18 +57,29 @@ const CategoriesPage: React.VFC = () => {
   const filterByRoute = useCallback(() => {
     if (catId) {
       const idNum = parseInt(catId, 10);
-      if (idNum !== transFilter.category) {
-        setTransFilter({
-          pagination: INIT_PAGINATION,
-          category: idNum,
-        });
-      }
+      const newFilter: { [key: string]: string | number | Pagination | null } = {
+        pagination: INIT_PAGINATION,
+        category: idNum,
+      };
+      FilterKeys.forEach((key) => {
+        if (query.get(key)) {
+          newFilter[key] = query.get(key);
+        }
+      });
+      setTransFilter(newFilter);
     } else {
       setTransFilter({ pagination: { offset: 0, limit: 0 } }); // Clean up transaction
     }
-  }, [catId, transFilter.category]);
+  }, [catId, query.toString(), transFilter.category]);
 
   useEffect(() => {
+    // Scroll to top
+    if (window.scrollY > 0) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
     filterByRoute();
   }, [filterByRoute]);
 
@@ -86,12 +102,22 @@ const CategoriesPage: React.VFC = () => {
     }));
   }, [hasMoreTrans, transLoading]);
 
-  const handleTransFilter = (key: keyof TransactionFilter, value?: number): void => {
-    history.push(`/categories/${value?.toString()}`);
+  const handleCategorySelect = (value?: Category): void => {
+    history.push({
+      pathname: `/categories/${value?.id.toString()}`,
+      search: `?route=${MainGroups.Directories}`,
+    });
   };
 
-  const clearFilter = (): void => {
-    history.push('/categories');
+  const handleTransFilter = (
+    key: keyof TransactionFilter,
+    value?: Department | Category | Vendor,
+  ): void => {
+    query.set(key, value?.id.toString() ?? '');
+    history.push({
+      pathname: location.pathname,
+      search: query.toString(),
+    });
   };
 
   return (
@@ -100,7 +126,7 @@ const CategoriesPage: React.VFC = () => {
       {isFiltering && (
         <div className="flex items-center justify-between space-x-4 pb-8">
           <div className="flex flex-1 items-center  space-x-4">
-            <ChevronLeftIcon onClick={clearFilter} />
+            <ChevronLeftIcon onClick={history.goBack} />
             <h1 className="text-Gray-1 text-xl font-bold">{category?.name}</h1>
           </div>
         </div>
@@ -111,7 +137,7 @@ const CategoriesPage: React.VFC = () => {
           isLoading={isLoading}
           hasMore={hasMore}
           onLoadMore={handleLoadMore}
-          onSelect={({ id }) => handleTransFilter('category', id)}
+          onSelect={handleCategorySelect}
         />
       ) : (
         <TransactionList
@@ -119,6 +145,7 @@ const CategoriesPage: React.VFC = () => {
           isLoading={transLoading || isLoading}
           hasMore={hasMoreTrans}
           onLoadMore={handleTransLoadMore}
+          onFilter={handleTransFilter}
           updateCategory={updateCategory}
         />
       )}

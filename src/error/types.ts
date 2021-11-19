@@ -5,7 +5,7 @@ export enum ApiErrorCode {
   NetworkError = 1,
   BadRequest = 400,
   Unauthenticated = 401,
-  Unauthorized = 403,
+  Forbidden = 403,
   Notfound = 404,
   ServerError = 500,
   GatewayTimeout = 504,
