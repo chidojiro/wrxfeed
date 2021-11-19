@@ -1,3 +1,4 @@
+import { useSetIdentity } from '@identity/hooks';
 import React from 'react';
 import { toast } from 'react-toastify';
 import { useNavUtils } from '../../common/hooks';
@@ -6,6 +7,7 @@ import { isApiError } from '../utils';
 
 export default function useErrorHandler(): ErrorHandler {
   const { redirect } = useNavUtils();
+  const setIdentity = useSetIdentity();
   return React.useCallback(
     async (error) => {
       if (!isApiError(error)) {
@@ -38,10 +40,11 @@ export default function useErrorHandler(): ErrorHandler {
 
         case ApiErrorCode.Unauthenticated:
           toast.error('Your authorization failed. Please check your account info and try again.');
+          setIdentity(undefined);
           redirect('/login');
           break;
 
-        case ApiErrorCode.Unauthorized:
+        case ApiErrorCode.Forbidden:
           toast.error('Your cannot access this section right now.');
           break;
 
@@ -54,6 +57,6 @@ export default function useErrorHandler(): ErrorHandler {
           break;
       }
     },
-    [redirect],
+    [redirect, setIdentity],
   );
 }
