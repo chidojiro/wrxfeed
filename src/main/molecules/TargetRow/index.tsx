@@ -150,12 +150,12 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     const totalSpent = Math.abs(target?.total ?? 0);
     let targetAmount = TARGET_PLACEHOLDER;
     const percent = (totalSpent / targetAmount) * 100;
-    const percentLength = percent < 80 ? `${percent}%` : '80%';
+    const percentLength = percent < 75 ? `${percent}%` : '75%';
     const totalSpentCurrency = nFormatter(totalSpent);
     if (totalSpent > targetAmount) {
       targetAmount = totalSpent * 1.2;
     }
-    const targetAmountCurrency = `$${Math.round((targetAmount / 1000) * 10) / 10}K(est)`;
+    const targetAmountCurrency = `${nFormatter(targetAmount)}(est)`;
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
