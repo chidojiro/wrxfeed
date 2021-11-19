@@ -115,7 +115,7 @@ const DepartmentsPage: React.VFC = () => {
     }));
   }, [hasMoreTrans, transLoading]);
 
-  const handleDepartmentSelect = (key: keyof TransactionFilter, value?: Department): void => {
+  const handleDepartmentSelect = (value?: Department): void => {
     history.push({
       pathname: `/departments/${value?.id.toString()}`,
       search: `?route=${MainGroups.Directories}`,
@@ -180,8 +180,8 @@ const DepartmentsPage: React.VFC = () => {
           isLoading={isLoading}
           hasMore={hasMore}
           onLoadMore={handleLoadMore}
-          onSelect={(dept) => handleDepartmentSelect('department', dept)}
-          onSelectRoot={(dept) => handleDepartmentSelect('rootDepartment', dept)}
+          onSelect={handleDepartmentSelect}
+          onSelectRoot={handleDepartmentSelect}
         />
       ) : (
         <TransactionList
