@@ -25,8 +25,8 @@ NetworkError.args = { error: { code: ApiErrorCode.NetworkError } as unknown as E
 export const Notfound = Template.bind({});
 Notfound.args = { error: { code: ApiErrorCode.Notfound } as unknown as Error };
 
-export const Unauthorized = Template.bind({});
-Unauthorized.args = { error: { code: ApiErrorCode.Unauthorized } as unknown as Error };
+export const Forbidden = Template.bind({});
+Forbidden.args = { error: { code: ApiErrorCode.Forbidden } as unknown as Error };
 
 export const ServerError = Template.bind({});
 ServerError.args = { error: { code: ApiErrorCode.ServerError } as unknown as Error };

@@ -20,7 +20,7 @@ export async function handleResponseFail(error: AxiosError): Promise<never> {
     // Force Logout
     await apiClient.logout();
     localStorage.clear();
-    window.location.href = '/logout';
+    window.location.href = '/login';
   }
   return Promise.reject(error);
 }
