@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import DepartmentList from '@main/organisms/DepartmentList';
 import { Pagination, TransactionFilter } from '@api/types';
@@ -17,18 +17,19 @@ import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
 import { MouseEventHandler } from 'react-router/node_modules/@types/react';
 import { MainGroups } from '@common/constants';
 import { useQuery } from '@common/hooks';
-import routes from '@src/routes';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
   offset: 0,
   limit: LIMIT,
 });
+const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
 const DepartmentsPage: React.VFC = () => {
   const history = useHistory();
   const { id: deptId } = useParams<{ id?: string }>();
   const query = useQuery();
+  const location = useLocation();
   // Department states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { departments, hasMore, isLoading } = useDepartment(filter);
@@ -51,7 +52,10 @@ const DepartmentsPage: React.VFC = () => {
     updateCategory,
   } = useTransaction(transFilter);
   // Variables
-  const isFiltering = !!transFilter.rootDepartment;
+  const inDirectoryList = query.get('route') !== MainGroups.Feeds;
+  const isFiltering = inDirectoryList
+    ? !!transFilter.pagination?.offset || !!transFilter.pagination?.limit
+    : FilterKeys.some((key) => query.has(key));
   const deptSelect = useMemo(() => {
     if (!isFiltering || !transactions.length) return null;
     if (transactions[0].department.id === transFilter.rootDepartment) {
@@ -63,21 +67,24 @@ const DepartmentsPage: React.VFC = () => {
     return null;
   }, [isFiltering, transactions]);
   const isFollow = deptSelect && isFollowing('departments', deptSelect);
-  const inDirectoryList = query.get('route') !== MainGroups.Feeds; // Only show Back button when the filter list is in Directories
 
   const filterByRoute = useCallback(() => {
     if (deptId) {
       const idNum = parseInt(deptId, 10);
-      if (idNum !== transFilter.rootDepartment) {
-        setTransFilter({
-          pagination: INIT_PAGINATION,
-          rootDepartment: idNum,
-        });
-      }
+      const newFilter: any = {
+        pagination: INIT_PAGINATION,
+        rootDepartment: idNum,
+      };
+      FilterKeys.forEach((key) => {
+        if (query.get(key)) {
+          newFilter[key] = query.get(key);
+        }
+      });
+      setTransFilter(newFilter);
     } else {
       setTransFilter({ pagination: { offset: 0, limit: 0 } }); // Clean up transaction
     }
-  }, [deptId, transFilter.rootDepartment]);
+  }, [deptId, query.toString(), transFilter.rootDepartment]);
 
   useEffect(() => {
     // Scroll to top
@@ -109,28 +116,22 @@ const DepartmentsPage: React.VFC = () => {
     }));
   }, [hasMoreTrans, transLoading]);
 
+  const handleDepartmentSelect = (key: keyof TransactionFilter, value?: Department): void => {
+    history.push({
+      pathname: `/departments/${value?.id.toString()}`,
+      search: `?route=${MainGroups.Directories}`,
+    });
+  };
+
   const handleTransFilter = (
     key: keyof TransactionFilter,
     value?: Department | Category | Vendor,
   ): void => {
-    if (inDirectoryList) {
-      history.push({
-        pathname: `/departments/${value?.id.toString()}`,
-        search: `?route=${MainGroups.Directories}`,
-      });
-      return;
-    }
-
-    // Push back to overview if page is feed list
-    const queryString = `?${key}=${value?.id}`;
+    query.set(key, value?.id.toString() ?? '');
     history.push({
-      pathname: routes.Overview.path as string,
-      search: queryString,
+      pathname: location.pathname,
+      search: query.toString(),
     });
-  };
-
-  const clearFilter = (): void => {
-    history.push('/departments');
   };
 
   const handleFollow: MouseEventHandler<HTMLButtonElement> = () => {
@@ -147,7 +148,7 @@ const DepartmentsPage: React.VFC = () => {
       {isFiltering && (
         <div className="flex px-4 sm:px-0 items-center justify-between space-x-4 pb-8">
           <div className="flex flex-1 items-center space-x-4">
-            {inDirectoryList && <ChevronLeftIcon onClick={clearFilter} />}
+            <ChevronLeftIcon onClick={history.goBack} />
             <h1 className="text-Gray-1 text-xl font-bold">{deptSelect?.name ?? ''}</h1>
           </div>
           {isFollow ? (
@@ -174,14 +175,14 @@ const DepartmentsPage: React.VFC = () => {
           )}
         </div>
       )}
-      {!isFiltering ? (
+      {!isFiltering && inDirectoryList ? (
         <DepartmentList
           departments={departments}
           isLoading={isLoading}
           hasMore={hasMore}
           onLoadMore={handleLoadMore}
-          onSelect={(dept) => handleTransFilter('department', dept)}
-          onSelectRoot={(dept) => handleTransFilter('rootDepartment', dept)}
+          onSelect={(dept) => handleDepartmentSelect('department', dept)}
+          onSelectRoot={(dept) => handleDepartmentSelect('rootDepartment', dept)}
         />
       ) : (
         <TransactionList
@@ -189,7 +190,7 @@ const DepartmentsPage: React.VFC = () => {
           isLoading={transLoading || isLoading}
           hasMore={hasMoreTrans}
           onLoadMore={handleTransLoadMore}
-          onFilter={inDirectoryList ? undefined : handleTransFilter}
+          onFilter={handleTransFilter}
           updateCategory={updateCategory}
         />
       )}
