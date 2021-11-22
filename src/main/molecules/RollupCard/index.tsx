@@ -1,19 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { CommentFormModel } from '@main/types';
-import { Category, Department, Transaction, Vendor, Visibility } from '@main/entity';
-import { useComment, useMention } from '@main/hooks';
-import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
-import { SubmitHandler } from 'react-hook-form';
-import { EditorState } from 'draft-js';
-import { commentEditorRawParser } from '@main/utils';
+import { Category, Department, Rollup, Vendor, Visibility } from '@main/entity';
+import { useMention } from '@main/hooks';
+import { GetUploadTokenBody, UploadTypes } from '@api/types';
 import { classNames, formatCurrency, formatDate } from '@common/utils';
 // Tailwind components
 import { Menu } from '@headlessui/react';
 import DepartmentColorSection from '@main/atoms/DepartmentColorSection';
 import NotifyBanner from '@common/molecules/NotifyBanner';
 import CommentBox from '@main/molecules/CommentBox';
-import CommentItem from '@main/molecules/CommentItem';
-import CommentRemaining from '@main/atoms/CommentRemaining';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/organisms/FeelBackModal';
@@ -23,15 +17,12 @@ import ConfirmModal from '@main/atoms/ConfirmModal';
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
-import { useIdentity, usePermission } from '@identity/hooks';
+import { usePermission } from '@identity/hooks';
 import { ProtectedFeatures } from '@identity/constants';
-import RollupCell from '../RollupTransactions';
+import RollupTransactions from '../RollupTransactions';
 
-const INITIAL_COMMENT_NUMBER = 2;
-const LOAD_MORE_LIMIT = 5;
-
-export interface TransactionCardProps {
-  transaction: Transaction;
+export interface RollupCardProps {
+  rollup: Rollup;
   onClickDepartment?: (department?: Department) => void;
   onClickVendor?: (vendor?: Vendor) => void;
   onClickCategory?: (category?: Category) => void;
@@ -46,66 +37,33 @@ interface ConfirmModalProps {
   confirmLabel: string;
 }
 
-const TransactionCard: React.VFC<TransactionCardProps> = ({
-  transaction,
+const RollupCard: React.VFC<RollupCardProps> = ({
+  rollup,
   onClickDepartment,
-  onClickVendor,
   onClickCategory,
   onClickRootDept,
   updateCategory,
 }) => {
   // Recoil states
+  const transaction = rollup.transactions?.length ? rollup.transactions[0] : undefined;
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
-  const [filter, setFilter] = useState<Pagination>({ offset: 0, limit: INITIAL_COMMENT_NUMBER });
   const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
   const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
   const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
   const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
   // Data hooks
-  const identity = useIdentity();
-  const { comments, total, isLoading, addComment, editComment, deleteComment, showLessComments } =
-    useComment(transaction, filter);
   const { mentions } = useMention();
   const { checkPermission } = usePermission();
   // Variables
-  const hasComment = !!total;
-  const hiddenCommentCount = total - comments.length;
-  const canCollapseComments = total > INITIAL_COMMENT_NUMBER;
-  const isHidden = transaction.category.visibility === Visibility.HIDDEN;
+  const isHidden = transaction?.category.visibility === Visibility.HIDDEN;
   const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
-
-  const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
-    const contentState = values?.content as EditorState;
-    const isDirty = contentState.getCurrentContent().hasText() || !!values?.attachment;
-    if (!isDirty) return;
-    const parsedContent = commentEditorRawParser(contentState.getCurrentContent());
-    addComment({ content: parsedContent, attachment: values.attachment }).then();
-  };
-
-  const loadMoreComments = () => {
-    if (isLoading) return;
-    if (hiddenCommentCount > 0) {
-      // Load more
-      setFilter({
-        limit: LOAD_MORE_LIMIT,
-        offset: comments?.length ?? 0,
-      });
-    } else {
-      // Show less
-      showLessComments(INITIAL_COMMENT_NUMBER);
-      setFilter({
-        limit: INITIAL_COMMENT_NUMBER,
-        offset: 0,
-      });
-    }
-  };
 
   const handleHideCategory = async () => {
     setConfirmModal(undefined);
     if (updateCategory) {
-      await updateCategory({ id: transaction.category.id, visibility: Visibility.HIDDEN });
+      await updateCategory({ id: transaction?.category.id, visibility: Visibility.HIDDEN });
     }
     NotifyBanner.info('You have hidden this transaction');
   };
@@ -123,7 +81,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   const handleShowCategory = async () => {
     setConfirmModal(undefined);
     if (updateCategory) {
-      await updateCategory({ id: transaction.category.id, visibility: Visibility.VISIBLE });
+      await updateCategory({ id: transaction?.category.id, visibility: Visibility.VISIBLE });
     }
     NotifyBanner.info('You have unhidden this transaction');
   };
@@ -143,7 +101,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
 
   const handleAttachFile = (file: File) => {
     setUploadFileOptions({
-      filename: `${transaction.id}-${Date.now()}-${file.name}`,
+      filename: `${transaction?.id}-${Date.now()}-${file.name}`,
       contentType: file.type,
       uploadType: UploadTypes.Attachments,
     });
@@ -184,13 +142,21 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
 
   return (
     <>
-      <li ref={containerRef} key={transaction.id} className="bg-white filter shadow-md">
-        <article className="flex" aria-labelledby={`question-title-${transaction.id}`}>
-          <DepartmentColorSection
-            department={transaction.department.parent}
-            onClick={onClickRootDept}
-          />
-          <div className={classNames(isHidden ? 'bg-purple-8' : 'bg-white', 'flex-grow w-4/5 p-5')}>
+      <article
+        ref={containerRef}
+        key={rollup.id}
+        className="bg-white filter shadow-md"
+        aria-labelledby={`rollup-title-${rollup.id}`}
+      >
+        {/* Rollup detail */}
+        <div className="flex flex-row">
+          <DepartmentColorSection department={rollup.department.parent} onClick={onClickRootDept} />
+          <div
+            className={classNames(
+              isHidden ? 'bg-purple-8' : 'bg-white',
+              'flex-grow w-4/5 px-6 py-5 border-b border-Gray-11',
+            )}
+          >
             <div className="flex items-center space-x-3">
               <div className="flex items-center min-w-0 flex-1">
                 <p className="text-xs text-Gray-6">
@@ -198,10 +164,10 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                     type="button"
                     className="hover:underline"
                     onClick={() => {
-                      return onClickDepartment && onClickDepartment(transaction.department);
+                      return onClickDepartment && onClickDepartment(rollup.department);
                     }}
                   >
-                    {transaction.department.name}
+                    {rollup.department.name}
                   </button>
                 </p>
                 {isHidden && (
@@ -216,10 +182,10 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
               </div>
               <div className="flex-shrink-0 self-center flex items-center">
                 <h2
-                  id={`question-title-${transaction.id}`}
+                  id={`question-title-${rollup.id}`}
                   className="text-base font-semibold text-Gray-2 mr-3"
                 >
-                  {`$ ${formatCurrency(transaction.amount)}`}
+                  {`$ ${formatCurrency(rollup.amount)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
@@ -234,59 +200,34 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
             </div>
             <h2
               aria-hidden="true"
-              id={`question-title-${transaction.id}`}
+              id={`question-title-${rollup.id}`}
               className="mt-1 text-base font-semibold text-Gray-2 cursor-pointer hover:underline"
-              onClick={() => onClickCategory && onClickCategory(transaction.category)}
+              onClick={() => onClickCategory && onClickCategory(rollup.category)}
             >
-              {transaction.category.name}
+              {rollup.category.name}
             </h2>
             <p className="mt-1 text-xs text-Gray-6">
-              <button
-                type="button"
-                className="hover:underline"
-                onClick={() => onClickVendor && onClickVendor(transaction.vendor)}
-              >
-                {transaction.vendor.name}
-              </button>
+              <time dateTime={rollup.startTime}>{formatDate(rollup.startTime)}</time>
               {' • '}
-              <time dateTime={transaction.transDate}>{formatDate(transaction.transDate)}</time>
+              <time dateTime={rollup.endTime}>
+                {rollup.endTime ? formatDate(rollup.endTime) : 'Present'}
+              </time>
             </p>
-            <div className="mt-9 space-y-4">
-              {(hiddenCommentCount > 0 || canCollapseComments) && (
-                <CommentRemaining
-                  hiddenCount={hiddenCommentCount}
-                  onClick={loadMoreComments}
-                  loading={isLoading}
-                />
-              )}
-              {hasComment && (
-                <ul>
-                  {comments?.map((comment) => (
-                    <li key={comment.id}>
-                      <CommentItem
-                        className={isHidden ? 'bg-purple-11' : 'bg-purple-10'}
-                        comment={comment}
-                        mentionData={mentions}
-                        editable={identity?.id === comment.user.id}
-                        onEdit={editComment}
-                        onDelete={deleteComment}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <CommentBox
-              id={transaction.id.toString()}
-              className="mt-6 mb-5 bg-white"
-              onSubmit={onSubmitComment}
-              onAttachFile={handleAttachFile}
-              mentionData={mentions}
-            />
           </div>
-        </article>
-        <RollupCell />
-      </li>
+        </div>
+
+        <div className="px-12 py-4">
+          {/* Transaction list */}
+          <RollupTransactions transactions={rollup.transactions} />
+          {/* Comment section */}
+          <CommentBox
+            id={rollup.id.toString()}
+            className="mt-4 mb-1.5 bg-white"
+            onAttachFile={handleAttachFile}
+            mentionData={mentions}
+          />
+        </div>
+      </article>
 
       <ConfirmModal
         open={!!confirmModal}
@@ -303,7 +244,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
       <FeedBackModal
         open={isOpenFeedbackModal}
         onClose={() => openFeedbackModal(false)}
-        transactionId={transaction.id}
+        transactionId={rollup.id}
       />
       <AttachmentModal
         transaction={transaction}
@@ -312,10 +253,10 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
         mentionData={mentions}
         uploadOptions={uploadFileOptions}
         onClose={() => setAttachFileComment(null)}
-        onFileUploaded={onSubmitComment}
+        onFileUploaded={() => undefined}
       />
     </>
   );
 };
 
-export default React.memo(TransactionCard);
+export default React.memo(RollupCard);

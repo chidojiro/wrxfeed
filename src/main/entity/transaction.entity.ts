@@ -3,6 +3,10 @@ export enum Visibility {
   HIDDEN = 'HIDDEN',
 }
 
+export enum STATUS {
+  NEW = 'NEW',
+}
+
 export type Department = {
   id: number;
   name: string;
@@ -22,7 +26,8 @@ export type Vendor = {
 
 export type Transaction = {
   id: number;
-  status?: string;
+  status?: STATUS;
+  description?: string;
   transDate: string;
   department: Department;
   category: Category;
@@ -30,7 +35,7 @@ export type Transaction = {
   currency: string;
   amount: number;
   commentCount: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   deletedAt?: string;
 };

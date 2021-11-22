@@ -84,7 +84,7 @@ export function stringToColor(string: string): string {
   return color;
 }
 
-const DATE_FORMAT = 'MM/DD/YYYY';
+const DATE_FORMAT = 'MM/DD/YY';
 const HOUR_FORMAT = 'h:mm A';
 export function formatDate(value?: string | number | Date | dayjs.Dayjs): string {
   if (!dayjs(value).isValid()) return 'Invalid Date';
