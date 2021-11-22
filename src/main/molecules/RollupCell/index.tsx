@@ -100,6 +100,7 @@ const RollupCell: React.VFC<RollupCellProps> = ({ className = '', data = dummyRo
     );
   };
 
+  if (data.length === 0) return null;
   return (
     <div className={classNames('w-full py-4 bg-Gray-18 max-h-[435px]', className)}>
       {data.map(renderTransaction)}
