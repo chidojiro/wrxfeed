@@ -47,6 +47,13 @@ const dummyRollUps: Rollup[] = [
     messageCount: 3,
     isNew: false,
   },
+  {
+    transactionName: 'Schnell’s Global Transport',
+    time: '10/02/21',
+    amount: 8572.65,
+    messageCount: 3,
+    isNew: false,
+  },
 ];
 
 export interface RollupCellProps {
@@ -85,7 +92,7 @@ const RollupCell: React.VFC<RollupCellProps> = ({ className = '', data = dummyRo
         <p className="text-Gray-6 text-xs font-semibold">{item?.transactionName}</p>
         <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
         <p className="text-Gray-6 text-xs font-normal">{item?.time}</p>
-        <p className="text-Gray-6 text-xs font-semibold ml-auto">
+        <p className="text-Gray-6 text-xs font-normal ml-auto">
           {`$ ${formatCurrency(item?.amount)}`}
         </p>
         {renderMessages()}
@@ -94,7 +101,7 @@ const RollupCell: React.VFC<RollupCellProps> = ({ className = '', data = dummyRo
   };
 
   return (
-    <div className={classNames('w-full py-4 bg-Gray-18', className)}>
+    <div className={classNames('w-full py-4 bg-Gray-18 max-h-[435px]', className)}>
       {data.map(renderTransaction)}
     </div>
   );
