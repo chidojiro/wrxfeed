@@ -19,15 +19,20 @@ const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) =
   const isNew = item.status === NotifyStatus.UNREAD;
 
   const renderAvatarOrShortname = () => {
-    const username = '';
-    const shortName = getNameAbbreviation(username);
-    const isHaveAvatar = false;
+    const shortName = getNameAbbreviation(item?.causedByUser?.fullName);
+    const isHaveAvatar = item?.causedByUser?.avatar;
     return (
       <div
         className="flex flex-row justify-center items-center w-10 h-10 rounded-full"
         style={{ backgroundColor: avatarBgColor }}
       >
-        {isHaveAvatar && <img className="flex w-10 h-10 rounded-full" alt="avatar-who-mention" />}
+        {isHaveAvatar && (
+          <img
+            className="flex w-10 h-10 rounded-full"
+            alt="avatar-who-mention"
+            src={isHaveAvatar}
+          />
+        )}
         {!isHaveAvatar && <p className="text-sm font-bold text-white">{shortName}</p>}
       </div>
     );

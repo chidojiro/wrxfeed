@@ -19,6 +19,8 @@ const Notifications: React.VFC = () => {
   const { notifications, isLoading, hasMore, patchNotification } = useNotification(filter);
   const history = useHistory();
 
+  console.log(`CHeck notifications = ${JSON.stringify(notifications)}`);
+
   const handleLoadMore = React.useCallback(() => {
     if (!hasMore || isLoading) return;
     setFilter((prevFilter) => ({
@@ -29,7 +31,7 @@ const Notifications: React.VFC = () => {
 
   const onClickNotification = async (item: Notification) => {
     history.push(`${(Routes.Feed.path as string).replace(':id', `${item.data?.transactionId}`)}`);
-    patchNotification(item.id);
+    patchNotification(item?.id);
   };
 
   return (
