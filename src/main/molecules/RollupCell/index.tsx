@@ -85,11 +85,13 @@ const RollupCell: React.VFC<RollupCellProps> = ({ className = '', data = dummyRo
     return (
       <button
         type="button"
-        className="flex flex-row w-full items-center pl-8 pr-6 py-1.5 hover:bg-Gray-12"
+        className="flex flex-row w-full items-center pl-4 sm:pl-8 pr-2 sm:pr-6 py-1.5 hover:bg-Gray-12"
         onClick={onClickTransaction}
       >
         {renderNewGreen()}
-        <p className="text-Gray-6 text-xs font-semibold">{item?.transactionName}</p>
+        <p className="text-Gray-6 text-xs font-semibold text-left max-w-[140px] sm:max-w-[300px] truncate">
+          {item?.transactionName}
+        </p>
         <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
         <p className="text-Gray-6 text-xs font-normal">{item?.time}</p>
         <p className="text-Gray-6 text-xs font-normal ml-auto">
@@ -102,7 +104,7 @@ const RollupCell: React.VFC<RollupCellProps> = ({ className = '', data = dummyRo
 
   if (data.length === 0) return null;
   return (
-    <div className={classNames('w-full py-4 bg-Gray-18 max-h-[435px]', className)}>
+    <div className={classNames('w-full py-2 sm:py-4 bg-Gray-18 max-h-[435px]', className)}>
       {data.map(renderTransaction)}
     </div>
   );
