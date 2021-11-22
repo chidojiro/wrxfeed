@@ -19,8 +19,6 @@ const Notifications: React.VFC = () => {
   const { notifications, isLoading, hasMore, patchNotification } = useNotification(filter);
   const history = useHistory();
 
-  console.log(`CHeck notifications = ${JSON.stringify(notifications)}`);
-
   const handleLoadMore = React.useCallback(() => {
     if (!hasMore || isLoading) return;
     setFilter((prevFilter) => ({

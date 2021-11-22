@@ -19,6 +19,7 @@ import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-v
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
 import { usePermission } from '@identity/hooks';
 import { ProtectedFeatures } from '@identity/constants';
+import RollupTransactions from '../RollupTransactions';
 
 export interface RollupCardProps {
   rollup: Rollup;
@@ -216,7 +217,8 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         </div>
 
         <div className="px-12 py-4">
-          {/* Rollup section */}
+          {/* Transaction list */}
+          <RollupTransactions transactions={rollup.transactions} />
           {/* Comment section */}
           <CommentBox
             id={rollup.id.toString()}
