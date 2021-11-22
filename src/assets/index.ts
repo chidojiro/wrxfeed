@@ -21,6 +21,7 @@ import UserAvaDefaultIcon from '@assets/icons/solid/userAvaDefault.png';
 import { ReactComponent as BasicsEditCircle } from '@assets/icons/solid/basics-edit-circle.svg';
 import { ReactComponent as BasicsDownSmall } from '@assets/icons/outline/basics-down-small.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
+import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
 
 export {
   NextEmoji,
@@ -46,4 +47,5 @@ export {
   BasicsEditCircle,
   BasicsDownSmall,
   BasicsXSmall,
+  MessageTextAlt,
 };

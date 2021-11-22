@@ -32,10 +32,12 @@ module.exports = {
         'Gray-14': '#F9F9F9',
         'Gray-16': 'rgba(209, 213, 219, 0.2)',
         'Gray-18': '#fafafa',
+        'Gray-20': 'rgba(125, 132, 144, 0.25)',
 
         'Green-1': '#4A944E',
         'Green-2': '#13b9b9',
         'Green-3': 'rgba(19, 185, 185, 0.3)',
+        'Green-4': '#10B981',
         'Green-12': '#D7F3D8',
 
         'Accent-1': '#3363FF',
