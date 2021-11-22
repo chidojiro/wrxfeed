@@ -343,7 +343,7 @@ export default class ApiUtils implements ApiClient {
     });
     return {
       notifications: res.data,
-      unreadCount: res.headers['x-unread-count'],
+      unreadCount: parseInt(res.headers['x-unread-count'], 10),
     };
   };
 
