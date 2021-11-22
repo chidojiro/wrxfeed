@@ -19,7 +19,7 @@ const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) =
   const isNew = item.status === NotifyStatus.UNREAD;
 
   const renderAvatarOrShortname = () => {
-    const shortName = getNameAbbreviation(item?.causedByUser.fullName);
+    const shortName = getNameAbbreviation(item?.causedByUser?.fullName);
     const isHaveAvatar = item?.causedByUser?.avatar;
     return (
       <div
