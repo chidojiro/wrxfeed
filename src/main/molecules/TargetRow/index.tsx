@@ -93,16 +93,16 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     return (
       <div className="flex flex-row py-3 px-6 mb-4">
         <div className="flex flex-col">
-          <div className="flex text-xs text-Gray-6 font-normal">{target?.name}</div>
+          <p className="text-xs text-Gray-6 font-normal">{target?.name}</p>
           {!!loading && <Loading width={15} height={15} className="flex mt-1" />}
           {/* <Loading width={15} height={15} className="flex mt-1" /> */}
         </div>
         <div className="flex ml-auto flex-col">
-          <div className="flex w-32 ml-auto text-right text-sm text-Gray-3 font-semibold">
+          <p className="w-32 ml-auto text-right text-sm text-Gray-3 font-semibold">
             Edit target amount
-          </div>
+          </p>
           <div className="flex flex-1 w-[120px] max-w-lg flex-row items-center mt-1 py-2 border-b border-Gray-11">
-            <div className="text-sm text-Gray-6">$</div>
+            <p className="text-sm text-Gray-6">$</p>
             <input
               ref={inputRef}
               onKeyDown={handleKeyDown}
@@ -138,7 +138,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
         className="flex-row ml-auto hidden group-hover:flex"
       >
         <BasicsEditCircle />
-        <div className="flex text-xs text-Gray-4 font-semibold ml-1">Edit</div>
+        <p className="text-xs text-Gray-4 font-semibold ml-1">Edit</p>
       </button>
     );
   };
@@ -147,7 +147,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   const inactiveTarget = 'rgba(209,213,219,0.3)';
 
   if (!isActive) {
-    const totalSpent = Math.abs(target?.total ?? 0);
+    const totalSpent = target?.total ?? 0;
     let targetAmount = TARGET_PLACEHOLDER;
     const percent = (totalSpent / targetAmount) * 100;
     const percentLength = percent < 80 ? `${percent}%` : '80%';
@@ -159,29 +159,25 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
-          <div className="flex text-Gray-6 font-regular text-sm">{target?.name}</div>
+          <p className="text-Gray-6 font-regular text-sm">{target?.name}</p>
           {renderEditButton()}
         </div>
         <div className="flex flex-row">
           <div className="flex flex-col" style={{ width: percentLength }}>
             <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveColor }} />
-            <div className="flex text-Gray-3 text-2xs mt-1 font-bold ml-auto">
-              {totalSpentCurrency}
-            </div>
+            <p className="text-Gray-3 text-2xs mt-1 font-bold ml-auto">{totalSpentCurrency}</p>
           </div>
           <div className="flex flex-col flex-1 min-w-[60px]">
             <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveTarget }} />
-            <div className="flex text-Gray-6 text-2xs mt-1 font-bold ml-auto">
-              {targetAmountCurrency}
-            </div>
+            <p className="text-Gray-6 text-2xs mt-1 font-bold ml-auto">{targetAmountCurrency}</p>
           </div>
         </div>
       </div>
     );
   }
 
-  const totalSpent = Math.abs(target?.total ?? 0);
-  const targetAmount = Math.abs(target?.amount ?? 0);
+  const totalSpent = target?.total ?? 0;
+  const targetAmount = target?.amount ?? 0;
 
   let percent = (totalSpent / targetAmount) * 100;
   const currentCurrency = nFormatter(totalSpent);
@@ -219,10 +215,10 @@ const TargetRow: React.VFC<TargetRowProps> = ({
             </div>
           </div>
           <div className="flex flex-row">
-            <div className="flex text-2xs mt-1 font-bold ml-auto text-system-alert">
+            <p className="flex text-2xs mt-1 font-bold ml-auto text-system-alert">
               {currentCurrency}
-            </div>
-            <div className="flex text-Gray-6 text-2xs mt-1 font-bold">{`/${totalAmountCurrency}`}</div>
+            </p>
+            <p className="flex text-Gray-6 text-2xs mt-1 font-bold">{`/${totalAmountCurrency}`}</p>
           </div>
         </div>
       );
@@ -232,16 +228,14 @@ const TargetRow: React.VFC<TargetRowProps> = ({
       <div className="flex flex-row">
         <div className="flex flex-col" style={{ width: percentLength }}>
           <div className="flex mt-1 w-full h-1" style={{ backgroundColor: currentColor }} />
-          <div className="flex text-Gray-3 text-2xs mt-1 font-bold ml-auto">{currentCurrency}</div>
+          <p className="flex text-Gray-3 text-2xs mt-1 font-bold ml-auto">{currentCurrency}</p>
         </div>
         <div className="flex flex-col flex-1">
           <div
             className={classNames('flex mt-1 w-full h-1', styleTotal)}
             style={{ backgroundColor: totalColor }}
           />
-          <div className="flex text-Gray-6 text-2xs mt-1 font-bold ml-auto">
-            {totalAmountCurrency}
-          </div>
+          <p className="flex text-Gray-6 text-2xs mt-1 font-bold ml-auto">{totalAmountCurrency}</p>
         </div>
       </div>
     );
@@ -252,19 +246,21 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     const exceedNumber = targetAmount - totalSpent;
     const exceedNumberCurrency = nFormatter(Math.round(Math.abs(exceedNumber) * 100) / 100);
     return (
-      <div
-        className="flex text-system-alert font-bold font-regular group-hover:hidden ml-auto"
-        style={{ fontSize: '10px' }}
-      >
+      <p className="text-system-alert font-bold font-regular group-hover:hidden ml-auto text-2xs truncate">
         {`Exceeds target by ${exceedNumberCurrency}`}
-      </div>
+      </p>
     );
   };
 
   return (
     <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
       <div className="flex flex-row items-center">
-        <div className="flex text-Gray-6 font-regular text-sm">{target?.name}</div>
+        <p
+          className="text-Gray-6 font-regular text-sm truncate max-w-xs"
+          style={{ maxWidth: '145px' }}
+        >
+          {target?.name}
+        </p>
         {renderAlertText()}
         {renderEditButton()}
       </div>

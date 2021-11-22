@@ -266,14 +266,18 @@ export const getNameAbbreviation = (name?: string): string => {
 };
 
 export const nFormatter = (num: number, withCurrency = '$'): string => {
-  if (num >= 1000000000) {
-    return `${withCurrency}${(num / 1000000000).toFixed(1).replace(/\.0$/, '')}G`;
+  const isNegative = num < 0 ? '-' : '';
+  const positiveNum = Math.abs(num);
+  if (positiveNum >= 1000000000) {
+    return `${isNegative}${withCurrency}${(positiveNum / 1000000000)
+      .toFixed(1)
+      .replace(/\.0$/, '')}G`;
   }
-  if (num >= 1000000) {
-    return `${withCurrency}${(num / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+  if (positiveNum >= 1000000) {
+    return `${isNegative}${withCurrency}${(positiveNum / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
   }
-  if (num >= 1000) {
-    return `${withCurrency}${(num / 1000).toFixed(1).replace(/\.0$/, '')}K`;
+  if (positiveNum >= 1000) {
+    return `${isNegative}${withCurrency}${(positiveNum / 1000).toFixed(1).replace(/\.0$/, '')}K`;
   }
-  return `${withCurrency}${num}`;
+  return `${isNegative}${withCurrency}${num}`;
 };
