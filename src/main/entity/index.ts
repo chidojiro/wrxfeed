@@ -9,3 +9,4 @@ export * from './contact.entity';
 export * from './target.entity';
 export * from './subscription.entity';
 export * from './notification.entity';
+export * from './rollup.entity';
