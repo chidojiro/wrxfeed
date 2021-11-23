@@ -132,6 +132,7 @@ svg.path-no-filled > path {
 
 svg.path-no-stroke > path {
   stroke: inherit;
+  stroke-width: inherit;
 }
 
 .divider {

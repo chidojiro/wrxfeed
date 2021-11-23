@@ -9,6 +9,7 @@ import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron
 import { useQuery } from '@common/hooks';
 import { useHistory } from 'react-router-dom';
 import { Department, Vendor, Category } from '@main/entity';
+import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -83,6 +84,7 @@ const OverviewPage: React.VFC = () => {
         onFilter={handleFilter}
         updateCategory={updateCategory}
       />
+      <NewFeedIndicator isVisible={false} counter={13} />
       <MainRightSide>
         <TargetPanel />
       </MainRightSide>
