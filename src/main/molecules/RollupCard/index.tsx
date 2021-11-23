@@ -59,6 +59,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   // Variables
   const isHidden = transaction?.category.visibility === Visibility.HIDDEN;
   const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
+  const [isLoadMore, setLoadMore] = useState(false);
 
   const handleHideCategory = async () => {
     setConfirmModal(undefined);
@@ -140,12 +141,20 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     return items;
   };
 
+  const onLoadMoreTransaction = () => {
+    setLoadMore(true);
+    setTimeout(() => {
+      // call API
+      setLoadMore(false);
+    }, 3000);
+  };
+
   return (
     <>
       <article
         ref={containerRef}
         key={rollup.id}
-        className="bg-white filter shadow-md"
+        className="bg-white flex flex-col filter shadow-md"
         aria-labelledby={`rollup-title-${rollup.id}`}
       >
         {/* Rollup detail */}
@@ -187,7 +196,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                 >
                   {`$ ${formatCurrency(rollup.amount)}`}
                 </h2>
-                <Menu as="div" className="relative inline-block text-left">
+                <Menu as="div" className="relative inline-block z-10 text-left">
                   <div>
                     <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
                       <span className="sr-only">Open options</span>
@@ -215,14 +224,21 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             </p>
           </div>
         </div>
-
-        <div className="px-12 py-4">
+        {/* Zeplin design: rollupsClass="bg-Gray-18" */}
+        <RollupTransactions
+          transactions={rollup.transactions}
+          rollupsClass="bg-white"
+          className="mb-1 sm:mb-2.5"
+          hasMore
+          onLoadMore={onLoadMoreTransaction}
+          isLoadMore={isLoadMore}
+        />
+        <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4 mt-1 sm:mt-2">
           {/* Transaction list */}
-          <RollupTransactions transactions={rollup.transactions} />
           {/* Comment section */}
           <CommentBox
             id={rollup.id.toString()}
-            className="mt-4 mb-1.5 bg-white"
+            className="bg-white"
             onAttachFile={handleAttachFile}
             mentionData={mentions}
           />

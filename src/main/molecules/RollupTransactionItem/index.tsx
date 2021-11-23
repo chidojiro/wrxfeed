@@ -7,17 +7,22 @@ import { STATUS, Transaction } from '@main/entity';
 export interface RollupTransactionItemProps {
   transaction: Transaction;
   onClick?: (transaction: Transaction) => void;
+  onClickMessage?: () => void;
 }
 
-const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({ transaction, onClick }) => {
+const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
+  transaction,
+  onClick,
+  onClickMessage,
+}) => {
   const renderMessages = () => {
     const isShowMessage = transaction.commentCount > 0;
     if (isShowMessage) {
       return (
-        <div className="flex h-4 w-8 flex-row ml-4">
+        <button onClick={onClickMessage} type="button" className="flex h-4 w-8 flex-row ml-4">
           <MessageTextAlt className="fill-current text-Gray-6 opacity-25" />
           <p className="text-Gray-6 text-xs font-medium ml-1">{transaction?.commentCount}</p>
-        </div>
+        </button>
       );
     }
     return <div className="h-4 w-8 ml-4" />;
@@ -33,7 +38,7 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({ transact
   return (
     <div
       aria-hidden="true"
-      className="flex flex-row w-full items-center pl-4 sm:pl-8 pr-2 sm:pr-6 py-1.5 hover:bg-Gray-12"
+      className="flex flex-row w-full items-center pl-4 sm:pl-10 pr-2 sm:pr-2 py-1.5 hover:bg-Gray-12"
       onClick={() => onClick && onClick(transaction)}
     >
       {renderNewGreen()}

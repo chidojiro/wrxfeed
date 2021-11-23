@@ -25,7 +25,7 @@ import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-v
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
 import { useIdentity, usePermission } from '@identity/hooks';
 import { ProtectedFeatures } from '@identity/constants';
-import RollupCell from '../RollupTransactions';
+import RollupTransactions from '../RollupTransactions';
 
 const INITIAL_COMMENT_NUMBER = 2;
 const LOAD_MORE_LIMIT = 5;
@@ -285,7 +285,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
             />
           </div>
         </article>
-        <RollupCell />
+        <RollupTransactions hasMore={false} />
       </li>
 
       <ConfirmModal

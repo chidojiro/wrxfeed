@@ -23,7 +23,7 @@ const FeedList: React.VFC<FeedListProps> = ({
   updateCategory,
 }) => {
   const renderEmptyList = () => (
-    <div className="pb-5 text-center">
+    <div className="pb-2 sm:pb-5 text-center">
       <svg
         className="mx-auto h-8 w-8 text-gray-400"
         fill="none"
@@ -45,16 +45,13 @@ const FeedList: React.VFC<FeedListProps> = ({
 
   return (
     <InfiniteScroller
-      style={{
-        paddingBottom: 52,
-        marginRight: 2,
-        ...style,
-      }}
+      className="pb-4 sm:pb-12 mr-0.5"
+      style={style}
       onLoadMore={onLoadMore}
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}
     >
-      <ul className="pb-5 space-y-4">
+      <ul className="pb-2 sm:pb-5 space-y-4">
         {rollups.map((rollup) => (
           <li key={rollup.id}>
             <RollupCard key={rollup.id} rollup={rollup} updateCategory={updateCategory} />
