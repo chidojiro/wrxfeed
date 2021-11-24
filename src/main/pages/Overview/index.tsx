@@ -68,29 +68,27 @@ const OverviewPage: React.VFC = () => {
   };
 
   return (
-    <>
-      <MainLayout>
-        <h1 className="sr-only">Transaction list</h1>
-        {!!filterKey && (
-          <div className="flex items-center space-x-4 pb-8">
-            <ChevronLeftIcon className="cursor-pointer" onClick={clearFilter} />
-            <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
-          </div>
-        )}
-        <TransactionList
-          transactions={transactions}
-          isLoading={isLoading}
-          hasMore={hasMore}
-          onLoadMore={handleLoadMore}
-          onFilter={handleFilter}
-          updateCategory={updateCategory}
-        />
-        <NewFeedIndicator isVisible={false} counter={13} />
-        <MainRightSide>
-          <TargetPanel />
-        </MainRightSide>
-      </MainLayout>
-    </>
+    <MainLayout>
+      <h1 className="sr-only">Transaction list</h1>
+      {!!filterKey && (
+        <div className="flex items-center space-x-4 pb-8">
+          <ChevronLeftIcon className="cursor-pointer" onClick={clearFilter} />
+          <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
+        </div>
+      )}
+      <TransactionList
+        transactions={transactions}
+        isLoading={isLoading}
+        hasMore={hasMore}
+        onLoadMore={handleLoadMore}
+        onFilter={handleFilter}
+        updateCategory={updateCategory}
+      />
+      <NewFeedIndicator isVisible={false} counter={13} />
+      <MainRightSide>
+        <TargetPanel />
+      </MainRightSide>
+    </MainLayout>
   );
 };
 

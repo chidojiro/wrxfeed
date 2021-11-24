@@ -10,15 +10,13 @@ const CompanyPage: React.VFC = () => {
   const rollups = useRecoilValue(rollupsState);
 
   return (
-    <>
-      <MainLayout>
-        <h1 className="sr-only">Feed list</h1>
-        <FeedList rollups={rollups} onLoadMore={() => undefined} />
-        <MainRightSide>
-          <TargetPanel />
-        </MainRightSide>
-      </MainLayout>
-    </>
+    <MainLayout>
+      <h1 className="sr-only">Feed list</h1>
+      <FeedList rollups={rollups} onLoadMore={() => undefined} />
+      <MainRightSide>
+        <TargetPanel />
+      </MainRightSide>
+    </MainLayout>
   );
 };
 
