@@ -33,7 +33,7 @@ const ContactSupportButton: React.VFC<ContactSupportButtonProps> = ({ className 
         type="button"
         onClick={onClickContactSupport}
         className={classNames(
-          'group flex w-[50px] h-[50px] rounded-full justify-center items-center bg-primary hover:bg-Accent-2 absolute z-20 bottom-12 right-12',
+          'fixed group flex w-[50px] h-[50px] rounded-full justify-center items-center bg-primary hover:bg-Accent-2 z-20 bottom-12 right-12',
           className ?? '',
         )}
       >
