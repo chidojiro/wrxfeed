@@ -20,6 +20,7 @@ import { CookieProvider } from '@common/hooks/useCookie';
 import { UploadCSVModal } from '@main/organisms';
 import { EmojiPickerContainer } from '@common/molecules/EmojiPicker';
 import { NotifyBannerContainer } from '@common/molecules/NotifyBanner';
+import ContactSupportButton from '@main/organisms/ContactSupportButton';
 
 const StyledToastContainer = () => (
   <ToastContainer
@@ -63,6 +64,7 @@ const App: React.FC = () => {
           <StyledToastContainer />
           <EmojiPickerContainer />
           <NotifyBannerContainer topOffset={56} />
+          <ContactSupportButton />
         </ApiProvider>
       </RecoilRoot>
     </CookieProvider>
