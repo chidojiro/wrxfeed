@@ -9,6 +9,7 @@ import { useQuery } from '@common/hooks';
 import { useHistory } from 'react-router-dom';
 import { Department, Vendor, Category } from '@main/entity';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import ContactSupportButton from '@main/organisms/ContactSupportButton';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -69,29 +70,32 @@ const ForYouPage: React.VFC = () => {
   };
 
   return (
-    <MainLayout>
-      <h1 className="sr-only">For you feed</h1>
-      <div className="flex items-center space-x-4 pb-8">
-        <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>
-      </div>
-      {!!filterKey && (
+    <>
+      <MainLayout>
+        <h1 className="sr-only">For you feed</h1>
         <div className="flex items-center space-x-4 pb-8">
-          <ChevronLeftIcon className="cursor-pointer" onClick={clearFilter} />
-          <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
+          <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>
         </div>
-      )}
-      <TransactionList
-        transactions={transactions}
-        isLoading={isLoading}
-        hasMore={hasMore}
-        onLoadMore={handleLoadMore}
-        onFilter={handleFilter}
-        updateCategory={updateCategory}
-      />
-      <MainRightSide>
-        <TargetPanel />
-      </MainRightSide>
-    </MainLayout>
+        {!!filterKey && (
+          <div className="flex items-center space-x-4 pb-8">
+            <ChevronLeftIcon className="cursor-pointer" onClick={clearFilter} />
+            <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
+          </div>
+        )}
+        <TransactionList
+          transactions={transactions}
+          isLoading={isLoading}
+          hasMore={hasMore}
+          onLoadMore={handleLoadMore}
+          onFilter={handleFilter}
+          updateCategory={updateCategory}
+        />
+        <MainRightSide>
+          <TargetPanel />
+        </MainRightSide>
+      </MainLayout>
+      <ContactSupportButton />
+    </>
   );
 };
 

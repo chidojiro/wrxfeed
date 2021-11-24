@@ -5,6 +5,7 @@ import { useNotification } from '@main/hooks';
 import Routes from '@src/routes';
 import { Notification } from '@main/entity';
 import { useHistory } from 'react-router-dom';
+import ContactSupportButton from '@main/organisms/ContactSupportButton';
 import NotificationList from '../../organisms/NotificationList';
 
 const LIMIT = 30;
@@ -33,18 +34,21 @@ const Notifications: React.VFC = () => {
   };
 
   return (
-    <MainLayout>
-      <h1 className="sr-only">Notifications feed</h1>
-      <div className="flex items-center space-x-4 pb-6">
-        <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">Notifications</h1>
-      </div>
-      <NotificationList
-        notifications={notifications}
-        isLoading={isLoading}
-        onLoadMore={handleLoadMore}
-        onClickNotification={onClickNotification}
-      />
-    </MainLayout>
+    <>
+      <MainLayout>
+        <h1 className="sr-only">Notifications feed</h1>
+        <div className="flex items-center space-x-4 pb-6">
+          <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">Notifications</h1>
+        </div>
+        <NotificationList
+          notifications={notifications}
+          isLoading={isLoading}
+          onLoadMore={handleLoadMore}
+          onClickNotification={onClickNotification}
+        />
+      </MainLayout>
+      <ContactSupportButton />
+    </>
   );
 };
 

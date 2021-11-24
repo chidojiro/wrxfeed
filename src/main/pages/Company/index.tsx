@@ -5,18 +5,22 @@ import TargetPanel from '@main/organisms/TargetPanel';
 import FeedList from '@main/organisms/FeedList';
 import { useRecoilValue } from 'recoil';
 import { rollupsState } from '@main/states/rollup.state';
+import ContactSupportButton from '@main/organisms/ContactSupportButton';
 
 const CompanyPage: React.VFC = () => {
   const rollups = useRecoilValue(rollupsState);
 
   return (
-    <MainLayout>
-      <h1 className="sr-only">Feed list</h1>
-      <FeedList rollups={rollups} onLoadMore={() => undefined} />
-      <MainRightSide>
-        <TargetPanel />
-      </MainRightSide>
-    </MainLayout>
+    <>
+      <MainLayout>
+        <h1 className="sr-only">Feed list</h1>
+        <FeedList rollups={rollups} onLoadMore={() => undefined} />
+        <MainRightSide>
+          <TargetPanel />
+        </MainRightSide>
+      </MainLayout>
+      <ContactSupportButton />
+    </>
   );
 };
 
