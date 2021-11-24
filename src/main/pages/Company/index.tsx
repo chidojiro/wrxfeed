@@ -5,7 +5,6 @@ import TargetPanel from '@main/organisms/TargetPanel';
 import FeedList from '@main/organisms/FeedList';
 import { useRecoilValue } from 'recoil';
 import { rollupsState } from '@main/states/rollup.state';
-import ContactSupportButton from '@main/organisms/ContactSupportButton';
 
 const CompanyPage: React.VFC = () => {
   const rollups = useRecoilValue(rollupsState);
@@ -19,7 +18,6 @@ const CompanyPage: React.VFC = () => {
           <TargetPanel />
         </MainRightSide>
       </MainLayout>
-      <ContactSupportButton />
     </>
   );
 };

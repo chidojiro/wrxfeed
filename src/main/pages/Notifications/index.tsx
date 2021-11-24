@@ -5,7 +5,6 @@ import { useNotification } from '@main/hooks';
 import Routes from '@src/routes';
 import { Notification } from '@main/entity';
 import { useHistory } from 'react-router-dom';
-import ContactSupportButton from '@main/organisms/ContactSupportButton';
 import NotificationList from '../../organisms/NotificationList';
 
 const LIMIT = 30;
@@ -47,7 +46,6 @@ const Notifications: React.VFC = () => {
           onClickNotification={onClickNotification}
         />
       </MainLayout>
-      <ContactSupportButton />
     </>
   );
 };

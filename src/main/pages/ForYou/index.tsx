@@ -9,7 +9,6 @@ import { useQuery } from '@common/hooks';
 import { useHistory } from 'react-router-dom';
 import { Department, Vendor, Category } from '@main/entity';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import ContactSupportButton from '@main/organisms/ContactSupportButton';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -94,7 +93,6 @@ const ForYouPage: React.VFC = () => {
           <TargetPanel />
         </MainRightSide>
       </MainLayout>
-      <ContactSupportButton />
     </>
   );
 };

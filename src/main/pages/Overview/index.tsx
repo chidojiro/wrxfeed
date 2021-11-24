@@ -10,7 +10,6 @@ import { useQuery } from '@common/hooks';
 import { useHistory } from 'react-router-dom';
 import { Department, Vendor, Category } from '@main/entity';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
-import ContactSupportButton from '@main/organisms/ContactSupportButton';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -91,7 +90,6 @@ const OverviewPage: React.VFC = () => {
           <TargetPanel />
         </MainRightSide>
       </MainLayout>
-      <ContactSupportButton />
     </>
   );
 };
