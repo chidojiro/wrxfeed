@@ -8,3 +8,4 @@ export const UPLOAD_FILE_ACCEPT =
 // eslint-disable-next-line prefer-destructuring
 export const SSE_NOTI_ENDPOINT = process.env.SSE_NOTI_ENDPOINT || '';
 export const MICRO_LINK_API_KEY = process.env.MICRO_LINK_API_KEY || '';
+export const EMAIL_SUPPORT_ADDRESS = 'support@gravitylabs.co';
