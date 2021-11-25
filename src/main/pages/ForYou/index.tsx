@@ -11,7 +11,8 @@ import { Department, Vendor, Category } from '@main/entity';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { profileState } from '@auth/containers/ProfileEditForm/states';
 import { useRecoilValue } from 'recoil';
-import { usePusher } from '@common/hooks/usePusher';
+import NewMessageBanner from '@main/atoms/NewMessageBanner';
+import { useForYouNew } from '@main/hooks/forYouNew.hook';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -33,11 +34,7 @@ const ForYouPage: React.VFC = () => {
   const { transactions, hasMore, isLoading, updateCategory } = useTransaction(filter);
   const filterKey = FilterKeys.find((key) => query.get(key));
   const profile = useRecoilValue(profileState);
-  const { counter } = usePusher(`feed-${profile.id}`);
-
-  React.useEffect(() => {
-    console.log(`Check new counter = ${counter}`);
-  }, [counter]);
+  const { counter, readAll } = useForYouNew(`feed-${profile.id}`);
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -77,8 +74,20 @@ const ForYouPage: React.VFC = () => {
     history.goBack();
   };
 
+  const onClickNewMessage = () => {
+    readAll();
+    setFilter(INIT_FILTERS);
+    if (window.scrollY > 0) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   return (
-    <MainLayout>
+    <MainLayout className="flex flex-col">
+      <NewMessageBanner onClick={onClickNewMessage} counter={counter} />
       <h1 className="sr-only">For you feed</h1>
       <div className="flex items-center space-x-4 pb-8">
         <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>
