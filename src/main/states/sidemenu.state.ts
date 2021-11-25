@@ -1,5 +1,7 @@
+import { getApiClient } from '@api/utils';
 import { MainGroups, MainMenu } from '@common/constants';
 import { GroupTab, LeftTab } from '@common/types';
+import { identityState } from '@identity/states';
 import { Category, Department, Subscription, Vendor } from '@main/entity';
 import cloneDeep from 'lodash.clonedeep';
 import { atom, selector } from 'recoil';
@@ -43,5 +45,27 @@ export const menuItemsValue = selector<GroupTab[]>({
 
 export const newFeedCountState = atom<FeedCount>({
   key: 'main/sidemenu/feedcount',
-  default: {},
+  default: selector({
+    key: 'main/sidemenu/feedcount/default',
+    get: async ({ get }) => {
+      get(identityState);
+      try {
+        const apiClient = await getApiClient();
+        const overviewRequest = apiClient.getUnreadTransactionCount({
+          pagination: { offset: 0, limit: 0 },
+        });
+        const forYouRequest = apiClient.getUnreadTransactionCount({
+          forYou: true,
+          pagination: { offset: 0, limit: 0 },
+        });
+        const [overviewCount, forYouCount] = await Promise.all([overviewRequest, forYouRequest]);
+        return {
+          '/overview': overviewCount ?? 0,
+          '/for-you': forYouCount ?? 0,
+        };
+      } catch {
+        return { '/overview': 0, '/for-you': 0 };
+      }
+    },
+  }),
 });

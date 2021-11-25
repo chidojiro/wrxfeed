@@ -6,13 +6,14 @@ import { useTransaction } from '@main/hooks';
 import { TransactionFilter } from '@api/types';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { useQuery } from '@common/hooks';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Department, Vendor, Category } from '@main/entity';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { profileState } from '@auth/containers/ProfileEditForm/states';
 import { useRecoilValue } from 'recoil';
-import NewMessageBanner from '@main/atoms/NewMessageBanner';
 import { useForYouNew } from '@main/hooks/forYouNew.hook';
+import { useApi } from '@api';
+import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -29,9 +30,12 @@ const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartmen
 const ForYouPage: React.VFC = () => {
   const query = useQuery();
   const history = useHistory();
+  const location = useLocation();
+  const { readAllTransactions } = useApi();
   const [filter, setFilter] = useState<TransactionFilter>(INIT_FILTERS);
   const [filterTitle, setFilterTitle] = useState('');
-  const { transactions, hasMore, isLoading, updateCategory } = useTransaction(filter);
+  const { transactions, hasMore, newFeedCount, isLoading, updateCategory, upsertNewFeedCount } =
+    useTransaction(filter);
   const filterKey = FilterKeys.find((key) => query.get(key));
   const profile = useRecoilValue(profileState);
   const { counter, readAll } = useForYouNew(`feed-${profile.id}`);
@@ -46,6 +50,14 @@ const ForYouPage: React.VFC = () => {
       },
     }));
   }, [hasMore, isLoading]);
+
+  useEffect(() => {
+    // Mark all transactions as read
+    if (newFeedCount && newFeedCount[location.pathname] > 0)
+      readAllTransactions().then(() => {
+        upsertNewFeedCount(location.pathname, 0);
+      });
+  }, []);
 
   useEffect(() => {
     if (filterKey) {
@@ -87,7 +99,7 @@ const ForYouPage: React.VFC = () => {
 
   return (
     <MainLayout className="flex flex-col">
-      <NewMessageBanner onClick={onClickNewMessage} counter={counter} />
+      <NewFeedIndicator isVisible={counter > 0} counter={counter} onClick={onClickNewMessage} />
       <h1 className="sr-only">For you feed</h1>
       <div className="flex items-center space-x-4 pb-8">
         <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>

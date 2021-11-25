@@ -35,6 +35,8 @@ export interface ApiClient {
   acceptInvitation: (id: string) => Promise<void>;
   // Transaction API
   getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
+  getUnreadTransactionCount: (filters?: TransactionFilter) => Promise<number>;
+  readAllTransactions: () => Promise<void>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: AddCommentParams) => Promise<Comment>;
   deleteComment: (commentId: number) => Promise<void>;

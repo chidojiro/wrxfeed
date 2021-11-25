@@ -9,10 +9,11 @@ interface NewFeedIndicatorProps {
 }
 
 const NewFeedIndicator: VFC<NewFeedIndicatorProps> = ({ isVisible, counter, onClick }) => {
+  const title = counter > 1 ? `${counter} New Items` : `${counter} New Item`;
   return (
     <div
       aria-live="assertive"
-      className="fixed inset-0 top-24 flex items-start pointer-events-none"
+      className="fixed inset-0 z-30 top-24 flex items-start pointer-events-none"
     >
       <div className="w-full flex items-start justify-center">
         <Transition
@@ -30,7 +31,7 @@ const NewFeedIndicator: VFC<NewFeedIndicatorProps> = ({ isVisible, counter, onCl
             className="flex flex-row justify-center items-center px-4 py-2.5 rounded-full bg-primary shadow-sm space-x-1"
             onClick={onClick}
           >
-            <p className="text-sm font-semibold text-white">{`${counter} New Items`}</p>
+            <p className="text-sm font-semibold text-white">{title}</p>
             <ArrowUpIcon
               width={20}
               height={20}

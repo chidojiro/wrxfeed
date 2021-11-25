@@ -168,6 +168,31 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
+  getUnreadTransactionCount = async (filters?: TransactionFilter): Promise<number> => {
+    const params = {
+      ...filters?.pagination,
+      dep: filters?.department,
+      ven: filters?.vendor,
+      cat: filters?.category,
+      rootDep: filters?.rootDepartment,
+    };
+    const url = filters?.forYou ? '/feed/transactions/for-you' : '/feed/transactions';
+    const res = await this.request<Transaction[]>({
+      url,
+      method: 'GET',
+      params,
+    });
+    return parseInt(res.headers['x-unread-count'], 10);
+  };
+
+  readAllTransactions = async (): Promise<void> => {
+    const res = await this.request<void>({
+      url: '/feed/transactions',
+      method: 'PATCH',
+    });
+    return res.data;
+  };
+
   getComments = async (filters: CommentFilters): Promise<Comment[]> => {
     const params = {
       order: filters.order,
