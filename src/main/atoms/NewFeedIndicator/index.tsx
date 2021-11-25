@@ -5,16 +5,13 @@ import React, { Fragment, MouseEventHandler, VFC } from 'react';
 interface NewFeedIndicatorProps {
   isVisible: boolean;
   counter: number;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  onClick?: () => void;
 }
 
 const NewFeedIndicator: VFC<NewFeedIndicatorProps> = ({ isVisible, counter, onClick }) => {
   const title = counter > 1 ? `${counter} New Items` : `${counter} New Item`;
   return (
-    <div
-      aria-live="assertive"
-      className="fixed inset-0 z-30 top-24 flex items-start pointer-events-none"
-    >
+    <div aria-live="assertive" className="fixed inset-10 z-30 top-24 flex items-start">
       <div className="w-full flex items-start justify-center">
         <Transition
           as={Fragment}
@@ -26,7 +23,8 @@ const NewFeedIndicator: VFC<NewFeedIndicatorProps> = ({ isVisible, counter, onCl
           leaveFrom="opacity-100 translate-y-0"
           leaveTo="opacity-0 translate-y-[-10rem]"
         >
-          <div
+          <button
+            type="button"
             aria-hidden="true"
             className="flex flex-row justify-center items-center px-4 py-2.5 rounded-full bg-primary shadow-sm space-x-1"
             onClick={onClick}
@@ -37,7 +35,7 @@ const NewFeedIndicator: VFC<NewFeedIndicatorProps> = ({ isVisible, counter, onCl
               height={20}
               className="stroke-current path-no-stroke text-white stroke-[1.5]"
             />
-          </div>
+          </button>
         </Transition>
       </div>
     </div>
