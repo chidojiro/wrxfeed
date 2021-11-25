@@ -1,5 +1,4 @@
 import ScrollToTopButton from './ScrollToTopButton';
-import DiscussionItem from './DiscussionItem';
 import CommentBox from './CommentBox';
 import CommentItem from './CommentItem';
 import FeelBackModal from '../organisms/FeelBackModal';
@@ -10,7 +9,6 @@ import NotifyDetails from './NotifyDetails';
 
 export {
   ScrollToTopButton,
-  DiscussionItem,
   CommentBox,
   CommentItem,
   FeelBackModal,

@@ -10,7 +10,19 @@ export const startPusher = () => {
   const userId = 12;
   const channel = pusher.subscribe(`feed-${userId}`);
   channel.bind('new-item', (data: any) => {
-    console.log(data);
-    // document.getElementById('content').innerHTML += `<p>${data.id}</p>`;
+    console.log(`Check channel bind data = ${JSON.stringify(data)}`);
   });
 };
+
+// interface PusherData {
+//   isConnect: boolean;
+// }
+
+// export const usePusher = (callback: FileUploaderCallback): PusherData => {
+//   const { getUploadFileToken, uploadAttachment } = useApi();
+
+//   return {
+//     isUploading,
+//     uploadFile,
+//   };
+// };
