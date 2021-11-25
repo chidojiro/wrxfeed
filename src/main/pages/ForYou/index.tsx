@@ -6,9 +6,10 @@ import { useTransaction } from '@main/hooks';
 import { TransactionFilter } from '@api/types';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { useQuery } from '@common/hooks';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Department, Vendor, Category } from '@main/entity';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { useApi } from '@api';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -25,9 +26,12 @@ const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartmen
 const ForYouPage: React.VFC = () => {
   const query = useQuery();
   const history = useHistory();
+  const location = useLocation();
+  const { readAllTransactions } = useApi();
   const [filter, setFilter] = useState<TransactionFilter>(INIT_FILTERS);
   const [filterTitle, setFilterTitle] = useState('');
-  const { transactions, hasMore, isLoading, updateCategory } = useTransaction(filter);
+  const { transactions, hasMore, newFeedCount, isLoading, updateCategory, upsertNewFeedCount } =
+    useTransaction(filter);
   const filterKey = FilterKeys.find((key) => query.get(key));
 
   const handleLoadMore = useCallback(() => {
@@ -40,6 +44,14 @@ const ForYouPage: React.VFC = () => {
       },
     }));
   }, [hasMore, isLoading]);
+
+  useEffect(() => {
+    // Mark all transactions as read
+    if (newFeedCount && newFeedCount[location.pathname] > 0)
+      readAllTransactions().then(() => {
+        upsertNewFeedCount(location.pathname, 0);
+      });
+  }, []);
 
   useEffect(() => {
     if (filterKey) {

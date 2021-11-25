@@ -27,7 +27,7 @@ const SideBar: React.VFC = () => {
 
   const renderCounter = (item: LeftTab) => {
     const isCurrentTab = currentTab?.location.pathname === item.location.pathname;
-    const counter = newFeedCount[item.location.pathname] ?? 0;
+    const counter = newFeedCount[item.location.pathname];
     return (
       !!counter && (
         <div

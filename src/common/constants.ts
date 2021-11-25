@@ -11,7 +11,7 @@ export const MainMenu: GroupTab[] = [
     name: MainGroups.Feeds,
     icon: FeedIcon,
     tabs: [
-      { name: 'Company', location: { pathname: '/overview' }, icon: null },
+      { name: 'Company', location: { pathname: '/overview' }, icon: null, isShowCounter: true },
       {
         name: 'For you',
         location: { pathname: '/for-you' },
