@@ -1,6 +1,6 @@
 import { ArrowUpIcon } from '@assets';
 import { Transition } from '@headlessui/react';
-import React, { Fragment, MouseEventHandler, VFC } from 'react';
+import React, { Fragment, VFC } from 'react';
 
 interface NewFeedIndicatorProps {
   isVisible: boolean;
