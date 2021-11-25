@@ -1,11 +1,11 @@
 import { ArrowUpIcon } from '@assets';
 import { Transition } from '@headlessui/react';
-import React, { Fragment, VFC } from 'react';
+import React, { Fragment, MouseEventHandler, VFC } from 'react';
 
 interface NewFeedIndicatorProps {
   isVisible: boolean;
   counter: number;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
 const NewFeedIndicator: VFC<NewFeedIndicatorProps> = ({ isVisible, counter, onClick }) => {
@@ -22,7 +22,7 @@ const NewFeedIndicator: VFC<NewFeedIndicatorProps> = ({ isVisible, counter, onCl
           enter="transition ease-out duration-300"
           enterFrom="opacity-0 translate-y-[-10rem]"
           enterTo="opacity-100 translate-y-0"
-          leave="transition ease-in duration-150"
+          leave="transition ease-in duration-300"
           leaveFrom="opacity-100 translate-y-0"
           leaveTo="opacity-0 translate-y-[-10rem]"
         >

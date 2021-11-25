@@ -21,6 +21,7 @@ import { UploadCSVModal } from '@main/organisms';
 import { EmojiPickerContainer } from '@common/molecules/EmojiPicker';
 import { NotifyBannerContainer } from '@common/molecules/NotifyBanner';
 import ContactSupportButton from '@main/organisms/ContactSupportButton';
+import { PusherProvider } from '@api/containers/PusherProvider';
 
 const StyledToastContainer = () => (
   <ToastContainer
@@ -41,30 +42,32 @@ const App: React.FC = () => {
     <CookieProvider>
       <RecoilRoot>
         <ApiProvider baseUrl={API_BASE_URL}>
-          <Router key={Math.random()}>
-            <Suspense fallback={<LoadingFallback />}>
-              <Switch>
-                {Object.entries(routes).map(([key, route]) =>
-                  route.permissions?.length ? (
-                    // Added property`key` to Router to fix warning
-                    // when hot reloading Route component
-                    <ProtectedRoute key={key} exact {...route} />
-                  ) : (
-                    <Route key={key} exact {...route} />
-                  ),
-                )}
-                {/* 404 homepage */}
-                <Route>
-                  <NotFoundPage />
-                </Route>
-              </Switch>
-            </Suspense>
-          </Router>
-          <UploadCSVModal />
-          <StyledToastContainer />
-          <EmojiPickerContainer />
-          <NotifyBannerContainer topOffset={56} />
-          <ContactSupportButton />
+          <PusherProvider>
+            <Router key={Math.random()}>
+              <Suspense fallback={<LoadingFallback />}>
+                <Switch>
+                  {Object.entries(routes).map(([key, route]) =>
+                    route.permissions?.length ? (
+                      // Added property`key` to Router to fix warning
+                      // when hot reloading Route component
+                      <ProtectedRoute key={key} exact {...route} />
+                    ) : (
+                      <Route key={key} exact {...route} />
+                    ),
+                  )}
+                  {/* 404 homepage */}
+                  <Route>
+                    <NotFoundPage />
+                  </Route>
+                </Switch>
+              </Suspense>
+            </Router>
+            <UploadCSVModal />
+            <StyledToastContainer />
+            <EmojiPickerContainer />
+            <NotifyBannerContainer topOffset={56} />
+            <ContactSupportButton />
+          </PusherProvider>
         </ApiProvider>
       </RecoilRoot>
     </CookieProvider>
