@@ -1,28 +1,32 @@
+import React from 'react';
 import Pusher from 'pusher-js';
+import { PUSHER_APP_KEY, PUSHER_APP_CLUSTER, PUSHER_EVENT_KEYS } from '../../config';
 
-const APP_KEY_PUSHER = '4869e37d167fcddb177c';
-const APP_CLUSTER = 'mt1';
-
-export const startPusher = () => {
-  const pusher = new Pusher(APP_KEY_PUSHER, {
-    cluster: APP_CLUSTER,
-  });
-  const userId = 12;
-  const channel = pusher.subscribe(`feed-${userId}`);
-  channel.bind('new-item', (data: any) => {
-    console.log(`Check channel bind data = ${JSON.stringify(data)}`);
-  });
+export type ItemData = {
+  id: number;
 };
 
-// interface PusherData {
-//   isConnect: boolean;
-// }
+interface PusherHookValues {
+  counter: number;
+  latestItemId: number;
+}
+export function usePusher(channelId: string): PusherHookValues {
+  const [counter, setCounter] = React.useState(0);
+  const [latestItemId, setLatestItemId] = React.useState(-1);
 
-// export const usePusher = (callback: FileUploaderCallback): PusherData => {
-//   const { getUploadFileToken, uploadAttachment } = useApi();
+  React.useEffect(() => {
+    const pusher = new Pusher(PUSHER_APP_KEY, {
+      cluster: PUSHER_APP_CLUSTER,
+    });
+    const channel = pusher.subscribe(channelId);
+    channel.bind(PUSHER_EVENT_KEYS.NEW_ITEM, (data: ItemData) => {
+      setLatestItemId(data.id);
+      setCounter(counter + 1);
+    });
+  }, [channelId, counter]);
 
-//   return {
-//     isUploading,
-//     uploadFile,
-//   };
-// };
+  return {
+    counter,
+    latestItemId,
+  };
+}

@@ -9,6 +9,9 @@ import { useQuery } from '@common/hooks';
 import { useHistory } from 'react-router-dom';
 import { Department, Vendor, Category } from '@main/entity';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { profileState } from '@auth/containers/ProfileEditForm/states';
+import { useRecoilValue } from 'recoil';
+import { usePusher } from '@common/hooks/usePusher';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -29,6 +32,12 @@ const ForYouPage: React.VFC = () => {
   const [filterTitle, setFilterTitle] = useState('');
   const { transactions, hasMore, isLoading, updateCategory } = useTransaction(filter);
   const filterKey = FilterKeys.find((key) => query.get(key));
+  const profile = useRecoilValue(profileState);
+  const { counter } = usePusher(`feed-${profile.id}`);
+
+  React.useEffect(() => {
+    console.log(`Check new counter = ${counter}`);
+  }, [counter]);
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;

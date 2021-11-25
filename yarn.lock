@@ -1401,15 +1401,6 @@
   resolved "https://registry.npmjs.org/@gar/promisify/-/promisify-1.1.2.tgz"
   integrity sha512-82cpyJyKRoQoRi+14ibCeGPu0CwypgtBAdBhq1WfvagpCZNKqwXbKwXllYSMG91DhmG4jt9gN8eP6lGOtozuaw==
 
-"@harelpls/use-pusher@^7.2.1":
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/@harelpls/use-pusher/-/use-pusher-7.2.1.tgz#f1f133c09f971b89dc692dc2a11a4198ee003dce"
-  integrity sha512-e94JTkNsaVKDnB6j6j4P3RRAGSNtMN6V+f3Or+gwe3TsdLUlpeGrw7JchIsSLmsxYvnJwS4YRees4fbuHLeQFQ==
-  dependencies:
-    dequal "^2.0.1"
-    invariant "^2.2.4"
-    pusher-js "^7.0.0"
-
 "@headlessui/react@^1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-1.4.1.tgz#0a8dbb20e1d63dcea55bfc3ab1b87637aaac7777"
@@ -6260,11 +6251,6 @@ depd@^1.1.2, depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/depd/-/depd-1.1.2.tgz"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
-
-dequal@^2.0.1:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/dequal/-/dequal-2.0.2.tgz#85ca22025e3a87e65ef75a7a437b35284a7e319d"
-  integrity sha512-q9K8BlJVxK7hQYqa6XISGmBZbtQQWVXSrRrWreHC94rMt1QL/Impruc+7p2CYSYuVIUr+YCt6hjrs1kkdJRTug==
 
 des.js@^1.0.0:
   version "1.0.1"
@@ -12284,7 +12270,7 @@ purgecss@^4.0.3:
     postcss "^8.2.1"
     postcss-selector-parser "^6.0.2"
 
-pusher-js@*, pusher-js@^7.0.0, pusher-js@^7.0.3:
+pusher-js@*, pusher-js@^7.0.3:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-7.0.3.tgz#f81c78cdf2ad32f546caa7532ec7f9081ef00b8d"
   integrity sha512-HIfCvt00CAqgO4W0BrdpPsDcAwy51rB6DN0VMC+JeVRRbo8mn3XTeUeIFjmmlRLZLX8rPhUtLRo7vPag6b8GCw==
