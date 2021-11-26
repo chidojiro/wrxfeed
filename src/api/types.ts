@@ -33,7 +33,7 @@ export interface ApiClient {
   forgotPassword: (data: ForgotPwdFormModel) => Promise<void>;
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   acceptInvitation: (id: string) => Promise<void>;
-  // Transaction API
+  // Feed
   getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
   getUnreadTransactionCount: (filters?: TransactionFilter) => Promise<number>;
   readAllTransactions: () => Promise<void>;
@@ -42,6 +42,8 @@ export interface ApiClient {
   deleteComment: (commentId: number) => Promise<void>;
   editComment: (commentId: number, data: AddCommentParams) => Promise<void>;
   getTransactionById: (id: number) => Promise<Transaction>;
+  getFeedItems: (page: Pagination) => Promise<Transaction>;
+  getItemTransactions: (id: ItemTransactionFilter) => Promise<Transaction>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
@@ -167,4 +169,9 @@ export interface SubscriptionParams {
 export interface NotificationsResponse {
   notifications: Notification[];
   unreadCount: number;
+}
+
+export interface ItemTransactionFilter {
+  id: number;
+  page?: Pagination;
 }
