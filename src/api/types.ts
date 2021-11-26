@@ -2,7 +2,6 @@ import { UserToken, Identity } from '@identity/types';
 import {
   Comment,
   Transaction,
-  Discussion,
   User,
   Contact,
   Department,
@@ -36,6 +35,8 @@ export interface ApiClient {
   acceptInvitation: (id: string) => Promise<void>;
   // Transaction API
   getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
+  getUnreadTransactionCount: (filters?: TransactionFilter) => Promise<number>;
+  readAllTransactions: () => Promise<void>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: AddCommentParams) => Promise<Comment>;
   deleteComment: (commentId: number) => Promise<void>;
@@ -44,13 +45,12 @@ export interface ApiClient {
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
-  // For Inbox/Discussion list
+  // For Inbox page
   getMentions: (pagination?: Pagination) => Promise<User[]>;
   sendInvitation: (data: InviteFormModel) => Promise<void>;
   getUsers: (filters: GetUsersFilter) => Promise<User[]>;
   getContacts: (filters: GetContactsFilter) => Promise<Contact[]>;
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
-  getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
   // Directory
   getDepartments: (filters?: DepartmentFilter) => Promise<Department[]>;
   getCategories: (pagination?: Pagination) => Promise<Category[]>;

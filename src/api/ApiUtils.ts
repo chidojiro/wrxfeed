@@ -4,7 +4,6 @@ import {
   Comment,
   Transaction,
   User,
-  Discussion,
   Contact,
   Department,
   Category,
@@ -169,6 +168,31 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
+  getUnreadTransactionCount = async (filters?: TransactionFilter): Promise<number> => {
+    const params = {
+      ...filters?.pagination,
+      dep: filters?.department,
+      ven: filters?.vendor,
+      cat: filters?.category,
+      rootDep: filters?.rootDepartment,
+    };
+    const url = filters?.forYou ? '/feed/transactions/for-you' : '/feed/transactions';
+    const res = await this.request<Transaction[]>({
+      url,
+      method: 'GET',
+      params,
+    });
+    return parseInt(res.headers['x-unread-count'], 10);
+  };
+
+  readAllTransactions = async (): Promise<void> => {
+    const res = await this.request<void>({
+      url: '/feed/transactions',
+      method: 'PATCH',
+    });
+    return res.data;
+  };
+
   getComments = async (filters: CommentFilters): Promise<Comment[]> => {
     const params = {
       order: filters.order,
@@ -242,18 +266,6 @@ export default class ApiUtils implements ApiClient {
       url: '/inv/contacts',
       method: 'GET',
       params,
-    });
-    return res.data;
-  };
-
-  getDiscussions = async (pagination?: Pagination): Promise<Discussion[]> => {
-    const res = await this.request<Discussion[]>({
-      url: '/user/me/mentions',
-      method: 'GET',
-      params: {
-        ...pagination,
-        order: OrderDirection.DESC,
-      },
     });
     return res.data;
   };
@@ -343,7 +355,7 @@ export default class ApiUtils implements ApiClient {
     });
     return {
       notifications: res.data,
-      unreadCount: res.headers['x-unread-count'],
+      unreadCount: parseInt(res.headers['x-unread-count'], 10),
     };
   };
 

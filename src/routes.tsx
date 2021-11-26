@@ -14,6 +14,7 @@ import Categories from '@main/pages/Categories';
 import Vendors from '@main/pages/Vendors';
 import Feed from '@main/pages/Feed';
 import Notifications from '@main/pages/Notifications';
+import Company from '@main/pages/Company';
 
 export interface RouteItem<T> {
   path: string | readonly string[];
@@ -78,6 +79,12 @@ const routes: Route = {
   Vendors: {
     path: ['/vendors', '/vendors/:id'],
     component: Vendors,
+    permissions: [UserRole.ADMIN, UserRole.USER],
+  },
+  // TODO: this will replace Overview page
+  Company: {
+    path: '/company',
+    component: Company,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
 };
