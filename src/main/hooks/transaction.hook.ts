@@ -128,12 +128,14 @@ export function useFeedChannel(
 ): void {
   const pusher = usePusher();
   const identity = useIdentity();
+  const channelName = `feed-${identity?.id}`;
 
   useEffect(() => {
-    const channel = pusher.subscribe(`feed-${identity?.id}`);
+    // Subscribe feed channel
+    const channel = pusher.subscribe(channelName);
     channel.bind(eventName, callback);
     return () => {
-      channel.unsubscribe();
+      channel.unbind(eventName, callback);
     };
   }, []);
 }
