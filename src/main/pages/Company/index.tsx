@@ -8,7 +8,6 @@ import { rollupsState } from '@main/states/rollup.state';
 
 const CompanyPage: React.VFC = () => {
   const rollups = useRecoilValue(rollupsState);
-
   return (
     <MainLayout>
       <h1 className="sr-only">Feed list</h1>

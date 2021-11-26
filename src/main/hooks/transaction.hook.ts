@@ -1,12 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useApi } from '@api';
+import usePusher from '@api/hooks/usePusher';
 import { TransactionFilter } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
+import { useIdentity } from '@identity/hooks';
 import { Category, Transaction } from '@main/entity';
 import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useRecoilState } from 'recoil';
+import { SetterOrUpdater, useRecoilState } from 'recoil';
 
 interface TransactionHookValues {
   transactions: Transaction[];
@@ -15,6 +18,7 @@ interface TransactionHookValues {
   isLoading: boolean;
   updateCategory: (category: Partial<Category>) => Promise<void>;
   upsertNewFeedCount: (key: string, count: number) => void;
+  setNewFeedCount: SetterOrUpdater<FeedCount>;
 }
 
 export const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
@@ -102,6 +106,34 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
     isLoading,
     newFeedCount,
     upsertNewFeedCount,
+    setNewFeedCount,
     updateCategory,
   };
+}
+
+/**
+ * Subscribe events from Feed channel
+ */
+export enum FeedChannelEvents {
+  NEW_ITEM = 'new-item',
+}
+
+export type FeedEventData = {
+  id: number;
+};
+
+export function useFeedChannel(
+  eventName: FeedChannelEvents,
+  callback: (data: FeedEventData) => void,
+): void {
+  const pusher = usePusher();
+  const identity = useIdentity();
+
+  useEffect(() => {
+    const channel = pusher.subscribe(`feed-${identity?.id}`);
+    channel.bind(eventName, callback);
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
 }

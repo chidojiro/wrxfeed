@@ -9,3 +9,6 @@ export const UPLOAD_FILE_ACCEPT =
 export const SSE_NOTI_ENDPOINT = process.env.SSE_NOTI_ENDPOINT || '';
 export const MICRO_LINK_API_KEY = process.env.MICRO_LINK_API_KEY || '';
 export const EMAIL_SUPPORT_ADDRESS = 'support@gravitylabs.co';
+// Pusher configs
+export const PUSHER_APP_KEY = process.env.PUSHER_APP_KEY || '';
+export const PUSHER_APP_CLUSTER = process.env.PUSHER_APP_CLUSTER || '';

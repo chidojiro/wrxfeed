@@ -4,7 +4,6 @@ import {
   Comment,
   Transaction,
   User,
-  Discussion,
   Contact,
   Department,
   Category,
@@ -267,18 +266,6 @@ export default class ApiUtils implements ApiClient {
       url: '/inv/contacts',
       method: 'GET',
       params,
-    });
-    return res.data;
-  };
-
-  getDiscussions = async (pagination?: Pagination): Promise<Discussion[]> => {
-    const res = await this.request<Discussion[]>({
-      url: '/user/me/mentions',
-      method: 'GET',
-      params: {
-        ...pagination,
-        order: OrderDirection.DESC,
-      },
     });
     return res.data;
   };

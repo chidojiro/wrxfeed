@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import TransactionList from '@main/organisms/TransactionList';
-import { useTransaction } from '@main/hooks';
+import { FeedChannelEvents, FeedEventData, useFeedChannel, useTransaction } from '@main/hooks';
 import { TransactionFilter } from '@api/types';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { useQuery } from '@common/hooks';
@@ -10,6 +10,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { Department, Vendor, Category } from '@main/entity';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { useApi } from '@api';
+import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -30,9 +31,17 @@ const ForYouPage: React.VFC = () => {
   const { readAllTransactions } = useApi();
   const [filter, setFilter] = useState<TransactionFilter>(INIT_FILTERS);
   const [filterTitle, setFilterTitle] = useState('');
-  const { transactions, hasMore, newFeedCount, isLoading, updateCategory, upsertNewFeedCount } =
-    useTransaction(filter);
+  const {
+    transactions,
+    hasMore,
+    newFeedCount,
+    isLoading,
+    updateCategory,
+    upsertNewFeedCount,
+    setNewFeedCount,
+  } = useTransaction(filter);
   const filterKey = FilterKeys.find((key) => query.get(key));
+  const newFeedNumber = newFeedCount ? newFeedCount[location.pathname] : 0;
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -45,9 +54,20 @@ const ForYouPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
+  // Subscribe feed event
+  useFeedChannel(FeedChannelEvents.NEW_ITEM, (data: FeedEventData) => {
+    if (data.id) {
+      // Increase counter
+      setNewFeedCount((prevCount) => ({
+        ...prevCount,
+        [location.pathname]: prevCount[location.pathname] + 1,
+      }));
+    }
+  });
+
   useEffect(() => {
     // Mark all transactions as read
-    if (newFeedCount && newFeedCount[location.pathname] > 0)
+    if (newFeedNumber > 0)
       readAllTransactions().then(() => {
         upsertNewFeedCount(location.pathname, 0);
       });
@@ -80,8 +100,26 @@ const ForYouPage: React.VFC = () => {
     history.goBack();
   };
 
+  const refetchNewItems = () => {
+    setFilter({ ...filter, pagination: INIT_PAGINATION });
+    if (window.scrollY > 0) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+    // Clear counter
+    upsertNewFeedCount(location.pathname, 0);
+    readAllTransactions();
+  };
+
   return (
-    <MainLayout>
+    <MainLayout className="flex flex-col">
+      <NewFeedIndicator
+        isVisible={!!newFeedNumber}
+        counter={newFeedNumber}
+        onClick={refetchNewItems}
+      />
       <h1 className="sr-only">For you feed</h1>
       <div className="flex items-center space-x-4 pb-8">
         <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>

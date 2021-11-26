@@ -2,7 +2,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import TransactionList from '@main/organisms/TransactionList';
-import { FilterKeys, useTransaction } from '@main/hooks';
+import {
+  FeedChannelEvents,
+  FeedEventData,
+  FilterKeys,
+  useFeedChannel,
+  useTransaction,
+} from '@main/hooks';
 import { TransactionFilter } from '@api/types';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
@@ -23,13 +29,33 @@ const OverviewPage: React.VFC = () => {
   const history = useHistory();
   const location = useLocation();
   const { readAllTransactions } = useApi();
+  // Local states
   const [filter, setFilter] = useState<TransactionFilter>({
     pagination: INIT_PAGINATION,
   });
   const [filterTitle, setFilterTitle] = useState('');
-  const { transactions, hasMore, newFeedCount, isLoading, updateCategory, upsertNewFeedCount } =
-    useTransaction(filter);
+  const {
+    transactions,
+    hasMore,
+    newFeedCount,
+    isLoading,
+    updateCategory,
+    upsertNewFeedCount,
+    setNewFeedCount,
+  } = useTransaction(filter);
   const filterKey = FilterKeys.find((key) => query.get(key));
+  const newFeedNumber = newFeedCount ? newFeedCount[location.pathname] : 0;
+
+  // Subscribe feed event
+  useFeedChannel(FeedChannelEvents.NEW_ITEM, (data: FeedEventData) => {
+    if (data.id) {
+      // Increase counter
+      setNewFeedCount((prevCount) => ({
+        ...prevCount,
+        [location.pathname]: prevCount[location.pathname] + 1,
+      }));
+    }
+  });
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -44,7 +70,7 @@ const OverviewPage: React.VFC = () => {
 
   useEffect(() => {
     // Mark all transactions as read
-    if (newFeedCount && newFeedCount[location.pathname] > 0)
+    if (newFeedNumber > 0)
       readAllTransactions().then(() => {
         upsertNewFeedCount(location.pathname, 0);
       });
@@ -79,6 +105,19 @@ const OverviewPage: React.VFC = () => {
     history.goBack();
   };
 
+  const refetchNewItems = () => {
+    setFilter({ ...filter, pagination: INIT_PAGINATION });
+    if (window.scrollY > 0) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+    // Clear counter
+    upsertNewFeedCount(location.pathname, 0);
+    readAllTransactions();
+  };
+
   return (
     <MainLayout>
       <h1 className="sr-only">Transaction list</h1>
@@ -96,7 +135,11 @@ const OverviewPage: React.VFC = () => {
         onFilter={handleFilter}
         updateCategory={updateCategory}
       />
-      <NewFeedIndicator isVisible={false} counter={13} />
+      <NewFeedIndicator
+        isVisible={newFeedNumber > 0}
+        counter={newFeedNumber}
+        onClick={refetchNewItems}
+      />
       <MainRightSide>
         <TargetPanel />
       </MainRightSide>

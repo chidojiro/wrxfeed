@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { classNames } from '@common/utils';
 import SideBar from './SideBar';
 import NavBar from './NavBar';
 
-const MainLayout: React.FC = ({ children }) => {
+interface MainLayoutProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const MainLayout: React.VFC<MainLayoutProps> = ({ children, className }) => {
   useEffect(() => {
     // Scroll to top
     if (window.scrollY > 0) {
@@ -14,7 +20,7 @@ const MainLayout: React.FC = ({ children }) => {
     }
   }, []);
   return (
-    <div className="relative">
+    <div className={classNames('relative', className ?? '')}>
       <NavBar />
       <div className="pt-8 sm:pt-navbar pb-1 sm:pb-10">
         <div className="relative min-h-screen max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12">
