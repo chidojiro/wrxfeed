@@ -11,6 +11,7 @@ import {
   Notification,
   Target,
   Subscription,
+  FeedItem,
 } from '@main/entity';
 import { ApiError } from '@error';
 import {
@@ -32,7 +33,7 @@ import {
   PutTargetParams,
   SubscriptionParams,
   NotificationsResponse,
-  ItemTransactionFilter,
+  FeedItemFilter,
 } from '@api/types';
 import {
   AuthProfile,
@@ -441,8 +442,8 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getFeedItems = async (page: Pagination): Promise<Transaction> => {
-    const res = await this.request<Transaction>({
+  getFeedItems = async (page: Pagination): Promise<FeedItem[]> => {
+    const res = await this.request<FeedItem[]>({
       url: '/feed/items',
       method: 'GET',
       params: page,
@@ -450,8 +451,8 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getItemTransactions = async (filter: ItemTransactionFilter): Promise<Transaction> => {
-    const res = await this.request<Transaction>({
+  getItemTransactions = async (filter: FeedItemFilter): Promise<Transaction[]> => {
+    const res = await this.request<Transaction[]>({
       url: `/feed/items/${filter?.id}/transactions`,
       method: 'GET',
       params: filter?.page,

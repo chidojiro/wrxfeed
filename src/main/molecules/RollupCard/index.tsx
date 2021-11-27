@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { Category, Department, Rollup, Vendor, Visibility } from '@main/entity';
+import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity';
 import { useMention } from '@main/hooks';
-import { GetUploadTokenBody, UploadTypes } from '@api/types';
+import { FeedItemFilter, GetUploadTokenBody, UploadTypes } from '@api/types';
 import { classNames, formatCurrency, formatDate } from '@common/utils';
 // Tailwind components
 import { Menu } from '@headlessui/react';
@@ -19,10 +19,11 @@ import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-v
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
 import { usePermission } from '@identity/hooks';
 import { ProtectedFeatures } from '@identity/constants';
+import { useFeedItem } from '@main/hooks/feedItem.hook';
 import RollupTransactions from '../RollupTransactions';
 
 export interface RollupCardProps {
-  rollup: Rollup;
+  feedItem: FeedItem;
   onClickDepartment?: (department?: Department) => void;
   onClickVendor?: (vendor?: Vendor) => void;
   onClickCategory?: (category?: Category) => void;
@@ -37,15 +38,26 @@ interface ConfirmModalProps {
   confirmLabel: string;
 }
 
+const LIMIT = 12;
+const INIT_PAGINATION = Object.freeze({
+  offset: 0,
+  limit: LIMIT,
+});
+
 const RollupCard: React.VFC<RollupCardProps> = ({
-  rollup,
+  feedItem,
   onClickDepartment,
   onClickCategory,
   onClickRootDept,
   updateCategory,
 }) => {
+  const [filter, setFilter] = React.useState<FeedItemFilter>({
+    id: feedItem?.id,
+    page: INIT_PAGINATION,
+  });
+  const { transactions, isLoading, hasMore } = useFeedItem(filter);
   // Recoil states
-  const transaction = rollup.transactions?.length ? rollup.transactions[0] : undefined;
+  const transaction = feedItem.transactions?.length ? feedItem.transactions[0] : undefined;
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
@@ -59,7 +71,6 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   // Variables
   const isHidden = transaction?.category.visibility === Visibility.HIDDEN;
   const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
-  const [isLoadMore, setLoadMore] = useState(false);
 
   const handleHideCategory = async () => {
     setConfirmModal(undefined);
@@ -141,25 +152,31 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     return items;
   };
 
-  const onLoadMoreTransaction = () => {
-    setLoadMore(true);
-    setTimeout(() => {
-      // call API
-      setLoadMore(false);
-    }, 3000);
-  };
+  const onLoadMoreTransaction = React.useCallback(() => {
+    if (!hasMore || isLoading) return;
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      page: {
+        limit: prevFilter?.page?.limit ?? 0,
+        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
+      },
+    }));
+  }, [hasMore, isLoading]);
 
   return (
     <>
       <article
         ref={containerRef}
-        key={rollup.id}
+        key={feedItem.id}
         className="bg-white flex flex-col filter shadow-md"
-        aria-labelledby={`rollup-title-${rollup.id}`}
+        aria-labelledby={`rollup-title-${feedItem.id}`}
       >
         {/* Rollup detail */}
         <div className="flex flex-row">
-          <DepartmentColorSection department={rollup.department.parent} onClick={onClickRootDept} />
+          <DepartmentColorSection
+            department={feedItem.department.parent}
+            onClick={onClickRootDept}
+          />
           <div
             className={classNames(
               isHidden ? 'bg-purple-8' : 'bg-white',
@@ -173,10 +190,10 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                     type="button"
                     className="hover:underline"
                     onClick={() => {
-                      return onClickDepartment && onClickDepartment(rollup.department);
+                      return onClickDepartment && onClickDepartment(feedItem.department);
                     }}
                   >
-                    {rollup.department.name}
+                    {feedItem.department.name}
                   </button>
                 </p>
                 {isHidden && (
@@ -191,10 +208,10 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               </div>
               <div className="flex-shrink-0 self-center flex items-center">
                 <h2
-                  id={`question-title-${rollup.id}`}
+                  id={`question-title-${feedItem.id}`}
                   className="text-base font-semibold text-Gray-2 mr-3"
                 >
-                  {`$ ${formatCurrency(rollup.amount)}`}
+                  {`$ ${formatCurrency(feedItem.amount)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block z-10 text-left">
                   <div>
@@ -209,35 +226,35 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             </div>
             <h2
               aria-hidden="true"
-              id={`question-title-${rollup.id}`}
+              id={`question-title-${feedItem.id}`}
               className="mt-1 text-base font-semibold text-Gray-2 cursor-pointer hover:underline"
-              onClick={() => onClickCategory && onClickCategory(rollup.category)}
+              onClick={() => onClickCategory && onClickCategory(feedItem.category)}
             >
-              {rollup.category.name}
+              {feedItem.category.name}
             </h2>
             <p className="mt-1 text-xs text-Gray-6">
-              <time dateTime={rollup.startTime}>{formatDate(rollup.startTime)}</time>
+              <time dateTime={feedItem.startTime}>{formatDate(feedItem.startTime)}</time>
               {' • '}
-              <time dateTime={rollup.endTime}>
-                {rollup.endTime ? formatDate(rollup.endTime) : 'Present'}
+              <time dateTime={feedItem.endTime}>
+                {feedItem.endTime ? formatDate(feedItem.endTime) : 'Present'}
               </time>
             </p>
           </div>
         </div>
         {/* Zeplin design: rollupsClass="bg-Gray-18" */}
         <RollupTransactions
-          transactions={rollup.transactions}
+          transactions={transactions}
           rollupsClass="bg-white"
           className="mb-1 sm:mb-2.5"
-          hasMore
+          hasMore={hasMore}
           onLoadMore={onLoadMoreTransaction}
-          isLoadMore={isLoadMore}
+          isLoadMore={isLoading}
         />
         <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4 mt-1 sm:mt-2">
           {/* Transaction list */}
           {/* Comment section */}
           <CommentBox
-            id={rollup.id.toString()}
+            id={feedItem.id.toString()}
             className="bg-white"
             onAttachFile={handleAttachFile}
             mentionData={mentions}
@@ -260,7 +277,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
       <FeedBackModal
         open={isOpenFeedbackModal}
         onClose={() => openFeedbackModal(false)}
-        transactionId={rollup.id}
+        transactionId={feedItem.id}
       />
       <AttachmentModal
         transaction={transaction}

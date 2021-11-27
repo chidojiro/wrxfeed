@@ -1,6 +1,6 @@
 import { Category, Department, Transaction, Vendor } from '.';
 
-export type Rollup = {
+export type FeedItem = {
   id: number;
   status?: string;
   startTime: string;

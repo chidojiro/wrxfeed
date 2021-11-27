@@ -10,6 +10,7 @@ import {
   Notification,
   Target,
   Subscription,
+  FeedItem,
 } from '@main/entity';
 import {
   AuthProfile,
@@ -42,8 +43,8 @@ export interface ApiClient {
   deleteComment: (commentId: number) => Promise<void>;
   editComment: (commentId: number, data: AddCommentParams) => Promise<void>;
   getTransactionById: (id: number) => Promise<Transaction>;
-  getFeedItems: (page: Pagination) => Promise<Transaction>;
-  getItemTransactions: (id: ItemTransactionFilter) => Promise<Transaction>;
+  getFeedItems: (page: Pagination) => Promise<FeedItem[]>;
+  getItemTransactions: (id: FeedItemFilter) => Promise<Transaction[]>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
@@ -171,7 +172,7 @@ export interface NotificationsResponse {
   unreadCount: number;
 }
 
-export interface ItemTransactionFilter {
+export interface FeedItemFilter {
   id: number;
   page?: Pagination;
 }
