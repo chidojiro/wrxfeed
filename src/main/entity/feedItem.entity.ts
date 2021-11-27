@@ -1,18 +1,15 @@
-import { Category, Department, Transaction, Vendor } from '.';
+import { Category, Department } from '.';
 
 export type FeedItem = {
   id: number;
-  status?: string;
-  startTime: string;
-  endTime?: string;
+  type: string;
   department: Department;
   category: Category;
-  vendor: Vendor;
-  currency: string;
-  transactions?: Transaction[];
-  amount: number;
-  commentCount: number;
-  createdAt?: string;
-  updatedAt?: string;
-  deletedAt?: string;
+  depId?: number;
+  catId?: number;
+  year?: number;
+  month?: number;
+  total?: number;
+  firstDate?: string;
+  lastDate?: string;
 };

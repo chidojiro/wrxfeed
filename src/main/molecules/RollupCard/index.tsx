@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity';
 import { useMention } from '@main/hooks';
-import { FeedItemFilter, GetUploadTokenBody, UploadTypes } from '@api/types';
+import { FeedItemFilters, GetUploadTokenBody, UploadTypes } from '@api/types';
 import { classNames, formatCurrency, formatDate } from '@common/utils';
 // Tailwind components
 import { Menu } from '@headlessui/react';
@@ -51,13 +51,11 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   onClickRootDept,
   updateCategory,
 }) => {
-  const [filter, setFilter] = React.useState<FeedItemFilter>({
+  const [filter, setFilter] = React.useState<FeedItemFilters>({
     id: feedItem?.id,
     page: INIT_PAGINATION,
   });
   const { transactions, isLoading, hasMore } = useFeedItem(filter);
-  // Recoil states
-  const transaction = feedItem.transactions?.length ? feedItem.transactions[0] : undefined;
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
@@ -69,13 +67,13 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const { mentions } = useMention();
   const { checkPermission } = usePermission();
   // Variables
-  const isHidden = transaction?.category.visibility === Visibility.HIDDEN;
+  const isHidden = feedItem?.category.visibility === Visibility.HIDDEN;
   const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
 
   const handleHideCategory = async () => {
     setConfirmModal(undefined);
     if (updateCategory) {
-      await updateCategory({ id: transaction?.category.id, visibility: Visibility.HIDDEN });
+      await updateCategory({ id: feedItem?.category.id, visibility: Visibility.HIDDEN });
     }
     NotifyBanner.info('You have hidden this transaction');
   };
@@ -93,7 +91,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const handleShowCategory = async () => {
     setConfirmModal(undefined);
     if (updateCategory) {
-      await updateCategory({ id: transaction?.category.id, visibility: Visibility.VISIBLE });
+      await updateCategory({ id: feedItem?.category.id, visibility: Visibility.VISIBLE });
     }
     NotifyBanner.info('You have unhidden this transaction');
   };
@@ -113,7 +111,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
 
   const handleAttachFile = (file: File) => {
     setUploadFileOptions({
-      filename: `${transaction?.id}-${Date.now()}-${file.name}`,
+      filename: `${feedItem?.id}-${Date.now()}-${file.name}`,
       contentType: file.type,
       uploadType: UploadTypes.Attachments,
     });
@@ -211,7 +209,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                   id={`question-title-${feedItem.id}`}
                   className="text-base font-semibold text-Gray-2 mr-3"
                 >
-                  {`$ ${formatCurrency(feedItem.amount)}`}
+                  {`$ ${formatCurrency(feedItem.total)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block z-10 text-left">
                   <div>
@@ -233,15 +231,14 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               {feedItem.category.name}
             </h2>
             <p className="mt-1 text-xs text-Gray-6">
-              <time dateTime={feedItem.startTime}>{formatDate(feedItem.startTime)}</time>
+              <time dateTime={feedItem.firstDate}>{formatDate(feedItem.lastDate)}</time>
               {' • '}
-              <time dateTime={feedItem.endTime}>
-                {feedItem.endTime ? formatDate(feedItem.endTime) : 'Present'}
+              <time dateTime={feedItem.lastDate}>
+                {feedItem.lastDate ? formatDate(feedItem.lastDate) : 'Present'}
               </time>
             </p>
           </div>
         </div>
-        {/* Zeplin design: rollupsClass="bg-Gray-18" */}
         <RollupTransactions
           transactions={transactions}
           rollupsClass="bg-white"
@@ -279,15 +276,17 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         onClose={() => openFeedbackModal(false)}
         transactionId={feedItem.id}
       />
-      <AttachmentModal
-        transaction={transaction}
-        open={!!attachFileComment}
-        file={attachFileComment}
-        mentionData={mentions}
-        uploadOptions={uploadFileOptions}
-        onClose={() => setAttachFileComment(null)}
-        onFileUploaded={() => undefined}
-      />
+      {transactions.length > 0 && (
+        <AttachmentModal
+          transaction={transactions[0]}
+          open={!!attachFileComment}
+          file={attachFileComment}
+          mentionData={mentions}
+          uploadOptions={uploadFileOptions}
+          onClose={() => setAttachFileComment(null)}
+          onFileUploaded={() => undefined}
+        />
+      )}
     </>
   );
 };

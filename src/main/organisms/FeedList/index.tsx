@@ -7,7 +7,7 @@ import RollupCard from '@main/molecules/RollupCard';
 
 interface FeedListProps {
   style?: CSSProperties;
-  feedItems: FeedItem[];
+  feeds: FeedItem[];
   isLoading?: boolean;
   hasMore?: boolean;
   onLoadMore?: () => void;
@@ -16,7 +16,7 @@ interface FeedListProps {
 
 const FeedList: React.VFC<FeedListProps> = ({
   style,
-  feedItems,
+  feeds,
   isLoading,
   hasMore,
   onLoadMore,
@@ -52,13 +52,13 @@ const FeedList: React.VFC<FeedListProps> = ({
       LoadingComponent={<ListLoading />}
     >
       <ul className="pb-2 sm:pb-5 space-y-4">
-        {feedItems.map((feedItem) => (
-          <li key={feedItem.id}>
-            <RollupCard key={feedItem.id} feedItem={feedItem} updateCategory={updateCategory} />
+        {feeds.map((feed) => (
+          <li key={feed.id}>
+            <RollupCard key={feed.id} feedItem={feed} updateCategory={updateCategory} />
           </li>
         ))}
       </ul>
-      {!isLoading && !feedItems.length && renderEmptyList()}
+      {!isLoading && !feeds.length && renderEmptyList()}
       {!isLoading && !hasMore && <TransactionListEnd />}
     </InfiniteScroller>
   );

@@ -1,5 +1,5 @@
 import { useApi } from '@api';
-import { FeedItemFilter } from '@api/types';
+import { FeedItemFilters } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { Transaction } from '@main/entity';
@@ -11,7 +11,7 @@ interface FeedItemHookValues {
   hasMore: boolean;
   isLoading: boolean;
 }
-export function useFeedItem(filter: FeedItemFilter): FeedItemHookValues {
+export function useFeedItem(filter: FeedItemFilters): FeedItemHookValues {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -22,7 +22,7 @@ export function useFeedItem(filter: FeedItemFilter): FeedItemHookValues {
     try {
       setLoading(true);
       if (filter?.page?.limit) {
-        const res = await ApiClient.getItemTransactions(filter);
+        const res = await ApiClient.getFeedItemTransactions(filter);
         if (filter?.page?.offset) {
           setTransactions((prevTrans) => [...prevTrans, ...res]);
         } else {

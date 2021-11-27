@@ -7,26 +7,26 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 interface FeedHookValues {
-  feedItems: FeedItem[];
+  feeds: FeedItem[];
   hasMore: boolean;
   isLoading: boolean;
 }
 export function useFeed(page: Pagination): FeedHookValues {
-  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
+  const [feeds, setFeeds] = useState<FeedItem[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
-  const getFeedItems = useCallback(async () => {
+  const getFeeds = useCallback(async () => {
     try {
       setLoading(true);
       if (page?.limit) {
-        const res = await ApiClient.getFeedItems(page);
+        const res = await ApiClient.getFeeds(page);
         if (page?.offset) {
-          setFeedItems((prevTrans) => [...prevTrans, ...res]);
+          setFeeds((prevTrans) => [...prevTrans, ...res]);
         } else {
-          setFeedItems(res);
+          setFeeds(res);
         }
         setHasMore(!!res.length);
       } else {
@@ -44,10 +44,10 @@ export function useFeed(page: Pagination): FeedHookValues {
   }, [ApiClient, errorHandler, page]);
 
   useEffect(() => {
-    getFeedItems().then();
-  }, [getFeedItems]);
+    getFeeds().then();
+  }, [getFeeds]);
   return {
-    feedItems,
+    feeds,
     hasMore,
     isLoading,
   };

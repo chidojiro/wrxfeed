@@ -33,7 +33,7 @@ import {
   PutTargetParams,
   SubscriptionParams,
   NotificationsResponse,
-  FeedItemFilter,
+  FeedItemFilters,
 } from '@api/types';
 import {
   AuthProfile,
@@ -442,7 +442,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getFeedItems = async (page: Pagination): Promise<FeedItem[]> => {
+  getFeeds = async (page: Pagination): Promise<FeedItem[]> => {
     const res = await this.request<FeedItem[]>({
       url: '/feed/items',
       method: 'GET',
@@ -451,7 +451,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getItemTransactions = async (filter: FeedItemFilter): Promise<Transaction[]> => {
+  getFeedItemTransactions = async (filter: FeedItemFilters): Promise<Transaction[]> => {
     const res = await this.request<Transaction[]>({
       url: `/feed/items/${filter?.id}/transactions`,
       method: 'GET',
