@@ -1,13 +1,13 @@
 import React, { CSSProperties } from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
-import { Category, Rollup } from '@main/entity';
+import { Category, FeedItem } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
 import TransactionListEnd from '@main/atoms/TransactionListEnd';
 import RollupCard from '@main/molecules/RollupCard';
 
 interface FeedListProps {
   style?: CSSProperties;
-  rollups: Rollup[];
+  feeds: FeedItem[];
   isLoading?: boolean;
   hasMore?: boolean;
   onLoadMore?: () => void;
@@ -16,7 +16,7 @@ interface FeedListProps {
 
 const FeedList: React.VFC<FeedListProps> = ({
   style,
-  rollups,
+  feeds,
   isLoading,
   hasMore,
   onLoadMore,
@@ -52,13 +52,13 @@ const FeedList: React.VFC<FeedListProps> = ({
       LoadingComponent={<ListLoading />}
     >
       <ul className="pb-2 sm:pb-5 space-y-4">
-        {rollups.map((rollup) => (
-          <li key={rollup.id}>
-            <RollupCard key={rollup.id} rollup={rollup} updateCategory={updateCategory} />
+        {feeds.map((feed) => (
+          <li key={feed.id}>
+            <RollupCard key={feed.id} feedItem={feed} updateCategory={updateCategory} />
           </li>
         ))}
       </ul>
-      {!isLoading && !rollups.length && renderEmptyList()}
+      {!isLoading && !feeds.length && renderEmptyList()}
       {!isLoading && !hasMore && <TransactionListEnd />}
     </InfiniteScroller>
   );
