@@ -5,12 +5,6 @@ import { isBadRequest } from '@error/utils';
 import { Notification } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { SSE_NOTI_ENDPOINT } from '@src/config';
-
-enum NotiTypes {
-  MENTION = 'MENTION',
-  COMMENT = 'COMMENT',
-}
 
 interface NotificationHookValues {
   notifications: Notification[];
@@ -19,12 +13,14 @@ interface NotificationHookValues {
   patchNotification: (id: number) => Promise<void>;
   markAllAsRead: () => void;
   isMarkAll: boolean;
+  unreadCount: number;
 }
 export function useNotification(page: Pagination): NotificationHookValues {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isMarkAll, setMarkAll] = useState<boolean>(false);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
@@ -47,12 +43,13 @@ export function useNotification(page: Pagination): NotificationHookValues {
       setLoading(true);
       if (page?.limit) {
         const res = await ApiClient.getNotifications(page);
+        setUnreadCount(res.unreadCount);
         if (page?.offset) {
-          setNotifications((prevTrans) => [...prevTrans, ...res]);
+          setNotifications((prevTrans) => [...prevTrans, ...res.notifications]);
         } else {
-          setNotifications(res);
+          setNotifications(res.notifications);
         }
-        setHasMore(!!res.length);
+        setHasMore(!!res.notifications.length);
       } else {
         setHasMore(false);
       }
@@ -66,24 +63,6 @@ export function useNotification(page: Pagination): NotificationHookValues {
       setLoading(false);
     }
   }, [ApiClient, errorHandler, page]);
-
-  const getRealtimeNoti = useCallback(
-    (data: Notification) => {
-      switch (data?.type) {
-        case NotiTypes.MENTION: {
-          setNotifications((prev) => [data, ...prev]);
-          break;
-        }
-        case NotiTypes.COMMENT: {
-          setNotifications((prev) => [data, ...prev]);
-          break;
-        }
-        default:
-          break;
-      }
-    },
-    [setNotifications],
-  );
 
   const markAllAsRead = async () => {
     try {
@@ -101,18 +80,6 @@ export function useNotification(page: Pagination): NotificationHookValues {
     }
   };
 
-  // Listen EventStream
-  useEffect(() => {
-    const sse = new EventSource(SSE_NOTI_ENDPOINT, { withCredentials: true });
-    sse.onmessage = (e) => getRealtimeNoti(JSON.parse(e.data));
-    sse.onerror = () => {
-      sse.close();
-    };
-    return () => {
-      sse.close();
-    };
-  }, [getRealtimeNoti]);
-
   useEffect(() => {
     getNotifications().then();
   }, [getNotifications]);
@@ -123,5 +90,6 @@ export function useNotification(page: Pagination): NotificationHookValues {
     patchNotification,
     markAllAsRead,
     isMarkAll,
+    unreadCount,
   };
 }

@@ -42,12 +42,9 @@ const LoginPage: React.VFC = () => {
   }, [message]);
 
   useEffect(() => {
-    if (identity?.token && identity?.lastLoginAt) {
+    if (identity?.token) {
       const callbackUrl = from?.pathname || (Routes.Overview.path as string);
       redirect(callbackUrl);
-    }
-    if (identity?.token && !identity?.lastLoginAt) {
-      redirect(Routes.Onboard.path as string);
     }
   }, [redirect, identity, from]);
 

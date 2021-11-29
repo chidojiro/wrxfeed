@@ -4,7 +4,6 @@ import {
   Comment,
   Transaction,
   User,
-  Discussion,
   Contact,
   Department,
   Category,
@@ -12,6 +11,7 @@ import {
   Notification,
   Target,
   Subscription,
+  FeedItem,
 } from '@main/entity';
 import { ApiError } from '@error';
 import {
@@ -32,6 +32,8 @@ import {
   PostTargetParams,
   PutTargetParams,
   SubscriptionParams,
+  NotificationsResponse,
+  FeedItemFilters,
 } from '@api/types';
 import {
   AuthProfile,
@@ -168,6 +170,31 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
+  getUnreadTransactionCount = async (filters?: TransactionFilter): Promise<number> => {
+    const params = {
+      ...filters?.pagination,
+      dep: filters?.department,
+      ven: filters?.vendor,
+      cat: filters?.category,
+      rootDep: filters?.rootDepartment,
+    };
+    const url = filters?.forYou ? '/feed/transactions/for-you' : '/feed/transactions';
+    const res = await this.request<Transaction[]>({
+      url,
+      method: 'GET',
+      params,
+    });
+    return parseInt(res.headers['x-unread-count'], 10);
+  };
+
+  readAllTransactions = async (): Promise<void> => {
+    const res = await this.request<void>({
+      url: '/feed/transactions',
+      method: 'PATCH',
+    });
+    return res.data;
+  };
+
   getComments = async (filters: CommentFilters): Promise<Comment[]> => {
     const params = {
       order: filters.order,
@@ -241,18 +268,6 @@ export default class ApiUtils implements ApiClient {
       url: '/inv/contacts',
       method: 'GET',
       params,
-    });
-    return res.data;
-  };
-
-  getDiscussions = async (pagination?: Pagination): Promise<Discussion[]> => {
-    const res = await this.request<Discussion[]>({
-      url: '/user/me/mentions',
-      method: 'GET',
-      params: {
-        ...pagination,
-        order: OrderDirection.DESC,
-      },
     });
     return res.data;
   };
@@ -332,7 +347,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getNotifications = async (page?: Pagination): Promise<Notification[]> => {
+  getNotifications = async (page?: Pagination): Promise<NotificationsResponse> => {
     const res = await this.request<Notification[]>({
       url: '/noti/notifications',
       method: 'GET',
@@ -340,7 +355,10 @@ export default class ApiUtils implements ApiClient {
         ...page,
       },
     });
-    return res.data;
+    return {
+      notifications: res.data,
+      unreadCount: parseInt(res.headers['x-unread-count'], 10),
+    };
   };
 
   patchNotification = async (id: number): Promise<void> => {
@@ -420,6 +438,24 @@ export default class ApiUtils implements ApiClient {
       url: '/subs/subscriptions/mine',
       method: 'DELETE',
       data,
+    });
+    return res.data;
+  };
+
+  getFeeds = async (page: Pagination): Promise<FeedItem[]> => {
+    const res = await this.request<FeedItem[]>({
+      url: '/feed/items',
+      method: 'GET',
+      params: page,
+    });
+    return res.data;
+  };
+
+  getFeedItemTransactions = async (filter: FeedItemFilters): Promise<Transaction[]> => {
+    const res = await this.request<Transaction[]>({
+      url: `/feed/items/${filter?.id}/transactions`,
+      method: 'GET',
+      params: filter?.page,
     });
     return res.data;
   };

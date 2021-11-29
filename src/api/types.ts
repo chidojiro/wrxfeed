@@ -2,7 +2,6 @@ import { UserToken, Identity } from '@identity/types';
 import {
   Comment,
   Transaction,
-  Discussion,
   User,
   Contact,
   Department,
@@ -11,6 +10,7 @@ import {
   Notification,
   Target,
   Subscription,
+  FeedItem,
 } from '@main/entity';
 import {
   AuthProfile,
@@ -34,30 +34,33 @@ export interface ApiClient {
   forgotPassword: (data: ForgotPwdFormModel) => Promise<void>;
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   acceptInvitation: (id: string) => Promise<void>;
-  // Transaction API
+  // Feed
   getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
+  getUnreadTransactionCount: (filters?: TransactionFilter) => Promise<number>;
+  readAllTransactions: () => Promise<void>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: AddCommentParams) => Promise<Comment>;
   deleteComment: (commentId: number) => Promise<void>;
   editComment: (commentId: number, data: AddCommentParams) => Promise<void>;
   getTransactionById: (id: number) => Promise<Transaction>;
+  getFeeds: (page: Pagination) => Promise<FeedItem[]>;
+  getFeedItemTransactions: (id: FeedItemFilters) => Promise<Transaction[]>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
-  // For Inbox/Discussion list
+  // For Inbox page
   getMentions: (pagination?: Pagination) => Promise<User[]>;
   sendInvitation: (data: InviteFormModel) => Promise<void>;
   getUsers: (filters: GetUsersFilter) => Promise<User[]>;
   getContacts: (filters: GetContactsFilter) => Promise<Contact[]>;
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
-  getDiscussions: (pagination?: Pagination) => Promise<Discussion[]>;
   // Directory
   getDepartments: (filters?: DepartmentFilter) => Promise<Department[]>;
   getCategories: (pagination?: Pagination) => Promise<Category[]>;
   getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
   updateCategory: (data?: Partial<Category>) => Promise<void>;
   // Notification
-  getNotifications: (page?: Pagination) => Promise<Notification[]>;
+  getNotifications: (page?: Pagination) => Promise<NotificationsResponse>;
   patchNotification: (id: number) => Promise<void>;
   patchAllNotification: () => Promise<void>;
   // targets
@@ -162,4 +165,14 @@ export interface SubscriptionParams {
   departments?: string[];
   vendors?: string[];
   categories?: string[];
+}
+
+export interface NotificationsResponse {
+  notifications: Notification[];
+  unreadCount: number;
+}
+
+export interface FeedItemFilters {
+  id: number;
+  page?: Pagination;
 }

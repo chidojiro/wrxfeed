@@ -29,7 +29,7 @@ const Notifications: React.VFC = () => {
 
   const onClickNotification = async (item: Notification) => {
     history.push(`${(Routes.Feed.path as string).replace(':id', `${item.data?.transactionId}`)}`);
-    patchNotification(item.id);
+    patchNotification(item?.id);
   };
 
   return (

@@ -1,3 +1,5 @@
+import { Profile } from '@auth/types';
+
 export type NotificationData = {
   commentId: number;
   transactionId: number;
@@ -10,6 +12,7 @@ export type Notification = {
   status: string;
   data: NotificationData;
   createdAt: string;
+  causedByUser: Profile;
 };
 
 export enum NotifyStatus {
