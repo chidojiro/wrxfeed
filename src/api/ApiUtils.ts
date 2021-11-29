@@ -34,6 +34,7 @@ import {
   SubscriptionParams,
   NotificationsResponse,
   FeedItemFilters,
+  FeedCommentFilters,
 } from '@api/types';
 import {
   AuthProfile,
@@ -454,6 +455,15 @@ export default class ApiUtils implements ApiClient {
   getFeedItemTransactions = async (filter: FeedItemFilters): Promise<Transaction[]> => {
     const res = await this.request<Transaction[]>({
       url: `/feed/items/${filter?.id}/transactions`,
+      method: 'GET',
+      params: filter?.page,
+    });
+    return res.data;
+  };
+
+  getFeedItemComments = async (filter: FeedCommentFilters): Promise<Comment[]> => {
+    const res = await this.request<Comment[]>({
+      url: `/api/feed/items/${filter.feedId}/comments`,
       method: 'GET',
       params: filter?.page,
     });
