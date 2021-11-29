@@ -16,7 +16,7 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
   onClickMessage,
 }) => {
   const renderMessages = () => {
-    const isShowMessage = transaction.commentCount > 0;
+    const isShowMessage = transaction?.commentCount > 0;
     if (isShowMessage) {
       return (
         <button onClick={onClickMessage} type="button" className="flex h-4 w-8 flex-row ml-4">
@@ -43,7 +43,7 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
     >
       {renderNewGreen()}
       <p className="text-Gray-6 text-xs font-semibold text-left max-w-[140px] sm:max-w-[300px] truncate">
-        {transaction?.description}
+        {transaction?.vendor.name}
       </p>
       <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
       <p className="text-Gray-6 text-xs font-normal">{formatDate(transaction?.transDate)}</p>

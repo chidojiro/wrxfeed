@@ -11,6 +11,7 @@ import {
   Notification,
   Target,
   Subscription,
+  FeedItem,
 } from '@main/entity';
 import { ApiError } from '@error';
 import {
@@ -32,6 +33,7 @@ import {
   PutTargetParams,
   SubscriptionParams,
   NotificationsResponse,
+  FeedItemFilters,
 } from '@api/types';
 import {
   AuthProfile,
@@ -436,6 +438,24 @@ export default class ApiUtils implements ApiClient {
       url: '/subs/subscriptions/mine',
       method: 'DELETE',
       data,
+    });
+    return res.data;
+  };
+
+  getFeeds = async (page: Pagination): Promise<FeedItem[]> => {
+    const res = await this.request<FeedItem[]>({
+      url: '/feed/items',
+      method: 'GET',
+      params: page,
+    });
+    return res.data;
+  };
+
+  getFeedItemTransactions = async (filter: FeedItemFilters): Promise<Transaction[]> => {
+    const res = await this.request<Transaction[]>({
+      url: `/feed/items/${filter?.id}/transactions`,
+      method: 'GET',
+      params: filter?.page,
     });
     return res.data;
   };
