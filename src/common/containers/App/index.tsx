@@ -26,6 +26,7 @@ import { PusherProvider } from '@api/containers/PusherProvider';
 const StyledToastContainer = () => (
   <ToastContainer
     position="top-center"
+    limit={1}
     autoClose={3000}
     hideProgressBar
     newestOnTop={false}
