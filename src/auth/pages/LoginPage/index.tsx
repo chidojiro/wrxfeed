@@ -43,7 +43,7 @@ const LoginPage: React.VFC = () => {
 
   useEffect(() => {
     if (identity?.token) {
-      const callbackUrl = from?.pathname || (Routes.Overview.path as string);
+      const callbackUrl = from?.pathname || (Routes.Company.path as string);
       redirect(callbackUrl);
     }
   }, [redirect, identity, from]);

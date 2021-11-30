@@ -22,7 +22,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [comments, setComments] = useState<Comment[]>([]);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(0); // waiting api update feed's commentCount
   const [isLoading, setLoading] = useState(false);
 
   const getComments = useCallback(async () => {
