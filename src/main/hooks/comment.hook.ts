@@ -57,14 +57,24 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
 
   const addComment = async (comment: AddCommentParams) => {
     try {
-      const res = await ApiClient.addComment(transaction.id, comment);
-      if (!res.user) {
-        res.user = {
+      // const res = await ApiClient.addComment(transaction.id, comment);
+      // if (!res.user) {
+      //   res.user = {
+      //     id: identity?.id,
+      //     email: identity?.email || '',
+      //     fullName: identity?.fullName || identity?.email || '',
+      //   };
+      // }
+      const res: Comment = {
+        id: Date.now(),
+        createdAt: new Date().toISOString(),
+        content: comment.content ?? '',
+        user: {
           id: identity?.id,
           email: identity?.email || '',
           fullName: identity?.fullName || identity?.email || '',
-        };
-      }
+        },
+      };
       setComments((prevComments) => [...prevComments, res]);
       setTotal(total + 1);
     } catch (error) {
@@ -81,7 +91,7 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
     try {
       setLoading(true);
       // Request API to update
-      await ApiClient.editComment(comment.id, comment);
+      // await ApiClient.editComment(comment.id, comment);
       // Replace old comment
       const oldIdx = comments.findIndex((cmt) => cmt.id === comment.id);
       if (oldIdx > -1) {
@@ -105,7 +115,7 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
   const deleteComment = async (comment: Comment) => {
     try {
       setLoading(true);
-      await ApiClient.deleteComment(comment.id);
+      // await ApiClient.deleteComment(comment.id);
       // Remove comment from current list
       setComments((prevComments) => prevComments.filter((cmt) => cmt.id !== comment.id));
       setTotal(total - 1);
@@ -122,7 +132,7 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
 
   // invalidate list when component is unmounted
   useEffect(() => {
-    getComments().then();
+    // getComments().then();
   }, [getComments]);
 
   return { comments, total, isLoading, showLessComments, addComment, editComment, deleteComment };
