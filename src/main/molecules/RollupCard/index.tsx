@@ -1,10 +1,15 @@
 import React, { useRef, useState } from 'react';
-import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity';
-import { useMention } from '@main/hooks';
-import { FeedItemFilters, GetUploadTokenBody, UploadTypes } from '@api/types';
-import { classNames, formatCurrency, formatDate } from '@common/utils';
-// Tailwind components
+import { SubmitHandler } from 'react-hook-form';
+import { EditorState } from 'draft-js';
 import { Menu } from '@headlessui/react';
+
+import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity';
+import { CommentFormModel } from '@main/types';
+import { useMention } from '@main/hooks';
+import { FeedItemFilters, GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
+import { classNames, formatCurrency, formatDate } from '@common/utils';
+import { commentEditorRawParser } from '@main/utils';
+// Tailwind components
 import DepartmentColorSection from '@main/atoms/DepartmentColorSection';
 import NotifyBanner from '@common/molecules/NotifyBanner';
 import CommentBox from '@main/molecules/CommentBox';
@@ -13,13 +18,16 @@ import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/organisms/FeelBackModal';
 import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
+import CommentRemaining from '@main/atoms/CommentRemaining';
 // Icons
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
-import { usePermission } from '@identity/hooks';
+import { useIdentity, usePermission } from '@identity/hooks';
 import { ProtectedFeatures } from '@identity/constants';
 import { useFeedItem } from '@main/hooks/feedItem.hook';
+import { useFeedComment } from '@main/hooks/feedComment.hook';
+import CommentItem from '@main/molecules/CommentItem';
 import RollupTransactions from '../RollupTransactions';
 
 export interface RollupCardProps {
@@ -44,6 +52,9 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
+const INITIAL_COMMENT_NUMBER = 2;
+const LOAD_MORE_LIMIT = 5;
+
 const RollupCard: React.VFC<RollupCardProps> = ({
   feedItem,
   onClickDepartment,
@@ -51,11 +62,16 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   onClickRootDept,
   updateCategory,
 }) => {
-  const [filter, setFilter] = React.useState<FeedItemFilters>({
+  const identity = useIdentity();
+  const [filterComment, setFilterComment] = useState<Pagination>({
+    offset: 0,
+    limit: INITIAL_COMMENT_NUMBER,
+  });
+  const [filterTrans, setFilterTrans] = React.useState<FeedItemFilters>({
     id: feedItem?.id,
     page: INIT_PAGINATION,
   });
-  const { transactions, isLoading, hasMore } = useFeedItem(filter);
+  const { transactions, isLoading: isLoadingTrans, hasMore } = useFeedItem(filterTrans);
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
@@ -69,6 +85,48 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   // Variables
   const isHidden = feedItem?.category.visibility === Visibility.HIDDEN;
   const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
+
+  const {
+    comments,
+    isLoading: isLoadingComments,
+    deleteComment,
+    editComment,
+    total,
+    addComment,
+    showLessComments,
+  } = useFeedComment(feedItem, filterComment);
+
+  const hasComment = total > 0;
+  const hiddenCommentCount = total - comments.length;
+  const canCollapseComments = total > INITIAL_COMMENT_NUMBER;
+
+  console.log(`Check hasComment = ${hasComment}`);
+
+  const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
+    const contentState = values?.content as EditorState;
+    const isDirty = contentState.getCurrentContent().hasText() || !!values?.attachment;
+    if (!isDirty) return;
+    const parsedContent = commentEditorRawParser(contentState.getCurrentContent());
+    addComment({ content: parsedContent, attachment: values.attachment }).then();
+  };
+
+  const loadMoreComments = () => {
+    if (isLoadingComments) return;
+    if (hiddenCommentCount > 0) {
+      // Load more
+      setFilterComment({
+        limit: LOAD_MORE_LIMIT,
+        offset: comments?.length ?? 0,
+      });
+    } else {
+      // Show less
+      showLessComments(INITIAL_COMMENT_NUMBER);
+      setFilterComment({
+        limit: INITIAL_COMMENT_NUMBER,
+        offset: 0,
+      });
+    }
+  };
 
   const handleHideCategory = async () => {
     setConfirmModal(undefined);
@@ -151,15 +209,15 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   };
 
   const onLoadMoreTransaction = React.useCallback(() => {
-    if (!hasMore || isLoading) return;
-    setFilter((prevFilter) => ({
+    if (!hasMore || isLoadingTrans) return;
+    setFilterTrans((prevFilter) => ({
       ...prevFilter,
       page: {
         limit: prevFilter?.page?.limit ?? 0,
         offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
       },
     }));
-  }, [hasMore, isLoading]);
+  }, [hasMore, isLoadingTrans]);
 
   return (
     <>
@@ -245,16 +303,41 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           className="mb-1 sm:mb-2.5"
           hasMore={hasMore}
           onLoadMore={onLoadMoreTransaction}
-          isLoadMore={isLoading}
+          isLoadMore={isLoadingTrans}
         />
+        {/* Comment section */}
+        <div className="mt-2 sm:mt-9 space-y-4 px-12">
+          {(hiddenCommentCount > 0 || canCollapseComments) && (
+            <CommentRemaining
+              hiddenCount={hiddenCommentCount}
+              onClick={loadMoreComments}
+              loading={isLoadingComments}
+            />
+          )}
+          {hasComment && (
+            <ul>
+              {comments?.map((comment) => (
+                <li key={comment.id}>
+                  <CommentItem
+                    className={isHidden ? 'bg-purple-11' : 'bg-purple-10'}
+                    comment={comment}
+                    mentionData={mentions}
+                    editable={identity?.id === comment.user.id}
+                    onEdit={editComment}
+                    onDelete={deleteComment}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4 mt-1 sm:mt-2">
-          {/* Transaction list */}
-          {/* Comment section */}
           <CommentBox
             id={feedItem.id.toString()}
             className="bg-white"
             onAttachFile={handleAttachFile}
             mentionData={mentions}
+            onSubmit={onSubmitComment}
           />
         </div>
       </article>

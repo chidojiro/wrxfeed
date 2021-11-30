@@ -35,6 +35,7 @@ import {
   NotificationsResponse,
   FeedItemFilters,
   FeedCommentFilters,
+  AddFeedCommentParams,
 } from '@api/types';
 import {
   AuthProfile,
@@ -463,9 +464,18 @@ export default class ApiUtils implements ApiClient {
 
   getFeedItemComments = async (filter: FeedCommentFilters): Promise<Comment[]> => {
     const res = await this.request<Comment[]>({
-      url: `/api/feed/items/${filter.feedId}/comments`,
+      url: `/feed/items/${filter.feedId}/comments`,
       method: 'GET',
       params: filter?.page,
+    });
+    return res.data;
+  };
+
+  addFeedItemComment = async (feedId: number, data: AddFeedCommentParams): Promise<Comment> => {
+    const res = await this.request<Comment>({
+      url: `/feed/items/${feedId}/comments`,
+      method: 'POST',
+      data,
     });
     return res.data;
   };

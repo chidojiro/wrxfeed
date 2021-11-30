@@ -46,6 +46,7 @@ export interface ApiClient {
   getFeeds: (page: Pagination) => Promise<FeedItem[]>;
   getFeedItemTransactions: (id: FeedItemFilters) => Promise<Transaction[]>;
   getFeedItemComments: (id: FeedCommentFilters) => Promise<Comment[]>;
+  addFeedItemComment: (feedId: number, data: AddFeedCommentParams) => Promise<Comment>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
@@ -180,5 +181,11 @@ export interface FeedItemFilters {
 
 export interface FeedCommentFilters {
   feedId: number;
+  order?: OrderDirection;
   page?: Pagination;
+}
+
+export interface AddFeedCommentParams {
+  content?: string;
+  attachment?: string;
 }

@@ -1,5 +1,5 @@
 import { useApi } from '@api';
-import { AddCommentParams, Pagination } from '@api/types';
+import { AddCommentParams, OrderDirection, Pagination } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { useIdentity } from '@identity/hooks';
@@ -29,7 +29,8 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
     try {
       setLoading(true);
       const res = await ApiClient.getFeedItemComments({
-        feedId: feed.id,
+        feedId: feed?.id,
+        order: OrderDirection.DESC,
         page,
       });
       // Comments're shown from bottom to top => need to reverse it;
@@ -56,7 +57,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
 
   const addComment = async (comment: AddCommentParams) => {
     try {
-      const res = await ApiClient.addComment(feed.id, comment);
+      const res = await ApiClient.addFeedItemComment(feed.id, comment);
       if (!res.user) {
         res.user = {
           id: identity?.id,
