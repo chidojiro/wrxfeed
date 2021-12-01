@@ -52,6 +52,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
   isShowUserAva = false,
   ...rest
 }) => {
+  console.log(`Check comment = ${JSON.stringify(comment)}`);
   // Local states
   const [isHover, setHover] = useState(false);
   const [isEditing, setEditing] = useState(false);

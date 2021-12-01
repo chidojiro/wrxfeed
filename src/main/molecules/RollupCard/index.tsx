@@ -94,11 +94,12 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     total,
     addComment,
     showLessComments,
+    hasMore: hasMoreComment,
   } = useFeedComment(feedItem, filterComment);
 
   const hasComment = comments.length > 0; // !!total;
   const hiddenCommentCount = total - comments.length;
-  const canCollapseComments = total > INITIAL_COMMENT_NUMBER;
+  // const canCollapseComments = total > INITIAL_COMMENT_NUMBER;
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
     const contentState = values?.content as EditorState;
@@ -305,7 +306,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         />
         {/* Comment section */}
         <div className="space-y-4 px-12 mt-1">
-          {(hiddenCommentCount > 0 || canCollapseComments) && (
+          {hasMoreComment && (
             <CommentRemaining
               hiddenCount={hiddenCommentCount}
               onClick={loadMoreComments}

@@ -466,7 +466,10 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<Comment[]>({
       url: `/feed/items/${filter.feedId}/comments`,
       method: 'GET',
-      params: filter?.page,
+      params: {
+        ...filter?.page,
+        order: filter?.order,
+      },
     });
     return res.data;
   };

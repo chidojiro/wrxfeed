@@ -15,6 +15,7 @@ interface CommentHookValues {
   addComment: (comment: AddCommentParams) => Promise<void>;
   editComment: (comment: Comment) => Promise<void>;
   deleteComment: (comment: Comment) => Promise<void>;
+  hasMore: boolean;
 }
 
 export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookValues {
@@ -24,6 +25,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
   const [comments, setComments] = useState<Comment[]>([]);
   const [total, setTotal] = useState(0); // waiting api update feed's commentCount
   const [isLoading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState<boolean>(false);
 
   const getComments = useCallback(async () => {
     try {
@@ -39,6 +41,11 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
         setComments((prevComments) => [...reverse, ...prevComments]);
       } else {
         setComments([...reverse]);
+      }
+      setHasMore(!!res.length);
+      setTotal((page?.offset ?? 0) + (page?.limit ?? 0));
+      if (res.length) {
+        setTotal((preTotal) => preTotal + 1);
       }
     } catch (error) {
       if (isBadRequest(error)) {
@@ -125,5 +132,14 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
     getComments().then();
   }, [getComments]);
 
-  return { comments, total, isLoading, showLessComments, addComment, editComment, deleteComment };
+  return {
+    comments,
+    total,
+    isLoading,
+    showLessComments,
+    addComment,
+    editComment,
+    deleteComment,
+    hasMore,
+  };
 }
