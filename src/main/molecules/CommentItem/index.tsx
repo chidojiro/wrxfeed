@@ -32,6 +32,7 @@ export interface CommentItemProps {
   style?: CSSProperties;
   onEdit?: (comment: Comment) => void;
   onDelete?: (comment: Comment) => void;
+  isShowUserAva?: boolean;
 }
 
 interface ConfirmModalProps {
@@ -48,6 +49,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
   editable,
   onEdit,
   onDelete,
+  isShowUserAva = false,
   ...rest
 }) => {
   // Local states
@@ -76,7 +78,6 @@ const CommentItem: React.VFC<CommentItemProps> = ({
 
   useEffect(() => {
     document.addEventListener('keydown', escFunction, false);
-
     return () => {
       document.removeEventListener('keydown', escFunction, false);
     };
@@ -132,15 +133,19 @@ const CommentItem: React.VFC<CommentItemProps> = ({
     <>
       <div
         className={classNames(
-          'group bg-purple-10 py-2 px-3.5 space-y-1 hover:bg-purple-12',
+          'group bg-purple-10 py-2 px-3.5 space-y-1 hover:bg-purple-11',
           className ?? '',
         )}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         {...rest}
       >
-        <div className="flex flex-row justify-between itmes-center">
-          <CommentOwner owner={comment.user} commentDate={comment.createdAt} />
+        <div className="flex flex-row justify-between items-center">
+          <CommentOwner
+            owner={comment.user}
+            commentDate={comment.createdAt}
+            showAva={isShowUserAva}
+          />
           {editable && isHover && (
             <Menu
               as="div"
@@ -170,7 +175,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
             </Menu>
           )}
         </div>
-        <CommentText content={comment.content} />
+        <CommentText className={isShowUserAva ? 'ml-8' : ''} content={comment.content} />
         {!!comment.attachment && renderAttachment()}
         {!!hyperlinks?.length && renderLinkPreview()}
       </div>
