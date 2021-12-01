@@ -29,7 +29,7 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
   };
 
   const renderNewGreen = () => {
-    if (transaction?.status === STATUS.NEW) {
+    if (transaction?.status === STATUS.NEW || transaction?.meta?.isRead === false) {
       return <div className="flex w-1 h-1 rounded-full bg-Green-4 mr-1.5" />;
     }
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;

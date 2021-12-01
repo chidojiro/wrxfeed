@@ -9,13 +9,13 @@ import { toast } from 'react-toastify';
 
 interface CommentHookValues {
   comments: Comment[];
-  total: number;
   isLoading: boolean;
   showLessComments: (keep: number) => void;
   addComment: (comment: AddCommentParams) => Promise<void>;
   editComment: (comment: Comment) => Promise<void>;
   deleteComment: (comment: Comment) => Promise<void>;
   hasMore: boolean;
+  loadAllLimit: number;
 }
 
 export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookValues {
@@ -23,30 +23,31 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [comments, setComments] = useState<Comment[]>([]);
-  const [total, setTotal] = useState(0); // waiting api update feed's commentCount
   const [isLoading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState<boolean>(false);
+  const loadAllLimit = 50;
+  const order = OrderDirection.DESC;
 
   const getComments = useCallback(async () => {
     try {
       setLoading(true);
       const res = await ApiClient.getFeedItemComments({
         feedId: feed?.id,
-        order: OrderDirection.DESC,
+        order,
         page,
       });
       // Comments're shown from bottom to top => need to reverse it;
       const reverse = res.reverse();
       if (page?.offset !== 0) {
-        setComments((prevComments) => [...reverse, ...prevComments]);
+        setComments((prevComments) =>
+          order === OrderDirection.DESC
+            ? [...reverse, ...prevComments]
+            : [...prevComments, ...reverse],
+        );
       } else {
         setComments([...reverse]);
       }
-      setHasMore(!!res.length);
-      setTotal((page?.offset ?? 0) + (page?.limit ?? 0));
-      if (res.length) {
-        setTotal((preTotal) => preTotal + 1);
-      }
+      setHasMore(!!page && page?.limit < res.length);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');
@@ -55,8 +56,11 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
       }
     } finally {
       setLoading(false);
+      if (page && page.limit >= loadAllLimit) {
+        setHasMore(false);
+      }
     }
-  }, [ApiClient, errorHandler, feed.id, page]);
+  }, [ApiClient, errorHandler, feed?.id, order, page]);
 
   const showLessComments = (keep: number): void => {
     setComments((prevComments) => prevComments.slice(-keep));
@@ -73,7 +77,6 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
         };
       }
       setComments((prevComments) => [...prevComments, res]);
-      setTotal(total + 1);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');
@@ -115,7 +118,6 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
       await ApiClient.deleteComment(comment.id);
       // Remove comment from current list
       setComments((prevComments) => prevComments.filter((cmt) => cmt.id !== comment.id));
-      setTotal(total - 1);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Fail to delete this comment');
@@ -134,12 +136,12 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
 
   return {
     comments,
-    total,
     isLoading,
     showLessComments,
     addComment,
     editComment,
     deleteComment,
     hasMore,
+    loadAllLimit,
   };
 }

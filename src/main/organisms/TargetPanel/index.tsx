@@ -93,7 +93,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
       <ul className="flex flex-col">
         {targets.map((item: Target, index: number) => (
           <TargetRow
-            key={`target-${item?.name}`}
+            key={`target-${item?.name}-${item?.depId}`}
             target={item}
             index={index}
             onPostTarget={handlePostTarget}

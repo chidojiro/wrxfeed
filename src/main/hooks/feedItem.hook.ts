@@ -28,7 +28,7 @@ export function useFeedItem(filter: FeedItemFilters): FeedItemHookValues {
         } else {
           setTransactions(res);
         }
-        setHasMore(res.length === filter.page.limit);
+        setHasMore(res.length >= filter.page.limit);
       } else {
         setHasMore(false);
       }
