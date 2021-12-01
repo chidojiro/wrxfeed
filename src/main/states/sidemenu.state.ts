@@ -51,20 +51,20 @@ export const newFeedCountState = atom<FeedCount>({
       get(identityState);
       try {
         const apiClient = await getApiClient();
-        const overviewRequest = apiClient.getUnreadTransactionCount({
+        const companyRequest = apiClient.getUnreadTransactionCount({
           pagination: { offset: 0, limit: 0 },
         });
         const forYouRequest = apiClient.getUnreadTransactionCount({
           forYou: true,
           pagination: { offset: 0, limit: 0 },
         });
-        const [overviewCount, forYouCount] = await Promise.all([overviewRequest, forYouRequest]);
+        const [companyCount, forYouCount] = await Promise.all([companyRequest, forYouRequest]);
         return {
-          '/overview': overviewCount ?? 0,
+          '/company': companyCount ?? 0,
           '/for-you': forYouCount ?? 0,
         };
       } catch {
-        return { '/overview': 0, '/for-you': 0 };
+        return { '/company': 0, '/for-you': 0 };
       }
     },
   }),

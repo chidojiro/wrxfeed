@@ -36,7 +36,7 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
     if (!hasMore) {
       return (
         <div className="flex h-5 w-full items-center absolute left-0 right-0 -bottom-2.5">
-          <div className="bg-Gray-11 h-px w-auto flex-1" />
+          <div className="bg-Gray-11 h-px w-auto flex-1 mx-12" />
         </div>
       );
     }
