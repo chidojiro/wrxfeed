@@ -9,12 +9,12 @@ import { toast } from 'react-toastify';
 
 interface CommentHookValues {
   comments: Comment[];
-  total: number;
   isLoading: boolean;
   showLessComments: (keep: number) => void;
   addComment: (comment: AddCommentParams) => Promise<void>;
   editComment: (comment: Comment) => Promise<void>;
   deleteComment: (comment: Comment) => Promise<void>;
+  hasMore: boolean;
 }
 
 export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookValues {
@@ -22,8 +22,8 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [comments, setComments] = useState<Comment[]>([]);
-  const [total, setTotal] = useState(0); // waiting api update feed's commentCount
   const [isLoading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState<boolean>(false);
 
   const getComments = useCallback(async () => {
     try {
@@ -40,6 +40,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
       } else {
         setComments([...reverse]);
       }
+      setHasMore(!!page && page?.limit <= res.length);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');
@@ -49,7 +50,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, errorHandler, feed.id, page]);
+  }, [ApiClient, errorHandler, feed?.id, page]);
 
   const showLessComments = (keep: number): void => {
     setComments((prevComments) => prevComments.slice(-keep));
@@ -66,7 +67,6 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
         };
       }
       setComments((prevComments) => [...prevComments, res]);
-      setTotal(total + 1);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');
@@ -108,7 +108,6 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
       await ApiClient.deleteComment(comment.id);
       // Remove comment from current list
       setComments((prevComments) => prevComments.filter((cmt) => cmt.id !== comment.id));
-      setTotal(total - 1);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Fail to delete this comment');
@@ -125,5 +124,13 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
     getComments().then();
   }, [getComments]);
 
-  return { comments, total, isLoading, showLessComments, addComment, editComment, deleteComment };
+  return {
+    comments,
+    isLoading,
+    showLessComments,
+    addComment,
+    editComment,
+    deleteComment,
+    hasMore,
+  };
 }

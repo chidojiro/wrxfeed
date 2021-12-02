@@ -17,8 +17,8 @@ const CommentOwner: React.VFC<CommentOwnerProps> = ({
   showAva = false,
 }) => {
   const avatarBgColor = React.useMemo(
-    () => getDepartmentBgColor(owner?.department ?? ''),
-    [owner?.department],
+    () => getDepartmentBgColor(owner?.fullName ?? ''),
+    [owner?.fullName],
   );
   const renderAvaOrShortName = () => {
     if (owner?.avatar && isURL(owner?.avatar)) {

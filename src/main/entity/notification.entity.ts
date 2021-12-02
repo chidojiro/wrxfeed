@@ -2,7 +2,7 @@ import { Profile } from '@auth/types';
 
 export type NotificationData = {
   commentId: number;
-  transactionId: number;
+  itemId: number;
 };
 
 export type Notification = {

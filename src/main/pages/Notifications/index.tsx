@@ -7,11 +7,11 @@ import { Notification } from '@main/entity';
 import { useHistory } from 'react-router-dom';
 import NotificationList from '../../organisms/NotificationList';
 
-const LIMIT = 30;
+const LIMIT_GET_NOTIFICATIONS = 30;
 
 const INIT_PAGINATION = Object.freeze({
   offset: 0,
-  limit: LIMIT,
+  limit: LIMIT_GET_NOTIFICATIONS,
 });
 
 const Notifications: React.VFC = () => {
@@ -28,7 +28,7 @@ const Notifications: React.VFC = () => {
   }, [hasMore, isLoading]);
 
   const onClickNotification = async (item: Notification) => {
-    history.push(`${(Routes.Feed.path as string).replace(':id', `${item.data?.transactionId}`)}`);
+    history.push(`${(Routes.Feed.path as string).replace(':id', `${item.data?.itemId}`)}`);
     patchNotification(item?.id);
   };
 
