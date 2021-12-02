@@ -219,7 +219,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
       },
     }));
-  }, [hasMoreTrans, isLoadingTrans]);
+  }, [hasMoreTrans, isLoadingTrans, transactions.length]);
 
   return (
     <>
@@ -369,7 +369,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           mentionData={mentions}
           uploadOptions={uploadFileOptions}
           onClose={() => setAttachFileComment(null)}
-          onFileUploaded={() => undefined}
+          onFileUploaded={onSubmitComment}
         />
       )}
     </>
