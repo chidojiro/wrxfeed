@@ -24,6 +24,10 @@ export type Vendor = {
   name: string;
 };
 
+export type TranMeta = {
+  isRead: boolean;
+};
+
 export type Transaction = {
   id: number;
   status?: STATUS;
@@ -38,4 +42,5 @@ export type Transaction = {
   createdAt?: string;
   updatedAt?: string;
   deletedAt?: string;
+  meta?: TranMeta;
 };

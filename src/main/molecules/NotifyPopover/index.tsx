@@ -57,7 +57,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
               index={index}
               onClickNotifyAndSeen={async () => {
                 history.push(
-                  `${(Routes.Feed.path as string).replace(':id', `${item.data.transactionId}`)}`,
+                  `${(Routes.Feed.path as string).replace(':id', `${item.data.itemId}`)}`,
                 );
                 patchNotification(item.id);
               }}
