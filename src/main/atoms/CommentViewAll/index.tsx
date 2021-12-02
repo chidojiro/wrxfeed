@@ -9,7 +9,6 @@ export interface CommentRemainingProps {
   loading?: boolean;
   className?: string;
   title?: string;
-  color?: string;
 }
 
 const CommentViewAll: React.VFC<CommentRemainingProps> = ({
@@ -18,7 +17,6 @@ const CommentViewAll: React.VFC<CommentRemainingProps> = ({
   loading,
   style,
   title = 'View all comments',
-  color = 'Accent-2',
 }) => {
   return (
     <div
@@ -28,12 +26,12 @@ const CommentViewAll: React.VFC<CommentRemainingProps> = ({
       onClick={onClick}
     >
       <MessageTextAltIcon
-        className={`fill-current text-${color} path-no-filled`}
+        className="fill-current text-Accent-2 path-no-filled"
         width={17}
         height={17}
         viewBox="0 -2 16 18"
       />
-      <p className={`text-sm font-semibold text-${color}`}>{title}</p>
+      <p className="text-sm font-semibold text-Accent-2">{title}</p>
       {loading && <Loading width={15} height={15} />}
     </div>
   );

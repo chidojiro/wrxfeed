@@ -48,6 +48,7 @@ interface ConfirmModalProps {
 }
 
 const LIMIT_GET_TRANS = 12;
+const LIMIT_GET_TRANS_FULL = 50;
 const MAX_USER_CLICK_LOAD_MORE = 2;
 const INIT_PAGINATION_TRANS = Object.freeze({
   offset: 0,
@@ -55,6 +56,7 @@ const INIT_PAGINATION_TRANS = Object.freeze({
 });
 
 const INITIAL_COMMENT_NUMBER = 2;
+const LIMIT_GET_COMMENT = 20;
 
 const RollupCard: React.VFC<RollupCardProps> = ({
   feedItem,
@@ -98,7 +100,6 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     editComment,
     addComment,
     hasMore: hasMoreComment,
-    loadAllLimit,
   } = useFeedComment(feedItem, filterComment);
 
   const hasComment = comments.length > 0;
@@ -114,7 +115,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const loadAllComments = () => {
     if (isLoadingComments || !hasMoreComment) return;
     setFilterComment({
-      limit: loadAllLimit,
+      limit: LIMIT_GET_COMMENT,
       offset: comments?.length ?? 0,
     });
   };
@@ -202,20 +203,13 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const onLoadMoreTransaction = React.useCallback(() => {
     if (!hasMoreTrans || isLoadingTrans) return;
     // If there are more than 24 (12*2) items, users can click "see more" a third time to load the rest of the transactions.
-    if (transactions.length >= LIMIT_GET_TRANS * MAX_USER_CLICK_LOAD_MORE) {
-      setFilterTrans((prevFilter) => ({
-        ...prevFilter,
-        page: {
-          limit: 1000,
-          offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
-        },
-      }));
-      return;
-    }
     setFilterTrans((prevFilter) => ({
       ...prevFilter,
       page: {
-        limit: prevFilter?.page?.limit ?? 0,
+        limit:
+          transactions.length >= LIMIT_GET_TRANS * MAX_USER_CLICK_LOAD_MORE
+            ? LIMIT_GET_TRANS_FULL
+            : prevFilter?.page?.limit ?? 0,
         offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
       },
     }));

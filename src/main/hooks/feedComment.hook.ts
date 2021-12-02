@@ -15,7 +15,6 @@ interface CommentHookValues {
   editComment: (comment: Comment) => Promise<void>;
   deleteComment: (comment: Comment) => Promise<void>;
   hasMore: boolean;
-  loadAllLimit: number;
 }
 
 export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookValues {
@@ -25,29 +24,23 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState<boolean>(false);
-  const loadAllLimit = 50;
-  const order = OrderDirection.DESC;
 
   const getComments = useCallback(async () => {
     try {
       setLoading(true);
       const res = await ApiClient.getFeedItemComments({
         feedId: feed?.id,
-        order,
+        order: OrderDirection.DESC,
         page,
       });
       // Comments're shown from bottom to top => need to reverse it;
       const reverse = res.reverse();
       if (page?.offset !== 0) {
-        setComments((prevComments) =>
-          order === OrderDirection.DESC
-            ? [...reverse, ...prevComments]
-            : [...prevComments, ...reverse],
-        );
+        setComments((prevComments) => [...reverse, ...prevComments]);
       } else {
         setComments([...reverse]);
       }
-      setHasMore(!!page && page?.limit < res.length);
+      setHasMore(!!page && page?.limit <= res.length);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');
@@ -56,11 +49,8 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
       }
     } finally {
       setLoading(false);
-      if (page && page.limit >= loadAllLimit) {
-        setHasMore(false);
-      }
     }
-  }, [ApiClient, errorHandler, feed?.id, order, page]);
+  }, [ApiClient, errorHandler, feed?.id, page]);
 
   const showLessComments = (keep: number): void => {
     setComments((prevComments) => prevComments.slice(-keep));
@@ -142,6 +132,5 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
     editComment,
     deleteComment,
     hasMore,
-    loadAllLimit,
   };
 }
