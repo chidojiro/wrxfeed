@@ -301,7 +301,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           onLoadMore={onLoadMoreTransaction}
           isLoadMore={isLoadingTrans}
         />
-        <div className="space-y-4 px-12 mt-1">
+        <div className="space-y-4 px-4 sm:px-12 mt-1">
           {hasMoreComment && (
             <CommentViewAll
               onClick={loadAllComments}

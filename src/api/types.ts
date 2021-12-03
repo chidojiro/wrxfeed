@@ -43,7 +43,7 @@ export interface ApiClient {
   deleteComment: (commentId: number) => Promise<void>;
   editComment: (commentId: number, data: AddCommentParams) => Promise<void>;
   getTransactionById: (id: number) => Promise<Transaction>;
-  getFeeds: (page: Pagination) => Promise<FeedItem[]>;
+  getFeeds: (filters: GetFeedsFilters) => Promise<FeedItem[]>;
   getFeedItemTransactions: (id: FeedItemFilters) => Promise<Transaction[]>;
   getFeedItemComments: (id: FeedCommentFilters) => Promise<Comment[]>;
   addFeedItemComment: (feedId: number, data: AddFeedCommentParams) => Promise<Comment>;
@@ -188,4 +188,9 @@ export interface FeedCommentFilters {
 export interface AddFeedCommentParams {
   content?: string;
   attachment?: string;
+}
+
+export interface GetFeedsFilters {
+  page: Pagination;
+  forYou: number;
 }
