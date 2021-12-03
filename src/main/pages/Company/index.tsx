@@ -4,23 +4,29 @@ import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import TargetPanel from '@main/organisms/TargetPanel';
 import FeedList from '@main/organisms/FeedList';
 import { useFeed } from '@main/hooks/feed.hook';
-import { Pagination } from '@api/types';
+import { GetFeedsFilters } from '@api/types';
 
 const LIMIT = 10;
-const INIT_PAGINATION = Object.freeze({
-  offset: 0,
-  limit: LIMIT,
+const INIT_FEED_FILTER = Object.freeze({
+  page: {
+    offset: 0,
+    limit: LIMIT,
+  },
+  forYou: 0,
 });
 
 const CompanyPage: React.VFC = () => {
   // const rollups = useRecoilValue(rollupsState);
-  const [page, setPage] = React.useState<Pagination>(INIT_PAGINATION);
-  const { feeds, hasMore, isLoading } = useFeed(page);
+  const [feedFilters, setFeedFilters] = React.useState<GetFeedsFilters>(INIT_FEED_FILTER);
+  const { feeds, hasMore, isLoading } = useFeed(feedFilters);
   const handleLoadMore = React.useCallback(() => {
     if (!hasMore || isLoading) return;
-    setPage((prevPage) => ({
-      limit: prevPage?.limit ?? 0,
-      offset: (prevPage?.offset ?? 0) + (prevPage?.limit ?? 0),
+    setFeedFilters((prevFilters) => ({
+      page: {
+        limit: prevFilters?.page.limit ?? 0,
+        offset: (prevFilters?.page?.offset ?? 0) + (prevFilters?.page?.limit ?? 0),
+      },
+      forYou: 0,
     }));
   }, [hasMore, isLoading]);
 

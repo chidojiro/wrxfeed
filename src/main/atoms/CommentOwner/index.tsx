@@ -1,7 +1,7 @@
 import React from 'react';
 import { User } from '@main/entity';
 import { classNames, formatDate } from '@common/utils';
-import { getDepartmentBgColor, getNameAbbreviation, isURL } from '@main/utils';
+import { getDepartmentBgColor, getNameAbbreviation } from '@main/utils';
 
 export interface CommentOwnerProps {
   owner: User;
@@ -21,7 +21,7 @@ const CommentOwner: React.VFC<CommentOwnerProps> = ({
     [owner?.fullName],
   );
   const renderAvaOrShortName = () => {
-    if (owner?.avatar && isURL(owner?.avatar)) {
+    if (owner?.avatar) {
       return <img className="w-6 h-6 rounded-full" src={owner?.avatar} alt="avatar" />;
     }
     const shortName = getNameAbbreviation(owner?.fullName);

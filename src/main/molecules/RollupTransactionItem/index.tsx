@@ -2,7 +2,7 @@
 import { formatCurrency, formatDate } from '@common/utils';
 import React from 'react';
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
-import { STATUS, Transaction } from '@main/entity';
+import { Transaction } from '@main/entity';
 
 export interface RollupTransactionItemProps {
   transaction: Transaction;
@@ -29,7 +29,7 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
   };
 
   const renderNewGreen = () => {
-    if (transaction?.status === STATUS.NEW || transaction?.meta?.isRead === false) {
+    if (transaction?.meta?.isRead === false) {
       return <div className="flex w-1 h-1 rounded-full bg-Green-4 mr-1.5" />;
     }
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
@@ -38,7 +38,7 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
   return (
     <div
       aria-hidden="true"
-      className="flex flex-row w-full items-center pl-4 sm:pl-10 pr-2 sm:pr-2 py-1.5 hover:bg-Gray-12"
+      className="flex flex-row w-full items-center pl-2 sm:pl-10 pr-2 sm:pr-2 py-1.5 hover:bg-Gray-12"
       onClick={() => onClick && onClick(transaction)}
     >
       {renderNewGreen()}
