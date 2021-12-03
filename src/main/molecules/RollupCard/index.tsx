@@ -286,7 +286,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             </h2>
             <p className="mt-1 text-xs text-Gray-6">
               <time dateTime={feedItem.firstDate}>{formatDate(feedItem.lastDate)}</time>
-              {' • '}
+              {' - '}
               <time dateTime={feedItem.lastDate}>
                 {feedItem.lastDate ? formatDate(feedItem.lastDate) : 'Present'}
               </time>
