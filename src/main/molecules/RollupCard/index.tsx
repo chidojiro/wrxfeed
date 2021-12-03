@@ -286,7 +286,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             </h2>
             <p className="mt-1 text-xs text-Gray-6">
               <time dateTime={feedItem.firstDate}>{formatDate(feedItem.lastDate)}</time>
-              {' • '}
+              {' - '}
               <time dateTime={feedItem.lastDate}>
                 {feedItem.lastDate ? formatDate(feedItem.lastDate) : 'Present'}
               </time>
@@ -301,7 +301,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           onLoadMore={onLoadMoreTransaction}
           isLoadMore={isLoadingTrans}
         />
-        <div className="space-y-4 px-12 mt-1">
+        <div className="space-y-4 px-4 sm:px-12 mt-1">
           {hasMoreComment && (
             <CommentViewAll
               onClick={loadAllComments}

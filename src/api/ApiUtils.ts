@@ -36,6 +36,7 @@ import {
   FeedItemFilters,
   FeedCommentFilters,
   AddFeedCommentParams,
+  GetFeedsFilters,
 } from '@api/types';
 import {
   AuthProfile,
@@ -444,11 +445,14 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getFeeds = async (page: Pagination): Promise<FeedItem[]> => {
+  getFeeds = async (filters: GetFeedsFilters): Promise<FeedItem[]> => {
     const res = await this.request<FeedItem[]>({
       url: '/feed/items',
       method: 'GET',
-      params: page,
+      params: {
+        ...filters?.page,
+        forYou: filters?.forYou,
+      },
     });
     return res.data;
   };
