@@ -486,4 +486,12 @@ export default class ApiUtils implements ApiClient {
     });
     return res.data;
   };
+
+  getFeedItemById = async (feedId: number): Promise<FeedItem> => {
+    const res = await this.request<FeedItem>({
+      url: `/feed/items/${feedId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
 }
