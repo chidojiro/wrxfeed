@@ -43,6 +43,7 @@ const Notifications: React.VFC = () => {
         isLoading={isLoading}
         onLoadMore={handleLoadMore}
         onClickNotification={onClickNotification}
+        hasMore={hasMore}
       />
     </MainLayout>
   );

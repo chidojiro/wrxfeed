@@ -80,7 +80,7 @@ const FeedPage: React.VFC = () => {
       <h1 className="sr-only">Rollups</h1>
       <div className="flex items-center space-x-4 pb-8 pl-4 sm:pl-0">
         <ChevronLeftIcon onClick={onClickGoBack} />
-        <h1 className="text-Gray-1 text-xl font-bold">Rollups</h1>
+        <h1 className="text-Gray-1 text-xl font-bold">Notifications</h1>
       </div>
       {renderFeed()}
       <MainRightSide>

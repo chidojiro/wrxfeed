@@ -86,7 +86,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
 
   const renderNotifyIconWithBell = () => {
     return (
-      <div className="flex h-8 w-8 justify-center items-center">
+      <div className="flex h-8 w-8 justify-center items-center rounded-full focus:outline-none hover:ring-2 ring-offset-2 ring-rose-500">
         <NotifyIcon aria-hidden="true" />
         {unreadCount !== 0 && (
           <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
@@ -111,9 +111,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
       <button
         onClick={onClickNotifications}
         type="button"
-        className={classNames(
-          'rounded-full flex-shrink-0 flex relative w-10 h-10 justify-center items-center focus:outline-none hover:ring-2 ring-offset-2 ring-rose-500',
-        )}
+        className={classNames('flex-shrink-0 flex relative w-10 h-10 justify-center items-center')}
       >
         {renderNotifyIconWithBell()}
       </button>

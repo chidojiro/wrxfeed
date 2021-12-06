@@ -39,7 +39,7 @@ const FeedList: React.VFC<FeedListProps> = ({
           d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
         />
       </svg>
-      <h3 className="mt-2 text-sm text-Gray-3">No transactions</h3>
+      <h3 className="mt-2 text-sm text-Gray-3">No rollups now!</h3>
     </div>
   );
 

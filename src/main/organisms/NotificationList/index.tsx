@@ -3,6 +3,7 @@ import NotificationItem from '@main/molecules/NotificationItem';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Notification } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
+import TransactionListEnd from '@main/atoms/TransactionListEnd';
 
 interface NotificationListProps {
   style?: CSSProperties;
@@ -19,6 +20,7 @@ const NotificationList: React.VFC<NotificationListProps> = ({
   isLoading,
   onLoadMore,
   onClickNotification,
+  hasMore,
 }) => {
   const renderEmptyList = () => (
     <div className="pb-5 text-center">
@@ -55,6 +57,7 @@ const NotificationList: React.VFC<NotificationListProps> = ({
         ))}
       </ul>
       {!isLoading && !notifications.length && renderEmptyList()}
+      {!isLoading && !hasMore && <TransactionListEnd />}
     </InfiniteScroller>
   );
 };
