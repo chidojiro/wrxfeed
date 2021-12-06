@@ -64,6 +64,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
           id: identity?.id,
           email: identity?.email || '',
           fullName: identity?.fullName || identity?.email || '',
+          avatar: identity?.avatar,
         };
       }
       setComments((prevComments) => [...prevComments, res]);
