@@ -4,10 +4,9 @@ import React from 'react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-// import { useQuery } from '@common/hooks';
 import { useHistory, useParams } from 'react-router-dom';
-import TransactionCard from '@main/molecules/TransactionCard';
-import { Transaction } from '@main/entity';
+import RollupCard from '@main/molecules/RollupCard';
+import { FeedItem } from '@main/entity';
 import { useApi } from '@api';
 import { isBadRequest } from '@error/utils';
 import { useErrorHandler } from 'react-error-boundary';
@@ -17,19 +16,19 @@ import Loading from '@common/atoms/Loading';
 const FeedPage: React.VFC = () => {
   const history = useHistory();
   const ApiClient = useApi();
-  const { id: transactionId } = useParams<{ id: string }>();
-  const [transSelect, setTransSelect] = React.useState<Transaction | undefined>();
+  const { id: feedId } = useParams<{ id: string }>();
+  const [feedItem, setFeedItem] = React.useState<FeedItem | undefined>();
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const errorHandler = useErrorHandler();
 
-  const getTrans = async (id: number) => {
+  const getFeedItem = async (id: number) => {
     try {
       setLoading(true);
-      const trans = await ApiClient.getTransactionById(id);
-      setTransSelect(trans);
+      const res = await ApiClient.getFeedItemById(id);
+      setFeedItem(res);
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error('Can not get this transaction 🤦!');
+        toast.error('Can not get this rollups 🤦!');
       } else {
         errorHandler(error);
       }
@@ -39,8 +38,8 @@ const FeedPage: React.VFC = () => {
   };
 
   React.useEffect(() => {
-    getTrans(parseInt(transactionId, 10));
-  }, [transactionId]);
+    getFeedItem(parseInt(feedId, 10));
+  }, [feedId]);
 
   const onClickGoBack = (): void => {
     history.push('/notifications');
@@ -55,7 +54,7 @@ const FeedPage: React.VFC = () => {
       );
     }
 
-    if (!transSelect) {
+    if (!feedItem) {
       return (
         <div className="flex flex-1 w-full h-[300px] justify-center items-center px-16">
           <span className="flex text-2xl text-Gray-1 font-semibold text-center">
@@ -70,7 +69,7 @@ const FeedPage: React.VFC = () => {
     return (
       <div className="w-full h-full overflow-scroll hide-scrollbar">
         <ul>
-          <TransactionCard transaction={transSelect} />
+          <RollupCard feedItem={feedItem} />
         </ul>
       </div>
     );
@@ -78,7 +77,7 @@ const FeedPage: React.VFC = () => {
 
   return (
     <MainLayout>
-      <h1 className="sr-only">Transaction</h1>
+      <h1 className="sr-only">Rollups</h1>
       <div className="flex items-center space-x-4 pb-8 pl-4 sm:pl-0">
         <ChevronLeftIcon onClick={onClickGoBack} />
         <h1 className="text-Gray-1 text-xl font-bold">Notifications</h1>

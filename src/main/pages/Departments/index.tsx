@@ -90,7 +90,7 @@ const DepartmentsPage: React.VFC = () => {
     if (window.scrollY > 0) {
       window.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: 'auto',
       });
     }
     filterByRoute();

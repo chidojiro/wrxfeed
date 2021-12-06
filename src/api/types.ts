@@ -47,6 +47,7 @@ export interface ApiClient {
   getFeedItemTransactions: (id: FeedItemFilters) => Promise<Transaction[]>;
   getFeedItemComments: (id: FeedCommentFilters) => Promise<Comment[]>;
   addFeedItemComment: (feedId: number, data: AddFeedCommentParams) => Promise<Comment>;
+  getFeedItemById: (feedId: number) => Promise<FeedItem>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
