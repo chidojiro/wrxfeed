@@ -21,21 +21,21 @@ const ContactItem: VFC<ContactItemProps> = ({ className, contact, onSelect }) =>
     >
       <div>
         <div className="flex flex-row space-x-1">
-          <p className="text-xs text-Gray-1 font-semibold">{contact.fullName ?? '<unknown>'}</p>
-          {contact.title && (
-            <p className="text-xs text-Gray-1">
+          <p className="text-xs text-Gray-1 font-semibold">{contact?.fullName ?? '<unknown>'}</p>
+          {contact?.jobTitle && (
+            <p className="text-xs text-Gray-3">
               <span className="text-Gray-6">• </span>
-              {contact.title}
+              {contact?.jobTitle}
             </p>
           )}
-          {contact.department && (
-            <p className="text-xs text-Gray-1">
+          {contact?.departmentName && (
+            <p className="text-xs text-Gray-3">
               <span className="text-Gray-6">• </span>
-              {contact.department}
+              {contact?.departmentName}
             </p>
           )}
         </div>
-        <p className="text-xs text-Gray-6 font-semibold">{contact.email}</p>
+        <p className="text-xs text-Gray-6 font-semibold">{contact?.email}</p>
       </div>
     </li>
   );
