@@ -13,12 +13,12 @@ import { SetterOrUpdater, useRecoilState } from 'recoil';
 
 interface TransactionHookValues {
   transactions: Transaction[];
-  newFeedCount: FeedCount | null;
   hasMore: boolean;
   isLoading: boolean;
   updateCategory: (category: Partial<Category>) => Promise<void>;
   upsertNewFeedCount: (key: string, count: number) => void;
   setNewFeedCount: SetterOrUpdater<FeedCount>;
+  newFeedCount: FeedCount | null;
 }
 
 export const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
@@ -129,6 +129,7 @@ export function useFeedChannel(
   const pusher = usePusher();
   const identity = useIdentity();
   const channelName = `feed-${identity?.id}`;
+  // for notifications, channel name will be like notification-${userId}
 
   useEffect(() => {
     // Subscribe feed channel

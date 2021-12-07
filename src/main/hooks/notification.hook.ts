@@ -1,10 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useCallback, useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { toast } from 'react-toastify';
+
 import { useApi } from '@api';
+import usePusher from '@api/hooks/usePusher';
 import { Pagination } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
+import { useIdentity } from '@identity/hooks';
 import { Notification } from '@main/entity';
-import { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { newNotifyCountState } from '@main/states/notify.state';
 
 interface NotificationHookValues {
   notifications: Notification[];
@@ -14,9 +20,13 @@ interface NotificationHookValues {
   markAllAsRead: () => void;
   isMarkAll: boolean;
   unreadCount: number;
+  setNewNotifyCount: (id: number) => void;
+  newNotifyCount: number;
 }
+
 export function useNotification(page: Pagination): NotificationHookValues {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [newNotifyCount, setNewNotifyCount] = useRecoilState<number>(newNotifyCountState);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isMarkAll, setMarkAll] = useState<boolean>(false);
@@ -68,9 +78,10 @@ export function useNotification(page: Pagination): NotificationHookValues {
     try {
       setMarkAll(true);
       await ApiClient.patchAllNotification();
+      setUnreadCount(0);
       setMarkAll(false);
-      setNotifications([]);
-      toast.success('Mark all notify as read successfully 🙌!');
+      // setNotifications([]);
+      // toast.success('Mark all notify as read successfully 🙌!');
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error("Can't mark all notify as read 😤!");
@@ -91,5 +102,37 @@ export function useNotification(page: Pagination): NotificationHookValues {
     markAllAsRead,
     isMarkAll,
     unreadCount,
+    newNotifyCount,
+    setNewNotifyCount,
   };
+}
+
+/**
+ * Subscribe events from Notification channel
+ * notification-${userId}
+ */
+export enum NotifyChannelEvents {
+  NEW_NOTIFY = 'NEW_NOTIFY',
+}
+
+export type NotifyEventData = {
+  id: number;
+};
+
+export function useNotifyChannel(
+  eventName: NotifyChannelEvents,
+  callback: (data: NotifyEventData) => void,
+): void {
+  const pusher = usePusher();
+  const identity = useIdentity();
+  const channelName = `notification-${identity?.id}`;
+
+  useEffect(() => {
+    // Subscribe notify channel
+    const channel = pusher.subscribe(channelName);
+    channel.bind(eventName, callback);
+    return () => {
+      channel.unbind(eventName, callback);
+    };
+  }, []);
 }

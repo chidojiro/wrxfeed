@@ -1,7 +1,12 @@
 import React, { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { NotifyIcon } from '@assets';
-import { useNotification } from '@main/hooks';
+import {
+  NotifyChannelEvents,
+  NotifyEventData,
+  useNotification,
+  useNotifyChannel,
+} from '@main/hooks';
 import { Pagination } from '@api/types';
 import { Notification } from '@main/entity';
 import { NotifyRow } from '@main/atoms';
@@ -24,9 +29,24 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   useDropDown = true,
 }) => {
   const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
-  const { notifications, isLoading, patchNotification, markAllAsRead, unreadCount } =
-    useNotification(filter);
+  const {
+    notifications,
+    isLoading,
+    patchNotification,
+    markAllAsRead,
+    unreadCount,
+    setNewNotifyCount,
+    newNotifyCount,
+  } = useNotification(filter);
   const history = useHistory();
+
+  // Subscribe notify event
+  useNotifyChannel(NotifyChannelEvents.NEW_NOTIFY, (data: NotifyEventData) => {
+    if (data?.id) {
+      // Increase counter
+      setNewNotifyCount(newNotifyCount + 1);
+    }
+  });
 
   const renderNotifyList = () => {
     if (isLoading) {
@@ -104,6 +124,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
 
   const onClickNotifications = () => {
     history.push('/notifications');
+    markAllAsRead();
   };
 
   if (!useDropDown) {
