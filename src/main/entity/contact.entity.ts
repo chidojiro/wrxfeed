@@ -4,6 +4,10 @@ export type Contact = {
   fullName?: string;
   title?: string;
   supervisor?: string;
+  supervisorId?: number;
   officeLocation?: string;
-  department?: string;
+  jobTitle?: string;
+  departmentName?: string;
+  subDepartmentName?: string;
+  departmentId?: number;
 };
