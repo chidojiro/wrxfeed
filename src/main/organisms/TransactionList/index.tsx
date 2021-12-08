@@ -4,7 +4,7 @@ import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Category, Department, Transaction, Vendor } from '@main/entity';
 import { TransactionFilter } from '@api/types';
 import ListLoading from '@main/atoms/ListLoading';
-import TransactionListEnd from '@main/atoms/TransactionListEnd';
+import ListEndComponent from '@main/atoms/ListEndComponent';
 
 interface TransactionListProps {
   style?: CSSProperties;
@@ -71,7 +71,7 @@ const TransactionList: React.VFC<TransactionListProps> = ({
         ))}
       </ul>
       {!isLoading && !transactions.length && renderEmptyList()}
-      {!isLoading && !hasMore && <TransactionListEnd />}
+      {!isLoading && !hasMore && <ListEndComponent />}
     </InfiniteScroller>
   );
 };

@@ -16,14 +16,14 @@ export interface NotifyPopoverProps {
   useDropDown?: boolean;
 }
 
-const LIMIT = 15;
+const LIMIT_GET_NOTIFY = 15;
 
 const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   style,
   showNumberNotify = false,
   useDropDown = true,
 }) => {
-  const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
+  const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT_GET_NOTIFY });
   const { notifications, isLoading, patchNotification, markAllAsRead, unreadCount } =
     useNotification(filter);
   const history = useHistory();

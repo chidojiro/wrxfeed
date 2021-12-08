@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Category, FeedItem } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
-import TransactionListEnd from '@main/atoms/TransactionListEnd';
+import ListEndComponent from '@main/atoms/ListEndComponent';
 import RollupCard from '@main/molecules/RollupCard';
 
 interface FeedListProps {
@@ -59,7 +59,7 @@ const FeedList: React.VFC<FeedListProps> = ({
         ))}
       </ul>
       {!isLoading && !feeds.length && renderEmptyList()}
-      {!isLoading && !hasMore && <TransactionListEnd />}
+      {!isLoading && feeds.length > 0 && !hasMore && <ListEndComponent />}
     </InfiniteScroller>
   );
 };
