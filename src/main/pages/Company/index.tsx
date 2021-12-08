@@ -4,7 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { useFeed } from '@main/hooks/feed.hook';
 import { GetFeedsFilters } from '@api/types';
-import { FilterKeys } from '@main/hooks';
+import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@main/hooks';
 import { useQuery } from '@common/hooks';
 import { useApi } from '@api';
 
@@ -35,7 +35,15 @@ const CompanyPage: React.VFC = () => {
   const [filterTitle, setFilterTitle] = React.useState('');
   const filterKey = FilterKeys.find((key) => query.get(key));
 
-  const { feeds, hasMore, isLoading, updateCategory, newFeedCount } = useFeed(feedFilters);
+  const {
+    feeds,
+    hasMore,
+    isLoading,
+    updateCategory,
+    newFeedCount,
+    upsertNewFeedCount,
+    setNewFeedCount,
+  } = useFeed(feedFilters);
   const newFeedNumber = newFeedCount ? newFeedCount[location.pathname] : 0;
   const handleLoadMore = React.useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -85,9 +93,20 @@ const CompanyPage: React.VFC = () => {
       });
     }
     // Clear counter
-    // upsertNewFeedCount(location.pathname, 0);
+    upsertNewFeedCount(location.pathname, 0);
     readAllTransactions();
   };
+
+  // Subscribe feed event
+  useFeedChannel(FeedChannelEvents.NEW_ITEM, (data: FeedEventData) => {
+    if (data.id) {
+      // Increase counter
+      setNewFeedCount((prevCount) => ({
+        ...prevCount,
+        [location.pathname]: prevCount[location.pathname] + 1,
+      }));
+    }
+  });
 
   return (
     <MainLayout>

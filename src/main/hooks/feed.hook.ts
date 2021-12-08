@@ -31,10 +31,6 @@ export function useFeed(filters: GetFeedsFilters): FeedHookValues {
     try {
       setLoading(true);
       if (filters?.page?.limit) {
-        // clear old feed if when get new category or department
-        // if (filters?.page?.offset === 0) {
-        //   setFeeds([]);
-        // }
         const res = await ApiClient.getFeeds(filters);
         if (filters?.page?.offset !== 0) {
           setFeeds((prevTrans) => [...prevTrans, ...res]);
@@ -47,7 +43,7 @@ export function useFeed(filters: GetFeedsFilters): FeedHookValues {
       }
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error("Can't get feed items 🤦!");
+        toast.error("Can't get rollups 🤦!");
       } else {
         await errorHandler(error);
       }
