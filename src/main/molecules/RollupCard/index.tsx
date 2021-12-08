@@ -102,7 +102,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     hasMore: hasMoreComment,
   } = useFeedComment(feedItem, filterComment);
 
-  const hasComment = comments.length > 0;
+  const hasComment = comments?.length > 0;
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
     const contentState = values?.content as EditorState;
