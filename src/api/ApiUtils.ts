@@ -264,8 +264,8 @@ export default class ApiUtils implements ApiClient {
 
   getContacts = async (filters: GetContactsFilter): Promise<Contact[]> => {
     const params = {
-      text: filters.text,
-      ...filters.pagination,
+      text: filters?.text,
+      ...filters?.pagination,
     };
     const res = await this.request<Contact[]>({
       url: '/inv/contacts',
