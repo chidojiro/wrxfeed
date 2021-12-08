@@ -192,6 +192,10 @@ export interface AddFeedCommentParams {
 }
 
 export interface GetFeedsFilters {
-  page: Pagination;
-  forYou: number;
+  page?: Pagination;
+  forYou?: number;
+  department?: number;
+  vendor?: number;
+  category?: number;
+  rootDepartment?: number;
 }

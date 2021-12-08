@@ -57,7 +57,7 @@ const NotificationList: React.VFC<NotificationListProps> = ({
         ))}
       </ul>
       {!isLoading && !notifications.length && renderEmptyList()}
-      {!isLoading && !hasMore && <ListEndComponent />}
+      {!isLoading && notifications.length > 0 && !hasMore && <ListEndComponent />}
     </InfiniteScroller>
   );
 };

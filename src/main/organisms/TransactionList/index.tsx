@@ -70,8 +70,8 @@ const TransactionList: React.VFC<TransactionListProps> = ({
           />
         ))}
       </ul>
-      {!isLoading && !transactions.length && renderEmptyList()}
-      {!isLoading && !hasMore && <ListEndComponent />}
+      {!isLoading && !transactions?.length && renderEmptyList()}
+      {!isLoading && transactions?.length > 0 && !hasMore && <ListEndComponent />}
     </InfiniteScroller>
   );
 };
