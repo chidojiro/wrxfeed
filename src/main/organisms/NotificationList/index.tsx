@@ -3,7 +3,7 @@ import NotificationItem from '@main/molecules/NotificationItem';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Notification } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
-import TransactionListEnd from '@main/atoms/TransactionListEnd';
+import ListEndComponent from '@main/atoms/ListEndComponent';
 
 interface NotificationListProps {
   style?: CSSProperties;
@@ -57,7 +57,7 @@ const NotificationList: React.VFC<NotificationListProps> = ({
         ))}
       </ul>
       {!isLoading && !notifications.length && renderEmptyList()}
-      {!isLoading && !hasMore && <TransactionListEnd />}
+      {!isLoading && notifications.length > 0 && !hasMore && <ListEndComponent />}
     </InfiniteScroller>
   );
 };

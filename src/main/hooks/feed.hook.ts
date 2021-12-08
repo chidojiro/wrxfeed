@@ -3,7 +3,7 @@ import { useApi } from '@api';
 import { GetFeedsFilters } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
-import { FeedItem } from '@main/entity';
+import { Category, FeedItem } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
@@ -15,6 +15,8 @@ interface FeedHookValues {
   upsertNewFeedCount: (key: string, count: number) => void;
   setNewFeedCount: SetterOrUpdater<FeedCount>;
   newFeedCount: FeedCount | null;
+  updateCategory: (category: Partial<Category>) => Promise<void>;
+  cleanData: () => void;
 }
 export function useFeed(filters: GetFeedsFilters): FeedHookValues {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
@@ -23,13 +25,14 @@ export function useFeed(filters: GetFeedsFilters): FeedHookValues {
   const [newFeedCount, setNewFeedCount] = useRecoilState<FeedCount>(newFeedCountState);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
+  const cleanData = () => setFeeds([]);
 
   const getFeeds = useCallback(async () => {
     try {
       setLoading(true);
-      if (filters?.page.limit) {
+      if (filters?.page?.limit) {
         const res = await ApiClient.getFeeds(filters);
-        if (filters?.page?.offset) {
+        if (filters?.page?.offset !== 0) {
           setFeeds((prevTrans) => [...prevTrans, ...res]);
         } else {
           setFeeds(res);
@@ -40,7 +43,7 @@ export function useFeed(filters: GetFeedsFilters): FeedHookValues {
       }
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error("Can't get feed items 🤦!");
+        toast.error("Can't get rollups 🤦!");
       } else {
         await errorHandler(error);
       }
@@ -56,6 +59,35 @@ export function useFeed(filters: GetFeedsFilters): FeedHookValues {
     });
   };
 
+  const updateCategory = useCallback(
+    async (category: Partial<Category>) => {
+      try {
+        await ApiClient.updateCategory(category);
+        // Update current feeds
+        setFeeds((prev) => {
+          const newFeeds = prev.map((item) => {
+            if (item?.category?.id !== category.id) return item;
+            return {
+              ...item,
+              category: {
+                ...item?.category,
+                ...category,
+              },
+            };
+          });
+          return newFeeds;
+        });
+      } catch (error) {
+        if (isBadRequest(error)) {
+          toast.error('Can not update category!');
+        } else {
+          await errorHandler(error);
+        }
+      }
+    },
+    [ApiClient, errorHandler],
+  );
+
   useEffect(() => {
     getFeeds().then();
   }, [getFeeds]);
@@ -66,5 +98,7 @@ export function useFeed(filters: GetFeedsFilters): FeedHookValues {
     upsertNewFeedCount,
     setNewFeedCount,
     newFeedCount,
+    updateCategory,
+    cleanData,
   };
 }
