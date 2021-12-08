@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { SetterOrUpdater, useRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
 
 import { useApi } from '@api';
@@ -20,7 +20,7 @@ interface NotificationHookValues {
   markAllAsRead: () => void;
   isMarkAll: boolean;
   unreadCount: number;
-  setNewNotifyCount: (id: number) => void;
+  setNewNotifyCount: SetterOrUpdater<number>;
   newNotifyCount: number;
 }
 
@@ -54,6 +54,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
       if (page?.limit) {
         const res = await ApiClient.getNotifications(page);
         setUnreadCount(res.unreadCount);
+        setNewNotifyCount(res.unreadCount);
         if (page?.offset) {
           setNotifications((prevTrans) => [...prevTrans, ...res.notifications]);
         } else {
@@ -79,6 +80,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
       setMarkAll(true);
       await ApiClient.patchAllNotification();
       setUnreadCount(0);
+      setNewNotifyCount(0);
       setMarkAll(false);
       // setNotifications([]);
       // toast.success('Mark all notify as read successfully 🙌!');
@@ -112,7 +114,7 @@ export function useNotification(page: Pagination): NotificationHookValues {
  * notification-${userId}
  */
 export enum NotifyChannelEvents {
-  NEW_NOTIFY = 'NEW_NOTIFY',
+  NEW_NOTIFY = 'new-notification',
 }
 
 export type NotifyEventData = {

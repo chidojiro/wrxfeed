@@ -34,7 +34,6 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
     isLoading,
     patchNotification,
     markAllAsRead,
-    unreadCount,
     setNewNotifyCount,
     newNotifyCount,
   } = useNotification(filter);
@@ -44,7 +43,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   useNotifyChannel(NotifyChannelEvents.NEW_NOTIFY, (data: NotifyEventData) => {
     if (data?.id) {
       // Increase counter
-      setNewNotifyCount(newNotifyCount + 1);
+      setNewNotifyCount((preCount) => preCount + 1);
     }
   });
 
@@ -89,7 +88,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   };
 
   const renderMarkAllAsRead = () => {
-    if (notifications.length === 0 || unreadCount === 0) return null;
+    if (notifications.length === 0 || newNotifyCount === 0) return null;
     const onClickMarkAllAsRead = () => {
       markAllAsRead();
     };
@@ -108,10 +107,10 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
     return (
       <div className="flex h-8 w-8 justify-center items-center rounded-full focus:outline-none hover:ring-2 ring-offset-2 ring-rose-500">
         <NotifyIcon aria-hidden="true" />
-        {unreadCount !== 0 && (
+        {newNotifyCount !== 0 && (
           <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
             {showNumberNotify && (
-              <div className="flex text-white font-semibold text-2xs">{unreadCount}</div>
+              <div className="flex text-white font-semibold text-2xs">{newNotifyCount}</div>
             )}
           </div>
         )}
