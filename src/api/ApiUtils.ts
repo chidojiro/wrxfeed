@@ -452,6 +452,9 @@ export default class ApiUtils implements ApiClient {
       params: {
         ...filters?.page,
         forYou: filters?.forYou,
+        dep: filters?.department,
+        rootDep: filters?.rootDepartment,
+        cat: filters?.category,
       },
     });
     return res.data;

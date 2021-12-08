@@ -1,9 +1,10 @@
 import React, { CSSProperties } from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
-import { Category, FeedItem } from '@main/entity';
+import { Category, Department, FeedItem, Vendor } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
-import TransactionListEnd from '@main/atoms/TransactionListEnd';
+import ListEndComponent from '@main/atoms/ListEndComponent';
 import RollupCard from '@main/molecules/RollupCard';
+import { GetFeedsFilters } from '@api/types';
 
 interface FeedListProps {
   style?: CSSProperties;
@@ -11,6 +12,7 @@ interface FeedListProps {
   isLoading?: boolean;
   hasMore?: boolean;
   onLoadMore?: () => void;
+  onFilter?: (key: keyof GetFeedsFilters, value?: Department | Category | Vendor) => void;
   updateCategory?: (category: Partial<Category>) => Promise<void>;
 }
 
@@ -20,6 +22,7 @@ const FeedList: React.VFC<FeedListProps> = ({
   isLoading,
   hasMore,
   onLoadMore,
+  onFilter,
   updateCategory,
 }) => {
   const renderEmptyList = () => (
@@ -54,12 +57,20 @@ const FeedList: React.VFC<FeedListProps> = ({
       <ul className="pb-2 sm:pb-5 space-y-4">
         {feeds.map((feed) => (
           <li key={feed.id}>
-            <RollupCard key={feed.id} feedItem={feed} updateCategory={updateCategory} />
+            <RollupCard
+              key={feed.id}
+              feedItem={feed}
+              updateCategory={updateCategory}
+              onClickVendor={(value) => onFilter && onFilter('vendor', value)}
+              onClickDepartment={(value) => onFilter && onFilter('department', value)}
+              onClickCategory={(value) => onFilter && onFilter('category', value)}
+              onClickRootDept={(value) => onFilter && onFilter('rootDepartment', value)}
+            />
           </li>
         ))}
       </ul>
       {!isLoading && !feeds.length && renderEmptyList()}
-      {!isLoading && !hasMore && <TransactionListEnd />}
+      {!isLoading && feeds.length > 0 && !hasMore && <ListEndComponent />}
     </InfiniteScroller>
   );
 };
