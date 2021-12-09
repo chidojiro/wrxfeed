@@ -9,3 +9,4 @@ export * from './target.entity';
 export * from './subscription.entity';
 export * from './notification.entity';
 export * from './feedItem.entity';
+export * from './lineItem.entity';
