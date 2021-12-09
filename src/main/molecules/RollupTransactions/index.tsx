@@ -57,7 +57,7 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
   };
   return transactions?.length ? (
     <div className={classNames('relative flex flex-col', className ?? '')}>
-      <ul className={classNames('w-full py-2 sm:py-4 max-h-[435px]', rollupsClass ?? '')}>
+      <ul className={classNames('w-full py-2 sm:py-4', rollupsClass ?? '')}>
         {transactions.map((transaction) => (
           <li key={transaction?.id}>
             <RollupTransactionItem transaction={transaction} />
