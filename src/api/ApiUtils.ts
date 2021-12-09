@@ -12,6 +12,7 @@ import {
   Target,
   Subscription,
   FeedItem,
+  TransLineItem,
 } from '@main/entity';
 import { ApiError } from '@error';
 import {
@@ -463,6 +464,15 @@ export default class ApiUtils implements ApiClient {
   getFeedItemTransactions = async (filter: FeedItemFilters): Promise<Transaction[]> => {
     const res = await this.request<Transaction[]>({
       url: `/feed/items/${filter?.id}/transactions`,
+      method: 'GET',
+      params: filter?.page,
+    });
+    return res.data;
+  };
+
+  getItemLineItems = async (filter: FeedItemFilters): Promise<TransLineItem[]> => {
+    const res = await this.request<TransLineItem[]>({
+      url: `/api/feed/items/${filter?.id}/line-items`,
       method: 'GET',
       params: filter?.page,
     });
