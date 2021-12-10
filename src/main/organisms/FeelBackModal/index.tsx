@@ -76,12 +76,10 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({
       <div className="sm:max-w-[442px]">
         <div className="px-10 pb-10">
           <p className="text-2xl text-Gray-1 font-bold mt-8">
-            {'We’re working on\n improvements!'}
+            Please describe the specific issue with this item.
           </p>
           <p className="mt-3 text-Gray-1 text-sm">
-            Please describe the specific issue with this item.
-            <br />
-            Ex: Data is mapped to the wrong category.
+            Ex: Data is mapped to wrong category, transaction is not for this team
           </p>
           <CommentBox
             placeholder="Your feedback here…"
