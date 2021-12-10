@@ -462,7 +462,7 @@ export default class ApiUtils implements ApiClient {
 
   getFeedItemTransactions = async (filter: FeedItemFilters): Promise<Transaction[]> => {
     const res = await this.request<Transaction[]>({
-      url: `/feed/items/${filter?.id}/transactions`,
+      url: `/feed/items/${filter?.id}/line-items`,
       method: 'GET',
       params: filter?.page,
     });
