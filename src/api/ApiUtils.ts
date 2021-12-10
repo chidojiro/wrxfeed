@@ -497,4 +497,13 @@ export default class ApiUtils implements ApiClient {
     });
     return res.data;
   };
+
+  postFeedBackFeed = async (feedId: number, data: FeedBackFormModel): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/api/feed/items/${feedId}/feedback`,
+      method: 'POST',
+      data,
+    });
+    return res.data;
+  };
 }
