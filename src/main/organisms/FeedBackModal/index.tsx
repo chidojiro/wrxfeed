@@ -8,18 +8,18 @@ import { commentEditorRawParser } from '@main/utils';
 import { classNames } from '@common/utils';
 import LinearProgress from '@common/atoms/LinearProgress';
 
-interface FeelBackModalProps {
+interface FeedBackModalProps {
   open: boolean;
   onClose: () => void;
-  transactionId: number;
+  feedId: number;
   enableMaxChar?: boolean;
   maxChar?: number;
 }
 
-const FeelBackModal: React.VFC<FeelBackModalProps> = ({
+const FeedBackModal: React.VFC<FeedBackModalProps> = ({
   open,
   onClose,
-  transactionId,
+  feedId,
   enableMaxChar = false,
   maxChar = 20000,
 }) => {
@@ -47,7 +47,7 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({
       toast.error('Invalid feedback content!');
       return;
     }
-    postFeedback(transactionId, { content: feedback });
+    postFeedback(feedId, { content: feedback });
   };
 
   const onChangeTextContent = (content?: EditorState): void => {
@@ -76,12 +76,10 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({
       <div className="sm:max-w-[442px]">
         <div className="px-10 pb-10">
           <p className="text-2xl text-Gray-1 font-bold mt-8">
-            {'We’re working on\n improvements!'}
+            Please describe the specific issue with this item.
           </p>
           <p className="mt-3 text-Gray-1 text-sm">
-            Please describe the specific issue with this item.
-            <br />
-            Ex: Data is mapped to the wrong category.
+            Ex: Data is mapped to wrong category, transaction is not for this team
           </p>
           <CommentBox
             placeholder="Your feedback here…"
@@ -122,4 +120,4 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({
   );
 };
 
-export default FeelBackModal;
+export default FeedBackModal;
