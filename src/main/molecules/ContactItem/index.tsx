@@ -31,10 +31,6 @@ const ContactItem: VFC<ContactItemProps> = ({ className, contact, onSelect }) =>
             <p className="text-xs text-Gray-6 max-w-xs truncate">
               <span className="text-Gray-6">• </span>
               {contact?.departmentName}
-              {contact?.departmentName}
-              {contact?.departmentName}
-              {contact?.departmentName}
-              {contact?.departmentName}
             </p>
           )}
         </div>
