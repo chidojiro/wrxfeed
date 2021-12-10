@@ -172,9 +172,9 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     }
     items.push(
       <PopoverMenuItem
-        key="share-feedback"
-        value="share-feedback"
-        label="Share Feedback"
+        key="issue-with-this-item"
+        value="issue-with-this-item"
+        label="Issue With This Item"
         onClick={handleShareFeedback}
       />,
     );
