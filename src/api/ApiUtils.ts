@@ -192,7 +192,7 @@ export default class ApiUtils implements ApiClient {
 
   readAllTransactions = async (): Promise<void> => {
     const res = await this.request<void>({
-      url: '/feed/transactions',
+      url: '/feed/items',
       method: 'PATCH',
     });
     return res.data;
@@ -204,7 +204,7 @@ export default class ApiUtils implements ApiClient {
       ...filters.pagination,
     };
     const res = await this.request<Comment[]>({
-      url: `/feed/transactions/${filters.transactionId}/comments`,
+      url: `/feed/items/${filters.transactionId}/comments`,
       method: 'GET',
       params,
     });
@@ -213,7 +213,7 @@ export default class ApiUtils implements ApiClient {
 
   addComment = async (transactionId: number, data: AddCommentParams): Promise<Comment> => {
     const res = await this.request<Comment>({
-      url: `/feed/transactions/${transactionId}/comments`,
+      url: `/feed/items/${transactionId}/comments`,
       method: 'POST',
       data,
     });
@@ -306,7 +306,7 @@ export default class ApiUtils implements ApiClient {
 
   postFeedback = async (transactionId: number, data: FeedBackFormModel): Promise<void> => {
     const res = await this.request<void>({
-      url: `/feed/transactions/${transactionId}/feedback`,
+      url: `/feed/items/${transactionId}/feedback`,
       method: 'POST',
       data,
     });
