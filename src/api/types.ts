@@ -48,6 +48,7 @@ export interface ApiClient {
   getFeedItemComments: (id: FeedCommentFilters) => Promise<Comment[]>;
   addFeedItemComment: (feedId: number, data: AddFeedCommentParams) => Promise<Comment>;
   getFeedItemById: (feedId: number) => Promise<FeedItem>;
+  postFeedBackFeed: (feedId: number, data: FeedBackFormModel) => Promise<void>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;

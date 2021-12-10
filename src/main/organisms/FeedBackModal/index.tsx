@@ -8,18 +8,18 @@ import { commentEditorRawParser } from '@main/utils';
 import { classNames } from '@common/utils';
 import LinearProgress from '@common/atoms/LinearProgress';
 
-interface FeelBackModalProps {
+interface FeedBackModalProps {
   open: boolean;
   onClose: () => void;
-  transactionId: number;
+  feedId: number;
   enableMaxChar?: boolean;
   maxChar?: number;
 }
 
-const FeelBackModal: React.VFC<FeelBackModalProps> = ({
+const FeedBackModal: React.VFC<FeedBackModalProps> = ({
   open,
   onClose,
-  transactionId,
+  feedId,
   enableMaxChar = false,
   maxChar = 20000,
 }) => {
@@ -47,7 +47,7 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({
       toast.error('Invalid feedback content!');
       return;
     }
-    postFeedback(transactionId, { content: feedback });
+    postFeedback(feedId, { content: feedback });
   };
 
   const onChangeTextContent = (content?: EditorState): void => {
@@ -122,4 +122,4 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({
   );
 };
 
-export default FeelBackModal;
+export default FeedBackModal;

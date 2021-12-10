@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { FeedBackFormModel } from '@main/types';
 
-interface FeelBackModalCallback {
+interface FeedBackModalCallback {
   onSuccess: () => void;
   onError?: (error: unknown) => void;
 }
@@ -13,19 +13,19 @@ interface FeelBackModalCallback {
 interface FeedbackHookValues {
   isSent: boolean;
   isLoading: boolean;
-  postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
+  postFeedback: (feedId: number, data: FeedBackFormModel) => Promise<void>;
 }
 
-export function useFeedBack(callback: FeelBackModalCallback): FeedbackHookValues {
+export function useFeedBack(callback: FeedBackModalCallback): FeedbackHookValues {
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [isLoading, setLoading] = useState(false);
   const [isSent, setSent] = useState(false);
 
-  const postFeedback = async (transactionId: number, data: FeedBackFormModel) => {
+  const postFeedback = async (feedId: number, data: FeedBackFormModel) => {
     try {
       setLoading(true);
-      await ApiClient.postFeedback(transactionId, data);
+      await ApiClient.postFeedBackFeed(feedId, data);
       setLoading(false);
       setSent(true);
       callback.onSuccess();

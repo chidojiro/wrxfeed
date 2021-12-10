@@ -16,7 +16,7 @@ import NotifyBanner from '@common/molecules/NotifyBanner';
 import CommentBox from '@main/molecules/CommentBox';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
-import FeedBackModal from '@main/organisms/FeelBackModal';
+import FeedBackModal from '@main/organisms/FeedBackModal';
 import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import CommentItem from '@main/molecules/CommentItem';
@@ -353,7 +353,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
       <FeedBackModal
         open={isOpenFeedbackModal}
         onClose={() => openFeedbackModal(false)}
-        transactionId={feedItem.id}
+        feedId={feedItem?.id}
       />
       {transactions.length > 0 && (
         <AttachmentModal
