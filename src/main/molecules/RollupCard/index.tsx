@@ -191,9 +191,9 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     }
     items.push(
       <PopoverMenuItem
-        key="share-feedback"
-        value="share-feedback"
-        label="Share Feedback"
+        key="issue-with-this-item"
+        value="issue-with-this-item"
+        label="Issue With This Item"
         onClick={handleShareFeedback}
       />,
     );
@@ -242,10 +242,10 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                     type="button"
                     className="hover:underline"
                     onClick={() => {
-                      return onClickDepartment && onClickDepartment(feedItem.department);
+                      return onClickDepartment && onClickDepartment(feedItem?.department);
                     }}
                   >
-                    {feedItem.department.name}
+                    {feedItem?.department?.name}
                   </button>
                 </p>
                 {isHidden && (
@@ -260,10 +260,10 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               </div>
               <div className="flex-shrink-0 self-center flex items-center">
                 <h2
-                  id={`question-title-${feedItem.id}`}
+                  id={`question-title-${feedItem?.id}`}
                   className="text-base font-semibold text-Gray-2 mr-3"
                 >
-                  {`$ ${formatCurrency(feedItem.total)}`}
+                  {`$ ${formatCurrency(feedItem?.total)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block z-10 text-left">
                   <div>
@@ -278,18 +278,24 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             </div>
             <h2
               aria-hidden="true"
-              id={`question-title-${feedItem.id}`}
+              id={`question-title-${feedItem?.id}`}
               className="mt-1 text-base font-semibold text-Gray-2 cursor-pointer hover:underline"
-              onClick={() => onClickCategory && onClickCategory(feedItem.category)}
+              onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
             >
-              {feedItem.category.name}
+              {feedItem?.category?.name}
             </h2>
             <p className="mt-1 text-xs text-Gray-6">
-              <time dateTime={feedItem.firstDate}>{formatDate(feedItem.lastDate)}</time>
-              {' - '}
-              <time dateTime={feedItem.lastDate}>
-                {feedItem.lastDate ? formatDate(feedItem.lastDate) : 'Present'}
+              <time dateTime={feedItem?.firstDate}>
+                {feedItem?.firstDate ? formatDate(feedItem?.firstDate) : 'Unknown'}
               </time>
+              {feedItem?.lastDate && (
+                <span>
+                  {' - '}
+                  <time dateTime={feedItem?.lastDate}>
+                    {feedItem?.lastDate ? formatDate(feedItem?.lastDate) : 'Present'}
+                  </time>
+                </span>
+              )}
             </p>
           </div>
         </div>
