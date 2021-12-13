@@ -15,6 +15,7 @@ import Vendors from '@main/pages/Vendors';
 import Feed from '@main/pages/Feed';
 import Notifications from '@main/pages/Notifications';
 import Company from '@main/pages/Company';
+import NotFoundPage from '@common/pages/NotFoundPage';
 
 export interface RouteItem<T> {
   path: string | readonly string[];
@@ -39,6 +40,10 @@ const routes: Route = {
   AcceptInvitation: {
     path: '/accept-invitation',
     component: AcceptInvitation,
+  },
+  PageNotFound: {
+    path: '/404',
+    component: NotFoundPage,
   },
   // Protected pages
   Feed: {
@@ -81,7 +86,6 @@ const routes: Route = {
     component: Vendors,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  // TODO: this will replace Overview page
   Company: {
     path: '/company',
     component: Company,
