@@ -31,7 +31,7 @@ const FeedPage: React.VFC = () => {
       toast.error('Can not get this feed 🤦!');
       if (isApiError(error)) {
         if (error.code === ApiErrorCode.Notfound) {
-          history.push('/not-found');
+          history.push('/404');
         } else {
           errorHandler(error);
         }

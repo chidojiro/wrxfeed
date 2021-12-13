@@ -42,7 +42,7 @@ const routes: Route = {
     component: AcceptInvitation,
   },
   PageNotFound: {
-    path: '/not-found',
+    path: '/404',
     component: NotFoundPage,
   },
   // Protected pages
