@@ -1,19 +1,20 @@
 import React, { useRef } from 'react';
+import { EditorState } from 'draft-js';
+import { MentionData } from '@draft-js-plugins/mention';
+
 import LinearProgress from '@common/atoms/LinearProgress';
 import CommentBox from '@main/molecules/CommentBox';
 import { useFileUploader } from '@common/hooks/useFileUploader';
 import { GetUploadTokenBody } from '@api/types';
-import { Transaction } from '@main/entity';
+import { TransLineItem } from '@main/entity';
 import CircleAvatar from '@main/atoms/CircleAvatar';
 import ImageFilePreview from '@main/atoms/ImageFilePreview';
 import { CommentFormModel } from '@main/types';
-import { EditorState } from 'draft-js';
-import { MentionData } from '@draft-js-plugins/mention';
 import Modal, { ModalProps } from '@common/atoms/Modal';
 
 export type AttachmentModalProps = ModalProps & {
   style?: React.CSSProperties;
-  transaction?: Transaction;
+  lineItem?: TransLineItem;
   file: File | null;
   mentionData: MentionData[];
   uploadOptions?: GetUploadTokenBody;
@@ -21,7 +22,7 @@ export type AttachmentModalProps = ModalProps & {
 };
 
 const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
-  transaction,
+  lineItem,
   open,
   file,
   mentionData,
@@ -66,17 +67,17 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
               <CircleAvatar
                 size={20}
                 className="mx-1"
-                name={transaction?.department.name}
+                name={lineItem?.department?.name}
                 initialLength={1}
               />
-              <span style={{ fontWeight: 600 }}>{transaction?.category.name ?? ''}</span>
+              <span style={{ fontWeight: 600 }}>{lineItem?.category?.name ?? ''}</span>
             </div>
           </div>
         </div>
         <div className="flex flex-col p-6">
           <p className="text-sm text-left text-Gray-1 font-bold mb-2">Add a comment</p>
           <CommentBox
-            id={`attachment-${transaction?.id.toString()}`}
+            id={`attachment-${lineItem?.id.toString()}`}
             showAttach={false}
             showSend={false}
             showEmoji={false}

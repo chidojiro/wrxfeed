@@ -21,7 +21,7 @@ const transaction: Transaction = {
   department: { id: 1, name: 'Department', parent: { id: 2, name: 'Parent Department' } },
   vendor: { id: 1, name: 'Vendor' },
   transDate: new Date().toISOString(),
-  amount: 17000,
+  amountFx: 17000,
   currency: '$',
   commentCount: 10,
   createdAt: new Date().toISOString(),

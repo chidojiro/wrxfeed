@@ -2,26 +2,26 @@
 import { formatCurrency, formatDate } from '@common/utils';
 import React from 'react';
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
-import { Transaction } from '@main/entity';
+import { TransLineItem } from '@main/entity';
 
 export interface RollupTransactionItemProps {
-  transaction: Transaction;
-  onClick?: (transaction: Transaction) => void;
+  lineItem: TransLineItem;
+  onClick?: (lineItem: TransLineItem) => void;
   onClickMessage?: () => void;
 }
 
 const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
-  transaction,
+  lineItem,
   onClick,
   onClickMessage,
 }) => {
   const renderMessages = () => {
-    const isShowMessage = transaction?.commentCount > 0;
+    const isShowMessage = false; // lineItem?.commentCount > 0;
     if (isShowMessage) {
       return (
         <button onClick={onClickMessage} type="button" className="flex h-4 w-8 flex-row ml-4">
           <MessageTextAlt className="fill-current text-Gray-6 opacity-25" />
-          <p className="text-Gray-6 text-xs font-medium ml-1">{transaction?.commentCount}</p>
+          <p className="text-Gray-6 text-xs font-medium ml-1">{lineItem?.accountId}</p>
         </button>
       );
     }
@@ -29,7 +29,7 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
   };
 
   const renderNewGreen = () => {
-    if (transaction?.meta?.isRead === false) {
+    if (lineItem?.meta?.isRead === false) {
       return <div className="flex w-1 h-1 rounded-full bg-Green-4 mr-1.5" />;
     }
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
@@ -39,16 +39,16 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
     <div
       aria-hidden="true"
       className="flex flex-row w-full items-center pl-2 sm:pl-10 pr-2 sm:pr-2 py-1.5 hover:bg-Gray-12"
-      onClick={() => onClick && onClick(transaction)}
+      onClick={() => onClick && onClick(lineItem)}
     >
       {renderNewGreen()}
       <p className="text-Gray-6 text-xs font-semibold text-left max-w-[140px] sm:max-w-[300px] truncate">
-        {transaction?.vendor.name}
+        {lineItem?.vendor?.name}
       </p>
       <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
-      <p className="text-Gray-6 text-xs font-normal">{formatDate(transaction?.transDate)}</p>
+      <p className="text-Gray-6 text-xs font-normal">{formatDate(lineItem?.updatedAt)}</p>
       <p className="text-Gray-6 text-xs font-normal ml-auto">
-        {`$ ${formatCurrency(transaction?.amount)}`}
+        {`$ ${formatCurrency(lineItem?.amountFx)}`}
       </p>
       {renderMessages()}
     </div>

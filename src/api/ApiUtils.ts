@@ -470,9 +470,9 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getItemLineItems = async (filter: FeedItemFilters): Promise<TransLineItem[]> => {
+  getFeedLineItems = async (filter: FeedItemFilters): Promise<TransLineItem[]> => {
     const res = await this.request<TransLineItem[]>({
-      url: `/api/feed/items/${filter?.id}/line-items`,
+      url: `/feed/items/${filter?.id}/line-items`,
       method: 'GET',
       params: filter?.page,
     });
@@ -510,7 +510,7 @@ export default class ApiUtils implements ApiClient {
 
   postFeedBackFeed = async (feedId: number, data: FeedBackFormModel): Promise<void> => {
     const res = await this.request<void>({
-      url: `/api/feed/items/${feedId}/feedback`,
+      url: `/feed/items/${feedId}/feedback`,
       method: 'POST',
       data,
     });
