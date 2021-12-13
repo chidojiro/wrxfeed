@@ -46,7 +46,7 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
         {lineItem?.vendor?.name}
       </p>
       <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
-      <p className="text-Gray-6 text-xs font-normal">{formatDate(lineItem?.updatedAt)}</p>
+      <p className="text-Gray-6 text-xs font-normal">{formatDate(lineItem?.createdAt)}</p>
       <p className="text-Gray-6 text-xs font-normal ml-auto">
         {`$ ${formatCurrency(lineItem?.amountFx)}`}
       </p>
