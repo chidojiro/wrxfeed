@@ -1,5 +1,5 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import TargetPanel from '@main/organisms/TargetPanel';
@@ -8,10 +8,11 @@ import { useHistory, useParams } from 'react-router-dom';
 import RollupCard from '@main/molecules/RollupCard';
 import { FeedItem } from '@main/entity';
 import { useApi } from '@api';
-import { isBadRequest } from '@error/utils';
+import { isApiError } from '@error/utils';
 import { useErrorHandler } from 'react-error-boundary';
 import { toast } from 'react-toastify';
 import Loading from '@common/atoms/Loading';
+import { ApiErrorCode } from '@error/types';
 
 const FeedPage: React.VFC = () => {
   const history = useHistory();
@@ -26,11 +27,14 @@ const FeedPage: React.VFC = () => {
       setLoading(true);
       const res = await ApiClient.getFeedItemById(id);
       setFeedItem(res);
-    } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Can not get this rollups 🤦!');
-      } else {
-        errorHandler(error);
+    } catch (error: unknown) {
+      toast.error('Can not get this feed 🤦!');
+      if (isApiError(error)) {
+        if (error.code === ApiErrorCode.Notfound) {
+          history.push('/not-found');
+        } else {
+          errorHandler(error);
+        }
       }
     } finally {
       setLoading(false);
