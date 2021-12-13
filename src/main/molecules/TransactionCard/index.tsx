@@ -16,7 +16,7 @@ import CommentItem from '@main/molecules/CommentItem';
 import CommentRemaining from '@main/atoms/CommentRemaining';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
-import FeedBackModal from '@main/organisms/FeelBackModal';
+import FeedBackModal from '@main/organisms/FeedBackModal';
 import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 // Icons
@@ -172,9 +172,9 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     }
     items.push(
       <PopoverMenuItem
-        key="share-feedback"
-        value="share-feedback"
-        label="Share Feedback"
+        key="issue-with-this-item"
+        value="issue-with-this-item"
+        label="Issue With This Item"
         onClick={handleShareFeedback}
       />,
     );
@@ -301,7 +301,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
       <FeedBackModal
         open={isOpenFeedbackModal}
         onClose={() => openFeedbackModal(false)}
-        transactionId={transaction.id}
+        feedId={transaction?.id}
       />
       <AttachmentModal
         transaction={transaction}
