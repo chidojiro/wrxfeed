@@ -12,6 +12,7 @@ import {
   Target,
   Subscription,
   FeedItem,
+  TransLineItem,
 } from '@main/entity';
 import { ApiError } from '@error';
 import {
@@ -469,6 +470,15 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
+  getFeedLineItems = async (filter: FeedItemFilters): Promise<TransLineItem[]> => {
+    const res = await this.request<TransLineItem[]>({
+      url: `/feed/items/${filter?.id}/line-items`,
+      method: 'GET',
+      params: filter?.page,
+    });
+    return res.data;
+  };
+
   getFeedItemComments = async (filter: FeedCommentFilters): Promise<Comment[]> => {
     const res = await this.request<Comment[]>({
       url: `/feed/items/${filter.feedId}/comments`,
@@ -500,7 +510,7 @@ export default class ApiUtils implements ApiClient {
 
   postFeedBackFeed = async (feedId: number, data: FeedBackFormModel): Promise<void> => {
     const res = await this.request<void>({
-      url: `/api/feed/items/${feedId}/feedback`,
+      url: `/feed/items/${feedId}/feedback`,
       method: 'POST',
       data,
     });

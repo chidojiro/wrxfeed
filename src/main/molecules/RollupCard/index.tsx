@@ -21,7 +21,7 @@ import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentViewAll from '@main/atoms/CommentViewAll';
-import RollupTransactions from '@main/molecules/RollupTransactions';
+import RollupLineItems from '@main/molecules/RollupLineItems';
 // Icons
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
@@ -74,11 +74,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     id: feedItem?.id,
     page: INIT_PAGINATION_TRANS,
   });
-  const {
-    transactions,
-    isLoading: isLoadingTrans,
-    hasMore: hasMoreTrans,
-  } = useFeedItem(filterTrans);
+  const { lineItems, isLoading: isLoadingTrans, hasMore: hasMoreTrans } = useFeedItem(filterTrans);
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
@@ -125,7 +121,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     if (updateCategory) {
       await updateCategory({ id: feedItem?.category.id, visibility: Visibility.HIDDEN });
     }
-    NotifyBanner.info('You have hidden this transaction');
+    NotifyBanner.info('You have hidden this line item!');
   };
 
   const openHideCategoryConfirmation = () => {
@@ -143,7 +139,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     if (updateCategory) {
       await updateCategory({ id: feedItem?.category.id, visibility: Visibility.VISIBLE });
     }
-    NotifyBanner.info('You have unhidden this transaction');
+    NotifyBanner.info('You have unhidden this line item!');
   };
 
   const openShowCategoryConfirmation = () => {
@@ -202,18 +198,18 @@ const RollupCard: React.VFC<RollupCardProps> = ({
 
   const onLoadMoreTransaction = React.useCallback(() => {
     if (!hasMoreTrans || isLoadingTrans) return;
-    // If there are more than 24 (12*2) items, users can click "see more" a third time to load the rest of the transactions.
+    // If there are more than 24 (12*2) items, users can click "see more" a third time to load the rest of the lineItems.
     setFilterTrans((prevFilter) => ({
       ...prevFilter,
       page: {
         limit:
-          transactions.length >= LIMIT_GET_TRANS * MAX_USER_CLICK_LOAD_MORE
+          lineItems.length >= LIMIT_GET_TRANS * MAX_USER_CLICK_LOAD_MORE
             ? LIMIT_GET_TRANS_FULL
             : prevFilter?.page?.limit ?? 0,
         offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
       },
     }));
-  }, [hasMoreTrans, isLoadingTrans, transactions.length]);
+  }, [hasMoreTrans, isLoadingTrans, lineItems.length]);
 
   return (
     <>
@@ -299,8 +295,8 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             </p>
           </div>
         </div>
-        <RollupTransactions
-          transactions={transactions}
+        <RollupLineItems
+          lineItems={lineItems}
           rollupsClass="bg-white"
           className="mb-1 sm:mb-2.5"
           hasMore={hasMoreTrans}
@@ -361,9 +357,9 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         onClose={() => openFeedbackModal(false)}
         feedId={feedItem?.id}
       />
-      {transactions.length > 0 && (
+      {lineItems.length > 0 && (
         <AttachmentModal
-          transaction={transactions[0]}
+          lineItem={lineItems[0]}
           open={!!attachFileComment}
           file={attachFileComment}
           mentionData={mentions}

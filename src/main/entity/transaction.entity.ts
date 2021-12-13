@@ -37,7 +37,7 @@ export type Transaction = {
   category: Category;
   vendor: Vendor;
   currency: string;
-  amount: number;
+  amountFx: number;
   commentCount: number;
   createdAt?: string;
   updatedAt?: string;

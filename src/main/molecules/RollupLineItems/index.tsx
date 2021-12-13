@@ -1,13 +1,13 @@
 // import { MessageTextAlt } from '@assets/index';
 import { classNames } from '@common/utils';
 import React from 'react';
-import { Transaction } from '@main/entity';
+import { TransLineItem } from '@main/entity';
 import Loading from '@common/atoms/Loading';
 import RollupTransactionItem from '../RollupTransactionItem';
 
-export interface RollupTransactionsProps {
+export interface RollupLineItemsProps {
   className?: string;
-  transactions?: Transaction[];
+  lineItems?: TransLineItem[];
   showLoadMore?: boolean;
   rollupsClass?: string;
   onLoadMore?: () => void;
@@ -15,10 +15,10 @@ export interface RollupTransactionsProps {
   isLoadMore?: boolean;
 }
 
-const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
+const RollupLineItems: React.VFC<RollupLineItemsProps> = ({
   className,
   rollupsClass,
-  transactions,
+  lineItems,
   showLoadMore = true,
   onLoadMore,
   hasMore = false,
@@ -55,12 +55,12 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
       </div>
     );
   };
-  return transactions?.length ? (
+  return lineItems?.length ? (
     <div className={classNames('relative flex flex-col', className ?? '')}>
       <ul className={classNames('w-full py-2 sm:py-4', rollupsClass ?? '')}>
-        {transactions.map((transaction) => (
-          <li key={transaction?.id}>
-            <RollupTransactionItem transaction={transaction} />
+        {lineItems.map((lineItem) => (
+          <li key={lineItem?.id}>
+            <RollupTransactionItem lineItem={lineItem} />
           </li>
         ))}
       </ul>
@@ -72,4 +72,4 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
   );
 };
 
-export default RollupTransactions;
+export default RollupLineItems;

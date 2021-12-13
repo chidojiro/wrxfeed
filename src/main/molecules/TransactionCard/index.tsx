@@ -218,7 +218,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                   id={`question-title-${transaction.id}`}
                   className="text-base font-semibold text-Gray-2 mr-3"
                 >
-                  {`$ ${formatCurrency(transaction.amount)}`}
+                  {`$ ${formatCurrency(transaction?.amountFx)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
@@ -304,7 +304,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
         feedId={transaction?.id}
       />
       <AttachmentModal
-        transaction={transaction}
+        // transaction={transaction}
         open={!!attachFileComment}
         file={attachFileComment}
         mentionData={mentions}

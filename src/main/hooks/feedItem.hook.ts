@@ -2,17 +2,17 @@ import { useApi } from '@api';
 import { FeedItemFilters } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
-import { Transaction } from '@main/entity';
+import { TransLineItem } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 interface FeedItemHookValues {
-  transactions: Transaction[];
+  lineItems: TransLineItem[];
   hasMore: boolean;
   isLoading: boolean;
 }
 export function useFeedItem(filter: FeedItemFilters): FeedItemHookValues {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [lineItems, setLineItems] = useState<TransLineItem[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const ApiClient = useApi();
@@ -22,11 +22,11 @@ export function useFeedItem(filter: FeedItemFilters): FeedItemHookValues {
     try {
       setLoading(true);
       if (filter?.page?.limit) {
-        const res = await ApiClient.getFeedItemTransactions(filter);
+        const res = await ApiClient.getFeedLineItems(filter);
         if (filter?.page?.offset) {
-          setTransactions((prevTrans) => [...prevTrans, ...res]);
+          setLineItems((prevTrans) => [...prevTrans, ...res]);
         } else {
-          setTransactions(res);
+          setLineItems(res);
         }
         setHasMore(res.length >= filter.page.limit);
       } else {
@@ -34,7 +34,7 @@ export function useFeedItem(filter: FeedItemFilters): FeedItemHookValues {
       }
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error("Can't get transactions 🤦!");
+        toast.error("Can't get line items 🤦!");
       } else {
         await errorHandler(error);
       }
@@ -47,7 +47,7 @@ export function useFeedItem(filter: FeedItemFilters): FeedItemHookValues {
     getTransactions().then();
   }, [getTransactions]);
   return {
-    transactions,
+    lineItems,
     hasMore,
     isLoading,
   };

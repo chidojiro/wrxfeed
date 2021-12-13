@@ -11,6 +11,7 @@ import {
   Target,
   Subscription,
   FeedItem,
+  TransLineItem,
 } from '@main/entity';
 import {
   AuthProfile,
@@ -45,6 +46,7 @@ export interface ApiClient {
   getTransactionById: (id: number) => Promise<Transaction>;
   getFeeds: (filters: GetFeedsFilters) => Promise<FeedItem[]>;
   getFeedItemTransactions: (id: FeedItemFilters) => Promise<Transaction[]>;
+  getFeedLineItems: (id: FeedItemFilters) => Promise<TransLineItem[]>;
   getFeedItemComments: (id: FeedCommentFilters) => Promise<Comment[]>;
   addFeedItemComment: (feedId: number, data: AddFeedCommentParams) => Promise<Comment>;
   getFeedItemById: (feedId: number) => Promise<FeedItem>;
