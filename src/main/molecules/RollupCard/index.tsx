@@ -30,6 +30,7 @@ import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.sv
 import { useIdentity, usePermission } from '@identity/hooks';
 import { useFeedItem } from '@main/hooks/feedItem.hook';
 import { useFeedComment } from '@main/hooks/feedComment.hook';
+import dayjs from 'dayjs';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -215,13 +216,40 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     }));
   }, [hasMoreTrans, isLoadingTrans, transactions.length]);
 
+  const renderDateRangeRollup = () => {
+    if (dayjs(feedItem?.firstDate).isSame(dayjs(feedItem?.lastDate))) {
+      return (
+        <p className="mt-1 text-xs text-Gray-6">
+          <time dateTime={feedItem?.firstDate}>
+            {feedItem?.firstDate ? formatDate(feedItem?.firstDate) : 'Unknown'}
+          </time>
+        </p>
+      );
+    }
+    return (
+      <p className="mt-1 text-xs text-Gray-6">
+        <time dateTime={feedItem?.firstDate}>
+          {feedItem?.firstDate ? formatDate(feedItem?.firstDate) : 'Unknown'}
+        </time>
+        {feedItem?.lastDate && (
+          <span>
+            {' - '}
+            <time dateTime={feedItem?.lastDate}>
+              {feedItem?.lastDate ? formatDate(feedItem?.lastDate) : 'Present'}
+            </time>
+          </span>
+        )}
+      </p>
+    );
+  };
+
   return (
     <>
       <article
         ref={containerRef}
         key={feedItem.id}
         className="bg-white flex flex-col filter shadow-md"
-        aria-labelledby={`rollup-title-${feedItem.id}`}
+        aria-labelledby={`rollup-title-${feedItem?.id}`}
       >
         {/* Rollup detail */}
         <div className="flex flex-row">
@@ -284,19 +312,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             >
               {feedItem?.category?.name}
             </h2>
-            <p className="mt-1 text-xs text-Gray-6">
-              <time dateTime={feedItem?.firstDate}>
-                {feedItem?.firstDate ? formatDate(feedItem?.firstDate) : 'Unknown'}
-              </time>
-              {feedItem?.lastDate && (
-                <span>
-                  {' - '}
-                  <time dateTime={feedItem?.lastDate}>
-                    {feedItem?.lastDate ? formatDate(feedItem?.lastDate) : 'Present'}
-                  </time>
-                </span>
-              )}
-            </p>
+            {renderDateRangeRollup()}
           </div>
         </div>
         <RollupTransactions
