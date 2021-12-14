@@ -7,7 +7,7 @@ import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity
 import { CommentFormModel } from '@main/types';
 import { useMention } from '@main/hooks';
 import { FeedItemFilters, GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
-import { classNames, formatCurrency, formatDate } from '@common/utils';
+import { classNames, formatCurrency } from '@common/utils';
 import { commentEditorRawParser } from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
 // Tailwind components
@@ -217,7 +217,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
       return (
         <p className="mt-1 text-xs text-Gray-6">
           <time dateTime={feedItem?.firstDate}>
-            {feedItem?.firstDate ? formatDate(feedItem?.firstDate) : 'Unknown'}
+            {feedItem?.firstDate ? dayjs(feedItem?.firstDate).format('DD/MM/YYYY') : 'Unknown'}
           </time>
         </p>
       );
@@ -225,13 +225,13 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     return (
       <p className="mt-1 text-xs text-Gray-6">
         <time dateTime={feedItem?.firstDate}>
-          {feedItem?.firstDate ? formatDate(feedItem?.firstDate) : 'Unknown'}
+          {feedItem?.firstDate ? dayjs(feedItem?.firstDate).format('DD/MM/YYYY') : 'Unknown'}
         </time>
         {feedItem?.lastDate && (
           <span>
             {' - '}
             <time dateTime={feedItem?.lastDate}>
-              {feedItem?.lastDate ? formatDate(feedItem?.lastDate) : 'Present'}
+              {feedItem?.lastDate ? dayjs(feedItem?.lastDate).format('DD/MM/YYYY') : 'Present'}
             </time>
           </span>
         )}
