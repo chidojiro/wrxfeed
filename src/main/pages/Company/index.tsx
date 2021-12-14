@@ -49,12 +49,32 @@ const CompanyPage: React.VFC = () => {
     if (!hasMore || isLoading) return;
     setFeedFilters((prevFilters) => ({
       page: {
-        limit: prevFilters?.page?.limit ?? 0,
-        offset: (prevFilters?.page?.offset ?? 0) + (prevFilters?.page?.limit ?? 0),
+        limit: prevFilters?.page?.limit ?? LIMIT,
+        offset: (prevFilters?.page?.offset ?? 0) + (prevFilters?.page?.limit ?? LIMIT),
       },
       forYou: 0,
+      ...(filterKey ? { [filterKey]: query.get(filterKey) } : {}),
     }));
   }, [hasMore, isLoading]);
+
+  React.useEffect(() => {
+    if (filterKey) {
+      const firstFeed = feeds[0];
+      switch (filterKey) {
+        case FilterKeys[0]: // department
+          setFilterTitle(firstFeed?.department?.name);
+          break;
+        case FilterKeys[1]: // category
+          setFilterTitle(firstFeed?.category?.name);
+          break;
+        case FilterKeys[3]: // rootDepartment
+          setFilterTitle(firstFeed?.department?.name);
+          break;
+        default:
+          break;
+      }
+    }
+  }, [feeds]);
 
   React.useEffect(() => {
     if (filterKey) {

@@ -40,8 +40,8 @@ const ForYouPage: React.VFC = () => {
     setFeedFilters((prevFilter) => ({
       ...prevFilter,
       page: {
-        limit: prevFilter?.page?.limit ?? 0,
-        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
+        limit: prevFilter?.page?.limit ?? LIMIT,
+        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? LIMIT),
       },
     }));
   }, [hasMore, isLoading]);
