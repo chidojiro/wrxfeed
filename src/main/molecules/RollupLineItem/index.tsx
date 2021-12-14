@@ -1,5 +1,5 @@
 // import { MessageTextAlt } from '@assets/index';
-import { formatCurrency } from '@common/utils';
+import { DATE_FORMAT, formatCurrency } from '@common/utils';
 import React from 'react';
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
 import { TransLineItem } from '@main/entity';
@@ -44,7 +44,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick, onC
       </p>
       <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
       <p className="text-Gray-6 text-xs font-normal">
-        {dayjs(lineItem?.createdAt).format('DD/MM/YYYY')}
+        {dayjs(lineItem?.createdAt).format(DATE_FORMAT)}
       </p>
       <p className="text-Gray-6 text-xs font-normal ml-auto">
         {`$ ${formatCurrency(lineItem?.amountFx)}`}
