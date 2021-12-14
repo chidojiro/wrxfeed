@@ -3,9 +3,9 @@ import { classNames } from '@common/utils';
 import React from 'react';
 import { TransLineItem } from '@main/entity';
 import Loading from '@common/atoms/Loading';
-import RollupTransactionItem from '../RollupTransactionItem';
+import RollupLineItem from '../RollupLineItem';
 
-export interface RollupLineItemsProps {
+export interface RollupLineItemListProps {
   className?: string;
   lineItems?: TransLineItem[];
   showLoadMore?: boolean;
@@ -15,7 +15,7 @@ export interface RollupLineItemsProps {
   isLoadMore?: boolean;
 }
 
-const RollupLineItems: React.VFC<RollupLineItemsProps> = ({
+const RollupLineItemList: React.VFC<RollupLineItemListProps> = ({
   className,
   rollupsClass,
   lineItems,
@@ -60,7 +60,7 @@ const RollupLineItems: React.VFC<RollupLineItemsProps> = ({
       <ul className={classNames('w-full py-2 sm:py-4', rollupsClass ?? '')}>
         {lineItems.map((lineItem) => (
           <li key={lineItem?.id}>
-            <RollupTransactionItem lineItem={lineItem} />
+            <RollupLineItem lineItem={lineItem} />
           </li>
         ))}
       </ul>
@@ -72,4 +72,4 @@ const RollupLineItems: React.VFC<RollupLineItemsProps> = ({
   );
 };
 
-export default RollupLineItems;
+export default RollupLineItemList;

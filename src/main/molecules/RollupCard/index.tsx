@@ -21,7 +21,7 @@ import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentViewAll from '@main/atoms/CommentViewAll';
-import RollupLineItems from '@main/molecules/RollupLineItems';
+import RollupLineItemList from '@main/molecules/RollupLineItemList';
 // Icons
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
@@ -311,7 +311,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             {renderDateRangeRollup()}
           </div>
         </div>
-        <RollupLineItems
+        <RollupLineItemList
           lineItems={lineItems}
           rollupsClass="bg-white"
           className="mb-1 sm:mb-2.5"
