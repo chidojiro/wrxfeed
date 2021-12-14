@@ -42,7 +42,7 @@ const CategoriesPage: React.VFC = () => {
 
   const {
     feeds,
-    hasMore: hasMoreTrans,
+    hasMore: hasMoreFeeds,
     isLoading: feedsLoading,
     updateCategory,
     cleanData,
@@ -94,8 +94,8 @@ const CategoriesPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  const handleTransLoadMore = useCallback(() => {
-    if (!hasMoreTrans || feedsLoading) return;
+  const handleFeedsLoadMore = useCallback(() => {
+    if (!hasMoreFeeds || feedsLoading) return;
     setFeedsFilter((prevFilter) => ({
       ...prevFilter,
       page: {
@@ -103,7 +103,7 @@ const CategoriesPage: React.VFC = () => {
         offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
       },
     }));
-  }, [hasMoreTrans, feedsLoading]);
+  }, [hasMoreFeeds, feedsLoading]);
 
   const handleCategorySelect = (value?: Category): void => {
     cleanData();
@@ -148,8 +148,8 @@ const CategoriesPage: React.VFC = () => {
         <FeedList
           feeds={feeds}
           isLoading={feedsLoading || isLoading}
-          hasMore={hasMoreTrans}
-          onLoadMore={handleTransLoadMore}
+          hasMore={hasMoreFeeds}
+          onLoadMore={handleFeedsLoadMore}
           onFilter={handleFeedsFilter}
           updateCategory={updateCategory}
         />

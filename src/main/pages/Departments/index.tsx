@@ -111,7 +111,7 @@ const DepartmentsPage: React.VFC = () => {
     if (!hasMoreFeeds || feedsLoading) return;
     setFeedsFilter((prevFilter) => ({
       ...prevFilter,
-      pagination: {
+      page: {
         limit: prevFilter?.page?.limit ?? 0,
         offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
       },
