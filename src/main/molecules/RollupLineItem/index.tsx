@@ -1,20 +1,17 @@
 // import { MessageTextAlt } from '@assets/index';
-import { formatCurrency, formatDate } from '@common/utils';
+import { formatCurrency } from '@common/utils';
 import React from 'react';
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
 import { TransLineItem } from '@main/entity';
+import dayjs from 'dayjs';
 
-export interface RollupTransactionItemProps {
+export interface RollupLineItemProps {
   lineItem: TransLineItem;
   onClick?: (lineItem: TransLineItem) => void;
   onClickMessage?: () => void;
 }
 
-const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
-  lineItem,
-  onClick,
-  onClickMessage,
-}) => {
+const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick, onClickMessage }) => {
   const renderMessages = () => {
     const isShowMessage = false; // lineItem?.commentCount > 0;
     if (isShowMessage) {
@@ -46,7 +43,9 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
         {lineItem?.vendor?.name}
       </p>
       <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
-      <p className="text-Gray-6 text-xs font-normal">{formatDate(lineItem?.createdAt)}</p>
+      <p className="text-Gray-6 text-xs font-normal">
+        {dayjs(lineItem?.createdAt).format('DD/MM/YYYY')}
+      </p>
       <p className="text-Gray-6 text-xs font-normal ml-auto">
         {`$ ${formatCurrency(lineItem?.amountFx)}`}
       </p>
@@ -55,4 +54,4 @@ const RollupTransactionItem: React.VFC<RollupTransactionItemProps> = ({
   );
 };
 
-export default RollupTransactionItem;
+export default RollupLineItem;

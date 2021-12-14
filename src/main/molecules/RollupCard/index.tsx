@@ -7,7 +7,7 @@ import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity
 import { CommentFormModel } from '@main/types';
 import { useMention } from '@main/hooks';
 import { FeedItemFilters, GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
-import { classNames, formatCurrency, formatDate } from '@common/utils';
+import { classNames, formatCurrency } from '@common/utils';
 import { commentEditorRawParser } from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
 // Tailwind components
@@ -21,7 +21,7 @@ import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentViewAll from '@main/atoms/CommentViewAll';
-import RollupLineItems from '@main/molecules/RollupLineItems';
+import RollupLineItemList from '@main/molecules/RollupLineItemList';
 // Icons
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
@@ -217,7 +217,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
       return (
         <p className="mt-1 text-xs text-Gray-6">
           <time dateTime={feedItem?.firstDate}>
-            {feedItem?.firstDate ? formatDate(feedItem?.firstDate) : 'Unknown'}
+            {feedItem?.firstDate ? dayjs(feedItem?.firstDate).format('DD/MM/YYYY') : 'Unknown'}
           </time>
         </p>
       );
@@ -225,13 +225,13 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     return (
       <p className="mt-1 text-xs text-Gray-6">
         <time dateTime={feedItem?.firstDate}>
-          {feedItem?.firstDate ? formatDate(feedItem?.firstDate) : 'Unknown'}
+          {feedItem?.firstDate ? dayjs(feedItem?.firstDate).format('DD/MM/YYYY') : 'Unknown'}
         </time>
         {feedItem?.lastDate && (
           <span>
             {' - '}
             <time dateTime={feedItem?.lastDate}>
-              {feedItem?.lastDate ? formatDate(feedItem?.lastDate) : 'Present'}
+              {feedItem?.lastDate ? dayjs(feedItem?.lastDate).format('DD/MM/YYYY') : 'Present'}
             </time>
           </span>
         )}
@@ -311,7 +311,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             {renderDateRangeRollup()}
           </div>
         </div>
-        <RollupLineItems
+        <RollupLineItemList
           lineItems={lineItems}
           rollupsClass="bg-white"
           className="mb-1 sm:mb-2.5"
