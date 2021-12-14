@@ -39,7 +39,7 @@ const ForYouPage: React.VFC = () => {
     if (!hasMore || isLoading) return;
     setFeedFilters((prevFilter) => ({
       ...prevFilter,
-      pagination: {
+      page: {
         limit: prevFilter?.page?.limit ?? 0,
         offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
       },
