@@ -17,7 +17,7 @@ module.exports = (env) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: 'https://staging-api.gravitylabs.co',
+          target: 'https://dev-api.gravitylabs.co',
           secure: false,
           changeOrigin: true,
         },

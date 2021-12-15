@@ -51,12 +51,12 @@ export const newFeedCountState = atom<FeedCount>({
       get(identityState);
       try {
         const apiClient = await getApiClient();
-        const companyRequest = apiClient.getUnreadTransactionCount({
-          pagination: { offset: 0, limit: 0 },
+        const companyRequest = apiClient.getUnreadLineItemsCount({
+          page: { offset: 0, limit: 1 },
         });
-        const forYouRequest = apiClient.getUnreadTransactionCount({
-          forYou: true,
-          pagination: { offset: 0, limit: 0 },
+        const forYouRequest = apiClient.getUnreadLineItemsCount({
+          forYou: 1,
+          page: { offset: 0, limit: 1 },
         });
         const [companyCount, forYouCount] = await Promise.all([companyRequest, forYouRequest]);
         return {

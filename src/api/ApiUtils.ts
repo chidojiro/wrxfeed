@@ -37,7 +37,7 @@ import {
   FeedItemFilters,
   FeedCommentFilters,
   AddFeedCommentParams,
-  GetFeedsFilters,
+  FeedFilters,
 } from '@api/types';
 import {
   AuthProfile,
@@ -174,17 +174,16 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getUnreadTransactionCount = async (filters?: TransactionFilter): Promise<number> => {
+  getUnreadLineItemsCount = async (filters?: FeedFilters): Promise<number> => {
     const params = {
-      ...filters?.pagination,
+      ...filters?.page,
+      forYou: filters?.forYou,
       dep: filters?.department,
-      ven: filters?.vendor,
-      cat: filters?.category,
       rootDep: filters?.rootDepartment,
+      cat: filters?.category,
     };
-    const url = filters?.forYou ? '/feed/transactions/for-you' : '/feed/transactions';
-    const res = await this.request<Transaction[]>({
-      url,
+    const res = await this.request<FeedItem[]>({
+      url: '/feed/items',
       method: 'GET',
       params,
     });
@@ -446,7 +445,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getFeeds = async (filters: GetFeedsFilters): Promise<FeedItem[]> => {
+  getFeeds = async (filters: FeedFilters): Promise<FeedItem[]> => {
     const res = await this.request<FeedItem[]>({
       url: '/feed/items',
       method: 'GET',

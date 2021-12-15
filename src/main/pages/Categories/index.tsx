@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import CategoryList from '@main/organisms/CategoryList';
-import { GetFeedsFilters, Pagination } from '@api/types';
+import { FeedFilters, Pagination } from '@api/types';
 import { useCategory } from '@main/hooks/category.hook';
 import { FilterKeys } from '@main/hooks';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
@@ -29,7 +29,7 @@ const CategoriesPage: React.VFC = () => {
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { categories, hasMore, isLoading } = useCategory(filter);
   // Feeds states
-  const [feedsFilter, setFeedsFilter] = useState<GetFeedsFilters>(
+  const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
     catId
       ? {
           page: INIT_PAGINATION,
@@ -115,7 +115,7 @@ const CategoriesPage: React.VFC = () => {
   };
 
   const handleFeedsFilter = (
-    key: keyof GetFeedsFilters,
+    key: keyof FeedFilters,
     value?: Department | Category | Vendor,
   ): void => {
     query.set(key, value?.id.toString() ?? '');
