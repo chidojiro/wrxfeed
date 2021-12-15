@@ -23,7 +23,8 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
   onSelect,
   onSelectRoot,
 }) => {
-  const { subscribe, unsubscribe, isFollowing } = useSubscription();
+  const { subscribe, batchSubscribe, unsubscribe, batchUnsubscribe, isFollowing } =
+    useSubscription();
 
   const renderDeptSection = (dept: DepartmentSection) => (
     <div className="shadow-md" key={dept.id}>
@@ -31,8 +32,8 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
         item={dept}
         isFollowing={isFollowing('departments', dept)}
         onClick={() => onSelectRoot && onSelectRoot(dept)}
-        onFollow={() => subscribe('departments', dept)}
-        onUnfollow={() => unsubscribe('departments', dept)}
+        onFollow={() => batchSubscribe({ departments: [dept, ...dept.children] })}
+        onUnfollow={() => batchUnsubscribe({ departments: [dept, ...dept.children] })}
       />
       {!!dept.children.length && (
         <div className="bg-white overflow-hidden sm:rounded-sm">

@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import DepartmentList from '@main/organisms/DepartmentList';
-import { GetFeedsFilters, Pagination } from '@api/types';
+import { FeedFilters, Pagination } from '@api/types';
 import { useDepartment } from '@main/hooks/department.hook';
 import { FilterKeys } from '@main/hooks';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
@@ -35,7 +35,7 @@ const DepartmentsPage: React.VFC = () => {
   const { departments, hasMore, isLoading } = useDepartment(filter);
   const { subscribe, unsubscribe, isFollowing } = useSubscription();
   // Feeds states
-  const [feedsFilter, setFeedsFilter] = useState<GetFeedsFilters>(
+  const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
     deptId
       ? {
           page: INIT_PAGINATION,
@@ -126,7 +126,7 @@ const DepartmentsPage: React.VFC = () => {
   };
 
   const handleFeedsFilter = (
-    key: keyof GetFeedsFilters,
+    key: keyof FeedFilters,
     value?: Department | Category | Vendor,
   ): void => {
     query.set(key, value?.id.toString() ?? '');

@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect } from 'react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@main/hooks';
-import { GetFeedsFilters } from '@api/types';
+import { FeedFilters } from '@api/types';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { useQuery } from '@common/hooks';
 import { useLocation } from 'react-router-dom';
@@ -28,7 +28,7 @@ const ForYouPage: React.VFC = () => {
   const location = useLocation();
   const { readAllTransactions } = useApi();
 
-  const [feedFilters, setFeedFilters] = React.useState<GetFeedsFilters>(INIT_FOR_YOU_FILTER);
+  const [feedFilters, setFeedFilters] = React.useState<FeedFilters>(INIT_FOR_YOU_FILTER);
   const { feeds, hasMore, isLoading, setNewFeedCount, upsertNewFeedCount, newFeedCount } =
     useFeed(feedFilters);
 

@@ -1,6 +1,6 @@
 import { SetterOrUpdater, useRecoilState } from 'recoil';
 import { useApi } from '@api';
-import { GetFeedsFilters } from '@api/types';
+import { FeedFilters } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { Category, FeedItem } from '@main/entity';
@@ -18,7 +18,7 @@ interface FeedHookValues {
   updateCategory: (category: Partial<Category>) => Promise<void>;
   cleanData: () => void;
 }
-export function useFeed(filters: GetFeedsFilters): FeedHookValues {
+export function useFeed(filters: FeedFilters): FeedHookValues {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);

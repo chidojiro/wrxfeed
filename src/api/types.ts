@@ -37,14 +37,14 @@ export interface ApiClient {
   acceptInvitation: (id: string) => Promise<void>;
   // Feed
   getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
-  getUnreadTransactionCount: (filters?: TransactionFilter) => Promise<number>;
+  getUnreadLineItemsCount: (filters?: FeedFilters) => Promise<number>;
   readAllTransactions: () => Promise<void>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: AddCommentParams) => Promise<Comment>;
   deleteComment: (commentId: number) => Promise<void>;
   editComment: (commentId: number, data: AddCommentParams) => Promise<void>;
   getTransactionById: (id: number) => Promise<Transaction>;
-  getFeeds: (filters: GetFeedsFilters) => Promise<FeedItem[]>;
+  getFeeds: (filters: FeedFilters) => Promise<FeedItem[]>;
   getFeedItemTransactions: (id: FeedItemFilters) => Promise<Transaction[]>;
   getFeedLineItems: (id: FeedItemFilters) => Promise<TransLineItem[]>;
   getFeedItemComments: (id: FeedCommentFilters) => Promise<Comment[]>;
@@ -168,9 +168,9 @@ export interface PostTargetParams {
 }
 
 export interface SubscriptionParams {
-  departments?: string[];
-  vendors?: string[];
-  categories?: string[];
+  departments?: number[];
+  vendors?: number[];
+  categories?: number[];
 }
 
 export interface NotificationsResponse {
@@ -194,7 +194,7 @@ export interface AddFeedCommentParams {
   attachment?: string;
 }
 
-export interface GetFeedsFilters {
+export interface FeedFilters {
   page?: Pagination;
   forYou?: number;
   department?: number;

@@ -3,7 +3,7 @@ import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { useFeed } from '@main/hooks/feed.hook';
-import { GetFeedsFilters } from '@api/types';
+import { FeedFilters } from '@api/types';
 import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@main/hooks';
 import { useQuery } from '@common/hooks';
 import { useApi } from '@api';
@@ -31,7 +31,7 @@ const CompanyPage: React.VFC = () => {
   const history = useHistory();
   const location = useLocation();
   const { readAllTransactions } = useApi();
-  const [feedFilters, setFeedFilters] = React.useState<GetFeedsFilters>(INIT_FEED_FILTER);
+  const [feedFilters, setFeedFilters] = React.useState<FeedFilters>(INIT_FEED_FILTER);
   const [filterTitle, setFilterTitle] = React.useState('');
   const filterKey = FilterKeys.find((key) => query.get(key));
 
@@ -88,10 +88,7 @@ const CompanyPage: React.VFC = () => {
     }
   }, [setFeedFilters, filterKey]);
 
-  const handleFilter = (
-    key: keyof GetFeedsFilters,
-    value?: Department | Category | Vendor,
-  ): void => {
+  const handleFilter = (key: keyof FeedFilters, value?: Department | Category | Vendor): void => {
     const queryString = `?${key}=${value?.id}`;
     history.push({
       pathname: history.location.pathname,
