@@ -58,7 +58,7 @@ const CompanyPage: React.VFC = () => {
   }, [hasMore, isLoading]);
 
   React.useEffect(() => {
-    if (filterKey) {
+    if (filterKey && feeds.length > 0) {
       const firstFeed = feeds[0];
       switch (filterKey) {
         case FilterKeys[0]: // department
@@ -68,7 +68,9 @@ const CompanyPage: React.VFC = () => {
           setFilterTitle(firstFeed?.category?.name);
           break;
         case FilterKeys[3]: // rootDepartment
-          setFilterTitle(firstFeed?.department?.name);
+          if (firstFeed?.department?.parent) {
+            setFilterTitle(firstFeed?.department?.parent?.name);
+          }
           break;
         default:
           break;
