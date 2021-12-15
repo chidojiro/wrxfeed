@@ -2,16 +2,22 @@
 import { DATE_FORMAT, formatCurrency } from '@common/utils';
 import React from 'react';
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
-import { TransLineItem } from '@main/entity';
+import { TransLineItem, Vendor } from '@main/entity';
 import dayjs from 'dayjs';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
   onClick?: (lineItem: TransLineItem) => void;
   onClickMessage?: () => void;
+  onClickVendor?: (vendor: Vendor) => void;
 }
 
-const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick, onClickMessage }) => {
+const RollupLineItem: React.VFC<RollupLineItemProps> = ({
+  lineItem,
+  onClick,
+  onClickMessage,
+  onClickVendor,
+}) => {
   const renderMessages = () => {
     const isShowMessage = false; // lineItem?.commentCount > 0;
     if (isShowMessage) {
@@ -32,6 +38,12 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick, onC
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
   };
 
+  const onClickLineItemVendor = () => {
+    if (onClickVendor && lineItem.vendor) {
+      onClickVendor(lineItem.vendor);
+    }
+  };
+
   return (
     <div
       aria-hidden="true"
@@ -39,9 +51,11 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick, onC
       onClick={() => onClick && onClick(lineItem)}
     >
       {renderNewGreen()}
-      <p className="text-Gray-6 text-xs font-semibold text-left max-w-[140px] sm:max-w-[300px] truncate">
-        {lineItem?.vendor?.name}
-      </p>
+      <button type="button" className="hover:underline" onClick={onClickLineItemVendor}>
+        <b className="text-Gray-6 text-xs font-semibold text-left max-w-[140px] sm:max-w-[300px] truncate">
+          {lineItem?.vendor?.name}
+        </b>
+      </button>
       <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
       <p className="text-Gray-6 text-xs font-normal">
         {dayjs(lineItem?.createdAt).format(DATE_FORMAT)}

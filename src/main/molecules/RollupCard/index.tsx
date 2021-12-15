@@ -65,6 +65,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   onClickCategory,
   onClickRootDept,
   updateCategory,
+  onClickVendor,
 }) => {
   const identity = useIdentity();
   const [filterComment, setFilterComment] = useState<Pagination>({
@@ -318,6 +319,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           hasMore={hasMoreTrans}
           onLoadMore={onLoadMoreTransaction}
           isLoadMore={isLoadingTrans}
+          onClickVendor={onClickVendor}
         />
         <div className="space-y-4 px-4 sm:px-12 mt-1">
           {hasMoreComment && (

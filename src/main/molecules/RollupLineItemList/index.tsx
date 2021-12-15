@@ -1,7 +1,7 @@
 // import { MessageTextAlt } from '@assets/index';
 import { classNames } from '@common/utils';
 import React from 'react';
-import { TransLineItem } from '@main/entity';
+import { TransLineItem, Vendor } from '@main/entity';
 import Loading from '@common/atoms/Loading';
 import RollupLineItem from '../RollupLineItem';
 
@@ -13,6 +13,7 @@ export interface RollupLineItemListProps {
   onLoadMore?: () => void;
   hasMore?: boolean;
   isLoadMore?: boolean;
+  onClickVendor?: (vendor: Vendor) => void;
 }
 
 const RollupLineItemList: React.VFC<RollupLineItemListProps> = ({
@@ -23,6 +24,7 @@ const RollupLineItemList: React.VFC<RollupLineItemListProps> = ({
   onLoadMore,
   hasMore = false,
   isLoadMore = false,
+  onClickVendor,
 }) => {
   const renderLoading = () => {
     if (!isLoadMore) return null;
@@ -60,7 +62,7 @@ const RollupLineItemList: React.VFC<RollupLineItemListProps> = ({
       <ul className={classNames('w-full py-2 sm:py-4', rollupsClass ?? '')}>
         {lineItems.map((lineItem) => (
           <li key={lineItem?.id}>
-            <RollupLineItem lineItem={lineItem} />
+            <RollupLineItem lineItem={lineItem} onClickVendor={onClickVendor} />
           </li>
         ))}
       </ul>
