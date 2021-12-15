@@ -51,7 +51,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
       onClick={() => onClick && onClick(lineItem)}
     >
       {renderNewGreen()}
-      <button type="button" onClick={onClickLineItemVendor}>
+      <button type="button" className="hover:underline" onClick={onClickLineItemVendor}>
         <b className="text-Gray-6 text-xs font-semibold text-left max-w-[140px] sm:max-w-[300px] truncate">
           {lineItem?.vendor?.name}
         </b>

@@ -532,4 +532,12 @@ export default class ApiUtils implements ApiClient {
     });
     return res.data;
   };
+
+  getDepartmentById = async (depId: number): Promise<Department> => {
+    const res = await this.request<Department>({
+      url: `/feed/departments/${depId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
 }

@@ -53,6 +53,7 @@ export interface ApiClient {
   postFeedBackFeed: (feedId: number, data: FeedBackFormModel) => Promise<void>;
   getCategoryById: (catId: number) => Promise<Category>;
   getVendorById: (venId: number) => Promise<Vendor>;
+  getDepartmentById: (depId: number) => Promise<Department>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
