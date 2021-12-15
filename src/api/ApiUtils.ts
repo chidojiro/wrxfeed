@@ -516,4 +516,20 @@ export default class ApiUtils implements ApiClient {
     });
     return res.data;
   };
+
+  getCategoryById = async (catId: number): Promise<Category> => {
+    const res = await this.request<Category>({
+      url: `/feed/categories/${catId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  getVendorById = async (venId: number): Promise<Vendor> => {
+    const res = await this.request<Vendor>({
+      url: `/feed/vendors/${venId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
 }
