@@ -265,7 +265,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                 <p className="text-xs text-Gray-6">
                   <button
                     type="button"
-                    className="hover:underline"
+                    className="hover:underline text-left"
                     onClick={() => {
                       return onClickDepartment && onClickDepartment(feedItem?.department);
                     }}
