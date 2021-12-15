@@ -455,6 +455,7 @@ export default class ApiUtils implements ApiClient {
         dep: filters?.department,
         rootDep: filters?.rootDepartment,
         cat: filters?.category,
+        ven: filters?.vendor,
       },
     });
     return res.data;
@@ -512,6 +513,30 @@ export default class ApiUtils implements ApiClient {
       url: `/feed/items/${feedId}/feedback`,
       method: 'POST',
       data,
+    });
+    return res.data;
+  };
+
+  getCategoryById = async (catId: number): Promise<Category> => {
+    const res = await this.request<Category>({
+      url: `/feed/categories/${catId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  getVendorById = async (venId: number): Promise<Vendor> => {
+    const res = await this.request<Vendor>({
+      url: `/feed/vendors/${venId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  getDepartmentById = async (depId: number): Promise<Department> => {
+    const res = await this.request<Department>({
+      url: `/feed/departments/${depId}`,
+      method: 'GET',
     });
     return res.data;
   };

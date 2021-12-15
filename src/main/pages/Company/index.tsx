@@ -30,7 +30,7 @@ const CompanyPage: React.VFC = () => {
   const query = useQuery();
   const history = useHistory();
   const location = useLocation();
-  const { readAllTransactions } = useApi();
+  const { readAllTransactions, getVendorById, getCategoryById, getDepartmentById } = useApi();
   const [feedFilters, setFeedFilters] = React.useState<FeedFilters>(INIT_FEED_FILTER);
   const [filterTitle, setFilterTitle] = React.useState('');
   const filterKey = FilterKeys.find((key) => query.get(key));
@@ -57,18 +57,44 @@ const CompanyPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
+  const getFilterVendorById = async (key: string) => {
+    if (key === FilterKeys[2] && filterKey && query.get(filterKey)) {
+      const venId = query.get(filterKey);
+      if (!venId) return;
+      const vendor = await getVendorById(parseInt(venId, 10));
+      setFilterTitle(vendor?.name);
+    }
+  };
+
+  const getFilterCategoryById = async (key: string) => {
+    if (key === FilterKeys[1] && filterKey && query.get(filterKey)) {
+      const catId = query.get(filterKey);
+      if (!catId) return;
+      const category = await getCategoryById(parseInt(catId, 10));
+      setFilterTitle(category?.name);
+    }
+  };
+
+  const getFilterDepById = async (key: string) => {
+    if (key === FilterKeys[0] && filterKey && query.get(filterKey)) {
+      const depId = query.get(filterKey);
+      if (!depId) return;
+      const department = await getDepartmentById(parseInt(depId, 10));
+      setFilterTitle(department?.name);
+    }
+  };
+
   React.useEffect(() => {
-    if (filterKey) {
+    if (filterKey && feeds.length > 0) {
       const firstFeed = feeds[0];
       switch (filterKey) {
-        case FilterKeys[0]: // department
-          setFilterTitle(firstFeed?.department?.name);
-          break;
-        case FilterKeys[1]: // category
-          setFilterTitle(firstFeed?.category?.name);
+        case FilterKeys[2]: // vendor
+          getFilterVendorById(filterKey);
           break;
         case FilterKeys[3]: // rootDepartment
-          setFilterTitle(firstFeed?.department?.name);
+          if (firstFeed?.department?.parent) {
+            setFilterTitle(firstFeed?.department?.parent?.name);
+          }
           break;
         default:
           break;
@@ -83,6 +109,9 @@ const CompanyPage: React.VFC = () => {
         [filterKey]: query.get(filterKey),
         forYou: 0,
       });
+      getFilterDepById(filterKey);
+      getFilterCategoryById(filterKey);
+      getFilterVendorById(filterKey);
     } else {
       setFeedFilters(INIT_FEED_FILTER);
     }
