@@ -4,7 +4,7 @@ import { Category, Department, FeedItem, Vendor } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
 import ListEndComponent from '@main/atoms/ListEndComponent';
 import RollupCard from '@main/molecules/RollupCard';
-import { GetFeedsFilters } from '@api/types';
+import { FeedFilters } from '@api/types';
 
 interface FeedListProps {
   style?: CSSProperties;
@@ -12,7 +12,7 @@ interface FeedListProps {
   isLoading?: boolean;
   hasMore?: boolean;
   onLoadMore?: () => void;
-  onFilter?: (key: keyof GetFeedsFilters, value?: Department | Category | Vendor) => void;
+  onFilter?: (key: keyof FeedFilters, value?: Department | Category | Vendor) => void;
   updateCategory?: (category: Partial<Category>) => Promise<void>;
 }
 

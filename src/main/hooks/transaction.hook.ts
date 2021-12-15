@@ -97,7 +97,7 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
   };
 
   useEffect(() => {
-    getTransactions().then();
+    // getTransactions().then();
   }, [getTransactions]);
 
   return {

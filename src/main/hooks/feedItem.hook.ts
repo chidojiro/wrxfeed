@@ -18,7 +18,7 @@ export function useFeedItem(filter: FeedItemFilters): FeedItemHookValues {
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
-  const getTransactions = useCallback(async () => {
+  const getLineItems = useCallback(async () => {
     try {
       setLoading(true);
       if (filter?.page?.limit) {
@@ -44,8 +44,8 @@ export function useFeedItem(filter: FeedItemFilters): FeedItemHookValues {
   }, [ApiClient, errorHandler, filter]);
 
   useEffect(() => {
-    getTransactions().then();
-  }, [getTransactions]);
+    getLineItems().then();
+  }, [getLineItems]);
   return {
     lineItems,
     hasMore,
