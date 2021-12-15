@@ -36,6 +36,8 @@
     "@hookform/resolvers": "^2.8.1",
     "@microlink/react": "^5.5.7",
     "@popperjs/core": "^2.10.2",
+    "@sentry/react": "^6.16.1",
+    "@sentry/tracing": "^6.16.1",
     "axios": "^0.21.1",
     "dayjs": "^1.10.7",
     "draft-js": "^0.11.7",

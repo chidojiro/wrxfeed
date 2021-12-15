@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import * as Sentry from '@sentry/react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import VendorList from '@main/organisms/VendorList';
@@ -153,4 +154,4 @@ const CategoriesPage: React.VFC = () => {
   );
 };
 
-export default CategoriesPage;
+export default Sentry.withProfiler(CategoriesPage, { name: 'CategoriesPage' });

@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect } from 'react';
+import * as Sentry from '@sentry/react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@main/hooks';
 import { FeedFilters } from '@api/types';
@@ -108,4 +109,4 @@ const ForYouPage: React.VFC = () => {
   );
 };
 
-export default ForYouPage;
+export default Sentry.withProfiler(ForYouPage, { name: 'ForYouPage' });

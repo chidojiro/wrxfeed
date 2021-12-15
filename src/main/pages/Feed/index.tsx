@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
+import * as Sentry from '@sentry/react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
@@ -94,4 +95,4 @@ const FeedPage: React.VFC = () => {
   );
 };
 
-export default FeedPage;
+export default Sentry.withProfiler(FeedPage, { name: 'FeedPage' });

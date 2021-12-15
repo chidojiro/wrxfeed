@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import DepartmentList from '@main/organisms/DepartmentList';
 import { FeedFilters, Pagination } from '@api/types';
@@ -203,4 +204,4 @@ const DepartmentsPage: React.VFC = () => {
   );
 };
 
-export default DepartmentsPage;
+export default Sentry.withProfiler(DepartmentsPage, { name: 'DepartmentsPage' });
