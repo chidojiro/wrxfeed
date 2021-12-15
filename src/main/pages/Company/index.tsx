@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 
 import { useFeed } from '@main/hooks/feed.hook';
 import { FeedFilters } from '@api/types';
@@ -183,4 +184,4 @@ const CompanyPage: React.VFC = () => {
   );
 };
 
-export default CompanyPage;
+export default Sentry.withProfiler(CompanyPage, { name: 'CompanyPage' });

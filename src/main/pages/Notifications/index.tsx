@@ -1,4 +1,5 @@
 import React from 'react';
+import * as Sentry from '@sentry/react';
 import MainLayout from '@common/templates/MainLayout';
 import { Pagination } from '@api/types';
 import { useNotification } from '@main/hooks';
@@ -49,4 +50,4 @@ const Notifications: React.VFC = () => {
   );
 };
 
-export default Notifications;
+export default Sentry.withProfiler(Notifications, { name: 'Notifications' });
