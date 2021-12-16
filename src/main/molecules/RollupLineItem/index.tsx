@@ -4,6 +4,7 @@ import React from 'react';
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
 import { TransLineItem, Vendor } from '@main/entity';
 import dayjs from 'dayjs';
+import { useApi } from '@api';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -18,6 +19,14 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   onClickMessage,
   onClickVendor,
 }) => {
+  const { maskLineItemAsRead } = useApi();
+
+  React.useEffect(() => {
+    if (lineItem.meta?.isRead === false) {
+      maskLineItemAsRead(lineItem.id);
+    }
+  }, [lineItem.id, lineItem.meta?.isRead, maskLineItemAsRead]);
+
   const renderMessages = () => {
     const isShowMessage = false; // lineItem?.commentCount > 0;
     if (isShowMessage) {

@@ -455,7 +455,7 @@ export default class ApiUtils implements ApiClient {
         dep: filters?.department,
         rootDep: filters?.rootDepartment,
         cat: filters?.category,
-        ven: filters?.vendor,
+        vend: filters?.vendor,
       },
     });
     return res.data;
@@ -537,6 +537,14 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<Department>({
       url: `/feed/departments/${depId}`,
       method: 'GET',
+    });
+    return res.data;
+  };
+
+  maskLineItemAsRead = async (id: number): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feed/line-items/${id}`,
+      method: 'PATCH',
     });
     return res.data;
   };
