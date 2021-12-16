@@ -54,6 +54,7 @@ export interface ApiClient {
   getCategoryById: (catId: number) => Promise<Category>;
   getVendorById: (venId: number) => Promise<Vendor>;
   getDepartmentById: (depId: number) => Promise<Department>;
+  maskLineItemAsRead: (id: number) => Promise<void>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
