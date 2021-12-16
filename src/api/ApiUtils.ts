@@ -540,4 +540,12 @@ export default class ApiUtils implements ApiClient {
     });
     return res.data;
   };
+
+  maskLineItemAsRead = async (id: number): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feed/line-items/${id}`,
+      method: 'PATCH',
+    });
+    return res.data;
+  };
 }
