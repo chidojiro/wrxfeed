@@ -46,10 +46,6 @@ const VendorsPage: React.VFC = () => {
         },
   );
 
-  useEffect(() => {
-    console.log(`Check feedsFilter = ${JSON.stringify(feedsFilter)}`);
-  }, [feedsFilter]);
-
   const {
     feeds,
     hasMore: hasMoreFeeds,
