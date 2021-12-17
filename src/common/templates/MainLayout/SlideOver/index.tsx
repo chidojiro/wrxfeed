@@ -1,22 +1,36 @@
-import React, { Fragment, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { ReactComponent as MoreVertical } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
+import { TransLineItem } from '@main/entity';
+// import { useRecoilState } from 'recoil';
+// import { lineItemState } from '@main/states/lineItem.state';
+import EventEmitter, { EventName } from '@main/EventEmitter';
 
+export interface SelectItemProps {
+  item: TransLineItem;
+}
 export interface SlideOverProps {
   className: string;
 }
 
+export type LineInfo = {
+  key: string;
+  value: string;
+};
+
 const SlideOver: React.VFC = () => {
-  const [open, setOpen] = useState<boolean>(true);
-  const rows = [
+  const [open, setOpen] = useState<boolean>(false);
+  const [item, setItem] = useState<TransLineItem>();
+  const rows: LineInfo[] = [
     {
       key: 'Date',
       value: 'Oct 2, 2021',
     },
     {
       key: 'Original Amount',
-      value: '€ 123.75',
+      value: `€ ${item?.amountFx}`,
     },
     {
       key: 'Converted Amount',
@@ -43,6 +57,23 @@ const SlideOver: React.VFC = () => {
       value: 'Austin Marshburn',
     },
   ];
+
+  const handleOpenSlide = (props: SelectItemProps | unknown) => {
+    if (props && typeof props === 'object') {
+      const lineItemProps = props as SelectItemProps;
+      setItem(lineItemProps.item);
+      if (!open) {
+        setOpen(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    EventEmitter.subscribe(EventName.SHOW_SLIDE_OVER, handleOpenSlide);
+    return () => {
+      EventEmitter.unsubscribe(EventName.SHOW_SLIDE_OVER, handleOpenSlide);
+    };
+  }, []);
 
   const onClickMore = () => undefined;
   const onClickCloseSlideOver = () => {
@@ -97,14 +128,14 @@ const SlideOver: React.VFC = () => {
                       <div className="flex flex-col mt-6">
                         <p className="text-sm font-semibold text-Gray-3">Information</p>
                         <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
-                          {rows.map((item) => {
+                          {rows.map((row: LineInfo) => {
                             return (
                               <div
-                                key={item.key}
+                                key={row.key}
                                 className="flex w-full h-11 flex-row items-center justify-between border-b border-b-Gray-28"
                               >
-                                <p className="text-Gray-6 text-sm">{item.key}</p>
-                                <p className="text-Gray-3 text-sm font-semibold">{item.value}</p>
+                                <p className="text-Gray-6 text-sm">{row.key}</p>
+                                <p className="text-Gray-3 text-sm font-semibold">{row.value}</p>
                               </div>
                             );
                           })}

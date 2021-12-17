@@ -5,6 +5,7 @@ import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-te
 import { TransLineItem, Vendor } from '@main/entity';
 import dayjs from 'dayjs';
 import { useApi } from '@api';
+import EventEmitter, { EventName } from '@main/EventEmitter';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -53,6 +54,13 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
     }
   };
 
+  const onClickLineItem = () => {
+    if (onClick) onClick(lineItem);
+    EventEmitter.dispatch(EventName.SHOW_SLIDE_OVER, {
+      item: lineItem,
+    });
+  };
+
   const renderVendorName = () => {
     const vendorName =
       lineItem?.vendor?.name || lineItem?.description || `Expense: ${lineItem?.vendorName}`;
@@ -68,10 +76,11 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   };
 
   return (
-    <div
+    <button
+      type="button"
       aria-hidden="true"
       className="flex flex-row w-full items-center pl-2 sm:pl-10 pr-2 sm:pr-2 py-1.5 hover:bg-Gray-12"
-      onClick={() => onClick && onClick(lineItem)}
+      onClick={onClickLineItem}
     >
       {renderNewGreen()}
       {renderVendorName()}
@@ -83,7 +92,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
         {`$ ${formatCurrency(lineItem?.amountFx)}`}
       </p>
       {renderMessages()}
-    </div>
+    </button>
   );
 };
 
