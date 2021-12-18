@@ -2,6 +2,7 @@ export enum EventName {
   OPEN_EMOJI_PICKER = 'OPEN_EMOJI_PICKER',
   CLOSE_EMOJI_PICKER = 'CLOSE_EMOJI_PICKER',
   OPEN_NOTIFY_BANNER = 'OPEN_NOTIFY_BANNER',
+  SHOW_SLIDE_OVER = 'SHOW_SLIDE_OVER',
 }
 
 type Callback = (...args: unknown[]) => unknown;

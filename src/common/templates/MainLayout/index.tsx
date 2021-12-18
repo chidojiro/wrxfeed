@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { classNames } from '@common/utils';
 import SideBar from './SideBar';
 import NavBar from './NavBar';
+import SlideOver from './SlideOver';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -36,6 +37,7 @@ const MainLayout: React.VFC<MainLayoutProps> = ({ children, className }) => {
             <div id="main-right-side" className="sticky top-14" />
           </aside>
         </div>
+        <SlideOver />
       </div>
     </div>
   );
