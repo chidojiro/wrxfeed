@@ -28,11 +28,9 @@ const MainLayout: React.VFC<MainLayoutProps> = ({ children, className }) => {
           <div className="relative hidden lg:sticky lg:top-navbar lg:h-0 lg:block lg:col-span-2 xl:col-span-2">
             <SideBar />
           </div>
-
           <main className="relative pt-12 lg:border-l lg:border-Gray-11 lg:pl-5 lg:col-span-10 xl:col-span-7">
             {children}
           </main>
-
           <aside className="hidden xl:block xl:col-span-3 lg:pl-5">
             <div id="main-right-side" className="sticky top-14" />
           </aside>
