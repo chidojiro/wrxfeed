@@ -40,4 +40,5 @@ export type TransLineItem = {
   endDate?: string;
   meta?: UserLineItem;
   vendorName?: string;
+  transDate?: string;
 };
