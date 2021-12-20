@@ -1,11 +1,12 @@
 // import { MessageTextAlt } from '@assets/index';
-import { DATE_FORMAT, formatCurrency } from '@common/utils';
 import React from 'react';
-import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
-import { TransLineItem, Vendor } from '@main/entity';
 import dayjs from 'dayjs';
-import { useApi } from '@api';
+
+import { TransLineItem, Vendor } from '@main/entity';
 import EventEmitter, { EventName } from '@main/EventEmitter';
+import { DATE_FORMAT, formatCurrency } from '@common/utils';
+import { useApi } from '@api';
+import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -48,10 +49,11 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
   };
 
-  const onClickLineItemVendor = () => {
+  const onClickLineItemVendor = (event: React.MouseEvent<HTMLElement>) => {
     if (onClickVendor && lineItem.vendor) {
       onClickVendor(lineItem.vendor);
     }
+    event.stopPropagation();
   };
 
   const onClickLineItem = () => {
@@ -66,6 +68,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
       lineItem?.vendor?.name || lineItem?.description || `Expense: ${lineItem?.vendorName}`;
     return (
       <button
+        // onClick="event.stopPropagation()"
         type="button"
         className="hover:underline flex flex-row items-center max-w-[140px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[450px]"
         onClick={onClickLineItemVendor}
