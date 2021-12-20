@@ -81,7 +81,7 @@ const routes: Route = {
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Company: {
-    path: ['/company', '/overview'],
+    path: '/company',
     component: Company,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
