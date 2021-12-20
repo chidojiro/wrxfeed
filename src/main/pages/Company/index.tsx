@@ -46,6 +46,7 @@ const CompanyPage: React.VFC = () => {
     upsertNewFeedCount,
     setNewFeedCount,
   } = useFeed(feedFilters);
+
   const newFeedNumber = newFeedCount ? newFeedCount[location.pathname] : 0;
   const handleLoadMore = React.useCallback(() => {
     if (!hasMore || isLoading) return;
