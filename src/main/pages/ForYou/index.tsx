@@ -1,16 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
-import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@main/hooks';
+import { useHistory, useLocation } from 'react-router-dom';
+
 import { FeedFilters } from '@api/types';
-import TargetPanel from '@main/organisms/TargetPanel';
-import { useQuery } from '@common/hooks';
-import { useLocation } from 'react-router-dom';
-import { useApi } from '@api';
-import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
-import FeedList from '@main/organisms/FeedList';
+import { Category, Department, Vendor } from '@main/entity';
+
+import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@main/hooks';
 import { useFeed } from '@main/hooks/feed.hook';
+import { useQuery } from '@common/hooks';
+import { useApi } from '@api';
+
+import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
+import FeedList from '@main/organisms/FeedList';
+import TargetPanel from '@main/organisms/TargetPanel';
+import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
+import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -25,6 +30,7 @@ const INIT_FOR_YOU_FILTER = Object.freeze({
 const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
 const ForYouPage: React.VFC = () => {
+  const history = useHistory();
   const query = useQuery();
   const location = useLocation();
   const { readAllTransactions } = useApi();
@@ -34,6 +40,7 @@ const ForYouPage: React.VFC = () => {
     useFeed(feedFilters);
 
   const filterKey = FilterKeys.find((key) => query.get(key));
+  const [filterTitle, setFilterTitle] = React.useState('');
   const newFeedNumber = newFeedCount ? newFeedCount[location.pathname] : 0;
 
   const handleLoadMore = useCallback(() => {
@@ -90,6 +97,20 @@ const ForYouPage: React.VFC = () => {
     readAllTransactions();
   };
 
+  const handleFilter = (key: keyof FeedFilters, value?: Department | Category | Vendor): void => {
+    const queryString = `?${key}=${value?.id}`;
+    history.push({
+      pathname: history.location.pathname,
+      search: queryString,
+    });
+    // cleanData();
+    setFilterTitle(value?.name ?? '');
+  };
+
+  const clearFilter = (): void => {
+    history.goBack();
+  };
+
   return (
     <MainLayout className="flex flex-col">
       <NewFeedIndicator
@@ -98,10 +119,24 @@ const ForYouPage: React.VFC = () => {
         onClick={refetchNewItems}
       />
       <h1 className="sr-only">For you feed</h1>
-      <div className="flex items-center space-x-4 pb-8">
-        <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>
-      </div>
-      <FeedList feeds={feeds} onLoadMore={handleLoadMore} isLoading={isLoading} hasMore={hasMore} />
+
+      {filterKey ? (
+        <div className="flex items-center space-x-4 pb-8">
+          <ChevronLeftIcon className="cursor-pointer" onClick={clearFilter} />
+          <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
+        </div>
+      ) : (
+        <div className="flex items-center space-x-4 pb-8">
+          <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>
+        </div>
+      )}
+      <FeedList
+        feeds={feeds}
+        onLoadMore={handleLoadMore}
+        isLoading={isLoading}
+        hasMore={hasMore}
+        onFilter={handleFilter}
+      />
       <MainRightSide>
         <TargetPanel />
       </MainRightSide>

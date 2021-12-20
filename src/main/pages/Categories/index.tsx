@@ -14,6 +14,7 @@ import { MainGroups } from '@common/constants';
 import { useQuery } from '@common/hooks';
 import FeedList from '@main/organisms/FeedList';
 import { useFeed } from '@main/hooks/feed.hook';
+import { scrollToTop } from '@main/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -124,6 +125,7 @@ const CategoriesPage: React.VFC = () => {
       pathname: location.pathname,
       search: query.toString(),
     });
+    scrollToTop();
   };
 
   return (
