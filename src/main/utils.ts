@@ -281,3 +281,12 @@ export const nFormatter = (num: number, withCurrency = '$'): string => {
   }
   return `${isNegative}${withCurrency}${num}`;
 };
+
+export const scrollToTop = (): void => {
+  if (window.scrollY > 0) {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+};
