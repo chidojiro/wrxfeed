@@ -50,10 +50,10 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   };
 
   const onClickLineItemVendor = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     if (onClickVendor && lineItem.vendor) {
       onClickVendor(lineItem.vendor);
     }
-    event.stopPropagation();
   };
 
   const onClickLineItem = () => {
@@ -68,7 +68,6 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
       lineItem?.vendor?.name || lineItem?.description || `Expense: ${lineItem?.vendorName}`;
     return (
       <button
-        // onClick="event.stopPropagation()"
         type="button"
         className="hover:underline flex flex-row items-center max-w-[140px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[450px]"
         onClick={onClickLineItemVendor}
