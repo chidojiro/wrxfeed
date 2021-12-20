@@ -7,6 +7,7 @@ import { TransLineItem } from '@main/entity';
 // import { useRecoilState } from 'recoil';
 // import { lineItemState } from '@main/states/lineItem.state';
 import EventEmitter, { EventName } from '@main/EventEmitter';
+import dayjs from 'dayjs';
 
 export interface SelectItemProps {
   item: TransLineItem;
@@ -26,7 +27,7 @@ const SlideOver: React.VFC = () => {
   const rows: LineInfo[] = [
     {
       key: 'Date',
-      value: 'Oct 2, 2021',
+      value: dayjs(item?.startDate).format('MMM D, YYYY'), // 'Oct 2, 2021',
     },
     {
       key: 'Original Amount',
@@ -34,11 +35,11 @@ const SlideOver: React.VFC = () => {
     },
     {
       key: 'Converted Amount',
-      value: '$ 120.75',
+      value: `$ ${item?.amountFx}`,
     },
     {
       key: 'Last Modified',
-      value: '10/2/2021 at 3:52PM PST',
+      value: dayjs(item?.endDate).format('MM/D/YYYY h:mmA'), // '10/2/2021 at 3:52PM PST',
     },
     {
       key: 'Subsidiary',
@@ -46,7 +47,7 @@ const SlideOver: React.VFC = () => {
     },
     {
       key: 'Vendor',
-      value: 'AIT Worldwide Logistics',
+      value: item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`,
     },
     {
       key: 'Created by',
@@ -80,12 +81,17 @@ const SlideOver: React.VFC = () => {
     setOpen(false);
   };
 
+  const renderVendorName = () => {
+    const vendorName = item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`;
+    return <h1 className="text-base font-semibold text-Gray-3">{vendorName}</h1>;
+  };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="fixed inset-0 overflow-hidden z-20" onClose={setOpen}>
         <div className="absolute inset-0 overflow-hidden">
           <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-          <div className="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+          <div className="fixed inset-y-0 right-0 max-w-md flex">
             <Transition.Child
               as={Fragment}
               enter="transform transition ease-in-out duration-500 sm:duration-700"
@@ -105,11 +111,9 @@ const SlideOver: React.VFC = () => {
                     <BasicsXSmall className="w-5 h-5" width={20} height={20} />
                   </button>
                   <div className="h-full flex flex-1 flex-col bg-white shadow-xl overflow-y-scroll">
-                    <div className="flex flex-1 flex-col p-8">
+                    <div className="flex flex-1 flex-col px-8 pt-8 pb-5">
                       <div className="flex flex-row w-full justify-between">
-                        <h1 className="text-base font-semibold text-Gray-3">
-                          AIT Worldwide Logistics
-                        </h1>
+                        {renderVendorName()}
                         <button type="button" onClick={onClickMore}>
                           <MoreVertical
                             className="fill-current text-Gray-6"
@@ -120,10 +124,7 @@ const SlideOver: React.VFC = () => {
                       </div>
                       <div className="flex flex-col mt-6">
                         <p className="text-sm font-semibold text-Gray-3">Description</p>
-                        <p className="text-sm font-regular text-Gray-6 mt-2">
-                          AWS and other network cost related to supporting the vehicle and app - COS
-                          July 2021
-                        </p>
+                        <p className="text-sm font-regular text-Gray-6 mt-2">{item?.description}</p>
                       </div>
                       <div className="flex flex-col mt-6">
                         <p className="text-sm font-semibold text-Gray-3">Information</p>
@@ -140,6 +141,9 @@ const SlideOver: React.VFC = () => {
                             );
                           })}
                         </ul>
+                      </div>
+                      <div className="mt-auto flex flex-row justify-end">
+                        <p className="text-Gray-11 text-xs">{item?.id}</p>
                       </div>
                     </div>
                   </div>
