@@ -1,6 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useEffect } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, Transition, Menu } from '@headlessui/react';
+import PopoverMenu from '@main/atoms/PopoverMenu';
+import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
+import FeedBackModal from '@main/organisms/FeedBackModal';
+
 import { ReactComponent as MoreVertical } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
 import { TransLineItem } from '@main/entity';
@@ -23,6 +27,8 @@ export type LineInfo = {
 const SlideOver: React.VFC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [item, setItem] = useState<TransLineItem>();
+  const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
+
   const rows: LineInfo[] = [
     {
       key: 'Date',
@@ -80,6 +86,23 @@ const SlideOver: React.VFC = () => {
     setOpen(false);
   };
 
+  const handleShareFeedback = () => {
+    openFeedbackModal(true);
+  };
+
+  const renderMenuItems = () => {
+    const items = [];
+    items.push(
+      <PopoverMenuItem
+        key="issue-with-this-item"
+        value="issue-with-this-item"
+        label="Issue With This Item"
+        onClick={handleShareFeedback}
+      />,
+    );
+    return items;
+  };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="fixed inset-0 overflow-hidden z-20" onClose={setOpen}>
@@ -111,11 +134,19 @@ const SlideOver: React.VFC = () => {
                           AIT Worldwide Logistics
                         </h1>
                         <button type="button" onClick={onClickMore}>
-                          <MoreVertical
-                            className="fill-current text-Gray-6"
-                            width={15}
-                            height={15}
-                          />
+                          <Menu as="div" className="relative inline-block z-10 text-left">
+                            <div>
+                              <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
+                                <span className="sr-only">Open options</span>
+                                <MoreVertical
+                                  className="fill-current text-Gray-6"
+                                  width={15}
+                                  height={15}
+                                />
+                              </Menu.Button>
+                            </div>
+                            <PopoverMenu>{renderMenuItems()}</PopoverMenu>
+                          </Menu>
                         </button>
                       </div>
                       <div className="flex flex-col mt-6">
@@ -144,6 +175,13 @@ const SlideOver: React.VFC = () => {
                     </div>
                   </div>
                 </div>
+                {item && (
+                  <FeedBackModal
+                    open={isOpenFeedbackModal}
+                    onClose={() => openFeedbackModal(false)}
+                    feedId={item?.id}
+                  />
+                )}
               </div>
             </Transition.Child>
           </div>
