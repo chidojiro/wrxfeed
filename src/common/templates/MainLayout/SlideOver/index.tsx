@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
+import { useErrorHandler } from 'react-error-boundary';
+
+import { TransLineItem } from '@main/entity';
+import { isApiError } from '@error/utils';
+import EventEmitter, { EventName } from '@main/EventEmitter';
+
+import { useApi } from '@api';
+
 import { ReactComponent as MoreVertical } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
-import { TransLineItem } from '@main/entity';
-// import { useRecoilState } from 'recoil';
-// import { lineItemState } from '@main/states/lineItem.state';
-import EventEmitter, { EventName } from '@main/EventEmitter';
-import dayjs from 'dayjs';
-import { useApi } from '@api';
-import { toast } from 'react-toastify';
-import { isApiError } from '@error/utils';
-import { useErrorHandler } from 'react-error-boundary';
-import { ApiErrorCode } from '@error/types';
 import Loading from '@common/atoms/Loading';
 
 export interface SelectItemProps {
@@ -92,13 +92,9 @@ const SlideOver: React.VFC = () => {
       const res = await ApiClient.getLineItemById(id);
       setItem(res);
     } catch (error: unknown) {
-      toast.error('Can not get this feed 🤦!');
+      toast.error('Can not get details of this item 🤦!');
       if (isApiError(error)) {
-        if (error.code === ApiErrorCode.Notfound) {
-          toast.error('Can not found this item!');
-        } else {
-          errorHandler(error);
-        }
+        errorHandler(error);
       }
     } finally {
       setLoading(false);
