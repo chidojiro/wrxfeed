@@ -4,6 +4,7 @@ import { Dialog, Transition, Menu } from '@headlessui/react';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/organisms/FeedBackModal';
+import { FeedBackType } from '@main/types';
 
 import { ReactComponent as MoreVertical } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
@@ -179,7 +180,8 @@ const SlideOver: React.VFC = () => {
                   <FeedBackModal
                     open={isOpenFeedbackModal}
                     onClose={() => openFeedbackModal(false)}
-                    feedId={item?.id}
+                    itemId={item?.id}
+                    type={FeedBackType.LineItem}
                   />
                 )}
               </div>

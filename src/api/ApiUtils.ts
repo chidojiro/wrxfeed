@@ -548,4 +548,13 @@ export default class ApiUtils implements ApiClient {
     });
     return res.data;
   };
+
+  postFeedBackLineItem = async (id: number, data: FeedBackFormModel): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feedback/line-items/${id}/feedback`,
+      method: 'POST',
+      data,
+    });
+    return res.data;
+  };
 }

@@ -301,7 +301,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
       <FeedBackModal
         open={isOpenFeedbackModal}
         onClose={() => openFeedbackModal(false)}
-        feedId={transaction?.id}
+        itemId={transaction?.id}
       />
       <AttachmentModal
         // transaction={transaction}

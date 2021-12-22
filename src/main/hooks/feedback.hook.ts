@@ -3,7 +3,7 @@ import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { FeedBackFormModel } from '@main/types';
+import { FeedBackFormModel, FeedBackType } from '@main/types';
 
 interface FeedBackModalCallback {
   onSuccess: () => void;
@@ -13,7 +13,7 @@ interface FeedBackModalCallback {
 interface FeedbackHookValues {
   isSent: boolean;
   isLoading: boolean;
-  postFeedback: (feedId: number, data: FeedBackFormModel) => Promise<void>;
+  postFeedback: (type: FeedBackType, itemId: number, data: FeedBackFormModel) => Promise<void>;
 }
 
 export function useFeedBack(callback: FeedBackModalCallback): FeedbackHookValues {
@@ -22,10 +22,14 @@ export function useFeedBack(callback: FeedBackModalCallback): FeedbackHookValues
   const [isLoading, setLoading] = useState(false);
   const [isSent, setSent] = useState(false);
 
-  const postFeedback = async (feedId: number, data: FeedBackFormModel) => {
+  const postFeedback = async (type: FeedBackType, itemId: number, data: FeedBackFormModel) => {
     try {
       setLoading(true);
-      await ApiClient.postFeedBackFeed(feedId, data);
+      if (type === FeedBackType.Rollup) {
+        await ApiClient.postFeedBackFeed(itemId, data);
+      } else {
+        await ApiClient.postFeedBackLineItem(itemId, data);
+      }
       setLoading(false);
       setSent(true);
       callback.onSuccess();
@@ -42,5 +46,6 @@ export function useFeedBack(callback: FeedBackModalCallback): FeedbackHookValues
       }
     }
   };
+
   return { isSent, isLoading, postFeedback };
 }
