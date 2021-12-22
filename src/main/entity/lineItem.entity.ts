@@ -36,6 +36,8 @@ export type TransLineItem = {
   quantityBilled?: number;
   quantityReceived?: number;
   amountFx?: number;
+  amountUsd?: number;
+  rateUsd?: number;
   startDate?: string;
   endDate?: string;
   meta?: UserLineItem;

@@ -8,6 +8,12 @@ import { TransLineItem } from '@main/entity';
 // import { lineItemState } from '@main/states/lineItem.state';
 import EventEmitter, { EventName } from '@main/EventEmitter';
 import dayjs from 'dayjs';
+import { useApi } from '@api';
+import { toast } from 'react-toastify';
+import { isApiError } from '@error/utils';
+import { useErrorHandler } from 'react-error-boundary';
+import { ApiErrorCode } from '@error/types';
+import Loading from '@common/atoms/Loading';
 
 export interface SelectItemProps {
   item: TransLineItem;
@@ -23,19 +29,23 @@ export type LineInfo = {
 
 const SlideOver: React.VFC = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [item, setItem] = useState<TransLineItem>();
+  const ApiClient = useApi();
+  const errorHandler = useErrorHandler();
+
   const rows: LineInfo[] = [
     {
       key: 'Date',
-      value: dayjs(item?.startDate).format('MMM D, YYYY'), // 'Oct 2, 2021',
+      value: dayjs(item?.startDate).format('MMM D, YYYY'),
     },
     {
       key: 'Original Amount',
-      value: `€ ${item?.amountFx}`,
+      value: `${item?.transaction?.currency ?? '...'} ${item?.amountFx}`,
     },
     {
       key: 'Converted Amount',
-      value: `$ ${item?.amountFx}`,
+      value: `$ ${(item?.amountFx ?? 0) * (item?.rateUsd ?? 1)}`,
     },
     {
       key: 'Last Modified',
@@ -43,7 +53,7 @@ const SlideOver: React.VFC = () => {
     },
     {
       key: 'Subsidiary',
-      value: 'Bird Rides Germany GmbH',
+      value: item?.transaction?.subsidiaryName ?? '...',
     },
     {
       key: 'Vendor',
@@ -51,11 +61,11 @@ const SlideOver: React.VFC = () => {
     },
     {
       key: 'Created by',
-      value: 'Jeremy Madriaga',
+      value: item?.transaction?.createdByName ?? '...',
     },
     {
       key: 'Approver',
-      value: 'Austin Marshburn',
+      value: item?.transaction?.billApproverName ?? '...',
     },
   ];
 
@@ -75,6 +85,31 @@ const SlideOver: React.VFC = () => {
       EventEmitter.unsubscribe(EventName.SHOW_SLIDE_OVER, handleOpenSlide);
     };
   }, []);
+
+  const getLineItemDetails = async (id: number) => {
+    try {
+      setLoading(true);
+      const res = await ApiClient.getLineItemById(id);
+      setItem(res);
+    } catch (error: unknown) {
+      toast.error('Can not get this feed 🤦!');
+      if (isApiError(error)) {
+        if (error.code === ApiErrorCode.Notfound) {
+          toast.error('Can not found this item!');
+        } else {
+          errorHandler(error);
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (item?.id && open) {
+      getLineItemDetails(item?.id);
+    }
+  }, [item?.id, open]);
 
   const onClickMore = () => undefined;
   const onClickCloseSlideOver = () => {
@@ -127,7 +162,10 @@ const SlideOver: React.VFC = () => {
                         <p className="text-sm font-regular text-Gray-6 mt-2">{item?.description}</p>
                       </div>
                       <div className="flex flex-col mt-6">
-                        <p className="text-sm font-semibold text-Gray-3">Information</p>
+                        <div className="flex flex-row items-center">
+                          <p className="text-sm font-semibold text-Gray-3">Information</p>
+                          {!!loading && <Loading className="ml-4" width={12} height={12} />}
+                        </div>
                         <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
                           {rows.map((row: LineInfo) => {
                             return (
