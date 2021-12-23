@@ -91,7 +91,9 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
         {dayjs(lineItem?.transDate).format(DATE_FORMAT)}
       </p>
       <p className="text-Gray-6 text-xs font-semibold ml-auto">
-        {`$ ${formatCurrency(lineItem?.amountFx)}`}
+        {lineItem?.amountUsd === null || lineItem?.amountUsd === undefined
+          ? 'Error'
+          : `$${formatCurrency(lineItem?.amountUsd)}`}
       </p>
       {renderMessages()}
     </button>
