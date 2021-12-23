@@ -16,6 +16,7 @@ import TargetPanel from '@main/organisms/TargetPanel';
 import FeedList from '@main/organisms/FeedList';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { scrollToTop } from '@main/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = {
@@ -45,6 +46,7 @@ const CompanyPage: React.VFC = () => {
     upsertNewFeedCount,
     setNewFeedCount,
   } = useFeed(feedFilters);
+
   const newFeedNumber = newFeedCount ? newFeedCount[location.pathname] : 0;
   const handleLoadMore = React.useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -125,6 +127,7 @@ const CompanyPage: React.VFC = () => {
       search: queryString,
     });
     setFilterTitle(value?.name ?? '');
+    scrollToTop();
   };
 
   const clearFilter = (): void => {
@@ -133,12 +136,7 @@ const CompanyPage: React.VFC = () => {
 
   const refetchNewItems = () => {
     setFeedFilters({ ...feedFilters, page: INIT_PAGINATION });
-    if (window.scrollY > 0) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-    }
+    scrollToTop();
     // Clear counter
     upsertNewFeedCount(location.pathname, 0);
     readAllTransactions();

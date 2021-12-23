@@ -19,6 +19,7 @@ import { MainGroups } from '@common/constants';
 import { useQuery } from '@common/hooks';
 import { useFeed } from '@main/hooks/feed.hook';
 import FeedList from '@main/organisms/FeedList';
+import { scrollToTop } from '@main/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -124,6 +125,7 @@ const DepartmentsPage: React.VFC = () => {
       pathname: `/departments/${value?.id.toString()}`,
       search: `?route=${MainGroups.Directories}`,
     });
+    scrollToTop();
   };
 
   const handleFeedsFilter = (
@@ -135,6 +137,7 @@ const DepartmentsPage: React.VFC = () => {
       pathname: location.pathname,
       search: query.toString(),
     });
+    scrollToTop();
   };
 
   const handleFollow: MouseEventHandler<HTMLButtonElement> = () => {

@@ -7,7 +7,6 @@ import Login from '@auth/pages/LoginPage';
 import AcceptInvitation from '@auth/pages/AcceptInvitation';
 
 import Onboard from '@auth/pages/OnboardPage';
-import Overview from '@main/pages/Overview';
 import ForYou from '@main/pages/ForYou';
 import Departments from '@main/pages/Departments';
 import Categories from '@main/pages/Categories';
@@ -54,11 +53,6 @@ const routes: Route = {
   Onboard: {
     path: '/onboarding',
     component: Onboard,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  Overview: {
-    path: '/overview',
-    component: Overview,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   ForYou: {

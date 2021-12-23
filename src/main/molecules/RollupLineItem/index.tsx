@@ -1,10 +1,12 @@
 // import { MessageTextAlt } from '@assets/index';
-import { DATE_FORMAT, formatCurrency } from '@common/utils';
 import React from 'react';
-import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
-import { TransLineItem, Vendor } from '@main/entity';
 import dayjs from 'dayjs';
+
+import { TransLineItem, Vendor } from '@main/entity';
+import EventEmitter, { EventName } from '@main/EventEmitter';
+import { DATE_FORMAT, formatCurrency } from '@common/utils';
 import { useApi } from '@api';
+import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -47,10 +49,18 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
   };
 
-  const onClickLineItemVendor = () => {
+  const onClickLineItemVendor = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     if (onClickVendor && lineItem.vendor) {
       onClickVendor(lineItem.vendor);
     }
+  };
+
+  const onClickLineItem = () => {
+    if (onClick) onClick(lineItem);
+    EventEmitter.dispatch(EventName.SHOW_LINE_ITEM_DETAILS, {
+      item: lineItem,
+    });
   };
 
   const renderVendorName = () => {
@@ -68,22 +78,25 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   };
 
   return (
-    <div
+    <button
+      type="button"
       aria-hidden="true"
       className="flex flex-row w-full items-center pl-2 sm:pl-10 pr-2 sm:pr-2 py-1.5 hover:bg-Gray-12"
-      onClick={() => onClick && onClick(lineItem)}
+      onClick={onClickLineItem}
     >
       {renderNewGreen()}
       {renderVendorName()}
       <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
       <p className="text-Gray-6 text-xs font-normal">
-        {dayjs(lineItem?.createdAt).format(DATE_FORMAT)}
+        {dayjs(lineItem?.transDate).format(DATE_FORMAT)}
       </p>
       <p className="text-Gray-6 text-xs font-semibold ml-auto">
-        {`$ ${formatCurrency(lineItem?.amountFx)}`}
+        {lineItem?.amountUsd === null || lineItem?.amountUsd === undefined
+          ? 'Error'
+          : `$${formatCurrency(lineItem?.amountUsd)}`}
       </p>
       {renderMessages()}
-    </div>
+    </button>
   );
 };
 

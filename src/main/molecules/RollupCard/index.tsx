@@ -373,7 +373,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
       <FeedBackModal
         open={isOpenFeedbackModal}
         onClose={() => openFeedbackModal(false)}
-        feedId={feedItem?.id}
+        itemId={feedItem?.id}
       />
       {lineItems.length > 0 && (
         <AttachmentModal

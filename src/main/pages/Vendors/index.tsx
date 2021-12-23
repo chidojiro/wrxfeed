@@ -15,6 +15,7 @@ import { useQuery } from '@common/hooks';
 import FeedList from '@main/organisms/FeedList';
 import { useFeed } from '@main/hooks/feed.hook';
 import { useApi } from '@api';
+import { scrollToTop } from '@main/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -45,10 +46,6 @@ const VendorsPage: React.VFC = () => {
           forYou: 0,
         },
   );
-
-  useEffect(() => {
-    console.log(`Check feedsFilter = ${JSON.stringify(feedsFilter)}`);
-  }, [feedsFilter]);
 
   const {
     feeds,
@@ -124,6 +121,7 @@ const VendorsPage: React.VFC = () => {
       pathname: location.pathname,
       search: query.toString(),
     });
+    scrollToTop();
   };
 
   const clearFilter = (): void => {

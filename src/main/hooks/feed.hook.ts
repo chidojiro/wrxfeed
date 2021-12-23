@@ -37,7 +37,7 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
         } else {
           setFeeds(res);
         }
-        setHasMore(!!res.length);
+        setHasMore(!!filters.page && filters.page?.limit <= res.length);
       } else {
         setHasMore(false);
       }

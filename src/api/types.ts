@@ -55,6 +55,8 @@ export interface ApiClient {
   getVendorById: (venId: number) => Promise<Vendor>;
   getDepartmentById: (depId: number) => Promise<Department>;
   maskLineItemAsRead: (id: number) => Promise<void>;
+  postFeedBackLineItem: (id: number, data: FeedBackFormModel) => Promise<void>;
+  getLineItemById: (id: number) => Promise<TransLineItem>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
