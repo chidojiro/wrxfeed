@@ -58,7 +58,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
 
   const onClickLineItem = () => {
     if (onClick) onClick(lineItem);
-    EventEmitter.dispatch(EventName.SHOW_SLIDE_OVER, {
+    EventEmitter.dispatch(EventName.SHOW_LINE_ITEM_DETAILS, {
       item: lineItem,
     });
   };
