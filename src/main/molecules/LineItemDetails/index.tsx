@@ -38,6 +38,16 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   item,
 }) => {
   const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
+
+  const getOriginalAmountWithSign = (): string => {
+    if (!item?.transaction?.currency || !item?.amountFx) return '...';
+    const amountWithCurrency = Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: item?.transaction?.currency || '',
+    }).format(item?.amountFx || 0);
+    return amountWithCurrency;
+  };
+
   const rows: LineInfo[] = [
     {
       key: 'Date',
@@ -45,11 +55,11 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     },
     {
       key: 'Original Amount',
-      value: `${item?.transaction?.currency ?? '...'} ${item?.amountFx}`,
+      value: getOriginalAmountWithSign(),
     },
     {
       key: 'Converted Amount',
-      value: `$ ${(item?.amountFx ?? 0) * (item?.rateUsd ?? 1)}`,
+      value: `$${(item.amountUsd || (item?.amountFx ?? 0) * (item?.rateUsd ?? 1)).toFixed(6)}`,
     },
     {
       key: 'Last Modified',
