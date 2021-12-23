@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
+import React, { useState } from 'react';
 import dayjs from 'dayjs';
+import { Menu } from '@headlessui/react';
 
 import { TransLineItem } from '@main/entity';
 import { classNames } from '@common/utils';
@@ -8,6 +9,10 @@ import { classNames } from '@common/utils';
 import { ReactComponent as MoreVertical } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
 import Loading from '@common/atoms/Loading';
+import PopoverMenu from '@main/atoms/PopoverMenu';
+import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
+import FeedBackModal from '@main/organisms/FeedBackModal';
+import { FeedBackType } from '@main/types';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -32,6 +37,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   loading,
   item,
 }) => {
+  const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
   const rows: LineInfo[] = [
     {
       key: 'Date',
@@ -77,6 +83,23 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     return <h1 className="text-base font-semibold text-Gray-3">{vendorName}</h1>;
   };
 
+  const handleShareFeedback = () => {
+    openFeedbackModal(true);
+  };
+
+  const renderMenuItems = () => {
+    const items = [];
+    items.push(
+      <PopoverMenuItem
+        key="issue-with-this-item"
+        value="issue-with-this-item"
+        label="Issue With This Item"
+        onClick={handleShareFeedback}
+      />,
+    );
+    return items;
+  };
+
   return (
     <div className={classNames('flex flex-1 flex-row', className)}>
       <button type="button" onClick={onClickCloseSlideOver} className="flex w-5 h-5 mt-4 mr-5">
@@ -87,7 +110,15 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
           <div className="flex flex-row w-full justify-between">
             {renderVendorName()}
             <button type="button" onClick={onClickMore}>
-              <MoreVertical className="fill-current text-Gray-6" width={15} height={15} />
+              <Menu as="div" className="relative inline-block z-10 text-left">
+                <div>
+                  <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
+                    <span className="sr-only">Open options</span>
+                    <MoreVertical className="fill-current text-Gray-6" width={15} height={15} />
+                  </Menu.Button>
+                </div>
+                <PopoverMenu>{renderMenuItems()}</PopoverMenu>
+              </Menu>
             </button>
           </div>
           <div className="flex flex-col mt-6">
@@ -118,6 +149,14 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
           </div>
         </div>
       </div>
+      {item && (
+        <FeedBackModal
+          open={isOpenFeedbackModal}
+          onClose={() => openFeedbackModal(false)}
+          itemId={item?.id}
+          type={FeedBackType.LineItem}
+        />
+      )}
     </div>
   );
 };

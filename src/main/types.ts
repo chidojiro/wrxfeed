@@ -25,3 +25,8 @@ export interface InviteFormModel {
 export interface FeedBackFormModel {
   content: string;
 }
+
+export enum FeedBackType {
+  Rollup = 1,
+  LineItem = 2,
+}

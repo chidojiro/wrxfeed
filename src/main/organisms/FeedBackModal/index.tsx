@@ -7,21 +7,24 @@ import { EditorState } from 'draft-js';
 import { commentEditorRawParser } from '@main/utils';
 import { classNames } from '@common/utils';
 import LinearProgress from '@common/atoms/LinearProgress';
+import { FeedBackType } from '@main/types';
 
 interface FeedBackModalProps {
   open: boolean;
   onClose: () => void;
-  feedId: number;
+  itemId: number;
   enableMaxChar?: boolean;
   maxChar?: number;
+  type?: FeedBackType;
 }
 
 const FeedBackModal: React.VFC<FeedBackModalProps> = ({
   open,
   onClose,
-  feedId,
+  itemId,
   enableMaxChar = false,
   maxChar = 20000,
+  type = FeedBackType.Rollup,
 }) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const [feedback, setFeedback] = React.useState<string>('');
@@ -47,7 +50,7 @@ const FeedBackModal: React.VFC<FeedBackModalProps> = ({
       toast.error('Invalid feedback content!');
       return;
     }
-    postFeedback(feedId, { content: feedback });
+    postFeedback(type, itemId, { content: feedback });
   };
 
   const onChangeTextContent = (content?: EditorState): void => {
