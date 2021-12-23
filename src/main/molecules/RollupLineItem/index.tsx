@@ -88,7 +88,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
       {renderVendorName()}
       <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
       <p className="text-Gray-6 text-xs font-normal">
-        {dayjs(lineItem?.createdAt).format(DATE_FORMAT)}
+        {dayjs(lineItem?.transDate).format(DATE_FORMAT)}
       </p>
       <p className="text-Gray-6 text-xs font-semibold ml-auto">
         {`$ ${formatCurrency(lineItem?.amountFx)}`}

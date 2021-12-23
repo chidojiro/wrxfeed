@@ -56,6 +56,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
     reset,
     setValue,
     getValues,
+    setFocus,
     watch,
     formState: { isSubmitted },
   } = useForm<CommentFormModel>({
@@ -92,8 +93,10 @@ const CommentBox: React.VFC<CommentFormProps> = ({
   useEffect(() => {
     if (isSubmitted) {
       reset();
+      // Waiting for reset form is completed. Seem like it's async
+      setTimeout(() => setFocus('content'));
     }
-  }, [isSubmitted, reset]);
+  }, [isSubmitted, reset, setFocus]);
 
   useEffect(() => {
     if (onChange) {
@@ -155,6 +158,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
           control={control}
           render={({ field }) => (
             <CommentInput
+              ref={field.ref}
               autoFocus={alwaysFocus}
               onChange={field.onChange}
               editorState={field.value as EditorState}

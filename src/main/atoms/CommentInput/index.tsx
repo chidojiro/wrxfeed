@@ -1,4 +1,12 @@
-import React, { KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { convertToRaw, DraftHandleValue, EditorProps, EditorState, KeyBindingUtil } from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
@@ -9,6 +17,7 @@ import createMentionPlugin, {
 } from '@draft-js-plugins/mention';
 import createLinkifyPlugin from '@draft-js-plugins/linkify';
 import MentionEntry from '@main/atoms/MentionEntry';
+import { useCombinedRefs } from '@common/hooks/useCombinedRefs';
 
 const { isSoftNewlineEvent } = KeyBindingUtil;
 
@@ -27,14 +36,12 @@ interface CommentInputProps extends EditorProps {
   autoFocus?: boolean;
 }
 
-const CommentInput: React.VFC<CommentInputProps> = ({
-  onEnterPress,
-  mentions,
-  onChange,
-  autoFocus,
-  ...rest
-}) => {
+const CommentInput: React.ForwardRefRenderFunction<Editor, CommentInputProps> = (
+  { onEnterPress, mentions, onChange, autoFocus, ...rest },
+  ref,
+) => {
   const editorRef = useRef<Editor>(null);
+  const combinedRef = useCombinedRefs(ref, editorRef);
   const containerRef = useRef<HTMLDivElement>(null);
   const [openMention, setOpenMention] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions || []);
@@ -69,11 +76,11 @@ const CommentInput: React.VFC<CommentInputProps> = ({
   }, []);
 
   useEffect(() => {
-    if (editorRef.current && autoFocus) {
+    if (combinedRef?.current && autoFocus) {
       // Waiting for initializing mentions
-      setTimeout(() => editorRef.current?.focus(), 200);
+      setTimeout(() => combinedRef.current?.focus(), 200);
     }
-  }, [autoFocus]);
+  }, [autoFocus, combinedRef]);
 
   const handleReturn = (event: KeyboardEvent): DraftHandleValue => {
     if (event.key === 'Enter' && !isSoftNewlineEvent(event)) {
@@ -111,11 +118,11 @@ const CommentInput: React.VFC<CommentInputProps> = ({
     <div
       ref={containerRef}
       className="editor hide-scrollbar"
-      onClick={() => editorRef.current?.focus()}
+      onClick={() => combinedRef.current?.focus()}
       aria-hidden="true"
     >
       <Editor
-        ref={editorRef}
+        ref={combinedRef}
         handleReturn={handleReturn}
         editorKey="editor"
         plugins={plugins}
@@ -133,4 +140,4 @@ const CommentInput: React.VFC<CommentInputProps> = ({
   );
 };
 
-export default React.memo(CommentInput);
+export default React.memo(forwardRef(CommentInput));
