@@ -59,7 +59,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     },
     {
       key: 'Converted Amount',
-      value: `$${(item.amountUsd || (item?.amountFx ?? 0) * (item?.rateUsd ?? 1)).toFixed(6)}`,
+      value: `$${(item.amountUsd || (item?.amountFx ?? 0) * (item?.rateUsd ?? 1)).toFixed(2)}`,
     },
     {
       key: 'Last Modified',
