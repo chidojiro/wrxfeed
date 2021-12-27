@@ -63,7 +63,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     },
     {
       key: 'Last Modified',
-      value: dayjs(item?.endDate).format('MM/D/YYYY h:mmA'), // '10/2/2021 at 3:52PM PST',
+      value: `${dayjs(item?.endDate).format('MM/D/YYYY h:mmA')} PST`,
     },
     {
       key: 'Subsidiary',
@@ -133,7 +133,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
           </div>
           <div className="flex flex-col mt-6">
             <p className="text-sm font-semibold text-Gray-3">Description</p>
-            <p className="text-sm font-regular text-Gray-6 mt-2">{item?.description}</p>
+            <p className="text-sm font-regular text-Gray-6 mt-2 max-h-72 text-ellipsis">
+              {item?.description}
+            </p>
           </div>
           <div className="flex flex-col mt-6">
             <div className="flex flex-row items-center">
@@ -142,13 +144,14 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
             </div>
             <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
               {rows.map((row: LineInfo) => {
+                if (!loading && (row?.value === null || row?.value === undefined)) return null;
                 return (
                   <div
-                    key={row.key}
+                    key={row?.key}
                     className="flex w-full h-11 flex-row items-center justify-between border-b border-b-Gray-28"
                   >
-                    <p className="text-Gray-6 text-sm">{row.key}</p>
-                    <p className="text-Gray-3 text-sm font-semibold">{row.value}</p>
+                    <p className="text-Gray-6 text-sm">{row?.key}</p>
+                    <p className="text-Gray-3 text-sm font-semibold truncate">{row?.value}</p>
                   </div>
                 );
               })}
