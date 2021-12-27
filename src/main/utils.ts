@@ -290,3 +290,7 @@ export const scrollToTop = (): void => {
     });
   }
 };
+
+export const isEmptyOrSpaces = (str: string): boolean => {
+  return str === undefined || str === null || str.length === 0 || str.match(/^ *$/) !== null;
+};
