@@ -13,6 +13,7 @@ import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/organisms/FeedBackModal';
 import { FeedBackType } from '@main/types';
+import { isEmptyOrSpaces } from '@main/utils';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -144,7 +145,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
             </div>
             <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
               {rows.map((row: LineInfo) => {
-                if (!loading && (row?.value === null || row?.value === undefined)) return null;
+                if (!loading && isEmptyOrSpaces(row?.value)) return null;
                 return (
                   <div
                     key={row?.key}
