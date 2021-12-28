@@ -1,26 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/accessible-emoji */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { useHistory, useParams } from 'react-router-dom';
 import RollupCard from '@main/molecules/RollupCard';
-import { FeedItem } from '@main/entity';
+import { Category, Department, FeedItem, Vendor } from '@main/entity';
 import { useApi } from '@api';
 import { isApiError } from '@error/utils';
 import { useErrorHandler } from 'react-error-boundary';
 import { toast } from 'react-toastify';
 import Loading from '@common/atoms/Loading';
 import { ApiErrorCode } from '@error/types';
+import { MainGroups } from '@common/constants';
 
 const FeedPage: React.VFC = () => {
   const history = useHistory();
   const ApiClient = useApi();
   const { id: feedId } = useParams<{ id: string }>();
-  const [feedItem, setFeedItem] = React.useState<FeedItem | undefined>();
-  const [isLoading, setLoading] = React.useState<boolean>(false);
+  const [feedItem, setFeedItem] = useState<FeedItem | undefined>();
+  const [isLoading, setLoading] = useState<boolean>(false);
   const errorHandler = useErrorHandler();
 
   const getFeedItem = async (id: number) => {
@@ -42,12 +43,37 @@ const FeedPage: React.VFC = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     getFeedItem(parseInt(feedId, 10));
   }, [feedId]);
 
   const onClickGoBack = (): void => {
     history.push('/notifications');
+  };
+
+  const onClickCategory = (category?: Category) => {
+    history.push({
+      pathname: `/categories/${category?.id.toString()}`,
+      search: `?route=${MainGroups.Directories}`,
+    });
+  };
+  const onClickDepartment = (department?: Department) => {
+    history.push({
+      pathname: `/departments/${department?.id.toString()}`,
+      search: `?route=${MainGroups.Directories}`,
+    });
+  };
+  const onClickRootDept = (rootDept?: Department) => {
+    history.push({
+      pathname: `/departments/${rootDept?.id.toString()}`,
+      search: `?route=${MainGroups.Directories}`,
+    });
+  };
+  const onClickVendor = (vendor?: Vendor) => {
+    history.push({
+      pathname: `/vendors/${vendor?.id.toString()}`,
+      search: `?route=${MainGroups.Directories}`,
+    });
   };
 
   const renderFeed = () => {
@@ -74,7 +100,13 @@ const FeedPage: React.VFC = () => {
     return (
       <div className="w-full h-full overflow-scroll hide-scrollbar">
         <ul>
-          <RollupCard feedItem={feedItem} />
+          <RollupCard
+            onClickCategory={onClickCategory}
+            onClickDepartment={onClickDepartment}
+            onClickRootDept={onClickRootDept}
+            onClickVendor={onClickVendor}
+            feedItem={feedItem}
+          />
         </ul>
       </div>
     );
