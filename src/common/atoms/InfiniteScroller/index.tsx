@@ -26,7 +26,7 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
   const scrollerRef = useRef<HTMLDivElement>(null);
   const endAnchorRef = useRef<HTMLDivElement>(null);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
-  const isEndReached = useIntersection(endAnchorRef.current || undefined, `${DEFAULT_THRESHOLD}px`); // Trigger if 200px is visible from the element
+  const isEndReached = useIntersection(endAnchorRef.current || undefined, `${threshold}px`); // Trigger if 200px is visible from the element
   const loadMoreFunc = onLoadMore || (() => undefined);
   const handleLoadMoreTrigger = useDebounce(loadMoreFunc, DEBOUNCE_WAIT, []);
   const handleScroll = useCallback(() => {

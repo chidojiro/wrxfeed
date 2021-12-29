@@ -50,6 +50,7 @@ const FeedList: React.VFC<FeedListProps> = ({
     <InfiniteScroller
       className="pb-4 sm:pb-12 mr-0.5"
       style={style}
+      threshold={500}
       onLoadMore={onLoadMore}
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}
