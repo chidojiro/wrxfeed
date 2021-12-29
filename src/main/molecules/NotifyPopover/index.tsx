@@ -28,7 +28,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   showNumberNotify = false,
   useDropDown = true,
 }) => {
-  const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
+  const [filter] = React.useState<Pagination>({ offset: 0, limit: useDropDown ? LIMIT : 1 }); // Reduce loading time if we don't need notification popup
   const {
     notifications,
     isLoading,
