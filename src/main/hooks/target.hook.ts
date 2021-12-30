@@ -1,11 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useCallback, useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { toast } from 'react-toastify';
+
 import { useApi } from '@api';
+import { targetState } from '@main/states/target.state';
 import { TargetFilter, PostTargetParams, PutTargetParams } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { Target } from '@main/entity';
-import { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 
 interface TargetCallback {
   onSuccess: () => void;
@@ -25,7 +28,8 @@ export function useTarget(
   cbPost: TargetCallback,
   cbPut: TargetCallback,
 ): TargetHookValues {
-  const [targets, setTargets] = useState<Target[]>([]);
+  const [targets, setTargets] = useRecoilState<Target[]>(targetState);
+  // const [targets, setTargets] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isGetTargets, setGetTargets] = useState<boolean>(false);
   const [isPostTarget, setPostTarget] = useState<boolean>(false);
@@ -33,7 +37,6 @@ export function useTarget(
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
-  // Monthly targets - stack targets by the largest monthly spend
   const stackTargetsByTheLargestMonthlySpend = (data: Target[]): Target[] => {
     let targetStacked = data.sort((a: Target, b: Target) => (b?.total ?? 0) - (a?.total ?? 0));
     targetStacked = data.sort(
