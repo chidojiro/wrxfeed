@@ -52,7 +52,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   const rows: LineInfo[] = [
     {
       key: 'Date',
-      value: dayjs(item?.startDate).format('MMM D, YYYY'),
+      value: dayjs(item?.transDate).format('MMM D, YYYY'),
     },
     {
       key: 'Original Amount',
@@ -62,10 +62,10 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       key: 'Converted Amount',
       value: `$${(item.amountUsd || (item?.amountFx ?? 0) * (item?.rateUsd ?? 1)).toFixed(2)}`,
     },
-    {
-      key: 'Last Modified',
-      value: `${dayjs(item?.endDate).format('MM/D/YYYY h:mmA')} PST`,
-    },
+    // {
+    //   key: 'Last Modified',
+    //   value: `${dayjs(item?.endDate).format('MM/D/YYYY h:mmA')} PST`,
+    // },
     {
       key: 'Subsidiary',
       value: item?.transaction?.subsidiaryName ?? '...',
