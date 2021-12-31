@@ -7,6 +7,7 @@ import { Category, FeedItem } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
+import { USE_CONTACT_BUTTON_MESSAGE } from '@error/errorMessages';
 
 interface FeedHookValues {
   feeds: FeedItem[];
@@ -43,7 +44,7 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
       }
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error("Can't get rollups 🤦!");
+        toast.error(USE_CONTACT_BUTTON_MESSAGE);
       } else {
         await errorHandler(error);
       }

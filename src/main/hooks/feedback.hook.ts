@@ -4,6 +4,7 @@ import { isBadRequest } from '@error/utils';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { FeedBackFormModel, FeedBackType } from '@main/types';
+import { SEND_EMAIL_MESSAGE } from '@error/errorMessages';
 
 interface FeedBackModalCallback {
   onSuccess: () => void;
@@ -33,14 +34,14 @@ export function useFeedBack(callback: FeedBackModalCallback): FeedbackHookValues
       setLoading(false);
       setSent(true);
       callback.onSuccess();
-      toast.success('Send your feedback successfully!');
+      toast.success('Your feedback has been successfully sent!');
     } catch (error) {
       setLoading(false);
       setSent(false);
       if (callback.onError) {
         callback.onError(error);
       } else if (isBadRequest(error)) {
-        toast.error('Can not send your feedback!');
+        toast.error(SEND_EMAIL_MESSAGE);
       } else {
         await errorHandler(error);
       }
