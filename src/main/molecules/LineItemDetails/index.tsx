@@ -159,7 +159,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
             </ul>
           </div>
           <div className="mt-auto flex flex-row justify-end">
-            <p className="text-Gray-11 text-xs">{item?.id}</p>
+            <p className="text-Gray-11 text-xs">{item?.transaction?.id ?? '...'}</p>
           </div>
         </div>
       </div>
