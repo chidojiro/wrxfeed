@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { PostTargetParams, PutTargetParams, TargetFilter } from '@api/types';
 import { BasicsDownSmall } from '@assets';
 import Loading from '@common/atoms/Loading';
@@ -5,13 +7,12 @@ import { Target } from '@main/entity';
 import { useTarget } from '@main/hooks';
 import { TargetRow } from '@main/molecules';
 import { classNames } from '@common/utils';
-import React from 'react';
 
 export interface TargetPanelProps {
   title?: string;
 }
 
-const GET_TARGETS_LIMIT = 10;
+const GET_TARGETS_LIMIT = 30;
 
 const initFilter = {
   offset: 0,
@@ -23,7 +24,6 @@ const initFilter = {
 
 const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const [filter, setFilter] = React.useState<TargetFilter>(initFilter);
-
   const [isExpanded, setExpanded] = React.useState<boolean>(false);
   const onPostSuccess = () => {
     setFilter({
@@ -44,6 +44,12 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     { onSuccess: onPostSuccess, onError: onPostError },
     { onSuccess: onPutSuccess, onError: onPutError },
   );
+
+  // React.useEffect(() => {
+  //   if (targets.length > 0) {
+  //     setTargetsRecoil(targets);
+  //   }
+  // }, [setTargetsRecoil, targets]);
 
   const handleClickExpand = () => {
     if (isGetTargets) return;
@@ -73,7 +79,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   };
 
   const renderTargets = () => {
-    if (isGetTargets) {
+    if (isGetTargets && targets?.length === 0) {
       return (
         <div className="flex h-32 w-full justify-center items-center">
           <Loading width={15} height={15} />
