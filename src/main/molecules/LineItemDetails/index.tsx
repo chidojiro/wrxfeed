@@ -79,6 +79,12 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       value: item?.transaction?.createdByName ?? '...',
     },
     {
+      key: 'Created at',
+      value: item?.transaction?.createdAt
+        ? `${dayjs(item?.transaction?.createdAt).format('MM/DD/YYYY h:mmA')}`
+        : '',
+    },
+    {
       key: 'Approver',
       value: item?.transaction?.billApproverName ?? '...',
     },
