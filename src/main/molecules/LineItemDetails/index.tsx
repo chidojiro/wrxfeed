@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { Menu } from '@headlessui/react';
 
 import { TransLineItem } from '@main/entity';
-import { classNames } from '@common/utils';
+import { classNames, formatCurrency } from '@common/utils';
 
 import { ReactComponent as MoreVertical } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
@@ -60,7 +60,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     },
     {
       key: 'Converted Amount',
-      value: `$${(item.amountUsd || (item?.amountFx ?? 0) * (item?.rateUsd ?? 1)).toFixed(2)}`,
+      value: `$${formatCurrency(item?.amountUsd)}`,
     },
     // {
     //   key: 'Last Modified',
