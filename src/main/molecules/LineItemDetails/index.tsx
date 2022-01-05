@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { Menu } from '@headlessui/react';
 
 import { TransLineItem } from '@main/entity';
-import { classNames } from '@common/utils';
+import { classNames, formatCurrency } from '@common/utils';
 
 import { ReactComponent as MoreVertical } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
@@ -52,7 +52,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   const rows: LineInfo[] = [
     {
       key: 'Date',
-      value: dayjs(item?.startDate).format('MMM D, YYYY'),
+      value: dayjs(item?.transDate).format('MMM D, YYYY'),
     },
     {
       key: 'Original Amount',
@@ -60,12 +60,12 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     },
     {
       key: 'Converted Amount',
-      value: `$${(item.amountUsd || (item?.amountFx ?? 0) * (item?.rateUsd ?? 1)).toFixed(2)}`,
+      value: `$${formatCurrency(item?.amountUsd)}`,
     },
-    {
-      key: 'Last Modified',
-      value: `${dayjs(item?.endDate).format('MM/D/YYYY h:mmA')} PST`,
-    },
+    // {
+    //   key: 'Last Modified',
+    //   value: `${dayjs(item?.endDate).format('MM/D/YYYY h:mmA')} PST`,
+    // },
     {
       key: 'Subsidiary',
       value: item?.transaction?.subsidiaryName ?? '...',
@@ -159,7 +159,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
             </ul>
           </div>
           <div className="mt-auto flex flex-row justify-end">
-            <p className="text-Gray-11 text-xs">{item?.id}</p>
+            <p className="text-Gray-11 text-xs">{item?.transaction?.id ?? '...'}</p>
           </div>
         </div>
       </div>
