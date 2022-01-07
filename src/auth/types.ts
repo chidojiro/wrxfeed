@@ -2,9 +2,9 @@ import { Company } from '@main/entity';
 
 export interface Profile {
   company?: Company;
-  id: number;
-  email: string;
-  fullName: string;
+  id?: number;
+  email?: string;
+  fullName?: string;
   title?: string;
   department?: string;
   signupDate?: string;
