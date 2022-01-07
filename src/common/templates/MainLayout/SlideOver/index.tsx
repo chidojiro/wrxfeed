@@ -6,12 +6,11 @@ import { useErrorHandler } from 'react-error-boundary';
 
 import { TransLineItem } from '@main/entity';
 import { isApiError } from '@error/utils';
-
+import { classNames } from '@common/utils';
 import { useApi } from '@api';
 
 import LineItemDetails from '@main/molecules/LineItemDetails';
 import EventEmitter, { EventName } from '@main/EventEmitter';
-import { classNames } from '@common/utils';
 
 export interface SelectItemProps {
   item: TransLineItem;
@@ -33,10 +32,16 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
-  const handleOpenSlide = (props: SelectItemProps | unknown) => {
+  const handleOpenSlide = (
+    props: SelectItemProps | unknown,
+    curItem: TransLineItem | undefined,
+  ) => {
     if (props && typeof props === 'object') {
       const lineItemProps = props as SelectItemProps;
-      setItem(lineItemProps.item);
+      setItem({
+        ...curItem,
+        ...lineItemProps.item,
+      });
       if (!open) {
         setOpen(true);
       }
@@ -44,11 +49,13 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
   };
 
   useEffect(() => {
-    EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, handleOpenSlide);
+    EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) => handleOpenSlide(prop, item));
     return () => {
-      EventEmitter.unsubscribe(EventName.SHOW_LINE_ITEM_DETAILS, handleOpenSlide);
+      EventEmitter.unsubscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) =>
+        handleOpenSlide(prop, item),
+      );
     };
-  }, []);
+  }, [item]);
 
   const getLineItemDetails = async (id: number) => {
     try {
