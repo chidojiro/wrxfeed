@@ -149,10 +149,15 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                 return (
                   <div
                     key={row?.key}
-                    className="flex w-full h-11 flex-row items-center justify-between border-b border-b-Gray-28"
+                    className="flex w-full py-3.5 max-h-32 flex-row items-center justify-between border-b border-b-Gray-28"
                   >
-                    <p className="text-Gray-6 text-sm">{row?.key}</p>
-                    <p className="text-Gray-3 text-sm font-semibold truncate">{row?.value}</p>
+                    <p className="text-Gray-6 text-sm min-w-max">{row?.key}</p>
+                    <p
+                      style={{ textOverflow: 'ellipsis' }}
+                      className="text-Gray-3 text-sm max-h-24 text-right font-semibold overflow-hidden text-ellipsis ml-6"
+                    >
+                      {row?.value}
+                    </p>
                   </div>
                 );
               })}
