@@ -79,7 +79,7 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = tr
               <div className="flex justify-center md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-2">
                 <div className="flex-shrink-0 flex items-center">
                   <h1 className="text-lg font-bold text-white">
-                    {identity?.company?.name || 'Gravity'}
+                    {identity?.company?.name || '...'}
                   </h1>
                 </div>
               </div>
