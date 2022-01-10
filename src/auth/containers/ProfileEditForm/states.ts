@@ -7,11 +7,17 @@ export const refreshProfileFlag = atom<number>({
   default: 0,
 });
 
-export const profileState = selector<Profile>({
+export const profileState = atom<Profile>({
   key: 'admin/profile',
-  get: async ({ get }) => {
-    get(refreshProfileFlag);
-    const apiClient = await getApiClient();
-    return apiClient.getProfile();
-  },
+  default: selector({
+    key: 'main/profile/default',
+    get: async () => {
+      try {
+        const apiClient = await getApiClient();
+        return await apiClient.getProfile();
+      } catch {
+        return {};
+      }
+    },
+  }),
 });

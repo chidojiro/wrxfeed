@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Popover } from '@headlessui/react';
+import { useRecoilValue } from 'recoil';
+import { useHistory } from 'react-router-dom';
+import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+
 import { classNames } from '@common/utils';
 import { useIdentity } from '@identity/hooks';
 import { UserProfilePopover, NotifyPopover } from '@main/molecules';
 import { InviteModal } from '@main/organisms';
 import { UserPlusIcon } from '@assets/index';
-import SearchBar from '@common/molecules/SearchBar';
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 import { Profile } from '@auth/types';
-import { useRecoilValue } from 'recoil';
 import { profileState } from '@auth/containers/ProfileEditForm/states';
-import { useHistory } from 'react-router-dom';
+import SearchBar from '@common/molecules/SearchBar';
 import SideBar from '../SideBar';
 
 interface NavBarProps {
