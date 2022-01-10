@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { PostTargetParams, PutTargetParams, TargetFilter } from '@api/types';
 import { BasicsDownSmall } from '@assets';
@@ -23,8 +23,8 @@ const initFilter = {
 };
 
 const TargetPanel: React.VFC<TargetPanelProps> = () => {
-  const [filter, setFilter] = React.useState<TargetFilter>(initFilter);
-  const [isExpanded, setExpanded] = React.useState<boolean>(false);
+  const [filter, setFilter] = useState<TargetFilter>(initFilter);
+  const [isExpanded, setExpanded] = useState<boolean>(false);
   const onPostSuccess = () => {
     setFilter({
       ...initFilter,
@@ -44,12 +44,6 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     { onSuccess: onPostSuccess, onError: onPostError },
     { onSuccess: onPutSuccess, onError: onPutError },
   );
-
-  // React.useEffect(() => {
-  //   if (targets.length > 0) {
-  //     setTargetsRecoil(targets);
-  //   }
-  // }, [setTargetsRecoil, targets]);
 
   const handleClickExpand = () => {
     if (isGetTargets) return;
