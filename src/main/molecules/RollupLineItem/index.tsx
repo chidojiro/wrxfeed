@@ -91,7 +91,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
       type="button"
       aria-hidden="true"
       className={classNames(
-        'flex flex-row w-full items-center pl-2 sm:pl-10 pr-2 sm:pr-2 py-1.5 hover:bg-Gray-12',
+        'flex flex-row w-full items-center pl-2 sm:pl-10 pr-2 sm:pr-2 py-1.5 hover:bg-Gray-12 z-30 relative',
         bgColor,
       )}
       onClick={onClickLineItem}

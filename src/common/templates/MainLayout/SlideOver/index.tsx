@@ -1,16 +1,19 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useErrorHandler } from 'react-error-boundary';
 import { useRecoilState } from 'recoil';
-
+// types
 import { TransLineItem } from '@main/entity';
 import { isApiError } from '@error/utils';
 import { classNames } from '@common/utils';
+// hooks and states
 import { useApi } from '@api';
 import { slideOverOpenState } from '@main/states/slideOver.state';
-
+// components
 import LineItemDetails from '@main/molecules/LineItemDetails';
 import EventEmitter, { EventName } from '@main/EventEmitter';
 
@@ -31,6 +34,7 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
   const [open, setOpen] = useRecoilState(slideOverOpenState);
   const [loading, setLoading] = useState<boolean>(false);
   const [item, setItem] = useState<TransLineItem>();
+
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
@@ -65,13 +69,17 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
       const res = await ApiClient.getLineItemById(id);
       setItem(res);
     } catch (error: unknown) {
-      toast.error('Can not get details of this item 🤦!');
+      toast.error(JSON.stringify(error));
       if (isApiError(error)) {
         errorHandler(error);
       }
     } finally {
       setLoading(false);
     }
+  };
+
+  const onClickOverlay = () => {
+    setOpen(false);
   };
 
   useEffect(() => {
@@ -82,9 +90,10 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <div className={classNames('absolute right-0 max-w-md overflow-hidden z-20', className)}>
+      <div className={classNames('absolute inset-0 overflow-hidden z-10', className)}>
         {/* <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" /> */}
-        <div className="fixed inset-y-0 right-0 max-w-md flex">
+        <div role="alertdialog" className="absolute z-10 inset-0" onClick={onClickOverlay} />
+        <div className="fixed inset-y-0 z-20 right-0 max-w-md flex">
           <Transition.Child
             as={Fragment}
             enter="transform transition ease-in-out duration-200 sm:duration-300"
