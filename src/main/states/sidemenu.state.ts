@@ -17,32 +17,31 @@ export const menuItemsValue = selector<GroupTab[]>({
   key: 'main/sidemenu',
   get: ({ get }) => {
     const menu = cloneDeep(MainMenu);
-    if (ENABLE_SUBSCRIPTION_SIDE_BAR) {
-      const subscription = get(subscriptionState);
-      const subscriptionMenuItems = Object.keys(subscription).reduce<LeftTab[]>(
-        (list, key) => [
-          ...list,
-          ...(subscription[key as keyof Subscription]?.map(
-            (channel: Department | Category | Vendor): LeftTab => ({
-              name: channel.name,
-              location: {
-                pathname: `/${key}/${channel.id}`,
-                search: `?route=${MainGroups.Feeds}`,
-              },
-              icon: null,
-              subscription: {
-                type: key as keyof Subscription,
-                item: channel,
-              },
-              removable: true,
-              strict: true,
-            }),
-          ) || []),
-        ],
-        [],
-      );
-      menu[0].tabs.push(...subscriptionMenuItems);
-    }
+    if (!ENABLE_SUBSCRIPTION_SIDE_BAR) return menu;
+    const subscription = get(subscriptionState);
+    const subscriptionMenuItems = Object.keys(subscription).reduce<LeftTab[]>(
+      (list, key) => [
+        ...list,
+        ...(subscription[key as keyof Subscription]?.map(
+          (channel: Department | Category | Vendor): LeftTab => ({
+            name: channel.name,
+            location: {
+              pathname: `/${key}/${channel.id}`,
+              search: `?route=${MainGroups.Feeds}`,
+            },
+            icon: null,
+            subscription: {
+              type: key as keyof Subscription,
+              item: channel,
+            },
+            removable: true,
+            strict: true,
+          }),
+        ) || []),
+      ],
+      [],
+    );
+    menu[0].tabs.push(...subscriptionMenuItems);
     return menu;
   },
 });
