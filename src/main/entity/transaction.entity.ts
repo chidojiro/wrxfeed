@@ -24,6 +24,10 @@ export type Vendor = {
   name: string;
 };
 
+export type TranMeta = {
+  isRead: boolean;
+};
+
 export type Transaction = {
   id: number;
   status?: STATUS;
@@ -33,9 +37,35 @@ export type Transaction = {
   category: Category;
   vendor: Vendor;
   currency: string;
-  amount: number;
+  amountFx: number;
   commentCount: number;
   createdAt?: string;
   updatedAt?: string;
   deletedAt?: string;
+  meta?: TranMeta;
+  externalId?: string;
+  recordType?: string;
+  documentNumber?: string;
+  subsidiaryName?: string;
+  subsidiaryId?: string;
+  vendorName?: string;
+  vendorId?: string;
+  requestorName?: string;
+  requestorId?: string;
+  billApproverName?: string;
+  billApproverId?: number;
+  createdByName?: string;
+  createdById?: string;
+  createdFrom?: string;
+  externalCreatedAt?: string;
+  exchangeRate?: number;
+  memo?: string;
+  terms?: string;
+  dueDate?: string;
+  poInternalId?: string;
+  expenseReportId?: string;
+  jounalEntryId?: string;
+  nextApproverName?: string;
+  nextApproverId?: string;
+  internalMemo?: string;
 };

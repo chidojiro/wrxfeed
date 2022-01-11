@@ -271,7 +271,7 @@ export const nFormatter = (num: number, withCurrency = '$'): string => {
   if (positiveNum >= 1000000000) {
     return `${isNegative}${withCurrency}${(positiveNum / 1000000000)
       .toFixed(1)
-      .replace(/\.0$/, '')}G`;
+      .replace(/\.0$/, '')}B`;
   }
   if (positiveNum >= 1000000) {
     return `${isNegative}${withCurrency}${(positiveNum / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
@@ -280,4 +280,17 @@ export const nFormatter = (num: number, withCurrency = '$'): string => {
     return `${isNegative}${withCurrency}${(positiveNum / 1000).toFixed(1).replace(/\.0$/, '')}K`;
   }
   return `${isNegative}${withCurrency}${num}`;
+};
+
+export const scrollToTop = (): void => {
+  if (window.scrollY > 0) {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+};
+
+export const isEmptyOrSpaces = (str: string): boolean => {
+  return str === undefined || str === null || str.length === 0 || str.match(/^ *$/) !== null;
 };

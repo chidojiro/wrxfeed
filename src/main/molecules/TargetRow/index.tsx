@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Target } from '@main/entity';
 import { BasicsEditCircle, BasicsXSmall } from '@assets';
 import { PostTargetParams, PutTargetParams } from '@api/types';
@@ -24,19 +24,19 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   isPutTarget,
   isPostTarget,
 }) => {
-  const [isEdit, setEdit] = React.useState<boolean>(false);
-  const [amount, setAmount] = React.useState<string>('');
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [isEdit, setEdit] = useState<boolean>(false);
+  const [amount, setAmount] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isPutTarget || !isPostTarget) {
       setLoading(false);
       setEdit(false);
     }
   }, [isPutTarget, isPostTarget]);
 
-  const deptBgClass = React.useMemo(() => getDepartmentBgColor(target?.name ?? ''), [target?.name]);
+  const deptBgClass = useMemo(() => getDepartmentBgColor(target?.name ?? ''), [target?.name]);
   const isActive = (target?.amount ?? 0) > 0 && target?.id !== null;
 
   const handlePostTarget = (amountInput: number) => {

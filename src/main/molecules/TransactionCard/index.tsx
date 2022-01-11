@@ -16,7 +16,7 @@ import CommentItem from '@main/molecules/CommentItem';
 import CommentRemaining from '@main/atoms/CommentRemaining';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
-import FeedBackModal from '@main/organisms/FeelBackModal';
+import FeedBackModal from '@main/organisms/FeedBackModal';
 import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 // Icons
@@ -172,9 +172,9 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     }
     items.push(
       <PopoverMenuItem
-        key="share-feedback"
-        value="share-feedback"
-        label="Share Feedback"
+        key="issue-with-this-item"
+        value="issue-with-this-item"
+        label="Issue With This Item"
         onClick={handleShareFeedback}
       />,
     );
@@ -218,7 +218,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                   id={`question-title-${transaction.id}`}
                   className="text-base font-semibold text-Gray-2 mr-3"
                 >
-                  {`$ ${formatCurrency(transaction.amount)}`}
+                  {`$ ${formatCurrency(transaction?.amountFx)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
@@ -301,10 +301,10 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
       <FeedBackModal
         open={isOpenFeedbackModal}
         onClose={() => openFeedbackModal(false)}
-        transactionId={transaction.id}
+        itemId={transaction?.id}
       />
       <AttachmentModal
-        transaction={transaction}
+        // transaction={transaction}
         open={!!attachFileComment}
         file={attachFileComment}
         mentionData={mentions}

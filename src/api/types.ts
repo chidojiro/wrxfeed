@@ -11,6 +11,7 @@ import {
   Target,
   Subscription,
   FeedItem,
+  TransLineItem,
 } from '@main/entity';
 import {
   AuthProfile,
@@ -36,15 +37,27 @@ export interface ApiClient {
   acceptInvitation: (id: string) => Promise<void>;
   // Feed
   getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
-  getUnreadTransactionCount: (filters?: TransactionFilter) => Promise<number>;
+  getUnreadLineItemsCount: (filters?: FeedFilters) => Promise<number>;
   readAllTransactions: () => Promise<void>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: AddCommentParams) => Promise<Comment>;
   deleteComment: (commentId: number) => Promise<void>;
   editComment: (commentId: number, data: AddCommentParams) => Promise<void>;
   getTransactionById: (id: number) => Promise<Transaction>;
-  getFeeds: (page: Pagination) => Promise<FeedItem[]>;
+  getFeeds: (filters: FeedFilters) => Promise<FeedItem[]>;
   getFeedItemTransactions: (id: FeedItemFilters) => Promise<Transaction[]>;
+  getFeedLineItems: (id: FeedItemFilters) => Promise<TransLineItem[]>;
+  getFeedItemComments: (id: FeedCommentFilters) => Promise<Comment[]>;
+  addFeedItemComment: (feedId: number, data: AddFeedCommentParams) => Promise<Comment>;
+  getFeedItemById: (feedId: number) => Promise<FeedItem>;
+  getCategoryById: (catId: number) => Promise<Category>;
+  getVendorById: (venId: number) => Promise<Vendor>;
+  getDepartmentById: (depId: number) => Promise<Department>;
+  maskLineItemAsRead: (id: number) => Promise<void>;
+  getLineItemById: (id: number) => Promise<TransLineItem>;
+  // feedback
+  postFeedBackFeed: (feedId: number, data: FeedBackFormModel) => Promise<void>;
+  postFeedBackLineItem: (id: number, data: FeedBackFormModel) => Promise<void>;
   // Media
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
@@ -162,9 +175,9 @@ export interface PostTargetParams {
 }
 
 export interface SubscriptionParams {
-  departments?: string[];
-  vendors?: string[];
-  categories?: string[];
+  departments?: number[];
+  vendors?: number[];
+  categories?: number[];
 }
 
 export interface NotificationsResponse {
@@ -175,4 +188,24 @@ export interface NotificationsResponse {
 export interface FeedItemFilters {
   id: number;
   page?: Pagination;
+}
+
+export interface FeedCommentFilters {
+  feedId: number;
+  order?: OrderDirection;
+  page?: Pagination;
+}
+
+export interface AddFeedCommentParams {
+  content?: string;
+  attachment?: string;
+}
+
+export interface FeedFilters {
+  page?: Pagination;
+  forYou?: number;
+  department?: number;
+  vendor?: number;
+  category?: number;
+  rootDepartment?: number;
 }

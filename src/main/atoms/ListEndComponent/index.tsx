@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TransactionListEnd: React.VFC = () => {
+const ListEndComponent: React.VFC = () => {
   return (
     <>
       <p className="text-base text-center text-Neutral-4 mt-3 sm:mt-8">
@@ -14,4 +14,4 @@ const TransactionListEnd: React.VFC = () => {
   );
 };
 
-export default TransactionListEnd;
+export default ListEndComponent;

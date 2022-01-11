@@ -1,17 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import * as Sentry from '@sentry/react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import CategoryList from '@main/organisms/CategoryList';
-import { Pagination, TransactionFilter } from '@api/types';
+import { FeedFilters, Pagination } from '@api/types';
 import { useCategory } from '@main/hooks/category.hook';
-import TransactionList from '@main/organisms/TransactionList';
-import { FilterKeys, useTransaction } from '@main/hooks';
+import { FilterKeys } from '@main/hooks';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { Category, Department, Vendor } from '@main/entity';
 import { MainGroups } from '@common/constants';
 import { useQuery } from '@common/hooks';
+import FeedList from '@main/organisms/FeedList';
+import { useFeed } from '@main/hooks/feed.hook';
+import { scrollToTop } from '@main/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -27,57 +30,59 @@ const CategoriesPage: React.VFC = () => {
   // Category states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { categories, hasMore, isLoading } = useCategory(filter);
-  // Transaction states
-  const [transFilter, setTransFilter] = useState<TransactionFilter>(
+  // Feeds states
+  const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
     catId
       ? {
-          pagination: INIT_PAGINATION,
+          page: INIT_PAGINATION,
           category: parseInt(catId, 10),
         }
       : {
-          pagination: { offset: 0, limit: 0 }, // Don't load transaction at the first launch
+          page: { offset: 0, limit: 0 }, // Don't load feed at the first launch
         },
   );
+
   const {
-    transactions,
-    hasMore: hasMoreTrans,
-    isLoading: transLoading,
+    feeds,
+    hasMore: hasMoreFeeds,
+    isLoading: feedsLoading,
     updateCategory,
-  } = useTransaction(transFilter);
+    cleanData,
+  } = useFeed(feedsFilter);
   // Variables
-  const isFiltering = !!transFilter.category;
-  const category = useMemo(() => {
-    if (!isFiltering || !transactions.length) return null;
-    if (transactions[0].category.id === transFilter.category) {
-      return transactions[0].category;
+  const isFiltering = !!feedsFilter.category;
+  const [category, setCategory] = useState<Category | null>();
+
+  React.useEffect(() => {
+    if (!isFiltering || feeds.length === 0) return;
+    if (feeds[0]?.category?.id === feedsFilter?.category) {
+      setCategory(feeds[0]?.category);
     }
-    return null;
-  }, [isFiltering, transactions]);
+  }, [feeds, isFiltering]);
 
   const filterByRoute = useCallback(() => {
     if (catId) {
-      const idNum = parseInt(catId, 10);
       const newFilter: { [key: string]: string | number | Pagination | null } = {
-        pagination: INIT_PAGINATION,
-        category: idNum,
+        page: INIT_PAGINATION,
+        category: parseInt(catId, 10),
       };
       FilterKeys.forEach((key) => {
         if (query.get(key)) {
           newFilter[key] = query.get(key);
         }
       });
-      setTransFilter(newFilter);
+      setFeedsFilter(newFilter);
     } else {
-      setTransFilter({ pagination: { offset: 0, limit: 0 } }); // Clean up transaction
+      setFeedsFilter({ page: { offset: 0, limit: 0 } }); // Clean up feed
     }
-  }, [catId, query.toString(), transFilter.category]);
+  }, [catId, query.toString(), feedsFilter.category]);
 
   useEffect(() => {
     // Scroll to top
     if (window.scrollY > 0) {
       window.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: 'auto',
       });
     }
     filterByRoute();
@@ -91,26 +96,28 @@ const CategoriesPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  const handleTransLoadMore = useCallback(() => {
-    if (!hasMoreTrans || transLoading) return;
-    setTransFilter((prevFilter) => ({
+  const handleFeedsLoadMore = useCallback(() => {
+    if (!hasMoreFeeds || feedsLoading) return;
+    setFeedsFilter((prevFilter) => ({
       ...prevFilter,
-      pagination: {
-        limit: prevFilter?.pagination?.limit ?? 0,
-        offset: (prevFilter?.pagination?.offset ?? 0) + (prevFilter?.pagination?.limit ?? 0),
+      page: {
+        limit: prevFilter?.page?.limit ?? 0,
+        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
       },
     }));
-  }, [hasMoreTrans, transLoading]);
+  }, [hasMoreFeeds, feedsLoading]);
 
   const handleCategorySelect = (value?: Category): void => {
+    cleanData();
+    setCategory(value);
     history.push({
       pathname: `/categories/${value?.id.toString()}`,
       search: `?route=${MainGroups.Directories}`,
     });
   };
 
-  const handleTransFilter = (
-    key: keyof TransactionFilter,
+  const handleFeedsFilter = (
+    key: keyof FeedFilters,
     value?: Department | Category | Vendor,
   ): void => {
     query.set(key, value?.id.toString() ?? '');
@@ -118,6 +125,7 @@ const CategoriesPage: React.VFC = () => {
       pathname: location.pathname,
       search: query.toString(),
     });
+    scrollToTop();
   };
 
   return (
@@ -140,12 +148,12 @@ const CategoriesPage: React.VFC = () => {
           onSelect={handleCategorySelect}
         />
       ) : (
-        <TransactionList
-          transactions={transactions}
-          isLoading={transLoading || isLoading}
-          hasMore={hasMoreTrans}
-          onLoadMore={handleTransLoadMore}
-          onFilter={handleTransFilter}
+        <FeedList
+          feeds={feeds}
+          isLoading={feedsLoading || isLoading}
+          hasMore={hasMoreFeeds}
+          onLoadMore={handleFeedsLoadMore}
+          onFilter={handleFeedsFilter}
           updateCategory={updateCategory}
         />
       )}
@@ -156,4 +164,4 @@ const CategoriesPage: React.VFC = () => {
   );
 };
 
-export default CategoriesPage;
+export default Sentry.withProfiler(CategoriesPage, { name: 'CategoriesPage' });

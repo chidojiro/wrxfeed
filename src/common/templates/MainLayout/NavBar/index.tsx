@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import { Popover } from '@headlessui/react';
+import { useRecoilValue } from 'recoil';
+import { useHistory } from 'react-router-dom';
+import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+// types and utils
 import { classNames } from '@common/utils';
-import { useIdentity } from '@identity/hooks';
+import { UserRole } from '@identity/constants';
+import { Profile } from '@auth/types';
+// hooks and states
+import { useIdentity, usePermission } from '@identity/hooks';
+import { profileState } from '@auth/containers/ProfileEditForm/states';
+// components
 import { UserProfilePopover, NotifyPopover } from '@main/molecules';
 import { InviteModal } from '@main/organisms';
 import { UserPlusIcon } from '@assets/index';
 import SearchBar from '@common/molecules/SearchBar';
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
-import { Profile } from '@auth/types';
-import { useRecoilValue } from 'recoil';
-import { profileState } from '@auth/containers/ProfileEditForm/states';
-import { useHistory } from 'react-router-dom';
 import SideBar from '../SideBar';
 
 interface NavBarProps {
   showSearchBar?: boolean;
-  showInvite?: boolean;
 }
 
 const userNavigation = [
@@ -23,12 +26,15 @@ const userNavigation = [
   { name: 'Sign out', href: '#' },
 ];
 
-const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = true }) => {
+const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
   const identity = useIdentity();
+  const { roles } = usePermission();
+  const isAdmin = roles?.includes(UserRole.ADMIN);
+  const history = useHistory();
+
   const [isOpenInviteModal, openInviteModal] = useState(false);
   const profile = useRecoilValue(profileState);
-  const [profileUser] = React.useState<Profile>(profile);
-  const history = useHistory();
+  const [profileUser] = useState<Profile>(profile);
 
   const onClickInviteButton = () => {
     openInviteModal(true);
@@ -39,7 +45,7 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = tr
   };
 
   const renderInviteButton = () => {
-    if (!showInvite) {
+    if (!isAdmin) {
       return (
         <div className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm" />
       );
@@ -78,7 +84,7 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = tr
               <div className="flex justify-center md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-2">
                 <div className="flex-shrink-0 flex items-center">
                   <h1 className="text-lg font-bold text-white">
-                    {identity?.company?.name || 'Gravity'}
+                    {identity?.company?.name || '...'}
                   </h1>
                 </div>
               </div>

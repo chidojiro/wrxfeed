@@ -1,7 +1,12 @@
 import React, { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { NotifyIcon } from '@assets';
-import { useNotification } from '@main/hooks';
+import {
+  NotifyChannelEvents,
+  NotifyEventData,
+  useNotification,
+  useNotifyChannel,
+} from '@main/hooks';
 import { Pagination } from '@api/types';
 import { Notification } from '@main/entity';
 import { NotifyRow } from '@main/atoms';
@@ -23,10 +28,24 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   showNumberNotify = false,
   useDropDown = true,
 }) => {
-  const [filter] = React.useState<Pagination>({ offset: 0, limit: LIMIT });
-  const { notifications, isLoading, patchNotification, markAllAsRead, unreadCount } =
-    useNotification(filter);
+  const [filter] = React.useState<Pagination>({ offset: 0, limit: useDropDown ? LIMIT : 1 }); // Reduce loading time if we don't need notification popup
+  const {
+    notifications,
+    isLoading,
+    patchNotification,
+    markAllAsRead,
+    setNewNotifyCount,
+    newNotifyCount,
+  } = useNotification(filter);
   const history = useHistory();
+
+  // Subscribe notify event
+  useNotifyChannel(NotifyChannelEvents.NEW_NOTIFY, (data: NotifyEventData) => {
+    if (data?.id) {
+      // Increase counter
+      setNewNotifyCount((preCount) => preCount + 1);
+    }
+  });
 
   const renderNotifyList = () => {
     if (isLoading) {
@@ -57,7 +76,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
               index={index}
               onClickNotifyAndSeen={async () => {
                 history.push(
-                  `${(Routes.Feed.path as string).replace(':id', `${item.data.transactionId}`)}`,
+                  `${(Routes.Feed.path as string).replace(':id', `${item.data.itemId}`)}`,
                 );
                 patchNotification(item.id);
               }}
@@ -69,7 +88,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   };
 
   const renderMarkAllAsRead = () => {
-    if (notifications.length === 0 || unreadCount === 0) return null;
+    if (notifications.length === 0 || newNotifyCount === 0) return null;
     const onClickMarkAllAsRead = () => {
       markAllAsRead();
     };
@@ -86,12 +105,12 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
 
   const renderNotifyIconWithBell = () => {
     return (
-      <div className="flex h-8 w-8 justify-center items-center">
+      <div className="flex h-8 w-8 justify-center items-center rounded-full focus:outline-none hover:ring-2 ring-offset-2 ring-rose-500">
         <NotifyIcon aria-hidden="true" />
-        {unreadCount !== 0 && (
+        {newNotifyCount !== 0 && (
           <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
             {showNumberNotify && (
-              <div className="flex text-white font-semibold text-2xs">{unreadCount}</div>
+              <div className="flex text-white font-semibold text-2xs">{newNotifyCount}</div>
             )}
           </div>
         )}
@@ -104,6 +123,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
 
   const onClickNotifications = () => {
     history.push('/notifications');
+    markAllAsRead();
   };
 
   if (!useDropDown) {
@@ -111,9 +131,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
       <button
         onClick={onClickNotifications}
         type="button"
-        className={classNames(
-          'rounded-full flex-shrink-0 flex relative w-10 h-10 justify-center items-center focus:outline-none hover:ring-2 ring-offset-2 ring-rose-500',
-        )}
+        className={classNames('flex-shrink-0 flex relative w-10 h-10 justify-center items-center')}
       >
         {renderNotifyIconWithBell()}
       </button>

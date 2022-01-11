@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import DepartmentList from '@main/organisms/DepartmentList';
-import { Pagination, TransactionFilter } from '@api/types';
+import { FeedFilters, Pagination } from '@api/types';
 import { useDepartment } from '@main/hooks/department.hook';
-import { FilterKeys, useTransaction } from '@main/hooks';
-import TransactionList from '@main/organisms/TransactionList';
+import { FilterKeys } from '@main/hooks';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import TargetPanel from '@main/organisms/TargetPanel';
 import { Category, Department, Vendor } from '@main/entity';
@@ -17,6 +17,9 @@ import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
 import { MouseEventHandler } from 'react-router/node_modules/@types/react';
 import { MainGroups } from '@common/constants';
 import { useQuery } from '@common/hooks';
+import { useFeed } from '@main/hooks/feed.hook';
+import FeedList from '@main/organisms/FeedList';
+import { scrollToTop } from '@main/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -33,45 +36,46 @@ const DepartmentsPage: React.VFC = () => {
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { departments, hasMore, isLoading } = useDepartment(filter);
   const { subscribe, unsubscribe, isFollowing } = useSubscription();
-  // Transaction states
-  const [transFilter, setTransFilter] = useState<TransactionFilter>(
+  // Feeds states
+  const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
     deptId
       ? {
-          pagination: INIT_PAGINATION,
+          page: INIT_PAGINATION,
           rootDepartment: parseInt(deptId, 10),
         }
       : {
-          pagination: { offset: 0, limit: 0 }, // Don't load transaction at the first launch
+          page: { offset: 0, limit: 0 }, // Don't load feed items at the first launch
         },
   );
   const {
-    transactions,
-    hasMore: hasMoreTrans,
-    isLoading: transLoading,
+    feeds,
+    hasMore: hasMoreFeeds,
+    isLoading: feedsLoading,
     updateCategory,
-  } = useTransaction(transFilter);
+    cleanData,
+  } = useFeed(feedsFilter);
   // Variables
   const inDirectoryList = query.get('route') !== MainGroups.Feeds;
   const isFiltering = inDirectoryList
-    ? !!transFilter.pagination?.offset || !!transFilter.pagination?.limit
+    ? !!feedsFilter.page?.offset || !!feedsFilter.page?.limit
     : FilterKeys.some((key) => query.has(key));
   const deptSelect = useMemo(() => {
-    if (!isFiltering || !transactions.length) return null;
-    if (transactions[0].department.id === transFilter.rootDepartment) {
-      return transactions[0].department;
+    if (!isFiltering || !feeds.length) return null;
+    if (feeds[0].department.id === feedsFilter.rootDepartment) {
+      return feeds[0].department;
     }
-    if (transactions[0].department.parent?.id === transFilter.rootDepartment) {
-      return transactions[0].department.parent;
+    if (feeds[0].department.parent?.id === feedsFilter.rootDepartment) {
+      return feeds[0].department.parent;
     }
     return null;
-  }, [isFiltering, transactions]);
+  }, [isFiltering, feeds]);
   const isFollow = deptSelect && isFollowing('departments', deptSelect);
 
   const filterByRoute = useCallback(() => {
     if (deptId) {
       const idNum = parseInt(deptId, 10);
       const newFilter: { [key: string]: string | number | Pagination | null } = {
-        pagination: INIT_PAGINATION,
+        page: INIT_PAGINATION,
         rootDepartment: idNum,
       };
       FilterKeys.forEach((key) => {
@@ -79,18 +83,19 @@ const DepartmentsPage: React.VFC = () => {
           newFilter[key] = query.get(key);
         }
       });
-      setTransFilter(newFilter);
+      cleanData();
+      setFeedsFilter(newFilter);
     } else {
-      setTransFilter({ pagination: { offset: 0, limit: 0 } }); // Clean up transaction
+      setFeedsFilter({ page: { offset: 0, limit: 0 } }); // Clean up feed item
     }
-  }, [deptId, query.toString(), transFilter.rootDepartment]);
+  }, [deptId, query.toString(), feedsFilter.rootDepartment]);
 
   useEffect(() => {
     // Scroll to top
     if (window.scrollY > 0) {
       window.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: 'auto',
       });
     }
     filterByRoute();
@@ -104,26 +109,27 @@ const DepartmentsPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  const handleTransLoadMore = useCallback(() => {
-    if (!hasMoreTrans || transLoading) return;
-    setTransFilter((prevFilter) => ({
+  const handleFeedsLoadMore = useCallback(() => {
+    if (!hasMoreFeeds || feedsLoading) return;
+    setFeedsFilter((prevFilter) => ({
       ...prevFilter,
-      pagination: {
-        limit: prevFilter?.pagination?.limit ?? 0,
-        offset: (prevFilter?.pagination?.offset ?? 0) + (prevFilter?.pagination?.limit ?? 0),
+      page: {
+        limit: prevFilter?.page?.limit ?? 0,
+        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
       },
     }));
-  }, [hasMoreTrans, transLoading]);
+  }, [hasMoreFeeds, feedsLoading]);
 
   const handleDepartmentSelect = (value?: Department): void => {
     history.push({
       pathname: `/departments/${value?.id.toString()}`,
       search: `?route=${MainGroups.Directories}`,
     });
+    scrollToTop();
   };
 
-  const handleTransFilter = (
-    key: keyof TransactionFilter,
+  const handleFeedsFilter = (
+    key: keyof FeedFilters,
     value?: Department | Category | Vendor,
   ): void => {
     query.set(key, value?.id.toString() ?? '');
@@ -131,6 +137,7 @@ const DepartmentsPage: React.VFC = () => {
       pathname: location.pathname,
       search: query.toString(),
     });
+    scrollToTop();
   };
 
   const handleFollow: MouseEventHandler<HTMLButtonElement> = () => {
@@ -184,12 +191,12 @@ const DepartmentsPage: React.VFC = () => {
           onSelectRoot={handleDepartmentSelect}
         />
       ) : (
-        <TransactionList
-          transactions={transactions}
-          isLoading={transLoading || isLoading}
-          hasMore={hasMoreTrans}
-          onLoadMore={handleTransLoadMore}
-          onFilter={handleTransFilter}
+        <FeedList
+          feeds={feeds}
+          isLoading={feedsLoading || isLoading}
+          hasMore={hasMoreFeeds}
+          onLoadMore={handleFeedsLoadMore}
+          onFilter={handleFeedsFilter}
           updateCategory={updateCategory}
         />
       )}
@@ -200,4 +207,4 @@ const DepartmentsPage: React.VFC = () => {
   );
 };
 
-export default DepartmentsPage;
+export default Sentry.withProfiler(DepartmentsPage, { name: 'DepartmentsPage' });

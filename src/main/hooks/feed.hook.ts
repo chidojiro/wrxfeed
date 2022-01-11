@@ -1,47 +1,93 @@
+import { SetterOrUpdater, useRecoilState } from 'recoil';
 import { useApi } from '@api';
-import { Pagination } from '@api/types';
+import { FeedFilters } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
-import { FeedItem } from '@main/entity';
+import { Category, FeedItem } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
+import { USE_CONTACT_BUTTON_MESSAGE } from '@error/errorMessages';
 
 interface FeedHookValues {
   feeds: FeedItem[];
   hasMore: boolean;
   isLoading: boolean;
+  upsertNewFeedCount: (key: string, count: number) => void;
+  setNewFeedCount: SetterOrUpdater<FeedCount>;
+  newFeedCount: FeedCount | null;
+  updateCategory: (category: Partial<Category>) => Promise<void>;
+  cleanData: () => void;
 }
-export function useFeed(page: Pagination): FeedHookValues {
+export function useFeed(filters: FeedFilters): FeedHookValues {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [newFeedCount, setNewFeedCount] = useRecoilState<FeedCount>(newFeedCountState);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
+  const cleanData = () => setFeeds([]);
 
   const getFeeds = useCallback(async () => {
     try {
       setLoading(true);
-      if (page?.limit) {
-        const res = await ApiClient.getFeeds(page);
-        if (page?.offset) {
+      if (filters?.page?.limit) {
+        const res = await ApiClient.getFeeds(filters);
+        if (filters?.page?.offset !== 0) {
           setFeeds((prevTrans) => [...prevTrans, ...res]);
         } else {
           setFeeds(res);
         }
-        setHasMore(!!res.length);
+        setHasMore(!!filters.page && filters.page?.limit <= res.length);
       } else {
         setHasMore(false);
       }
     } catch (error) {
       if (isBadRequest(error)) {
-        toast.error("Can't get feed items 🤦!");
+        toast.error(USE_CONTACT_BUTTON_MESSAGE);
       } else {
         await errorHandler(error);
       }
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, errorHandler, page]);
+  }, [ApiClient, errorHandler, filters]);
+
+  const upsertNewFeedCount = (key: string, value: number) => {
+    setNewFeedCount({
+      ...newFeedCount,
+      [key]: value,
+    });
+  };
+
+  const updateCategory = useCallback(
+    async (category: Partial<Category>) => {
+      try {
+        await ApiClient.updateCategory(category);
+        // Update current feeds
+        setFeeds((prev) => {
+          const newFeeds = prev.map((item) => {
+            if (item?.category?.id !== category.id) return item;
+            return {
+              ...item,
+              category: {
+                ...item?.category,
+                ...category,
+              },
+            };
+          });
+          return newFeeds;
+        });
+      } catch (error) {
+        if (isBadRequest(error)) {
+          toast.error('Can not update category!');
+        } else {
+          await errorHandler(error);
+        }
+      }
+    },
+    [ApiClient, errorHandler],
+  );
 
   useEffect(() => {
     getFeeds().then();
@@ -50,5 +96,10 @@ export function useFeed(page: Pagination): FeedHookValues {
     feeds,
     hasMore,
     isLoading,
+    upsertNewFeedCount,
+    setNewFeedCount,
+    newFeedCount,
+    updateCategory,
+    cleanData,
   };
 }

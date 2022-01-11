@@ -7,21 +7,24 @@ import { EditorState } from 'draft-js';
 import { commentEditorRawParser } from '@main/utils';
 import { classNames } from '@common/utils';
 import LinearProgress from '@common/atoms/LinearProgress';
+import { FeedBackType } from '@main/types';
 
-interface FeelBackModalProps {
+interface FeedBackModalProps {
   open: boolean;
   onClose: () => void;
-  transactionId: number;
+  itemId: number;
   enableMaxChar?: boolean;
   maxChar?: number;
+  type?: FeedBackType;
 }
 
-const FeelBackModal: React.VFC<FeelBackModalProps> = ({
+const FeedBackModal: React.VFC<FeedBackModalProps> = ({
   open,
   onClose,
-  transactionId,
+  itemId,
   enableMaxChar = false,
   maxChar = 20000,
+  type = FeedBackType.Rollup,
 }) => {
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const [feedback, setFeedback] = React.useState<string>('');
@@ -47,7 +50,7 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({
       toast.error('Invalid feedback content!');
       return;
     }
-    postFeedback(transactionId, { content: feedback });
+    postFeedback(type, itemId, { content: feedback });
   };
 
   const onChangeTextContent = (content?: EditorState): void => {
@@ -76,17 +79,14 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({
       <div className="sm:max-w-[442px]">
         <div className="px-10 pb-10">
           <p className="text-2xl text-Gray-1 font-bold mt-8">
-            {'We’re working on\n improvements!'}
+            Please describe the specific issue with this item.
           </p>
           <p className="mt-3 text-Gray-1 text-sm">
-            Please describe the specific issue with this item.
-            <br />
-            Ex: Data is mapped to the wrong category.
+            Ex: Data is mapped to wrong category, transaction is not for this team
           </p>
           <CommentBox
             placeholder="Your feedback here…"
             style={{ backgroundColor: 'white', marginTop: '32px' }}
-            // onSubmit={({ content }) => console.log({ content })}
             showAttach={false}
             showEmoji={false}
             showSend={false}
@@ -123,4 +123,4 @@ const FeelBackModal: React.VFC<FeelBackModalProps> = ({
   );
 };
 
-export default FeelBackModal;
+export default FeedBackModal;

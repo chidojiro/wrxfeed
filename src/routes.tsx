@@ -7,7 +7,6 @@ import Login from '@auth/pages/LoginPage';
 import AcceptInvitation from '@auth/pages/AcceptInvitation';
 
 import Onboard from '@auth/pages/OnboardPage';
-import Overview from '@main/pages/Overview';
 import ForYou from '@main/pages/ForYou';
 import Departments from '@main/pages/Departments';
 import Categories from '@main/pages/Categories';
@@ -15,6 +14,7 @@ import Vendors from '@main/pages/Vendors';
 import Feed from '@main/pages/Feed';
 import Notifications from '@main/pages/Notifications';
 import Company from '@main/pages/Company';
+import NotFoundPage from '@common/pages/NotFoundPage';
 
 export interface RouteItem<T> {
   path: string | readonly string[];
@@ -40,6 +40,10 @@ const routes: Route = {
     path: '/accept-invitation',
     component: AcceptInvitation,
   },
+  PageNotFound: {
+    path: '/404',
+    component: NotFoundPage,
+  },
   // Protected pages
   Feed: {
     path: '/feed/:id',
@@ -49,11 +53,6 @@ const routes: Route = {
   Onboard: {
     path: '/onboarding',
     component: Onboard,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  Overview: {
-    path: '/overview',
-    component: Overview,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   ForYou: {
@@ -81,7 +80,6 @@ const routes: Route = {
     component: Vendors,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  // TODO: this will replace Overview page
   Company: {
     path: '/company',
     component: Company,

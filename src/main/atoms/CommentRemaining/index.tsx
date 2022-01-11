@@ -1,16 +1,19 @@
 import React, { CSSProperties } from 'react';
 import { ReactComponent as MessageTextAltIcon } from '@assets/icons/solid/message-text-alt.svg';
 import Loading from '@common/atoms/Loading';
+import { classNames } from '@common/utils';
 
 export interface CommentRemainingProps {
   hiddenCount: number;
   onClick?: () => void;
   style?: CSSProperties;
   loading?: boolean;
+  className?: string;
 }
 
 const CommentRemaining: React.VFC<CommentRemainingProps> = ({
   hiddenCount,
+  className,
   onClick,
   loading,
   style,
@@ -19,7 +22,7 @@ const CommentRemaining: React.VFC<CommentRemainingProps> = ({
     <div
       role="none"
       style={style}
-      className="flex space-x-1 cursor-pointer items-center"
+      className={classNames('flex space-x-1 cursor-pointer items-center', className ?? '')}
       onClick={onClick}
     >
       <MessageTextAltIcon

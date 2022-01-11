@@ -1,28 +1,30 @@
 // import { MessageTextAlt } from '@assets/index';
 import { classNames } from '@common/utils';
 import React from 'react';
-import { Transaction } from '@main/entity';
+import { TransLineItem, Vendor } from '@main/entity';
 import Loading from '@common/atoms/Loading';
-import RollupTransactionItem from '../RollupTransactionItem';
+import RollupLineItem from '../RollupLineItem';
 
-export interface RollupTransactionsProps {
+export interface RollupLineItemListProps {
   className?: string;
-  transactions?: Transaction[];
+  lineItems?: TransLineItem[];
   showLoadMore?: boolean;
   rollupsClass?: string;
   onLoadMore?: () => void;
   hasMore?: boolean;
   isLoadMore?: boolean;
+  onClickVendor?: (vendor: Vendor) => void;
 }
 
-const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
+const RollupLineItemList: React.VFC<RollupLineItemListProps> = ({
   className,
   rollupsClass,
-  transactions,
+  lineItems,
   showLoadMore = true,
   onLoadMore,
   hasMore = false,
   isLoadMore = false,
+  onClickVendor,
 }) => {
   const renderLoading = () => {
     if (!isLoadMore) return null;
@@ -36,7 +38,7 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
     if (!hasMore) {
       return (
         <div className="flex h-5 w-full items-center absolute left-0 right-0 -bottom-2.5">
-          <div className="bg-Gray-11 h-px w-auto flex-1" />
+          <div className="bg-Gray-11 h-px w-auto flex-1 mx-4 sm:mx-12" />
         </div>
       );
     }
@@ -55,12 +57,12 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
       </div>
     );
   };
-  return transactions?.length ? (
+  return lineItems?.length ? (
     <div className={classNames('relative flex flex-col', className ?? '')}>
-      <ul className={classNames('w-full py-2 sm:py-4 max-h-[435px]', rollupsClass ?? '')}>
-        {transactions.map((transaction) => (
-          <li key={transaction.id}>
-            <RollupTransactionItem transaction={transaction} />
+      <ul className={classNames('w-full py-2 sm:py-4', rollupsClass ?? '')}>
+        {lineItems.map((lineItem) => (
+          <li key={lineItem?.id}>
+            <RollupLineItem lineItem={lineItem} onClickVendor={onClickVendor} />
           </li>
         ))}
       </ul>
@@ -72,4 +74,4 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
   );
 };
 
-export default RollupTransactions;
+export default RollupLineItemList;

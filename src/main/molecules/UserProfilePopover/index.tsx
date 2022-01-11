@@ -1,18 +1,21 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useCallback } from 'react';
 import { Popover, Transition } from '@headlessui/react';
-import { useRecoilValue } from 'recoil';
-import { profileState } from '@auth/containers/ProfileEditForm/states';
-import { getNameAbbreviation } from '@main/utils';
-import { useSetIdentity } from '@identity/hooks';
-import { useApi } from '@api';
-import UploadButton from '@common/atoms/UploadButton';
-import { UPLOAD_FILE_ACCEPT } from '@src/config';
-import { GetUploadTokenBody, UploadTypes } from '@api/types';
-import { useFileUploader } from '@common/hooks/useFileUploader';
+import { useRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
-import Loading from '@common/atoms/Loading';
+
 import { Profile } from '@auth/types';
+import { profileState } from '@auth/containers/ProfileEditForm/states';
+import { UPLOAD_FILE_ACCEPT } from '@src/config';
+import { getNameAbbreviation } from '@main/utils';
 import { classNames } from '@common/utils';
+import { GetUploadTokenBody, UploadTypes } from '@api/types';
+
+import { useApi } from '@api';
+import { useSetIdentity } from '@identity/hooks';
+import { useFileUploader } from '@common/hooks/useFileUploader';
+
+import Loading from '@common/atoms/Loading';
+import UploadButton from '@common/atoms/UploadButton';
 
 export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
@@ -24,18 +27,19 @@ export type ProfileChanges = {
 };
 
 const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
-  const profile = useRecoilValue(profileState);
-  const [profileUser, setProfile] = React.useState<Profile>(profile);
-  const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
-  const [userAvatar, setAvatar] = React.useState<string>('');
-  const [changeData, setChangeData] = React.useState<boolean>(false);
-  const [title, setTitle] = React.useState<string>('');
-  const [department, setDepartment] = React.useState<string>('');
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [profile, setProfile] = useRecoilState(profileState);
+  const [profileUser, setProfileUser] = useState<Profile>(profile);
+  const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
+  const [userAvatar, setAvatar] = useState<string>('');
+  const [changeData, setChangeData] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
   const { updateProfile } = useApi();
   const setIdentity = useSetIdentity();
   const apiClient = useApi();
-  const logout = React.useCallback(async () => {
+
+  const logout = useCallback(async () => {
     await apiClient.logout();
     setIdentity(undefined);
   }, [setIdentity, apiClient]);
@@ -55,14 +59,14 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
       },
       editable: false,
     },
-    {
-      title: 'Department',
-      content: profileUser?.department || 'Update now',
-      onChange: (text: string) => {
-        setDepartment(text);
-      },
-      editable: false,
-    },
+    // {
+    //   title: 'Department',
+    //   content: profileUser?.department || 'Update now',
+    //   onChange: (text: string) => {
+    //     setDepartment(text);
+    //   },
+    //   editable: false,
+    // },
     {
       title: 'Email',
       content: profileUser?.email || 'Update now',
@@ -94,6 +98,10 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     };
     await updateProfile(updates);
     toast.success('Upload image successfully!');
+    setProfile({
+      ...profile,
+      avatar: avatarUri,
+    });
   };
 
   const onUploadSuccess = (url: string) => {
@@ -173,7 +181,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     const updates = {
       companyName: profileUser.company?.name || '',
       title: title || profileUser.title,
-      department: department || profileUser.department,
+      // department: department || profileUser.department,
       bio: profileUser.bio || '',
       lastLoginAt: profileUser.lastLoginAt || '',
     };
@@ -183,7 +191,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     setChangeData(false);
 
     const userProfile = await apiClient.getProfile();
-    setProfile(userProfile);
+    setProfileUser(userProfile);
   };
 
   const renderLogout = () => {

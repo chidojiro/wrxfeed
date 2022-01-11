@@ -1,10 +1,12 @@
+import cloneDeep from 'lodash.clonedeep';
+import { atom, selector } from 'recoil';
+
 import { getApiClient } from '@api/utils';
 import { MainGroups, MainMenu } from '@common/constants';
 import { GroupTab, LeftTab } from '@common/types';
 import { identityState } from '@identity/states';
 import { Category, Department, Subscription, Vendor } from '@main/entity';
-import cloneDeep from 'lodash.clonedeep';
-import { atom, selector } from 'recoil';
+import { ENABLE_SUBSCRIPTION_SIDE_BAR } from '@src/config';
 import { subscriptionState } from './subscription.state';
 
 export interface FeedCount {
@@ -14,6 +16,8 @@ export interface FeedCount {
 export const menuItemsValue = selector<GroupTab[]>({
   key: 'main/sidemenu',
   get: ({ get }) => {
+    const menu = cloneDeep(MainMenu);
+    if (!ENABLE_SUBSCRIPTION_SIDE_BAR) return menu;
     const subscription = get(subscriptionState);
     const subscriptionMenuItems = Object.keys(subscription).reduce<LeftTab[]>(
       (list, key) => [
@@ -37,7 +41,6 @@ export const menuItemsValue = selector<GroupTab[]>({
       ],
       [],
     );
-    const menu = cloneDeep(MainMenu);
     menu[0].tabs.push(...subscriptionMenuItems);
     return menu;
   },
@@ -51,20 +54,20 @@ export const newFeedCountState = atom<FeedCount>({
       get(identityState);
       try {
         const apiClient = await getApiClient();
-        const overviewRequest = apiClient.getUnreadTransactionCount({
-          pagination: { offset: 0, limit: 0 },
+        const companyRequest = apiClient.getUnreadLineItemsCount({
+          page: { offset: 0, limit: 1 },
         });
-        const forYouRequest = apiClient.getUnreadTransactionCount({
-          forYou: true,
-          pagination: { offset: 0, limit: 0 },
+        const forYouRequest = apiClient.getUnreadLineItemsCount({
+          forYou: 1,
+          page: { offset: 0, limit: 1 },
         });
-        const [overviewCount, forYouCount] = await Promise.all([overviewRequest, forYouRequest]);
+        const [companyCount, forYouCount] = await Promise.all([companyRequest, forYouRequest]);
         return {
-          '/overview': overviewCount ?? 0,
+          '/company': companyCount ?? 0,
           '/for-you': forYouCount ?? 0,
         };
       } catch {
-        return { '/overview': 0, '/for-you': 0 };
+        return { '/company': 0, '/for-you': 0 };
       }
     },
   }),

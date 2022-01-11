@@ -12,6 +12,7 @@ import {
   Target,
   Subscription,
   FeedItem,
+  TransLineItem,
 } from '@main/entity';
 import { ApiError } from '@error';
 import {
@@ -34,6 +35,9 @@ import {
   SubscriptionParams,
   NotificationsResponse,
   FeedItemFilters,
+  FeedCommentFilters,
+  AddFeedCommentParams,
+  FeedFilters,
 } from '@api/types';
 import {
   AuthProfile,
@@ -170,17 +174,16 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getUnreadTransactionCount = async (filters?: TransactionFilter): Promise<number> => {
+  getUnreadLineItemsCount = async (filters?: FeedFilters): Promise<number> => {
     const params = {
-      ...filters?.pagination,
+      ...filters?.page,
+      forYou: filters?.forYou,
       dep: filters?.department,
-      ven: filters?.vendor,
-      cat: filters?.category,
       rootDep: filters?.rootDepartment,
+      cat: filters?.category,
     };
-    const url = filters?.forYou ? '/feed/transactions/for-you' : '/feed/transactions';
-    const res = await this.request<Transaction[]>({
-      url,
+    const res = await this.request<FeedItem[]>({
+      url: '/feed/items',
       method: 'GET',
       params,
     });
@@ -189,7 +192,7 @@ export default class ApiUtils implements ApiClient {
 
   readAllTransactions = async (): Promise<void> => {
     const res = await this.request<void>({
-      url: '/feed/transactions',
+      url: '/feed/items',
       method: 'PATCH',
     });
     return res.data;
@@ -201,7 +204,7 @@ export default class ApiUtils implements ApiClient {
       ...filters.pagination,
     };
     const res = await this.request<Comment[]>({
-      url: `/feed/transactions/${filters.transactionId}/comments`,
+      url: `/feed/items/${filters.transactionId}/comments`,
       method: 'GET',
       params,
     });
@@ -210,7 +213,7 @@ export default class ApiUtils implements ApiClient {
 
   addComment = async (transactionId: number, data: AddCommentParams): Promise<Comment> => {
     const res = await this.request<Comment>({
-      url: `/feed/transactions/${transactionId}/comments`,
+      url: `/feed/items/${transactionId}/comments`,
       method: 'POST',
       data,
     });
@@ -261,8 +264,8 @@ export default class ApiUtils implements ApiClient {
 
   getContacts = async (filters: GetContactsFilter): Promise<Contact[]> => {
     const params = {
-      text: filters.text,
-      ...filters.pagination,
+      text: filters?.text,
+      ...filters?.pagination,
     };
     const res = await this.request<Contact[]>({
       url: '/inv/contacts',
@@ -303,7 +306,7 @@ export default class ApiUtils implements ApiClient {
 
   postFeedback = async (transactionId: number, data: FeedBackFormModel): Promise<void> => {
     const res = await this.request<void>({
-      url: `/feed/transactions/${transactionId}/feedback`,
+      url: `/feed/items/${transactionId}/feedback`,
       method: 'POST',
       data,
     });
@@ -442,20 +445,123 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getFeeds = async (page: Pagination): Promise<FeedItem[]> => {
+  getFeeds = async (filters: FeedFilters): Promise<FeedItem[]> => {
     const res = await this.request<FeedItem[]>({
       url: '/feed/items',
       method: 'GET',
-      params: page,
+      params: {
+        ...filters?.page,
+        forYou: filters?.forYou,
+        dep: filters?.department,
+        rootDep: filters?.rootDepartment,
+        cat: filters?.category,
+        vend: filters?.vendor,
+      },
     });
     return res.data;
   };
 
   getFeedItemTransactions = async (filter: FeedItemFilters): Promise<Transaction[]> => {
     const res = await this.request<Transaction[]>({
-      url: `/feed/items/${filter?.id}/transactions`,
+      url: `/feed/items/${filter?.id}/line-items`,
       method: 'GET',
       params: filter?.page,
+    });
+    return res.data;
+  };
+
+  getFeedLineItems = async (filter: FeedItemFilters): Promise<TransLineItem[]> => {
+    const res = await this.request<TransLineItem[]>({
+      url: `/feed/items/${filter?.id}/line-items`,
+      method: 'GET',
+      params: filter?.page,
+    });
+    return res.data;
+  };
+
+  getFeedItemComments = async (filter: FeedCommentFilters): Promise<Comment[]> => {
+    const res = await this.request<Comment[]>({
+      url: `/feed/items/${filter.feedId}/comments`,
+      method: 'GET',
+      params: {
+        ...filter?.page,
+        order: filter?.order,
+      },
+    });
+    return res.data;
+  };
+
+  addFeedItemComment = async (feedId: number, data: AddFeedCommentParams): Promise<Comment> => {
+    const res = await this.request<Comment>({
+      url: `/feed/items/${feedId}/comments`,
+      method: 'POST',
+      data,
+    });
+    return res.data;
+  };
+
+  getFeedItemById = async (feedId: number): Promise<FeedItem> => {
+    const res = await this.request<FeedItem>({
+      url: `/feed/items/${feedId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  postFeedBackFeed = async (feedId: number, data: FeedBackFormModel): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feedback/feed-items/${feedId}/feedback`,
+      method: 'POST',
+      data,
+    });
+    return res.data;
+  };
+
+  getCategoryById = async (catId: number): Promise<Category> => {
+    const res = await this.request<Category>({
+      url: `/feed/categories/${catId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  getVendorById = async (venId: number): Promise<Vendor> => {
+    const res = await this.request<Vendor>({
+      url: `/feed/vendors/${venId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  getDepartmentById = async (depId: number): Promise<Department> => {
+    const res = await this.request<Department>({
+      url: `/feed/departments/${depId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  maskLineItemAsRead = async (id: number): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feed/line-items/${id}`,
+      method: 'PATCH',
+    });
+    return res.data;
+  };
+
+  postFeedBackLineItem = async (id: number, data: FeedBackFormModel): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feedback/line-items/${id}/feedback`,
+      method: 'POST',
+      data,
+    });
+    return res.data;
+  };
+
+  getLineItemById = async (id: number): Promise<TransLineItem> => {
+    const res = await this.request<TransLineItem>({
+      url: `/feed/line-items/${id}`,
+      method: 'GET',
     });
     return res.data;
   };
