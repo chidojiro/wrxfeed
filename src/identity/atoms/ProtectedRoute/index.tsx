@@ -18,7 +18,7 @@ const ProtectedRoute: React.VFC<ProtectedRouteProps> = ({
   const identity = useIdentity();
   const { roles } = usePermission();
   const location = useLocation();
-  const isAccessable = !permissions?.length || roles?.some((role) => permissions.includes(role));
+  const isAccessible = !permissions?.length || roles?.some((role) => permissions.includes(role));
   const dst = {
     pathname: loginUrl,
     state: { from: location },
@@ -30,7 +30,7 @@ const ProtectedRoute: React.VFC<ProtectedRouteProps> = ({
   }
 
   // Check permission to access resource
-  if (!isAccessable) {
+  if (!isAccessible) {
     return <NoPermission />;
   }
 
