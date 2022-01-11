@@ -3,11 +3,13 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useErrorHandler } from 'react-error-boundary';
+import { useRecoilState } from 'recoil';
 
 import { TransLineItem } from '@main/entity';
 import { isApiError } from '@error/utils';
 import { classNames } from '@common/utils';
 import { useApi } from '@api';
+import { slideOverOpenState } from '@main/states/slideOver.state';
 
 import LineItemDetails from '@main/molecules/LineItemDetails';
 import EventEmitter, { EventName } from '@main/EventEmitter';
@@ -26,7 +28,7 @@ export type LineInfo = {
 };
 
 const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useRecoilState(slideOverOpenState);
   const [loading, setLoading] = useState<boolean>(false);
   const [item, setItem] = useState<TransLineItem>();
   const ApiClient = useApi();
