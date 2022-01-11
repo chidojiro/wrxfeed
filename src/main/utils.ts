@@ -271,7 +271,7 @@ export const nFormatter = (num: number, withCurrency = '$'): string => {
   if (positiveNum >= 1000000000) {
     return `${isNegative}${withCurrency}${(positiveNum / 1000000000)
       .toFixed(1)
-      .replace(/\.0$/, '')}G`;
+      .replace(/\.0$/, '')}B`;
   }
   if (positiveNum >= 1000000) {
     return `${isNegative}${withCurrency}${(positiveNum / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
