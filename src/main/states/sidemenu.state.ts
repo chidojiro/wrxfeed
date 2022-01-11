@@ -1,10 +1,12 @@
+import cloneDeep from 'lodash.clonedeep';
+import { atom, selector } from 'recoil';
+
 import { getApiClient } from '@api/utils';
 import { MainGroups, MainMenu } from '@common/constants';
 import { GroupTab, LeftTab } from '@common/types';
 import { identityState } from '@identity/states';
 import { Category, Department, Subscription, Vendor } from '@main/entity';
-import cloneDeep from 'lodash.clonedeep';
-import { atom, selector } from 'recoil';
+import { ENABLE_SUBSCRIPTION_SIDE_BAR } from '@src/config';
 import { subscriptionState } from './subscription.state';
 
 export interface FeedCount {
@@ -14,6 +16,8 @@ export interface FeedCount {
 export const menuItemsValue = selector<GroupTab[]>({
   key: 'main/sidemenu',
   get: ({ get }) => {
+    const menu = cloneDeep(MainMenu);
+    if (!ENABLE_SUBSCRIPTION_SIDE_BAR) return menu;
     const subscription = get(subscriptionState);
     const subscriptionMenuItems = Object.keys(subscription).reduce<LeftTab[]>(
       (list, key) => [
@@ -37,7 +41,6 @@ export const menuItemsValue = selector<GroupTab[]>({
       ],
       [],
     );
-    const menu = cloneDeep(MainMenu);
     menu[0].tabs.push(...subscriptionMenuItems);
     return menu;
   },
