@@ -14,7 +14,7 @@ import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/organisms/FeedBackModal';
 
 import { ReactComponent as MoreVertical } from '@assets/icons/outline/more-vertical.svg';
-import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
+import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x.svg';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -118,13 +118,12 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
 
   return (
     <div className={classNames('flex flex-1 flex-row', className)}>
-      <button type="button" onClick={onClickCloseSlideOver} className="flex w-5 h-5 mt-4 mr-5">
-        <BasicsXSmall className="w-5 h-5" width={20} height={20} />
-      </button>
       <div className="h-full flex flex-1 flex-col bg-white shadow-xl overflow-y-scroll">
         <div className="flex flex-1 flex-col px-8 pt-8 pb-5">
-          <div className="flex flex-row w-full justify-between">
-            {renderVendorName()}
+          <div className="flex flex-row items-center w-full justify-between">
+            <button type="button" onClick={onClickCloseSlideOver} className="flex w-4 h-4">
+              <BasicsXSmall className="w-4 h-4" width={20} height={20} />
+            </button>
             <button type="button" onClick={onClickMore}>
               <Menu as="div" className="relative inline-block z-10 text-left">
                 <div>
@@ -137,6 +136,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               </Menu>
             </button>
           </div>
+          <div className="flex flex-row w-full justify-between mt-6">{renderVendorName()}</div>
           <div className="flex flex-col mt-6">
             <p className="text-sm font-semibold text-Gray-3">Description</p>
             <p className="text-sm font-regular text-Gray-6 mt-2 max-h-72 text-ellipsis">
