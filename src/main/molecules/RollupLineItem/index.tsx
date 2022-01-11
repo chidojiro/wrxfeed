@@ -4,9 +4,12 @@ import dayjs from 'dayjs';
 
 import { TransLineItem, Vendor } from '@main/entity';
 import EventEmitter, { EventName } from '@main/EventEmitter';
-import { DATE_FORMAT, formatCurrency } from '@common/utils';
+import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
 import { useApi } from '@api';
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { lineItemSelectState } from '@main/states/lineItems.state';
+import { slideOverOpenState } from '@main/states/slideOver.state';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -22,6 +25,8 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   onClickVendor,
 }) => {
   const { maskLineItemAsRead } = useApi();
+  const [lineItemSelect, setLineItemSelect] = useRecoilState(lineItemSelectState);
+  const slideOverOpened = useRecoilValue(slideOverOpenState);
 
   React.useEffect(() => {
     if (lineItem.meta?.isRead === false) {
@@ -58,6 +63,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
 
   const onClickLineItem = () => {
     if (onClick) onClick(lineItem);
+    setLineItemSelect(lineItem);
     EventEmitter.dispatch(EventName.SHOW_LINE_ITEM_DETAILS, {
       item: lineItem,
     });
@@ -77,11 +83,17 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
     );
   };
 
+  const isItemShowing = slideOverOpened && lineItemSelect?.id === lineItem?.id;
+  const bgColor = isItemShowing ? 'bg-Gray-12' : 'bg-transparent';
+
   return (
     <button
       type="button"
       aria-hidden="true"
-      className="flex flex-row w-full items-center pl-2 sm:pl-10 pr-2 sm:pr-2 py-1.5 hover:bg-Gray-12"
+      className={classNames(
+        'flex flex-row w-full items-center pl-2 sm:pl-10 pr-2 sm:pr-2 py-1.5 hover:bg-Gray-12',
+        bgColor,
+      )}
       onClick={onClickLineItem}
     >
       {renderNewGreen()}
