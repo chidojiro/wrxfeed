@@ -19,7 +19,6 @@ import SideBar from '../SideBar';
 
 interface NavBarProps {
   showSearchBar?: boolean;
-  showInvite?: boolean;
 }
 
 const userNavigation = [
@@ -27,10 +26,10 @@ const userNavigation = [
   { name: 'Sign out', href: '#' },
 ];
 
-const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = true }) => {
+const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
   const identity = useIdentity();
   const { roles } = usePermission();
-  const isShowInvite = roles?.includes(UserRole.ADMIN);
+  const isAdmin = roles?.includes(UserRole.ADMIN);
   const history = useHistory();
 
   const [isOpenInviteModal, openInviteModal] = useState(false);
@@ -46,7 +45,7 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false, showInvite = tr
   };
 
   const renderInviteButton = () => {
-    if (!showInvite && !isShowInvite) {
+    if (!isAdmin) {
       return (
         <div className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm" />
       );
