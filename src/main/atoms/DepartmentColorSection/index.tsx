@@ -11,10 +11,8 @@ const DepartmentColorSection: React.VFC<DepartmentColorSectionProps> = ({
   department,
   onClick,
 }) => {
-  const deptBgClass = useMemo(
-    () => getDepartmentBgColor(department?.name ?? ''),
-    [department?.name],
-  );
+  const departmentName = department?.parent?.name ?? department?.name ?? 'unknown';
+  const deptBgClass = useMemo(() => getDepartmentBgColor(departmentName ?? ''), [departmentName]);
 
   const handleClick = () => {
     if (onClick && department) {
@@ -29,7 +27,7 @@ const DepartmentColorSection: React.VFC<DepartmentColorSectionProps> = ({
         className="text-base text-left font-semibold text-white cursor-pointer py-2 hover:underline min-w-[50px] text-ellipsis overflow-hidden"
         onClick={handleClick}
       >
-        {department?.name ?? 'unknown'}
+        {departmentName}
       </h2>
     </div>
   );
