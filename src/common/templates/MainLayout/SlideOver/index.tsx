@@ -83,10 +83,10 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
   };
 
   useEffect(() => {
-    if (item?.id && open && !loading) {
+    if (item?.id && !loading) {
       getLineItemDetails(item?.id);
     }
-  }, [item]);
+  }, [item, open]);
 
   return (
     <Transition.Root show={open} as={Fragment}>

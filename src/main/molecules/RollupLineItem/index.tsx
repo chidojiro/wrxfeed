@@ -1,15 +1,17 @@
 // import { MessageTextAlt } from '@assets/index';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { TransLineItem, Vendor } from '@main/entity';
 import EventEmitter, { EventName } from '@main/EventEmitter';
 import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
+
 import { useApi } from '@api';
-import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import { lineItemSelectState } from '@main/states/lineItems.state';
 import { slideOverOpenState } from '@main/states/slideOver.state';
+
+import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -25,14 +27,17 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   onClickVendor,
 }) => {
   const { maskLineItemAsRead } = useApi();
+
+  const [isRead, setRead] = useState(false);
+
   const [lineItemSelect, setLineItemSelect] = useRecoilState(lineItemSelectState);
   const slideOverOpened = useRecoilValue(slideOverOpenState);
 
-  React.useEffect(() => {
-    if (lineItem.meta?.isRead === false) {
-      maskLineItemAsRead(lineItem.id);
+  useEffect(() => {
+    if (lineItem?.meta?.isRead === false) {
+      maskLineItemAsRead(lineItem?.id);
     }
-  }, [lineItem.id, lineItem.meta?.isRead, maskLineItemAsRead]);
+  }, [lineItem?.id, lineItem?.meta?.isRead, maskLineItemAsRead]);
 
   const renderMessages = () => {
     const isShowMessage = false; // lineItem?.commentCount > 0;
@@ -47,8 +52,8 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
     return <div className="h-4 w-8 ml-4" />;
   };
 
-  const renderNewGreen = () => {
-    if (lineItem?.meta?.isRead === false) {
+  const renderGreenDot = () => {
+    if (lineItem?.meta?.isRead === false && !isRead) {
       return <div className="flex w-1 h-1 rounded-full bg-Green-4 mr-1.5" />;
     }
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
@@ -64,6 +69,8 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   const onClickLineItem = () => {
     if (onClick) onClick(lineItem);
     setLineItemSelect(lineItem);
+    setRead(true);
+    maskLineItemAsRead(lineItem?.id);
     EventEmitter.dispatch(EventName.SHOW_LINE_ITEM_DETAILS, {
       item: lineItem,
     });
@@ -96,7 +103,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
       )}
       onClick={onClickLineItem}
     >
-      {renderNewGreen()}
+      {renderGreenDot()}
       {renderVendorName()}
       <p className="text-Gray-6 text-sm font-normal mx-0.5">·</p>
       <p className="text-Gray-6 text-xs font-normal">
