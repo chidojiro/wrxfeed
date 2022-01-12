@@ -29,6 +29,7 @@ export interface SelectItemProps {
 }
 
 export type LineInfo = {
+  id: string;
   key: string;
   value: string;
 };
@@ -52,15 +53,18 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
 
   const rows: LineInfo[] = [
     {
+      id: 'date',
       key: 'Date',
       value: dayjs(item?.transDate).format('MMM D, YYYY'),
     },
     {
-      key: 'Original Amount',
+      id: 'original-amount',
+      key: 'Amount',
       value: getOriginalAmountWithSign(),
     },
     {
-      key: 'Converted Amount',
+      id: 'converted-amount',
+      key: 'Amount USD',
       value: `$${formatCurrency(item?.amountUsd)}`,
     },
     // {
@@ -68,22 +72,27 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     //   value: `${dayjs(item?.endDate).format('MM/D/YYYY h:mmA')} PST`,
     // },
     {
+      id: 'subsidiary-name',
       key: 'Subsidiary',
       value: item?.transaction?.subsidiaryName ?? '...',
     },
     {
+      id: 'vendor-name',
       key: 'Vendor',
       value: item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`,
     },
     {
+      id: 'created-by',
       key: 'Created by',
       value: item?.transaction?.createdByName ?? '...',
     },
     {
+      id: 'created-at',
       key: 'Created at',
       value: item?.createdAt ? `${dayjs(item?.createdAt).format('MM/DD/YYYY h:mmA')}` : '...',
     },
     {
+      id: 'approver-name',
       key: 'Approver',
       value: item?.transaction?.billApproverName ?? '...',
     },
@@ -151,6 +160,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
             <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
               {rows.map((row: LineInfo) => {
                 if (!loading && isEmptyOrSpaces(row?.value)) return null;
+                if (item?.transaction?.currency === 'USD' && row?.id === 'converted-amount') {
+                  return null;
+                }
                 return (
                   <div
                     key={row?.key}
