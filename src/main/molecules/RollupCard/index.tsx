@@ -250,10 +250,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
       >
         {/* Rollup detail */}
         <div className="flex flex-row">
-          <DepartmentColorSection
-            department={feedItem.department.parent}
-            onClick={onClickRootDept}
-          />
+          <DepartmentColorSection department={feedItem?.department} onClick={onClickRootDept} />
           <div
             className={classNames(
               isHidden ? 'bg-purple-8' : 'bg-white',
