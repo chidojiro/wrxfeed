@@ -67,10 +67,11 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       key: 'Amount USD',
       value: `$${formatCurrency(item?.amountUsd)}`,
     },
-    // {
-    //   key: 'Last Modified',
-    //   value: `${dayjs(item?.endDate).format('MM/D/YYYY h:mmA')} PST`,
-    // },
+    {
+      id: 'modified-at',
+      key: 'Modified at',
+      value: item?.updatedAt && `${dayjs(item?.updatedAt).format('MM/D/YYYY h:mmA')} PST`,
+    },
     {
       id: 'subsidiary-name',
       key: 'Subsidiary',
@@ -86,11 +87,11 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       key: 'Created by',
       value: item?.transaction?.createdByName ?? '...',
     },
-    {
-      id: 'created-at',
-      key: 'Created at',
-      value: item?.createdAt ? `${dayjs(item?.createdAt).format('MM/DD/YYYY h:mmA')}` : '...',
-    },
+    // {
+    //   id: 'created-at',
+    //   key: 'Created at',
+    //   value: item?.createdAt ? `${dayjs(item?.createdAt).format('MM/DD/YYYY h:mmA')}` : '...',
+    // },
     {
       id: 'approver-name',
       key: 'Approver',
