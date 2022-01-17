@@ -20,10 +20,12 @@ export function useInvite(): InviteHookValues {
   const sendInvitation = async (contact: Partial<Contact>) => {
     try {
       setLoading(true);
-      await ApiClient.sendInvitation({ email: contact.email ?? '' });
+      await ApiClient.sendInvitation({ email: contact?.email ?? '' });
       setLoading(false);
       setSent(true);
-    } catch (error) {
+    } catch (error: unknown) {
+      // console.log({ error });
+      await errorHandler(error);
       setLoading(false);
       setSent(false);
       if (isBadRequest(error)) {
