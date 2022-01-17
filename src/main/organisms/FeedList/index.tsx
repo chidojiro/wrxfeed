@@ -11,6 +11,7 @@ interface FeedListProps {
   feeds: FeedItem[];
   isLoading?: boolean;
   hasMore?: boolean;
+  endMessage?: string;
   onLoadMore?: () => void;
   onFilter?: (key: keyof FeedFilters, value?: Department | Category | Vendor) => void;
   updateCategory?: (category: Partial<Category>) => Promise<void>;
@@ -21,6 +22,7 @@ const FeedList: React.VFC<FeedListProps> = ({
   feeds,
   isLoading,
   hasMore,
+  endMessage,
   onLoadMore,
   onFilter,
   updateCategory,
@@ -71,7 +73,7 @@ const FeedList: React.VFC<FeedListProps> = ({
         ))}
       </ul>
       {!isLoading && !feeds.length && renderEmptyList()}
-      {!isLoading && feeds.length > 0 && !hasMore && <ListEndComponent />}
+      {!isLoading && feeds.length > 0 && !hasMore && <ListEndComponent message={endMessage} />}
     </InfiniteScroller>
   );
 };
