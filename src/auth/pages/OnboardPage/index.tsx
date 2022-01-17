@@ -58,16 +58,16 @@ const OnboardPage: React.VFC = () => {
   };
 
   return (
-    <BlankLayout className="flex bg-LightBG">
+    <BlankLayout className="flex bg-LightBG p-0 m-0">
       <OnboardTemplate
         title="Tell us a bit about yourself."
-        description="Let’s start by getting your name and company info"
+        description="Let's start by getting your name and company info"
         formComponent={<BasicUserInfoForm className="mb-10" onSubmit={handleSubmitBasicInfo} />}
         visible={step === InputStep.BasicInfo}
       />
       <OnboardTemplate
-        title="Let’s get some highlights."
-        description="What’s your role at the company?"
+        title="Let's get some highlights."
+        description="What's your role at the company?"
         formComponent={<UserRoleForm className="mb-10" onSubmit={handleSubmitRole} />}
         visible={step === InputStep.Role}
       />
