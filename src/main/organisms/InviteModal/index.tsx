@@ -46,11 +46,15 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
   );
 
   useEffect(() => {
+    let timeout: NodeJS.Timeout;
     if (isSent) {
       setShowSuccessBanner(true);
       // Close banner after 3s
-      setTimeout(() => setShowSuccessBanner(false), 3000);
+      timeout = setTimeout(() => setShowSuccessBanner(false), 3000);
     }
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
   }, [isSent]);
 
   const debounceSearchRequest = useDebounce(onSearchContact, DEBOUNCE_WAIT, [onSearchContact]);
