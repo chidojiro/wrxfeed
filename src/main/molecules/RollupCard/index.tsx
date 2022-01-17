@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import { Menu } from '@headlessui/react';
+import { toast } from 'react-toastify';
 // Constants
 import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity';
 import { CommentFormModel } from '@main/types';
@@ -166,6 +167,11 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     setAttachFileComment(file);
   };
 
+  const handleCopyFeedLink = () => {
+    navigator.clipboard.writeText(`${window.location.host}/feed/${feedItem?.id}`);
+    toast.success('Feed link has been copied');
+  };
+
   const renderMenuItems = () => {
     const items = [];
     if (hideCategoryPermission) {
@@ -193,6 +199,12 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         value="issue-with-this-item"
         label="Issue With This Item"
         onClick={handleShareFeedback}
+      />,
+      <PopoverMenuItem
+        key="copy-feed-link"
+        value="copy-feed-link"
+        label="Copy Link"
+        onClick={handleCopyFeedLink}
       />,
     );
     return items;
@@ -250,10 +262,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
       >
         {/* Rollup detail */}
         <div className="flex flex-row">
-          <DepartmentColorSection
-            department={feedItem.department.parent}
-            onClick={onClickRootDept}
-          />
+          <DepartmentColorSection department={feedItem?.department} onClick={onClickRootDept} />
           <div
             className={classNames(
               isHidden ? 'bg-purple-8' : 'bg-white',
@@ -290,7 +299,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                 >
                   {`$ ${formatCurrency(feedItem?.total)}`}
                 </h2>
-                <Menu as="div" className="relative inline-block z-10 text-left">
+                <Menu as="div" className="relative inline-block z-30 text-left">
                   <div>
                     <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
                       <span className="sr-only">Open options</span>

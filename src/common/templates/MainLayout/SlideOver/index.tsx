@@ -54,15 +54,6 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
     }
   };
 
-  useEffect(() => {
-    EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) => handleOpenSlide(prop, item));
-    return () => {
-      EventEmitter.unsubscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) =>
-        handleOpenSlide(prop, item),
-      );
-    };
-  }, [item]);
-
   const getLineItemDetails = async (id: number) => {
     try {
       setLoading(true);
@@ -87,6 +78,15 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
       getLineItemDetails(item?.id);
     }
   }, [item, open]);
+
+  useEffect(() => {
+    EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) => handleOpenSlide(prop, item));
+    return () => {
+      EventEmitter.unsubscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) =>
+        handleOpenSlide(prop, item),
+      );
+    };
+  }, [item]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
