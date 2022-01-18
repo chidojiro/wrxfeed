@@ -13,6 +13,9 @@ import { useErrorHandler, isApiError, ApiErrorCode } from '@src/error';
 import NotInvited from '@auth/molecules/NotInvited';
 import { useLocation } from 'react-router-dom';
 import NotifyBanner from '@common/molecules/NotifyBanner';
+import NavBarStatic from '@common/organisms/NavBarStatic';
+// import MainLayout from '@common/templates/MainLayout';
+// import BlankLayout from '@common/templates/BlankLayout';
 
 export interface LocationState {
   fromInvite?: boolean;
@@ -95,37 +98,40 @@ const LoginPage: React.VFC = () => {
   return notInvited ? (
     <NotInvited />
   ) : (
-    <div className="flex flex-col justify-center items-center min-h-screen my-auto space-y-10">
-      {fromInvite ? (
-        <div className="flex flex-col justify-center items-center mb-3 space-y-3 max-w-xl">
-          <h2 className="text-4xl text-primary text-center font-bold">
+    <div className="relative">
+      <NavBarStatic companyName="Gravity Labs" companyStyle="ml-4 sm:ml-12 md:ml-24 lg:ml-40" />
+      <div className="flex flex-col justify-center items-center min-h-screen my-auto space-y-10 relative">
+        {fromInvite ? (
+          <div className="flex flex-col justify-center items-center mb-3 space-y-3 max-w-xl">
+            <h2 className="text-4xl text-primary text-center font-bold">
+              Join your Bird team on Gravity.
+            </h2>
+            <p className="text-base text-Gray-6 text-center tracking-tight">
+              We change the way teams approach day-to-day spend. Collaborate, analyze and identify
+              inefficiencies to maximize profit. No finance hat needed.
+            </p>
+          </div>
+        ) : (
+          <h2 className="text-4xl text-primary text-center font-bold mb-3">
             Join your team on Gravity.
           </h2>
-          <p className="text-base text-Gray-6 text-center tracking-tight">
-            We change the way teams approach day-to-day spend. Collaborate, analyze and identify
-            inefficiencies to maximize profit. No finance hat needed.
-          </p>
-        </div>
-      ) : (
-        <h2 className="text-4xl text-primary text-center font-bold mb-3">
-          Join your team on Gravity.
-        </h2>
-      )}
-      <GoogleLogin
-        clientId={GOOGLE_CLIENT_ID}
-        scope={GOOGLE_SCOPES}
-        onSuccess={handleResponseSuccess}
-        onFailure={handleResponseFailure}
-        render={(renderProps) => (
-          <SocialAuthButton
-            provider={AuthProvider.GOOGLE}
-            disabled={renderProps.disabled}
-            onClick={renderProps.onClick}
-          >
-            Sign up with Google
-          </SocialAuthButton>
         )}
-      />
+        <GoogleLogin
+          clientId={GOOGLE_CLIENT_ID}
+          scope={GOOGLE_SCOPES}
+          onSuccess={handleResponseSuccess}
+          onFailure={handleResponseFailure}
+          render={(renderProps) => (
+            <SocialAuthButton
+              provider={AuthProvider.GOOGLE}
+              disabled={renderProps.disabled}
+              onClick={renderProps.onClick}
+            >
+              Sign up with Google
+            </SocialAuthButton>
+          )}
+        />
+      </div>
     </div>
   );
 };

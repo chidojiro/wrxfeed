@@ -15,10 +15,12 @@ import { UserProfilePopover, NotifyPopover } from '@main/molecules';
 import { InviteModal } from '@main/organisms';
 import { UserPlusIcon } from '@assets/index';
 import SearchBar from '@common/molecules/SearchBar';
+import routes from '@src/routes';
 import SideBar from '../SideBar';
+import NavBarStatic from '../NavBarStatic';
 
 interface NavBarProps {
-  showSearchBar?: boolean;
+  searchBar?: boolean;
 }
 
 const userNavigation = [
@@ -26,14 +28,14 @@ const userNavigation = [
   { name: 'Sign out', href: '#' },
 ];
 
-const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
+const NavBar: React.VFC<NavBarProps> = ({ searchBar = false }) => {
   const identity = useIdentity();
   const { roles } = usePermission();
   const isAdmin = roles?.includes(UserRole.ADMIN);
   const history = useHistory();
 
-  const [isOpenInviteModal, openInviteModal] = useState(false);
   const profile = useRecoilValue(profileState);
+  const [isOpenInviteModal, openInviteModal] = useState(false);
   const [profileUser] = useState<Profile>(profile);
 
   const onClickInviteButton = () => {
@@ -41,7 +43,7 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
   };
 
   const onClickNotification = () => {
-    history.push('/notifications');
+    history.push(routes?.Notifications?.path as string);
   };
 
   const renderInviteButton = () => {
@@ -67,6 +69,18 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
   };
 
   return (
+    <NavBarStatic
+      companyName={identity?.company?.name || '...'}
+      userAva={profileUser?.avatar}
+      userName={profileUser?.fullName}
+      userEmail={profileUser?.email}
+      showAva
+      showNoti
+      showInvite={isAdmin}
+    />
+  );
+
+  return (
     <Popover
       as="header"
       className={({ open }) => {
@@ -80,7 +94,6 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
         <>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative flex justify-between h-navbar xl:grid xl:grid-cols-12 lg:gap-8">
-              {/* Left space */}
               <div className="flex justify-center md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-2">
                 <div className="flex-shrink-0 flex items-center">
                   <h1 className="text-lg font-bold text-white">
@@ -88,10 +101,9 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
                   </h1>
                 </div>
               </div>
-              {/* Center space */}
               <div className="flex items-center min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-7">
                 <div className="flex w-full items-center px-5 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0">
-                  {showSearchBar && <SearchBar />}
+                  {searchBar && <SearchBar />}
                 </div>
               </div>
               <div className="hidden sm:flex items-center lg:justify-end xl:col-span-3 mr-0 md:mr-16 lg:mr-2">
@@ -113,8 +125,7 @@ const NavBar: React.VFC<NavBarProps> = ({ showSearchBar = false }) => {
               </div>
             </div>
           </div>
-
-          {/* for mobile */}
+          {/* mobile */}
           <Popover.Panel as="nav" className="bg-white h-full lg:hidden" aria-label="Global">
             <div className="max-w-3xl mx-auto px-2 pt-2 pb-3 space-y-1 sm:px-4">
               <SideBar />
