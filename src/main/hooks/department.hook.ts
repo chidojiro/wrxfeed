@@ -54,6 +54,9 @@ export function useDepartment(filters: DepartmentFilter): DepartmentHookValues {
           setDepartments(sectionData);
         }
       }
+      if (filters.offset === 0 && res.length === 0) {
+        setDepartments([]);
+      }
       setHasMore(!!res.length);
     } catch (error: unknown) {
       if (isApiError(error)) {

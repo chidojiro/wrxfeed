@@ -12,23 +12,23 @@ import { Department } from '@main/entity';
 import BlankLayout from '@common/templates/BlankLayout';
 import NavBarStatic from '@common/organisms/NavBarStatic';
 import { ReactComponent as SharpSpaceDashboard } from '@assets/icons/solid/sharp-space-dashboard.svg';
-import { ReactComponent as BasicsTickSmall } from '@assets/icons/solid/basics-tick-small.svg';
 import { useDepartment } from '@main/hooks/department.hook';
 import { DepartmentFilter } from '@api/types';
 import Loading from '@common/atoms/Loading';
-// import { ReactComponent as BasicsAddSmall } from '@assets/icons/solid/basics-add-small.svg';
+import DepartmentCell from '@auth/molecules/DepartmentCell';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
   offset: 0,
   limit: LIMIT,
 });
-const DEBOUNCE_WAIT = 300;
+const DEBOUNCE_WAIT = 500;
 
 const OnboardPage: React.VFC = () => {
   const identity = useIdentity();
   const { redirect } = useNavUtils();
   const { getDepartmentById } = useApi();
+
   const [filter, setFilter] = useState<DepartmentFilter>({
     ...INIT_PAGINATION,
     term: '',
@@ -40,7 +40,6 @@ const OnboardPage: React.VFC = () => {
 
   const getYourTeam = async (depId: number) => {
     const userDepartment = await getDepartmentById(depId);
-    // console.log({ userDepartment });
     yourTeams.push(userDepartment);
   };
 
@@ -57,12 +56,6 @@ const OnboardPage: React.VFC = () => {
   }, [identity?.depId]);
 
   const onClickIamDone = () => redirect(routes.Company.path as string);
-  // const onChangeKeyword = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setFilter({
-  //     ...INIT_PAGINATION,
-  //     term: event.target.value,
-  //   });
-  // };
   const onSearchTeam = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.value.length > 0) {
@@ -76,33 +69,18 @@ const OnboardPage: React.VFC = () => {
     },
     [setFilter],
   );
-  const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT, [onSearchTeam]);
 
-  const renderTeam = (item: Department) => {
-    return (
-      <div
-        key={item?.id}
-        className="flex flex-row items-center justify-between py-4 border-Gray-11 border-b"
-      >
-        <p className="text-sm font-medium text-Gray-3">{item?.name}</p>
-        <button
-          type="button"
-          className="flex flex-row items-center px-3 py-2 space-x-1.5 bg-Accent-2 rounded-full"
-        >
-          <BasicsTickSmall
-            width={20}
-            height={20}
-            className="w-5 h-5 stroke-current path-no-stroke text-white object-cover"
-          />
-          <p className="text-white text-sm">Following</p>
-        </button>
-      </div>
-    );
-  };
+  const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT, [onSearchTeam]);
 
   const renderSearchResults = () => {
     if (results.length === 0) return null;
-    return <div className="flex flex-col border-Gray-11 border-t">{results.map(renderTeam)}</div>;
+    return (
+      <div className="flex flex-col border-Gray-11 border-t">
+        {results.map((item) => (
+          <DepartmentCell key={item?.id} dept={item} isFollowed={false} />
+        ))}
+      </div>
+    );
   };
 
   const renderYourTeam = () => {
@@ -112,7 +90,9 @@ const OnboardPage: React.VFC = () => {
         <div className="flex flex-col py-4 border-Gray-11 border-b">
           <p className="text-xs text-Gray-6 text-left">Your Team</p>
         </div>
-        {yourTeams.map(renderTeam)}
+        {yourTeams.map((item) => (
+          <DepartmentCell key={item?.id} dept={item} isFollowed />
+        ))}
       </div>
     );
   };
@@ -124,7 +104,9 @@ const OnboardPage: React.VFC = () => {
         <div className="flex flex-col py-4 border-Gray-11 border-b">
           <p className="text-xs text-Gray-6 text-left">Suggested Teams</p>
         </div>
-        {suggestedTeams.map(renderTeam)}
+        {suggestedTeams.map((item) => (
+          <DepartmentCell key={item?.id} dept={item} isFollowed={false} />
+        ))}
       </div>
     );
   };
@@ -135,9 +117,11 @@ const OnboardPage: React.VFC = () => {
         companyName={identity?.company?.name || 'Gravity Labs'}
         companyStyle="ml-4 sm:ml-12 md:ml-24 lg:ml-40"
       />
-      <div className="flex flex-1  h-screen flex-col pt-24 items-center bg-Gray-12">
-        <div className="w-[448px] h-auto flex flex-col items-center">
-          <SharpSpaceDashboard className="mt-14 w-8 h-8" width={32} height={32} />
+      <div className="flex flex-1 flex-col pt-24 items-center bg-Gray-12 overflow-hidden">
+        <div className="h-auto flex flex-1 flex-col items-center overflow-hidden">
+          <div className="mt-14 w-8 h-8 flex">
+            <SharpSpaceDashboard className="w-8 h-8" width={32} height={32} />
+          </div>
           <div className="text-center">
             <h1 className="text-primary text-2xl font-semibold mt-4">What team are you on?</h1>
             <p className="text-Gray-6 text-sm mt-1">
@@ -148,25 +132,30 @@ const OnboardPage: React.VFC = () => {
           </div>
           <div className="bg-white mt-6">
             <input
-              className="w-[448px] h-9 text-sm text-center border border-Gray-11 focus:border-Accent-2 hover:border-Accent-2"
+              className="w-[448px] text-primary h-9 text-sm text-center border border-Gray-11 focus:border-Accent-2 hover:border-Accent-2"
               placeholder="My team is…"
               onChange={debounceSearchRequest}
             />
           </div>
-          <div className="w-full h-full flex flex-col mt-3">
+          <div className="w-full h-auto flex flex-1 relative flex-col mt-3 overflow-hidden">
             <div className="w-full h-4 flex justify-center items-center mb-3">
-              {!!isLoading && <Loading className="ml-4" width={12} height={12} />}
+              {!!isLoading && <Loading width={12} height={12} />}
             </div>
-            <div className="flex flex-col w-full overflow-y-scroll h-[360px]">
+            <div className="flex flex-col w-full overflow-y-scroll">
               {renderSearchResults()}
               {renderYourTeam()}
               {renderSuggestedTeam()}
             </div>
-            <button type="button" onClick={onClickIamDone}>
-              <p className="text-Accent-2 text-sm self-center mb-20 mt-4">{"I'm Done —>"}</p>
-            </button>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={onClickIamDone}
+          className="flex flex-col items-center self-center mb-20 mt-4"
+        >
+          <p className="text-Accent-2 text-sm">{"I'm Done —>"}</p>
+          <div className="h-px bg-Accent-2 w-full" />
+        </button>
       </div>
     </BlankLayout>
   );

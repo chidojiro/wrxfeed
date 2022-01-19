@@ -5,9 +5,12 @@ import cloneDeep from 'lodash.clonedeep';
 import { useApi } from '@api';
 import { toast } from 'react-toastify';
 import { SubscriptionParams } from '@api/types';
+import { useState } from 'react';
 
 interface SubscriptionHookValues {
   subscription: Subscription | null;
+  isFollowLoading: boolean;
+  isUnfollowLoading: boolean;
   subscribe: (type: keyof Subscription, channel: Department | Category | Vendor) => void;
   batchSubscribe: (subs: Subscription) => void;
   unsubscribe: (type: keyof Subscription, channel: Department | Category | Vendor) => void;
@@ -17,11 +20,15 @@ interface SubscriptionHookValues {
 export function useSubscription(): SubscriptionHookValues {
   const ApiClient = useApi();
   const [subscription, setSubscription] = useRecoilState(subscriptionState);
+  const [isFollowLoading, setFollowLoading] = useState<boolean>(false);
+  const [isUnfollowLoading, setUnfollowLoading] = useState<boolean>(false);
 
   function unsubscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
     // Call API to unsubscribe follow data
+    setUnfollowLoading(true);
     ApiClient.deleteSubscriptions({ [type]: [channel.id] })
       .then(() => {
+        setUnfollowLoading(false);
         const newSubscription: Subscription = cloneDeep(subscription);
         switch (type) {
           case 'departments':
@@ -78,9 +85,11 @@ export function useSubscription(): SubscriptionHookValues {
   }
 
   function subscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
+    setFollowLoading(true);
     // Call API to update follow data
     ApiClient.updateSubscriptions({ [type]: [channel.id] })
       .then(() => {
+        setFollowLoading(false);
         const newSubscription: Subscription = cloneDeep(subscription);
         switch (type) {
           case 'departments':
@@ -183,5 +192,7 @@ export function useSubscription(): SubscriptionHookValues {
     unsubscribe,
     batchUnsubscribe,
     isFollowing,
+    isFollowLoading,
+    isUnfollowLoading,
   };
 }
