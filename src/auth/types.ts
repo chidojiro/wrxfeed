@@ -10,6 +10,8 @@ export interface Profile {
   signupDate?: string;
   bio?: string;
   lastLoginAt?: string;
+  depId?: number;
+  refererId?: number;
   avatar?: string;
 }
 

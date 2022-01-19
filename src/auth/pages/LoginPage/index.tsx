@@ -5,18 +5,18 @@ import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 
 import { useNavUtils } from '@common/hooks';
-import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
-import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@src/config';
-import Routes from '@src/routes';
+import { useErrorHandler, isApiError, ApiErrorCode } from '@src/error';
 import { useIdentity, useSetIdentity } from '@identity/hooks';
 import { useApi } from '@api';
+
+import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@src/config';
+import Routes from '@src/routes';
 import { ProviderName } from '@main/entity';
-import { useErrorHandler, isApiError, ApiErrorCode } from '@src/error';
+
+import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
 import NotInvited from '@auth/molecules/NotInvited';
 import NotifyBanner from '@common/molecules/NotifyBanner';
 import NavBarStatic from '@common/organisms/NavBarStatic';
-// import MainLayout from '@common/templates/MainLayout';
-// import BlankLayout from '@common/templates/BlankLayout';
 
 export interface LocationState {
   fromInvite?: boolean;
@@ -47,8 +47,13 @@ const LoginPage: React.VFC = () => {
 
   useEffect(() => {
     if (identity?.token) {
-      const callbackUrl = from?.pathname || (Routes.Company.path as string);
-      redirect(callbackUrl);
+      if (identity.lastLoginAt !== null) {
+        // new user => onboarding
+        redirect(Routes.Onboard.path as string);
+      } else {
+        const callbackUrl = from?.pathname || (Routes.Company.path as string);
+        redirect(callbackUrl);
+      }
     }
   }, [redirect, identity, from]);
 
