@@ -16,6 +16,7 @@ import { useDepartment } from '@main/hooks/department.hook';
 import { DepartmentFilter } from '@api/types';
 import Loading from '@common/atoms/Loading';
 import DepartmentCell from '@auth/molecules/DepartmentCell';
+// import { getMultiRandomInt } from '@main/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -47,6 +48,8 @@ const OnboardPage: React.VFC = () => {
     // if (identity?.token && identity?.lastLoginAt) {
     //   redirect(routes.Company.path as string);
     // }
+    // const random = getMultiRandomInt(4, 0, 10);
+    // console.log({ random });
   }, [redirect, identity]);
 
   useEffect(() => {
