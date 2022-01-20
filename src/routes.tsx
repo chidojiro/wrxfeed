@@ -2,7 +2,7 @@
 import { UserRole } from '@identity/constants';
 import { ComponentType } from 'react';
 // Pages
-import Home from '@main/pages/Landing';
+// import Home from '@main/pages/Landing';
 import Login from '@auth/pages/LoginPage';
 import AcceptInvitation from '@auth/pages/AcceptInvitation';
 
@@ -28,10 +28,10 @@ export interface Route {
 
 const routes: Route = {
   // Public pages
-  Home: {
-    path: '/',
-    component: Home,
-  },
+  // Home: {
+  //   path: '/',
+  //   component: Home,
+  // },
   Login: {
     path: '/login',
     component: Login,

@@ -5,7 +5,12 @@
   force = true
 
 [[redirects]]
+  from = "/"
+  to = "/login"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
