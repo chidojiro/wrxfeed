@@ -47,13 +47,13 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const profileForms = [
     {
       title: 'Name',
-      content: profileUser?.fullName || 'Update now',
+      content: profileUser?.fullName || 'Unknown',
       onChange: () => {},
       editable: false,
     },
     {
       title: 'Title',
-      content: profileUser?.title || 'Update now',
+      content: profileUser?.title || 'Unknown',
       onChange: (text: string) => {
         setTitle(text);
       },
@@ -69,7 +69,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     // },
     {
       title: 'Email',
-      content: 'taipham1803@gmail.comtaipham1803@gmail.com', // profileUser?.email || 'Update now',
+      content: profileUser?.email || 'Unknown',
       onChange: () => {},
       editable: false,
     },
