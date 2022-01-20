@@ -35,11 +35,12 @@ const AcceptInvitation: VFC = () => {
       setLoading(false);
     } else {
       try {
-        await acceptInvitation(inviteId);
+        const result = await acceptInvitation(inviteId);
         // Redirect to login
         router.replace(Routes.Login.path as string, {
           fromInvite: true,
           message: 'Your account has been created successfully',
+          metadata: result,
         });
       } catch (err: any) {
         if (isApiError(err)) {
