@@ -7,6 +7,12 @@ import { toast } from 'react-toastify';
 import { SubscriptionParams } from '@api/types';
 import { useState } from 'react';
 
+interface SubscribeCallback {
+  onFollowSuccess?: () => void;
+  onFollowError?: (error: unknown) => void;
+  onUnfollowSuccess?: () => void;
+  onUnfollowError?: (error: unknown) => void;
+}
 interface SubscriptionHookValues {
   subscription: Subscription | null;
   isFollowLoading: boolean;
@@ -17,7 +23,7 @@ interface SubscriptionHookValues {
   batchUnsubscribe: (subs: Subscription) => void;
   isFollowing: (type: keyof Subscription, channel: Department | Category | Vendor) => boolean;
 }
-export function useSubscription(): SubscriptionHookValues {
+export function useSubscription(callback?: SubscribeCallback): SubscriptionHookValues {
   const ApiClient = useApi();
   const [subscription, setSubscription] = useRecoilState(subscriptionState);
   const [isFollowLoading, setFollowLoading] = useState<boolean>(false);
@@ -28,6 +34,7 @@ export function useSubscription(): SubscriptionHookValues {
     setUnfollowLoading(true);
     ApiClient.deleteSubscriptions({ [type]: [channel.id] })
       .then(() => {
+        if (callback && callback.onUnfollowSuccess) callback?.onUnfollowSuccess();
         setUnfollowLoading(false);
         const newSubscription: Subscription = cloneDeep(subscription);
         switch (type) {
@@ -51,8 +58,9 @@ export function useSubscription(): SubscriptionHookValues {
         }
         setSubscription(newSubscription);
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         toast.error(`Can not unfollow ${channel.name}. Please check your network and try again.`);
+        if (callback && callback.onUnfollowError) callback?.onUnfollowError(error);
       });
   }
 
@@ -89,6 +97,7 @@ export function useSubscription(): SubscriptionHookValues {
     // Call API to update follow data
     ApiClient.updateSubscriptions({ [type]: [channel.id] })
       .then(() => {
+        if (callback && callback.onFollowSuccess) callback?.onFollowSuccess();
         setFollowLoading(false);
         const newSubscription: Subscription = cloneDeep(subscription);
         switch (type) {
@@ -118,8 +127,9 @@ export function useSubscription(): SubscriptionHookValues {
         }
         setSubscription(newSubscription);
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         toast.error(`Can not follow ${channel.name}. Please check your network and try again.`);
+        if (callback && callback.onFollowError) callback?.onFollowError(error);
       });
   }
 
