@@ -47,13 +47,13 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
   const profileForms = [
     {
       title: 'Name',
-      content: profileUser?.fullName || 'Update now',
+      content: profileUser?.fullName || 'Unknown',
       onChange: () => {},
       editable: false,
     },
     {
       title: 'Title',
-      content: profileUser?.title || 'Update now',
+      content: profileUser?.title || 'Unknown',
       onChange: (text: string) => {
         setTitle(text);
       },
@@ -69,7 +69,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     // },
     {
       title: 'Email',
-      content: profileUser?.email || 'Update now',
+      content: profileUser?.email || 'Unknown',
       onChange: () => {},
       editable: false,
     },
@@ -259,9 +259,9 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
                       return (
                         <div key={`profileInfos-${item.title}`} className="flex flex-col mt-2">
                           <div className="flex text-sm text-gray-1 font-medium">{item.title}</div>
-                          <div className="flex flex-row items-center py-4 h-10">
+                          <div className="flex w-full flex-row items-center py-4 h-10 overflow-hidden">
                             <input
-                              className="flex text-sm text-Gray-6 border-none outline-none placeholder-gray-300 bg-transparent"
+                              className="flex w-full text-sm text-Gray-6 border-none outline-none placeholder-gray-300 bg-transparent truncate"
                               defaultValue={item.content}
                               disabled={!editable}
                               placeholder={item.content}

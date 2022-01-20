@@ -54,15 +54,6 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
     }
   };
 
-  useEffect(() => {
-    EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) => handleOpenSlide(prop, item));
-    return () => {
-      EventEmitter.unsubscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) =>
-        handleOpenSlide(prop, item),
-      );
-    };
-  }, [item]);
-
   const getLineItemDetails = async (id: number) => {
     try {
       setLoading(true);
@@ -83,17 +74,26 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
   };
 
   useEffect(() => {
-    if (item?.id && open && !loading) {
+    if (item?.id && !loading) {
       getLineItemDetails(item?.id);
     }
-  }, [item?.id]);
+  }, [item, open]);
+
+  useEffect(() => {
+    EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) => handleOpenSlide(prop, item));
+    return () => {
+      EventEmitter.unsubscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) =>
+        handleOpenSlide(prop, item),
+      );
+    };
+  }, [item]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
       <div className={classNames('absolute inset-0 overflow-hidden', className)}>
         {/* <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" /> */}
-        <div role="alertdialog" className="absolute inset-0 z-10" onClick={onClickOverlay} />
-        <div className="fixed inset-y-0 z-30 right-0 max-w-md flex">
+        <div role="alertdialog" className="absolute inset-0 z-5" onClick={onClickOverlay} />
+        <div className="fixed inset-y-0 z-20 right-0 max-w-md flex">
           <Transition.Child
             as={Fragment}
             enter="transform transition ease-in-out duration-200 sm:duration-300"
@@ -103,7 +103,7 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
             leaveFrom="translate-x-0"
             leaveTo="translate-x-full"
           >
-            <div className="w-screen max-w-md flex flex-1 flex-col pt-navbar relative z-30">
+            <div className="w-screen max-w-md flex flex-1 flex-col pt-navbar relative">
               {!!item && (
                 <LineItemDetails
                   open={open}
