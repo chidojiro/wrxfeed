@@ -18,6 +18,7 @@ export interface LocationState {
   fromInvite?: boolean;
   message?: string;
   from?: Location;
+  metadata?: any;
 }
 
 const LoginPage: React.VFC = () => {
@@ -29,7 +30,7 @@ const LoginPage: React.VFC = () => {
   const errorHandler = useErrorHandler();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
-  const { message, from, fromInvite } = location.state ?? {};
+  const { message, from, fromInvite, metadata } = location.state ?? {};
 
   useEffect(() => {
     if (message) {
@@ -99,7 +100,7 @@ const LoginPage: React.VFC = () => {
       {fromInvite ? (
         <div className="flex flex-col justify-center items-center mb-3 space-y-3 max-w-xl">
           <h2 className="text-4xl text-primary text-center font-bold">
-            Join your team on Gravity.
+            {`Join your ${metadata?.company?.name || ''} team on Gravity.`.replace(/\s+/g, ' ')}
           </h2>
           <p className="text-base text-Gray-6 text-center tracking-tight">
             We change the way teams approach day-to-day spend. Collaborate, analyze and identify
