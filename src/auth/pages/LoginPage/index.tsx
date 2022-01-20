@@ -18,6 +18,7 @@ export interface LocationState {
   fromInvite?: boolean;
   message?: string;
   from?: Location;
+  metadata?: any;
 }
 
 const LoginPage: React.VFC = () => {
@@ -29,7 +30,7 @@ const LoginPage: React.VFC = () => {
   const errorHandler = useErrorHandler();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
-  const { message, from } = location.state ?? {};
+  const { message, from, fromInvite, metadata } = location.state ?? {};
 
   useEffect(() => {
     if (message) {
@@ -96,9 +97,21 @@ const LoginPage: React.VFC = () => {
     <NotInvited />
   ) : (
     <div className="flex flex-col justify-center items-center min-h-screen my-auto space-y-10">
-      <h2 className="text-4xl text-primary text-center font-bold mb-3">
-        Join your team on Gravity.
-      </h2>
+      {fromInvite ? (
+        <div className="flex flex-col justify-center items-center mb-3 space-y-3 max-w-xl">
+          <h2 className="text-4xl text-primary text-center font-bold">
+            {`Join your ${metadata?.company?.name || ''} team on Gravity.`.replace(/\s+/g, ' ')}
+          </h2>
+          <p className="text-base text-Gray-6 text-center tracking-tight">
+            We change the way teams approach day-to-day spend. Collaborate, analyze and identify
+            inefficiencies to maximize profit. No finance hat needed.
+          </p>
+        </div>
+      ) : (
+        <h2 className="text-4xl text-primary text-center font-bold mb-3">
+          Join your team on Gravity.
+        </h2>
+      )}
       <GoogleLogin
         clientId={GOOGLE_CLIENT_ID}
         scope={GOOGLE_SCOPES}

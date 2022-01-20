@@ -136,6 +136,7 @@ const ForYouPage: React.VFC = () => {
         isLoading={isLoading}
         hasMore={hasMore}
         onFilter={handleFilter}
+        endMessage="Add to your feed by following more teams."
       />
       <MainRightSide>
         <TargetPanel />

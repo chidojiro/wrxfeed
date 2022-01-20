@@ -1,6 +1,7 @@
 import { useApi } from '@api';
 import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
+import { ApiErrorCode } from '@error/types';
+import { isApiError } from '@error/utils';
 import { Contact } from '@main/entity';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -20,17 +21,19 @@ export function useInvite(): InviteHookValues {
   const sendInvitation = async (contact: Partial<Contact>) => {
     try {
       setLoading(true);
-      await ApiClient.sendInvitation({ email: contact.email ?? '' });
-      setLoading(false);
+      await ApiClient.sendInvitation({ email: contact?.email ?? '' });
       setSent(true);
-    } catch (error) {
-      setLoading(false);
+    } catch (error: unknown) {
       setSent(false);
-      if (isBadRequest(error)) {
-        toast.error('Can not send invite!');
-      } else {
-        await errorHandler(error);
+      if (isApiError(error)) {
+        if (error.code === ApiErrorCode.BadRequest) {
+          toast.error(error.details?.message);
+        } else {
+          errorHandler(error);
+        }
       }
+    } finally {
+      setLoading(false);
     }
   };
   return { isSent, isLoading, sendInvitation };

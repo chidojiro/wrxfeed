@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Contact } from '@main/entity/contact.entity';
 import { GetContactsFilter } from '@api/types';
 import { useGetContacts } from '@main/hooks/contact.hook';
@@ -31,7 +31,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
     pagination: INIT_PAGINATION,
   });
   const { contacts } = useGetContacts(filter);
-  const { sendInvitation } = useInvite();
+  const { sendInvitation, isSent } = useInvite();
   const [isLoading, setLoading] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
 
@@ -44,15 +44,25 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
     },
     [setFilter],
   );
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (isSent) {
+      setShowSuccessBanner(true);
+      // Close banner after 3s
+      timeout = setTimeout(() => setShowSuccessBanner(false), 3000);
+    }
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [isSent]);
+
   const debounceSearchRequest = useDebounce(onSearchContact, DEBOUNCE_WAIT, [onSearchContact]);
 
   const sendMultipleInvites = async (emails: string[]) => {
     setLoading(true);
     await Promise.all(emails.map((email) => sendInvitation({ email })));
     setLoading(false);
-    setShowSuccessBanner(true);
-    // Close banner after 3s
-    setTimeout(() => setShowSuccessBanner(false), 3000);
   };
 
   return (
