@@ -40,7 +40,6 @@ const OnboardPage: React.VFC = () => {
   const { departments, onClear, isLoading } = useDepartment(filter);
   const { isFollowing } = useSubscription();
 
-  // const [deptLocal, setDeptLocal] = useState<DepartmentSection[]>([]);
   const [searchResults, setSearchResults] = useState<DepartmentSection[]>([]);
   const [yourTeams, setYourTeams] = useState<DepartmentSection[]>([]);
   const [suggestedTeams, setSuggestedTeams] = useState<DepartmentSection[]>([]);
@@ -53,13 +52,12 @@ const OnboardPage: React.VFC = () => {
 
   useEffect(() => {
     setSearchResults(departments);
-    // if (departments.length > 0) setDeptLocal(departments);
   }, [departments]);
 
   useEffect(() => {
-    // if (identity?.token && identity?.lastLoginAt) {
-    //   redirect(routes.Company.path as string);
-    // }
+    if (identity?.token && identity?.lastLoginAt) {
+      redirect(routes.Company.path as string);
+    }
   }, [redirect, identity]);
 
   useEffect(() => {
