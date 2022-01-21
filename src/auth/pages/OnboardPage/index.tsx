@@ -18,6 +18,7 @@ import Loading from '@common/atoms/Loading';
 import DepartmentCell from '@auth/molecules/DepartmentCell';
 import { getMultiRandomInt } from '@main/utils';
 import { useSubscription } from '@main/hooks/subscription.hook';
+import { TEAM_SUGGEST_RANDOM_NUMBER } from '@src/config';
 
 const LIMIT_GET_DEPT = 100;
 const INIT_PAGE_DEPT = Object.freeze({
@@ -60,26 +61,26 @@ const OnboardPage: React.VFC = () => {
 
   useEffect(() => {
     if (suggestedTeams.length > 0) return;
-    const suggestRaw: DepartmentSection[] = [];
+    const teamNotFollowYet: DepartmentSection[] = [];
     const followed: DepartmentSection[] = [];
 
     searchResults.forEach((item) => {
       if (isFollowing('departments', item)) {
         followed.push(item);
-      } else {
-        suggestRaw.push(item);
+      } else if (item?.id !== identity?.depId) {
+        teamNotFollowYet.push(item);
       }
     });
 
     setYourTeams((pre) => [...pre, ...followed]);
 
-    if (suggestRaw.length > 4) {
-      const random = getMultiRandomInt(4, 0, suggestRaw.length - 1);
+    if (teamNotFollowYet.length > 4) {
+      const random = getMultiRandomInt(TEAM_SUGGEST_RANDOM_NUMBER, 0, teamNotFollowYet.length - 1);
       const randomSuggest: DepartmentSection[] = [];
-      random.forEach((item) => randomSuggest.push(suggestRaw[item]));
+      random.forEach((item) => randomSuggest.push(teamNotFollowYet[item]));
       setSuggestedTeams(randomSuggest);
     } else {
-      setSuggestedTeams(suggestRaw);
+      setSuggestedTeams(teamNotFollowYet);
     }
   }, [searchResults]);
 

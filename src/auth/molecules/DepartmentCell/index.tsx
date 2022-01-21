@@ -9,6 +9,7 @@ import { ReactComponent as BasicsTickSmall } from '@assets/icons/solid/basics-ti
 import { ReactComponent as BasicsAddSmall } from '@assets/icons/solid/basics-add-small.svg';
 import Loading from '@common/atoms/Loading';
 import { toast } from 'react-toastify';
+import { useIdentity } from '@identity/hooks';
 
 interface DepartmentCellProps {
   className?: string;
@@ -23,6 +24,7 @@ const DepartmentCell: React.VFC<DepartmentCellProps> = ({
   onFollowedTeam = () => undefined,
   onUnfollowedTeam = () => undefined,
 }) => {
+  const identity = useIdentity();
   const { subscribe, unsubscribe, isFollowLoading, isUnfollowLoading, isFollowing } =
     useSubscription({
       onFollowSuccess: () => onFollowedTeam(dept),
@@ -68,16 +70,12 @@ const DepartmentCell: React.VFC<DepartmentCellProps> = ({
     }
     return <BasicsAddSmall width={20} height={20} className="w-5 h-5 stroke-current" />;
   };
+
+  const isUserDepartment = identity?.depId === dept?.id;
   const hoverStyle = isFollowed ? 'hover:bg-Gray-2' : 'hover:bg-Accent-3';
-  return (
-    <div
-      key={dept?.id}
-      className={classNames(
-        'flex flex-row items-center justify-between py-4 border-Gray-11 border-b',
-        className,
-      )}
-    >
-      <p className="text-sm font-medium text-Gray-3">{dept?.name}</p>
+  const renderFollowButton = () => {
+    if (isUserDepartment) return null;
+    return (
       <button
         type="button"
         onClick={onClickFollowDepartment}
@@ -90,6 +88,19 @@ const DepartmentCell: React.VFC<DepartmentCellProps> = ({
         {renderIcon()}
         <p className={classNames('text-sm', textColor)}>{isFollowed ? 'Following' : 'Follow'}</p>
       </button>
+    );
+  };
+
+  return (
+    <div
+      key={dept?.id}
+      className={classNames(
+        'flex flex-row items-center justify-between py-4 border-Gray-11 border-b',
+        className,
+      )}
+    >
+      <p className="text-sm font-medium text-Gray-3">{dept?.name}</p>
+      {renderFollowButton()}
     </div>
   );
 };
