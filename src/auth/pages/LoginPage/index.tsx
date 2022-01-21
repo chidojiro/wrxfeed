@@ -94,7 +94,7 @@ const LoginPage: React.VFC = () => {
   };
 
   return notInvited ? (
-    <NotInvited />
+    <NotInvited onBack={() => setNotInvited(false)} />
   ) : (
     <div className="flex flex-col justify-center items-center min-h-screen my-auto space-y-10">
       {fromInvite ? (
