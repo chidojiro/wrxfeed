@@ -19,10 +19,10 @@ import DepartmentCell from '@auth/molecules/DepartmentCell';
 import { getMultiRandomInt } from '@main/utils';
 import { useSubscription } from '@main/hooks/subscription.hook';
 
-const LIMIT = 10;
-const INIT_PAGINATION = Object.freeze({
+const LIMIT_GET_DEPT = 100;
+const INIT_PAGE_DEPT = Object.freeze({
   offset: 0,
-  limit: LIMIT,
+  limit: LIMIT_GET_DEPT,
 });
 const DEBOUNCE_WAIT = 500;
 
@@ -32,7 +32,7 @@ const OnboardPage: React.VFC = () => {
   const { getDepartmentById } = useApi();
 
   const [filter, setFilter] = useState<DepartmentFilter>({
-    ...INIT_PAGINATION,
+    ...INIT_PAGE_DEPT,
     term: '',
   });
   const { departments, onClear, isLoading } = useDepartment(filter);
@@ -45,7 +45,7 @@ const OnboardPage: React.VFC = () => {
 
   const getYourTeam = async (depId: number) => {
     const userDepartment = await getDepartmentById(depId);
-    setYourTeams([...yourTeams, { ...userDepartment, children: [] }]);
+    setYourTeams((pre) => [...pre, { ...userDepartment, children: [] }]);
   };
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const OnboardPage: React.VFC = () => {
       }
     });
 
-    setYourTeams(followed);
+    setYourTeams((pre) => [...pre, ...followed]);
 
     if (suggestRaw.length > 4) {
       const random = getMultiRandomInt(4, 0, suggestRaw.length - 1);
@@ -97,7 +97,7 @@ const OnboardPage: React.VFC = () => {
       if (event.target.value.length > 0) {
         setFilter({
           term: event.target.value,
-          ...INIT_PAGINATION,
+          ...INIT_PAGE_DEPT,
         });
       }
     },

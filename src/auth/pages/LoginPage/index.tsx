@@ -1,27 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
-import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
-import { toast } from 'react-toastify';
-import { useLocation } from 'react-router-dom';
-
 import { useNavUtils } from '@common/hooks';
-import { useErrorHandler, isApiError, ApiErrorCode } from '@src/error';
-import { useIdentity, useSetIdentity } from '@identity/hooks';
-import { useApi } from '@api';
-
+import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
 import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@src/config';
 import Routes from '@src/routes';
+import { useIdentity, useSetIdentity } from '@identity/hooks';
+import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import { useApi } from '@api';
+import { toast } from 'react-toastify';
 import { ProviderName } from '@main/entity';
-
-import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
+import { useErrorHandler, isApiError, ApiErrorCode } from '@src/error';
 import NotInvited from '@auth/molecules/NotInvited';
+import { useLocation } from 'react-router-dom';
 import NotifyBanner from '@common/molecules/NotifyBanner';
-import NavBarStatic from '@common/organisms/NavBarStatic';
 
 export interface LocationState {
   fromInvite?: boolean;
   message?: string;
   from?: Location;
+  metadata?: any;
 }
 
 const LoginPage: React.VFC = () => {
@@ -33,7 +30,7 @@ const LoginPage: React.VFC = () => {
   const errorHandler = useErrorHandler();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
-  const { message, from, fromInvite } = location.state ?? {};
+  const { message, from, fromInvite, metadata } = location.state ?? {};
 
   useEffect(() => {
     if (message) {
@@ -47,13 +44,8 @@ const LoginPage: React.VFC = () => {
 
   useEffect(() => {
     if (identity?.token) {
-      if (identity.lastLoginAt !== null) {
-        // new user => onboarding
-        redirect(Routes.Onboard.path as string);
-      } else {
-        const callbackUrl = from?.pathname || (Routes.Company.path as string);
-        redirect(callbackUrl);
-      }
+      const callbackUrl = from?.pathname || (Routes.Company.path as string);
+      redirect(callbackUrl);
     }
   }, [redirect, identity, from]);
 
@@ -104,40 +96,37 @@ const LoginPage: React.VFC = () => {
   return notInvited ? (
     <NotInvited />
   ) : (
-    <div className="relative">
-      <NavBarStatic companyName="Gravity Labs" companyStyle="ml-4 sm:ml-12 md:ml-24 lg:ml-40" />
-      <div className="flex flex-col justify-center items-center min-h-screen my-auto space-y-10 relative">
-        {fromInvite ? (
-          <div className="flex flex-col justify-center items-center mb-3 space-y-3 max-w-xl">
-            <h2 className="text-4xl text-primary text-center font-bold">
-              Join your Bird team on Gravity.
-            </h2>
-            <p className="text-base text-Gray-6 text-center tracking-tight">
-              We change the way teams approach day-to-day spend. Collaborate, analyze and identify
-              inefficiencies to maximize profit. No finance hat needed.
-            </p>
-          </div>
-        ) : (
-          <h2 className="text-4xl text-primary text-center font-bold mb-3">
-            Join your team on Gravity.
+    <div className="flex flex-col justify-center items-center min-h-screen my-auto space-y-10">
+      {fromInvite ? (
+        <div className="flex flex-col justify-center items-center mb-3 space-y-3 max-w-xl">
+          <h2 className="text-4xl text-primary text-center font-bold">
+            {`Join your ${metadata?.company?.name || ''} team on Gravity.`.replace(/\s+/g, ' ')}
           </h2>
+          <p className="text-base text-Gray-6 text-center tracking-tight">
+            We change the way teams approach day-to-day spend. Collaborate, analyze and identify
+            inefficiencies to maximize profit. No finance hat needed.
+          </p>
+        </div>
+      ) : (
+        <h2 className="text-4xl text-primary text-center font-bold mb-3">
+          Join your team on Gravity.
+        </h2>
+      )}
+      <GoogleLogin
+        clientId={GOOGLE_CLIENT_ID}
+        scope={GOOGLE_SCOPES}
+        onSuccess={handleResponseSuccess}
+        onFailure={handleResponseFailure}
+        render={(renderProps) => (
+          <SocialAuthButton
+            provider={AuthProvider.GOOGLE}
+            disabled={renderProps.disabled}
+            onClick={renderProps.onClick}
+          >
+            Sign up with Google
+          </SocialAuthButton>
         )}
-        <GoogleLogin
-          clientId={GOOGLE_CLIENT_ID}
-          scope={GOOGLE_SCOPES}
-          onSuccess={handleResponseSuccess}
-          onFailure={handleResponseFailure}
-          render={(renderProps) => (
-            <SocialAuthButton
-              provider={AuthProvider.GOOGLE}
-              disabled={renderProps.disabled}
-              onClick={renderProps.onClick}
-            >
-              Sign up with Google
-            </SocialAuthButton>
-          )}
-        />
-      </div>
+      />
     </div>
   );
 };
