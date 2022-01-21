@@ -20,10 +20,11 @@ import { getMultiRandomInt } from '@main/utils';
 import { useSubscription } from '@main/hooks/subscription.hook';
 import { TEAM_SUGGEST_RANDOM_NUMBER } from '@src/config';
 
-const LIMIT_GET_DEPT = 100;
+const LIMIT_GET_DEPT_INIT = 100;
+const LIMIT_GET_DEPT_SEARCH = 10;
 const INIT_PAGE_DEPT = Object.freeze({
   offset: 0,
-  limit: LIMIT_GET_DEPT,
+  limit: LIMIT_GET_DEPT_INIT,
 });
 const DEBOUNCE_WAIT = 500;
 
@@ -39,6 +40,7 @@ const OnboardPage: React.VFC = () => {
   const { departments, onClear, isLoading } = useDepartment(filter);
   const { isFollowing } = useSubscription();
 
+  // const [deptLocal, setDeptLocal] = useState<DepartmentSection[]>([]);
   const [searchResults, setSearchResults] = useState<DepartmentSection[]>([]);
   const [yourTeams, setYourTeams] = useState<DepartmentSection[]>([]);
   const [suggestedTeams, setSuggestedTeams] = useState<DepartmentSection[]>([]);
@@ -51,6 +53,7 @@ const OnboardPage: React.VFC = () => {
 
   useEffect(() => {
     setSearchResults(departments);
+    // if (departments.length > 0) setDeptLocal(departments);
   }, [departments]);
 
   useEffect(() => {
@@ -60,11 +63,11 @@ const OnboardPage: React.VFC = () => {
   }, [redirect, identity]);
 
   useEffect(() => {
-    if (suggestedTeams.length > 0) return;
+    if (suggestedTeams.length > 0 || keyword?.length > 0) return;
     const teamNotFollowYet: DepartmentSection[] = [];
     const followed: DepartmentSection[] = [];
 
-    searchResults.forEach((item) => {
+    departments.forEach((item) => {
       if (isFollowing('departments', item)) {
         followed.push(item);
       } else if (item?.id !== identity?.depId) {
@@ -82,7 +85,7 @@ const OnboardPage: React.VFC = () => {
     } else {
       setSuggestedTeams(teamNotFollowYet);
     }
-  }, [searchResults]);
+  }, [departments]);
 
   useEffect(() => {
     if (identity?.depId) {
@@ -90,7 +93,13 @@ const OnboardPage: React.VFC = () => {
     }
   }, [identity?.depId]);
 
+  // const searchDepartmentLocal = (key: string, db: DepartmentSection[]): DepartmentSection[] => {
+  //   const results = db.filter((item) => item?.name?.toLowerCase()?.includes(key.toLowerCase()));
+  //   return results;
+  // };
+
   const onClickIamDone = () => redirect(routes.Company.path as string);
+
   const onSearchTeam = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(event.target.value.toString());
@@ -98,21 +107,31 @@ const OnboardPage: React.VFC = () => {
       if (event.target.value.length > 0) {
         setFilter({
           term: event.target.value,
-          ...INIT_PAGE_DEPT,
+          ...{
+            ...INIT_PAGE_DEPT,
+            limit: LIMIT_GET_DEPT_SEARCH,
+          },
         });
       }
     },
     [setFilter],
   );
 
+  // const onSearchTeam = useCallback(
+  //   (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     setKeyword(event.target.value.toString());
+  //     onClear();
+  //     if (event.target.value.length > 0) {
+  //       const results = searchDepartmentLocal(event.target.value, deptLocal);
+  //       setSearchResults(results);
+  //     }
+  //   },
+  //   [deptLocal, setSearchResults],
+  // );
+
   const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT, [onSearchTeam]);
 
   const onFollowedTeam = (dept: DepartmentSection) => {
-    // if (keyword.length > 0) {
-    //   // is searching
-    //   const newResults = cloneDeep(searchResults);
-    //   setSearchResults(newResults.filter((item) => item?.id !== dept?.id));
-    // }
     const newSuggested = cloneDeep(suggestedTeams);
     setSuggestedTeams(newSuggested.filter((item) => item?.id !== dept?.id));
 
@@ -123,10 +142,7 @@ const OnboardPage: React.VFC = () => {
     const newYourTeams = cloneDeep(yourTeams);
     setYourTeams(newYourTeams.filter((item) => item?.id !== dept?.id));
 
-    if (keyword.length > 0) {
-      // is searching
-      // setSearchResults((pre) => [...pre, dept]);
-    } else {
+    if (keyword.length === 0) {
       setSuggestedTeams((pre) => [...pre, dept]);
     }
   };

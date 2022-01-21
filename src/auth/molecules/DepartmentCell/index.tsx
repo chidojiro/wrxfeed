@@ -91,11 +91,13 @@ const DepartmentCell: React.VFC<DepartmentCellProps> = ({
     );
   };
 
+  const paddingVertical = isUserDepartment ? 'py-6' : 'py-4';
   return (
     <div
       key={dept?.id}
       className={classNames(
-        'flex flex-row items-center justify-between py-4 border-Gray-11 border-b',
+        'flex flex-row items-center justify-between border-Gray-11 border-b',
+        paddingVertical,
         className,
       )}
     >
