@@ -294,3 +294,18 @@ export const scrollToTop = (): void => {
 export const isEmptyOrSpaces = (str: string): boolean => {
   return str === undefined || str === null || str.length === 0 || str.match(/^ *$/) !== null;
 };
+
+export const getRandomInt = (min: number, max: number): number => {
+  const minInt = Math.ceil(min);
+  const maxInt = Math.floor(max);
+  return Math.floor(Math.random() * (maxInt - minInt + 1)) + minInt;
+};
+
+export const getMultiRandomInt = (multi: number, min: number, max: number): number[] => {
+  let results: number[] = [];
+  while (results.length < 4) {
+    results.push(getRandomInt(min, max));
+    results = Array.from(new Set(results));
+  }
+  return results;
+};

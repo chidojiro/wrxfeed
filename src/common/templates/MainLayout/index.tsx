@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+
 import { classNames } from '@common/utils';
-import SideBar from './SideBar';
-import NavBar from './NavBar';
-import SlideOver from './SlideOver';
+import SideBar from '@common/organisms/SideBar';
+import NavBar from '@common/organisms/NavBar';
+import SlideOver from '@common/organisms/SlideOver';
 
 interface MainLayoutProps {
   children: React.ReactNode;
   className?: string;
+  showNavBar?: boolean;
+  showSlideOver?: boolean;
 }
 
-const MainLayout: React.VFC<MainLayoutProps> = ({ children, className }) => {
+const MainLayout: React.VFC<MainLayoutProps> = ({
+  children,
+  className,
+  showNavBar = true,
+  showSlideOver = true,
+}) => {
   useEffect(() => {
     // Scroll to top
     if (window.scrollY > 0) {
@@ -22,7 +30,7 @@ const MainLayout: React.VFC<MainLayoutProps> = ({ children, className }) => {
   }, []);
   return (
     <div className={classNames('relative', className ?? '')}>
-      <NavBar />
+      {showNavBar && <NavBar />}
       <div className="pt-8 sm:pt-navbar pb-1 sm:pb-10">
         <div className="relative min-h-screen max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12">
           <div className="relative hidden lg:sticky lg:top-navbar lg:h-0 lg:block lg:col-span-2 xl:col-span-2">
@@ -37,7 +45,7 @@ const MainLayout: React.VFC<MainLayoutProps> = ({ children, className }) => {
             <div id="main-right-side" className="sticky top-14" />
           </aside>
         </div>
-        <SlideOver />
+        {showSlideOver && <SlideOver />}
       </div>
     </div>
   );
