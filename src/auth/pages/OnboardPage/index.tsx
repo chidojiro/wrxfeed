@@ -6,19 +6,19 @@ import cloneDeep from 'lodash.clonedeep';
 import { useApi } from '@api';
 import { useIdentity } from '@identity/hooks';
 import { useDebounce, useNavUtils } from '@common/hooks';
+import { DepartmentSection, useDepartment } from '@main/hooks/department.hook';
+import { useSubscription } from '@main/hooks/subscription.hook';
 
 import routes from '@src/routes';
+import { getMultiRandomInt } from '@main/utils';
+import { DepartmentFilter } from '@api/types';
+import { TEAM_SUGGEST_RANDOM_NUMBER } from '@src/config';
 
 import BlankLayout from '@common/templates/BlankLayout';
 import NavBarStatic from '@common/organisms/NavBarStatic';
-import { ReactComponent as SharpSpaceDashboard } from '@assets/icons/solid/sharp-space-dashboard.svg';
-import { DepartmentSection, useDepartment } from '@main/hooks/department.hook';
-import { DepartmentFilter } from '@api/types';
 import Loading from '@common/atoms/Loading';
 import DepartmentCell from '@auth/molecules/DepartmentCell';
-import { getMultiRandomInt } from '@main/utils';
-import { useSubscription } from '@main/hooks/subscription.hook';
-import { TEAM_SUGGEST_RANDOM_NUMBER } from '@src/config';
+import { ReactComponent as SharpSpaceDashboard } from '@assets/icons/solid/sharp-space-dashboard.svg';
 
 const LIMIT_GET_DEPT_INIT = 100;
 const LIMIT_GET_DEPT_SEARCH = 10;

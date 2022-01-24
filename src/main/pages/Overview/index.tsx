@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
-import TransactionList from '@main/organisms/TransactionList';
+import { useHistory, useLocation } from 'react-router-dom';
+
 import {
   FeedChannelEvents,
   FeedEventData,
@@ -9,14 +9,18 @@ import {
   useFeedChannel,
   useTransaction,
 } from '@main/hooks';
-import { TransactionFilter } from '@api/types';
-import TargetPanel from '@main/organisms/TargetPanel';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import { useQuery } from '@common/hooks';
-import { useHistory, useLocation } from 'react-router-dom';
-import { Department, Vendor, Category } from '@main/entity';
-import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { useApi } from '@api';
+import { useQuery } from '@common/hooks';
+
+import { TransactionFilter } from '@api/types';
+import { Department, Vendor, Category } from '@main/entity';
+import { scrollToTop } from '@main/utils';
+
+import TargetPanel from '@main/organisms/TargetPanel';
+import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
+import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
+import TransactionList from '@main/organisms/TransactionList';
+import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -107,12 +111,7 @@ const OverviewPage: React.VFC = () => {
 
   const refetchNewItems = () => {
     setFilter({ ...filter, pagination: INIT_PAGINATION });
-    if (window.scrollY > 0) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-    }
+    scrollToTop();
     // Clear counter
     upsertNewFeedCount(location.pathname, 0);
     readAllTransactions();

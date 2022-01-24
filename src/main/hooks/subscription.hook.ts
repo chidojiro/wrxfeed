@@ -1,11 +1,11 @@
-import { Category, Department, Subscription, Vendor } from '@main/entity';
-import { subscriptionState } from '@main/states/subscription.state';
+import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import cloneDeep from 'lodash.clonedeep';
-import { useApi } from '@api';
 import { toast } from 'react-toastify';
+import { useApi } from '@api';
+import { subscriptionState } from '@main/states/subscription.state';
+import { Category, Department, Subscription, Vendor } from '@main/entity';
 import { SubscriptionParams } from '@api/types';
-import { useState } from 'react';
 
 interface SubscribeCallback {
   onFollowSuccess?: () => void;
