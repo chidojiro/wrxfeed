@@ -303,7 +303,7 @@ export const getRandomInt = (min: number, max: number): number => {
 
 export const getMultiRandomInt = (multi: number, min: number, max: number): number[] => {
   let results: number[] = [];
-  while (results.length < 4) {
+  while (results.length < multi) {
     results.push(getRandomInt(min, max));
     results = Array.from(new Set(results));
   }
