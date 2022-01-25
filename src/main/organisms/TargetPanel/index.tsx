@@ -8,6 +8,9 @@ import { useTarget } from '@main/hooks';
 import { TargetRow } from '@main/molecules';
 import { classNames } from '@common/utils';
 
+import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
+import AddTargetModal from '@main/organisms/AddTargetModal';
+
 export interface TargetPanelProps {
   title?: string;
 }
@@ -25,6 +28,8 @@ const initFilter = {
 const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const [filter, setFilter] = useState<TargetFilter>(initFilter);
   const [isExpanded, setExpanded] = useState<boolean>(false);
+  const [showAddTarget, setShowAddTarget] = useState<boolean>(false);
+
   const onPostSuccess = () => {
     setFilter({
       ...initFilter,
@@ -49,6 +54,8 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     if (isGetTargets) return;
     setExpanded(!isExpanded);
   };
+
+  const onClickNewTarget = () => setShowAddTarget(true);
 
   const renderExpandedIcon = () => {
     // if (targets.length === 0) return null;
@@ -115,10 +122,26 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   return (
     <div className={classNames('flex flex-1 pt-12 w-[330px]', heightExpand)}>
       <div className="flex flex-col w-full bg-white pt-6 pb-2 max-h-106 drop-shadow-md overflow-auto">
-        <div className="flex text-Gray-2 text-base font-semibold px-6">Monthly Targets</div>
+        <div className="flex flex-row items-center justify-between px-6">
+          <div className="text-Gray-2 text-base font-semibold">Monthly Targets</div>
+          <button
+            type="button"
+            className="flex flex-row items-center px-2 py-1.5 rounded-sm hover:bg-Gray-12"
+            onClick={onClickNewTarget}
+          >
+            <BasicsAddSmall className="w-4 h-4 mr-0.5" />
+            <p className="text-xs text-Gray-3 font-normal">New</p>
+          </button>
+        </div>
         {renderListTargets()}
         {renderExpandedIcon()}
       </div>
+      <AddTargetModal
+        open={showAddTarget}
+        onClose={() => setShowAddTarget(false)}
+        onCancel={() => setShowAddTarget(false)}
+        onCreate={() => setShowAddTarget(false)}
+      />
     </div>
   );
 };
