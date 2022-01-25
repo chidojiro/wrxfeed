@@ -10,6 +10,8 @@ import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
 
+import { TransLineItem } from '@main/entity';
+
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
 const MentionRegex =
@@ -308,4 +310,13 @@ export const getMultiRandomInt = (multi: number, min: number, max: number): numb
     results = Array.from(new Set(results));
   }
   return results;
+};
+
+export const getVendorNameFromLineItem = (item: TransLineItem): string => {
+  let vendorName = item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`;
+  const isConcurIntegration = item?.transaction?.createdByName;
+  if (isConcurIntegration) {
+    vendorName = `${item?.description} expense by ${item?.transaction?.createdByName}.`;
+  }
+  return vendorName;
 };
