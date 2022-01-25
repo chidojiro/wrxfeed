@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Popover } from '@headlessui/react';
 import { useHistory } from 'react-router-dom';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
-import { UserPlusIcon } from '@assets/index';
 
 import { classNames } from '@common/utils';
+import routes from '@src/routes';
+
 import SearchBar from '@common/molecules/SearchBar';
 import { NotifyPopover, UserProfilePopover } from '@main/molecules';
 import { InviteModal } from '@main/organisms';
-import routes from '@src/routes';
+import { UserPlusIcon } from '@assets/index';
 
 interface NavBarStaticProps {
   className?: string;
@@ -86,7 +87,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
         <>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="relative flex justify-between h-navbar xl:grid xl:grid-cols-12 lg:gap-8">
-              <div className="flex justify-center md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-2">
+              <div className="flex justify-center lg:static xl:col-span-2">
                 <div className="flex-shrink-0 flex items-center">
                   <h1 className={classNames('text-lg font-bold text-white', companyStyle)}>
                     {companyName}
@@ -94,9 +95,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
                 </div>
               </div>
               <div className="flex items-center min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-7">
-                <div className="flex w-full items-center px-5 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0">
-                  {searchBar && <SearchBar />}
-                </div>
+                {searchBar && <SearchBar />}
               </div>
               <div className="hidden sm:flex items-center lg:justify-end xl:col-span-3 mr-0 md:mr-16 lg:mr-2">
                 {showNoti && <NotifyPopover showNumberNotify useDropDown={false} />}
@@ -106,7 +105,6 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
                 {showAva && <UserProfilePopover />}
                 {renderInviteButton()}
               </div>
-              {/* Mobile menu button */}
               <div className="flex items-center md:absolute md:right-0 md:inset-y-0 lg:hidden">
                 <Popover.Button className="-mx-2 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rose-500">
                   <span className="sr-only">Open menu</span>
@@ -119,7 +117,6 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
               </div>
             </div>
           </div>
-          {/* mobile */}
           <Popover.Panel as="nav" className="bg-white h-full lg:hidden" aria-label="Global">
             <div className="max-w-3xl mx-auto px-2 pt-2 pb-3 space-y-1 sm:px-4">
               {/* <SideBar /> */}

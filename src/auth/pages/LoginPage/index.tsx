@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useLocation } from 'react-router-dom';
+import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+
 import { useNavUtils } from '@common/hooks';
-import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
+import { useIdentity, useSetIdentity } from '@identity/hooks';
+import { useApi } from '@api';
+import { useErrorHandler, isApiError, ApiErrorCode } from '@src/error';
+
 import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@src/config';
 import Routes from '@src/routes';
-import { useIdentity, useSetIdentity } from '@identity/hooks';
-import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
-import { useApi } from '@api';
-import { toast } from 'react-toastify';
 import { ProviderName } from '@main/entity';
-import { useErrorHandler, isApiError, ApiErrorCode } from '@src/error';
+
+import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
 import NotInvited from '@auth/molecules/NotInvited';
-import { useLocation } from 'react-router-dom';
 import NotifyBanner from '@common/molecules/NotifyBanner';
 
 export interface LocationState {

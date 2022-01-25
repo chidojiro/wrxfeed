@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 import { classNames } from '@common/utils';
+import { scrollToTop } from '@main/utils';
+
 import SideBar from '@common/organisms/SideBar';
 import NavBar from '@common/organisms/NavBar';
 import SlideOver from '@common/organisms/SlideOver';
@@ -20,13 +22,7 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
   showSlideOver = true,
 }) => {
   useEffect(() => {
-    // Scroll to top
-    if (window.scrollY > 0) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-    }
+    scrollToTop();
   }, []);
   return (
     <div className={classNames('relative', className ?? '')}>

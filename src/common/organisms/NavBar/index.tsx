@@ -26,6 +26,7 @@ const NavBar: React.VFC = () => {
       showAva
       showNoti
       showInvite={isAdmin}
+      searchBar
     />
   );
 };
