@@ -16,6 +16,9 @@ interface DepartmentCellProps {
   dept: DepartmentSection;
   onFollowedTeam?: (team: DepartmentSection) => void;
   onUnfollowedTeam?: (team: DepartmentSection) => void;
+  onFollow?: (team: DepartmentSection) => void;
+  onUnfollow?: (team: DepartmentSection) => void;
+  enableAction: boolean;
 }
 
 const DepartmentCell: React.VFC<DepartmentCellProps> = ({
@@ -23,6 +26,9 @@ const DepartmentCell: React.VFC<DepartmentCellProps> = ({
   dept,
   onFollowedTeam = () => undefined,
   onUnfollowedTeam = () => undefined,
+  onFollow = () => undefined,
+  onUnfollow = () => undefined,
+  enableAction,
 }) => {
   const identity = useIdentity();
   const { subscribe, unsubscribe, isFollowLoading, isUnfollowLoading, isFollowing } =
@@ -37,18 +43,24 @@ const DepartmentCell: React.VFC<DepartmentCellProps> = ({
   const textColor = isFollowed ? 'text-white' : 'text-Gray-3';
 
   const onClickFollowDepartment = () => {
+    if (!enableAction) {
+      toast.warn('Please wait a minute!');
+      return;
+    }
     if (isFollowed) {
       if (isUnfollowLoading) {
         toast.warn('Please wait a minute!');
         return;
       }
       unsubscribe('departments', dept);
+      if (onUnfollow) onUnfollow(dept);
     } else {
       if (isFollowLoading) {
         toast.warn('Please wait a minute!');
         return;
       }
       subscribe('departments', dept);
+      if (onFollow) onFollow(dept);
     }
   };
   const renderIcon = () => {

@@ -2,12 +2,15 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useCallback, useEffect, useState } from 'react';
 import cloneDeep from 'lodash.clonedeep';
+import { toast } from 'react-toastify';
 
 import { useApi } from '@api';
 import { useIdentity } from '@identity/hooks';
 import { useDebounce, useNavUtils } from '@common/hooks';
 import { DepartmentSection, useDepartment } from '@main/hooks/department.hook';
 import { useSubscription } from '@main/hooks/subscription.hook';
+import { useErrorHandler } from '@error/hooks';
+import { isApiError } from '@error/utils';
 
 import routes from '@src/routes';
 import { getMultiRandomInt } from '@main/utils';
@@ -31,7 +34,8 @@ const DEBOUNCE_WAIT = 500;
 const OnboardPage: React.VFC = () => {
   const identity = useIdentity();
   const { redirect } = useNavUtils();
-  const { getDepartmentById } = useApi();
+  const { getDepartmentById, updateProfile } = useApi();
+  const errorHandler = useErrorHandler();
 
   const [filter, setFilter] = useState<DepartmentFilter>({
     ...INIT_PAGE_DEPT,
@@ -44,6 +48,8 @@ const OnboardPage: React.VFC = () => {
   const [yourTeams, setYourTeams] = useState<DepartmentSection[]>([]);
   const [suggestedTeams, setSuggestedTeams] = useState<DepartmentSection[]>([]);
   const [keyword, setKeyword] = useState('');
+  const [isDoneOnboard, setDoneOnboard] = useState(false);
+  const [isHandlingAction, setHandlingAction] = useState(false);
 
   const getYourTeam = async (depId: number) => {
     const userDepartment = await getDepartmentById(depId);
@@ -96,7 +102,29 @@ const OnboardPage: React.VFC = () => {
   //   return results;
   // };
 
-  const onClickIamDone = () => redirect(routes.Company.path as string);
+  const onClickIamDone = async () => {
+    try {
+      setDoneOnboard(true);
+      const currentTime = new Date();
+      const updates = {
+        ...identity,
+        companyName: identity?.company?.name || '',
+        title: identity?.title,
+        bio: identity?.bio || '',
+        lastLoginAt: currentTime.toISOString(),
+      };
+      await updateProfile(updates);
+      redirect(routes.Company.path as string);
+    } catch (error: unknown) {
+      if (isApiError(error)) {
+        toast.error(error?.details?.message);
+      } else {
+        await errorHandler(error);
+      }
+    } finally {
+      setDoneOnboard(false);
+    }
+  };
 
   const onSearchTeam = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,6 +162,7 @@ const OnboardPage: React.VFC = () => {
     setSuggestedTeams(newSuggested.filter((item) => item?.id !== dept?.id));
 
     setYourTeams((pre) => [...pre, dept]);
+    setHandlingAction(false);
   };
 
   const onUnfollowedTeam = (dept: DepartmentSection) => {
@@ -143,6 +172,7 @@ const OnboardPage: React.VFC = () => {
     if (keyword.length === 0) {
       setSuggestedTeams((pre) => [...pre, dept]);
     }
+    setHandlingAction(false);
   };
 
   const renderSearchResults = () => {
@@ -155,6 +185,9 @@ const OnboardPage: React.VFC = () => {
             dept={item}
             onFollowedTeam={onFollowedTeam}
             onUnfollowedTeam={onUnfollowedTeam}
+            onFollow={() => setHandlingAction(true)}
+            onUnfollow={() => setHandlingAction(true)}
+            enableAction={!isHandlingAction}
           />
         ))}
       </div>
@@ -174,6 +207,9 @@ const OnboardPage: React.VFC = () => {
             dept={item}
             onFollowedTeam={onFollowedTeam}
             onUnfollowedTeam={onUnfollowedTeam}
+            onFollow={() => setHandlingAction(true)}
+            onUnfollow={() => setHandlingAction(true)}
+            enableAction={!isHandlingAction}
           />
         ))}
       </div>
@@ -193,6 +229,9 @@ const OnboardPage: React.VFC = () => {
             dept={item}
             onFollowedTeam={onFollowedTeam}
             onUnfollowedTeam={onUnfollowedTeam}
+            onFollow={() => setHandlingAction(true)}
+            onUnfollow={() => setHandlingAction(true)}
+            enableAction={!isHandlingAction}
           />
         ))}
       </div>
@@ -236,14 +275,13 @@ const OnboardPage: React.VFC = () => {
             </div>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={onClickIamDone}
-          className="flex flex-col items-center self-center mb-12 sm:mb-20 mt-4"
-        >
-          <p className="text-Accent-2 text-sm">{"I'm Done —>"}</p>
-          <div className="h-px bg-Accent-2 w-full" />
-        </button>
+        <div className="flex flex-row self-center mb-12 sm:mb-20 mt-4">
+          {isDoneOnboard && <Loading width={12} height={12} className="mr-4" />}
+          <button type="button" onClick={onClickIamDone} className="flex flex-col items-center">
+            <p className="text-Accent-2 text-sm">{"I'm Done —>"}</p>
+            <div className="h-px bg-Accent-2 w-full" />
+          </button>
+        </div>
       </div>
     </BlankLayout>
   );
