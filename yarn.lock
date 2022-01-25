@@ -1294,6 +1294,22 @@
     prop-types "^15.5.8"
     react-popper "^2.2.5"
 
+"@dwarvesf/react-hooks@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@dwarvesf/react-hooks/-/react-hooks-0.6.0.tgz#085856b1f484096a584dd4a946054d33174da3f5"
+  integrity sha512-qQaJ4mdOQrChOhDbcTVqMmr0Kny4D297uGg8VkRMAc6eTKL6GTW2Go32z3gjLwmtP3go1ZCwaaWn8dFpE1+egA==
+  dependencies:
+    "@dwarvesf/react-utils" "^0.3.0"
+    copy-to-clipboard "^3.3.1"
+    tslib "^2.3.0"
+
+"@dwarvesf/react-utils@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@dwarvesf/react-utils/-/react-utils-0.3.0.tgz#e2cc5bd5fb0e49b895fa05b73e1519d66a2623f1"
+  integrity sha512-DC5/quktPAycrokeC5B/kVpI/m3PVLUkELl1lun85rHijnvdT+aSfyMndvtIGft+Kn+D2mqjcAAGwwEMHcr24g==
+  dependencies:
+    tslib "^2.3.0"
+
 "@emotion/cache@^10.0.27":
   version "10.0.29"
   resolved "https://registry.npmjs.org/@emotion/cache/-/cache-10.0.29.tgz"
