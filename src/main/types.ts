@@ -30,3 +30,16 @@ export enum FeedBackType {
   Rollup = 1,
   LineItem = 2,
 }
+
+export enum SearchResultType {
+  Vendor = 'Vendor',
+  Teams = 'Teams',
+  Categories = 'Categories',
+}
+
+export type SearchResult = {
+  id: number | string;
+  title: string;
+  type: SearchResultType;
+  directoryId: number;
+};

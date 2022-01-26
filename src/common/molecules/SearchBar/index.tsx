@@ -1,42 +1,20 @@
 /* eslint-disable react/jsx-curly-newline */
-import React, { Fragment, useState, useCallback, useEffect, useRef } from 'react';
+import React, { Fragment, useState, useCallback, useRef } from 'react';
 import { Transition } from '@headlessui/react';
 import { useHistory } from 'react-router-dom';
 import { useOnClickOutside } from '@dwarvesf/react-hooks';
 
 import { useDebounce } from '@common/hooks';
+import { useSearch } from '@main/hooks/search.hook';
 
 import { classNames } from '@common/utils';
+import { MainGroups } from '@common/constants';
+import { SearchResult, SearchResultType } from '@main/types';
 
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
-import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
-import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
-import { ReactComponent as Suitcase } from '@assets/icons/outline/suitcase.svg';
 import { ReactComponent as ArrowRight2 } from '@assets/icons/outline/arrow-right-2.svg';
-import { MainGroups } from '@common/constants';
-
-export enum SearchResultType {
-  Vendor = 'Vendor',
-  Teams = 'Teams',
-  Categories = 'Categories',
-}
-
-export const getIconByResultType = (
-  type: SearchResultType,
-): React.FC<React.SVGAttributes<SVGElement>> => {
-  if (type === SearchResultType.Vendor) return Suitcase;
-  if (type === SearchResultType.Teams) return GroupUsers;
-  if (type === SearchResultType.Categories) return Files;
-  return BasicsSearchSmall;
-};
-
-export type SearchResult = {
-  id: number;
-  title: string;
-  type: SearchResultType;
-  directoryId: number;
-};
+import { getIconByResultType } from '@main/utils';
 
 const DEBOUNCE_WAIT = 500;
 
@@ -45,62 +23,13 @@ const SearchBar: React.VFC = () => {
   const useableViewRef = useRef(null);
 
   const [keyword, setKeyword] = useState<string>('');
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isFocus, setFocus] = useState<boolean>(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const onCloseDropDownResultsView = () => setResults([]);
-  useOnClickOutside(useableViewRef, onCloseDropDownResultsView);
+  const { results, onClear } = useSearch(keyword);
 
-  useEffect(() => {
-    if (keyword.length > 0) {
-      setResults([
-        {
-          id: 0,
-          title: 'Adecco Personeelsdiensten BV',
-          type: SearchResultType.Vendor,
-          directoryId: 1362,
-        },
-        {
-          id: 1,
-          title: 'AD-Hoc Fines Germany',
-          type: SearchResultType.Vendor,
-          directoryId: 1333,
-        },
-        {
-          id: 2,
-          title: 'CAD-HOC Fines Italy',
-          type: SearchResultType.Vendor,
-          directoryId: 1347,
-        },
-        {
-          id: 3,
-          title: 'Adobe, Inc.',
-          type: SearchResultType.Vendor,
-          directoryId: 1356,
-        },
-        {
-          id: 4,
-          title: 'Community Operations',
-          type: SearchResultType.Teams,
-          directoryId: 332,
-        },
-        {
-          id: 5,
-          title: '3PL Labor',
-          type: SearchResultType.Categories,
-          directoryId: 333,
-        },
-        {
-          id: 6,
-          title: 'AFPA ENTREPRISES',
-          type: SearchResultType.Vendor,
-          directoryId: 1359,
-        },
-      ]);
-    } else {
-      setResults([]);
-    }
-  }, [keyword]);
+  const onCloseDropDownResultsView = () => onClear();
+  useOnClickOutside(useableViewRef, onCloseDropDownResultsView);
 
   const onSearchTeam = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,11 +43,11 @@ const SearchBar: React.VFC = () => {
     if (!searchInputRef || !searchInputRef.current) return;
     searchInputRef.current.value = '';
     searchInputRef.current.focus();
-    setResults([]);
+    onClear();
   };
 
   const onPressResultRow = (result: SearchResult) => {
-    setResults([]);
+    onClear();
     switch (result.type) {
       case SearchResultType.Teams:
         history.push({
@@ -144,7 +73,7 @@ const SearchBar: React.VFC = () => {
   };
 
   const renderResultRow = (result: SearchResult) => {
-    const IconByType = getIconByResultType(result.type);
+    const IconByType = getIconByResultType(result?.type);
     return (
       <button
         onClick={() => onPressResultRow(result)}
@@ -172,7 +101,7 @@ const SearchBar: React.VFC = () => {
         <>
           <div className="w-full relative" ref={useableViewRef}>
             <div className="sr-only">Search for teams, categories, or vendors</div>
-            <div className="relative flex flex-row items-center">
+            <div className="relative flex flex-row items-center group">
               <div className="absolute inset-y-0 left-1 sm:left-2 flex items-center">
                 <BasicsSearchSmall
                   width={24}
@@ -191,19 +120,23 @@ const SearchBar: React.VFC = () => {
                 autoCorrect="off"
                 autoCapitalize="off"
                 onChange={debounceSearchRequest}
+                onFocus={() => setFocus(true)}
+                onBlur={() => setFocus(false)}
               />
-              <button
-                type="button"
-                onClick={onClickClearSearchInput}
-                className="absolute z-30 inset-y-0 right-2 sm:right-7 flex flex-row items-center"
-              >
-                <BasicsXSmall
-                  width={20}
-                  height={20}
-                  className="h-5 w-5 fill-current path-no-filled stroke-current path-no-stroke object-fill text-Gray-12"
-                  aria-hidden="true"
-                />
-              </button>
+              {(isFocus || keyword?.length > 0) && (
+                <button
+                  type="button"
+                  onClick={onClickClearSearchInput}
+                  className="absolute z-30 inset-y-0 right-2 sm:right-7 flex flex-row items-center group-focus:invisible"
+                >
+                  <BasicsXSmall
+                    width={20}
+                    height={20}
+                    className="h-5 w-5 fill-current path-no-filled stroke-current path-no-stroke object-fill text-Gray-12"
+                    aria-hidden="true"
+                  />
+                </button>
+              )}
             </div>
             <Transition
               show={results.length > 0}
@@ -212,7 +145,7 @@ const SearchBar: React.VFC = () => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="absolute mt-2 w-full px-4 bg-white shadow-lg rounded-sm border border-Gray-11 pt-6 pb-4 ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+              <div className="absolute mt-2 w-full px-4 max-h-[327px] bg-white shadow-lg rounded-sm border border-Gray-11 pt-6 pb-4 ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
                 {results.map(renderResultRow)}
               </div>
             </Transition>
