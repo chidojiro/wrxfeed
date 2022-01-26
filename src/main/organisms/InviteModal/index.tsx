@@ -4,7 +4,7 @@ import { GetContactsFilter } from '@api/types';
 import { useGetContacts } from '@main/hooks/contact.hook';
 import Modal from '@common/atoms/Modal';
 import ContactItem from '@main/molecules/ContactItem';
-import InviteTagInput from '@main/atoms/InviteTagInput/InviteTagInput';
+import InviteTagInput from '@main/atoms/InviteTagInput';
 import { useDebounce } from '@common/hooks';
 import { useInvite } from '@main/hooks';
 import Banner from '@common/atoms/Banner';

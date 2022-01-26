@@ -54,6 +54,9 @@ module.exports = {
         'Neutral-5': '#8D9183',
         'Neutral-10': '#ECEEE4',
 
+        'team-color': '#0891B2',
+        'vendor-color': '#F3AA20',
+
         'purple-4': '#6D28D9',
         'purple-5': '#7A3FEB',
         'purple-6': '#8B5CF6',
