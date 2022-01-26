@@ -1,8 +1,14 @@
-import React, { useCallback, useRef } from 'react';
-import Modal from '@common/atoms/Modal';
-import InviteTagInput from '@main/atoms/InviteTagInput/InviteTagInput';
+import React, { useCallback, useRef, useState } from 'react';
+
 import { useDebounce } from '@common/hooks';
-import { ReactComponent as Suitcase } from '@assets/icons/outline/suitcase.svg';
+import { useSearch } from '@main/hooks/search.hook';
+
+import { classNames, formatToCurrency } from '@common/utils';
+import { getIconByResultType } from '@main/utils';
+import { SearchResult } from '@main/types';
+
+import Modal from '@common/atoms/Modal';
+import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
 import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-2.svg';
 
 const DEBOUNCE_WAIT = 500;
@@ -14,13 +20,7 @@ export type AddTargetModalProps = {
   onCreate: () => void;
 };
 
-// const LIMIT = 20;
-// const INIT_PAGINATION = Object.freeze({
-//   offset: 0,
-//   limit: LIMIT,
-// });
-
-type InviteTagInputHandler = React.ElementRef<typeof InviteTagInput>;
+type AddTargetTagInputHandler = React.ElementRef<typeof AddTargetTagInput>;
 
 const AddTargetModal: React.FC<AddTargetModalProps> = ({
   open = false,
@@ -28,9 +28,18 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   onCancel,
   onCreate,
 }) => {
-  const tagInputRef = useRef<InviteTagInputHandler>(null);
+  const tagInputRef = useRef<AddTargetTagInputHandler>(null);
+  const [keyword, setKeyword] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
 
-  const onSearchContact = useCallback(() => {}, []);
+  const { results, isLoading } = useSearch(keyword);
+
+  const onSearchContact = useCallback(
+    (value: string) => {
+      setKeyword(value);
+    },
+    [setKeyword],
+  );
   const debounceSearchRequest = useDebounce(onSearchContact, DEBOUNCE_WAIT, [onSearchContact]);
 
   const onClickCancel = () => {
@@ -39,19 +48,27 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const onClickCreate = () => {
     onCreate();
   };
+  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAmount(formatToCurrency(event.target.value, ''));
+  };
 
-  const renderResultProperty = () => {
+  const renderResultProperty = (result: SearchResult) => {
+    const IconByType = getIconByResultType(result?.type);
     return (
       <button
+        onClick={() => tagInputRef.current?.addItem(result)}
+        key={result?.id}
         type="button"
-        className="hover:bg-Gray-12 px-12 py-2.5 space-x-2 flex flex-row items-center text-xs"
+        className="hover:bg-Gray-12 px-12 py-2.5 flex flex-row items-center text-xs"
       >
-        <Suitcase className="w-5 h-5 object-scale-down" style={{ width: 20, height: 20 }} />
-        <p className="text-Gray-1">Consorzio Ecolight</p>
-        <p className="text-Gray-6">- Vendor</p>
+        <IconByType className="w-5 h-5 object-scale-down" style={{ width: 20, height: 20 }} />
+        <p className="text-Gray-1 ml-8">{result?.title}</p>
+        <p className="text-Gray-6 ml-2">{`- ${result.type.toString()}`}</p>
       </button>
     );
   };
+
+  const amountInputWidth = amount?.length > 9 ? 'w-36' : 'w-20';
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -64,14 +81,15 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         <div className="flex flex-col pt-10 pb-6">
           <div className="px-12">
             <p className="text-primary text-xs mb-2 font-semibold">Add Properties</p>
-            <InviteTagInput
+            <AddTargetTagInput
               ref={tagInputRef}
-              placeholder="Enter name or email address"
+              placeholder="Enter a team, category, or vendor"
               onTextChange={debounceSearchRequest}
+              loading={isLoading}
             />
           </div>
-          <div className="flex flex-col mt-2 w-full">
-            {[1, 2, 3, 4, 5].map(renderResultProperty)}
+          <div className="flex flex-col mt-2 w-full max-h-[300px] overflow-scroll hide-scrollbar">
+            {results?.map(renderResultProperty)}
           </div>
           <div className="px-12 w-full mt-6">
             <p className="text-primary text-xs mb-2 font-semibold">Target Amount</p>
@@ -79,8 +97,13 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               <div className="flex flex-row items-center px-1 py-2 border-b border-Gray-11">
                 <p className="text-Gray-3 text-base mr-2.5">$</p>
                 <input
-                  className="text-Gray-1 placeholder-Gray-6 w-20 outline-none border-none text-base"
+                  className={classNames(
+                    'text-Gray-1 placeholder-Gray-6 outline-none border-none text-base',
+                    amountInputWidth,
+                  )}
                   placeholder="10,000"
+                  onChange={onChangeInput}
+                  value={amount}
                 />
               </div>
             </div>

@@ -76,7 +76,6 @@ const TargetRow: React.VFC<TargetRowProps> = ({
   };
 
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(event.target.value);
     setAmount(formatToCurrency(event.target.value, ''));
   };
 
