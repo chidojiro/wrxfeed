@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { LocalDatabase, searchState } from '@main/states/search.state';
+import { GlobalSearchType, searchState } from '@main/states/search.state';
 import { SearchResult, SearchResultType } from '@main/types';
 import { Category, Department, Vendor } from '@main/entity';
 
@@ -13,7 +13,7 @@ interface SearchHookValues {
 }
 
 export function useSearch(keyword: string): SearchHookValues {
-  const localDb: LocalDatabase = useRecoilValue<LocalDatabase>(searchState);
+  const globalSearch: GlobalSearchType = useRecoilValue<GlobalSearchType>(searchState);
   const [isLoading, setLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [noResult, setNoResult] = useState(false);
@@ -24,7 +24,7 @@ export function useSearch(keyword: string): SearchHookValues {
     if (keyword.trim().length < 1) return;
 
     setLoading(true);
-    const departments = localDb.departments
+    const departments = globalSearch.departments
       .filter((dept: Department) => dept.name.toLowerCase().includes(keyword.toLowerCase()))
       .map((dept: Department) => {
         return {
@@ -34,7 +34,7 @@ export function useSearch(keyword: string): SearchHookValues {
           directoryId: dept?.id,
         };
       });
-    const categories = localDb.categories
+    const categories = globalSearch.categories
       .filter((cat: Category) => cat.name.toLowerCase().includes(keyword.toLowerCase()))
       .map((cat: Category) => {
         return {
@@ -44,7 +44,7 @@ export function useSearch(keyword: string): SearchHookValues {
           directoryId: cat?.id,
         };
       });
-    const vendors = localDb.vendors
+    const vendors = globalSearch.vendors
       .filter((vend: Vendor) => vend.name.toLowerCase().includes(keyword.toLowerCase()))
       .map((vend: Vendor) => {
         return {
@@ -58,7 +58,7 @@ export function useSearch(keyword: string): SearchHookValues {
     setResults(sumResult);
     setNoResult(sumResult.length === 0);
     setLoading(false);
-  }, [keyword, localDb]);
+  }, [keyword, globalSearch]);
 
   useEffect(() => {
     searchByKeyword().then();

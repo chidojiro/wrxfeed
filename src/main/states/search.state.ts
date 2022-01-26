@@ -8,16 +8,16 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-export type LocalDatabase = {
+export type GlobalSearchType = {
   departments: Department[];
   categories: Category[];
   vendors: Vendor[];
 };
 
-export const searchState = atom<LocalDatabase>({
-  key: 'main/search/local',
+export const searchState = atom<GlobalSearchType>({
+  key: 'main/search/global',
   default: selector({
-    key: 'main/search/local/default',
+    key: 'main/search/global/default',
     get: async () => {
       try {
         const apiClient = await getApiClient();
