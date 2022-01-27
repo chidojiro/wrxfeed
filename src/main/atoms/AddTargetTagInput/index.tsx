@@ -16,16 +16,19 @@ interface AddTargetTagInputProps {
   placeholder?: string;
   loading?: boolean;
   onTextChange?: (value: string) => void;
+  maxTag?: number;
+  maxHeight?: number;
 }
 
 export interface AddTargetTagInputHandler {
   addItem: (item: SearchResult) => void;
+  getItems: () => SearchResult[];
 }
 
 const AddTargetTagInput: ForwardRefRenderFunction<
   AddTargetTagInputHandler,
   AddTargetTagInputProps
-> = ({ placeholder, loading, onTextChange }, ref) => {
+> = ({ placeholder, loading, onTextChange, maxTag = 10 }, ref) => {
   const [items, setItems] = useState<SearchResult[]>([]);
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +42,9 @@ const AddTargetTagInput: ForwardRefRenderFunction<
 
     if (isInList(property)) {
       err = `${property.title} has already been added.`;
+    }
+    if (items?.length >= maxTag) {
+      err = `You can only add up to ${maxTag} tags.`;
     }
 
     if (err) {
@@ -59,6 +65,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
         }
       }
     },
+    getItems: () => items,
   }));
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +82,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
   return (
     <div className="flex flex-col">
       <div className="relative bg-Gray-12 flex flex-row items-center rounded-sm">
-        <div className="flex flex-grow flex-wrap items-center p-2 focus-within:z-10">
+        <div className="flex flex-grow flex-wrap items-center p-2 focus-within:z-10 max-h-60 overflow-y-scroll">
           {items.map((item) => (
             <InputTag
               key={item?.id}

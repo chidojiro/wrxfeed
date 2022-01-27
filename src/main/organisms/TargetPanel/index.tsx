@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { PostTargetParams, PutTargetParams, TargetFilter } from '@api/types';
+import { TargetFilter, TargetProp, TargetPropType } from '@api/types';
 import { BasicsDownSmall } from '@assets';
 import Loading from '@common/atoms/Loading';
 import { Target } from '@main/entity';
@@ -10,6 +10,7 @@ import { classNames } from '@common/utils';
 
 import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
 import AddTargetModal from '@main/organisms/AddTargetModal';
+import { SearchResult } from '@main/types';
 
 export interface TargetPanelProps {
   title?: string;
@@ -29,26 +30,37 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const [filter, setFilter] = useState<TargetFilter>(initFilter);
   const [isExpanded, setExpanded] = useState<boolean>(false);
   const [showAddTarget, setShowAddTarget] = useState<boolean>(false);
+  const [itemEditing, setItemEditing] = useState<Target | null>(null);
 
-  const onPostSuccess = () => {
+  const onPostTargetSuccess = () => {
     setFilter({
       ...initFilter,
       timestamp: Date.now(),
     });
   };
   const onPostError = () => {};
-  const onPutSuccess = () => {
+  const onPutTargetSuccess = () => {
     setFilter({
       ...initFilter,
       timestamp: Date.now(),
     });
   };
   const onPutError = () => {};
-  const { targets, isGetTargets, postTarget, putTarget, isPostTarget, isPutTarget } = useTarget(
-    filter,
-    { onSuccess: onPostSuccess, onError: onPostError },
-    { onSuccess: onPutSuccess, onError: onPutError },
-  );
+  const onDeleteTargetSuccess = () => {
+    setFilter({
+      ...initFilter,
+      timestamp: Date.now(),
+    });
+  };
+  const onDeleteError = () => {};
+
+  const { targets, isGetTargets, postTarget, putTarget, deleteTarget, isPostTarget, isPutTarget } =
+    useTarget(
+      filter,
+      { onSuccess: onPostTargetSuccess, onError: onPostError },
+      { onSuccess: onPutTargetSuccess, onError: onPutError },
+      { onSuccess: onDeleteTargetSuccess, onError: onDeleteError },
+    );
 
   const handleClickExpand = () => {
     if (isGetTargets) return;
@@ -71,12 +83,55 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     );
   };
 
-  const handlePostTarget = (data: PostTargetParams) => {
-    postTarget(data);
+  const onClickEdit = (target: Target) => {
+    setItemEditing(target);
+    setShowAddTarget(true);
   };
 
-  const handlePutTarget = (id: number, data: PutTargetParams) => {
-    putTarget(id, data);
+  const onCreateTarget = (amountInput: number, tags: SearchResult[]) => {
+    const props: TargetProp[] = tags.map((tag: SearchResult) => {
+      return {
+        id: tag?.directoryId,
+        type: TargetPropType.CATEGORY,
+        name: tag?.title ?? '',
+      };
+    });
+    postTarget({
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      amount: amountInput,
+      props,
+    });
+  };
+  const onDeleteTarget = (targetId: number, amountInput: number, tags: SearchResult[]) => {
+    const props: TargetProp[] = tags.map((tag: SearchResult) => {
+      return {
+        id: tag?.directoryId,
+        type: TargetPropType.CATEGORY,
+        name: tag?.title ?? '',
+      };
+    });
+    deleteTarget(targetId, {
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      amount: amountInput,
+      props,
+    });
+  };
+  const onSaveTarget = (targetId: number, amountInput: number, tags: SearchResult[]) => {
+    const props: TargetProp[] = tags.map((tag: SearchResult) => {
+      return {
+        id: tag?.directoryId,
+        type: TargetPropType.CATEGORY,
+        name: tag?.title ?? '',
+      };
+    });
+    putTarget(targetId, {
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      amount: amountInput,
+      props,
+    });
   };
 
   const renderTargets = () => {
@@ -103,10 +158,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
             key={`target-${item?.name}-${item?.depId}`}
             target={item}
             index={index}
-            onPostTarget={handlePostTarget}
-            onPutTarget={handlePutTarget}
-            isPostTarget={isPostTarget}
-            isPutTarget={isPutTarget}
+            onClickEdit={() => onClickEdit(item)}
           />
         ))}
       </ul>
@@ -140,7 +192,11 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
         open={showAddTarget}
         onClose={() => setShowAddTarget(false)}
         onCancel={() => setShowAddTarget(false)}
-        onCreate={() => setShowAddTarget(false)}
+        onCreate={onCreateTarget}
+        onSave={onSaveTarget}
+        onDelete={onDeleteTarget}
+        itemEditing={itemEditing}
+        isLoading={isPostTarget || isPutTarget}
       />
     </div>
   );

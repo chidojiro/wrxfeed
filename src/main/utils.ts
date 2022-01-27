@@ -10,12 +10,11 @@ import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
 
-import { SearchResultType } from '@main/types';
-
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
 import { ReactComponent as Suitcase } from '@assets/icons/outline/suitcase.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
+import { TargetPropType } from '@api/types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -318,11 +317,11 @@ export const getMultiRandomInt = (multi: number, min: number, max: number): numb
 };
 
 export const getIconByResultType = (
-  type: SearchResultType,
+  type: TargetPropType,
 ): React.FC<React.SVGAttributes<SVGElement>> => {
-  if (type === SearchResultType.Vendor) return Suitcase;
-  if (type === SearchResultType.Teams) return GroupUsers;
-  if (type === SearchResultType.Categories) return Files;
+  if (type === TargetPropType.VENDOR) return Suitcase;
+  if (type === TargetPropType.DEPARTMENT) return GroupUsers;
+  if (type === TargetPropType.CATEGORY) return Files;
   return BasicsSearchSmall;
 };
 
@@ -333,9 +332,9 @@ export const getWidthInputByLength = (length: number): number => {
   return 20;
 };
 
-export const getColorByPropertyType = (type: SearchResultType): string => {
-  if (type === SearchResultType.Vendor) return '#F3AA20';
-  if (type === SearchResultType.Teams) return '#0891B2';
-  if (type === SearchResultType.Categories) return '#6565FB';
+export const getColorByPropertyType = (type: TargetPropType): string => {
+  if (type === TargetPropType.VENDOR) return '#F3AA20';
+  if (type === TargetPropType.DEPARTMENT) return '#0891B2';
+  if (type === TargetPropType.CATEGORY) return '#6565FB';
   return '#6565FB';
 };
