@@ -10,6 +10,7 @@ import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
 
+import { TransLineItem } from '@main/entity';
 import { SearchResultType } from '@main/types';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
@@ -315,6 +316,27 @@ export const getMultiRandomInt = (multi: number, min: number, max: number): numb
     results = Array.from(new Set(results));
   }
   return results;
+};
+
+// Vendor information updates when created by "Concur Integrations"
+export const getVendorNameFromLineItem = (item: TransLineItem): string => {
+  // let vendorName = item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`;
+  let vendorName = item?.vendor?.name || item?.description || '...';
+
+  const des = item?.description;
+
+  const isConcurByCreatedByName = item?.transaction?.createdByName;
+  const isConcurByRecordType =
+    item?.transaction?.recordType?.toLowerCase() === 'Expense Report'.toLowerCase();
+
+  const checkDesIncludeSymbol = des?.toLowerCase().includes('|');
+
+  if ((isConcurByCreatedByName || isConcurByRecordType) && checkDesIncludeSymbol) {
+    const descriptionWithoutVendor = des?.substring(0, des?.lastIndexOf('|')) || '';
+    const vendorNameFromDescription = des?.substring(des?.indexOf('|') + 1, des.length - 1) || '';
+    vendorName = `${descriptionWithoutVendor} expense by ${vendorNameFromDescription}.`;
+  }
+  return vendorName;
 };
 
 export const getIconByResultType = (
