@@ -97,7 +97,6 @@ export function useTarget(
       setPutTarget(true);
       await ApiClient.putTarget(id, data);
       cbPut.onSuccess();
-      // getTargets();
     } catch (error) {
       if (cbPut.onError) {
         cbPut.onError(error);
@@ -115,14 +114,13 @@ export function useTarget(
     if (isPutTarget) return;
     try {
       setPutTarget(true);
-      await ApiClient.putTarget(id, data);
+      await ApiClient.deleteTarget(id, data);
       cbDelete.onSuccess();
-      // getTargets();
     } catch (error) {
       if (cbDelete.onError) {
         cbDelete.onError(error);
       } else if (isBadRequest(error)) {
-        toast.error('Can not update this target!');
+        toast.error('Can not delete this target!');
       } else {
         await errorHandler(error);
       }
