@@ -318,11 +318,23 @@ export const getMultiRandomInt = (multi: number, min: number, max: number): numb
   return results;
 };
 
+// Vendor information updates when created by "Concur Integrations"
 export const getVendorNameFromLineItem = (item: TransLineItem): string => {
-  let vendorName = item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`;
-  const isConcurIntegration = item?.transaction?.createdByName;
-  if (isConcurIntegration) {
-    vendorName = `${item?.description} expense by ${item?.transaction?.createdByName}.`;
+  // let vendorName = item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`;
+  let vendorName = item?.vendor?.name || item?.description || '...';
+
+  const des = item?.description;
+
+  const isConcurByCreatedByName = item?.transaction?.createdByName;
+  const isConcurByRecordType =
+    item?.transaction?.recordType?.toLowerCase() === 'Expense Report'.toLowerCase();
+
+  const checkDesIncludeSymbol = des?.toLowerCase().includes('|');
+
+  if ((isConcurByCreatedByName || isConcurByRecordType) && checkDesIncludeSymbol) {
+    const descriptionWithoutVendor = des?.substring(0, des?.lastIndexOf('|')) || '';
+    const vendorNameFromDescription = des?.substring(des?.indexOf('|') + 1, des.length - 1) || '';
+    vendorName = `${descriptionWithoutVendor} expense by ${vendorNameFromDescription}.`;
   }
   return vendorName;
 };
