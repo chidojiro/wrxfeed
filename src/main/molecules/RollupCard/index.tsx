@@ -299,7 +299,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                 >
                   {`$ ${formatCurrency(feedItem?.total)}`}
                 </h2>
-                <Menu as="div" className="relative inline-block z-10 text-left">
+                <Menu as="div" className="relative inline-block z-20 text-left">
                   <div>
                     <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
                       <span className="sr-only">Open options</span>
