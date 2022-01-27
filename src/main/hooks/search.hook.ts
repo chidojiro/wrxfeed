@@ -2,8 +2,9 @@ import { useCallback, useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { GlobalSearchType, searchState } from '@main/states/search.state';
-import { SearchResult, SearchResultType } from '@main/types';
+import { SearchResult } from '@main/types';
 import { Category, Department, Vendor } from '@main/entity';
+import { TargetPropType } from '@api/types';
 
 interface SearchHookValues {
   isLoading: boolean;
@@ -28,9 +29,9 @@ export function useSearch(keyword: string): SearchHookValues {
       .filter((dept: Department) => dept.name.toLowerCase().includes(keyword.toLowerCase()))
       .map((dept: Department) => {
         return {
-          id: `Teams-${dept?.id}`,
+          id: `DEPARTMENT-${dept?.id}`,
           title: dept?.name,
-          type: SearchResultType.Teams,
+          type: TargetPropType.DEPARTMENT,
           directoryId: dept?.id,
         };
       });
@@ -38,9 +39,9 @@ export function useSearch(keyword: string): SearchHookValues {
       .filter((cat: Category) => cat.name.toLowerCase().includes(keyword.toLowerCase()))
       .map((cat: Category) => {
         return {
-          id: `Categories-${cat?.id}`,
+          id: `CATEGORY-${cat?.id}`,
           title: cat?.name,
-          type: SearchResultType.Categories,
+          type: TargetPropType.CATEGORY,
           directoryId: cat?.id,
         };
       });
@@ -48,9 +49,9 @@ export function useSearch(keyword: string): SearchHookValues {
       .filter((vend: Vendor) => vend.name.toLowerCase().includes(keyword.toLowerCase()))
       .map((vend: Vendor) => {
         return {
-          id: `Categories-${vend?.id}`,
+          id: `VENDOR-${vend?.id}`,
           title: vend?.name,
-          type: SearchResultType.Vendor,
+          type: TargetPropType.VENDOR,
           directoryId: vend?.id,
         };
       });

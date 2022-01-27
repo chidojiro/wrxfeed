@@ -9,12 +9,13 @@ import { useSearch } from '@main/hooks/search.hook';
 
 import { classNames } from '@common/utils';
 import { MainGroups } from '@common/constants';
-import { SearchResult, SearchResultType } from '@main/types';
+import { SearchResult } from '@main/types';
 
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
 import { ReactComponent as ArrowRight2 } from '@assets/icons/outline/arrow-right-2.svg';
 import { getIconByResultType } from '@main/utils';
+import { TargetPropType } from '@api/types';
 
 const DEBOUNCE_WAIT = 500;
 
@@ -49,19 +50,19 @@ const SearchBar: React.VFC = () => {
   const onPressResultRow = (result: SearchResult) => {
     onClear();
     switch (result.type) {
-      case SearchResultType.Teams:
+      case TargetPropType.DEPARTMENT:
         history.push({
           pathname: `/departments/${result?.directoryId}`,
           search: `?route=${MainGroups.Directories}`,
         });
         break;
-      case SearchResultType.Categories:
+      case TargetPropType.CATEGORY:
         history.push({
           pathname: `/categories/${result?.directoryId}`,
           search: `?route=${MainGroups.Directories}`,
         });
         break;
-      case SearchResultType.Vendor:
+      case TargetPropType.VENDOR:
         history.push({
           pathname: `/vendors/${result?.directoryId}`,
           search: `?route=${MainGroups.Directories}`,

@@ -20,6 +20,7 @@ interface TargetHookValues {
   isGetTargets: boolean;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  deleteTarget: (id: number, data: PutTargetParams) => Promise<void>;
   isPostTarget: boolean;
   isPutTarget: boolean;
 }
@@ -27,6 +28,7 @@ export function useTarget(
   filter: TargetFilter,
   cbPost: TargetCallback,
   cbPut: TargetCallback,
+  cbDelete: TargetCallback,
 ): TargetHookValues {
   const [targets, setTargets] = useRecoilState<Target[]>(targetState);
   // const [targets, setTargets] = useState<Target[]>([]);
@@ -95,7 +97,6 @@ export function useTarget(
       setPutTarget(true);
       await ApiClient.putTarget(id, data);
       cbPut.onSuccess();
-      // getTargets();
     } catch (error) {
       if (cbPut.onError) {
         cbPut.onError(error);
@@ -109,10 +110,38 @@ export function useTarget(
     }
   };
 
+  const deleteTarget = async (id: number, data: PutTargetParams) => {
+    if (isPutTarget) return;
+    try {
+      setPutTarget(true);
+      await ApiClient.deleteTarget(id, data);
+      cbDelete.onSuccess();
+    } catch (error) {
+      if (cbDelete.onError) {
+        cbDelete.onError(error);
+      } else if (isBadRequest(error)) {
+        toast.error('Can not delete this target!');
+      } else {
+        await errorHandler(error);
+      }
+    } finally {
+      setPutTarget(false);
+    }
+  };
+
   // auto call in the first time with no default filter
   useEffect(() => {
     getTargets().then();
   }, [getTargets]);
 
-  return { targets, hasMore, isGetTargets, postTarget, putTarget, isPostTarget, isPutTarget };
+  return {
+    targets,
+    hasMore,
+    isGetTargets,
+    postTarget,
+    putTarget,
+    deleteTarget,
+    isPostTarget,
+    isPutTarget,
+  };
 }
