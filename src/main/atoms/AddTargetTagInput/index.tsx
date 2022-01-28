@@ -4,6 +4,8 @@ import React, {
   ForwardRefRenderFunction,
   useImperativeHandle,
   useState,
+  useEffect,
+  useRef,
 } from 'react';
 
 import { getColorByPropertyType } from '@main/utils';
@@ -18,20 +20,31 @@ interface AddTargetTagInputProps {
   onTextChange?: (value: string) => void;
   maxTag?: number;
   maxHeight?: number;
+  defaultItems?: SearchResult[];
+  autoFocus?: boolean;
 }
 
 export interface AddTargetTagInputHandler {
   addItem: (item: SearchResult) => void;
   getItems: () => SearchResult[];
+  setDefaultItems: (defaultItems: SearchResult[]) => void;
 }
 
 const AddTargetTagInput: ForwardRefRenderFunction<
   AddTargetTagInputHandler,
   AddTargetTagInputProps
-> = ({ placeholder, loading, onTextChange, maxTag = 10 }, ref) => {
-  const [items, setItems] = useState<SearchResult[]>([]);
+> = ({ placeholder, loading, onTextChange, maxTag = 10, defaultItems, autoFocus = false }, ref) => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const [items, setItems] = useState<SearchResult[]>(defaultItems || []);
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (searchInputRef?.current && autoFocus) {
+      setTimeout(() => searchInputRef.current?.focus(), 200);
+    }
+  }, [autoFocus, searchInputRef]);
 
   function isInList(property: SearchResult) {
     return items.includes(property);
@@ -66,6 +79,9 @@ const AddTargetTagInput: ForwardRefRenderFunction<
       }
     },
     getItems: () => items,
+    setDefaultItems: (newDefault: SearchResult[]) => {
+      setItems(newDefault);
+    },
   }));
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -92,6 +108,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
             />
           ))}
           <input
+            ref={searchInputRef}
             type="text"
             className="max-w-full min-w-[200px] py-1 rounded-none text-sm text-Gray-1 focus:outline-none bg-transparent"
             value={value}

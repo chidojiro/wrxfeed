@@ -1,21 +1,22 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { useDebounce } from '@common/hooks';
 import { useSearch } from '@main/hooks/search.hook';
 
-import { classNames, formatToCurrency } from '@common/utils';
+import { classNames, formatToCurrency, replaceAll } from '@common/utils';
 import { getIconByResultType } from '@main/utils';
 import { SearchResult } from '@main/types';
+import { TargetProp } from '@api/types';
 import { Target } from '@main/entity';
 
 import Modal from '@common/atoms/Modal';
+import Loading from '@common/atoms/Loading';
 import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
 import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-2.svg';
 import { ReactComponent as CarbonTrashCan } from '@assets/icons/outline/carbon-trash-can.svg';
-import Loading from '@common/atoms/Loading';
 
-const DEBOUNCE_WAIT = 500;
+const DEBOUNCE_WAIT = 0;
 
 export type AddTargetModalProps = {
   open: boolean;
@@ -25,7 +26,8 @@ export type AddTargetModalProps = {
   onSave: (targetId: number, amountInput: number, tags: SearchResult[]) => void;
   onDelete: (targetId: number, amountInput: number, tags: SearchResult[]) => void;
   itemEditing: Target | null;
-  isLoading: boolean;
+  isCreatingOrSaving: boolean;
+  isDeleting: boolean;
 };
 
 type AddTargetTagInputHandler = React.ElementRef<typeof AddTargetTagInput>;
@@ -35,15 +37,48 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   onClose,
   onCancel,
   onCreate,
+  onSave,
   onDelete,
   itemEditing,
+  isCreatingOrSaving,
+  isDeleting,
 }) => {
   const tagInputRef = useRef<AddTargetTagInputHandler>(null);
   const [keyword, setKeyword] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const isEdit = itemEditing !== null;
+  const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
 
-  const { results, isLoading, onClear } = useSearch(keyword);
+  const { results, isLoading: isSearching, onClear } = useSearch(keyword);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (!open) {
+      timeout = setTimeout(() => {
+        onClear();
+        setKeyword('');
+        setAmount('');
+      }, 800);
+    }
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [onClear, open]);
+
+  useEffect(() => {
+    if (itemEditing && itemEditing?.props.length > 0) {
+      const defaultTagsTemp = itemEditing?.props.map((prop: TargetProp) => {
+        return {
+          id: `${prop?.type.toUpperCase()}-${prop?.id}`,
+          title: prop?.name,
+          type: prop?.type,
+          directoryId: prop?.id,
+        };
+      });
+      setDefaultTags(defaultTagsTemp);
+    }
+    setAmount(formatToCurrency(itemEditing?.amount?.toString() || '', ''));
+  }, [itemEditing]);
 
   const onSearchContact = useCallback(
     (value: string) => {
@@ -55,8 +90,6 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
 
   const onCloseModal = () => {
     if (typeof onClose === 'function') onClose();
-    onClear();
-    setKeyword('');
   };
   const onClickDelete = () => {
     if (!itemEditing) return;
@@ -65,8 +98,6 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   };
   const onClickCancel = () => {
     onCancel();
-    onClear();
-    setKeyword('');
   };
   const onClickCreateOrSave = () => {
     const tags = tagInputRef.current?.getItems() || [];
@@ -74,14 +105,17 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       toast.warning('Can not create new target without any property!');
       return;
     }
-    const amountInt = parseInt(amount, 10);
+    const amountNumber = replaceAll(amount, ',', '');
+    const amountInt = parseInt(amountNumber, 10);
     if (!amountInt || amountInt < 1) {
       toast.warning('Invalid amount!');
       return;
     }
+    if (isEdit) {
+      onSave(itemEditing?.id, amountInt, tags);
+      return;
+    }
     onCreate(amountInt, tags);
-    onClear();
-    setKeyword('');
   };
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(formatToCurrency(event.target.value, ''));
@@ -107,10 +141,18 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const buttonTitleCreateOrSave = itemEditing === null ? 'Create' : 'Save';
 
   const renderIconNextOrLoading = () => {
-    if (isLoading) return <Loading width={12} height={12} color="white" className="w-4 h-4 ml-2" />;
+    if (isCreatingOrSaving)
+      return <Loading width={12} height={12} color="white" className="w-4 h-4 ml-2" />;
     return (
       <ArrowRight className="w-4 h-4 ml-2 fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />
     );
+  };
+
+  const renderIconDeleteOrLoading = () => {
+    if (isDeleting) {
+      return <Loading width={12} height={12} color="primary" className="w-4 h-4" />;
+    }
+    return <CarbonTrashCan width={16} height={16} className="w-4 h-4" />;
   };
 
   return (
@@ -128,8 +170,10 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               ref={tagInputRef}
               placeholder="Enter a team, category, or vendor"
               onTextChange={debounceSearchRequest}
-              loading={isLoading}
+              loading={isSearching}
               maxTag={40}
+              defaultItems={defaultTags}
+              autoFocus
             />
           </div>
           <div className="flex flex-col mt-2 w-full max-h-[300px] overflow-scroll hide-scrollbar">
@@ -161,7 +205,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               onClick={onClickDelete}
               className="flex flex-row items-center px-4 py-2 rounded-sm hover:bg-Gray-12 space-x-2"
             >
-              <CarbonTrashCan width={16} height={16} className="w-4 h-4" />
+              {renderIconDeleteOrLoading()}
               <p className="text-Gray-6 text-xs font-semibold">Delete</p>
             </button>
           )}

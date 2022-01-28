@@ -17,7 +17,7 @@ import { ReactComponent as ArrowRight2 } from '@assets/icons/outline/arrow-right
 import { getIconByResultType } from '@main/utils';
 import { TargetPropType } from '@api/types';
 
-const DEBOUNCE_WAIT = 500;
+const DEBOUNCE_WAIT = 0;
 
 const SearchBar: React.VFC = () => {
   const history = useHistory();
