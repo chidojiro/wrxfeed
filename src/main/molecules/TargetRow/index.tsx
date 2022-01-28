@@ -12,8 +12,20 @@ export interface TargetRowProps {
   onClickEdit: () => void;
 }
 
+export const getTargetName = (target: Target): string => {
+  const { props = [] } = target;
+  if (!Array.isArray(props) || props.length === 0) return 'Invalid target!';
+  let targetName = target.props[0].name;
+  if (props.length === 1) return targetName;
+  for (let i = 1; i < props?.length; i += 1) {
+    targetName += `, ${props[i].name}`;
+  }
+  return targetName;
+};
+
 const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
-  const deptBgClass = useMemo(() => getDepartmentBgColor(target?.name ?? ''), [target?.name]);
+  const targetName = getTargetName(target);
+  const deptBgClass = useMemo(() => getDepartmentBgColor(targetName ?? ''), [targetName]);
   const isActive = (target?.amount ?? 0) > 0 && target?.id !== null;
 
   const renderEditButton = () => {
@@ -45,7 +57,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
-          <p className="text-Gray-6 font-regular text-sm">{target?.name}</p>
+          <p className="text-Gray-6 font-regular text-sm">{targetName}</p>
           {renderEditButton()}
         </div>
         <div className="flex flex-row">
@@ -142,10 +154,10 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
     <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
       <div className="flex flex-row items-center">
         <p
-          className="text-Gray-6 font-regular text-sm truncate max-w-xs"
-          style={{ maxWidth: '145px' }}
+          className="text-Gray-6 font-regular text-sm truncate max-w-xs w-full mr-2"
+          // style={{ maxWidth: '200px' }}
         >
-          {target?.name}
+          {targetName}
         </p>
         {renderAlertText()}
         {renderEditButton()}

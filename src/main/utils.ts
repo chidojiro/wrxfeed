@@ -10,7 +10,7 @@ import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
 
-import { TransLineItem } from '@main/entity';
+import { TransLineItem, Target } from '@main/entity';
 import { TargetPropType } from '@api/types';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
@@ -367,4 +367,12 @@ export const getPropTypeDisplayName = (type: TargetPropType): string => {
   if (type === TargetPropType.DEPARTMENT) return 'Team';
   if (type === TargetPropType.CATEGORY) return 'Category';
   return '#6565FB';
+};
+
+export const stackTargetsBySpend = (data: Target[]): Target[] => {
+  let targetStacked = data.sort((a: Target, b: Target) => (b?.total ?? 0) - (a?.total ?? 0));
+  targetStacked = data.sort(
+    (a: Target, b: Target) => (b?.id !== null ? 1 : 0) - (a?.id !== null ? 1 : 0),
+  );
+  return targetStacked;
 };

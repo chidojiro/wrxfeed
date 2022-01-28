@@ -18,7 +18,7 @@ import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-s
 import { ReactComponent as ArrowRight2 } from '@assets/icons/outline/arrow-right-2.svg';
 import { ReactComponent as QuestionCircle } from '@assets/icons/solid/question-circle.svg';
 
-const DEBOUNCE_WAIT = 500;
+const DEBOUNCE_WAIT = 0;
 
 const SearchBar: React.VFC = () => {
   const history = useHistory();
