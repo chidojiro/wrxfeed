@@ -7,15 +7,16 @@ import { useOnClickOutside } from '@dwarvesf/react-hooks';
 import { useDebounce } from '@common/hooks';
 import { useSearch } from '@main/hooks/search.hook';
 
-import { classNames } from '@common/utils';
-import { MainGroups } from '@common/constants';
 import { SearchResult } from '@main/types';
+import { TargetPropType } from '@api/types';
+import { MainGroups } from '@common/constants';
+import { getIconByResultType, getPropTypeDisplayName } from '@main/utils';
+import { classNames } from '@common/utils';
 
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
 import { ReactComponent as ArrowRight2 } from '@assets/icons/outline/arrow-right-2.svg';
-import { getIconByResultType } from '@main/utils';
-import { TargetPropType } from '@api/types';
+import { ReactComponent as QuestionCircle } from '@assets/icons/solid/question-circle.svg';
 
 const DEBOUNCE_WAIT = 500;
 
@@ -26,6 +27,7 @@ const SearchBar: React.VFC = () => {
   const [keyword, setKeyword] = useState<string>('');
   const [isFocus, setFocus] = useState<boolean>(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const isSearching = keyword?.length > 0;
 
   const { results, onClear } = useSearch(keyword);
 
@@ -87,13 +89,31 @@ const SearchBar: React.VFC = () => {
         <IconByType className="w-6 h-6" />
         <div className="flex flex-1 items-center ml-2">
           <p className="text-Gray-3 text-sm">{result?.title}</p>
-          <p className="text-Gray-6 text-sm ml-2">{`- ${result.type.toString()}`}</p>
+          <p className="text-Gray-6 text-sm ml-2 invisible group-hover:visible">
+            {`- ${getPropTypeDisplayName(result?.type)}`}
+          </p>
         </div>
         <div className="flex ml-auto">
           <ArrowRight2 className="h-4 w-4 text-Accent-1 invisible group-hover:visible" />
         </div>
       </button>
     );
+  };
+
+  const isEmptyResult = isSearching && results.length === 0;
+  const renderResultsOrEmpty = () => {
+    if (isEmptyResult) {
+      return (
+        <div className="flex mx-6 px-1 my-2 w-full flex-row items-center space-x-3 py-1 h-6">
+          <QuestionCircle width={15} height={15} />
+          <p className="text-sm text-Gray-3">
+            No results found.
+            <span className="text-Gray-6"> Try searching for a team, category, or vendor.</span>
+          </p>
+        </div>
+      );
+    }
+    return results.map(renderResultRow);
   };
 
   return (
@@ -124,7 +144,7 @@ const SearchBar: React.VFC = () => {
                 onFocus={() => setFocus(true)}
                 onBlur={() => setFocus(false)}
               />
-              {(isFocus || keyword?.length > 0) && (
+              {(isFocus || isSearching) && (
                 <button
                   type="button"
                   onClick={onClickClearSearchInput}
@@ -140,14 +160,14 @@ const SearchBar: React.VFC = () => {
               )}
             </div>
             <Transition
-              show={results.length > 0}
+              show={results.length > 0 || isEmptyResult}
               as={Fragment}
               leave="transition ease-in duration-100"
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
               <div className="absolute mt-2 w-full px-4 max-h-[327px] bg-white shadow-lg rounded-sm border border-Gray-11 pt-6 pb-4 ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                {results.map(renderResultRow)}
+                {renderResultsOrEmpty()}
               </div>
             </Transition>
           </div>

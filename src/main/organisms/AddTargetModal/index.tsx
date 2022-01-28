@@ -5,7 +5,7 @@ import { useDebounce } from '@common/hooks';
 import { useSearch } from '@main/hooks/search.hook';
 
 import { classNames, formatToCurrency } from '@common/utils';
-import { getIconByResultType } from '@main/utils';
+import { getIconByResultType, getPropTypeDisplayName } from '@main/utils';
 import { SearchResult } from '@main/types';
 import { Target } from '@main/entity';
 
@@ -94,11 +94,13 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         onClick={() => tagInputRef.current?.addItem(result)}
         key={result?.id}
         type="button"
-        className="hover:bg-Gray-12 px-12 py-2.5 flex flex-row items-center text-xs"
+        className="hover:bg-Gray-12 px-12 py-2.5 flex flex-row items-center text-xs group"
       >
         <IconByType className="w-5 h-5 object-scale-down" style={{ width: 20, height: 20 }} />
         <p className="text-Gray-1 ml-8">{result?.title}</p>
-        <p className="text-Gray-6 ml-2">{`- ${result.type.toString()}`}</p>
+        <p className="text-Gray-6 ml-2 invisible group-hover:visible">
+          {`- ${getPropTypeDisplayName(result?.type)}`}
+        </p>
       </button>
     );
   };

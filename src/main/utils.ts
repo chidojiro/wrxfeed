@@ -361,3 +361,10 @@ export const getColorByPropertyType = (type: TargetPropType): string => {
   if (type === TargetPropType.CATEGORY) return '#6565FB';
   return '#6565FB';
 };
+
+export const getPropTypeDisplayName = (type: TargetPropType): string => {
+  if (type === TargetPropType.VENDOR) return 'Vendor';
+  if (type === TargetPropType.DEPARTMENT) return 'Team';
+  if (type === TargetPropType.CATEGORY) return 'Category';
+  return '#6565FB';
+};
