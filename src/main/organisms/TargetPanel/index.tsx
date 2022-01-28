@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { TargetFilter, TargetProp, TargetPropType } from '@api/types';
+import { TargetFilter, TargetProp } from '@api/types';
 import { BasicsDownSmall } from '@assets';
 import Loading from '@common/atoms/Loading';
 import { Target } from '@main/entity';
@@ -11,6 +11,7 @@ import { classNames } from '@common/utils';
 import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
 import AddTargetModal from '@main/organisms/AddTargetModal';
 import { SearchResult } from '@main/types';
+import { toast } from 'react-toastify';
 
 export interface TargetPanelProps {
   title?: string;
@@ -33,13 +34,17 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const [itemEditing, setItemEditing] = useState<Target | null>(null);
 
   const onPostTargetSuccess = () => {
+    toast.success('Successfully added target!');
+    setShowAddTarget(false);
     setFilter({
       ...initFilter,
       timestamp: Date.now(),
     });
   };
-  const onPostError = () => {};
+  const onPostTargetError = () => undefined;
   const onPutTargetSuccess = () => {
+    toast.success('Successfully updated target!');
+    setShowAddTarget(false);
     setFilter({
       ...initFilter,
       timestamp: Date.now(),
@@ -47,6 +52,8 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   };
   const onPutError = () => {};
   const onDeleteTargetSuccess = () => {
+    toast.success('Successfully deleted target!');
+    setShowAddTarget(false);
     setFilter({
       ...initFilter,
       timestamp: Date.now(),
@@ -54,13 +61,21 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   };
   const onDeleteError = () => {};
 
-  const { targets, isGetTargets, postTarget, putTarget, deleteTarget, isPostTarget, isPutTarget } =
-    useTarget(
-      filter,
-      { onSuccess: onPostTargetSuccess, onError: onPostError },
-      { onSuccess: onPutTargetSuccess, onError: onPutError },
-      { onSuccess: onDeleteTargetSuccess, onError: onDeleteError },
-    );
+  const {
+    targets,
+    isGetTargets,
+    postTarget,
+    putTarget,
+    deleteTarget,
+    isPostTarget,
+    isPutTarget,
+    isDeleteTarget,
+  } = useTarget(
+    filter,
+    { onSuccess: onPostTargetSuccess, onError: onPostTargetError },
+    { onSuccess: onPutTargetSuccess, onError: onPutError },
+    { onSuccess: onDeleteTargetSuccess, onError: onDeleteError },
+  );
 
   const handleClickExpand = () => {
     if (isGetTargets) return;
@@ -70,7 +85,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const onClickNewTarget = () => setShowAddTarget(true);
 
   const renderExpandedIcon = () => {
-    // if (targets.length === 0) return null;
+    if (targets.length < 5) return null;
     const expandStyle = isExpanded ? { transform: 'rotate(180deg)' } : {};
     return (
       <div className="flex flex-row h-4 items-center">
@@ -92,7 +107,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     const props: TargetProp[] = tags.map((tag: SearchResult) => {
       return {
         id: tag?.directoryId,
-        type: TargetPropType.CATEGORY,
+        type: tag?.type,
         name: tag?.title ?? '',
       };
     });
@@ -107,7 +122,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     const props: TargetProp[] = tags.map((tag: SearchResult) => {
       return {
         id: tag?.directoryId,
-        type: TargetPropType.CATEGORY,
+        type: tag?.type,
         name: tag?.title ?? '',
       };
     });
@@ -122,7 +137,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     const props: TargetProp[] = tags.map((tag: SearchResult) => {
       return {
         id: tag?.directoryId,
-        type: TargetPropType.CATEGORY,
+        type: tag?.type,
         name: tag?.title ?? '',
       };
     });
@@ -155,7 +170,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
       <ul className="flex flex-col">
         {targets.map((item: Target, index: number) => (
           <TargetRow
-            key={`target-${item?.name}-${item?.depId}`}
+            key={`target-${item?.id}-${item?.month}`}
             target={item}
             index={index}
             onClickEdit={() => onClickEdit(item)}
@@ -196,7 +211,8 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
         onSave={onSaveTarget}
         onDelete={onDeleteTarget}
         itemEditing={itemEditing}
-        isLoading={isPostTarget || isPutTarget}
+        isCreatingOrSaving={isPostTarget || isPutTarget}
+        isDeleting={isDeleteTarget}
       />
     </div>
   );

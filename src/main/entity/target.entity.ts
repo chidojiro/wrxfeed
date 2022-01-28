@@ -2,9 +2,9 @@ import { TargetProp } from '@api/types';
 
 export type Target = {
   id: number;
+  month: number;
+  year: number;
   amount: number | null;
-  depId: number;
   total: number | null;
-  name: string;
-  props: TargetProp;
+  props: TargetProp[];
 };

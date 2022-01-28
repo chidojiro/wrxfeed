@@ -29,7 +29,7 @@ export function useSearch(keyword: string): SearchHookValues {
       .filter((dept: Department) => dept.name.toLowerCase().includes(keyword.toLowerCase()))
       .map((dept: Department) => {
         return {
-          id: `DEPARTMENT-${dept?.id}`,
+          id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${dept?.id}`,
           title: dept?.name,
           type: TargetPropType.DEPARTMENT,
           directoryId: dept?.id,
@@ -39,7 +39,7 @@ export function useSearch(keyword: string): SearchHookValues {
       .filter((cat: Category) => cat.name.toLowerCase().includes(keyword.toLowerCase()))
       .map((cat: Category) => {
         return {
-          id: `CATEGORY-${cat?.id}`,
+          id: `${TargetPropType.CATEGORY.toUpperCase()}-${cat?.id}`,
           title: cat?.name,
           type: TargetPropType.CATEGORY,
           directoryId: cat?.id,
@@ -49,7 +49,7 @@ export function useSearch(keyword: string): SearchHookValues {
       .filter((vend: Vendor) => vend.name.toLowerCase().includes(keyword.toLowerCase()))
       .map((vend: Vendor) => {
         return {
-          id: `VENDOR-${vend?.id}`,
+          id: `${TargetPropType.VENDOR.toUpperCase()}-${vend?.id}`,
           title: vend?.name,
           type: TargetPropType.VENDOR,
           directoryId: vend?.id,
