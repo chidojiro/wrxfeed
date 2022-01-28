@@ -362,6 +362,13 @@ export const getColorByPropertyType = (type: TargetPropType): string => {
   return '#6565FB';
 };
 
+export const getPropTypeDisplayName = (type: TargetPropType): string => {
+  if (type === TargetPropType.VENDOR) return 'Vendor';
+  if (type === TargetPropType.DEPARTMENT) return 'Team';
+  if (type === TargetPropType.CATEGORY) return 'Category';
+  return '#6565FB';
+};
+
 export const stackTargetsBySpend = (data: Target[]): Target[] => {
   let targetStacked = data.sort((a: Target, b: Target) => (b?.total ?? 0) - (a?.total ?? 0));
   targetStacked = data.sort(
