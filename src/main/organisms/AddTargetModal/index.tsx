@@ -15,7 +15,7 @@ import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-
 import { ReactComponent as CarbonTrashCan } from '@assets/icons/outline/carbon-trash-can.svg';
 import Loading from '@common/atoms/Loading';
 
-const DEBOUNCE_WAIT = 500;
+const DEBOUNCE_WAIT = 0;
 
 export type AddTargetModalProps = {
   open: boolean;
