@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 // import { MessageTextAlt } from '@assets/index';
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
@@ -12,6 +14,7 @@ import { lineItemSelectState } from '@main/states/lineItems.state';
 import { slideOverOpenState } from '@main/states/slideOver.state';
 
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
+import { getVendorNameFromLineItem } from '@main/utils';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -40,7 +43,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   }, [lineItem?.id, lineItem?.meta?.isRead, maskLineItemAsRead]);
 
   const renderMessages = () => {
-    const isShowMessage = false; // lineItem?.commentCount > 0;
+    const isShowMessage = false;
     if (isShowMessage) {
       return (
         <button onClick={onClickMessage} type="button" className="flex h-4 w-8 flex-row ml-4">
@@ -77,16 +80,14 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   };
 
   const renderVendorName = () => {
-    const vendorName =
-      lineItem?.vendor?.name || lineItem?.description || `Expense: ${lineItem?.vendorName}`;
+    const vendorName = getVendorNameFromLineItem(lineItem);
     return (
-      <button
-        type="button"
+      <div
         className="hover:underline flex flex-row items-center max-w-[140px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[450px]"
         onClick={onClickLineItemVendor}
       >
         <p className="text-Gray-6 text-xs font-semibold text-left truncate">{vendorName}</p>
-      </button>
+      </div>
     );
   };
 

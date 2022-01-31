@@ -3,12 +3,14 @@ import React, { VFC } from 'react';
 interface InputTagProps {
   text: string;
   onDelete: (text: string) => void;
+  color?: string;
 }
 
-const InputTag: VFC<InputTagProps> = ({ text, onDelete }) => {
+const InputTag: VFC<InputTagProps> = ({ text, onDelete, color }) => {
   return (
     <div
-      className="flex items-center h-5 bg-Accent-2 rounded px-2 m-0.5 text-2xs text-white"
+      className="flex items-center h-5 rounded px-2 m-0.5 text-2xs text-white bg-Accent-2"
+      style={color ? { backgroundColor: color } : {}}
       key={text}
     >
       {text}

@@ -25,18 +25,17 @@ export function useFeedBack(callback: FeedBackModalCallback): FeedbackHookValues
 
   const postFeedback = async (type: FeedBackType, itemId: number, data: FeedBackFormModel) => {
     try {
+      setSent(false);
       setLoading(true);
       if (type === FeedBackType.Rollup) {
         await ApiClient.postFeedBackFeed(itemId, data);
       } else {
         await ApiClient.postFeedBackLineItem(itemId, data);
       }
-      setLoading(false);
       setSent(true);
       callback.onSuccess();
       toast.success('Your feedback has been successfully sent!');
     } catch (error) {
-      setLoading(false);
       setSent(false);
       if (callback.onError) {
         callback.onError(error);
@@ -45,6 +44,8 @@ export function useFeedBack(callback: FeedBackModalCallback): FeedbackHookValues
       } else {
         await errorHandler(error);
       }
+    } finally {
+      setLoading(false);
     }
   };
 

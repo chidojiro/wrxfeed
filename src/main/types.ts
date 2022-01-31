@@ -1,3 +1,4 @@
+import { TargetPropType } from '@api/types';
 import { EditorState } from 'draft-js';
 
 export type CommentFormModel = {
@@ -30,3 +31,10 @@ export enum FeedBackType {
   Rollup = 1,
   LineItem = 2,
 }
+
+export type SearchResult = {
+  id: number | string;
+  title: string;
+  type: TargetPropType;
+  directoryId: number;
+};

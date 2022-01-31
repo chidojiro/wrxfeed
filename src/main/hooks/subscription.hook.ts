@@ -1,27 +1,41 @@
-import { Category, Department, Subscription, Vendor } from '@main/entity';
-import { subscriptionState } from '@main/states/subscription.state';
+import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import cloneDeep from 'lodash.clonedeep';
-import { useApi } from '@api';
 import { toast } from 'react-toastify';
+import { useApi } from '@api';
+import { subscriptionState } from '@main/states/subscription.state';
+import { Category, Department, Subscription, Vendor } from '@main/entity';
 import { SubscriptionParams } from '@api/types';
 
+interface SubscribeCallback {
+  onFollowSuccess?: () => void;
+  onFollowError?: (error: unknown) => void;
+  onUnfollowSuccess?: () => void;
+  onUnfollowError?: (error: unknown) => void;
+}
 interface SubscriptionHookValues {
   subscription: Subscription | null;
+  isFollowLoading: boolean;
+  isUnfollowLoading: boolean;
   subscribe: (type: keyof Subscription, channel: Department | Category | Vendor) => void;
   batchSubscribe: (subs: Subscription) => void;
   unsubscribe: (type: keyof Subscription, channel: Department | Category | Vendor) => void;
   batchUnsubscribe: (subs: Subscription) => void;
   isFollowing: (type: keyof Subscription, channel: Department | Category | Vendor) => boolean;
 }
-export function useSubscription(): SubscriptionHookValues {
+export function useSubscription(callback?: SubscribeCallback): SubscriptionHookValues {
   const ApiClient = useApi();
   const [subscription, setSubscription] = useRecoilState(subscriptionState);
+  const [isFollowLoading, setFollowLoading] = useState<boolean>(false);
+  const [isUnfollowLoading, setUnfollowLoading] = useState<boolean>(false);
 
   function unsubscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
     // Call API to unsubscribe follow data
+    setUnfollowLoading(true);
     ApiClient.deleteSubscriptions({ [type]: [channel.id] })
       .then(() => {
+        if (callback && callback.onUnfollowSuccess) callback?.onUnfollowSuccess();
+        setUnfollowLoading(false);
         const newSubscription: Subscription = cloneDeep(subscription);
         switch (type) {
           case 'departments':
@@ -44,8 +58,9 @@ export function useSubscription(): SubscriptionHookValues {
         }
         setSubscription(newSubscription);
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         toast.error(`Can not unfollow ${channel.name}. Please check your network and try again.`);
+        if (callback && callback.onUnfollowError) callback?.onUnfollowError(error);
       });
   }
 
@@ -78,9 +93,12 @@ export function useSubscription(): SubscriptionHookValues {
   }
 
   function subscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
+    setFollowLoading(true);
     // Call API to update follow data
     ApiClient.updateSubscriptions({ [type]: [channel.id] })
       .then(() => {
+        if (callback && callback.onFollowSuccess) callback?.onFollowSuccess();
+        setFollowLoading(false);
         const newSubscription: Subscription = cloneDeep(subscription);
         switch (type) {
           case 'departments':
@@ -109,8 +127,9 @@ export function useSubscription(): SubscriptionHookValues {
         }
         setSubscription(newSubscription);
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         toast.error(`Can not follow ${channel.name}. Please check your network and try again.`);
+        if (callback && callback.onFollowError) callback?.onFollowError(error);
       });
   }
 
@@ -183,5 +202,7 @@ export function useSubscription(): SubscriptionHookValues {
     unsubscribe,
     batchUnsubscribe,
     isFollowing,
+    isFollowLoading,
+    isUnfollowLoading,
   };
 }

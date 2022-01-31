@@ -1,10 +1,12 @@
-import { useApi } from '@api';
-import { Pagination } from '@api/types';
-import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
-import { Department } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+
+import { useApi } from '@api';
+import { Pagination, DepartmentFilter } from '@api/types';
+import { useErrorHandler } from '@error/hooks';
+
+import { isBadRequest, isApiError } from '@error/utils';
+import { Department } from '@main/entity';
 
 const DEPT_PAGINATION: Pagination = {
   limit: 100,
@@ -21,18 +23,22 @@ interface DepartmentHookValues {
   isLoading: boolean;
   findDepartmentById: (id: number) => Department | null;
   isRootDepartment: (id: number) => boolean;
+  onClear: () => void;
 }
-export function useDepartment(pagination: Pagination): DepartmentHookValues {
+
+export function useDepartment(filters: DepartmentFilter): DepartmentHookValues {
   const [departments, setDepartments] = useState<DepartmentSection[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
+  const onClear = () => setDepartments([]);
+
   const getDepartments = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await ApiClient.getDepartments(pagination);
+      const res = await ApiClient.getDepartments(filters);
       // Get children of department
       if (res.length) {
         const childrenData = await Promise.all(
@@ -42,11 +48,20 @@ export function useDepartment(pagination: Pagination): DepartmentHookValues {
           ...dept,
           children: childrenData[idx],
         }));
-        setDepartments((prevTrans) => [...prevTrans, ...sectionData]);
+        if (filters?.offset) {
+          setDepartments((prevTrans) => [...prevTrans, ...sectionData]);
+        } else {
+          setDepartments(sectionData);
+        }
+      }
+      if (filters.offset === 0 && res.length === 0) {
+        setDepartments([]);
       }
       setHasMore(!!res.length);
-    } catch (error) {
-      if (isBadRequest(error)) {
+    } catch (error: unknown) {
+      if (isApiError(error)) {
+        toast.error(error?.details?.message);
+      } else if (isBadRequest(error)) {
         toast.error('Can not get departments');
       } else {
         await errorHandler(error);
@@ -54,7 +69,7 @@ export function useDepartment(pagination: Pagination): DepartmentHookValues {
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, errorHandler, pagination]);
+  }, [ApiClient, errorHandler, filters]);
 
   const findDepartmentById = useCallback(
     (id: number): Department | null => {
@@ -84,5 +99,5 @@ export function useDepartment(pagination: Pagination): DepartmentHookValues {
     getDepartments().then();
   }, [getDepartments]);
 
-  return { departments, hasMore, isLoading, findDepartmentById, isRootDepartment };
+  return { departments, hasMore, isLoading, findDepartmentById, isRootDepartment, onClear };
 }

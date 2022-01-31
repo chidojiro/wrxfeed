@@ -1,5 +1,6 @@
 import React, { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 import { ReactComponent as GoogleLogo } from '@assets/icons/google-logo.svg';
+import { classNames } from '@common/utils';
 
 export enum AuthProvider {
   GOOGLE = 'GOOGLE',
@@ -24,6 +25,7 @@ function getAuthProviderIcon(provider: AuthProvider) {
 const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
   children,
   provider = AuthProvider.GOOGLE,
+  className = '',
   ...rest
 }) => {
   const socialIcon = getAuthProviderIcon(provider);
@@ -31,7 +33,10 @@ const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
   return (
     <button
       type="button"
-      className="flex justify-center items-center space-x-3 px-6 sm:w-[23rem] h-16 bg-Gray-3 text-xl text-white rounded-sm disabled:opacity-50"
+      className={classNames(
+        'flex justify-center items-center space-x-3 px-20 h-16 bg-primary text-xl text-white rounded-sm disabled:opacity-50',
+        className,
+      )}
       {...rest}
     >
       {socialIcon}
