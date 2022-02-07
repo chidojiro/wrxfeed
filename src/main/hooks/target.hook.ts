@@ -48,7 +48,8 @@ export function useTarget(
     try {
       setGetTargets(true);
       const res = await ApiClient.getTargets(filter);
-      const merged = targets.concat(res);
+      // const merged = targets.concat(res);
+      const merged = [...res, ...targets];
       const targetMap = new Map();
       merged.forEach((target) => {
         targetMap.set(target?.id, target);

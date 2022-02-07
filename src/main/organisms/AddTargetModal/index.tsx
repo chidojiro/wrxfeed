@@ -23,7 +23,7 @@ export type AddTargetModalProps = {
   open: boolean;
   onClose: () => void;
   onCancel: () => void;
-  onCreate: (amountInput: number, tags: SearchResult[]) => void;
+  onCreate: (amountInput: number | null, tags: SearchResult[]) => void;
   onSave: (targetId: number, amountInput: number, tags: SearchResult[]) => void;
   onDelete: (targetId: number, amountInput: number, tags: SearchResult[]) => void;
   itemEditing: Target | null;
@@ -59,7 +59,8 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         onClear();
         setKeyword('');
         setAmount('');
-      }, 800);
+        setDefaultTags([]);
+      }, 400);
     }
     return () => {
       if (timeout) clearTimeout(timeout);
@@ -108,10 +109,10 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     }
     const amountNumber = replaceAll(amount, ',', '');
     const amountInt = parseInt(amountNumber, 10);
-    if (!amountInt || amountInt < 1) {
-      toast.warning('Invalid amount!');
-      return;
-    }
+    // if (!amountInt || amountInt < 1) {
+    //   toast.warning('Invalid amount!');
+    //   return;
+    // }
     if (isEdit) {
       onSave(itemEditing?.id, amountInt, tags);
       return;

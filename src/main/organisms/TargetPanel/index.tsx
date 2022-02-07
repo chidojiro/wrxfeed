@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+
+import { useTarget } from '@main/hooks';
 
 import { TargetFilter, TargetProp } from '@api/types';
-import { BasicsDownSmall } from '@assets';
-import Loading from '@common/atoms/Loading';
+import { SearchResult } from '@main/types';
 import { Target } from '@main/entity';
-import { useTarget } from '@main/hooks';
-import { TargetRow } from '@main/molecules';
 import { classNames } from '@common/utils';
 
-import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
+import Loading from '@common/atoms/Loading';
+import { TargetRow } from '@main/molecules';
 import AddTargetModal from '@main/organisms/AddTargetModal';
-import { SearchResult } from '@main/types';
-import { toast } from 'react-toastify';
+import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
+import { BasicsDownSmall } from '@assets';
 
 export interface TargetPanelProps {
   title?: string;
@@ -103,7 +104,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     setShowAddTarget(true);
   };
 
-  const onCreateTarget = (amountInput: number, tags: SearchResult[]) => {
+  const onCreateTarget = (amountInput: number | null, tags: SearchResult[]) => {
     const props: TargetProp[] = tags.map((tag: SearchResult) => {
       return {
         id: tag?.directoryId,
