@@ -187,7 +187,7 @@ export interface TargetProp {
 export interface PostTargetParams {
   month: number;
   year: number;
-  amount: number;
+  amount: number | null;
   props: TargetProp[];
 }
 
