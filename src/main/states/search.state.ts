@@ -21,9 +21,19 @@ export const searchState = atom<GlobalSearchType>({
     get: async () => {
       try {
         const apiClient = await getApiClient();
-        const departments = await apiClient.getDepartments(INIT_PAGINATION);
+        let departments = await apiClient.getDepartments(INIT_PAGINATION);
         const categories = await apiClient.getCategories(INIT_PAGINATION);
         const vendors = await apiClient.getVendors(INIT_PAGINATION);
+
+        if (departments.length > 0) {
+          const childrenData = await Promise.all(
+            departments.map((dept) =>
+              apiClient.getDepartments({ parent: dept.id, ...INIT_PAGINATION }),
+            ),
+          );
+          const children: Department[] = childrenData.reduce((pre, cur) => [...pre, ...cur]);
+          departments = [...departments, ...children];
+        }
 
         return {
           departments,

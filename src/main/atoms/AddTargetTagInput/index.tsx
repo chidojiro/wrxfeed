@@ -22,6 +22,7 @@ interface AddTargetTagInputProps {
   maxHeight?: number;
   defaultItems?: SearchResult[];
   autoFocus?: boolean;
+  onItemsChange?: (items: SearchResult[]) => void;
 }
 
 export interface AddTargetTagInputHandler {
@@ -33,7 +34,18 @@ export interface AddTargetTagInputHandler {
 const AddTargetTagInput: ForwardRefRenderFunction<
   AddTargetTagInputHandler,
   AddTargetTagInputProps
-> = ({ placeholder, loading, onTextChange, maxTag = 10, defaultItems, autoFocus = false }, ref) => {
+> = (
+  {
+    placeholder,
+    loading,
+    onTextChange,
+    maxTag = 10,
+    defaultItems,
+    autoFocus = false,
+    onItemsChange,
+  },
+  ref,
+) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [items, setItems] = useState<SearchResult[]>(defaultItems || []);
@@ -45,6 +57,10 @@ const AddTargetTagInput: ForwardRefRenderFunction<
       setTimeout(() => searchInputRef.current?.focus(), 200);
     }
   }, [autoFocus, searchInputRef]);
+
+  useEffect(() => {
+    if (typeof onItemsChange === 'function') onItemsChange(items);
+  }, [items, onItemsChange]);
 
   function isInList(property: SearchResult) {
     return items.includes(property);
