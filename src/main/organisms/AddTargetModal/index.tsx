@@ -61,10 +61,6 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         setAmount('');
         setDefaultTags([]);
       }, 400);
-    } else {
-      setKeyword('');
-      setAmount('');
-      setDefaultTags([]);
     }
     return () => {
       if (timeout) clearTimeout(timeout);
