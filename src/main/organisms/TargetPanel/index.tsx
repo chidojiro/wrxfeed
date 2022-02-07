@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+
+import { useTarget } from '@main/hooks';
 
 import { TargetFilter, TargetProp } from '@api/types';
-import { BasicsDownSmall } from '@assets';
-import Loading from '@common/atoms/Loading';
+import { SearchResult } from '@main/types';
 import { Target } from '@main/entity';
-import { useTarget } from '@main/hooks';
-import { TargetRow } from '@main/molecules';
 import { classNames } from '@common/utils';
 
-import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
+import Loading from '@common/atoms/Loading';
+import { TargetRow } from '@main/molecules';
 import AddTargetModal from '@main/organisms/AddTargetModal';
-import { SearchResult } from '@main/types';
-import { toast } from 'react-toastify';
+import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
+import { BasicsDownSmall } from '@assets';
 
 export interface TargetPanelProps {
   title?: string;
 }
 
-const GET_TARGETS_LIMIT = 30;
+const GET_TARGETS_LIMIT = 100;
 
 const initFilter = {
   offset: 0,
@@ -33,9 +34,13 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const [showAddTarget, setShowAddTarget] = useState<boolean>(false);
   const [itemEditing, setItemEditing] = useState<Target | null>(null);
 
-  const onPostTargetSuccess = () => {
-    toast.success('Successfully added target!');
+  const hideAddTargetModal = () => {
+    setItemEditing(null);
     setShowAddTarget(false);
+  };
+  const onPostTargetSuccess = () => {
+    toast.success('New target has been added');
+    hideAddTargetModal();
     setFilter({
       ...initFilter,
       timestamp: Date.now(),
@@ -43,8 +48,8 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   };
   const onPostTargetError = () => undefined;
   const onPutTargetSuccess = () => {
-    toast.success('Successfully updated target!');
-    setShowAddTarget(false);
+    toast.success('Target has been saved');
+    hideAddTargetModal();
     setFilter({
       ...initFilter,
       timestamp: Date.now(),
@@ -53,7 +58,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const onPutError = () => {};
   const onDeleteTargetSuccess = () => {
     toast.success('Successfully deleted target!');
-    setShowAddTarget(false);
+    hideAddTargetModal();
     setFilter({
       ...initFilter,
       timestamp: Date.now(),
@@ -85,7 +90,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
   const onClickNewTarget = () => setShowAddTarget(true);
 
   const renderExpandedIcon = () => {
-    if (targets.length < 5) return null;
+    if (targets.length <= 5) return null;
     const expandStyle = isExpanded ? { transform: 'rotate(180deg)' } : {};
     return (
       <div className="flex flex-row h-4 items-center">
@@ -103,7 +108,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     setShowAddTarget(true);
   };
 
-  const onCreateTarget = (amountInput: number, tags: SearchResult[]) => {
+  const onCreateTarget = (amountInput: number | null, tags: SearchResult[]) => {
     const props: TargetProp[] = tags.map((tag: SearchResult) => {
       return {
         id: tag?.directoryId,
@@ -205,8 +210,8 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
       </div>
       <AddTargetModal
         open={showAddTarget}
-        onClose={() => setShowAddTarget(false)}
-        onCancel={() => setShowAddTarget(false)}
+        onClose={() => hideAddTargetModal()}
+        onCancel={() => hideAddTargetModal()}
         onCreate={onCreateTarget}
         onSave={onSaveTarget}
         onDelete={onDeleteTarget}

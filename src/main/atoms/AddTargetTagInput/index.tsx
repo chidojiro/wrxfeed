@@ -22,6 +22,7 @@ interface AddTargetTagInputProps {
   maxHeight?: number;
   defaultItems?: SearchResult[];
   autoFocus?: boolean;
+  onItemsChange?: (items: SearchResult[]) => void;
 }
 
 export interface AddTargetTagInputHandler {
@@ -33,7 +34,18 @@ export interface AddTargetTagInputHandler {
 const AddTargetTagInput: ForwardRefRenderFunction<
   AddTargetTagInputHandler,
   AddTargetTagInputProps
-> = ({ placeholder, loading, onTextChange, maxTag = 10, defaultItems, autoFocus = false }, ref) => {
+> = (
+  {
+    placeholder,
+    loading,
+    onTextChange,
+    maxTag = 10,
+    defaultItems,
+    autoFocus = false,
+    onItemsChange,
+  },
+  ref,
+) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const [items, setItems] = useState<SearchResult[]>(defaultItems || []);
@@ -45,6 +57,10 @@ const AddTargetTagInput: ForwardRefRenderFunction<
       setTimeout(() => searchInputRef.current?.focus(), 200);
     }
   }, [autoFocus, searchInputRef]);
+
+  useEffect(() => {
+    if (typeof onItemsChange === 'function') onItemsChange(items);
+  }, [items, onItemsChange]);
 
   function isInList(property: SearchResult) {
     return items.includes(property);
@@ -86,7 +102,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
-    if (onTextChange) {
+    if (typeof onTextChange === 'function') {
       onTextChange(event.target.value);
     }
   };
@@ -110,7 +126,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
           <input
             ref={searchInputRef}
             type="text"
-            className="max-w-full min-w-[200px] py-1 rounded-none text-sm text-Gray-1 focus:outline-none bg-transparent"
+            className="max-w-full min-w-[280px] py-1 rounded-none text-sm text-Gray-1 focus:outline-none bg-transparent"
             value={value}
             placeholder={placeholder}
             onChange={handleChange}

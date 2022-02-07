@@ -23,7 +23,7 @@ export type AddTargetModalProps = {
   open: boolean;
   onClose: () => void;
   onCancel: () => void;
-  onCreate: (amountInput: number, tags: SearchResult[]) => void;
+  onCreate: (amountInput: number | null, tags: SearchResult[]) => void;
   onSave: (targetId: number, amountInput: number, tags: SearchResult[]) => void;
   onDelete: (targetId: number, amountInput: number, tags: SearchResult[]) => void;
   itemEditing: Target | null;
@@ -49,6 +49,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [amount, setAmount] = useState<string>('');
   const isEdit = itemEditing !== null;
   const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
+  const [enableCreate, setEnableCreate] = useState<boolean>(false);
 
   const { results, isLoading: isSearching, onClear } = useSearch(keyword);
 
@@ -59,7 +60,8 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         onClear();
         setKeyword('');
         setAmount('');
-      }, 800);
+        setDefaultTags([]);
+      }, 400);
     }
     return () => {
       if (timeout) clearTimeout(timeout);
@@ -103,15 +105,15 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const onClickCreateOrSave = () => {
     const tags = tagInputRef.current?.getItems() || [];
     if (tags.length === 0) {
-      toast.warning('Can not create new target without any property!');
+      toast.warning('Targets must have at least one property');
       return;
     }
     const amountNumber = replaceAll(amount, ',', '');
     const amountInt = parseInt(amountNumber, 10);
-    if (!amountInt || amountInt < 1) {
-      toast.warning('Invalid amount!');
-      return;
-    }
+    // if (!amountInt || amountInt < 1) {
+    //   toast.warning('Target amounts can only be numerical values');
+    //   return;
+    // }
     if (isEdit) {
       onSave(itemEditing?.id, amountInt, tags);
       return;
@@ -158,6 +160,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     return <CarbonTrashCan width={16} height={16} className="w-4 h-4" />;
   };
 
+  const createReadyState = enableCreate ? 'bg-primary' : 'bg-Gray-6';
   return (
     <Modal open={open} onClose={onCloseModal}>
       <div className="flex flex-col w-[523px] outline-none">
@@ -177,6 +180,13 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               maxTag={40}
               defaultItems={defaultTags}
               autoFocus
+              onItemsChange={(items: SearchResult[]) => {
+                if (items.length > 0) {
+                  setEnableCreate(true);
+                } else {
+                  setEnableCreate(false);
+                }
+              }}
             />
           </div>
           <div className="flex flex-col mt-2 w-full max-h-[300px] overflow-scroll hide-scrollbar">
@@ -222,7 +232,10 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
           <button
             type="button"
             onClick={onClickCreateOrSave}
-            className="flex flex-row items-center px-4 py-2 rounded-sm bg-Gray-6 hover:bg-primary"
+            className={classNames(
+              'flex flex-row items-center px-4 py-2 rounded-sm hover:bg-primary',
+              createReadyState,
+            )}
           >
             <p className="text-white text-xs font-semibold">{buttonTitleCreateOrSave}</p>
             {renderIconNextOrLoading()}

@@ -30,11 +30,11 @@ const FeedPage: React.VFC = () => {
       const res = await ApiClient.getFeedItemById(id);
       setFeedItem(res);
     } catch (error: unknown) {
-      toast.error('Can not get this feed 🤦!');
       if (isApiError(error)) {
         if (error.code === ApiErrorCode.Notfound) {
           history.push('/404');
         } else {
+          toast.error(error.details?.message);
           errorHandler(error);
         }
       }

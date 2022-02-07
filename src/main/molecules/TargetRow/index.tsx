@@ -57,7 +57,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
-          <p className="text-Gray-6 font-regular text-sm">{targetName}</p>
+          <p className="text-Gray-6 font-regular text-sm truncate">{targetName}</p>
           {renderEditButton()}
         </div>
         <div className="flex flex-row">

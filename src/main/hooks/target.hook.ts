@@ -11,6 +11,7 @@ import { useApi } from '@api';
 import { useErrorHandler } from '@error/hooks';
 import { targetState } from '@main/states/target.state';
 import { stackTargetsBySpend } from '@main/utils';
+import cloneDeep from 'lodash.clonedeep';
 
 interface TargetCallback {
   onSuccess: () => void;
@@ -48,12 +49,15 @@ export function useTarget(
     try {
       setGetTargets(true);
       const res = await ApiClient.getTargets(filter);
-      const merged = targets.concat(res);
-      const targetMap = new Map();
-      merged.forEach((target) => {
-        targetMap.set(target?.id, target);
+      const newTargets: Target[] = cloneDeep(targets);
+      res.forEach((tar: Target) => {
+        const isHaveIndex = newTargets.findIndex((item) => item?.id === tar.id);
+        if (isHaveIndex !== -1) {
+          newTargets[isHaveIndex] = tar;
+        } else {
+          newTargets.unshift(tar);
+        }
       });
-      const newTargets = [...targetMap.values()];
       setTargets(stackTargetsBySpend(newTargets));
       setHasMore(!!res.length);
       setGetTargets(false);
