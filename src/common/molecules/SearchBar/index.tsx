@@ -153,7 +153,7 @@ const SearchBar: React.VFC = () => {
                   <BasicsXSmall
                     width={20}
                     height={20}
-                    className="h-5 w-5 fill-current path-no-filled stroke-current path-no-stroke object-fill text-Gray-12"
+                    className="h-5 w-5 fill-current path-no-filled object-fill text-Gray-12"
                     aria-hidden="true"
                   />
                 </button>
