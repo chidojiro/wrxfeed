@@ -15,6 +15,7 @@ interface FeedListProps {
   onLoadMore?: () => void;
   onFilter?: (key: keyof FeedFilters, value?: Department | Category | Vendor) => void;
   updateCategory?: (category: Partial<Category>) => Promise<void>;
+  EndComponent?: React.FunctionComponent | undefined;
 }
 
 const FeedList: React.VFC<FeedListProps> = ({
@@ -26,6 +27,7 @@ const FeedList: React.VFC<FeedListProps> = ({
   onLoadMore,
   onFilter,
   updateCategory,
+  EndComponent,
 }) => {
   const renderEmptyList = () => (
     <div className="pb-2 sm:pb-5 text-center">
@@ -46,6 +48,12 @@ const FeedList: React.VFC<FeedListProps> = ({
       </svg>
       <h3 className="mt-2 text-sm text-Gray-3">No rollups now!</h3>
     </div>
+  );
+
+  const renderEndComponent = EndComponent ? (
+    <EndComponent />
+  ) : (
+    <ListEndComponent message={endMessage} />
   );
 
   return (
@@ -73,7 +81,7 @@ const FeedList: React.VFC<FeedListProps> = ({
         ))}
       </ul>
       {!isLoading && !feeds.length && renderEmptyList()}
-      {!isLoading && feeds.length > 0 && !hasMore && <ListEndComponent message={endMessage} />}
+      {!isLoading && feeds.length > 0 && !hasMore && renderEndComponent}
     </InfiniteScroller>
   );
 };
