@@ -118,7 +118,7 @@ const SearchBar: React.VFC = () => {
 
   return (
     <>
-      <div className="flex items-center w-full px-6 lg:max-w-none lg:mx-4 xl:px-0">
+      <div className="flex items-center w-full px-6 lg:max-w-none lg:ml-5 lg:mr-0.5 xl:px-0">
         <>
           <div className="w-full relative" ref={useableViewRef}>
             <div className="sr-only">Search for teams, categories, or vendors</div>
