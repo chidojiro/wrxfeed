@@ -86,7 +86,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
       {({ open }) => (
         <>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative flex justify-between h-navbar xl:grid xl:grid-cols-12 lg:gap-8">
+            <div className="relative flex justify-between h-navbar xl:grid xl:grid-cols-12">
               <div className="flex justify-center lg:static xl:col-span-2">
                 <div className="flex-shrink-0 flex items-center">
                   <h1 className={classNames('text-lg font-bold text-white', companyStyle)}>
@@ -97,7 +97,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
               <div className="flex items-center min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-7">
                 {searchBar && <SearchBar />}
               </div>
-              <div className="hidden sm:flex items-center lg:justify-end xl:col-span-3 mr-0 md:mr-16 lg:mr-2">
+              <div className="hidden sm:flex items-center lg:justify-end xl:col-span-3 mr-0">
                 {showNoti && <NotifyPopover showNumberNotify useDropDown={false} />}
                 {showAva && showNoti && (
                   <div className="bg-purple-9 w-[1px] h-[34px] ml-2.5 mr-4" />

@@ -47,6 +47,7 @@ const SearchBar: React.VFC = () => {
     searchInputRef.current.value = '';
     searchInputRef.current.focus();
     onClear();
+    setKeyword('');
   };
 
   const onPressResultRow = (result: SearchResult) => {
@@ -118,7 +119,7 @@ const SearchBar: React.VFC = () => {
 
   return (
     <>
-      <div className="flex items-center w-full px-6 lg:max-w-none lg:mx-4 xl:px-0">
+      <div className="flex items-center w-full px-6 lg:max-w-none lg:ml-5 lg:mr-0.5 xl:px-0">
         <>
           <div className="w-full relative" ref={useableViewRef}>
             <div className="sr-only">Search for teams, categories, or vendors</div>
@@ -153,7 +154,7 @@ const SearchBar: React.VFC = () => {
                   <BasicsXSmall
                     width={20}
                     height={20}
-                    className="h-5 w-5 fill-current path-no-filled stroke-current path-no-stroke object-fill text-Gray-12"
+                    className="h-5 w-5 fill-current path-no-filled object-fill text-Gray-12"
                     aria-hidden="true"
                   />
                 </button>

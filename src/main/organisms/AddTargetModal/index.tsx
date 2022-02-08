@@ -162,7 +162,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
 
   const createReadyState = enableCreate ? 'bg-primary' : 'bg-Gray-6';
   return (
-    <Modal open={open} onClose={onCloseModal}>
+    <Modal open={open} onClose={onCloseModal} center={false} contentClass="sm:my-24">
       <div className="flex flex-col w-[523px] outline-none">
         <div className="flex flex-col px-12 pt-8 pb-5">
           <h3 className="text-base text-primary font-semibold">Monthly Target</h3>
