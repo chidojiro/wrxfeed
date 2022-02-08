@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
@@ -103,12 +104,36 @@ const ForYouPage: React.VFC = () => {
       pathname: history.location.pathname,
       search: queryString,
     });
-    // cleanData();
     setFilterTitle(value?.name ?? '');
   };
 
   const clearFilter = (): void => {
     history.goBack();
+  };
+
+  const onClickFollowingMoreTeams = () => {
+    history.push({
+      pathname: '/departments',
+    });
+  };
+
+  const renderForYouEndList = () => {
+    return (
+      <p className="text-base text-center text-Neutral-4 mt-3 sm:mt-8">
+        Add to your feed by
+        <button
+          type="button"
+          onClick={onClickFollowingMoreTeams}
+          className="ml-1 text-Gray-3 underline"
+        >
+          <u>following more teams</u>
+        </button>
+        <span role="img" aria-label="rocket">
+          {' '}
+          🚀
+        </span>
+      </p>
+    );
   };
 
   return (
@@ -137,6 +162,7 @@ const ForYouPage: React.VFC = () => {
         hasMore={hasMore}
         onFilter={handleFilter}
         endMessage="Add to your feed by following more teams."
+        EndComponent={renderForYouEndList}
       />
       <MainRightSide>
         <TargetPanel />
