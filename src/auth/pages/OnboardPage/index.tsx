@@ -7,14 +7,12 @@ import { toast } from 'react-toastify';
 import { useApi } from '@api';
 import { useIdentity } from '@identity/hooks';
 import { useDebounce, useNavUtils } from '@common/hooks';
-import { DepartmentSection, useDepartment } from '@main/hooks/department.hook';
 import { useSubscription } from '@main/hooks/subscription.hook';
 import { useErrorHandler } from '@error/hooks';
 import { isApiError } from '@error/utils';
 
 import routes from '@src/routes';
 import { getMultiRandomInt } from '@main/utils';
-import { DepartmentFilter } from '@api/types';
 import { TEAM_SUGGEST_RANDOM_NUMBER } from '@src/config';
 
 import BlankLayout from '@common/templates/BlankLayout';
@@ -22,13 +20,16 @@ import NavBarStatic from '@common/organisms/NavBarStatic';
 import Loading from '@common/atoms/Loading';
 import DepartmentCell from '@auth/molecules/DepartmentCell';
 import { ReactComponent as SharpSpaceDashboard } from '@assets/icons/solid/sharp-space-dashboard.svg';
+import { useSearch } from '@main/hooks/search.hook';
+import { Department } from '@main/entity';
+import { SearchResult } from '@main/types';
 
-const LIMIT_GET_DEPT_INIT = 100;
-const LIMIT_GET_DEPT_SEARCH = 10;
-const INIT_PAGE_DEPT = Object.freeze({
-  offset: 0,
-  limit: LIMIT_GET_DEPT_INIT,
-});
+// const LIMIT_GET_DEPT_INIT = 100;
+// const LIMIT_GET_DEPT_SEARCH = 10;
+// const INIT_PAGE_DEPT = Object.freeze({
+//   offset: 0,
+//   limit: LIMIT_GET_DEPT_INIT,
+// });
 const DEBOUNCE_WAIT = 500;
 
 const OnboardPage: React.VFC = () => {
@@ -37,19 +38,29 @@ const OnboardPage: React.VFC = () => {
   const { getDepartmentById, updateProfile } = useApi();
   const errorHandler = useErrorHandler();
 
-  const [filter, setFilter] = useState<DepartmentFilter>({
-    ...INIT_PAGE_DEPT,
-    term: '',
-  });
-  const { departments, onClear, isLoading } = useDepartment(filter);
+  // const [filter, setFilter] = useState<DepartmentFilter>({
+  //   ...INIT_PAGE_DEPT,
+  //   term: '',
+  // });
+  // const { departments, onClear, isLoading } = useDepartment(filter);
   const { isFollowing } = useSubscription();
 
-  const [searchResults, setSearchResults] = useState<DepartmentSection[]>([]);
-  const [yourTeams, setYourTeams] = useState<DepartmentSection[]>([]);
-  const [suggestedTeams, setSuggestedTeams] = useState<DepartmentSection[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [yourTeams, setYourTeams] = useState<Department[]>([]);
+  const [suggestedTeams, setSuggestedTeams] = useState<Department[]>([]);
   const [keyword, setKeyword] = useState('');
   const [isDoneOnboard, setDoneOnboard] = useState(false);
   const [isHandlingAction, setHandlingAction] = useState(false);
+
+  const {
+    results: departments,
+    isLoading,
+    onClear,
+  } = useSearch({
+    keyword,
+    searchCate: false,
+    searchVend: false,
+  });
 
   const getYourTeam = async (depId: number) => {
     const userDepartment = await getDepartmentById(depId);
@@ -60,22 +71,23 @@ const OnboardPage: React.VFC = () => {
     setSearchResults(departments);
   }, [departments]);
 
-  useEffect(() => {
-    if (identity?.token && identity?.lastLoginAt) {
-      redirect(routes.Company.path as string);
-    }
-  }, [redirect, identity]);
+  // useEffect(() => {
+  //   if (identity?.token && identity?.lastLoginAt) {
+  //     redirect(routes.Company.path as string);
+  //   }
+  // }, [redirect, identity]);
 
   useEffect(() => {
     if (suggestedTeams.length > 0 || keyword?.length > 0) return;
-    const teamNotFollowYet: DepartmentSection[] = [];
-    const followed: DepartmentSection[] = [];
+    const teamNotFollowYet: Department[] = [];
+    const followed: Department[] = [];
 
     departments.forEach((item) => {
-      if (isFollowing('departments', item)) {
-        followed.push(item);
+      const tempDepartment = { id: item?.directoryId, name: item?.title };
+      if (isFollowing('departments', tempDepartment)) {
+        followed.push(tempDepartment);
       } else if (item?.id !== identity?.depId) {
-        teamNotFollowYet.push(item);
+        teamNotFollowYet.push(tempDepartment);
       }
     });
 
@@ -83,7 +95,7 @@ const OnboardPage: React.VFC = () => {
 
     if (teamNotFollowYet.length > 4) {
       const random = getMultiRandomInt(TEAM_SUGGEST_RANDOM_NUMBER, 0, teamNotFollowYet.length - 1);
-      const randomSuggest: DepartmentSection[] = [];
+      const randomSuggest: Department[] = [];
       random.forEach((item) => randomSuggest.push(teamNotFollowYet[item]));
       setSuggestedTeams(randomSuggest);
     } else {
@@ -96,11 +108,6 @@ const OnboardPage: React.VFC = () => {
       getYourTeam(identity?.depId);
     }
   }, [identity?.depId]);
-
-  // const searchDepartmentLocal = (key: string, db: DepartmentSection[]): DepartmentSection[] => {
-  //   const results = db.filter((item) => item?.name?.toLowerCase()?.includes(key.toLowerCase()));
-  //   return results;
-  // };
 
   const onClickIamDone = async () => {
     try {
@@ -130,17 +137,17 @@ const OnboardPage: React.VFC = () => {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(event.target.value.toString());
       onClear();
-      if (event.target.value.length > 0) {
-        setFilter({
-          term: event.target.value,
-          ...{
-            ...INIT_PAGE_DEPT,
-            limit: LIMIT_GET_DEPT_SEARCH,
-          },
-        });
-      }
+      // if (event.target.value.length > 0) {
+      //   setFilter({
+      //     term: event.target.value,
+      //     ...{
+      //       ...INIT_PAGE_DEPT,
+      //       limit: LIMIT_GET_DEPT_SEARCH,
+      //     },
+      //   });
+      // }
     },
-    [setFilter],
+    [setKeyword],
   );
 
   // const onSearchTeam = useCallback(
@@ -157,7 +164,7 @@ const OnboardPage: React.VFC = () => {
 
   const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT, [onSearchTeam]);
 
-  const onFollowedTeam = (dept: DepartmentSection) => {
+  const onFollowedTeam = (dept: Department) => {
     const newSuggested = cloneDeep(suggestedTeams);
     setSuggestedTeams(newSuggested.filter((item) => item?.id !== dept?.id));
 
@@ -165,7 +172,7 @@ const OnboardPage: React.VFC = () => {
     setHandlingAction(false);
   };
 
-  const onUnfollowedTeam = (dept: DepartmentSection) => {
+  const onUnfollowedTeam = (dept: Department) => {
     const newYourTeams = cloneDeep(yourTeams);
     setYourTeams(newYourTeams.filter((item) => item?.id !== dept?.id));
 
@@ -182,7 +189,7 @@ const OnboardPage: React.VFC = () => {
         {searchResults.map((item) => (
           <DepartmentCell
             key={item?.id}
-            dept={item}
+            dept={{ id: item?.directoryId, name: item?.title }}
             onFollowedTeam={onFollowedTeam}
             onUnfollowedTeam={onUnfollowedTeam}
             onFollow={() => setHandlingAction(true)}

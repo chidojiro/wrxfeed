@@ -226,3 +226,10 @@ export interface FeedFilters {
   category?: number;
   rootDepartment?: number;
 }
+
+export interface SearchFilters {
+  keyword: string;
+  searchDept?: boolean;
+  searchVend?: boolean;
+  searchCate?: boolean;
+}

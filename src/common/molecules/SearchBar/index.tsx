@@ -29,7 +29,7 @@ const SearchBar: React.VFC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const isSearching = keyword?.length > 0;
 
-  const { results, onClear } = useSearch(keyword);
+  const { results, onClear } = useSearch({ keyword });
 
   const onCloseDropDownResultsView = () => onClear();
   useOnClickOutside(useableViewRef, onCloseDropDownResultsView);

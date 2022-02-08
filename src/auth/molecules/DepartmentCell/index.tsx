@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { classNames } from '@common/utils';
-import { DepartmentSection } from '@main/hooks/department.hook';
 
 import { useSubscription } from '@main/hooks/subscription.hook';
 
@@ -10,14 +9,15 @@ import { ReactComponent as BasicsAddSmall } from '@assets/icons/solid/basics-add
 import Loading from '@common/atoms/Loading';
 import { toast } from 'react-toastify';
 import { useIdentity } from '@identity/hooks';
+import { Department } from '@main/entity';
 
 interface DepartmentCellProps {
   className?: string;
-  dept: DepartmentSection;
-  onFollowedTeam?: (team: DepartmentSection) => void;
-  onUnfollowedTeam?: (team: DepartmentSection) => void;
-  onFollow?: (team: DepartmentSection) => void;
-  onUnfollow?: (team: DepartmentSection) => void;
+  dept: Department;
+  onFollowedTeam?: (team: Department) => void;
+  onUnfollowedTeam?: (team: Department) => void;
+  onFollow?: (team: Department) => void;
+  onUnfollow?: (team: Department) => void;
   enableAction: boolean;
 }
 
