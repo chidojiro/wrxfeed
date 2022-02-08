@@ -47,6 +47,7 @@ const SearchBar: React.VFC = () => {
     searchInputRef.current.value = '';
     searchInputRef.current.focus();
     onClear();
+    setKeyword('');
   };
 
   const onPressResultRow = (result: SearchResult) => {
