@@ -17,6 +17,7 @@ import FeedList from '@main/organisms/FeedList';
 import TargetPanel from '@main/organisms/TargetPanel';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { classNames } from '@common/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -113,9 +114,9 @@ const ForYouPage: React.VFC = () => {
     });
   };
 
-  const renderForYouEndList = () => {
+  const renderForYouEndList = (className = 'mt-3 sm:mt-8') => {
     return (
-      <p className="text-base text-center text-Neutral-4 mt-3 sm:mt-8">
+      <p className={classNames('text-base text-center text-Neutral-4', className)}>
         Add to your feed by
         <button
           type="button"
@@ -158,7 +159,8 @@ const ForYouPage: React.VFC = () => {
         hasMore={hasMore}
         onFilter={handleFilter}
         endMessage="Add to your feed by following more teams."
-        EndComponent={renderForYouEndList}
+        EndComponent={() => renderForYouEndList()}
+        EmptyStateComponent={() => renderForYouEndList()}
       />
       <MainRightSide>
         <TargetPanel />
