@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ContentState,
   convertFromRaw,
@@ -375,4 +376,8 @@ export const stackTargetsBySpend = (data: Target[]): Target[] => {
     (a: Target, b: Target) => (b?.id !== null ? 1 : 0) - (a?.id !== null ? 1 : 0),
   );
   return targetStacked;
+};
+
+export const getUniqueListBy = (arr: any[], objectKey: string): any[] => {
+  return [...new Map(arr.map((item: any) => [item[objectKey], item])).values()];
 };

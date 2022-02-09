@@ -1,81 +1,86 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import cloneDeep from 'lodash.clonedeep';
 import { toast } from 'react-toastify';
 
 import { useApi } from '@api';
 import { useIdentity } from '@identity/hooks';
-import { useDebounce, useNavUtils } from '@common/hooks';
-import { DepartmentSection, useDepartment } from '@main/hooks/department.hook';
+import { useDebounce, useNavUtils, useQuery } from '@common/hooks';
 import { useSubscription } from '@main/hooks/subscription.hook';
 import { useErrorHandler } from '@error/hooks';
 import { isApiError } from '@error/utils';
+import { useSearch } from '@main/hooks/search.hook';
 
 import routes from '@src/routes';
-import { getMultiRandomInt } from '@main/utils';
-import { DepartmentFilter } from '@api/types';
+import { getMultiRandomInt, getUniqueListBy } from '@main/utils';
 import { TEAM_SUGGEST_RANDOM_NUMBER } from '@src/config';
+import { Department } from '@main/entity';
+import { SearchResult } from '@main/types';
 
 import BlankLayout from '@common/templates/BlankLayout';
 import NavBarStatic from '@common/organisms/NavBarStatic';
 import Loading from '@common/atoms/Loading';
 import DepartmentCell from '@auth/molecules/DepartmentCell';
-import { ReactComponent as SharpSpaceDashboard } from '@assets/icons/solid/sharp-space-dashboard.svg';
 
-const LIMIT_GET_DEPT_INIT = 100;
-const LIMIT_GET_DEPT_SEARCH = 10;
-const INIT_PAGE_DEPT = Object.freeze({
-  offset: 0,
-  limit: LIMIT_GET_DEPT_INIT,
-});
+import { ReactComponent as SharpSpaceDashboard } from '@assets/icons/solid/sharp-space-dashboard.svg';
+import { ReactComponent as QuestionCircle } from '@assets/icons/solid/question-circle.svg';
+
 const DEBOUNCE_WAIT = 500;
 
 const OnboardPage: React.VFC = () => {
   const identity = useIdentity();
   const { redirect } = useNavUtils();
-  const { getDepartmentById, updateProfile } = useApi();
+  const { updateProfile } = useApi();
   const errorHandler = useErrorHandler();
+  const query = useQuery();
 
-  const [filter, setFilter] = useState<DepartmentFilter>({
-    ...INIT_PAGE_DEPT,
-    term: '',
-  });
-  const { departments, onClear, isLoading } = useDepartment(filter);
+  const autoDirectString: string = query.get('autoDirect') ?? '1';
+  const authDirect: boolean = parseInt(autoDirectString, 10) === 1;
+
   const { isFollowing } = useSubscription();
 
-  const [searchResults, setSearchResults] = useState<DepartmentSection[]>([]);
-  const [yourTeams, setYourTeams] = useState<DepartmentSection[]>([]);
-  const [suggestedTeams, setSuggestedTeams] = useState<DepartmentSection[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [yourTeams, setYourTeams] = useState<Department[]>([]);
+  const [suggestedTeams, setSuggestedTeams] = useState<Department[]>([]);
   const [keyword, setKeyword] = useState('');
   const [isDoneOnboard, setDoneOnboard] = useState(false);
   const [isHandlingAction, setHandlingAction] = useState(false);
+  const [ignoreEmpty, setIgnoreEmpty] = useState(false);
 
-  const getYourTeam = async (depId: number) => {
-    const userDepartment = await getDepartmentById(depId);
-    setYourTeams((pre) => [...pre, { ...userDepartment, children: [] }]);
-  };
+  const {
+    results: departments,
+    isLoading,
+    onClear,
+  } = useSearch({
+    keyword,
+    searchCate: false,
+    searchVend: false,
+    ignoreEmptyKeyword: ignoreEmpty,
+  });
 
   useEffect(() => {
     setSearchResults(departments);
   }, [departments]);
 
   useEffect(() => {
-    if (identity?.token && identity?.lastLoginAt) {
+    if (identity?.token && identity?.lastLoginAt && authDirect) {
       redirect(routes.Company.path as string);
     }
   }, [redirect, identity]);
 
   useEffect(() => {
     if (suggestedTeams.length > 0 || keyword?.length > 0) return;
-    const teamNotFollowYet: DepartmentSection[] = [];
-    const followed: DepartmentSection[] = [];
+    const teamNotFollowYet: Department[] = [];
+    const followed: Department[] = [];
 
     departments.forEach((item) => {
-      if (isFollowing('departments', item)) {
-        followed.push(item);
+      const tempDepartment = { id: item?.directoryId, name: item?.title };
+      if (isFollowing('departments', tempDepartment)) {
+        if (yourTeams.includes(tempDepartment)) return;
+        followed.push(tempDepartment);
       } else if (item?.id !== identity?.depId) {
-        teamNotFollowYet.push(item);
+        teamNotFollowYet.push(tempDepartment);
       }
     });
 
@@ -83,24 +88,14 @@ const OnboardPage: React.VFC = () => {
 
     if (teamNotFollowYet.length > 4) {
       const random = getMultiRandomInt(TEAM_SUGGEST_RANDOM_NUMBER, 0, teamNotFollowYet.length - 1);
-      const randomSuggest: DepartmentSection[] = [];
+      const randomSuggest: Department[] = [];
       random.forEach((item) => randomSuggest.push(teamNotFollowYet[item]));
       setSuggestedTeams(randomSuggest);
     } else {
       setSuggestedTeams(teamNotFollowYet);
     }
+    setIgnoreEmpty(true);
   }, [departments]);
-
-  useEffect(() => {
-    if (identity?.depId) {
-      getYourTeam(identity?.depId);
-    }
-  }, [identity?.depId]);
-
-  // const searchDepartmentLocal = (key: string, db: DepartmentSection[]): DepartmentSection[] => {
-  //   const results = db.filter((item) => item?.name?.toLowerCase()?.includes(key.toLowerCase()));
-  //   return results;
-  // };
 
   const onClickIamDone = async () => {
     try {
@@ -130,61 +125,59 @@ const OnboardPage: React.VFC = () => {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(event.target.value.toString());
       onClear();
-      if (event.target.value.length > 0) {
-        setFilter({
-          term: event.target.value,
-          ...{
-            ...INIT_PAGE_DEPT,
-            limit: LIMIT_GET_DEPT_SEARCH,
-          },
-        });
-      }
     },
-    [setFilter],
+    [setKeyword],
   );
-
-  // const onSearchTeam = useCallback(
-  //   (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     setKeyword(event.target.value.toString());
-  //     onClear();
-  //     if (event.target.value.length > 0) {
-  //       const results = searchDepartmentLocal(event.target.value, deptLocal);
-  //       setSearchResults(results);
-  //     }
-  //   },
-  //   [deptLocal, setSearchResults],
-  // );
 
   const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT, [onSearchTeam]);
 
-  const onFollowedTeam = (dept: DepartmentSection) => {
-    const newSuggested = cloneDeep(suggestedTeams);
-    setSuggestedTeams(newSuggested.filter((item) => item?.id !== dept?.id));
-
-    setYourTeams((pre) => [...pre, dept]);
+  const onFollowedTeam = (depts: Department[]) => {
     setHandlingAction(false);
+    const newSuggested = cloneDeep(suggestedTeams);
+    setSuggestedTeams(
+      newSuggested.filter((item: Department) => {
+        return depts.findIndex((dept: Department) => dept?.id === item?.id) === -1;
+      }),
+    );
+
+    setYourTeams((pre) => getUniqueListBy([...pre, ...depts], 'id'));
   };
 
-  const onUnfollowedTeam = (dept: DepartmentSection) => {
-    const newYourTeams = cloneDeep(yourTeams);
-    setYourTeams(newYourTeams.filter((item) => item?.id !== dept?.id));
-
-    if (keyword.length === 0) {
-      setSuggestedTeams((pre) => [...pre, dept]);
-    }
+  const onUnfollowedTeam = (depts: Department[]) => {
     setHandlingAction(false);
+    const newYourTeams = cloneDeep(yourTeams);
+    setYourTeams(
+      newYourTeams.filter((item: Department) => {
+        return depts.findIndex((dept: Department) => dept?.id === item?.id) === -1;
+      }),
+    );
+    if (keyword.length === 0) {
+      setSuggestedTeams((pre) => getUniqueListBy([...pre, ...depts], 'id'));
+    }
   };
 
   const renderSearchResults = () => {
-    if (searchResults.length === 0 || keyword.length === 0) return null;
+    if (keyword.trim().length === 0) {
+      return null;
+    }
+    if (searchResults.length === 0) {
+      return (
+        <div className="flex mx-6 w-full flex-row items-center justify-center space-x-3 py-1 h-6 self-center">
+          <QuestionCircle width={15} height={15} />
+          <p className="text-sm text-Gray-3">No teams found.</p>
+        </div>
+      );
+    }
     return (
       <div className="flex flex-col border-Gray-11 border-t">
         {searchResults.map((item) => (
           <DepartmentCell
             key={item?.id}
-            dept={item}
+            dept={{ id: item?.directoryId, name: item?.title }}
             onFollowedTeam={onFollowedTeam}
+            onFollowTeamFail={() => setHandlingAction(false)}
             onUnfollowedTeam={onUnfollowedTeam}
+            onUnfollowTeamFail={() => setHandlingAction(false)}
             onFollow={() => setHandlingAction(true)}
             onUnfollow={() => setHandlingAction(true)}
             enableAction={!isHandlingAction}
@@ -206,7 +199,9 @@ const OnboardPage: React.VFC = () => {
             key={item?.id}
             dept={item}
             onFollowedTeam={onFollowedTeam}
+            onFollowTeamFail={() => setHandlingAction(false)}
             onUnfollowedTeam={onUnfollowedTeam}
+            onUnfollowTeamFail={() => setHandlingAction(false)}
             onFollow={() => setHandlingAction(true)}
             onUnfollow={() => setHandlingAction(true)}
             enableAction={!isHandlingAction}
@@ -218,6 +213,8 @@ const OnboardPage: React.VFC = () => {
 
   const renderSuggestedTeam = () => {
     if (suggestedTeams.length === 0 || keyword.length > 0) return null;
+    if (yourTeams.length >= 3) return null;
+
     return (
       <div className="flex flex-col">
         <div className="flex flex-col py-4 border-Gray-11 border-b">
@@ -228,7 +225,9 @@ const OnboardPage: React.VFC = () => {
             key={item?.id}
             dept={item}
             onFollowedTeam={onFollowedTeam}
+            onFollowTeamFail={() => setHandlingAction(false)}
             onUnfollowedTeam={onUnfollowedTeam}
+            onUnfollowTeamFail={() => setHandlingAction(false)}
             onFollow={() => setHandlingAction(true)}
             onUnfollow={() => setHandlingAction(true)}
             enableAction={!isHandlingAction}
