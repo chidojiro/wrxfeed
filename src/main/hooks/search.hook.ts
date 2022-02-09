@@ -5,6 +5,7 @@ import { GlobalSearchType, searchState } from '@main/states/search.state';
 import { SearchResult } from '@main/types';
 import { Category, Department, Vendor } from '@main/entity';
 import { SearchFilters, TargetPropType } from '@api/types';
+import { SearchTypes } from '@auth/types';
 
 interface SearchHookValues {
   isLoading: boolean;
@@ -18,6 +19,8 @@ export function useSearch({
   searchDept = true,
   searchCate = true,
   searchVend = true,
+  ignoreEmptyKeyword = true,
+  searchType = SearchTypes.Local,
 }: SearchFilters): SearchHookValues {
   const globalSearch: GlobalSearchType = useRecoilValue<GlobalSearchType>(searchState);
   const [isLoading, setLoading] = useState(false);
@@ -27,7 +30,11 @@ export function useSearch({
   const onClear = () => setResults([]);
 
   const searchByKeyword = useCallback(async () => {
-    if (keyword.trim().length < 1) return;
+    if (ignoreEmptyKeyword && keyword.trim().length < 1) return;
+
+    if (searchType === SearchTypes.Api) {
+      return;
+    }
 
     setLoading(true);
     const departments = !searchDept
@@ -70,7 +77,7 @@ export function useSearch({
     setResults(sumResult);
     setNoResult(sumResult.length === 0);
     setLoading(false);
-  }, [keyword, searchDept, globalSearch, searchCate, searchVend]);
+  }, [keyword, searchDept, globalSearch, searchCate, searchVend, ignoreEmptyKeyword, searchType]);
 
   useEffect(() => {
     searchByKeyword().then();
