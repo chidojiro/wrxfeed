@@ -1,3 +1,4 @@
+import { isApiError } from '@error/utils';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import cloneDeep from 'lodash.clonedeep';
@@ -35,7 +36,6 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
     ApiClient.deleteSubscriptions({ [type]: [channel.id] })
       .then(() => {
         if (callback && callback.onUnfollowSuccess) callback?.onUnfollowSuccess();
-        setUnfollowLoading(false);
         const newSubscription: Subscription = cloneDeep(subscription);
         switch (type) {
           case 'departments':
@@ -59,12 +59,20 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         setSubscription(newSubscription);
       })
       .catch((error: unknown) => {
-        toast.error(`Can not unfollow ${channel.name}. Please check your network and try again.`);
+        if (isApiError(error)) {
+          toast.error(error.details?.message);
+        } else {
+          toast.error(`Can not unfollow ${channel.name}. Please check your network and try again.`);
+        }
         if (callback && callback.onUnfollowError) callback?.onUnfollowError(error);
+      })
+      .finally(() => {
+        setUnfollowLoading(false);
       });
   }
 
   function batchUnsubscribe(subs: Subscription) {
+    setUnfollowLoading(true);
     const params: SubscriptionParams = {
       departments: subs.departments?.map((dep) => dep.id) || [],
       categories: subs.categories?.map((cat) => cat.id) || [],
@@ -72,6 +80,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
     };
     ApiClient.deleteSubscriptions(params)
       .then(() => {
+        if (callback && callback.onUnfollowSuccess) callback?.onUnfollowSuccess();
         const newSubscription: Subscription = cloneDeep(subscription);
         // Merge remove departments
         newSubscription.departments = newSubscription.departments?.filter(
@@ -87,8 +96,16 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         );
         setSubscription(newSubscription);
       })
-      .catch(() => {
-        toast.error('Can not follow these channels. Please check your network and try again.');
+      .catch((error: unknown) => {
+        if (isApiError(error)) {
+          if (error.details?.message) toast.error(error.details?.message);
+        } else {
+          toast.error('Can not follow these channels. Please check your network and try again.');
+        }
+        if (callback && callback.onUnfollowError) callback?.onUnfollowError(error);
+      })
+      .finally(() => {
+        setUnfollowLoading(false);
       });
   }
 
@@ -98,7 +115,6 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
     ApiClient.updateSubscriptions({ [type]: [channel.id] })
       .then(() => {
         if (callback && callback.onFollowSuccess) callback?.onFollowSuccess();
-        setFollowLoading(false);
         const newSubscription: Subscription = cloneDeep(subscription);
         switch (type) {
           case 'departments':
@@ -128,12 +144,20 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         setSubscription(newSubscription);
       })
       .catch((error: unknown) => {
-        toast.error(`Can not follow ${channel.name}. Please check your network and try again.`);
+        if (isApiError(error)) {
+          toast.error(error.details?.message);
+        } else {
+          toast.error(`Can not follow ${channel.name}. Please check your network and try again.`);
+        }
         if (callback && callback.onFollowError) callback?.onFollowError(error);
+      })
+      .finally(() => {
+        setFollowLoading(false);
       });
   }
 
   function batchSubscribe(subs: Subscription) {
+    setFollowLoading(true);
     const params: SubscriptionParams = {
       departments: subs.departments?.map((dep) => dep.id) || [],
       categories: subs.categories?.map((cat) => cat.id) || [],
@@ -141,6 +165,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
     };
     ApiClient.updateSubscriptions(params)
       .then(() => {
+        if (callback && callback.onFollowSuccess) callback?.onFollowSuccess();
         const newSubscription: Subscription = cloneDeep(subscription);
         // Merge new departments
         if (subs.departments?.length) {
@@ -186,8 +211,16 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         }
         setSubscription(newSubscription);
       })
-      .catch(() => {
-        toast.error('Can not follow these channels. Please check your network and try again.');
+      .catch((error: unknown) => {
+        if (isApiError(error)) {
+          if (error.details?.message) toast.error(error.details?.message);
+        } else {
+          toast.error('Can not follow these channels. Please check your network and try again.');
+        }
+        if (callback && callback.onFollowError) callback?.onFollowError(error);
+      })
+      .finally(() => {
+        setFollowLoading(false);
       });
   }
 

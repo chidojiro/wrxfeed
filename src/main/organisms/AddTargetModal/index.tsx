@@ -51,7 +51,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
   const [enableCreate, setEnableCreate] = useState<boolean>(false);
 
-  const { results, isLoading: isSearching, onClear } = useSearch(keyword);
+  const { results, isLoading: isSearching, onClear } = useSearch({ keyword });
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
