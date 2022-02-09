@@ -1,5 +1,5 @@
 import { useSetIdentity } from '@identity/hooks';
-import React from 'react';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useNavUtils } from '../../common/hooks';
 import { ApiErrorCode, ErrorHandler } from '../types';
@@ -8,10 +8,10 @@ import { isApiError } from '../utils';
 export default function useErrorHandler(): ErrorHandler {
   const { redirect } = useNavUtils();
   const setIdentity = useSetIdentity();
-  return React.useCallback(
-    async (error) => {
+  return useCallback(
+    async (error: unknown) => {
       if (!isApiError(error)) {
-        toast.error('An error occurred in the app.');
+        // toast.error('An error occurred in the app.');
         return;
       }
 
@@ -27,11 +27,13 @@ export default function useErrorHandler(): ErrorHandler {
           break;
 
         case ApiErrorCode.BadRequest:
-          toast.error('The request sent to server is invalid.');
+          // toast.error('The request sent to server is invalid.');
+          toast.error(error.details?.message);
           break;
 
         case ApiErrorCode.Notfound:
-          toast.error('The thing you are looking for was not found.');
+          // toast.error('The thing you are looking for was not found.');
+          toast.error(error.details?.message);
           break;
 
         case ApiErrorCode.ServerError:

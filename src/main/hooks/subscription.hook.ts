@@ -6,6 +6,7 @@ import { useApi } from '@api';
 import { subscriptionState } from '@main/states/subscription.state';
 import { Category, Department, Subscription, Vendor } from '@main/entity';
 import { SubscriptionParams } from '@api/types';
+import { useErrorHandler } from '@error/hooks';
 
 interface SubscribeCallback {
   onFollowSuccess?: () => void;
@@ -25,6 +26,7 @@ interface SubscriptionHookValues {
 }
 export function useSubscription(callback?: SubscribeCallback): SubscriptionHookValues {
   const ApiClient = useApi();
+  const errorHandler = useErrorHandler();
   const [subscription, setSubscription] = useRecoilState(subscriptionState);
   const [isFollowLoading, setFollowLoading] = useState<boolean>(false);
   const [isUnfollowLoading, setUnfollowLoading] = useState<boolean>(false);
@@ -87,8 +89,9 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         );
         setSubscription(newSubscription);
       })
-      .catch(() => {
-        toast.error('Can not follow these channels. Please check your network and try again.');
+      .catch((error: unknown) => {
+        // toast.error('Can not follow these channels. Please check your network and try again.');
+        errorHandler(error);
       });
   }
 
@@ -128,8 +131,9 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         setSubscription(newSubscription);
       })
       .catch((error: unknown) => {
-        toast.error(`Can not follow ${channel.name}. Please check your network and try again.`);
+        // toast.error(`Can not follow ${channel.name}. Please check your network and try again.`);
         if (callback && callback.onFollowError) callback?.onFollowError(error);
+        errorHandler(error);
       });
   }
 
@@ -186,8 +190,9 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         }
         setSubscription(newSubscription);
       })
-      .catch(() => {
-        toast.error('Can not follow these channels. Please check your network and try again.');
+      .catch((error: unknown) => {
+        errorHandler(error);
+        // toast.error('Can not follow these channels. Please check your network and try again.');
       });
   }
 

@@ -28,7 +28,7 @@ export function useCategory(pagination: Pagination): CategoryHookValues {
       if (isBadRequest(error)) {
         toast.error('Can not get categories');
       } else {
-        await errorHandler(error);
+        errorHandler(error);
       }
     } finally {
       setLoading(false);
