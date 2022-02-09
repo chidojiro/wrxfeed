@@ -17,6 +17,7 @@ import FeedList from '@main/organisms/FeedList';
 import TargetPanel from '@main/organisms/TargetPanel';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { classNames } from '@common/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -55,10 +56,8 @@ const ForYouPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  // Subscribe feed event
   useFeedChannel(FeedChannelEvents.NEW_ITEM, (data: FeedEventData) => {
     if (data.id) {
-      // Increase counter
       setNewFeedCount((prevCount) => ({
         ...prevCount,
         [location.pathname]: prevCount[location.pathname] + 1,
@@ -67,7 +66,6 @@ const ForYouPage: React.VFC = () => {
   });
 
   useEffect(() => {
-    // Mark all transactions as read
     if (newFeedNumber > 0)
       readAllTransactions().then(() => {
         upsertNewFeedCount(location.pathname, 0);
@@ -93,7 +91,6 @@ const ForYouPage: React.VFC = () => {
         behavior: 'auto',
       });
     }
-    // Clear counter
     upsertNewFeedCount(location.pathname, 0);
     readAllTransactions();
   };
@@ -117,9 +114,9 @@ const ForYouPage: React.VFC = () => {
     });
   };
 
-  const renderForYouEndList = () => {
+  const renderForYouEndList = (className = 'mt-3 sm:mt-8') => {
     return (
-      <p className="text-base text-center text-Neutral-4 mt-3 sm:mt-8">
+      <p className={classNames('text-base text-center text-Neutral-4', className)}>
         Add to your feed by
         <button
           type="button"
@@ -135,6 +132,29 @@ const ForYouPage: React.VFC = () => {
       </p>
     );
   };
+
+  // const renderEmptyStateWithIcon = () => {
+  //   return (
+  //     <div className="pb-2 sm:pb-5 text-center">
+  //       <svg
+  //         className="mx-auto h-8 w-8 text-gray-400"
+  //         fill="none"
+  //         viewBox="0 0 24 24"
+  //         stroke="currentColor"
+  //         aria-hidden="true"
+  //       >
+  //         <path
+  //           vectorEffect="non-scaling-stroke"
+  //           strokeLinecap="round"
+  //           strokeLinejoin="round"
+  //           strokeWidth={2}
+  //           d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+  //         />
+  //       </svg>
+  //       {renderForYouEndList('mt-1 sm:mt-3')}
+  //     </div>
+  //   );
+  // };
 
   return (
     <MainLayout className="flex flex-col">
@@ -162,7 +182,8 @@ const ForYouPage: React.VFC = () => {
         hasMore={hasMore}
         onFilter={handleFilter}
         endMessage="Add to your feed by following more teams."
-        EndComponent={renderForYouEndList}
+        EndComponent={() => renderForYouEndList()}
+        EmptyStateComponent={() => renderForYouEndList()}
       />
       <MainRightSide>
         <TargetPanel />
