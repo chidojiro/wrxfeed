@@ -55,10 +55,8 @@ const ForYouPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  // Subscribe feed event
   useFeedChannel(FeedChannelEvents.NEW_ITEM, (data: FeedEventData) => {
     if (data.id) {
-      // Increase counter
       setNewFeedCount((prevCount) => ({
         ...prevCount,
         [location.pathname]: prevCount[location.pathname] + 1,
@@ -67,7 +65,6 @@ const ForYouPage: React.VFC = () => {
   });
 
   useEffect(() => {
-    // Mark all transactions as read
     if (newFeedNumber > 0)
       readAllTransactions().then(() => {
         upsertNewFeedCount(location.pathname, 0);
@@ -93,7 +90,6 @@ const ForYouPage: React.VFC = () => {
         behavior: 'auto',
       });
     }
-    // Clear counter
     upsertNewFeedCount(location.pathname, 0);
     readAllTransactions();
   };

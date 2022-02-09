@@ -26,12 +26,6 @@ import DepartmentCell from '@auth/molecules/DepartmentCell';
 import { ReactComponent as SharpSpaceDashboard } from '@assets/icons/solid/sharp-space-dashboard.svg';
 import { ReactComponent as QuestionCircle } from '@assets/icons/solid/question-circle.svg';
 
-// const LIMIT_GET_DEPT_INIT = 100;
-// const LIMIT_GET_DEPT_SEARCH = 10;
-// const INIT_PAGE_DEPT = Object.freeze({
-//   offset: 0,
-//   limit: LIMIT_GET_DEPT_INIT,
-// });
 const DEBOUNCE_WAIT = 500;
 
 const OnboardPage: React.VFC = () => {
@@ -41,17 +35,11 @@ const OnboardPage: React.VFC = () => {
   const errorHandler = useErrorHandler();
   const query = useQuery();
 
-  const autoDirectString: string = query.get('autoDirect') ?? '1'; // default is 1 ! auto direct
+  const autoDirectString: string = query.get('autoDirect') ?? '1';
   const authDirect: boolean = parseInt(autoDirectString, 10) === 1;
 
-  // const [filter, setFilter] = useState<DepartmentFilter>({
-  //   ...INIT_PAGE_DEPT,
-  //   term: '',
-  // });
-  // const { departments, onClear, isLoading } = useDepartment(filter);
   const { isFollowing } = useSubscription();
 
-  // const [userDept, setUserDept] = useState<Department>();
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [yourTeams, setYourTeams] = useState<Department[]>([]);
   const [suggestedTeams, setSuggestedTeams] = useState<Department[]>([]);
@@ -70,11 +58,6 @@ const OnboardPage: React.VFC = () => {
     searchVend: false,
     ignoreEmptyKeyword: ignoreEmpty,
   });
-
-  // const getYourTeam = async (depId: number) => {
-  //   const userDepartment = await getDepartmentById(depId);
-  //   setYourTeams((pre) => [...pre, { ...userDepartment, children: [] }]);
-  // };
 
   useEffect(() => {
     setSearchResults(departments);
@@ -114,12 +97,6 @@ const OnboardPage: React.VFC = () => {
     setIgnoreEmpty(true);
   }, [departments]);
 
-  // useEffect(() => {
-  //   if (identity?.depId) {
-  //     getYourTeam(identity?.depId);
-  //   }
-  // }, [identity?.depId]);
-
   const onClickIamDone = async () => {
     try {
       setDoneOnboard(true);
@@ -148,30 +125,9 @@ const OnboardPage: React.VFC = () => {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(event.target.value.toString());
       onClear();
-      // if (event.target.value.length > 0) {
-      //   setFilter({
-      //     term: event.target.value,
-      //     ...{
-      //       ...INIT_PAGE_DEPT,
-      //       limit: LIMIT_GET_DEPT_SEARCH,
-      //     },
-      //   });
-      // }
     },
     [setKeyword],
   );
-
-  // const onSearchTeam = useCallback(
-  //   (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     setKeyword(event.target.value.toString());
-  //     onClear();
-  //     if (event.target.value.length > 0) {
-  //       const results = searchDepartmentLocal(event.target.value, deptLocal);
-  //       setSearchResults(results);
-  //     }
-  //   },
-  //   [deptLocal, setSearchResults],
-  // );
 
   const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT, [onSearchTeam]);
 

@@ -23,9 +23,9 @@ export function useSearch({
   searchType = SearchTypes.Local,
 }: SearchFilters): SearchHookValues {
   const globalSearch: GlobalSearchType = useRecoilValue<GlobalSearchType>(searchState);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [noResult, setNoResult] = useState(false);
+  const [noResult, setNoResult] = useState<boolean>(false);
 
   const onClear = () => setResults([]);
 
@@ -37,42 +37,60 @@ export function useSearch({
     }
 
     setLoading(true);
-    const departments = !searchDept
+    const departments: SearchResult[] = !searchDept
       ? []
-      : globalSearch.departments
-          .filter((dept: Department) => dept.name.toLowerCase().includes(keyword.toLowerCase()))
-          .map((dept: Department) => {
-            return {
+      : globalSearch.departments.reduce<SearchResult[]>((arr: SearchResult[], dept: Department) => {
+          if (!dept.name.toLowerCase().includes(keyword.toLowerCase())) {
+            return arr;
+          }
+          return [
+            ...arr,
+            {
               id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${dept?.id}`,
               title: dept?.name,
               type: TargetPropType.DEPARTMENT,
               directoryId: dept?.id,
-            };
-          });
-    const categories = !searchCate
+              name: 'ss',
+            },
+          ];
+        }, []);
+
+    const categories: SearchResult[] = !searchCate
       ? []
-      : globalSearch.categories
-          .filter((cat: Category) => cat.name.toLowerCase().includes(keyword.toLowerCase()))
-          .map((cat: Category) => {
-            return {
+      : globalSearch.categories.reduce<SearchResult[]>((arr: SearchResult[], cat: Category) => {
+          if (!cat.name.toLowerCase().includes(keyword.toLowerCase())) {
+            return arr;
+          }
+          return [
+            ...arr,
+            {
               id: `${TargetPropType.CATEGORY.toUpperCase()}-${cat?.id}`,
               title: cat?.name,
               type: TargetPropType.CATEGORY,
               directoryId: cat?.id,
-            };
-          });
-    const vendors = !searchVend
+              name: 'ss',
+            },
+          ];
+        }, []);
+
+    const vendors: SearchResult[] = !searchVend
       ? []
-      : globalSearch.vendors
-          .filter((vend: Vendor) => vend.name.toLowerCase().includes(keyword.toLowerCase()))
-          .map((vend: Vendor) => {
-            return {
+      : globalSearch.vendors.reduce<SearchResult[]>((arr: SearchResult[], vend: Vendor) => {
+          if (!vend.name.toLowerCase().includes(keyword.toLowerCase())) {
+            return arr;
+          }
+          return [
+            ...arr,
+            {
               id: `${TargetPropType.VENDOR.toUpperCase()}-${vend?.id}`,
               title: vend?.name,
               type: TargetPropType.VENDOR,
               directoryId: vend?.id,
-            };
-          });
+              name: 'ss',
+            },
+          ];
+        }, []);
+
     const sumResult = [...departments, ...categories, ...vendors];
     setResults(sumResult);
     setNoResult(sumResult.length === 0);
