@@ -2,24 +2,28 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
-import DepartmentList from '@main/organisms/DepartmentList';
-import { FeedFilters, Pagination } from '@api/types';
-import { useDepartment } from '@main/hooks/department.hook';
-import { FilterKeys } from '@main/hooks';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import TargetPanel from '@main/organisms/TargetPanel';
-import { Category, Department, Vendor } from '@main/entity';
-import { useSubscription } from '@main/hooks/subscription.hook';
-import Button from '@common/atoms/Button';
-import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
-import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
 import { MouseEventHandler } from 'react-router/node_modules/@types/react';
-import { MainGroups } from '@common/constants';
+
 import { useQuery } from '@common/hooks';
 import { useFeed } from '@main/hooks/feed.hook';
-import FeedList from '@main/organisms/FeedList';
+import { useDepartment } from '@main/hooks/department.hook';
+import { useSubscription } from '@main/hooks/subscription.hook';
+
+import { Category, Department, Vendor } from '@main/entity';
+import { FeedFilters, Pagination } from '@api/types';
+import { FilterKeys } from '@main/hooks';
 import { scrollToTop } from '@main/utils';
+import { MainGroups } from '@common/constants';
+
+import Button from '@common/atoms/Button';
+import TargetPanel from '@main/organisms/TargetPanel';
+import FeedList from '@main/organisms/FeedList';
+import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
+import DepartmentList from '@main/organisms/DepartmentList';
+
+import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
+import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
+import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({

@@ -20,6 +20,7 @@ import {
   LoginFormModel,
   Profile,
   ProfileFormModel,
+  SearchTypes,
 } from '@auth/types';
 import { InviteFormModel, FeedBackFormModel } from '@main/types';
 
@@ -225,4 +226,13 @@ export interface FeedFilters {
   vendor?: number;
   category?: number;
   rootDepartment?: number;
+}
+
+export interface SearchFilters {
+  keyword: string;
+  searchDept?: boolean;
+  searchVend?: boolean;
+  searchCate?: boolean;
+  ignoreEmptyKeyword?: boolean;
+  searchType?: SearchTypes;
 }
