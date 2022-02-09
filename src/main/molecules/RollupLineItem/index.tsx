@@ -15,6 +15,7 @@ import { slideOverOpenState } from '@main/states/slideOver.state';
 
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
 import { getVendorNameFromLineItem } from '@main/utils';
+import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@src/config';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -42,6 +43,15 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
     }
   }, [lineItem?.id, lineItem?.meta?.isRead, maskLineItemAsRead]);
 
+  useEffect(() => {
+    const timeout: NodeJS.Timeout = setTimeout(() => {
+      setRead(true);
+    }, REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT);
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, []);
+
   const renderMessages = () => {
     const isShowMessage = false;
     if (isShowMessage) {
@@ -56,7 +66,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   };
 
   const renderGreenDot = () => {
-    if (lineItem?.meta?.isRead === false && !isRead) {
+    if (lineItem?.meta?.isRead === false && isRead === false) {
       return <div className="flex w-1 h-1 rounded-full bg-Green-4 mr-1.5" />;
     }
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
