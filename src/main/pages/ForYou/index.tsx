@@ -133,29 +133,6 @@ const ForYouPage: React.VFC = () => {
     );
   };
 
-  // const renderEmptyStateWithIcon = () => {
-  //   return (
-  //     <div className="pb-2 sm:pb-5 text-center">
-  //       <svg
-  //         className="mx-auto h-8 w-8 text-gray-400"
-  //         fill="none"
-  //         viewBox="0 0 24 24"
-  //         stroke="currentColor"
-  //         aria-hidden="true"
-  //       >
-  //         <path
-  //           vectorEffect="non-scaling-stroke"
-  //           strokeLinecap="round"
-  //           strokeLinejoin="round"
-  //           strokeWidth={2}
-  //           d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
-  //         />
-  //       </svg>
-  //       {renderForYouEndList('mt-1 sm:mt-3')}
-  //     </div>
-  //   );
-  // };
-
   return (
     <MainLayout className="flex flex-col">
       <NewFeedIndicator
