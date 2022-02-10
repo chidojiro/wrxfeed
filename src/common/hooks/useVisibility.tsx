@@ -1,23 +1,33 @@
-import { useRef, useEffect, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { MutableRefObject, useRef, useEffect, useState } from 'react';
 import throttle from 'lodash.throttle';
 
 /// Check if an element is in viewport
 /// @param {number} offset - Number of pixels up to the observable element from the top
 /// @param {number} throttleMilliseconds - Throttle observable listener, in ms
+interface VisibilityHooksValue {
+  isVisible: boolean;
+  refVisible: MutableRefObject<any>;
+}
 
-export const useVisibility = <Element extends HTMLElement>(
+type VisibilityParams = {
+  offset?: number;
+  throttleMilliseconds?: number;
+};
+
+export const useVisibility = <Element extends HTMLElement>({
   offset = 0,
-  throttleMilliseconds = 100,
-): [boolean, React.RefObject<Element>] => {
+  throttleMilliseconds = 1000,
+}: VisibilityParams = {}): VisibilityHooksValue => {
   const [isVisible, setIsVisible] = useState(false);
-  const currentElement = useRef<Element>(null);
+  const refVisible = useRef<Element>(null);
 
   const onScroll = throttle(() => {
-    if (!currentElement.current) {
+    if (!refVisible.current) {
       setIsVisible(false);
       return;
     }
-    const { top } = currentElement.current.getBoundingClientRect();
+    const { top } = refVisible?.current.getBoundingClientRect();
     setIsVisible(top + offset >= 0 && top - offset <= window.innerHeight);
   }, throttleMilliseconds);
 
@@ -26,5 +36,5 @@ export const useVisibility = <Element extends HTMLElement>(
     return () => document.removeEventListener('scroll', onScroll, true);
   });
 
-  return [isVisible, currentElement];
+  return { isVisible, refVisible };
 };

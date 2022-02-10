@@ -1,22 +1,22 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-// import { MessageTextAlt } from '@assets/index';
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { TransLineItem, Vendor } from '@main/entity';
-import EventEmitter, { EventName } from '@main/EventEmitter';
-import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
-
 import { useApi } from '@api';
+import { useVisibility } from '@common/hooks/useVisibility';
+
+import EventEmitter, { EventName } from '@main/EventEmitter';
+import { TransLineItem, Vendor } from '@main/entity';
+import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
+import { getVendorNameFromLineItem } from '@main/utils';
+import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@src/config';
+
 import { lineItemSelectState } from '@main/states/lineItems.state';
 import { slideOverOpenState } from '@main/states/slideOver.state';
 
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
-import { getVendorNameFromLineItem } from '@main/utils';
-import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@src/config';
-import { useVisibility } from '@common/hooks/useVisibility';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -31,7 +31,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   onClickMessage,
   onClickVendor,
 }) => {
-  const [isVisible, refVisible] = useVisibility<HTMLButtonElement>(0);
+  const { isVisible, refVisible } = useVisibility<HTMLButtonElement>({ offset: 0 });
   const { maskLineItemAsRead } = useApi();
 
   const [lineItemSelect, setLineItemSelect] = useRecoilState(lineItemSelectState);
