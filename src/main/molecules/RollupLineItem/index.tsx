@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import dayjs from 'dayjs';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { useApi } from '@api';
-import { useVisibility } from '@common/hooks/useVisibility';
+import { useIntersection } from '@common/hooks';
 
 import EventEmitter, { EventName } from '@main/EventEmitter';
 import { TransLineItem, Vendor } from '@main/entity';
@@ -31,7 +31,8 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   onClickMessage,
   onClickVendor,
 }) => {
-  const { isVisible, refVisible } = useVisibility<HTMLButtonElement>({ offset: 0 });
+  const viewRef = useRef<HTMLButtonElement>(null);
+  const isEndReached = useIntersection(viewRef.current || undefined, '0px');
   const { maskLineItemAsRead } = useApi();
 
   const [lineItemSelect, setLineItemSelect] = useRecoilState(lineItemSelectState);
@@ -41,7 +42,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
-    if (isVisible) {
+    if (isEndReached) {
       timeout = setTimeout(() => {
         setRead(true);
       }, REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT);
@@ -49,7 +50,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
     return () => {
       if (timeout) clearTimeout(timeout);
     };
-  }, [isVisible]);
+  }, [isEndReached]);
 
   useEffect(() => {
     if (lineItem?.meta?.isRead === false) {
@@ -111,7 +112,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
 
   return (
     <button
-      ref={refVisible}
+      ref={viewRef}
       type="button"
       aria-hidden="true"
       className={classNames(
