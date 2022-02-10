@@ -31,7 +31,10 @@ const SearchBar: React.VFC = () => {
 
   const { results, onClear } = useSearch({ keyword });
 
-  const onCloseDropDownResultsView = () => onClear();
+  const onCloseDropDownResultsView = () => {
+    onClear();
+    setKeyword('');
+  };
   useOnClickOutside(useableViewRef, onCloseDropDownResultsView);
 
   const onSearchTeam = useCallback(
@@ -101,7 +104,7 @@ const SearchBar: React.VFC = () => {
     );
   };
 
-  const isEmptyResult = isSearching && results.length === 0;
+  const isEmptyResult = isFocus && isSearching && results.length === 0;
   const renderResultsOrEmpty = () => {
     if (isEmptyResult) {
       return (

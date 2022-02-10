@@ -1,20 +1,22 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-// import { MessageTextAlt } from '@assets/index';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import dayjs from 'dayjs';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { TransLineItem, Vendor } from '@main/entity';
-import EventEmitter, { EventName } from '@main/EventEmitter';
-import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
-
 import { useApi } from '@api';
+import { useIntersection } from '@common/hooks';
+
+import EventEmitter, { EventName } from '@main/EventEmitter';
+import { TransLineItem, Vendor } from '@main/entity';
+import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
+import { getVendorNameFromLineItem } from '@main/utils';
+import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@src/config';
+
 import { lineItemSelectState } from '@main/states/lineItems.state';
 import { slideOverOpenState } from '@main/states/slideOver.state';
 
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
-import { getVendorNameFromLineItem } from '@main/utils';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -29,12 +31,26 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   onClickMessage,
   onClickVendor,
 }) => {
+  const viewRef = useRef<HTMLButtonElement>(null);
+  const isVisible = useIntersection(viewRef.current || undefined, '0px');
   const { maskLineItemAsRead } = useApi();
-
-  const [isRead, setRead] = useState(false);
 
   const [lineItemSelect, setLineItemSelect] = useRecoilState(lineItemSelectState);
   const slideOverOpened = useRecoilValue(slideOverOpenState);
+
+  const [isRead, setRead] = useState(false);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (isVisible) {
+      timeout = setTimeout(() => {
+        setRead(true);
+      }, REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT);
+    }
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [isVisible]);
 
   useEffect(() => {
     if (lineItem?.meta?.isRead === false) {
@@ -56,7 +72,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   };
 
   const renderGreenDot = () => {
-    if (lineItem?.meta?.isRead === false && !isRead) {
+    if (lineItem?.meta?.isRead === false && isRead === false) {
       return <div className="flex w-1 h-1 rounded-full bg-Green-4 mr-1.5" />;
     }
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
@@ -96,6 +112,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
 
   return (
     <button
+      ref={viewRef}
       type="button"
       aria-hidden="true"
       className={classNames(
