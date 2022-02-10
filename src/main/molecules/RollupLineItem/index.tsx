@@ -32,7 +32,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   onClickVendor,
 }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
-  const isEndReached = useIntersection(viewRef.current || undefined, '0px');
+  const isVisible = useIntersection(viewRef.current || undefined, '0px');
   const { maskLineItemAsRead } = useApi();
 
   const [lineItemSelect, setLineItemSelect] = useRecoilState(lineItemSelectState);
@@ -42,7 +42,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
-    if (isEndReached) {
+    if (isVisible) {
       timeout = setTimeout(() => {
         setRead(true);
       }, REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT);
@@ -50,7 +50,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
     return () => {
       if (timeout) clearTimeout(timeout);
     };
-  }, [isEndReached]);
+  }, [isVisible]);
 
   useEffect(() => {
     if (lineItem?.meta?.isRead === false) {
