@@ -16,6 +16,7 @@ import { slideOverOpenState } from '@main/states/slideOver.state';
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
 import { getVendorNameFromLineItem } from '@main/utils';
 import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@src/config';
+import { useVisibility } from '@common/hooks/useVisibility';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -30,27 +31,31 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   onClickMessage,
   onClickVendor,
 }) => {
+  const [isVisible, refVisible] = useVisibility<HTMLButtonElement>(0);
   const { maskLineItemAsRead } = useApi();
-
-  const [isRead, setRead] = useState(false);
 
   const [lineItemSelect, setLineItemSelect] = useRecoilState(lineItemSelectState);
   const slideOverOpened = useRecoilValue(slideOverOpenState);
+
+  const [isRead, setRead] = useState(false);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (isVisible) {
+      timeout = setTimeout(() => {
+        setRead(true);
+      }, REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT);
+    }
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [isVisible]);
 
   useEffect(() => {
     if (lineItem?.meta?.isRead === false) {
       maskLineItemAsRead(lineItem?.id);
     }
   }, [lineItem?.id, lineItem?.meta?.isRead, maskLineItemAsRead]);
-
-  useEffect(() => {
-    const timeout: NodeJS.Timeout = setTimeout(() => {
-      setRead(true);
-    }, REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT);
-    return () => {
-      if (timeout) clearTimeout(timeout);
-    };
-  }, []);
 
   const renderMessages = () => {
     const isShowMessage = false;
@@ -106,6 +111,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
 
   return (
     <button
+      ref={refVisible}
       type="button"
       aria-hidden="true"
       className={classNames(
