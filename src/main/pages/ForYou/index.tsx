@@ -17,6 +17,7 @@ import FeedList from '@main/organisms/FeedList';
 import TargetPanel from '@main/organisms/TargetPanel';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { classNames } from '@common/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -55,10 +56,8 @@ const ForYouPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  // Subscribe feed event
   useFeedChannel(FeedChannelEvents.NEW_ITEM, (data: FeedEventData) => {
     if (data.id) {
-      // Increase counter
       setNewFeedCount((prevCount) => ({
         ...prevCount,
         [location.pathname]: prevCount[location.pathname] + 1,
@@ -67,7 +66,6 @@ const ForYouPage: React.VFC = () => {
   });
 
   useEffect(() => {
-    // Mark all transactions as read
     if (newFeedNumber > 0)
       readAllTransactions().then(() => {
         upsertNewFeedCount(location.pathname, 0);
@@ -93,7 +91,6 @@ const ForYouPage: React.VFC = () => {
         behavior: 'auto',
       });
     }
-    // Clear counter
     upsertNewFeedCount(location.pathname, 0);
     readAllTransactions();
   };
@@ -117,9 +114,9 @@ const ForYouPage: React.VFC = () => {
     });
   };
 
-  const renderForYouEndList = () => {
+  const renderForYouEndList = (className = 'mt-3 sm:mt-8') => {
     return (
-      <p className="text-base text-center text-Neutral-4 mt-3 sm:mt-8">
+      <p className={classNames('text-base text-center text-Neutral-4', className)}>
         Add to your feed by
         <button
           type="button"
@@ -162,7 +159,8 @@ const ForYouPage: React.VFC = () => {
         hasMore={hasMore}
         onFilter={handleFilter}
         endMessage="Add to your feed by following more teams."
-        EndComponent={renderForYouEndList}
+        EndComponent={() => renderForYouEndList()}
+        EmptyStateComponent={() => renderForYouEndList()}
       />
       <MainRightSide>
         <TargetPanel />

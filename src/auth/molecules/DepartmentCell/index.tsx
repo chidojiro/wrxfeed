@@ -1,65 +1,110 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { classNames } from '@common/utils';
-import { DepartmentSection } from '@main/hooks/department.hook';
+import { Department } from '@main/entity';
 
 import { useSubscription } from '@main/hooks/subscription.hook';
+import { useIdentity } from '@identity/hooks';
+
+import Loading from '@common/atoms/Loading';
 
 import { ReactComponent as BasicsTickSmall } from '@assets/icons/solid/basics-tick-small.svg';
 import { ReactComponent as BasicsAddSmall } from '@assets/icons/solid/basics-add-small.svg';
-import Loading from '@common/atoms/Loading';
-import { toast } from 'react-toastify';
-import { useIdentity } from '@identity/hooks';
+import { useApi } from '@api';
+
+const LIMIT = 9999;
+const INIT_PAGINATION = Object.freeze({
+  offset: 0,
+  limit: LIMIT,
+});
 
 interface DepartmentCellProps {
   className?: string;
-  dept: DepartmentSection;
-  onFollowedTeam?: (team: DepartmentSection) => void;
-  onUnfollowedTeam?: (team: DepartmentSection) => void;
-  onFollow?: (team: DepartmentSection) => void;
-  onUnfollow?: (team: DepartmentSection) => void;
+  dept: Department;
+  onFollowedTeam?: (teams: Department[]) => void;
+  onFollowTeamFail?: (error: unknown) => void;
+  onUnfollowedTeam?: (teams: Department[]) => void;
+  onUnfollowTeamFail?: (error: unknown) => void;
+  onFollow?: (team: Department) => void;
+  onUnfollow?: (team: Department) => void;
   enableAction: boolean;
+  enableUnfollowUserDept?: boolean;
 }
 
 const DepartmentCell: React.VFC<DepartmentCellProps> = ({
   className = '',
   dept,
   onFollowedTeam = () => undefined,
+  onFollowTeamFail = () => undefined,
   onUnfollowedTeam = () => undefined,
+  onUnfollowTeamFail = () => undefined,
   onFollow = () => undefined,
   onUnfollow = () => undefined,
   enableAction,
+  enableUnfollowUserDept = true,
 }) => {
   const identity = useIdentity();
-  const { subscribe, unsubscribe, isFollowLoading, isUnfollowLoading, isFollowing } =
+  const ApiClient = useApi();
+  const [childs, setChilds] = useState<Department[]>([]);
+
+  const onFollowSuccess = async () => {
+    onFollowedTeam([dept, ...childs]);
+  };
+  const onUnfollowSuccess = async () => {
+    onUnfollowedTeam([dept, ...childs]);
+  };
+
+  const { isFollowLoading, isUnfollowLoading, isFollowing, batchSubscribe, batchUnsubscribe } =
     useSubscription({
-      onFollowSuccess: () => onFollowedTeam(dept),
-      onUnfollowSuccess: () => onUnfollowedTeam(dept),
+      onFollowSuccess,
+      onFollowError: (error: unknown) => onFollowTeamFail(error),
+      onUnfollowSuccess,
+      onUnfollowError: (error: unknown) => onUnfollowTeamFail(error),
     });
+
+  const getChilds = useCallback(async () => {
+    const deptChild: Department[] = await ApiClient.getDepartments({
+      parent: dept.id,
+      ...INIT_PAGINATION,
+    });
+    setChilds(deptChild);
+  }, [ApiClient, dept.id]);
+
+  useEffect(() => {
+    getChilds();
+  }, [getChilds]);
 
   const isFollowed = isFollowing('departments', dept);
 
   const bgColor = isFollowed ? 'bg-Accent-2' : 'bg-white';
   const textColor = isFollowed ? 'text-white' : 'text-Gray-3';
 
-  const onClickFollowDepartment = () => {
+  const onClickFollowDepartment = async () => {
     if (!enableAction) {
       toast.warn('Please wait a minute!');
       return;
     }
+
+    // const deptChild: Department[] = await ApiClient.getDepartments({
+    //   parent: dept.id,
+    //   ...INIT_PAGINATION,
+    // });
+    // setChilds(deptChild);
+
     if (isFollowed) {
       if (isUnfollowLoading) {
         toast.warn('Please wait a minute!');
         return;
       }
-      unsubscribe('departments', dept);
+      batchUnsubscribe({ departments: [dept, ...childs] });
       if (onUnfollow) onUnfollow(dept);
     } else {
       if (isFollowLoading) {
         toast.warn('Please wait a minute!');
         return;
       }
-      subscribe('departments', dept);
+      batchSubscribe({ departments: [dept, ...childs] });
       if (onFollow) onFollow(dept);
     }
   };
@@ -86,7 +131,7 @@ const DepartmentCell: React.VFC<DepartmentCellProps> = ({
   const isUserDepartment = identity?.depId === dept?.id;
   const hoverStyle = isFollowed ? 'hover:bg-Gray-2' : 'hover:bg-Accent-3';
   const renderFollowButton = () => {
-    if (isUserDepartment) return null;
+    if (!enableUnfollowUserDept && isUserDepartment) return null;
     return (
       <button
         type="button"

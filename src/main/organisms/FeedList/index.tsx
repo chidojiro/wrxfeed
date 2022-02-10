@@ -16,6 +16,7 @@ interface FeedListProps {
   onFilter?: (key: keyof FeedFilters, value?: Department | Category | Vendor) => void;
   updateCategory?: (category: Partial<Category>) => Promise<void>;
   EndComponent?: React.FunctionComponent | undefined;
+  EmptyStateComponent?: React.FunctionComponent | undefined;
 }
 
 const FeedList: React.VFC<FeedListProps> = ({
@@ -28,8 +29,11 @@ const FeedList: React.VFC<FeedListProps> = ({
   onFilter,
   updateCategory,
   EndComponent,
+  EmptyStateComponent,
 }) => {
-  const renderEmptyList = () => (
+  const renderEmptyList = EmptyStateComponent ? (
+    <EmptyStateComponent />
+  ) : (
     <div className="pb-2 sm:pb-5 text-center">
       <svg
         className="mx-auto h-8 w-8 text-gray-400"
@@ -80,7 +84,7 @@ const FeedList: React.VFC<FeedListProps> = ({
           </li>
         ))}
       </ul>
-      {!isLoading && !feeds.length && renderEmptyList()}
+      {!isLoading && !feeds.length && renderEmptyList}
       {!isLoading && feeds.length > 0 && !hasMore && renderEndComponent}
     </InfiniteScroller>
   );
