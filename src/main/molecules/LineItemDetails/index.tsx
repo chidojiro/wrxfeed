@@ -97,6 +97,11 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       key: 'Approver',
       value: item?.transaction?.billApproverName ?? '...',
     },
+    {
+      id: 'transaction-status',
+      key: 'Status',
+      value: item?.transaction?.status ?? '',
+    },
   ];
 
   const onClickMore = () => undefined;
