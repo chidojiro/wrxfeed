@@ -85,7 +85,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
     >
       {({ open }) => (
         <>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto px-4 sm:px-6 lg:pl-8 lg:pr-24">
             <div className="relative flex justify-between h-navbar xl:grid xl:grid-cols-12">
               <div className="flex justify-center lg:static xl:col-span-2">
                 <div className="flex-shrink-0 flex items-center">
@@ -94,7 +94,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
                   </h1>
                 </div>
               </div>
-              <div className="flex items-center min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-7">
+              <div className="flex items-center min-w-0 flex-1 md:px-8 lg:pr-0 lg:pl-20 xl:col-span-7">
                 {searchBar && <SearchBar />}
               </div>
               <div className="hidden sm:flex items-center lg:justify-end xl:col-span-3 mr-0">
