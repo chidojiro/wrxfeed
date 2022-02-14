@@ -29,7 +29,7 @@ export const menuItemsValue = selector<GroupTab[]>({
             name: channel.name,
             location: {
               pathname: `/${key}/${channel.id}`,
-              search: `?route=${MainGroups.Teams}`,
+              search: `?route=${MainGroups.Feeds}`,
             },
             icon: TeamIcon,
             subscription: {

@@ -24,6 +24,7 @@ import DepartmentList from '@main/organisms/DepartmentList';
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import TeamHome from '@main/organisms/TeamHome/TeamHome';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -58,11 +59,12 @@ const DepartmentsPage: React.VFC = () => {
     updateCategory,
     cleanData,
   } = useFeed(feedsFilter);
-  // Variables
+
   const inDirectoryList = query.get('route') !== MainGroups.Feeds;
   const isFiltering = inDirectoryList
     ? !!feedsFilter.page?.offset || !!feedsFilter.page?.limit
     : FilterKeys.some((key) => query.has(key));
+
   const deptSelect = useMemo(() => {
     if (!isFiltering || !feeds.length) return null;
     if (feeds[0].department.id === feedsFilter.rootDepartment) {
@@ -95,7 +97,6 @@ const DepartmentsPage: React.VFC = () => {
   }, [deptId, query.toString(), feedsFilter.rootDepartment]);
 
   useEffect(() => {
-    // Scroll to top
     if (window.scrollY > 0) {
       window.scrollTo({
         top: 0,
@@ -195,14 +196,17 @@ const DepartmentsPage: React.VFC = () => {
           onSelectRoot={handleDepartmentSelect}
         />
       ) : (
-        <FeedList
-          feeds={feeds}
-          isLoading={feedsLoading || isLoading}
-          hasMore={hasMoreFeeds}
-          onLoadMore={handleFeedsLoadMore}
-          onFilter={handleFeedsFilter}
-          updateCategory={updateCategory}
-        />
+        <>
+          <TeamHome />
+          <FeedList
+            feeds={feeds}
+            isLoading={feedsLoading || isLoading}
+            hasMore={hasMoreFeeds}
+            onLoadMore={handleFeedsLoadMore}
+            onFilter={handleFeedsFilter}
+            updateCategory={updateCategory}
+          />
+        </>
       )}
       <MainRightSide>
         <TargetPanel />
