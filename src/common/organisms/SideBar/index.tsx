@@ -50,10 +50,10 @@ const SideBar: React.VFC = () => {
   };
 
   return (
-    <nav aria-label="Sidebar" className="divide-y divide-gray-300 flex flex-1">
+    <nav aria-label="Sidebar" className="divide-y divide-gray-300 flex flex-1 overflow-hidden">
       <div className="flex w-full flex-1 flex-col py-8 space-y-6 max-h-[calc(60vh-56px)] lg:max-h-[calc(100vh-56px)] overflow-scroll hide-scrollbar">
         {menuItems.map((menuItem: GroupTab) => {
-          const { tabs, icon: IconView } = menuItem;
+          const { tabs } = menuItem;
           return (
             <div key={menuItem.name}>
               <div
@@ -65,48 +65,63 @@ const SideBar: React.VFC = () => {
                 </h3>
               </div>
               {tabs.map((leftTab: LeftTab) => {
+                const { icon: IconView } = leftTab;
                 const isCurrentTab = currentTab?.location.pathname === leftTab.location.pathname;
                 return (
                   <RouterLink
                     key={`tabs-${leftTab.name}`}
                     to={leftTab.location}
                     className={classNames(
-                      isCurrentTab ? 'bg-Gray-5 text-Gray-3' : 'text-Gray-6 hover:bg-Gray-16',
-                      'group flex flex-row justify-between items-center pl-12 py-3 text-sm space-x-4',
+                      isCurrentTab ? 'text-Accent-2 font-semibold' : 'text-Gray-3 font-regular',
+                      'flex flex-row items-center',
                     )}
                   >
-                    {IconView ? (
-                      <IconView
-                        className="flex-shrink-0 h-5 w-5"
-                        aria-hidden="true"
-                        width={12}
-                        height={12}
-                        viewBox="0 -2 18 18"
-                      />
-                    ) : (
-                      <div className="flex-shrink-0 h-5 w-5" />
-                    )}
-                    <span className="w-full truncate">{leftTab.name}</span>
-                    {leftTab.removable && (
-                      <span
-                        aria-hidden="true"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          if (leftTab.subscription) {
-                            unsubscribe(leftTab.subscription.type, leftTab.subscription.item);
-                            history.replace(leftTab.location.pathname); // Remove Feeds from search query
-                          }
-                        }}
-                      >
-                        <CloseIcon
-                          className="group-hover:visible invisible mr-2"
-                          width={16}
-                          height={16}
-                          viewBox="0 0 18 18"
-                        />
-                      </span>
-                    )}
-                    {leftTab?.isShowCounter && renderCounter(leftTab)}
+                    <div className="ml-1 group flex flex-1 w-full flex-row hover:bg-Gray-7 justify-between py-3 items-center pl-12 pr-3 text-sm rounded-sm">
+                      {IconView ? (
+                        <div className="flex w-5 h-5 justify-center items-center">
+                          <IconView
+                            className={classNames(
+                              'flex-shrink-0 h-4 w-4 fill-current path-no-filled',
+                              isCurrentTab
+                                ? 'text-Accent-2 opacity-100'
+                                : 'text-Gray-3 opacity-100',
+                            )}
+                            aria-hidden="true"
+                            width={16}
+                            height={16}
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex-shrink-0 h-5 w-5" />
+                      )}
+                      <span className="w-full truncate sm: ml-2 md:ml-4 ">{leftTab.name}</span>
+                      {leftTab.removable && (
+                        <span
+                          aria-hidden="true"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            if (leftTab.subscription) {
+                              unsubscribe(leftTab.subscription.type, leftTab.subscription.item);
+                              history.replace(leftTab.location.pathname); // Remove Feeds from search query
+                            }
+                          }}
+                        >
+                          <CloseIcon
+                            className="group-hover:visible invisible mr-2"
+                            width={16}
+                            height={16}
+                            viewBox="0 0 16 16"
+                          />
+                        </span>
+                      )}
+                      {leftTab?.isShowCounter && renderCounter(leftTab)}
+                    </div>
+                    <div
+                      className={classNames(
+                        'h-6 w-1 rounded-full',
+                        isCurrentTab ? 'bg-Accent-2' : '',
+                      )}
+                    />
                   </RouterLink>
                 );
               })}

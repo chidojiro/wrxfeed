@@ -85,19 +85,19 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
     >
       {({ open }) => (
         <>
-          <div className="mx-auto px-4 sm:px-6 lg:pl-8 lg:pr-24">
-            <div className="relative flex justify-between h-navbar xl:grid xl:grid-cols-12">
-              <div className="flex justify-center lg:static xl:col-span-2">
+          <div className="mx-auto">
+            <div className="relative flex justify-between h-navbar md:grid md:grid-cols-12">
+              <div className="flex flex-col justify-center items-end md:col-span-3">
                 <div className="flex-shrink-0 flex items-center">
                   <h1 className={classNames('text-lg font-bold text-white', companyStyle)}>
                     {companyName}
                   </h1>
                 </div>
               </div>
-              <div className="flex items-center min-w-0 flex-1 md:px-8 lg:pr-0 lg:pl-20 xl:col-span-7">
+              <div className="flex items-center min-w-0 flex-1 md:pl-6 lg:pl-8 xl:pl-20 md:col-span-6 lg:col-span-6">
                 {searchBar && <SearchBar />}
               </div>
-              <div className="hidden sm:flex items-center lg:justify-end xl:col-span-3 mr-0">
+              <div className="hidden sm:flex flex-row items-center lg:justify-center md:col-span-3">
                 {showNoti && <NotifyPopover showNumberNotify useDropDown={false} />}
                 {showAva && showNoti && (
                   <div className="bg-purple-9 w-[1px] h-[34px] ml-2.5 mr-4" />
@@ -105,7 +105,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
                 {showAva && <UserProfilePopover />}
                 {renderInviteButton()}
               </div>
-              <div className="flex items-center md:absolute md:right-0 md:inset-y-0 lg:hidden">
+              <div className="flex items-center md:absolute md:right-0 md:inset-y-0 sm:hidden">
                 <Popover.Button className="-mx-2 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rose-500">
                   <span className="sr-only">Open menu</span>
                   {open ? (
@@ -117,7 +117,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
               </div>
             </div>
           </div>
-          <Popover.Panel as="nav" className="bg-white h-full lg:hidden" aria-label="Global">
+          <Popover.Panel as="nav" className="bg-white h-full sm:hidden" aria-label="Global">
             <div className="max-w-3xl mx-auto px-2 pt-2 pb-3 space-y-1 sm:px-4">
               {/* <SideBar /> */}
             </div>
