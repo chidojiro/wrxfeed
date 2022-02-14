@@ -16,7 +16,7 @@ import { TargetPropType } from '@api/types';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
-import { ReactComponent as Suitcase } from '@assets/icons/outline/suitcase.svg';
+import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
@@ -343,7 +343,7 @@ export const getVendorNameFromLineItem = (item: TransLineItem): string => {
 export const getIconByResultType = (
   type: TargetPropType,
 ): React.FC<React.SVGAttributes<SVGElement>> => {
-  if (type === TargetPropType.VENDOR) return Suitcase;
+  if (type === TargetPropType.VENDOR) return VendorIcon;
   if (type === TargetPropType.DEPARTMENT) return GroupUsers;
   if (type === TargetPropType.CATEGORY) return Files;
   return BasicsSearchSmall;
