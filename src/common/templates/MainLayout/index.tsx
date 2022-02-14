@@ -28,12 +28,12 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
     <div className={classNames('relative', className ?? '')}>
       {showNavBar && <NavBar />}
       <div className="pt-8 sm:pt-navbar pb-1 sm:pb-10">
-        <div className="relative min-h-screen max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12">
-          <div className="relative hidden lg:sticky lg:top-navbar lg:h-0 lg:block lg:col-span-2 xl:col-span-2">
+        <div className="relative min-h-screen max-w-3xl mx-auto md:max-w-full md:grid md:grid-cols-12">
+          <div className="relative hidden md:top-navbar md:sticky md:h-screen md:flex flex-1 md:col-span-3 lg:col-span-3 w-full">
             <SideBar />
           </div>
 
-          <main className="relative pt-12 lg:border-l lg:border-Gray-11 lg:pl-5 lg:col-span-10 xl:col-span-7">
+          <main className="relative pt-12 md:border-l md:border-Gray-11 md:pl-6 lg:pl-8 xl:pl-20 md:col-span-8 lg:col-span-8 xl:col-span-6">
             {children}
           </main>
 
