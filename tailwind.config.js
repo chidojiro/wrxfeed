@@ -12,7 +12,8 @@ module.exports = {
   theme: {
     extend: {
       fontSize: {
-        '2xs': '0.625rem',
+        '2xs': '0.6875rem',
+        '3xs': '0.625rem',
       },
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
@@ -74,6 +75,7 @@ module.exports = {
       },
       spacing: {
         'navbar': '56px',
+        '4.5': '18px',
       },
       shadow: {
 
