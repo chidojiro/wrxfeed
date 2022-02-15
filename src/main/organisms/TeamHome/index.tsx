@@ -1,12 +1,20 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
 import { classNames } from '@common/utils';
 import React, { useMemo } from 'react';
+import { MouseEventHandler } from 'react-router/node_modules/@types/react';
 
-import { TeamIcon, CategoryIcon, LoopIcon } from '@assets/index';
+import { Department, Target } from '@main/entity';
+
+import { getDepartmentBgColor, nFormatter } from '@main/utils';
+
 import Button from '@common/atoms/Button';
+import { TeamIcon, CategoryIcon, LoopIcon, BasicsEditCircle } from '@assets/index';
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
-import { Target } from '@main/entity';
-import { getDepartmentBgColor, nFormatter } from '@main/utils';
+import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
+import ExceedBar from '@main/atoms/ExceedBar';
+import { useSubscription } from '@main/hooks/subscription.hook';
+import Loading from '@common/atoms/Loading';
 
 const SYSTEM_ALERT_COLOR = '#ff5f68';
 // const TARGET_PLACEHOLDER = 10000;
@@ -15,10 +23,36 @@ const INACTIVE_TARGET_COLOR = '#d1d5db';
 
 interface TeamHomeProps {
   className?: string;
+  deptSelect: Department | null | undefined;
 }
 
-const TeamHome: React.VFC<TeamHomeProps> = ({ className = '' }) => {
+const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
+  const { subscribe, unsubscribe, isFollowing, isFollowLoading } = useSubscription();
   const onClickNewTarget = () => undefined;
+  const onClickEdit = () => undefined;
+  const onClickRetryTransactions = () => undefined;
+
+  const handleFollow: MouseEventHandler<HTMLButtonElement> = () => {
+    if (deptSelect) subscribe('departments', deptSelect);
+  };
+
+  const handleUnfollow: MouseEventHandler<HTMLButtonElement> = () => {
+    if (deptSelect) unsubscribe('departments', deptSelect);
+  };
+  const isFollow = deptSelect && isFollowing('departments', deptSelect);
+
+  const renderEditButton = () => {
+    return (
+      <button
+        type="button"
+        onClick={onClickEdit}
+        className="flex-row ml-auto hidden group-hover:flex"
+      >
+        <BasicsEditCircle className="text-Accent-2 fill-current path-no-filled" />
+        <p className="text-xs text-Accent-2 font-semibold ml-1.5">Edit</p>
+      </button>
+    );
+  };
   const renderTeamHeader = () => {
     return (
       <div>
@@ -38,17 +72,36 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '' }) => {
             />
           </div>
           <div className="flex flex-1 w-full">
-            <h2 className="text-white font-semibold text-xl">Core Field Operations</h2>
+            <h2 className="text-white font-semibold text-xl">{deptSelect?.name ?? '...'}</h2>
           </div>
-          <Button onClick={() => undefined} className="rounded-full">
-            <AddIcon
-              width={16}
-              height={16}
-              className="stroke-current path-no-stroke text-white"
-              viewBox="0 0 15 15"
-            />
-            <span className="text-white">Follow</span>
-          </Button>
+          {isFollow ? (
+            <Button onClick={handleUnfollow} className="group block relative rounded-full">
+              <TickIcon
+                width={16}
+                height={16}
+                className="stroke-current path-no-stroke text-white flex group-hover:hidden"
+                viewBox="0 0 15 15"
+              />
+              <span className="group-hover:hidden text-white text-sm">Following</span>
+              <span className="group-hover:flex hidden text-white text-sm">Unfollow</span>
+            </Button>
+          ) : (
+            <Button onClick={handleFollow} className="rounded-full bg-white">
+              {isFollowLoading ? (
+                <div className="w-5 h-5 flex justify-center items-center">
+                  <Loading width={16} height={16} />
+                </div>
+              ) : (
+                <AddIcon
+                  width={20}
+                  height={20}
+                  className="w-5 h-5 stroke-current path-no-stroke text-Gray-3"
+                  viewBox="0 0 15 15"
+                />
+              )}
+              <span className="text-Gray-3 text-sm">Follow</span>
+            </Button>
+          )}
         </div>
       </div>
     );
@@ -71,11 +124,12 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '' }) => {
     month: 2,
     year: 2022,
     amount: 1000000,
-    total: 200000,
+    total: 1200000,
     props: [],
   };
 
-  const targetName = 'Core Field Operations';
+  const targetName =
+    'Core Field Operations Core Field Operations Core Field Operations Core Field Operations Core Field Operations';
 
   const deptBgClass = useMemo(() => getDepartmentBgColor(targetName ?? ''), [targetName]);
   const isActive = true;
@@ -107,21 +161,23 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '' }) => {
       return (
         <div className="flex flex-col">
           <div className="flex flex-row space-x-0.5">
-            <div className="flex flex-col rounded-full" style={{ width: percentLength }}>
-              <div className="flex mt-1 w-full h-2" style={{ backgroundColor: currentColor }} />
-            </div>
-            <div className="flex flex-col flex-1 rounded-full">
+            <div className="flex flex-col" style={{ width: percentLength }}>
               <div
-                className={classNames('flex mt-1 w-full h-2')}
-                style={{ backgroundColor: totalColor }}
+                className="flex mt-1 w-full h-2 rounded-full"
+                style={{ backgroundColor: currentColor }}
               />
+              <div className="flex flex-row mt-1.5 text-2xs space-x-1.5">
+                <p className="text-Gray-6 font-normal">Spend</p>
+                <p className="text-Gray-3 font-bold">{currentCurrency}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-row">
-            <p className="flex text-3xs mt-1.5 font-bold ml-auto text-system-alert">
-              {currentCurrency}
-            </p>
-            <p className="flex text-Gray-6 text-3xs mt-1.5 font-bold">{`/${totalAmountCurrency}`}</p>
+            <div className="flex flex-col flex-1">
+              <ExceedBar className="flex mt-1 w-full h-2 rounded-full" color={totalColor} />
+              <div className="flex flex-row mt-1.5 ml-auto text-2xs space-x-1.5">
+                <p className="text-Gray-6 font-normal">Target</p>
+                <p className="text-Gray-3 font-bold">{totalAmountCurrency}</p>
+              </div>
+            </div>
           </div>
         </div>
       );
@@ -150,9 +206,27 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '' }) => {
   };
   const renderTargetRow = () => {
     return (
-      <div className="flex flex-col w-full justify-center pt-4 pb-4.5 px-6">
-        <p className="text-2xs text-Gray-3 font-normal mb-2">{targetName}</p>
+      <div className="flex flex-1 flex-col w-full justify-center pt-4 pb-4.5 px-6 group border-b border-Gray-11">
+        <div className="flex flex-row items-center mb-2 w-full">
+          <p className="text-2xs text-Gray-3 font-normal line-clamp-1 overflow-ellipsis">
+            {targetName}
+          </p>
+          {renderEditButton()}
+        </div>
         {renderCurrentPerTotalBar()}
+      </div>
+    );
+  };
+  const renderEmptyTarget = () => {
+    return (
+      <div className="flex flex-1 flex-col justify-center items-center w-full bg-purple-12 px-8">
+        <button type="button" onClick={onClickNewTarget}>
+          <p className="text-Gray-6 text-xs text-center">
+            Thats all of the teams targets 🎯
+            <br />
+            <span className="text-Gray-3 underline">create a new target</span>
+          </p>
+        </button>
       </div>
     );
   };
@@ -160,21 +234,22 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '' }) => {
     return (
       <div className="flex flex-col mt-px w-full">
         <div className="flex w-full flex-row px-6 py-3 items-center justify-between">
-          <p>Team Targets</p>
+          <p className="text-Gray-3 font-semibold">Team Targets</p>
           {renderAddNewTargetButton()}
         </div>
         {renderTargetRow()}
-        <div className="flex flex-row w-full border-t border-Gray-11">
+        <div className="flex flex-col sm:flex-row w-full">
           {renderTargetRow()}
-          <div className="flex w-px h-auto bg-Gray-11" />
-          {renderTargetRow()}
+          <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
+          {/* {renderTargetRow()} */}
+          {renderEmptyTarget()}
         </div>
       </div>
     );
   };
   const renderTopCategoryItem = () => {
     return (
-      <div className="flex flex-row items-center px-6 py-4 border-b border-Gray-11">
+      <div className="flex flex-row items-center px-6 py-4 border-b border-t border-t-white border-b-Gray-11 hover:border-Accent-4 bg-white hover:shadow-topCategoryHover hover:z-10">
         <p className="text-Gray-3 text-xs font-semibold">Core Vehicle In Market Labor</p>
         <p className="mx-1 text-Gray-6 text-sm">·</p>
         <p className="text-Gray-6 text-xs font-normal">January</p>
@@ -184,8 +259,8 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '' }) => {
   };
   const renderTopCategories = () => {
     return (
-      <div className="flex flex-col bg-white shadow-md rounded-lg mb-6">
-        <div className="flex flex-row items-center px-6 py-2 space-x-2 border-b border-Gray-11">
+      <div className="flex flex-col bg-white shadow-md rounded-lg overflow-hidden pb-6 mb-6">
+        <div className="flex flex-row items-center px-6 py-2.5 space-x-2 border-b border-Gray-11">
           <div className="flex w-6 h-6 justify-center items-center">
             <CategoryIcon
               className="w-4 h-4 fill-current path-no-filled text-Gray-3 opacity-100"
@@ -202,15 +277,20 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '' }) => {
   };
   const renderRecentTransactions = () => {
     return (
-      <div className="flex bg-white shadow-md rounded-t-lg flex-row px-6 py-2.5 mr-0.5 border-b border-Gray-11">
-        <div className="flex w-6 h-6 justify-center items-center">
+      <div className="flex bg-white shadow-md rounded-t-lg flex-row px-6 py-2.5 mr-0.5 border-b border-Gray-11 space-x-2">
+        <button
+          onClick={onClickRetryTransactions}
+          type="button"
+          className="flex w-6 h-6 justify-center items-center"
+        >
           <LoopIcon
             className="w-4 h-4 fill-current path-no-filled text-Gray-3 opacity-100"
             aria-hidden="true"
             width={16}
             height={16}
+            viewBox="0 -2 20 20"
           />
-        </div>
+        </button>
         <p className="text-Gray-3 text-base font-semibold">Transactions</p>
       </div>
     );
