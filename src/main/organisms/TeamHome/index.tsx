@@ -3,23 +3,23 @@ import { classNames } from '@common/utils';
 import React, { useMemo } from 'react';
 import { MouseEventHandler } from 'react-router/node_modules/@types/react';
 
-import { Department, Target } from '@main/entity';
+import { useSubscription } from '@main/hooks/subscription.hook';
 
+import { Department, Target } from '@main/entity';
 import { getDepartmentBgColor, nFormatter } from '@main/utils';
 
 import Button from '@common/atoms/Button';
-import { TeamIcon, CategoryIcon, LoopIcon, BasicsEditCircle } from '@assets/index';
+import Loading from '@common/atoms/Loading';
+import ExceedBar from '@main/atoms/ExceedBar';
+import TopCategories from '@main/molecules/TopCategories';
+import { TeamIcon, LoopIcon, BasicsEditCircle } from '@assets/index';
+
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
 import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
-import ExceedBar from '@main/atoms/ExceedBar';
-import { useSubscription } from '@main/hooks/subscription.hook';
-import Loading from '@common/atoms/Loading';
 
 const SYSTEM_ALERT_COLOR = '#ff5f68';
-// const TARGET_PLACEHOLDER = 10000;
 const INACTIVE_TARGET_COLOR = '#d1d5db';
-// const inactiveTarget = 'rgba(209,213,219,0.3)';
 
 interface TeamHomeProps {
   className?: string;
@@ -124,7 +124,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
     month: 2,
     year: 2022,
     amount: 1000000,
-    total: 1200000,
+    total: 800000,
     props: [],
   };
 
@@ -247,34 +247,6 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
       </div>
     );
   };
-  const renderTopCategoryItem = () => {
-    return (
-      <div className="flex flex-row items-center px-6 py-4 border-b border-t border-t-white border-b-Gray-11 hover:border-Accent-4 bg-white hover:shadow-topCategoryHover hover:z-10">
-        <p className="text-Gray-3 text-xs font-semibold">Core Vehicle In Market Labor</p>
-        <p className="mx-1 text-Gray-6 text-sm">·</p>
-        <p className="text-Gray-6 text-xs font-normal">January</p>
-        <p className="text-Gray-3 text-xs font-semibold ml-auto">$14,500.00</p>
-      </div>
-    );
-  };
-  const renderTopCategories = () => {
-    return (
-      <div className="flex flex-col bg-white shadow-md rounded-lg overflow-hidden pb-6 mb-6">
-        <div className="flex flex-row items-center px-6 py-2.5 space-x-2 border-b border-Gray-11">
-          <div className="flex w-6 h-6 justify-center items-center">
-            <CategoryIcon
-              className="w-4 h-4 fill-current path-no-filled text-Gray-3 opacity-100"
-              aria-hidden="true"
-              width={16}
-              height={16}
-            />
-          </div>
-          <p className="text-Gray-3 text-base font-semibold">Top Categories</p>
-        </div>
-        {[1, 2, 3, 4, 5, 6].map(renderTopCategoryItem)}
-      </div>
-    );
-  };
   const renderRecentTransactions = () => {
     return (
       <div className="flex bg-white shadow-md rounded-t-lg flex-row px-6 py-2.5 mr-0.5 border-b border-Gray-11 space-x-2">
@@ -301,7 +273,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
         {renderTeamHeader()}
         {renderTeamTargets()}
       </div>
-      {renderTopCategories()}
+      <TopCategories />
       {renderRecentTransactions()}
     </div>
   );
