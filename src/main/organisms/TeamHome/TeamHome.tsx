@@ -1,7 +1,7 @@
 import { classNames } from '@common/utils';
 import React, { useMemo } from 'react';
 
-import { TeamIcon, CategoryIcon } from '@assets/index';
+import { TeamIcon, CategoryIcon, LoopIcon } from '@assets/index';
 import Button from '@common/atoms/Button';
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
@@ -202,8 +202,16 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '' }) => {
   };
   const renderRecentTransactions = () => {
     return (
-      <div>
-        <div />
+      <div className="flex bg-white shadow-md rounded-t-lg flex-row px-6 py-2.5 mr-0.5 border-b border-Gray-11">
+        <div className="flex w-6 h-6 justify-center items-center">
+          <LoopIcon
+            className="w-4 h-4 fill-current path-no-filled text-Gray-3 opacity-100"
+            aria-hidden="true"
+            width={16}
+            height={16}
+          />
+        </div>
+        <p className="text-Gray-3 text-base font-semibold">Transactions</p>
       </div>
     );
   };

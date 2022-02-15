@@ -22,6 +22,7 @@ import { ReactComponent as SharpSpaceDashboard } from '@assets/icons/solid/sharp
 import { ReactComponent as Bank } from '@assets/icons/outline/bank.svg';
 import { ReactComponent as CategoryIcon } from '@assets/icons/outline/category-icon.svg';
 import { ReactComponent as TeamIcon } from '@assets/icons/outline/team-icon.svg';
+import { ReactComponent as LoopIcon } from '@assets/icons/outline/loop.svg';
 
 export {
   InviteIcon,
@@ -48,4 +49,5 @@ export {
   Bank,
   CategoryIcon,
   TeamIcon,
+  LoopIcon,
 };
