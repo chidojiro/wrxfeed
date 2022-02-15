@@ -63,11 +63,11 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
         <div className="flex flex-row">
           <div className="flex flex-col" style={{ width: percentLength }}>
             <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveColor }} />
-            <p className="text-Gray-3 text-2xs mt-1 font-bold ml-auto">{totalSpentCurrency}</p>
+            <p className="text-Gray-3 text-3xs mt-1 font-bold ml-auto">{totalSpentCurrency}</p>
           </div>
           <div className="flex flex-col flex-1 min-w-[60px]">
             <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveTarget }} />
-            <p className="text-Gray-6 text-2xs mt-1 font-bold ml-auto">{targetAmountCurrency}</p>
+            <p className="text-Gray-6 text-3xs mt-1 font-bold ml-auto">{targetAmountCurrency}</p>
           </div>
         </div>
       </div>
@@ -113,10 +113,10 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
             </div>
           </div>
           <div className="flex flex-row">
-            <p className="flex text-2xs mt-1 font-bold ml-auto text-system-alert">
+            <p className="flex text-3xs mt-1 font-bold ml-auto text-system-alert">
               {currentCurrency}
             </p>
-            <p className="flex text-Gray-6 text-2xs mt-1 font-bold">{`/${totalAmountCurrency}`}</p>
+            <p className="flex text-Gray-6 text-3xs mt-1 font-bold">{`/${totalAmountCurrency}`}</p>
           </div>
         </div>
       );
@@ -126,14 +126,14 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
       <div className="flex flex-row">
         <div className="flex flex-col" style={{ width: percentLength }}>
           <div className="flex mt-1 w-full h-1" style={{ backgroundColor: currentColor }} />
-          <p className="flex text-Gray-3 text-2xs mt-1 font-bold ml-auto">{currentCurrency}</p>
+          <p className="flex text-Gray-3 text-3xs mt-1 font-bold ml-auto">{currentCurrency}</p>
         </div>
         <div className="flex flex-col flex-1">
           <div
             className={classNames('flex mt-1 w-full h-1', styleTotal)}
             style={{ backgroundColor: totalColor }}
           />
-          <p className="flex text-Gray-6 text-2xs mt-1 font-bold ml-auto">{totalAmountCurrency}</p>
+          <p className="flex text-Gray-6 text-3xs mt-1 font-bold ml-auto">{totalAmountCurrency}</p>
         </div>
       </div>
     );
@@ -144,7 +144,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
     const exceedNumber = targetAmount - totalSpent;
     const exceedNumberCurrency = nFormatter(Math.round(Math.abs(exceedNumber) * 100) / 100);
     return (
-      <p className="text-system-alert font-bold font-regular group-hover:hidden ml-auto text-2xs truncate">
+      <p className="text-system-alert font-bold font-regular group-hover:hidden ml-auto text-3xs truncate">
         {`Exceeds target by ${exceedNumberCurrency}`}
       </p>
     );

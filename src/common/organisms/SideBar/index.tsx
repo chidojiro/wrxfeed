@@ -69,7 +69,7 @@ const SideBar: React.VFC = () => {
                 const isCurrentTab = currentTab?.location.pathname === leftTab.location.pathname;
                 return (
                   <RouterLink
-                    key={`tabs-${leftTab.name}`}
+                    key={`tabs-${leftTab?.name}`}
                     to={leftTab.location}
                     className={classNames(
                       isCurrentTab ? 'text-Accent-2 font-semibold' : 'text-Gray-3 font-regular',

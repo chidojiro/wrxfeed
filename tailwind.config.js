@@ -11,8 +11,12 @@ module.exports = {
   },
   theme: {
     extend: {
+      rotate: {
+        '40': '40deg',
+      },
       fontSize: {
-        '2xs': '0.625rem',
+        '2xs': '0.6875rem',
+        '3xs': '0.625rem',
       },
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
@@ -46,6 +50,7 @@ module.exports = {
         'Accent-1': '#3363FF',
         'Accent-2': '#6565FB',
         'Accent-3': '#DEE6FF',
+        'Accent-4': '#9797FC',
 
         'LightBG': '#F9FAFB',
         'Highlight': '#DDFF55',
@@ -74,12 +79,14 @@ module.exports = {
       },
       spacing: {
         'navbar': '56px',
+        '4.5': '18px',
       },
       shadow: {
 
       },
       boxShadow: {
         dropdown: '0 1px 1px 0 rgba(9, 30, 66, 0.31), 0 3px 5px 0 rgba(9, 30, 66, 0.2)',
+        topCategoryHover: '-4px 10px 8px 0 rgba(101, 101, 251, 0.03), 0 3px 10px 0 rgba(101, 101, 251, 0.1);',
       }
     },
   },

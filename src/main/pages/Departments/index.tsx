@@ -2,12 +2,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
-import { MouseEventHandler } from 'react-router/node_modules/@types/react';
 
 import { useQuery } from '@common/hooks';
 import { useFeed } from '@main/hooks/feed.hook';
 import { useDepartment } from '@main/hooks/department.hook';
-import { useSubscription } from '@main/hooks/subscription.hook';
 
 import { Category, Department, Vendor } from '@main/entity';
 import { FeedFilters, Pagination } from '@api/types';
@@ -15,15 +13,11 @@ import { FilterKeys } from '@main/hooks';
 import { scrollToTop } from '@main/utils';
 import { MainGroups } from '@common/constants';
 
-import Button from '@common/atoms/Button';
 import TargetPanel from '@main/organisms/TargetPanel';
 import FeedList from '@main/organisms/FeedList';
 import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
 import DepartmentList from '@main/organisms/DepartmentList';
-
-import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
-import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import TeamHome from '@main/organisms/TeamHome';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -39,7 +33,7 @@ const DepartmentsPage: React.VFC = () => {
   // Department states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
   const { departments, hasMore, isLoading } = useDepartment(filter);
-  const { subscribe, unsubscribe, isFollowing } = useSubscription();
+
   // Feeds states
   const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
     deptId
@@ -58,22 +52,23 @@ const DepartmentsPage: React.VFC = () => {
     updateCategory,
     cleanData,
   } = useFeed(feedsFilter);
-  // Variables
+
   const inDirectoryList = query.get('route') !== MainGroups.Feeds;
   const isFiltering = inDirectoryList
     ? !!feedsFilter.page?.offset || !!feedsFilter.page?.limit
     : FilterKeys.some((key) => query.has(key));
+
   const deptSelect = useMemo(() => {
-    if (!isFiltering || !feeds.length) return null;
-    if (feeds[0].department.id === feedsFilter.rootDepartment) {
+    if (!feeds.length) return null;
+    if (feeds[0].department.id === feedsFilter?.rootDepartment) {
       return feeds[0].department;
     }
+
     if (feeds[0].department.parent?.id === feedsFilter.rootDepartment) {
       return feeds[0].department.parent;
     }
     return null;
   }, [isFiltering, feeds]);
-  const isFollow = deptSelect && isFollowing('departments', deptSelect);
 
   const filterByRoute = useCallback(() => {
     if (deptId) {
@@ -95,7 +90,6 @@ const DepartmentsPage: React.VFC = () => {
   }, [deptId, query.toString(), feedsFilter.rootDepartment]);
 
   useEffect(() => {
-    // Scroll to top
     if (window.scrollY > 0) {
       window.scrollTo({
         top: 0,
@@ -144,47 +138,9 @@ const DepartmentsPage: React.VFC = () => {
     scrollToTop();
   };
 
-  const handleFollow: MouseEventHandler<HTMLButtonElement> = () => {
-    if (deptSelect) subscribe('departments', deptSelect);
-  };
-
-  const handleUnfollow: MouseEventHandler<HTMLButtonElement> = () => {
-    if (deptSelect) unsubscribe('departments', deptSelect);
-  };
-
   return (
     <MainLayout>
       <h1 className="sr-only">Department list</h1>
-      {isFiltering && (
-        <div className="flex px-4 sm:px-0 items-center justify-between space-x-4 pb-8">
-          <div className="flex flex-1 items-center space-x-4">
-            <ChevronLeftIcon onClick={history.goBack} />
-            <h1 className="text-Gray-1 text-xl font-bold">{deptSelect?.name ?? ''}</h1>
-          </div>
-          {isFollow ? (
-            <Button onClick={handleUnfollow} className="group block relative">
-              <TickIcon
-                width={16}
-                height={16}
-                className="stroke-current path-no-stroke text-Gray-3 flex group-hover:hidden"
-                viewBox="0 0 15 15"
-              />
-              <span className="flex group-hover:hidden">Following</span>
-              <span className="group-hover:flex hidden">Unfollow</span>
-            </Button>
-          ) : (
-            <Button onClick={handleFollow}>
-              <AddIcon
-                width={16}
-                height={16}
-                className="stroke-current path-no-stroke text-Gray-3"
-                viewBox="0 0 15 15"
-              />
-              <span className="text-Gray-3">Follow</span>
-            </Button>
-          )}
-        </div>
-      )}
       {!isFiltering && inDirectoryList ? (
         <DepartmentList
           departments={departments}
@@ -195,14 +151,17 @@ const DepartmentsPage: React.VFC = () => {
           onSelectRoot={handleDepartmentSelect}
         />
       ) : (
-        <FeedList
-          feeds={feeds}
-          isLoading={feedsLoading || isLoading}
-          hasMore={hasMoreFeeds}
-          onLoadMore={handleFeedsLoadMore}
-          onFilter={handleFeedsFilter}
-          updateCategory={updateCategory}
-        />
+        <>
+          <TeamHome deptSelect={deptSelect} />
+          <FeedList
+            feeds={feeds}
+            isLoading={feedsLoading || isLoading}
+            hasMore={hasMoreFeeds}
+            onLoadMore={handleFeedsLoadMore}
+            onFilter={handleFeedsFilter}
+            updateCategory={updateCategory}
+          />
+        </>
       )}
       <MainRightSide>
         <TargetPanel />
