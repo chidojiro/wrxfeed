@@ -381,3 +381,14 @@ export const stackTargetsBySpend = (data: Target[]): Target[] => {
 export const getUniqueListBy = (arr: any[], objectKey: string): any[] => {
   return [...new Map(arr.map((item: any) => [item[objectKey], item])).values()];
 };
+
+export const getTargetName = (target: Target): string => {
+  const { props = [] } = target;
+  if (!Array.isArray(props) || props.length === 0) return 'Invalid target!';
+  let targetName = target.props[0].name;
+  if (props.length === 1) return targetName;
+  for (let i = 1; i < props?.length; i += 1) {
+    targetName += `, ${props[i].name}`;
+  }
+  return targetName;
+};

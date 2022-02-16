@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
+
 import { Target } from '@main/entity';
-import { BasicsEditCircle } from '@assets';
-import { getDepartmentBgColor, nFormatter } from '@main/utils';
+import { getDepartmentBgColor, getTargetName, nFormatter } from '@main/utils';
 import { classNames } from '@common/utils';
+import { BasicsEditCircle } from '@assets';
 
 const SYSTEM_ALERT_COLOR = '#ff5f68';
 const TARGET_PLACEHOLDER = 10000;
@@ -11,17 +12,6 @@ export interface TargetRowProps {
   index?: number;
   onClickEdit: () => void;
 }
-
-export const getTargetName = (target: Target): string => {
-  const { props = [] } = target;
-  if (!Array.isArray(props) || props.length === 0) return 'Invalid target!';
-  let targetName = target.props[0].name;
-  if (props.length === 1) return targetName;
-  for (let i = 1; i < props?.length; i += 1) {
-    targetName += `, ${props[i].name}`;
-  }
-  return targetName;
-};
 
 const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
   const targetName = getTargetName(target);

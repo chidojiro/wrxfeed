@@ -3,8 +3,7 @@ import { toast } from 'react-toastify';
 
 import { useTarget } from '@main/hooks';
 
-import { TargetFilter, TargetProp } from '@api/types';
-import { SearchResult } from '@main/types';
+import { TargetFilter } from '@api/types';
 import { Target } from '@main/entity';
 import { classNames } from '@common/utils';
 
@@ -108,52 +107,6 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     setShowAddTarget(true);
   };
 
-  const onCreateTarget = (amountInput: number | null, tags: SearchResult[]) => {
-    const props: TargetProp[] = tags.map((tag: SearchResult) => {
-      return {
-        id: tag?.directoryId,
-        type: tag?.type,
-        name: tag?.title ?? '',
-      };
-    });
-    postTarget({
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
-      amount: amountInput,
-      props,
-    });
-  };
-  const onDeleteTarget = (targetId: number, amountInput: number, tags: SearchResult[]) => {
-    const props: TargetProp[] = tags.map((tag: SearchResult) => {
-      return {
-        id: tag?.directoryId,
-        type: tag?.type,
-        name: tag?.title ?? '',
-      };
-    });
-    deleteTarget(targetId, {
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
-      amount: amountInput,
-      props,
-    });
-  };
-  const onSaveTarget = (targetId: number, amountInput: number, tags: SearchResult[]) => {
-    const props: TargetProp[] = tags.map((tag: SearchResult) => {
-      return {
-        id: tag?.directoryId,
-        type: tag?.type,
-        name: tag?.title ?? '',
-      };
-    });
-    putTarget(targetId, {
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
-      amount: amountInput,
-      props,
-    });
-  };
-
   const renderTargets = () => {
     if (isGetTargets && targets?.length === 0) {
       return (
@@ -212,9 +165,9 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
         open={showAddTarget}
         onClose={() => hideAddTargetModal()}
         onCancel={() => hideAddTargetModal()}
-        onCreate={onCreateTarget}
-        onSave={onSaveTarget}
-        onDelete={onDeleteTarget}
+        deleteTarget={deleteTarget}
+        postTarget={postTarget}
+        putTarget={putTarget}
         itemEditing={itemEditing}
         isCreatingOrSaving={isPostTarget || isPutTarget}
         isDeleting={isDeleteTarget}
