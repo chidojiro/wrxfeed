@@ -161,13 +161,14 @@ export interface DepartmentFilter extends Pagination {
 }
 export interface CategoryFilter extends Pagination {
   term?: string;
-  dep?: number;
+  dep?: number; // department id
 }
 
 export interface TargetFilter extends Pagination {
   year: number;
   month: number;
   timestamp?: number;
+  dep?: number; // department id
 }
 
 export interface PutTargetParams {

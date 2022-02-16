@@ -112,7 +112,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
     <div className={classNames('w-full', className)}>
       <div className="flex flex-col rounded-lg shadow-md bg-white overflow-hidden mb-6">
         {renderTeamHeader()}
-        <TeamTargets />
+        {deptSelect && <TeamTargets dept={deptSelect} />}
       </div>
       {deptSelect && <TopCategories departmentId={deptSelect?.id} />}
       {renderRecentTransactions()}

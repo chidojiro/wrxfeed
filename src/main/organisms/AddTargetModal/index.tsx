@@ -8,7 +8,7 @@ import { classNames, formatToCurrency, replaceAll } from '@common/utils';
 import { getIconByResultType, getPropTypeDisplayName } from '@main/utils';
 
 import { SearchResult } from '@main/types';
-import { TargetProp } from '@api/types';
+import { PostTargetParams, PutTargetParams, TargetProp } from '@api/types';
 import { Target } from '@main/entity';
 
 import Modal from '@common/atoms/Modal';
@@ -23,12 +23,13 @@ export type AddTargetModalProps = {
   open: boolean;
   onClose: () => void;
   onCancel: () => void;
-  onCreate: (amountInput: number | null, tags: SearchResult[]) => void;
-  onSave: (targetId: number, amountInput: number, tags: SearchResult[]) => void;
-  onDelete: (targetId: number, amountInput: number, tags: SearchResult[]) => void;
+  deleteTarget: (id: number, data: PutTargetParams) => void;
+  postTarget: (data: PostTargetParams) => void;
+  putTarget: (id: number, data: PutTargetParams) => void;
   itemEditing: Target | null;
   isCreatingOrSaving: boolean;
   isDeleting: boolean;
+  initTags?: SearchResult[];
 };
 
 type AddTargetTagInputHandler = React.ElementRef<typeof AddTargetTagInput>;
@@ -37,21 +38,68 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   open = false,
   onClose,
   onCancel,
-  onCreate,
-  onSave,
-  onDelete,
+  deleteTarget,
+  putTarget,
+  postTarget,
   itemEditing,
   isCreatingOrSaving,
   isDeleting,
+  initTags,
 }) => {
   const tagInputRef = useRef<AddTargetTagInputHandler>(null);
   const [keyword, setKeyword] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const isEdit = itemEditing !== null;
-  const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
+  const [defaultTags, setDefaultTags] = useState<SearchResult[]>(initTags ?? []);
   const [enableCreate, setEnableCreate] = useState<boolean>(false);
 
   const { results, isLoading: isSearching, onClear } = useSearch({ keyword });
+
+  const onCreateTarget = (amountInput: number | null, tags: SearchResult[]) => {
+    const props: TargetProp[] = tags.map((tag: SearchResult) => {
+      return {
+        id: tag?.directoryId,
+        type: tag?.type,
+        name: tag?.title ?? '',
+      };
+    });
+    postTarget({
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      amount: amountInput,
+      props,
+    });
+  };
+  const onDeleteTarget = (targetId: number, amountInput: number, tags: SearchResult[]) => {
+    const props: TargetProp[] = tags.map((tag: SearchResult) => {
+      return {
+        id: tag?.directoryId,
+        type: tag?.type,
+        name: tag?.title ?? '',
+      };
+    });
+    deleteTarget(targetId, {
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      amount: amountInput,
+      props,
+    });
+  };
+  const onSaveTarget = (targetId: number, amountInput: number, tags: SearchResult[]) => {
+    const props: TargetProp[] = tags.map((tag: SearchResult) => {
+      return {
+        id: tag?.directoryId,
+        type: tag?.type,
+        name: tag?.title ?? '',
+      };
+    });
+    putTarget(targetId, {
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear(),
+      amount: amountInput,
+      props,
+    });
+  };
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -97,7 +145,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const onClickDelete = () => {
     if (!itemEditing) return;
     const tags = tagInputRef.current?.getItems() || [];
-    onDelete(itemEditing?.id, parseInt(amount, 10), tags);
+    onDeleteTarget(itemEditing?.id, parseInt(amount, 10), tags);
   };
   const onClickCancel = () => {
     onCancel();
@@ -115,10 +163,10 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     //   return;
     // }
     if (isEdit) {
-      onSave(itemEditing?.id, amountInt, tags);
+      onSaveTarget(itemEditing?.id, amountInt, tags);
       return;
     }
-    onCreate(amountInt, tags);
+    onCreateTarget(amountInt, tags);
   };
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(formatToCurrency(event.target.value, ''));

@@ -6,6 +6,7 @@ import { classNames, formatCurrency } from '@common/utils';
 import { Category } from '@main/entity';
 import { CategoryIcon } from '@assets/index';
 import { CategoryFilter } from '@api/types';
+import Loading from '@common/atoms/Loading';
 
 const LIMIT = 6;
 const INIT_PAGINATION = Object.freeze({
@@ -23,10 +24,13 @@ const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departme
     ...INIT_PAGINATION,
     dep: departmentId,
   });
-  const { categories = [] } = useCategory(filter);
+  const { categories = [], isLoading } = useCategory(filter);
   const renderTopCategoryItem = (category: Category) => {
     return (
-      <div className="flex flex-row items-center px-6 py-4 border-b border-t border-t-white border-b-Gray-11 hover:border-Accent-4 bg-white hover:shadow-topCategoryHover hover:z-10">
+      <div
+        key={`TopCategories-${category.id}`}
+        className="flex flex-row items-center px-6 py-4 border-b border-t border-t-white border-b-Gray-11 hover:border-Accent-4 bg-white hover:shadow-topCategoryHover hover:z-10"
+      >
         <p className="text-Gray-3 text-xs font-semibold">{category?.name}</p>
         <p className="mx-1 text-Gray-6 text-sm">·</p>
         <p className="text-Gray-6 text-xs font-normal">{dayjs().month(3).format('MMMM')}</p>
@@ -54,6 +58,11 @@ const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departme
         </div>
         <p className="text-Gray-3 text-base font-semibold">Top Categories</p>
       </div>
+      {isLoading && (
+        <div className="w-5 h-5 flex justify-center items-center self-center mt-6">
+          <Loading width={16} height={16} />
+        </div>
+      )}
       {categories.map(renderTopCategoryItem)}
     </div>
   );
