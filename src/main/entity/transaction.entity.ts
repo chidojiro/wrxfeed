@@ -17,6 +17,9 @@ export type Category = {
   id: number;
   name: string;
   visibility?: Visibility;
+  year?: number;
+  month?: number;
+  amount?: number;
 };
 
 export type Vendor = {

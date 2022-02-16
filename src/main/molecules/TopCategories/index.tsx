@@ -1,25 +1,38 @@
-import { classNames } from '@common/utils';
-import React from 'react';
+import React, { useState } from 'react';
+import dayjs from 'dayjs';
 
+import { useCategory } from '@main/hooks/category.hook';
+import { classNames, formatCurrency } from '@common/utils';
 import { Category } from '@main/entity';
 import { CategoryIcon } from '@assets/index';
+import { CategoryFilter } from '@api/types';
+
+const LIMIT = 6;
+const INIT_PAGINATION = Object.freeze({
+  offset: 0,
+  limit: LIMIT,
+});
 
 interface TopCategoriesProps {
   className?: string;
-  categories?: Category[];
+  departmentId: number;
 }
 
-const TopCategories: React.VFC<TopCategoriesProps> = ({
-  className = '',
-  categories = [1, 2, 3, 4, 5, 6],
-}) => {
-  const renderTopCategoryItem = () => {
+const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departmentId }) => {
+  const [filter] = useState<CategoryFilter>({
+    ...INIT_PAGINATION,
+    dep: departmentId,
+  });
+  const { categories = [] } = useCategory(filter);
+  const renderTopCategoryItem = (category: Category) => {
     return (
       <div className="flex flex-row items-center px-6 py-4 border-b border-t border-t-white border-b-Gray-11 hover:border-Accent-4 bg-white hover:shadow-topCategoryHover hover:z-10">
-        <p className="text-Gray-3 text-xs font-semibold">Core Vehicle In Market Labor</p>
+        <p className="text-Gray-3 text-xs font-semibold">{category?.name}</p>
         <p className="mx-1 text-Gray-6 text-sm">·</p>
-        <p className="text-Gray-6 text-xs font-normal">January</p>
-        <p className="text-Gray-3 text-xs font-semibold ml-auto">$14,500.00</p>
+        <p className="text-Gray-6 text-xs font-normal">{dayjs().month(3).format('MMMM')}</p>
+        <p className="text-Gray-3 text-xs font-semibold ml-auto">
+          {`$${formatCurrency(category?.amount ?? 0)}`}
+        </p>
       </div>
     );
   };
