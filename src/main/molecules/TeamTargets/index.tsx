@@ -107,32 +107,41 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept }) => {
     const targetView: ReactNode[] = [];
     for (let i = 1; i < data.length; i += 1) {
       const item = data[i];
+      const nextItem = data[i + 1];
       const left = data.length - (i + 1);
       if (left > 0) {
         targetView.push(
-          <div className="flex flex-col sm:flex-row w-full">
+          <div className="flex flex-col sm:flex-row w-full" key={`targetView-${item?.id}`}>
             <TeamTargetRow target={item} onClickEdit={() => onClickEdit(item)} />
             <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
-            <TeamTargetRow target={item} onClickEdit={() => onClickEdit(item)} />
+            <TeamTargetRow target={item} onClickEdit={() => onClickEdit(nextItem)} />
           </div>,
         );
-      } else {
+        i += 1;
+      }
+      if (left === 0) {
         targetView.push(
-          <div>
+          <div className="flex flex-col sm:flex-row w-full" key={`targetView-${item?.id}`}>
             <TeamTargetRow target={item} onClickEdit={() => onClickEdit(item)} />
+            <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
+            <EmptyTarget onClickNewTarget={onClickNewTarget} />
           </div>,
         );
       }
     }
-    if (targetView.length < 2) {
-      targetView.push(<EmptyTarget onClickNewTarget={onClickNewTarget} />);
+    if (targetView.length === 0) {
+      targetView.push(
+        <div key="targetView-EmptyTarget">
+          <EmptyTarget onClickNewTarget={onClickNewTarget} />
+        </div>,
+      );
     }
     return targetView;
   };
 
   const prePopulatedProps: SearchResult = {
     id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${dept?.id}`,
-    title: '',
+    title: dept?.name,
     type: TargetPropType.DEPARTMENT,
     directoryId: dept.id,
   };

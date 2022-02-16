@@ -21,6 +21,10 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) =
   const deptBgClass = useMemo(() => getDepartmentBgColor(targetName ?? ''), [targetName]);
   const isActive = (target?.amount ?? 0) > 0 && target?.id !== null;
 
+  const totalSpent = target?.total ?? 0;
+  const targetAmount = target?.amount ?? 0;
+  const isExceeds = totalSpent > targetAmount;
+
   const renderEditButton = () => {
     return (
       <button
@@ -34,13 +38,10 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) =
     );
   };
   const renderCurrentPerTotalBar = () => {
-    const totalSpent = target?.total ?? 0;
-    const targetAmount = target?.amount ?? 0;
-
     let percent = (totalSpent / targetAmount) * 100;
     const currentCurrency = nFormatter(totalSpent);
     const totalAmountCurrency = nFormatter(targetAmount);
-    const isExceeds = totalSpent > targetAmount;
+
     if (isExceeds) {
       percent = (targetAmount / totalSpent) * 100;
     }
@@ -66,7 +67,7 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) =
               />
               <div className="flex flex-row mt-1.5 text-2xs space-x-1.5">
                 <p className="text-Gray-6 font-normal">Spend</p>
-                <p className="text-Gray-3 font-bold">{currentCurrency}</p>
+                <p className="text-system-alert font-bold">{currentCurrency}</p>
               </div>
             </div>
             <div className="flex flex-col flex-1">
@@ -102,12 +103,23 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) =
       </div>
     );
   };
+  const renderAlertText = () => {
+    if (!isExceeds) return null;
+    const exceedNumber = targetAmount - totalSpent;
+    const exceedNumberCurrency = nFormatter(Math.round(Math.abs(exceedNumber) * 100) / 100);
+    return (
+      <p className="text-system-alert font-bold font-regular group-hover:hidden ml-auto text-3xs truncate">
+        {`Exceeds target by ${exceedNumberCurrency}`}
+      </p>
+    );
+  };
   return (
     <div className="flex flex-1 flex-col w-full justify-center pt-4 pb-4.5 px-6 group border-b border-Gray-11">
       <div className="flex flex-row items-center mb-2 w-full">
         <p className="text-2xs text-Gray-3 font-normal line-clamp-1 overflow-ellipsis">
           {targetName ?? '...'}
         </p>
+        {renderAlertText()}
         {renderEditButton()}
       </div>
       {renderCurrentPerTotalBar()}

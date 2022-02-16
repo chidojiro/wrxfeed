@@ -5,7 +5,7 @@ import { useDebounce } from '@common/hooks';
 import { useSearch } from '@main/hooks/search.hook';
 
 import { classNames, formatToCurrency, replaceAll } from '@common/utils';
-import { getIconByResultType, getPropTypeDisplayName } from '@main/utils';
+import { getIconByResultType, getPropTypeDisplayName, getUniqueListBy } from '@main/utils';
 
 import { SearchResult } from '@main/types';
 import { PostTargetParams, PutTargetParams, TargetProp } from '@api/types';
@@ -44,13 +44,13 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   itemEditing,
   isCreatingOrSaving,
   isDeleting,
-  initTags,
+  initTags = [],
 }) => {
   const tagInputRef = useRef<AddTargetTagInputHandler>(null);
   const [keyword, setKeyword] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const isEdit = itemEditing !== null;
-  const [defaultTags, setDefaultTags] = useState<SearchResult[]>(initTags ?? []);
+  const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
   const [enableCreate, setEnableCreate] = useState<boolean>(false);
 
   const { results, isLoading: isSearching, onClear } = useSearch({ keyword });
@@ -226,7 +226,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               onTextChange={debounceSearchRequest}
               loading={isSearching}
               maxTag={40}
-              defaultItems={defaultTags}
+              defaultItems={getUniqueListBy([...defaultTags, ...(initTags ?? [])], 'id')}
               autoFocus
               onItemsChange={(items: SearchResult[]) => {
                 if (items.length > 0) {
