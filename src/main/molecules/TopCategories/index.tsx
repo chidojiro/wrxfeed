@@ -33,7 +33,13 @@ const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departme
       >
         <p className="text-Gray-3 text-xs font-semibold">{category?.name}</p>
         <p className="mx-1 text-Gray-6 text-sm">·</p>
-        <p className="text-Gray-6 text-xs font-normal">{dayjs().month(3).format('MMMM')}</p>
+        <p className="text-Gray-6 text-xs font-normal">
+          {category?.month
+            ? dayjs()
+                .month(category?.month - 1)
+                .format('MMMM')
+            : '...'}
+        </p>
         <p className="text-Gray-3 text-xs font-semibold ml-auto">
           {`$${formatCurrency(category?.amount ?? 0)}`}
         </p>
