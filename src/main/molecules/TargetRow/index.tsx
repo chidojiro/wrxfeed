@@ -1,136 +1,34 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Target } from '@main/entity';
-import { BasicsEditCircle, BasicsXSmall } from '@assets';
-import { PostTargetParams, PutTargetParams } from '@api/types';
-import Loading from '@common/atoms/Loading';
+import { BasicsEditCircle } from '@assets';
 import { getDepartmentBgColor, nFormatter } from '@main/utils';
-import { classNames, formatToCurrency, replaceAll } from '@common/utils';
+import { classNames } from '@common/utils';
 
 const SYSTEM_ALERT_COLOR = '#ff5f68';
 const TARGET_PLACEHOLDER = 10000;
 export interface TargetRowProps {
   target: Target;
   index?: number;
-  onPostTarget: (data: PostTargetParams) => void;
-  onPutTarget: (id: number, data: PutTargetParams) => void;
-  isPutTarget: boolean;
-  isPostTarget: boolean;
+  onClickEdit: () => void;
 }
 
-const TargetRow: React.VFC<TargetRowProps> = ({
-  target,
-  onPostTarget,
-  onPutTarget,
-  isPutTarget,
-  isPostTarget,
-}) => {
-  const [isEdit, setEdit] = useState<boolean>(false);
-  const [amount, setAmount] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
-  const inputRef = useRef<HTMLInputElement>(null);
+export const getTargetName = (target: Target): string => {
+  const { props = [] } = target;
+  if (!Array.isArray(props) || props.length === 0) return 'Invalid target!';
+  let targetName = target.props[0].name;
+  if (props.length === 1) return targetName;
+  for (let i = 1; i < props?.length; i += 1) {
+    targetName += `, ${props[i].name}`;
+  }
+  return targetName;
+};
 
-  useEffect(() => {
-    if (!isPutTarget || !isPostTarget) {
-      setLoading(false);
-      setEdit(false);
-    }
-  }, [isPutTarget, isPostTarget]);
-
-  const deptBgClass = useMemo(() => getDepartmentBgColor(target?.name ?? ''), [target?.name]);
+const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
+  const targetName = getTargetName(target);
+  const deptBgClass = useMemo(() => getDepartmentBgColor(targetName ?? ''), [targetName]);
   const isActive = (target?.amount ?? 0) > 0 && target?.id !== null;
 
-  const handlePostTarget = (amountInput: number) => {
-    onPostTarget({
-      month: new Date().getMonth() + 1, // Get the month (0-11)
-      year: new Date().getFullYear(),
-      amount: amountInput,
-      departmentId: target?.depId,
-    });
-  };
-
-  const handlePutTarget = (newAmount: number) => {
-    onPutTarget(target.id, {
-      amount: newAmount,
-    });
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter') {
-      const amountNumber = replaceAll(amount, ',', '');
-      if (isActive) {
-        setLoading(true);
-        handlePutTarget(parseInt(amountNumber, 10));
-      } else {
-        setLoading(true);
-        handlePostTarget(parseInt(amountNumber, 10));
-      }
-    }
-  };
-
-  const handleClickClearButton = () => {
-    if (amount === '') {
-      setEdit(false);
-      return;
-    }
-    setAmount('');
-  };
-
-  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(event.target.value);
-    setAmount(formatToCurrency(event.target.value, ''));
-  };
-
-  const onBlurInput = () => {
-    setEdit(false);
-    setAmount('');
-  };
-
-  if (isEdit) {
-    const currentTargetAsPlaceHolder = formatToCurrency(
-      `${target?.amount ? Math.abs(target?.amount) : TARGET_PLACEHOLDER}`,
-      '',
-    );
-    return (
-      <div className="flex flex-row py-3 px-6 mb-4">
-        <div className="flex flex-col">
-          <p className="text-xs text-Gray-6 font-normal">{target?.name}</p>
-          {!!loading && <Loading width={15} height={15} className="flex mt-1" />}
-          {/* <Loading width={15} height={15} className="flex mt-1" /> */}
-        </div>
-        <div className="flex ml-auto flex-col">
-          <p className="w-32 ml-auto text-right text-sm text-Gray-3 font-semibold">
-            Edit target amount
-          </p>
-          <div className="flex flex-1 w-[120px] max-w-lg flex-row items-center mt-1 py-2 border-b border-Gray-11">
-            <p className="text-sm text-Gray-6">$</p>
-            <input
-              ref={inputRef}
-              onKeyDown={handleKeyDown}
-              placeholder={currentTargetAsPlaceHolder}
-              className="flex flex-1 mx-2 text-sm outline-none border-none w-[76px]"
-              style={{ color: 'rgba 125 132 144, 0.5' }}
-              onBlur={onBlurInput}
-              onChange={onChangeInput}
-              value={amount}
-            />
-            <button type="button" onClick={handleClickClearButton}>
-              <BasicsXSmall className="flex w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const renderEditButton = () => {
-    const onClickEdit = () => {
-      setTimeout(() => {
-        if (!isEdit) {
-          inputRef.current?.focus();
-        }
-      }, 500);
-      setEdit(!isEdit);
-    };
     return (
       <button
         type="button"
@@ -159,7 +57,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     return (
       <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
         <div className="flex flex-row items-center">
-          <p className="text-Gray-6 font-regular text-sm">{target?.name}</p>
+          <p className="text-Gray-6 font-regular text-sm truncate">{targetName}</p>
           {renderEditButton()}
         </div>
         <div className="flex flex-row">
@@ -256,10 +154,10 @@ const TargetRow: React.VFC<TargetRowProps> = ({
     <div className="group flex px-6 py-2 h-16 bg-white hover:bg-Gray-12 flex-col">
       <div className="flex flex-row items-center">
         <p
-          className="text-Gray-6 font-regular text-sm truncate max-w-xs"
-          style={{ maxWidth: '145px' }}
+          className="text-Gray-6 font-regular text-sm truncate max-w-xs w-full mr-2"
+          // style={{ maxWidth: '200px' }}
         >
-          {target?.name}
+          {targetName}
         </p>
         {renderAlertText()}
         {renderEditButton()}

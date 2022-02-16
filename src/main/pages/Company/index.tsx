@@ -91,10 +91,10 @@ const CompanyPage: React.VFC = () => {
     if (filterKey && feeds.length > 0) {
       const firstFeed = feeds[0];
       switch (filterKey) {
-        case FilterKeys[2]: // vendor
+        case FilterKeys[2]:
           getFilterVendorById(filterKey);
           break;
-        case FilterKeys[3]: // rootDepartment
+        case FilterKeys[3]:
           if (firstFeed?.department?.parent) {
             setFilterTitle(firstFeed?.department?.parent?.name);
           }
@@ -142,10 +142,8 @@ const CompanyPage: React.VFC = () => {
     readAllTransactions();
   };
 
-  // Subscribe feed event
   useFeedChannel(FeedChannelEvents.NEW_ITEM, (data: FeedEventData) => {
     if (data.id) {
-      // Increase counter
       setNewFeedCount((prevCount) => ({
         ...prevCount,
         [location.pathname]: prevCount[location.pathname] + 1,

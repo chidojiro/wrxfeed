@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { Menu } from '@headlessui/react';
 
 import { FeedBackType } from '@main/types';
-import { isEmptyOrSpaces } from '@main/utils';
+import { getVendorNameFromLineItem, isEmptyOrSpaces } from '@main/utils';
 import { TransLineItem } from '@main/entity';
 import { classNames, formatCurrency } from '@common/utils';
 
@@ -80,7 +80,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     {
       id: 'vendor-name',
       key: 'Vendor',
-      value: item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`,
+      value: getVendorNameFromLineItem(item),
     },
     {
       id: 'created-by',
@@ -97,6 +97,11 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       key: 'Approver',
       value: item?.transaction?.billApproverName ?? '...',
     },
+    {
+      id: 'transaction-status',
+      key: 'Status',
+      value: item?.transaction?.status ?? '',
+    },
   ];
 
   const onClickMore = () => undefined;
@@ -105,7 +110,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   };
 
   const renderVendorName = () => {
-    const vendorName = item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`;
+    const vendorName = getVendorNameFromLineItem(item);
     return <h1 className="text-base font-semibold text-Gray-3">{vendorName}</h1>;
   };
 

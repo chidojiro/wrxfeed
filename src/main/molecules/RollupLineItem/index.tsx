@@ -1,13 +1,18 @@
-// import { MessageTextAlt } from '@assets/index';
-import React, { useEffect, useState } from 'react';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React, { useEffect, useState, useRef } from 'react';
 import dayjs from 'dayjs';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { TransLineItem, Vendor } from '@main/entity';
-import EventEmitter, { EventName } from '@main/EventEmitter';
-import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
-
 import { useApi } from '@api';
+import { useIntersection } from '@common/hooks';
+
+import EventEmitter, { EventName } from '@main/EventEmitter';
+import { TransLineItem, Vendor } from '@main/entity';
+import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
+import { getVendorNameFromLineItem } from '@main/utils';
+import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@src/config';
+
 import { lineItemSelectState } from '@main/states/lineItems.state';
 import { slideOverOpenState } from '@main/states/slideOver.state';
 
@@ -26,12 +31,26 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   onClickMessage,
   onClickVendor,
 }) => {
+  const viewRef = useRef<HTMLButtonElement>(null);
+  const isVisible = useIntersection(viewRef.current || undefined, '0px');
   const { maskLineItemAsRead } = useApi();
-
-  const [isRead, setRead] = useState(false);
 
   const [lineItemSelect, setLineItemSelect] = useRecoilState(lineItemSelectState);
   const slideOverOpened = useRecoilValue(slideOverOpenState);
+
+  const [isRead, setRead] = useState(false);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (isVisible) {
+      timeout = setTimeout(() => {
+        setRead(true);
+      }, REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT);
+    }
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [isVisible]);
 
   useEffect(() => {
     if (lineItem?.meta?.isRead === false) {
@@ -40,7 +59,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   }, [lineItem?.id, lineItem?.meta?.isRead, maskLineItemAsRead]);
 
   const renderMessages = () => {
-    const isShowMessage = false; // lineItem?.commentCount > 0;
+    const isShowMessage = false;
     if (isShowMessage) {
       return (
         <button onClick={onClickMessage} type="button" className="flex h-4 w-8 flex-row ml-4">
@@ -53,7 +72,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   };
 
   const renderGreenDot = () => {
-    if (lineItem?.meta?.isRead === false && !isRead) {
+    if (lineItem?.meta?.isRead === false && isRead === false) {
       return <div className="flex w-1 h-1 rounded-full bg-Green-4 mr-1.5" />;
     }
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
@@ -77,16 +96,14 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
   };
 
   const renderVendorName = () => {
-    const vendorName =
-      lineItem?.vendor?.name || lineItem?.description || `Expense: ${lineItem?.vendorName}`;
+    const vendorName = getVendorNameFromLineItem(lineItem);
     return (
-      <button
-        type="button"
+      <div
         className="hover:underline flex flex-row items-center max-w-[140px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[450px]"
         onClick={onClickLineItemVendor}
       >
         <p className="text-Gray-6 text-xs font-semibold text-left truncate">{vendorName}</p>
-      </button>
+      </div>
     );
   };
 
@@ -95,6 +112,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({
 
   return (
     <button
+      ref={viewRef}
       type="button"
       aria-hidden="true"
       className={classNames(

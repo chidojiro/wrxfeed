@@ -20,6 +20,7 @@ import {
   LoginFormModel,
   Profile,
   ProfileFormModel,
+  SearchTypes,
 } from '@auth/types';
 import { InviteFormModel, FeedBackFormModel } from '@main/types';
 
@@ -80,6 +81,7 @@ export interface ApiClient {
   getTargets: (filters?: TargetFilter) => Promise<Target[]>;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  deleteTarget: (id: number, data: PutTargetParams) => Promise<void>;
   // Subscription
   getSubscriptions: () => Promise<Subscription>;
   updateSubscriptions: (data: SubscriptionParams) => Promise<Subscription>;
@@ -155,6 +157,7 @@ export interface AddCommentParams {
 
 export interface DepartmentFilter extends Pagination {
   parent?: number;
+  term?: string;
 }
 
 export interface TargetFilter extends Pagination {
@@ -164,14 +167,29 @@ export interface TargetFilter extends Pagination {
 }
 
 export interface PutTargetParams {
+  month: number;
+  year: number;
   amount: number;
+  props: TargetProp[];
+}
+
+export enum TargetPropType {
+  DEPARTMENT = 'DEPARTMENT',
+  CATEGORY = 'CATEGORY',
+  VENDOR = 'VENDOR',
+}
+
+export interface TargetProp {
+  id: number;
+  type: TargetPropType;
+  name: string;
 }
 
 export interface PostTargetParams {
   month: number;
   year: number;
-  amount: number;
-  departmentId: number;
+  amount: number | null;
+  props: TargetProp[];
 }
 
 export interface SubscriptionParams {
@@ -208,4 +226,13 @@ export interface FeedFilters {
   vendor?: number;
   category?: number;
   rootDepartment?: number;
+}
+
+export interface SearchFilters {
+  keyword: string;
+  searchDept?: boolean;
+  searchVend?: boolean;
+  searchCate?: boolean;
+  ignoreEmptyKeyword?: boolean;
+  searchType?: SearchTypes;
 }

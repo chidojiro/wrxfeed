@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
@@ -16,6 +17,7 @@ import FeedList from '@main/organisms/FeedList';
 import TargetPanel from '@main/organisms/TargetPanel';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { classNames } from '@common/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -54,10 +56,8 @@ const ForYouPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  // Subscribe feed event
   useFeedChannel(FeedChannelEvents.NEW_ITEM, (data: FeedEventData) => {
     if (data.id) {
-      // Increase counter
       setNewFeedCount((prevCount) => ({
         ...prevCount,
         [location.pathname]: prevCount[location.pathname] + 1,
@@ -66,7 +66,6 @@ const ForYouPage: React.VFC = () => {
   });
 
   useEffect(() => {
-    // Mark all transactions as read
     if (newFeedNumber > 0)
       readAllTransactions().then(() => {
         upsertNewFeedCount(location.pathname, 0);
@@ -92,7 +91,6 @@ const ForYouPage: React.VFC = () => {
         behavior: 'auto',
       });
     }
-    // Clear counter
     upsertNewFeedCount(location.pathname, 0);
     readAllTransactions();
   };
@@ -103,12 +101,36 @@ const ForYouPage: React.VFC = () => {
       pathname: history.location.pathname,
       search: queryString,
     });
-    // cleanData();
     setFilterTitle(value?.name ?? '');
   };
 
   const clearFilter = (): void => {
     history.goBack();
+  };
+
+  const onClickFollowingMoreTeams = () => {
+    history.push({
+      pathname: '/departments',
+    });
+  };
+
+  const renderForYouEndList = (className = 'mt-3 sm:mt-8') => {
+    return (
+      <p className={classNames('text-base text-center text-Neutral-4', className)}>
+        Add to your feed by
+        <button
+          type="button"
+          onClick={onClickFollowingMoreTeams}
+          className="ml-1 text-Gray-3 underline"
+        >
+          <u>following more teams</u>
+        </button>
+        <span role="img" aria-label="rocket">
+          {' '}
+          🚀
+        </span>
+      </p>
+    );
   };
 
   return (
@@ -137,6 +159,8 @@ const ForYouPage: React.VFC = () => {
         hasMore={hasMore}
         onFilter={handleFilter}
         endMessage="Add to your feed by following more teams."
+        EndComponent={() => renderForYouEndList()}
+        EmptyStateComponent={() => renderForYouEndList()}
       />
       <MainRightSide>
         <TargetPanel />

@@ -16,7 +16,10 @@ export function setApiClient(val: ApiClient): void {
 
 export async function handleResponseFail(error: AxiosError): Promise<never> {
   const apiClient = await getApiClient();
-  if (error.response?.status === ApiErrorCode.Unauthenticated) {
+  if (
+    error.response?.status === ApiErrorCode.Unauthenticated &&
+    window.location.pathname !== '/login'
+  ) {
     // Force Logout
     await apiClient.logout();
     localStorage.clear();

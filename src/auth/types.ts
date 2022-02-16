@@ -10,6 +10,8 @@ export interface Profile {
   signupDate?: string;
   bio?: string;
   lastLoginAt?: string;
+  depId?: number;
+  refererId?: number;
   avatar?: string;
 }
 
@@ -47,4 +49,9 @@ export interface ForgotPwdFormModel {
 export interface ResetPwdFormModel {
   newPassword: string;
   confirmPassword: string;
+}
+
+export enum SearchTypes {
+  Local = 'Local',
+  Api = 'Api',
 }

@@ -3,12 +3,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
 
-import { useApi } from '@api';
-import { targetState } from '@main/states/target.state';
+import { isApiError } from '@error/utils';
 import { TargetFilter, PostTargetParams, PutTargetParams } from '@api/types';
-import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
 import { Target } from '@main/entity';
+
+import { useApi } from '@api';
+import { useErrorHandler } from '@error/hooks';
+import { targetState } from '@main/states/target.state';
+import { stackTargetsBySpend } from '@main/utils';
+import cloneDeep from 'lodash.clonedeep';
 
 interface TargetCallback {
   onSuccess: () => void;
@@ -20,13 +23,16 @@ interface TargetHookValues {
   isGetTargets: boolean;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  deleteTarget: (id: number, data: PutTargetParams) => Promise<void>;
   isPostTarget: boolean;
   isPutTarget: boolean;
+  isDeleteTarget: boolean;
 }
 export function useTarget(
   filter: TargetFilter,
   cbPost: TargetCallback,
   cbPut: TargetCallback,
+  cbDelete: TargetCallback,
 ): TargetHookValues {
   const [targets, setTargets] = useRecoilState<Target[]>(targetState);
   // const [targets, setTargets] = useState<Target[]>([]);
@@ -34,33 +40,30 @@ export function useTarget(
   const [isGetTargets, setGetTargets] = useState<boolean>(false);
   const [isPostTarget, setPostTarget] = useState<boolean>(false);
   const [isPutTarget, setPutTarget] = useState<boolean>(false);
+  const [isDeleteTarget, setDeleteTarget] = useState<boolean>(false);
+
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
-
-  const stackTargetsByTheLargestMonthlySpend = (data: Target[]): Target[] => {
-    let targetStacked = data.sort((a: Target, b: Target) => (b?.total ?? 0) - (a?.total ?? 0));
-    targetStacked = data.sort(
-      (a: Target, b: Target) => (b?.id !== null ? 1 : 0) - (a?.id !== null ? 1 : 0),
-    );
-    return targetStacked;
-  };
 
   const getTargets = useCallback(async () => {
     try {
       setGetTargets(true);
       const res = await ApiClient.getTargets(filter);
-      const merged = targets.concat(res);
-      const targetMap = new Map();
-      merged.forEach((target) => {
-        targetMap.set(target?.depId, target);
+      const newTargets: Target[] = cloneDeep(targets);
+      res.forEach((tar: Target) => {
+        const isHaveIndex = newTargets.findIndex((item) => item?.id === tar.id);
+        if (isHaveIndex !== -1) {
+          newTargets[isHaveIndex] = tar;
+        } else {
+          newTargets.unshift(tar);
+        }
       });
-      const newTargets = [...targetMap.values()];
-      setTargets(stackTargetsByTheLargestMonthlySpend(newTargets));
+      setTargets(stackTargetsBySpend(newTargets));
       setHasMore(!!res.length);
       setGetTargets(false);
     } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Can not get monthly targets!');
+      if (isApiError(error)) {
+        toast.error(error.details?.message);
       } else {
         await errorHandler(error);
       }
@@ -75,12 +78,12 @@ export function useTarget(
       setPostTarget(true);
       await ApiClient.postTarget(data);
       cbPost.onSuccess();
-      // getTargets();
     } catch (error) {
       if (cbPost.onError) {
         cbPost.onError(error);
-      } else if (isBadRequest(error)) {
-        toast.error('Can not create new target!');
+      }
+      if (isApiError(error)) {
+        toast.error(error.details?.message);
       } else {
         await errorHandler(error);
       }
@@ -95,12 +98,12 @@ export function useTarget(
       setPutTarget(true);
       await ApiClient.putTarget(id, data);
       cbPut.onSuccess();
-      // getTargets();
     } catch (error) {
       if (cbPut.onError) {
         cbPut.onError(error);
-      } else if (isBadRequest(error)) {
-        toast.error('Can not update this target!');
+      }
+      if (isApiError(error)) {
+        toast.error(error.details?.message);
       } else {
         await errorHandler(error);
       }
@@ -109,10 +112,42 @@ export function useTarget(
     }
   };
 
+  const deleteTarget = async (id: number, data: PutTargetParams) => {
+    if (isPutTarget) return;
+    try {
+      setDeleteTarget(true);
+      await ApiClient.deleteTarget(id, data);
+      const newTargets = targets.filter((item: Target) => item?.id !== id);
+      setTargets(newTargets);
+      cbDelete.onSuccess();
+    } catch (error) {
+      if (cbDelete.onError) {
+        cbDelete.onError(error);
+      }
+      if (isApiError(error)) {
+        toast.error(error.details?.message);
+      } else {
+        await errorHandler(error);
+      }
+    } finally {
+      setDeleteTarget(false);
+    }
+  };
+
   // auto call in the first time with no default filter
   useEffect(() => {
     getTargets().then();
   }, [getTargets]);
 
-  return { targets, hasMore, isGetTargets, postTarget, putTarget, isPostTarget, isPutTarget };
+  return {
+    targets,
+    hasMore,
+    isGetTargets,
+    postTarget,
+    putTarget,
+    deleteTarget,
+    isPostTarget,
+    isPutTarget,
+    isDeleteTarget,
+  };
 }

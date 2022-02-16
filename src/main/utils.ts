@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ContentState,
   convertFromRaw,
@@ -9,6 +10,14 @@ import {
 import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
+
+import { TransLineItem, Target } from '@main/entity';
+import { TargetPropType } from '@api/types';
+
+import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
+import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
+import { ReactComponent as Suitcase } from '@assets/icons/outline/suitcase.svg';
+import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -293,4 +302,82 @@ export const scrollToTop = (): void => {
 
 export const isEmptyOrSpaces = (str: string): boolean => {
   return str === undefined || str === null || str.length === 0 || str.match(/^ *$/) !== null;
+};
+
+export const getRandomInt = (min: number, max: number): number => {
+  const minInt = Math.ceil(min);
+  const maxInt = Math.floor(max);
+  return Math.floor(Math.random() * (maxInt - minInt + 1)) + minInt;
+};
+
+export const getMultiRandomInt = (multi: number, min: number, max: number): number[] => {
+  let results: number[] = [];
+  while (results.length < multi) {
+    results.push(getRandomInt(min, max));
+    results = Array.from(new Set(results));
+  }
+  return results;
+};
+
+// Vendor information updates when created by "Concur Integrations"
+export const getVendorNameFromLineItem = (item: TransLineItem): string => {
+  // let vendorName = item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`;
+  let vendorName = item?.vendor?.name || item?.description || '...';
+
+  const des = item?.description;
+
+  const isConcurByCreatedByName = item?.transaction?.createdByName;
+  const isConcurByRecordType =
+    item?.transaction?.recordType?.toLowerCase() === 'Expense Report'.toLowerCase();
+
+  const checkDesIncludeSymbol = des?.toLowerCase().includes('|');
+
+  if ((isConcurByCreatedByName || isConcurByRecordType) && checkDesIncludeSymbol) {
+    const descriptionWithoutVendor = des?.substring(0, des?.lastIndexOf('|')) || '';
+    const vendorNameFromDescription = des?.substring(des?.indexOf('|') + 1, des.length - 1) || '';
+    vendorName = `${descriptionWithoutVendor} expense by ${vendorNameFromDescription}.`;
+  }
+  return vendorName;
+};
+
+export const getIconByResultType = (
+  type: TargetPropType,
+): React.FC<React.SVGAttributes<SVGElement>> => {
+  if (type === TargetPropType.VENDOR) return Suitcase;
+  if (type === TargetPropType.DEPARTMENT) return GroupUsers;
+  if (type === TargetPropType.CATEGORY) return Files;
+  return BasicsSearchSmall;
+};
+
+export const getWidthInputByLength = (length: number): number => {
+  if (length > 19) return 48;
+  if (length > 13) return 36;
+  if (length > 9) return 28;
+  return 20;
+};
+
+export const getColorByPropertyType = (type: TargetPropType): string => {
+  if (type === TargetPropType.VENDOR) return '#F3AA20';
+  if (type === TargetPropType.DEPARTMENT) return '#0891B2';
+  if (type === TargetPropType.CATEGORY) return '#6565FB';
+  return '#6565FB';
+};
+
+export const getPropTypeDisplayName = (type: TargetPropType): string => {
+  if (type === TargetPropType.VENDOR) return 'Vendor';
+  if (type === TargetPropType.DEPARTMENT) return 'Team';
+  if (type === TargetPropType.CATEGORY) return 'Category';
+  return '#6565FB';
+};
+
+export const stackTargetsBySpend = (data: Target[]): Target[] => {
+  let targetStacked = data.sort((a: Target, b: Target) => (b?.total ?? 0) - (a?.total ?? 0));
+  targetStacked = data.sort(
+    (a: Target, b: Target) => (b?.id !== null ? 1 : 0) - (a?.id !== null ? 1 : 0),
+  );
+  return targetStacked;
+};
+
+export const getUniqueListBy = (arr: any[], objectKey: string): any[] => {
+  return [...new Map(arr.map((item: any) => [item[objectKey], item])).values()];
 };

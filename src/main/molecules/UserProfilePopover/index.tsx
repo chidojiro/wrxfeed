@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useCallback } from 'react';
+import React, { Fragment, useState, useCallback, useEffect } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { useRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
@@ -113,7 +113,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     onSuccess: onUploadSuccess,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     setAvatar(profileUser?.avatar || '');
   }, [profileUser]);
 
@@ -194,7 +194,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     setProfileUser(userProfile);
   };
 
-  const renderLogout = () => {
+  const renderLogoutOrSaveChanges = () => {
     if (changeData) {
       return (
         <div className="flex py-4 items-center flex-row self-center">
@@ -276,7 +276,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
                     })}
                   </div>
                 </div>
-                {renderLogout()}
+                {renderLogoutOrSaveChanges()}
               </div>
             </Transition>
           </Popover.Panel>
