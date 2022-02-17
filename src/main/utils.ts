@@ -217,6 +217,21 @@ export function commentTextToContentState(text: string): ContentState {
 /**
  * Get department bg color based on name
  */
+const DEPT_GRADIENT_COLORS = [
+  'linear-gradient(90.91deg, #F4A27F 0.49%, #F28C6E 20.72%, #DB7271 40.14%, #9A5FAF 65.43%, #6A6AF2 80.23%, #9656AC 102.35%, #9656AC 105.59%)',
+  'linear-gradient(90.64deg, #F08299 0.34%, #EF707E 20.62%, #CB8595 40.08%, #B7BAB8 65.42%, #C4BFAD 80.26%, #DDB495 98.34%, #DDB495 105.67%)',
+  'linear-gradient(90.64deg, #B9A6D7 0.34%, #998DD5 20.62%, #7B78D8 40.08%, #5154DB 65.42%, #3C3FDC 80.26%, #5255DE 98.34%, #9656AC 105.67%)',
+  'linear-gradient(90.64deg, #CF88AF 0.34%, #BD8CB5 20.62%, #AB85B1 40.08%, #9E79AD 65.42%, #9B76A6 80.26%, #977FAC 98.34%, #9656AC 105.67%)',
+  'linear-gradient(90.64deg, #B4BBD6 0.34%, #A0AFC9 20.62%, #7E87D1 40.08%, #6F6EE0 65.42%, #7475DC 80.26%, #8E82CF 98.34%, #9686D0 105.67%)',
+  'linear-gradient(90.64deg, #60B6C1 0.34%, #61BFC2 20.62%, #60BBC2 40.08%, #4E88A3 65.42%, #5387AA 80.26%, #6C9AB8 98.34%, #7CB1E3 105.67%)',
+  'linear-gradient(90.64deg, #9FF2C2 0.34%, #7BCAD1 20.62%, #59A5DE 40.08%, #2B72F2 65.42%, #2065F6 80.26%, #2065F6 98.34%, #2065F6 105.67%)',
+  'linear-gradient(90.64deg, #D98551 0.34%, #D27449 20.62%, #D7834C 40.08%, #E9AE57 65.42%, #F0C35D 80.26%, #F6D160 98.34%, #F8D85F 105.67%)',
+  'linear-gradient(90.64deg, #777BBB 0.34%, #6071C2 20.62%, #636CC9 40.08%, #7964D6 65.42%, #825FDE 80.26%, #855CE5 98.34%, #855DE4 105.67%)',
+  'linear-gradient(90.64deg, #77D3F9 0.34%, #6CBFE4 20.62%, #5291BC 40.08%, #3F6BC0 65.42%, #3C61D9 80.26%, #3E6ABA 98.34%, #3E6ABC 105.67%)',
+];
+/**
+ * Get department bg color based on name
+ */
 const DEPT_COLORS = [
   '#254252',
   '#14213D',
@@ -234,7 +249,11 @@ const DEPT_COLORS = [
   '#DF6622',
   '#F64C32',
 ];
-export function getDepartmentBgColor(name: string): string {
+export const getDepartmentBgColor = (
+  name: string,
+  id: number | undefined = undefined,
+  gradient = false,
+): string => {
   let hash = 0;
   let i;
 
@@ -243,11 +262,14 @@ export function getDepartmentBgColor(name: string): string {
     hash += name.charCodeAt(i);
   }
 
-  // there are 15 pre-defined colors of department. Position starts from 1
-  const bgColorPos = hash % DEPT_COLORS.length;
+  const colorsData = gradient ? DEPT_GRADIENT_COLORS : DEPT_COLORS;
 
-  return DEPT_COLORS[bgColorPos];
-}
+  // there are 15 pre-defined colors of department. Position starts from 1
+  const preDefined = id || hash;
+  const bgColorPos = preDefined % colorsData.length;
+
+  return colorsData[bgColorPos];
+};
 
 export function isURL(str: string): boolean {
   const pattern = new RegExp(
