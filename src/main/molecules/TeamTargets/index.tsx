@@ -51,7 +51,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept }) => {
     toast.success('New target has been added');
     hideAddTargetModal();
     setFilter({
-      ...initFilter,
+      ...filter,
       timestamp: Date.now(),
     });
   };
@@ -60,7 +60,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept }) => {
     toast.success('Target has been saved');
     hideAddTargetModal();
     setFilter({
-      ...initFilter,
+      ...filter,
       timestamp: Date.now(),
     });
   };
@@ -69,7 +69,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept }) => {
     toast.success('Successfully deleted target!');
     hideAddTargetModal();
     setFilter({
-      ...initFilter,
+      ...filter,
       timestamp: Date.now(),
     });
   };
@@ -114,7 +114,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept }) => {
           <div className="flex flex-col sm:flex-row w-full" key={`targetView-${item?.id}`}>
             <TeamTargetRow target={item} onClickEdit={() => onClickEdit(item)} />
             <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
-            <TeamTargetRow target={item} onClickEdit={() => onClickEdit(nextItem)} />
+            <TeamTargetRow target={nextItem} onClickEdit={() => onClickEdit(nextItem)} />
           </div>,
         );
         i += 1;
@@ -122,9 +122,9 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept }) => {
       if (left === 0) {
         targetView.push(
           <div className="flex flex-col sm:flex-row w-full" key={`targetView-${item?.id}`}>
-            <TeamTargetRow target={item} onClickEdit={() => onClickEdit(item)} />
+            <TeamTargetRow className="w-6/12" target={item} onClickEdit={() => onClickEdit(item)} />
             <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
-            <EmptyTarget onClickNewTarget={onClickNewTarget} />
+            <EmptyTarget className="w-6/12" onClickNewTarget={onClickNewTarget} />
           </div>,
         );
       }

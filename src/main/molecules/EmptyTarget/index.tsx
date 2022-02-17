@@ -11,7 +11,7 @@ const EmptyTarget: React.VFC<EmptyTargetProps> = ({ className, onClickNewTarget 
   return (
     <div
       className={classNames(
-        'flex flex-1 flex-col justify-center items-center w-full bg-purple-12 px-8 py-7',
+        'flex flex-1 flex-col justify-center items-center w-full bg-purple-12 px-6 py-6',
         className ?? '',
       )}
     >

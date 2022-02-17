@@ -23,7 +23,6 @@ interface TeamHomeProps {
 
 const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
   const { subscribe, unsubscribe, isFollowing, isFollowLoading } = useSubscription();
-  const onClickRetryTransactions = () => undefined;
 
   const handleFollow: MouseEventHandler<HTMLButtonElement> = () => {
     if (deptSelect) subscribe('departments', deptSelect);
@@ -91,11 +90,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
   const renderRecentTransactions = () => {
     return (
       <div className="flex bg-white shadow-md rounded-t-lg flex-row px-6 py-2.5 mr-0.5 border-b border-Gray-11 space-x-2">
-        <button
-          onClick={onClickRetryTransactions}
-          type="button"
-          className="flex w-6 h-6 justify-center items-center"
-        >
+        <div className="flex w-6 h-6 justify-center items-center">
           <LoopIcon
             className="w-4 h-4 fill-current path-no-filled text-Gray-3 opacity-100"
             aria-hidden="true"
@@ -103,7 +98,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
             height={16}
             viewBox="0 -2 20 20"
           />
-        </button>
+        </div>
         <p className="text-Gray-3 text-base font-semibold">Transactions</p>
       </div>
     );
@@ -112,7 +107,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
     <div className={classNames('w-full', className)}>
       <div className="flex flex-col rounded-lg shadow-md bg-white overflow-hidden mb-6">
         {renderTeamHeader()}
-        {deptSelect && <TeamTargets dept={deptSelect} />}
+        {deptSelect && deptSelect.id && <TeamTargets dept={deptSelect} />}
       </div>
       {deptSelect && <TopCategories departmentId={deptSelect?.id} />}
       {renderRecentTransactions()}
