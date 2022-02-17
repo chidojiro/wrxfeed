@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import { classNames } from '@common/utils';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { MouseEventHandler } from 'react-router/node_modules/@types/react';
 
 import { useSubscription } from '@main/hooks/subscription.hook';
@@ -15,15 +15,16 @@ import { TeamIcon, LoopIcon } from '@assets/index';
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
 import TeamTargets from '@main/molecules/TeamTargets';
+import { getDepartmentBgColor } from '@main/utils';
 
 interface TeamHomeProps {
   className?: string;
   deptSelect: Department | null | undefined;
+  deptId: number;
 }
 
-const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
+const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect, deptId }) => {
   const { subscribe, unsubscribe, isFollowing, isFollowLoading } = useSubscription();
-  const onClickRetryTransactions = () => undefined;
 
   const handleFollow: MouseEventHandler<HTMLButtonElement> = () => {
     if (deptSelect) subscribe('departments', deptSelect);
@@ -34,14 +35,17 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
   };
   const isFollow = deptSelect && isFollowing('departments', deptSelect);
 
+  const deptGradientBg = useMemo(
+    () => getDepartmentBgColor(deptSelect?.name ?? '', deptId, true),
+    [deptId, deptSelect?.name],
+  );
   const renderTeamHeader = () => {
     return (
       <div>
         <div
           className="flex flex-row space-x-4 items-center p-6"
           style={{
-            background:
-              'linear-gradient(90.91deg, #F4A27F 0.49%, #F28C6E 20.72%, #DB7271 40.14%, #9A5FAF 65.43%, #6A6AF2 80.23%, #9656AC 102.35%, #9656AC 105.59%)',
+            background: deptGradientBg,
           }}
         >
           <div className="w-9 h-9 rounded-full border border-white flex justify-center items-center">
@@ -91,11 +95,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
   const renderRecentTransactions = () => {
     return (
       <div className="flex bg-white shadow-md rounded-t-lg flex-row px-6 py-2.5 mr-0.5 border-b border-Gray-11 space-x-2">
-        <button
-          onClick={onClickRetryTransactions}
-          type="button"
-          className="flex w-6 h-6 justify-center items-center"
-        >
+        <div className="flex w-6 h-6 justify-center items-center">
           <LoopIcon
             className="w-4 h-4 fill-current path-no-filled text-Gray-3 opacity-100"
             aria-hidden="true"
@@ -103,7 +103,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
             height={16}
             viewBox="0 -2 20 20"
           />
-        </button>
+        </div>
         <p className="text-Gray-3 text-base font-semibold">Transactions</p>
       </div>
     );
@@ -112,7 +112,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect }) => {
     <div className={classNames('w-full', className)}>
       <div className="flex flex-col rounded-lg shadow-md bg-white overflow-hidden mb-6">
         {renderTeamHeader()}
-        {deptSelect && <TeamTargets dept={deptSelect} />}
+        {deptSelect && deptSelect.id && <TeamTargets dept={deptSelect} />}
       </div>
       {deptSelect && <TopCategories departmentId={deptSelect?.id} />}
       {renderRecentTransactions()}
