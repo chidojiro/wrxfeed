@@ -9,7 +9,7 @@ interface InputTagProps {
 const InputTag: VFC<InputTagProps> = ({ text, onDelete, color }) => {
   return (
     <div
-      className="flex items-center h-5 rounded px-2 m-0.5 text-2xs text-white bg-Accent-2"
+      className="flex items-center h-5 rounded px-2 m-0.5 text-3xs text-white bg-Accent-2"
       style={color ? { backgroundColor: color } : {}}
       key={text}
     >

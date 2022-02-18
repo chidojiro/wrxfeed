@@ -1,12 +1,14 @@
 import cloneDeep from 'lodash.clonedeep';
 import { atom, selector } from 'recoil';
 
+import { Category, Department, Subscription, Vendor } from '@main/entity';
 import { getApiClient } from '@api/utils';
 import { MainGroups, MainMenu } from '@common/constants';
 import { GroupTab, LeftTab } from '@common/types';
-import { identityState } from '@identity/states';
-import { Category, Department, Subscription, Vendor } from '@main/entity';
 import { ENABLE_SUBSCRIPTION_SIDE_BAR } from '@src/config';
+
+import { identityState } from '@identity/states';
+import { TeamIcon } from '@assets/index';
 import { subscriptionState } from './subscription.state';
 
 export interface FeedCount {
@@ -29,7 +31,7 @@ export const menuItemsValue = selector<GroupTab[]>({
               pathname: `/${key}/${channel.id}`,
               search: `?route=${MainGroups.Feeds}`,
             },
-            icon: null,
+            icon: TeamIcon,
             subscription: {
               type: key as keyof Subscription,
               item: channel,
@@ -41,7 +43,8 @@ export const menuItemsValue = selector<GroupTab[]>({
       ],
       [],
     );
-    menu[0].tabs.push(...subscriptionMenuItems);
+    // push to "Teams" group
+    menu[1].tabs.push(...subscriptionMenuItems);
     return menu;
   },
 });

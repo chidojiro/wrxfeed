@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
+
 import { Target } from '@main/entity';
-import { BasicsEditCircle } from '@assets';
-import { getDepartmentBgColor, nFormatter } from '@main/utils';
+import { getDepartmentBgColor, getTargetName, nFormatter } from '@main/utils';
 import { classNames } from '@common/utils';
+import { BasicsEditCircle } from '@assets';
 
 const SYSTEM_ALERT_COLOR = '#ff5f68';
 const TARGET_PLACEHOLDER = 10000;
@@ -11,17 +12,6 @@ export interface TargetRowProps {
   index?: number;
   onClickEdit: () => void;
 }
-
-export const getTargetName = (target: Target): string => {
-  const { props = [] } = target;
-  if (!Array.isArray(props) || props.length === 0) return 'Invalid target!';
-  let targetName = target.props[0].name;
-  if (props.length === 1) return targetName;
-  for (let i = 1; i < props?.length; i += 1) {
-    targetName += `, ${props[i].name}`;
-  }
-  return targetName;
-};
 
 const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
   const targetName = getTargetName(target);
@@ -63,11 +53,11 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
         <div className="flex flex-row">
           <div className="flex flex-col" style={{ width: percentLength }}>
             <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveColor }} />
-            <p className="text-Gray-3 text-2xs mt-1 font-bold ml-auto">{totalSpentCurrency}</p>
+            <p className="text-Gray-3 text-3xs mt-1 font-bold ml-auto">{totalSpentCurrency}</p>
           </div>
           <div className="flex flex-col flex-1 min-w-[60px]">
             <div className="flex mt-1 w-full h-1" style={{ backgroundColor: inactiveTarget }} />
-            <p className="text-Gray-6 text-2xs mt-1 font-bold ml-auto">{targetAmountCurrency}</p>
+            <p className="text-Gray-6 text-3xs mt-1 font-bold ml-auto">{targetAmountCurrency}</p>
           </div>
         </div>
       </div>
@@ -113,10 +103,10 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
             </div>
           </div>
           <div className="flex flex-row">
-            <p className="flex text-2xs mt-1 font-bold ml-auto text-system-alert">
+            <p className="flex text-3xs mt-1 font-bold ml-auto text-system-alert">
               {currentCurrency}
             </p>
-            <p className="flex text-Gray-6 text-2xs mt-1 font-bold">{`/${totalAmountCurrency}`}</p>
+            <p className="flex text-Gray-6 text-3xs mt-1 font-bold">{`/${totalAmountCurrency}`}</p>
           </div>
         </div>
       );
@@ -126,14 +116,14 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
       <div className="flex flex-row">
         <div className="flex flex-col" style={{ width: percentLength }}>
           <div className="flex mt-1 w-full h-1" style={{ backgroundColor: currentColor }} />
-          <p className="flex text-Gray-3 text-2xs mt-1 font-bold ml-auto">{currentCurrency}</p>
+          <p className="flex text-Gray-3 text-3xs mt-1 font-bold ml-auto">{currentCurrency}</p>
         </div>
         <div className="flex flex-col flex-1">
           <div
             className={classNames('flex mt-1 w-full h-1', styleTotal)}
             style={{ backgroundColor: totalColor }}
           />
-          <p className="flex text-Gray-6 text-2xs mt-1 font-bold ml-auto">{totalAmountCurrency}</p>
+          <p className="flex text-Gray-6 text-3xs mt-1 font-bold ml-auto">{totalAmountCurrency}</p>
         </div>
       </div>
     );
@@ -144,7 +134,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
     const exceedNumber = targetAmount - totalSpent;
     const exceedNumberCurrency = nFormatter(Math.round(Math.abs(exceedNumber) * 100) / 100);
     return (
-      <p className="text-system-alert font-bold font-regular group-hover:hidden ml-auto text-2xs truncate">
+      <p className="text-system-alert font-bold font-regular group-hover:hidden ml-auto text-3xs truncate">
         {`Exceeds target by ${exceedNumberCurrency}`}
       </p>
     );
