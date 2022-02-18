@@ -152,7 +152,7 @@ const DepartmentsPage: React.VFC = () => {
         />
       ) : (
         <>
-          {deptId && <TeamHome deptSelect={deptSelect} deptId={parseInt(deptId, 10)} />}
+          {deptId && <TeamHome deptSelect={deptSelect} depId={parseInt(deptId, 10)} />}
           <FeedList
             feeds={feeds}
             isLoading={feedsLoading || isLoading}

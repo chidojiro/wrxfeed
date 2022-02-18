@@ -20,10 +20,10 @@ import { getDepartmentBgColor } from '@main/utils';
 interface TeamHomeProps {
   className?: string;
   deptSelect: Department | null | undefined;
-  deptId: number;
+  depId: number;
 }
 
-const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect, deptId }) => {
+const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect, depId }) => {
   const { subscribe, unsubscribe, isFollowing, isFollowLoading } = useSubscription();
 
   const handleFollow: MouseEventHandler<HTMLButtonElement> = () => {
@@ -33,12 +33,46 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect, deptId
   const handleUnfollow: MouseEventHandler<HTMLButtonElement> = () => {
     if (deptSelect) unsubscribe('departments', deptSelect);
   };
-  const isFollow = deptSelect && isFollowing('departments', deptSelect);
+  const isFollow: boolean | null | undefined = deptSelect && isFollowing('departments', deptSelect);
 
   const deptGradientBg = useMemo(
-    () => getDepartmentBgColor(deptSelect?.name ?? '', deptId, true),
-    [deptId, deptSelect?.name],
+    () => getDepartmentBgColor(deptSelect?.name ?? '', depId, true),
+    [depId, deptSelect?.name],
   );
+  const renderFollowButton = () => {
+    if (isFollow === null || isFollow === undefined) return null;
+    if (isFollow) {
+      return (
+        <Button onClick={handleUnfollow} className="group block relative rounded-full">
+          <TickIcon
+            width={16}
+            height={16}
+            className="stroke-current path-no-stroke text-white flex group-hover:hidden"
+            viewBox="0 0 15 15"
+          />
+          <span className="group-hover:hidden text-white text-sm">Following</span>
+          <span className="group-hover:flex hidden text-white text-sm">Unfollow</span>
+        </Button>
+      );
+    }
+    return (
+      <Button onClick={handleFollow} className="rounded-full bg-white">
+        {isFollowLoading ? (
+          <div className="w-5 h-5 flex justify-center items-center">
+            <Loading width={16} height={16} />
+          </div>
+        ) : (
+          <AddIcon
+            width={20}
+            height={20}
+            className="w-5 h-5 stroke-current path-no-stroke text-Gray-3"
+            viewBox="0 0 15 15"
+          />
+        )}
+        <span className="text-Gray-3 text-sm">Follow</span>
+      </Button>
+    );
+  };
   const renderTeamHeader = () => {
     return (
       <div>
@@ -59,34 +93,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect, deptId
           <div className="flex flex-1 w-full">
             <h2 className="text-white font-semibold text-xl">{deptSelect?.name ?? '...'}</h2>
           </div>
-          {isFollow ? (
-            <Button onClick={handleUnfollow} className="group block relative rounded-full">
-              <TickIcon
-                width={16}
-                height={16}
-                className="stroke-current path-no-stroke text-white flex group-hover:hidden"
-                viewBox="0 0 15 15"
-              />
-              <span className="group-hover:hidden text-white text-sm">Following</span>
-              <span className="group-hover:flex hidden text-white text-sm">Unfollow</span>
-            </Button>
-          ) : (
-            <Button onClick={handleFollow} className="rounded-full bg-white">
-              {isFollowLoading ? (
-                <div className="w-5 h-5 flex justify-center items-center">
-                  <Loading width={16} height={16} />
-                </div>
-              ) : (
-                <AddIcon
-                  width={20}
-                  height={20}
-                  className="w-5 h-5 stroke-current path-no-stroke text-Gray-3"
-                  viewBox="0 0 15 15"
-                />
-              )}
-              <span className="text-Gray-3 text-sm">Follow</span>
-            </Button>
-          )}
+          {renderFollowButton()}
         </div>
       </div>
     );
@@ -112,7 +119,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect, deptId
     <div className={classNames('w-full', className)}>
       <div className="flex flex-col rounded-lg shadow-md bg-white overflow-hidden mb-6">
         {renderTeamHeader()}
-        {deptSelect && deptSelect.id && <TeamTargets dept={deptSelect} />}
+        {deptSelect && depId && <TeamTargets dept={deptSelect} depId={depId} />}
       </div>
       {deptSelect && <TopCategories departmentId={deptSelect?.id} />}
       {renderRecentTransactions()}

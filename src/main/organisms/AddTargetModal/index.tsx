@@ -30,6 +30,7 @@ export type AddTargetModalProps = {
   isCreatingOrSaving: boolean;
   isDeleting: boolean;
   initTags?: SearchResult[];
+  depId?: number | undefined;
 };
 
 type AddTargetTagInputHandler = React.ElementRef<typeof AddTargetTagInput>;
@@ -45,6 +46,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   isCreatingOrSaving,
   isDeleting,
   initTags = [],
+  depId,
 }) => {
   const tagInputRef = useRef<AddTargetTagInputHandler>(null);
   const [keyword, setKeyword] = useState<string>('');
@@ -67,6 +69,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
       amount: amountInput,
+      depId,
       props,
     });
   };
@@ -97,6 +100,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
       amount: amountInput,
+      depId,
       props,
     });
   };

@@ -175,6 +175,7 @@ export interface PutTargetParams {
   month: number;
   year: number;
   amount: number;
+  depId?: number;
   props: TargetProp[];
 }
 
@@ -194,6 +195,7 @@ export interface PostTargetParams {
   month: number;
   year: number;
   amount: number | null;
+  depId?: number;
   props: TargetProp[];
 }
 
