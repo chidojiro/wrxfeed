@@ -33,14 +33,18 @@ export function useTarget(
   cbPost: TargetCallback,
   cbPut: TargetCallback,
   cbDelete: TargetCallback,
+  isSaveGlobal?: boolean,
 ): TargetHookValues {
-  const [targets, setTargets] = useRecoilState<Target[]>(targetState);
-  // const [targets, setTargets] = useState<Target[]>([]);
+  const [targetsGlobal, setTargetsGlobal] = useRecoilState<Target[]>(targetState);
+  const [targetsLocal, setTargetsLocal] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isGetTargets, setGetTargets] = useState<boolean>(false);
   const [isPostTarget, setPostTarget] = useState<boolean>(false);
   const [isPutTarget, setPutTarget] = useState<boolean>(false);
   const [isDeleteTarget, setDeleteTarget] = useState<boolean>(false);
+
+  const targets = isSaveGlobal ? targetsGlobal : targetsLocal;
+  const setTargets = isSaveGlobal ? setTargetsGlobal : setTargetsLocal;
 
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();

@@ -27,15 +27,16 @@ const initFilter = {
 interface TeamTargetsProps {
   className?: string;
   dept: Department;
+  depId: number;
 }
 
-const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept }) => {
+const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId }) => {
   const [showAddTarget, setShowAddTarget] = useState<boolean>(false);
   const [itemEditing, setItemEditing] = useState<Target | null>(null);
 
   const [filter, setFilter] = useState<TargetFilter>({
     ...initFilter,
-    dep: dept.id,
+    dep: depId,
   });
 
   const onClickNewTarget = () => setShowAddTarget(true);
@@ -88,6 +89,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept }) => {
     { onSuccess: onPostTargetSuccess, onError: onPostTargetError },
     { onSuccess: onPutTargetSuccess, onError: onPutError },
     { onSuccess: onDeleteTargetSuccess, onError: onDeleteError },
+    false,
   );
 
   const renderAddNewTargetButton = () => {
@@ -165,6 +167,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept }) => {
         isCreatingOrSaving={isPostTarget || isPutTarget}
         isDeleting={isDeleteTarget}
         initTags={[prePopulatedProps]}
+        depId={depId}
       />
     </div>
   );
