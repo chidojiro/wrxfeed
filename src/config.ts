@@ -12,6 +12,7 @@ export const EMAIL_SUPPORT_ADDRESS = 'support@gravitylabs.co';
 // Pusher configs
 export const PUSHER_APP_KEY = process.env.PUSHER_APP_KEY || '';
 export const PUSHER_APP_CLUSTER = process.env.PUSHER_APP_CLUSTER || '';
-export const ENABLE_SUBSCRIPTION_SIDE_BAR = false;
+export const ENABLE_SUBSCRIPTION_SIDE_BAR = true;
 export const AUTO_ADD_USER_DEPARTMENT_SIDE_BAR = true;
 export const TEAM_SUGGEST_RANDOM_NUMBER = 4;
+export const REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT = 30000;

@@ -25,7 +25,7 @@ const NotifyRow: React.VFC<NotifyRowProps> = ({ item, onClickNotifyAndSeen }) =>
         />
         <div className="flex w-40">
           <div
-            className="flex text-Gray-6 font-semibold ml-auto text-right text-2xs mt-1"
+            className="flex text-Gray-6 font-semibold ml-auto text-right text-3xs mt-1"
             style={{ fontSize: '10px' }}
           >
             {formatDate(item?.createdAt)}

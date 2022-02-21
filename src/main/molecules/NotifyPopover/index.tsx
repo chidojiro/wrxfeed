@@ -96,7 +96,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
       <button
         onClick={onClickMarkAllAsRead}
         type="button"
-        className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-2xs font-semibold"
+        className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-3xs font-semibold"
       >
         Mark all as read
       </button>
@@ -110,7 +110,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
         {newNotifyCount !== 0 && (
           <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
             {showNumberNotify && (
-              <div className="flex text-white font-semibold text-2xs">{newNotifyCount}</div>
+              <div className="flex text-white font-semibold text-3xs">{newNotifyCount}</div>
             )}
           </div>
         )}

@@ -38,6 +38,7 @@ import {
   FeedCommentFilters,
   AddFeedCommentParams,
   FeedFilters,
+  CategoryFilter,
 } from '@api/types';
 import {
   AuthProfile,
@@ -323,11 +324,13 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getCategories = async (pagination?: Pagination): Promise<Category[]> => {
+  getCategories = async (filter?: CategoryFilter): Promise<Category[]> => {
     const res = await this.request<Category[]>({
       url: '/feed/categories',
       method: 'GET',
-      params: pagination,
+      params: {
+        ...filter,
+      },
     });
     return res.data;
   };
