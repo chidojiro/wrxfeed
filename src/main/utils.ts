@@ -335,7 +335,12 @@ export const getVendorNameFromLineItem = (item: TransLineItem): string => {
   if ((isConcurByCreatedByName || isConcurByRecordType) && checkDesIncludeSymbol) {
     const descriptionWithoutVendor = des?.substring(0, des?.lastIndexOf('|')) || '';
     const vendorNameFromDescription = des?.substring(des?.indexOf('|') + 1, des.length - 1) || '';
-    vendorName = `${descriptionWithoutVendor} expense by ${vendorNameFromDescription}.`;
+    if (vendorNameFromDescription.trim().length > 2) {
+      // If there is no employee name for the expense the item should not add the "expense by" part.
+      vendorName = `${descriptionWithoutVendor} expense by ${vendorNameFromDescription}.`;
+    } else {
+      vendorName = descriptionWithoutVendor;
+    }
   }
   return vendorName;
 };
