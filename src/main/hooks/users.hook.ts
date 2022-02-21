@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useCallback, useEffect, useState } from 'react';
+
 import { useApi } from '@api';
 import { GetUsersFilter } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
 import { User } from '@main/entity';
-import { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 
 interface UsersHookValues {
   users: User[];
@@ -31,11 +30,7 @@ export function useGetUsers(filter: GetUsersFilter): UsersHookValues {
       }
       setHasMore(!!res.length);
     } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Can not get users by text');
-      } else {
-        await errorHandler(error);
-      }
+      await errorHandler(error);
     } finally {
       setLoading(false);
     }

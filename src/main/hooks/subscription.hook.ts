@@ -64,7 +64,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         if (isApiError(error)) {
           toast.error(error.details?.message);
         } else {
-          toast.error(`Can not unfollow ${channel.name}. Please check your network and try again.`);
+          errorHandler(error);
         }
         if (callback && callback.onUnfollowError) callback?.onUnfollowError(error);
       })
