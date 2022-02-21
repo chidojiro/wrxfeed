@@ -326,7 +326,8 @@ export const getVendorNameFromLineItem = (item: TransLineItem): string => {
 
   const des = item?.description;
 
-  const isConcurByCreatedByName = item?.transaction?.createdByName;
+  const employeeName: string | undefined = item?.transaction?.createdByName;
+  const isConcurByCreatedByName: string | undefined = employeeName;
   const isConcurByRecordType =
     item?.transaction?.recordType?.toLowerCase() === 'Expense Report'.toLowerCase();
 
@@ -338,6 +339,8 @@ export const getVendorNameFromLineItem = (item: TransLineItem): string => {
     if (vendorNameFromDescription.trim().length > 2) {
       // If there is no employee name for the expense the item should not add the "expense by" part.
       vendorName = `${descriptionWithoutVendor} expense by ${vendorNameFromDescription}.`;
+    } else if (employeeName && employeeName?.length > 2) {
+      vendorName = `${descriptionWithoutVendor} expense by ${employeeName}.`;
     } else {
       vendorName = descriptionWithoutVendor;
     }
