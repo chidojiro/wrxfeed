@@ -1,11 +1,10 @@
+import { useCallback, useEffect, useState } from 'react';
+
 import { useApi } from '@api';
 import { AddCommentParams, OrderDirection, Pagination } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
 import { useIdentity } from '@identity/hooks';
 import { Comment, FeedItem } from '@main/entity';
-import { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 
 interface CommentHookValues {
   comments: Comment[];
@@ -42,11 +41,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
       }
       setHasMore(!!page && page?.limit <= res.length);
     } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Can not get comments');
-      } else {
-        await errorHandler(error);
-      }
+      await errorHandler(error);
     } finally {
       setLoading(false);
     }
@@ -69,11 +64,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
       }
       setComments((prevComments) => [...prevComments, res]);
     } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Can not get comments');
-      } else {
-        await errorHandler(error);
-      }
+      await errorHandler(error);
     }
   };
 
@@ -93,11 +84,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
         });
       }
     } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Fail to update this comment');
-      } else {
-        await errorHandler(error);
-      }
+      await errorHandler(error);
     } finally {
       setLoading(false);
     }
@@ -110,11 +97,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
       // Remove comment from current list
       setComments((prevComments) => prevComments.filter((cmt) => cmt.id !== comment.id));
     } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Fail to delete this comment');
-      } else {
-        await errorHandler(error);
-      }
+      await errorHandler(error);
     } finally {
       setLoading(false);
     }

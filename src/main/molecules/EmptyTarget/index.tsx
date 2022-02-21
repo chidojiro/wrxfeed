@@ -1,4 +1,5 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
+/* eslint-disable react/jsx-curly-brace-presence */
+/* eslint-disable @typescript-eslint/quotes */
 import React from 'react';
 import { classNames } from '@common/utils';
 
@@ -17,9 +18,9 @@ const EmptyTarget: React.VFC<EmptyTargetProps> = ({ className, onClickNewTarget 
     >
       <button type="button" onClick={onClickNewTarget}>
         <p className="text-Gray-6 text-xs text-center">
-          Thats all of the teams targets 🎯
+          {`That's all for this team 🎯`}
           <br />
-          <span className="text-Gray-3 underline">create a new target</span>
+          <span className="text-Gray-3 underline">Create a new target</span>
         </p>
       </button>
     </div>

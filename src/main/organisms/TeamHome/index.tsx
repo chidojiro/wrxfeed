@@ -5,17 +5,17 @@ import { MouseEventHandler } from 'react-router/node_modules/@types/react';
 
 import { useSubscription } from '@main/hooks/subscription.hook';
 
+import { getDepartmentBgColor } from '@main/utils';
 import { Department } from '@main/entity';
 
 import Button from '@common/atoms/Button';
 import Loading from '@common/atoms/Loading';
 import TopCategories from '@main/molecules/TopCategories';
-import { TeamIcon, LoopIcon } from '@assets/index';
+import TeamTargets from '@main/molecules/TeamTargets';
 
+import { TeamIcon, LoopIcon } from '@assets/index';
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
-import TeamTargets from '@main/molecules/TeamTargets';
-import { getDepartmentBgColor } from '@main/utils';
 
 interface TeamHomeProps {
   className?: string;
