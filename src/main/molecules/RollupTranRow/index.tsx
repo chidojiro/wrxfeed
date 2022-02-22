@@ -2,16 +2,12 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useRef, useState } from 'react';
 import dayjs from 'dayjs';
-import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Vendor } from '@main/entity';
 import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
 
-import { lineItemSelectState } from '@main/states/lineItems.state';
-import { slideOverOpenState } from '@main/states/slideOver.state';
-
+import TranLineItemsList from '@main/molecules/TranLineItemsList';
 import { ReactComponent as DownSmall } from '@assets/icons/outline/down-small.svg';
-import TranLineItemsList from '../TranLineItemsList';
 
 export interface RollupTranRowProps {
   tran: number;
@@ -23,9 +19,6 @@ export interface RollupTranRowProps {
 const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
-
-  const [tranSelect] = useRecoilState(lineItemSelectState);
-  const slideOverOpened = useRecoilValue(slideOverOpenState);
 
   const onClickLineItem = () => {
     if (onClick) onClick(tran);
@@ -51,8 +44,6 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
     );
   };
 
-  const isItemShowing = slideOverOpened && tranSelect?.id === 1;
-  const bgColor = isItemShowing ? 'bg-Gray-12' : 'bg-transparent';
   const totalAmount: number | undefined | null = 1788.69;
 
   return (
@@ -63,7 +54,6 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
         aria-hidden="true"
         className={classNames(
           'flex flex-row w-full items-center px-2 sm:px-6 py-2 bg-white hover:shadow-topCategoryHover z-10 relative border border-white hover:border-Accent-4',
-          bgColor,
         )}
         onClick={onClickLineItem}
       >
