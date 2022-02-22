@@ -14,6 +14,9 @@ module.exports = {
       borderRadius: {
         'card': '10px',
       },
+      transitionProperty: {
+        height: 'height'
+      },
       rotate: {
         '40': '40deg',
       },

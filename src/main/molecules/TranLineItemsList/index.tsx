@@ -77,7 +77,7 @@ const TranLineItemsList: React.VFC<TranLineItemsListProps> = ({
     return <div />;
   }
   return lineItems?.length ? (
-    <div className={classNames('relative flex flex-col pb-2 transition-all', className ?? '')}>
+    <div className={classNames('relative flex flex-col pb-2 transition-[height]', className ?? '')}>
       <ul className={classNames('w-full', rollupsClass ?? '')}>
         {lineItems.map((lineItem: TransLineItem) => (
           <li key={lineItem?.id}>

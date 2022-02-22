@@ -42,10 +42,10 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
     );
   };
 
-  const renderTag = () => {
+  const renderStatusTag = () => {
     return (
       <div className="flex flex-row justify-center items-center rounded-full bg-Green-8 ml-auto px-2.5 py-0.5 h-5 mr-2.5">
-        <div className="flex bg-Green-400 rounded-full mr-[7px]" />
+        <div className="flex w-1.5 h-1.5 bg-Green-400 rounded-full mr-[7px]" />
         <p className="text-Green-800 text-xs font-medium">Paid</p>
       </div>
     );
@@ -73,7 +73,7 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
         {renderVendorName()}
         <p className="text-Gray-6 text-sm font-normal mx-1">·</p>
         <p className="text-Gray-6 text-xs font-normal">{dayjs('11-12-2022').format(DATE_FORMAT)}</p>
-        {renderTag()}
+        {renderStatusTag()}
         <p className="text-Gray-3 text-xs font-semibold w-18 text-right">
           {totalAmount === null || totalAmount === undefined
             ? 'Error'

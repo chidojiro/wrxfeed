@@ -62,7 +62,6 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   feedItem,
   onClickDepartment,
   onClickCategory,
-  // onClickRootDept,
   updateCategory,
 }) => {
   const identity = useIdentity();
@@ -300,19 +299,9 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             >
               {feedItem?.department?.name}
             </h2>
-            {/* {renderDateRangeRollup()} */}
           </div>
         </div>
-        {/* <RollupLineItemList
-          lineItems={lineItems}
-          rollupsClass="bg-white"
-          className="mb-1 sm:mb-2.5"
-          hasMore={hasMoreTrans}
-          onLoadMore={onLoadMoreTransaction}
-          isLoadMore={isLoadingTrans}
-          onClickVendor={onClickVendor}
-        /> */}
-        <RollupTransactions trans={[feedItem?.id, 2, 3, 4]} onLoadMore={onLoadMoreTransaction} />
+        <RollupTransactions trans={[feedItem?.id]} onLoadMore={onLoadMoreTransaction} />
         <div className="space-y-4 px-4 sm:px-12 mt-1">
           {hasMoreComment && (
             <CommentViewAll
