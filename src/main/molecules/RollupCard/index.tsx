@@ -25,11 +25,11 @@ import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentViewAll from '@main/atoms/CommentViewAll';
-import RollupLineItemList from '@main/molecules/RollupLineItemList';
 // assets
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
+import RollupTransactions from '../RollupTransactions';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -64,7 +64,6 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   onClickCategory,
   // onClickRootDept,
   updateCategory,
-  onClickVendor,
 }) => {
   const identity = useIdentity();
   const [filterComment, setFilterComment] = useState<Pagination>({
@@ -304,7 +303,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             {/* {renderDateRangeRollup()} */}
           </div>
         </div>
-        <RollupLineItemList
+        {/* <RollupLineItemList
           lineItems={lineItems}
           rollupsClass="bg-white"
           className="mb-1 sm:mb-2.5"
@@ -312,7 +311,8 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           onLoadMore={onLoadMoreTransaction}
           isLoadMore={isLoadingTrans}
           onClickVendor={onClickVendor}
-        />
+        /> */}
+        <RollupTransactions trans={[feedItem?.id, 2, 3, 4]} onLoadMore={onLoadMoreTransaction} />
         <div className="space-y-4 px-4 sm:px-12 mt-1">
           {hasMoreComment && (
             <CommentViewAll
