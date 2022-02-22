@@ -11,6 +11,9 @@ module.exports = {
   },
   theme: {
     extend: {
+      borderRadius: {
+        'card': '10px',
+      },
       rotate: {
         '40': '40deg',
       },
