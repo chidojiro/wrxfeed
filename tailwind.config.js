@@ -14,6 +14,9 @@ module.exports = {
       borderRadius: {
         'card': '10px',
       },
+      transitionProperty: {
+        height: 'height'
+      },
       rotate: {
         '40': '40deg',
       },
@@ -48,7 +51,10 @@ module.exports = {
         'Green-2': '#13b9b9',
         'Green-3': 'rgba(19, 185, 185, 0.3)',
         'Green-4': '#10B981',
+        'Green-8': '#D1FAE5',
         'Green-12': '#D7F3D8',
+        'Green-400': '#34D399',
+        'Green-800': '#065F46',
 
         'Accent-1': '#3363FF',
         'Accent-2': '#6565FB',
@@ -83,6 +89,7 @@ module.exports = {
       spacing: {
         'navbar': '56px',
         '4.5': '18px',
+        '18': '72px',
       },
       shadow: {
 
