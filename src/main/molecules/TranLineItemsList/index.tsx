@@ -3,19 +3,11 @@ import { classNames } from '@common/utils';
 import React from 'react';
 import { TransLineItem, Vendor } from '@main/entity';
 import Loading from '@common/atoms/Loading';
-import { FeedItemFilters } from '@api/types';
-import { useFeedItem } from '@main/hooks/feedItem.hook';
 import RollupLineItem from '../RollupLineItem';
-
-const LIMIT_GET_TRANS = 12;
-const INIT_PAGINATION_TRANS = Object.freeze({
-  offset: 0,
-  limit: LIMIT_GET_TRANS,
-});
 
 export interface TranLineItemsListProps {
   className?: string;
-  tran: number;
+  lineItems: TransLineItem[];
   showLoadMore?: boolean;
   rollupsClass?: string;
   onLoadMore?: () => void;
@@ -28,7 +20,7 @@ export interface TranLineItemsListProps {
 const TranLineItemsList: React.VFC<TranLineItemsListProps> = ({
   className,
   rollupsClass,
-  tran,
+  lineItems,
   showLoadMore = true,
   onLoadMore,
   hasMore = false,
@@ -36,12 +28,6 @@ const TranLineItemsList: React.VFC<TranLineItemsListProps> = ({
   onClickVendor,
   isOpen = false,
 }) => {
-  const [filterTrans] = React.useState<FeedItemFilters>({
-    id: tran,
-    page: INIT_PAGINATION_TRANS,
-  });
-  const { lineItems } = useFeedItem(filterTrans);
-
   const renderLoading = () => {
     if (!isLoadMore) return null;
     return (

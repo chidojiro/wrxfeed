@@ -1,13 +1,25 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable prettier/prettier */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useRef, useState } from 'react';
 import dayjs from 'dayjs';
+import { useSetRecoilState } from 'recoil';
 
+import EventEmitter, { EventName } from '@main/EventEmitter';
 import { Vendor } from '@main/entity';
 import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
 
 import TranLineItemsList from '@main/molecules/TranLineItemsList';
 import { ReactComponent as DownSmall } from '@assets/icons/outline/down-small.svg';
+import { lineItemSelectState } from '@main/states/lineItems.state';
+import { FeedItemFilters } from '@api/types';
+import { useFeedItem } from '@main/hooks/feedItem.hook';
+
+const LIMIT_GET_TRANS = 12;
+const INIT_PAGINATION_TRANS = Object.freeze({
+  offset: 0,
+  limit: LIMIT_GET_TRANS,
+});
 
 export interface RollupTranRowProps {
   tran: number;
@@ -19,10 +31,27 @@ export interface RollupTranRowProps {
 const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
+  const setLineItemSelect = useSetRecoilState(lineItemSelectState);
+
+  const [filterTrans] = React.useState<FeedItemFilters>({
+    id: tran,
+    page: INIT_PAGINATION_TRANS,
+  });
+  const { lineItems } = useFeedItem(filterTrans);
 
   const onClickLineItem = () => {
     if (onClick) onClick(tran);
     setOpen((pre) => !pre);
+  };
+
+  const onClickDetails = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    if (lineItems.length > 0){
+      setLineItemSelect(lineItems[0]);
+      EventEmitter.dispatch(EventName.SHOW_LINE_ITEM_DETAILS, {
+        item: lineItems[0],
+      });
+    }
   };
 
   const renderVendorName = () => {
@@ -69,11 +98,11 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
             ? 'Error'
             : `$${formatCurrency(totalAmount)}`}
         </p>
-        <p className="text-Gray-6 hover:text-Gray-3 text-xs font-normal underline ml-2.5 mr-4 w-8">
+        <p onClick={onClickDetails} className="text-Gray-6 hover:text-Gray-3 text-xs font-normal underline ml-2.5 mr-4 w-8">
           Details
         </p>
       </button>
-      <TranLineItemsList tran={tran} isOpen={isOpen} />
+      <TranLineItemsList lineItems={lineItems} isOpen={isOpen} />
     </div>
   );
 };
