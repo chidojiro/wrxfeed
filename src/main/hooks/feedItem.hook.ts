@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
-
 import { useApi } from '@api';
 import { FeedItemFilters } from '@api/types';
+import { useErrorHandler } from '@error/hooks';
+import { isBadRequest } from '@error/utils';
 import { TransLineItem } from '@main/entity';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface FeedItemHookValues {
   lineItems: TransLineItem[];
@@ -14,6 +16,7 @@ export function useFeedItem(filter: FeedItemFilters): FeedItemHookValues {
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const ApiClient = useApi();
+  const errorHandler = useErrorHandler();
 
   const getLineItems = useCallback(async () => {
     try {
@@ -30,11 +33,15 @@ export function useFeedItem(filter: FeedItemFilters): FeedItemHookValues {
         setHasMore(false);
       }
     } catch (error) {
-      // await errorHandler(error);
+      if (isBadRequest(error)) {
+        toast.error("Can't get line items 🤦!");
+      } else {
+        await errorHandler(error);
+      }
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, filter]);
+  }, [ApiClient, errorHandler, filter]);
 
   useEffect(() => {
     getLineItems().then();

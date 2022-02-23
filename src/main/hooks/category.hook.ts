@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
-
 import { useApi } from '@api';
 import { Pagination } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
+import { isBadRequest } from '@error/utils';
 import { Category } from '@main/entity';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface CategoryHookValues {
   categories: Category[];
@@ -24,7 +25,11 @@ export function useCategory(pagination: Pagination): CategoryHookValues {
       setCategories((prevTrans) => [...prevTrans, ...res]);
       setHasMore(!!res.length);
     } catch (error) {
-      errorHandler(error);
+      if (isBadRequest(error)) {
+        toast.error('Can not get categories');
+      } else {
+        await errorHandler(error);
+      }
     } finally {
       setLoading(false);
     }

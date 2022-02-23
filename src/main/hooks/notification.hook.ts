@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState } from 'react';
 import { SetterOrUpdater, useRecoilState } from 'recoil';
+import { toast } from 'react-toastify';
 
 import { useApi } from '@api';
 import usePusher from '@api/hooks/usePusher';
 import { Pagination } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
+import { isBadRequest } from '@error/utils';
 import { useIdentity } from '@identity/hooks';
 import { Notification } from '@main/entity';
 import { newNotifyCountState } from '@main/states/notify.state';
@@ -38,7 +40,11 @@ export function useNotification(page: Pagination): NotificationHookValues {
       const newNotifies = notifications.filter((item) => item.id !== id);
       setNotifications(newNotifies);
     } catch (error) {
-      await errorHandler(error);
+      if (isBadRequest(error)) {
+        toast.error('Can not patch notification 🤦!');
+      } else {
+        await errorHandler(error);
+      }
     }
   };
 
@@ -59,7 +65,11 @@ export function useNotification(page: Pagination): NotificationHookValues {
         setHasMore(false);
       }
     } catch (error) {
-      await errorHandler(error);
+      if (isBadRequest(error)) {
+        toast.error("Can't get notifications 🤦!");
+      } else {
+        await errorHandler(error);
+      }
     } finally {
       setLoading(false);
     }
@@ -72,8 +82,14 @@ export function useNotification(page: Pagination): NotificationHookValues {
       setUnreadCount(0);
       setNewNotifyCount(0);
       setMarkAll(false);
+      // setNotifications([]);
+      // toast.success('Mark all notify as read successfully 🙌!');
     } catch (error) {
-      await errorHandler(error);
+      if (isBadRequest(error)) {
+        toast.error("Can't mark all notify as read 😤!");
+      } else {
+        await errorHandler(error);
+      }
     }
   };
 

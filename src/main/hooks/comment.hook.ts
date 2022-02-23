@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
-
 import { useApi } from '@api';
 import { AddCommentParams, OrderDirection, Pagination } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
+import { isBadRequest } from '@error/utils';
 import { useIdentity } from '@identity/hooks';
 import { Comment, Transaction } from '@main/entity';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface CommentHookValues {
   comments: Comment[];
@@ -40,7 +41,11 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
         setComments([...reverse]);
       }
     } catch (error) {
-      await errorHandler(error);
+      if (isBadRequest(error)) {
+        toast.error('Can not get comments');
+      } else {
+        await errorHandler(error);
+      }
     } finally {
       setLoading(false);
     }
@@ -73,7 +78,11 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
       setComments((prevComments) => [...prevComments, res]);
       setTotal(total + 1);
     } catch (error) {
-      await errorHandler(error);
+      if (isBadRequest(error)) {
+        toast.error('Can not get comments');
+      } else {
+        await errorHandler(error);
+      }
     }
   };
 
@@ -93,7 +102,11 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
         });
       }
     } catch (error) {
-      await errorHandler(error);
+      if (isBadRequest(error)) {
+        toast.error('Fail to update this comment');
+      } else {
+        await errorHandler(error);
+      }
     } finally {
       setLoading(false);
     }
@@ -107,7 +120,11 @@ export function useComment(transaction: Transaction, pagination?: Pagination): C
       setComments((prevComments) => prevComments.filter((cmt) => cmt.id !== comment.id));
       setTotal(total - 1);
     } catch (error) {
-      await errorHandler(error);
+      if (isBadRequest(error)) {
+        toast.error('Fail to delete this comment');
+      } else {
+        await errorHandler(error);
+      }
     } finally {
       setLoading(false);
     }
