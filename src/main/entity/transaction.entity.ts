@@ -7,6 +7,65 @@ export enum STATUS {
   NEW = 'NEW',
 }
 
+export const TransactionStatus = {
+  Cancelled: {
+    displayName: 'Canceled',
+    color: 'Red',
+  },
+  Closed: {
+    displayName: 'Closed',
+    color: 'Red',
+  },
+  Open: {
+    displayName: 'Open',
+    color: 'Purple',
+  },
+  PartiallyReceived: {
+    displayName: 'Open',
+    color: 'Purple',
+  },
+  PaidInFull: {
+    displayName: 'Paid',
+    color: 'Green',
+  },
+  FullyBilled: {
+    displayName: 'Paid',
+    color: 'Green',
+  },
+  ApprovedByAccounting: {
+    displayName: 'Paid',
+    color: 'Green',
+  },
+  PendingBill: {
+    displayName: 'Pending',
+    color: 'Yellow',
+  },
+  PendingSupervisorApproval: {
+    displayName: 'Pending',
+    color: 'Yellow',
+  },
+  PendingApproval: {
+    displayName: 'Pending',
+    color: 'Yellow',
+  },
+  PendingReceipt: {
+    displayName: 'Pending',
+    color: 'Yellow',
+  },
+  PendingBillingPartiallyReceived: {
+    displayName: 'Pending',
+    color: 'Yellow',
+  },
+  Rejected: {
+    displayName: 'Rejected',
+    color: 'Red',
+  },
+  RejectedBySupervisor: {
+    displayName: 'Rejected',
+    color: 'Red',
+  },
+};
+
 export type Department = {
   id: number;
   name: string;
