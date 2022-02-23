@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useApi } from '@src/api';
 import { GetUploadTokenBody, UploadTypes } from '@api/types';
-import { useErrorHandler } from '@src/error';
+import { isBadRequest, useErrorHandler } from '@src/error';
+import { toast } from 'react-toastify';
 
 interface FileUploaderCallback {
   onSuccess: (url: string) => void;
@@ -32,6 +33,8 @@ export const useFileUploader = (callback: FileUploaderCallback): FileUploaderVal
     } catch (error: unknown) {
       if (callback.onError) {
         callback.onError(error);
+      } else if (isBadRequest(error)) {
+        toast.error('Can not upload file. Please try again later.');
       } else {
         errorHandler(error).then();
       }

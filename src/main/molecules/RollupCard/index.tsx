@@ -1,21 +1,18 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import { Menu } from '@headlessui/react';
 import { toast } from 'react-toastify';
-// hooks
-import { useIdentity, usePermission } from '@identity/hooks';
-import { useFeedItem } from '@main/hooks/feedItem.hook';
-import { useFeedComment } from '@main/hooks/feedComment.hook';
-// constants
+// Constants
 import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { useMention } from '@main/hooks';
 import { FeedItemFilters, GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
-import { classNames, formatCurrency } from '@common/utils';
-import { commentEditorRawParser, getDepartmentBgColor } from '@main/utils';
+import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
+import { commentEditorRawParser } from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
-// components
+// Tailwind components
+import DepartmentColorSection from '@main/atoms/DepartmentColorSection';
 import NotifyBanner from '@common/molecules/NotifyBanner';
 import CommentBox from '@main/molecules/CommentBox';
 import PopoverMenu from '@main/atoms/PopoverMenu';
@@ -25,11 +22,16 @@ import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentViewAll from '@main/atoms/CommentViewAll';
-// assets
+import RollupLineItemList from '@main/molecules/RollupLineItemList';
+// Icons
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
-import RollupTransactions from '../RollupTransactions';
+// Hooks
+import { useIdentity, usePermission } from '@identity/hooks';
+import { useFeedItem } from '@main/hooks/feedItem.hook';
+import { useFeedComment } from '@main/hooks/feedComment.hook';
+import dayjs from 'dayjs';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -62,7 +64,9 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   feedItem,
   onClickDepartment,
   onClickCategory,
+  onClickRootDept,
   updateCategory,
+  onClickVendor,
 }) => {
   const identity = useIdentity();
   const [filterComment, setFilterComment] = useState<Pagination>({
@@ -221,42 +225,61 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     }));
   }, [hasMoreTrans, isLoadingTrans, lineItems.length]);
 
-  const departmentName =
-    feedItem?.department?.parent?.name ?? feedItem?.department?.name ?? 'unknown';
-  const deptGradientBg = useMemo(
-    () => getDepartmentBgColor(departmentName ?? '', undefined, true),
-    [departmentName],
-  );
+  const renderDateRangeRollup = () => {
+    if (dayjs(feedItem?.firstDate).isSame(dayjs(feedItem?.lastDate))) {
+      return (
+        <p className="mt-1 text-xs text-Gray-6">
+          <time dateTime={feedItem?.firstDate}>
+            {feedItem?.firstDate ? dayjs(feedItem?.firstDate).format(DATE_FORMAT) : 'Unknown'}
+          </time>
+        </p>
+      );
+    }
+    return (
+      <p className="mt-1 text-xs text-Gray-6">
+        <time dateTime={feedItem?.firstDate}>
+          {feedItem?.firstDate ? dayjs(feedItem?.firstDate).format(DATE_FORMAT) : 'Unknown'}
+        </time>
+        {feedItem?.lastDate && (
+          <span>
+            {' - '}
+            <time dateTime={feedItem?.lastDate}>
+              {feedItem?.lastDate ? dayjs(feedItem?.lastDate).format(DATE_FORMAT) : 'Present'}
+            </time>
+          </span>
+        )}
+      </p>
+    );
+  };
 
   return (
     <>
       <article
         ref={containerRef}
         key={feedItem.id}
-        className="bg-white flex flex-col filter shadow-md rounded-card overflow-hidden"
+        className="bg-white flex flex-col filter shadow-md"
         aria-labelledby={`rollup-title-${feedItem?.id}`}
       >
+        {/* Rollup detail */}
         <div className="flex flex-row">
+          <DepartmentColorSection department={feedItem?.department} onClick={onClickRootDept} />
           <div
             className={classNames(
               isHidden ? 'bg-purple-8' : 'bg-white',
               'flex-grow w-4/5 px-6 py-5 border-b border-Gray-11',
             )}
-            style={{
-              background: deptGradientBg,
-            }}
           >
             <div className="flex items-center space-x-3">
               <div className="flex items-center min-w-0 flex-1">
-                <p className="text-base text-white">
+                <p className="text-xs text-Gray-6">
                   <button
                     type="button"
-                    className="hover:underline text-left font-bold"
+                    className="hover:underline text-left"
                     onClick={() => {
                       return onClickDepartment && onClickDepartment(feedItem?.department);
                     }}
                   >
-                    {feedItem?.category?.name}
+                    {feedItem?.department?.name}
                   </button>
                 </p>
                 {isHidden && (
@@ -272,7 +295,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               <div className="flex-shrink-0 self-center flex items-center">
                 <h2
                   id={`question-title-${feedItem?.id}`}
-                  className="text-base font-semibold text-white mr-3"
+                  className="text-base font-semibold text-Gray-2 mr-3"
                 >
                   {`$ ${formatCurrency(feedItem?.total)}`}
                 </h2>
@@ -280,11 +303,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                   <div>
                     <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
                       <span className="sr-only">Open options</span>
-                      <MoreVerticalIcon
-                        className="fill-current text-white path-no-filled"
-                        aria-hidden="true"
-                        viewBox="0 0 15 15"
-                      />
+                      <MoreVerticalIcon aria-hidden="true" viewBox="0 0 15 15" />
                     </Menu.Button>
                   </div>
                   <PopoverMenu>{renderMenuItems()}</PopoverMenu>
@@ -294,14 +313,23 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             <h2
               aria-hidden="true"
               id={`question-title-${feedItem?.id}`}
-              className="mt-1 text-xs font-normal text-white cursor-pointer hover:underline"
+              className="mt-1 text-base font-semibold text-Gray-2 cursor-pointer hover:underline"
               onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
             >
-              {feedItem?.department?.name}
+              {feedItem?.category?.name}
             </h2>
+            {renderDateRangeRollup()}
           </div>
         </div>
-        <RollupTransactions trans={[feedItem?.id]} onLoadMore={onLoadMoreTransaction} />
+        <RollupLineItemList
+          lineItems={lineItems}
+          rollupsClass="bg-white"
+          className="mb-1 sm:mb-2.5"
+          hasMore={hasMoreTrans}
+          onLoadMore={onLoadMoreTransaction}
+          isLoadMore={isLoadingTrans}
+          onClickVendor={onClickVendor}
+        />
         <div className="space-y-4 px-4 sm:px-12 mt-1">
           {hasMoreComment && (
             <CommentViewAll
@@ -338,6 +366,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           />
         </div>
       </article>
+
       <ConfirmModal
         open={!!confirmModal}
         icon={<ExclamationCircle />}
