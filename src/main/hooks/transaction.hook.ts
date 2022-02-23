@@ -1,15 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useCallback, useEffect, useState } from 'react';
+import { SetterOrUpdater, useRecoilState } from 'recoil';
+
 import { useApi } from '@api';
 import usePusher from '@api/hooks/usePusher';
 import { TransactionFilter } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
 import { useIdentity } from '@identity/hooks';
 import { Category, Transaction } from '@main/entity';
 import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
-import { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { SetterOrUpdater, useRecoilState } from 'recoil';
 
 interface TransactionHookValues {
   transactions: Transaction[];
@@ -50,11 +49,7 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
         setHasMore(false);
       }
     } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Can not get transactions');
-      } else {
-        await errorHandler(error);
-      }
+      await errorHandler(error);
     } finally {
       setLoading(false);
     }
@@ -79,11 +74,7 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
           return newTransactions;
         });
       } catch (error) {
-        if (isBadRequest(error)) {
-          toast.error('Can not update category');
-        } else {
-          await errorHandler(error);
-        }
+        await errorHandler(error);
       }
     },
     [ApiClient, errorHandler],

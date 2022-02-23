@@ -1,10 +1,9 @@
+import { useCallback, useEffect, useState } from 'react';
+
 import { useApi } from '@api';
 import { Pagination } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
 import { Vendor } from '@main/entity';
-import { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 
 interface VendorHookValues {
   vendors: Vendor[];
@@ -25,11 +24,7 @@ export function useVendor(pagination: Pagination): VendorHookValues {
       setVendors((prevTrans) => [...prevTrans, ...res]);
       setHasMore(!!res.length);
     } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Can not get vendors');
-      } else {
-        await errorHandler(error);
-      }
+      await errorHandler(error);
     } finally {
       setLoading(false);
     }

@@ -7,6 +7,7 @@ import { useApi } from '@api';
 import { subscriptionState } from '@main/states/subscription.state';
 import { Category, Department, Subscription, Vendor } from '@main/entity';
 import { SubscriptionParams } from '@api/types';
+import { useErrorHandler } from '@error/hooks';
 
 interface SubscribeCallback {
   onFollowSuccess?: () => void;
@@ -26,6 +27,7 @@ interface SubscriptionHookValues {
 }
 export function useSubscription(callback?: SubscribeCallback): SubscriptionHookValues {
   const ApiClient = useApi();
+  const errorHandler = useErrorHandler();
   const [subscription, setSubscription] = useRecoilState(subscriptionState);
   const [isFollowLoading, setFollowLoading] = useState<boolean>(false);
   const [isUnfollowLoading, setUnfollowLoading] = useState<boolean>(false);
@@ -62,7 +64,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         if (isApiError(error)) {
           toast.error(error.details?.message);
         } else {
-          toast.error(`Can not unfollow ${channel.name}. Please check your network and try again.`);
+          errorHandler(error);
         }
         if (callback && callback.onUnfollowError) callback?.onUnfollowError(error);
       })
@@ -100,7 +102,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         if (isApiError(error)) {
           if (error.details?.message) toast.error(error.details?.message);
         } else {
-          toast.error('Can not follow these channels. Please check your network and try again.');
+          errorHandler(error);
         }
         if (callback && callback.onUnfollowError) callback?.onUnfollowError(error);
       })
@@ -147,7 +149,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         if (isApiError(error)) {
           toast.error(error.details?.message);
         } else {
-          toast.error(`Can not follow ${channel.name}. Please check your network and try again.`);
+          errorHandler(error);
         }
         if (callback && callback.onFollowError) callback?.onFollowError(error);
       })
@@ -215,7 +217,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         if (isApiError(error)) {
           if (error.details?.message) toast.error(error.details?.message);
         } else {
-          toast.error('Can not follow these channels. Please check your network and try again.');
+          errorHandler(error);
         }
         if (callback && callback.onFollowError) callback?.onFollowError(error);
       })

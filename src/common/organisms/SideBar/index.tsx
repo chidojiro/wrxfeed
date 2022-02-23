@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import { useLocation, Link as RouterLink, useHistory } from 'react-router-dom';
+import { useLocation, Link as RouterLink } from 'react-router-dom';
 
 import { menuItemsValue, newFeedCountState } from '@main/states/sidemenu.state';
 
@@ -12,7 +12,6 @@ import { classNames } from '@common/utils';
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
 
 const SideBar: React.VFC = () => {
-  const history = useHistory();
   const location = useLocation();
 
   const { unsubscribe } = useSubscription();
@@ -102,7 +101,7 @@ const SideBar: React.VFC = () => {
                             event.preventDefault();
                             if (leftTab.subscription) {
                               unsubscribe(leftTab.subscription.type, leftTab.subscription.item);
-                              history.replace(leftTab.location.pathname); // Remove Feeds from search query
+                              // history.replace(leftTab.location.pathname); // Remove Feeds from search query
                             }
                           }}
                         >

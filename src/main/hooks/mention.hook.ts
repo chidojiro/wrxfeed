@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { MentionData } from '@draft-js-plugins/mention';
+import { useEffect, useState } from 'react';
+import { useRecoilValueLoadable } from 'recoil';
+
 import { useErrorHandler } from '@error/hooks';
 import { User } from '@main/entity';
-import { useEffect, useState } from 'react';
-import { isBadRequest } from '@src/error';
-import { toast } from 'react-toastify';
-import { useRecoilValueLoadable } from 'recoil';
 import { membersState } from '@main/states/member.state';
 
 interface MentionHookValues {
@@ -38,11 +37,7 @@ export function useMention(): MentionHookValues {
         break;
       case 'hasError':
         setLoading(false);
-        if (isBadRequest(membersLoadable.contents)) {
-          toast.error('Can not get users');
-        } else {
-          await errorHandler(membersLoadable.contents);
-        }
+        await errorHandler(membersLoadable.contents);
         break;
       default:
         setLoading(false);
