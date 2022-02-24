@@ -30,6 +30,7 @@ import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclama
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
 import RollupTransactions from '../RollupTransactions';
+import TargetChartView from '../TargetChartView';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -300,6 +301,10 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               {feedItem?.department?.name}
             </h2>
           </div>
+        </div>
+        <TargetChartView />
+        <div className="flex flex-col py-4 mt-4">
+          <div className="bg-Gray-11 h-px w-full" />
         </div>
         <RollupTransactions trans={[feedItem?.id]} onLoadMore={onLoadMoreTransaction} />
         <div className="space-y-4 px-4 sm:px-12 mt-1">
