@@ -306,7 +306,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         <div className="flex flex-col py-4 mt-4">
           <div className="bg-Gray-11 h-px w-full" />
         </div>
-        <RollupTransactions trans={[feedItem?.id]} onLoadMore={onLoadMoreTransaction} />
+        <RollupTransactions trans={feedItem.transactions} onLoadMore={onLoadMoreTransaction} />
         <div className="space-y-4 px-4 sm:px-12 mt-1">
           {hasMoreComment && (
             <CommentViewAll
