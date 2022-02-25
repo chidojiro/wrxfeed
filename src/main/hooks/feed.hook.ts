@@ -1,12 +1,15 @@
 import { SetterOrUpdater, useRecoilState } from 'recoil';
-import { useApi } from '@api';
-import { FeedFilters } from '@api/types';
-import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
-import { Category, FeedItem } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+
+import { useApi } from '@api';
+import { useErrorHandler } from '@error/hooks';
+
 import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
+
+import { FeedFilters } from '@api/types';
+import { isBadRequest } from '@error/utils';
+import { Category, FeedItem } from '@main/entity';
 import { USE_CONTACT_BUTTON_MESSAGE } from '@error/errorMessages';
 
 interface FeedHookValues {

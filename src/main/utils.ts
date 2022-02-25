@@ -11,7 +11,7 @@ import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
 
-import { TransLineItem, Target } from '@main/entity';
+import { TransLineItem, Target, TranStatusNameColor, TranStatusType } from '@main/entity';
 import { TargetPropType } from '@api/types';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
@@ -421,4 +421,8 @@ export const getTargetName = (target: Target): string => {
     targetName += `, ${props[i].name}`;
   }
   return targetName;
+};
+
+export const getTransactionColor = (status: string): TranStatusType => {
+  return TranStatusNameColor[status];
 };

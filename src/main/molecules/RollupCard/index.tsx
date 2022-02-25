@@ -3,6 +3,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import { Menu } from '@headlessui/react';
 import { toast } from 'react-toastify';
+import dayjs from 'dayjs';
 // hooks
 import { useIdentity, usePermission } from '@identity/hooks';
 import { useFeedItem } from '@main/hooks/feedItem.hook';
@@ -15,6 +16,7 @@ import { FeedItemFilters, GetUploadTokenBody, Pagination, UploadTypes } from '@a
 import { classNames, formatCurrency } from '@common/utils';
 import { commentEditorRawParser, getDepartmentBgColor } from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
+import { SHOW_TARGET_FEED_CHART } from '@src/config';
 // components
 import NotifyBanner from '@common/molecules/NotifyBanner';
 import CommentBox from '@main/molecules/CommentBox';
@@ -25,11 +27,12 @@ import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentViewAll from '@main/atoms/CommentViewAll';
+import TargetChartView from '@main/molecules/TargetChartView';
+import RollupTransactions from '@main/molecules/RollupTransactions';
 // assets
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
-import RollupTransactions from '../RollupTransactions';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -247,7 +250,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             }}
           >
             <div className="flex items-center space-x-3">
-              <div className="flex items-center min-w-0 flex-1">
+              <div className="flex items-center min-w-0 flex-1 ">
                 <p className="text-base text-white">
                   <button
                     type="button"
@@ -260,13 +263,13 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                   </button>
                 </p>
                 {isHidden && (
-                  <>
+                  <div className="flex flex-row items-center bg-Gray-12 py-0.5 px-2 ml-2 rounded-full">
                     <EyeHideIcon
                       viewBox="-2 -2 19 19"
-                      className="fill-current path-no-filled stroke-current path-no-stroke text-system-alert ml-3 mr-1"
+                      className="fill-current path-no-filled stroke-current path-no-stroke text-system-alert mr-1"
                     />
                     <span className="text-xs text-Gray-6">Hidden</span>
-                  </>
+                  </div>
                 )}
               </div>
               <div className="flex-shrink-0 self-center flex items-center">
@@ -297,11 +300,17 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               className="mt-1 text-xs font-normal text-white cursor-pointer hover:underline"
               onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
             >
-              {feedItem?.department?.name}
+              {`${feedItem?.department?.name} · ${
+                feedItem?.month &&
+                dayjs()
+                  .month(feedItem?.month - 1)
+                  .format('MMMM')
+              }`}
             </h2>
           </div>
         </div>
-        <RollupTransactions trans={[feedItem?.id]} onLoadMore={onLoadMoreTransaction} />
+        {SHOW_TARGET_FEED_CHART && <TargetChartView />}
+        <RollupTransactions trans={feedItem?.transactions} onLoadMore={onLoadMoreTransaction} />
         <div className="space-y-4 px-4 sm:px-12 mt-1">
           {hasMoreComment && (
             <CommentViewAll
