@@ -423,12 +423,6 @@ export const getTargetName = (target: Target): string => {
   return targetName;
 };
 
-export const getTransactionColor = (status: string): TranStatusType | null => {
-  const matchedStatus: TranStatusType[] = TranStatusNameColor.filter(
-    (item: TranStatusType) => item?.status.toLowerCase() === status.toLowerCase(),
-  );
-  if (matchedStatus.length === 0) {
-    return null;
-  }
-  return matchedStatus[0];
+export const getTransactionColor = (status: string): TranStatusType => {
+  return TranStatusNameColor[status];
 };

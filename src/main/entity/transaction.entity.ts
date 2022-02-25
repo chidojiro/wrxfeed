@@ -66,78 +66,78 @@ export const TranStatusColors = {
   },
 };
 
-export const TranStatusNameColor: TranStatusType[] = [
-  {
+export const TranStatusNameColor: Record<string, TranStatusType> = {
+  Cancelled: {
     status: 'Cancelled',
     displayName: 'Canceled',
     color: TranStatusColors.Red,
   },
-  {
+  Closed: {
     status: 'Closed',
     displayName: 'Closed',
     color: TranStatusColors.Red,
   },
-  {
+  Open: {
     status: 'Open',
     displayName: 'Open',
     color: TranStatusColors.Purple,
   },
-  {
+  'Partially Received': {
     status: 'Partially Received',
     displayName: 'Open',
     color: TranStatusColors.Purple,
   },
-  {
+  'Paid In Full': {
     status: 'Paid In Full',
     displayName: 'Paid',
     color: TranStatusColors.Green,
   },
-  {
-    status: 'FullyBilled',
+  'Fully Billed': {
+    status: 'Fully Billed',
     displayName: 'Paid',
     color: TranStatusColors.Green,
   },
-  {
+  'Approved by Accounting': {
     status: 'Approved by Accounting',
     displayName: 'Paid',
     color: TranStatusColors.Green,
   },
-  {
+  'Pending Bill': {
     status: 'Pending Bill',
     displayName: 'Pending',
     color: TranStatusColors.Yellow,
   },
-  {
+  'Pending Supervisor Approval': {
     status: 'Pending Supervisor Approval',
     displayName: 'Pending',
     color: TranStatusColors.Yellow,
   },
-  {
+  'Pending Approval': {
     status: 'Pending Approval',
     displayName: 'Pending',
     color: TranStatusColors.Yellow,
   },
-  {
+  'Pending Receipt': {
     status: 'Pending Receipt',
     displayName: 'Pending',
     color: TranStatusColors.Yellow,
   },
-  {
+  'Pending Billing Partially Received': {
     status: 'Pending Billing Partially Received',
     displayName: 'Pending',
     color: TranStatusColors.Yellow,
   },
-  {
+  Rejected: {
     status: 'Rejected',
     displayName: 'Rejected',
     color: TranStatusColors.Red,
   },
-  {
+  'Rejected by Supervisor': {
     status: 'Rejected by Supervisor',
     displayName: 'Rejected',
     color: TranStatusColors.Red,
   },
-];
+};
 
 export type Department = {
   id: number;
