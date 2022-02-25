@@ -1,9 +1,9 @@
-// import { MessageTextAlt } from '@assets/index';
-import { classNames } from '@common/utils';
 import React from 'react';
+import { classNames } from '@common/utils';
+
 import { TransLineItem, Vendor } from '@main/entity';
 import Loading from '@common/atoms/Loading';
-import RollupLineItem from '../RollupLineItem';
+import RollupLineItem from '@main/molecules/RollupLineItem';
 
 export interface TranLineItemsListProps {
   className?: string;

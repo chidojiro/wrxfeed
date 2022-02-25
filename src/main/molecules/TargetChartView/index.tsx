@@ -169,20 +169,27 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className }) => {
     );
   };
   return (
-    <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
-      <div className="flex flex-row space-x-4 w-auto">
-        <div className="flex flex-col min-w-[128px]">
-          <p className="text-xs text-Gray-3">Current Spend</p>
-          <p className="text-xl text-primary font-bold mt-1">$60,400.76</p>
+    <>
+      <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
+        <div className="flex flex-row space-x-4 w-auto">
+          <div className="flex flex-col min-w-[128px]">
+            <p className="text-xs text-Gray-3">Current Spend</p>
+            <p className="text-xl text-primary font-bold mt-1">$60,400.76</p>
+          </div>
+          <div className="flex flex-col min-w-[128px]">
+            <p className="text-xs text-Gray-3">Target</p>
+            <p className="text-xl text-primary font-bold mt-1">$75,000</p>
+          </div>
+          <div className="flex flex-1 justify-end flex-col items-end">
+            {renderEditTargetButton()}
+          </div>
         </div>
-        <div className="flex flex-col min-w-[128px]">
-          <p className="text-xs text-Gray-3">Target</p>
-          <p className="text-xl text-primary font-bold mt-1">$75,000</p>
-        </div>
-        <div className="flex flex-1 justify-end flex-col items-end">{renderEditTargetButton()}</div>
+        {renderChartVisualize()}
       </div>
-      {renderChartVisualize()}
-    </div>
+      <div className="flex flex-col py-4 mt-4">
+        <div className="bg-Gray-11 h-px w-full" />
+      </div>
+    </>
   );
 };
 

@@ -21,7 +21,7 @@ export interface RollupLineItemProps {
   onClickVendor?: (vendor: Vendor) => void;
 }
 
-const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick, onClickVendor }) => {
+const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
   const isVisible = useIntersection(viewRef.current || undefined, '0px');
   const { maskLineItemAsRead } = useApi();
@@ -56,12 +56,12 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick, onC
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
   };
 
-  const onClickLineItemVendor = (event: React.MouseEvent<HTMLElement>) => {
-    event.stopPropagation();
-    if (onClickVendor && lineItem.vendor) {
-      onClickVendor(lineItem.vendor);
-    }
-  };
+  // const onClickLineItemVendor = (event: React.MouseEvent<HTMLElement>) => {
+  //   event.stopPropagation();
+  //   if (onClickVendor && lineItem.vendor) {
+  //     onClickVendor(lineItem.vendor);
+  //   }
+  // };
 
   const onClickLineItem = () => {
     if (onClick) onClick(lineItem);
@@ -76,10 +76,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick, onC
   const renderVendorName = () => {
     const vendorName = getVendorNameFromLineItem(lineItem);
     return (
-      <div
-        className="flex flex-row items-center max-w-[140px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[450px]"
-        onClick={onClickLineItemVendor}
-      >
+      <div className="flex flex-row items-center max-w-[140px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[450px]">
         <p className="text-Gray-6 text-xs font-normal text-left truncate">{vendorName}</p>
       </div>
     );
