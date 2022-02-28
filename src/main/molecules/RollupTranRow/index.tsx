@@ -41,14 +41,6 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
     }
   };
 
-  const renderVendorName = () => {
-    return (
-      <div className="flex flex-row items-center max-w-[140px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[450px] ml-1.5">
-        <p className="text-Gray-3 text-xs font-semibold text-left truncate">{tran?.vendorName}</p>
-      </div>
-    );
-  };
-
   const tranType: TranStatusType | null = useMemo(
     () => getTransactionColor(tran?.status ?? ''),
     [tran?.status],
@@ -76,7 +68,7 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
   const totalAmount: number = tran?.amount;
 
   return (
-    <div className="flex flex-col mt-px">
+    <div className="flex flex-col mt-px w-full overflow-hidden">
       <button
         ref={viewRef}
         type="button"
@@ -89,7 +81,9 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
         <div className="flex w-5 h-5 justify-center items-center">
           <DownSmall className={classNames(isOpen ? 'rotate-180' : '')} />
         </div>
-        {renderVendorName()}
+        <div className="flex flex-row w-auto items-center max-w-[140px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[450px] ml-1.5">
+          <p className="text-Gray-3 text-xs font-semibold text-left truncate">{tran?.vendorName}</p>
+        </div>
         <p className="text-Gray-6 text-sm font-normal mx-1">·</p>
         <p className="text-Gray-6 text-xs font-normal">
           {dayjs(tran?.transDate).format(DATE_FORMAT)}

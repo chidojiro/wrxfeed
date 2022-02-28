@@ -50,7 +50,7 @@ const SideBar: React.VFC = () => {
 
   return (
     <nav aria-label="Sidebar" className="divide-y divide-gray-300 flex flex-1 overflow-hidden">
-      <div className="flex w-full flex-1 flex-col py-8 space-y-6 max-h-[calc(60vh-56px)] lg:max-h-[calc(100vh-56px)] overflow-scroll hide-scrollbar">
+      <div className="flex w-full flex-1 flex-col py-8 pb-40 space-y-6 h-auto overflow-scroll hide-scrollbar">
         {menuItems.map((menuItem: GroupTab) => {
           const { tabs } = menuItem;
           return (
