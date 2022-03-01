@@ -129,7 +129,6 @@ export const replaceAll = (str: string, find: string, replace: string): string =
 };
 
 export const formatToCurrency = (value: string, currency = '$', minValue = '0'): string => {
-  const result = value.replace(new RegExp(/[^0-9.]+/, 'g'), '') || minValue;
-  const resultInt = parseFloat(result).toFixed(0).toString();
-  return `${currency}${resultInt.replace(new RegExp(/\B(?=(\d{3})+(?!\d))/, 'g'), ',')}`;
+  const removeComma = value.replace(/[^0-9]+/g, '') || minValue;
+  return `${currency}${Number(removeComma).toLocaleString()}`;
 };
