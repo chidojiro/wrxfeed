@@ -5,7 +5,7 @@ import RollupTranRow from '../RollupTranRow';
 interface RollupTransactionsProps {
   className?: string;
   trans: Transaction[];
-  onLoadMore: () => void;
+  onLoadMore?: () => void;
 }
 
 const RollupTransactions: React.VFC<RollupTransactionsProps> = ({ trans }) => {

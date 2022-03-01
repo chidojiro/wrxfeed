@@ -6,13 +6,12 @@ import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
 // hooks
 import { useIdentity, usePermission } from '@identity/hooks';
-import { useFeedItem } from '@main/hooks/feedItem.hook';
 import { useFeedComment } from '@main/hooks/feedComment.hook';
 // constants
 import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { useMention } from '@main/hooks';
-import { FeedItemFilters, GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
+import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import { classNames, formatCurrency } from '@common/utils';
 import { commentEditorRawParser, getDepartmentBgColor } from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
@@ -50,14 +49,6 @@ interface ConfirmModalProps {
   confirmLabel: string;
 }
 
-const LIMIT_GET_TRANS = 12;
-const LIMIT_GET_TRANS_FULL = 50;
-const MAX_USER_CLICK_LOAD_MORE = 2;
-const INIT_PAGINATION_TRANS = Object.freeze({
-  offset: 0,
-  limit: LIMIT_GET_TRANS,
-});
-
 const INITIAL_COMMENT_NUMBER = 2;
 const LIMIT_GET_COMMENT = 20;
 
@@ -72,11 +63,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     offset: 0,
     limit: INITIAL_COMMENT_NUMBER,
   });
-  const [filterTrans, setFilterTrans] = React.useState<FeedItemFilters>({
-    id: feedItem?.id,
-    page: INIT_PAGINATION_TRANS,
-  });
-  const { lineItems, isLoading: isLoadingTrans, hasMore: hasMoreTrans } = useFeedItem(filterTrans);
+
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
@@ -209,21 +196,6 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     return items;
   };
 
-  const onLoadMoreTransaction = React.useCallback(() => {
-    if (!hasMoreTrans || isLoadingTrans) return;
-    // If there are more than 24 (12*2) items, users can click "see more" a third time to load the rest of the lineItems.
-    setFilterTrans((prevFilter) => ({
-      ...prevFilter,
-      page: {
-        limit:
-          lineItems.length >= LIMIT_GET_TRANS * MAX_USER_CLICK_LOAD_MORE
-            ? LIMIT_GET_TRANS_FULL
-            : prevFilter?.page?.limit ?? 0,
-        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
-      },
-    }));
-  }, [hasMoreTrans, isLoadingTrans, lineItems.length]);
-
   const departmentName =
     feedItem?.department?.parent?.name ?? feedItem?.department?.name ?? 'unknown';
   const deptGradientBg = useMemo(
@@ -310,7 +282,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           </div>
         </div>
         {SHOW_TARGET_FEED_CHART && <TargetChartView />}
-        <RollupTransactions trans={feedItem?.transactions} onLoadMore={onLoadMoreTransaction} />
+        <RollupTransactions trans={feedItem?.transactions} />
         <div className="space-y-4 px-4 sm:px-12 mt-1">
           {hasMoreComment && (
             <CommentViewAll
@@ -364,9 +336,10 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         onClose={() => openFeedbackModal(false)}
         itemId={feedItem?.id}
       />
-      {lineItems.length > 0 && (
+      {feedItem.transactions.length > 0 && (
         <AttachmentModal
-          lineItem={lineItems[0]}
+          depName={feedItem?.department?.name}
+          catName={feedItem?.category?.name}
           open={!!attachFileComment}
           file={attachFileComment}
           mentionData={mentions}

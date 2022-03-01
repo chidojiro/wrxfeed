@@ -6,7 +6,6 @@ import LinearProgress from '@common/atoms/LinearProgress';
 import CommentBox from '@main/molecules/CommentBox';
 import { useFileUploader } from '@common/hooks/useFileUploader';
 import { GetUploadTokenBody } from '@api/types';
-import { TransLineItem } from '@main/entity';
 import CircleAvatar from '@main/atoms/CircleAvatar';
 import ImageFilePreview from '@main/atoms/ImageFilePreview';
 import { CommentFormModel } from '@main/types';
@@ -14,7 +13,8 @@ import Modal, { ModalProps } from '@common/atoms/Modal';
 
 export type AttachmentModalProps = ModalProps & {
   style?: React.CSSProperties;
-  lineItem?: TransLineItem;
+  depName?: string;
+  catName?: string;
   file: File | null;
   mentionData: MentionData[];
   uploadOptions?: GetUploadTokenBody;
@@ -22,7 +22,8 @@ export type AttachmentModalProps = ModalProps & {
 };
 
 const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
-  lineItem,
+  depName,
+  catName,
   open,
   file,
   mentionData,
@@ -64,20 +65,15 @@ const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
           <div className="text-sm text-left text-Gray-2 mt-2">
             <div className="flex">
               Upload to
-              <CircleAvatar
-                size={20}
-                className="mx-1"
-                name={lineItem?.department?.name}
-                initialLength={1}
-              />
-              <span style={{ fontWeight: 600 }}>{lineItem?.category?.name ?? ''}</span>
+              <CircleAvatar size={20} className="mx-1" name={depName} initialLength={1} />
+              <span style={{ fontWeight: 600 }}>{catName ?? ''}</span>
             </div>
           </div>
         </div>
         <div className="flex flex-col p-6">
           <p className="text-sm text-left text-Gray-1 font-bold mb-2">Add a comment</p>
           <CommentBox
-            id={`attachment-${lineItem?.id.toString()}`}
+            id={`attachment-${depName}`}
             showAttach={false}
             showSend={false}
             showEmoji={false}

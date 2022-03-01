@@ -128,7 +128,8 @@ export const replaceAll = (str: string, find: string, replace: string): string =
   return str.replace(new RegExp(find, 'g'), replace);
 };
 
-export const formatToCurrency = (value: string, currency = '$'): string => {
-  const result = replaceAll(value, ',', '').replace(new RegExp(/[^0-9]+/, 'g'), ',');
-  return `${currency}${result.replace(new RegExp(/\B(?=(\d{3})+(?!\d))/, 'g'), ',')}`;
+export const formatToCurrency = (value: string, currency = '$', minValue = '0'): string => {
+  const result = value.replace(new RegExp(/[^0-9.]+/, 'g'), '') || minValue;
+  const resultInt = parseFloat(result).toFixed(0).toString();
+  return `${currency}${resultInt.replace(new RegExp(/\B(?=(\d{3})+(?!\d))/, 'g'), ',')}`;
 };
