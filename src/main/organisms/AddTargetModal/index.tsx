@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useDebounce } from '@common/hooks';
 import { useSearch } from '@main/hooks/search.hook';
 
-import { classNames, formatToCurrency, replaceAll } from '@common/utils';
+import { classNames, formatCurrency, replaceAll } from '@common/utils';
 import { getIconByResultType, getPropTypeDisplayName, getUniqueListBy } from '@main/utils';
 
 import { SearchResult } from '@main/types';
@@ -132,7 +132,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       });
       setDefaultTags(defaultTagsTemp);
     }
-    setAmount(formatToCurrency(itemEditing?.amount?.toString() || '', ''));
+    setAmount(formatCurrency(itemEditing?.amount?.toString() || '', '0,0', '0'));
   }, [itemEditing]);
 
   const onSearchContact = useCallback(
@@ -173,7 +173,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     onCreateTarget(amountInt, tags);
   };
   const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(formatToCurrency(event.target.value, ''));
+    setAmount(formatCurrency(event.target.value, '0,0', '0'));
   };
 
   const renderResultProperty = (result: SearchResult) => {

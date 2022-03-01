@@ -3,12 +3,9 @@ import { useRecoilValue } from 'recoil';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 
 import { menuItemsValue, newFeedCountState } from '@main/states/sidemenu.state';
-
 import { useSubscription } from '@main/hooks/subscription.hook';
-
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
-
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
 
 const SideBar: React.VFC = () => {
