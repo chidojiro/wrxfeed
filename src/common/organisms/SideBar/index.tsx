@@ -3,12 +3,9 @@ import { useRecoilValue } from 'recoil';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 
 import { menuItemsValue, newFeedCountState } from '@main/states/sidemenu.state';
-
 import { useSubscription } from '@main/hooks/subscription.hook';
-
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
-
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
 
 const SideBar: React.VFC = () => {
@@ -68,7 +65,7 @@ const SideBar: React.VFC = () => {
                 const isCurrentTab = currentTab?.location.pathname === leftTab.location.pathname;
                 return (
                   <RouterLink
-                    key={`tabs-${leftTab?.name}`}
+                    key={`tabs-${leftTab?.name}-${leftTab.location.pathname}`}
                     to={leftTab.location}
                     className={classNames(
                       isCurrentTab ? 'text-Accent-2 font-semibold' : 'text-Gray-3 font-regular',
