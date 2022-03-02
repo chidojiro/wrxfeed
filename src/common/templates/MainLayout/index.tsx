@@ -13,6 +13,7 @@ interface MainLayoutProps {
   className?: string;
   showNavBar?: boolean;
   showSlideOver?: boolean;
+  rightSide?: boolean;
 }
 
 const MainLayout: React.VFC<MainLayoutProps> = ({
@@ -20,6 +21,7 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
   className,
   showNavBar = true,
   showSlideOver = true,
+  rightSide = true,
 }) => {
   useEffect(() => {
     scrollToTop();
@@ -28,17 +30,22 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
     <div className={classNames('relative', className ?? '')}>
       {showNavBar && <NavBar />}
       <div className="pt-8 sm:pt-navbar pb-1 sm:pb-10">
-        <div className="relative min-h-screen max-w-3xl mx-auto md:max-w-7xl md:grid md:grid-cols-12">
+        <div className="relative min-h-screen max-w-3xl mx-auto md:max-w-[1440px] md:grid md:grid-cols-12">
           <div className="relative hidden md:top-navbar md:sticky md:h-screen md:flex flex-1 md:col-span-3 lg:col-span-3 w-full">
             <SideBar />
           </div>
 
-          <main className="relative pt-12 md:border-l md:border-Gray-11 md:pl-6 md:col-span-8 xl:col-span-6 max-w-3xl">
+          <main
+            className={classNames(
+              'relative pt-12 md:border-l md:border-Gray-11 md:pl-6 md:col-span-8 max-w-3xl',
+              rightSide ? 'xl:col-span-6' : '',
+            )}
+          >
             {children}
           </main>
 
           <aside className="hidden xl:block xl:col-span-3 lg:pl-5">
-            <div id="main-right-side" className="sticky top-14" />
+            {rightSide && <div id="main-right-side" className="sticky top-14" />}
           </aside>
         </div>
         {showSlideOver && <SlideOver />}
