@@ -3,12 +3,9 @@ import { useRecoilValue } from 'recoil';
 import { useLocation, Link as RouterLink, useHistory } from 'react-router-dom';
 
 import { menuItemsValue, newFeedCountState } from '@main/states/sidemenu.state';
-
 import { useSubscription } from '@main/hooks/subscription.hook';
-
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
-
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
 
 const SideBar: React.VFC = () => {
@@ -51,7 +48,7 @@ const SideBar: React.VFC = () => {
 
   return (
     <nav aria-label="Sidebar" className="divide-y divide-gray-300 flex flex-1 overflow-hidden">
-      <div className="flex w-full flex-1 flex-col py-8 space-y-6 max-h-[calc(60vh-56px)] lg:max-h-[calc(100vh-56px)] overflow-scroll hide-scrollbar">
+      <div className="flex w-full flex-1 flex-col py-8 pb-40 space-y-6 h-auto overflow-scroll hide-scrollbar">
         {menuItems.map((menuItem: GroupTab) => {
           const { tabs } = menuItem;
           return (
@@ -69,7 +66,7 @@ const SideBar: React.VFC = () => {
                 const isCurrentTab = currentTab?.location.pathname === leftTab.location.pathname;
                 return (
                   <RouterLink
-                    key={`tabs-${leftTab?.name}`}
+                    key={`tabs-${leftTab?.name}-${leftTab.location.pathname}`}
                     to={leftTab.location}
                     className={classNames(
                       isCurrentTab ? 'text-Accent-2 font-semibold' : 'text-Gray-3 font-regular',

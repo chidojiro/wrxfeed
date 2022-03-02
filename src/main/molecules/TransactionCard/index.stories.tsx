@@ -17,6 +17,8 @@ const Template: Story<TransactionCardProps> = (args) => {
 export const Default = Template.bind({});
 const transaction: Transaction = {
   id: 1,
+  amount: 17000,
+  amountUsd: 17000,
   category: { id: 1, name: 'Professional Services', visibility: Visibility.VISIBLE },
   department: { id: 1, name: 'Department', parent: { id: 2, name: 'Parent Department' } },
   vendor: { id: 1, name: 'Vendor' },

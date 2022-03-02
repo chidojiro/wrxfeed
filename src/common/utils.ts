@@ -32,8 +32,12 @@ dayjs.updateLocale('en', {
   },
 });
 
-export function formatCurrency(n?: number): string {
-  return n ? numeral(n).format('0,0.00') : '0.00';
+export function formatCurrency(
+  n?: string | number,
+  format = '0,0.00',
+  defaultValue = '0.00',
+): string {
+  return n ? numeral(n).format(format) : defaultValue;
 }
 
 export function hasSubArray(master: string[], sub: string[]): boolean {
@@ -126,9 +130,4 @@ export const emailMatches = (text: string): RegExpMatchArray | null => {
 
 export const replaceAll = (str: string, find: string, replace: string): string => {
   return str.replace(new RegExp(find, 'g'), replace);
-};
-
-export const formatToCurrency = (value: string, currency = '$'): string => {
-  const result = replaceAll(value, ',', '').replace(new RegExp(/[^0-9]+/, 'g'), ',');
-  return `${currency}${result.replace(new RegExp(/\B(?=(\d{3})+(?!\d))/, 'g'), ',')}`;
 };
