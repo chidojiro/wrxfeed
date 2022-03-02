@@ -18,6 +18,7 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({ trans }) => {
           </li>
         );
       })}
+      <div className="flex h-px bg-Gray-11 mt-4" />
     </ul>
   );
 };
