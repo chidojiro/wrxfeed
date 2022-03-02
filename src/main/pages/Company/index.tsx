@@ -9,13 +9,13 @@ import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@m
 import { useQuery } from '@common/hooks';
 import { useApi } from '@api';
 
+import { scrollToTop } from '@main/utils';
 import { Category, Department, Vendor } from '@main/entity';
 
 import MainLayout from '@common/templates/MainLayout';
 import FeedList from '@main/organisms/FeedList';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import { scrollToTop } from '@main/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = {

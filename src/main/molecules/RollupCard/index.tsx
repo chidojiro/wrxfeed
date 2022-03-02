@@ -283,16 +283,16 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         </div>
         {SHOW_TARGET_FEED_CHART && <TargetChartView />}
         <RollupTransactions trans={feedItem?.transactions} />
-        <div className="space-y-4 px-4 sm:px-12 mt-1">
+        <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
             <CommentViewAll
               onClick={loadAllComments}
               loading={isLoadingComments}
-              className="mt-1"
+              className="mt-2.5"
             />
           )}
           {hasComment && (
-            <ul>
+            <ul className="flex flex-col mt-1.5">
               {comments?.map((comment) => (
                 <li key={comment.id}>
                   <CommentItem
