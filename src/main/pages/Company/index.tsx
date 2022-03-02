@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 
@@ -11,8 +11,7 @@ import { useApi } from '@api';
 
 import { Category, Department, Vendor } from '@main/entity';
 
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
-import TargetPanel from '@main/organisms/TargetPanel';
+import MainLayout from '@common/templates/MainLayout';
 import FeedList from '@main/organisms/FeedList';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
@@ -48,7 +47,7 @@ const CompanyPage: React.VFC = () => {
   } = useFeed(feedFilters);
 
   const newFeedNumber = newFeedCount ? newFeedCount[location.pathname] : 0;
-  const handleLoadMore = React.useCallback(() => {
+  const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
     setFeedFilters((prevFilters) => ({
       page: {
@@ -87,7 +86,7 @@ const CompanyPage: React.VFC = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (filterKey && feeds.length > 0) {
       const firstFeed = feeds[0];
       switch (filterKey) {
@@ -105,7 +104,7 @@ const CompanyPage: React.VFC = () => {
     }
   }, [feeds]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (filterKey) {
       setFeedFilters({
         page: INIT_PAGINATION,
@@ -152,7 +151,7 @@ const CompanyPage: React.VFC = () => {
   });
 
   return (
-    <MainLayout>
+    <MainLayout rightSide={false}>
       <h1 className="sr-only">Feed list</h1>
       {!!filterKey && (
         <div className="flex items-center space-x-4 pb-8">
@@ -173,9 +172,6 @@ const CompanyPage: React.VFC = () => {
         counter={newFeedNumber}
         onClick={refetchNewItems}
       />
-      <MainRightSide>
-        <TargetPanel />
-      </MainRightSide>
     </MainLayout>
   );
 };

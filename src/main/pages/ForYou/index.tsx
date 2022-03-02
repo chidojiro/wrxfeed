@@ -6,18 +6,17 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { FeedFilters } from '@api/types';
 import { Category, Department, Vendor } from '@main/entity';
+import { classNames } from '@common/utils';
 
 import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@main/hooks';
 import { useFeed } from '@main/hooks/feed.hook';
 import { useQuery } from '@common/hooks';
 import { useApi } from '@api';
 
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
+import MainLayout from '@common/templates/MainLayout';
 import FeedList from '@main/organisms/FeedList';
-import TargetPanel from '@main/organisms/TargetPanel';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import { classNames } from '@common/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -134,7 +133,7 @@ const ForYouPage: React.VFC = () => {
   };
 
   return (
-    <MainLayout className="flex flex-col">
+    <MainLayout className="flex flex-col" rightSide={false}>
       <NewFeedIndicator
         isVisible={!!newFeedNumber}
         counter={newFeedNumber}
@@ -162,9 +161,6 @@ const ForYouPage: React.VFC = () => {
         EndComponent={() => renderForYouEndList()}
         EmptyStateComponent={() => renderForYouEndList()}
       />
-      <MainRightSide>
-        <TargetPanel />
-      </MainRightSide>
     </MainLayout>
   );
 };

@@ -85,7 +85,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
     >
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-3xl md:max-w-7xl">
+          <div className="mx-auto max-w-3xl md:max-w-[1440px]">
             <div className="relative flex justify-between h-navbar md:grid md:grid-cols-12">
               <div className="flex flex-col justify-center items-center md:col-span-3">
                 <div className="flex-shrink-0 flex items-center lg:ml-4 xl:ml-12">
