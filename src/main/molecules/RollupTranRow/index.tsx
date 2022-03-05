@@ -45,30 +45,10 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
     () => getTransactionColor(tran?.status ?? ''),
     [tran?.status],
   );
-  const renderStatusTag = () => {
-    return (
-      <div
-        className="flex flex-row justify-center items-center rounded-full bg-Green-8 ml-auto px-2.5 py-0.5 h-5 mr-2.5 min-h-[20px]"
-        style={{ backgroundColor: tranType?.color?.bgColor }}
-      >
-        <div
-          className="flex w-1.5 h-1.5 bg-Green-400 rounded-full mr-[7px]"
-          style={{ backgroundColor: tranType?.color?.dotColor }}
-        />
-        <p
-          className="text-Green-800 text-xs font-medium"
-          style={{ color: tranType?.color?.textColor }}
-        >
-          {tranType?.displayName}
-        </p>
-      </div>
-    );
-  };
-
   const totalAmount: number = tran?.amount;
 
   return (
-    <div className="flex flex-col mt-px w-full overflow-hidden">
+    <div className="flex flex-col mt-px w-auto overflow-hidden">
       <button
         ref={viewRef}
         type="button"
@@ -81,14 +61,28 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
         <div className="flex w-5 h-5 justify-center items-center">
           <DownSmall className={classNames(isOpen ? 'rotate-180' : '')} />
         </div>
-        <div className="flex flex-row w-auto items-center max-w-[140px] sm:max-w-[300px] md:max-w-[400px] lg:max-w-[450px] ml-1.5">
+        <div className="flex flex-1 h-5 overflow-hidden flex-row items-center ml-1.5">
           <p className="text-Gray-3 text-xs font-semibold text-left truncate">{tran?.vendorName}</p>
+          <p className="text-Gray-6 text-sm font-normal mx-1">·</p>
+          <p className="text-Gray-6 text-xs font-normal">
+            {dayjs(tran?.transDate).format(DATE_FORMAT)}
+          </p>
         </div>
-        <p className="text-Gray-6 text-sm font-normal mx-1">·</p>
-        <p className="text-Gray-6 text-xs font-normal">
-          {dayjs(tran?.transDate).format(DATE_FORMAT)}
-        </p>
-        {renderStatusTag()}
+        <div
+          className="flex flex-row justify-center items-center rounded-full bg-Green-8 px-2.5 py-0.5 h-5 mr-2.5 min-h-[20px]"
+          style={{ backgroundColor: tranType?.color?.bgColor }}
+        >
+          <div
+            className="flex w-1.5 h-1.5 bg-Green-400 rounded-full mr-[7px]"
+            style={{ backgroundColor: tranType?.color?.dotColor }}
+          />
+          <p
+            className="text-Green-800 text-xs font-medium"
+            style={{ color: tranType?.color?.textColor }}
+          >
+            {tranType?.displayName}
+          </p>
+        </div>
         <p className="text-Gray-3 text-xs font-semibold w-18 text-right">
           {totalAmount === null || totalAmount === undefined
             ? 'Error'
