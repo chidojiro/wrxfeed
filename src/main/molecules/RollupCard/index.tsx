@@ -227,9 +227,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                   <button
                     type="button"
                     className="hover:underline text-left font-bold"
-                    onClick={() => {
-                      return onClickDepartment && onClickDepartment(feedItem?.department);
-                    }}
+                    onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
                   >
                     {feedItem?.category?.name}
                   </button>
@@ -270,7 +268,11 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               aria-hidden="true"
               id={`question-title-${feedItem?.id}`}
               className="mt-1 text-xs font-normal text-white cursor-pointer hover:underline"
-              onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
+              onClick={() => {
+                if (onClickDepartment) {
+                  onClickDepartment(feedItem?.department);
+                }
+              }}
             >
               {`${feedItem?.department?.name} · ${
                 feedItem?.month &&
