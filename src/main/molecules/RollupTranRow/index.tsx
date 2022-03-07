@@ -45,7 +45,7 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
     () => getTransactionColor(tran?.status ?? ''),
     [tran?.status],
   );
-  const totalAmount: number = tran?.amount;
+  const totalAmount: number = tran?.amountUsd;
 
   return (
     <div className="flex flex-col mt-px w-auto overflow-hidden">
