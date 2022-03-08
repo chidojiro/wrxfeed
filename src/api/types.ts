@@ -197,6 +197,7 @@ export interface PostTargetParams {
   amount: number | null;
   depId?: number;
   props: TargetProp[];
+  name: string;
 }
 
 export interface SubscriptionParams {
