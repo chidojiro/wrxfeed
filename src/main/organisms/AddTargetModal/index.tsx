@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
 
 import { useDebounce } from '@common/hooks';
 import { useSearch } from '@main/hooks/search.hook';
@@ -16,6 +15,7 @@ import Loading from '@common/atoms/Loading';
 import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
 import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-2.svg';
 import { ReactComponent as CarbonTrashCan } from '@assets/icons/outline/carbon-trash-can.svg';
+import { AlertRed } from '@assets';
 
 const DEBOUNCE_WAIT = 0;
 
@@ -51,13 +51,17 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const tagInputRef = useRef<AddTargetTagInputHandler>(null);
   const [keyword, setKeyword] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
+  const [targetName, setTargetName] = useState<string>('');
+  const [showErrorProperty, setShowErrorProperty] = useState<boolean>(false);
+  const [showErrorName, setShowErrorName] = useState<boolean>(false);
+
   const isEdit = itemEditing !== null;
   const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
   const [enableCreate, setEnableCreate] = useState<boolean>(false);
 
   const { results, isLoading: isSearching, onClear } = useSearch({ keyword });
 
-  const onCreateTarget = (amountInput: number | null, tags: SearchResult[]) => {
+  const onCreateTarget = (amountInput: number | null, tags: SearchResult[], name: string) => {
     const props: TargetProp[] = tags.map((tag: SearchResult) => {
       return {
         id: tag?.directoryId,
@@ -71,6 +75,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       amount: amountInput,
       depId,
       props,
+      name,
     });
   };
   const onDeleteTarget = (targetId: number, amountInput: number, tags: SearchResult[]) => {
@@ -138,6 +143,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const onSearchContact = useCallback(
     (value: string) => {
       setKeyword(value);
+      setShowErrorProperty(false);
     },
     [setKeyword],
   );
@@ -157,23 +163,29 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const onClickCreateOrSave = () => {
     const tags = tagInputRef.current?.getItems() || [];
     if (tags.length === 0) {
-      toast.warning('Targets must have at least one property');
+      setShowErrorProperty(true);
+      return;
+    }
+    if (targetName.length === 0) {
+      setShowErrorName(true);
       return;
     }
     const amountNumber = replaceAll(amount, ',', '');
     const amountInt = parseInt(amountNumber, 10);
-    // if (!amountInt || amountInt < 1) {
-    //   toast.warning('Target amounts can only be numerical values');
-    //   return;
-    // }
     if (isEdit) {
       onSaveTarget(itemEditing?.id, amountInt, tags);
       return;
     }
-    onCreateTarget(amountInt, tags);
+    onCreateTarget(amountInt, tags, targetName);
   };
-  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeInputAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(formatCurrency(event.target.value, '0,0', '0'));
+  };
+  const onChangeInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTargetName(event.target.value);
+    if (showErrorName) {
+      setShowErrorName(false);
+    }
   };
 
   const renderResultProperty = (result: SearchResult) => {
@@ -185,7 +197,13 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         type="button"
         className="hover:bg-Gray-12 px-12 py-2.5 flex flex-row items-center text-xs group"
       >
-        <IconByType className="w-5 h-5 object-scale-down" style={{ width: 20, height: 20 }} />
+        <div className="flex w-5 h-5 justify-center items-center">
+          <IconByType
+            className="w-5 h-5 object-scale-down"
+            style={{ width: 20, height: 20 }}
+            viewBox="2 2 20 20"
+          />
+        </div>
         <p className="text-Gray-1 ml-8">{result?.title}</p>
         <p className="text-Gray-6 ml-2 invisible group-hover:visible">
           {`- ${getPropTypeDisplayName(result?.type)}`}
@@ -212,18 +230,38 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     return <CarbonTrashCan width={16} height={16} className="w-4 h-4" />;
   };
 
+  const renderErrorProperty = () => {
+    if (!showErrorProperty) return null;
+    return (
+      <div className="flex flex-row items-center px-2 space-x-1">
+        <AlertRed width={15} height={15} className="w-4 h-4" viewBox="0 0 15 15" />
+        <p className="text-xs text-Gray-6">Targets need at least one property</p>
+      </div>
+    );
+  };
+
+  const renderErrorName = () => {
+    if (!showErrorName) return null;
+    return (
+      <div className="flex flex-row items-center px-2 space-x-1">
+        <AlertRed width={15} height={15} className="w-4 h-4" viewBox="0 0 15 15" />
+        <p className="text-xs text-Gray-6">Target name is required</p>
+      </div>
+    );
+  };
+
   const createReadyState = enableCreate ? 'bg-primary' : 'bg-Gray-6';
   return (
     <Modal open={open} onClose={onCloseModal} center={false} contentClass="sm:my-24">
       <div className="flex flex-col w-[523px] outline-none">
-        <div className="flex flex-col px-12 pt-8 pb-5">
+        <div className="flex flex-col space-y-2 px-12 pt-8 pb-6">
           <h3 className="text-base text-primary font-semibold">Monthly Target</h3>
-          <p className="text-xs text-Gray-6 mt-2">Monitor spend and track performance.</p>
+          <p className="text-sm text-Gray-6">Monitor spend and track performance.</p>
         </div>
         <hr className="divider divider-horizontal w-full" />
-        <div className="flex flex-col pt-10 pb-6">
-          <div className="px-12">
-            <p className="text-primary text-xs mb-2 font-semibold">Add Properties</p>
+        <div className="flex flex-col py-8">
+          <div className="px-12 space-y-2">
+            <p className="text-primary text-xs font-semibold">Properties*</p>
             <AddTargetTagInput
               ref={tagInputRef}
               placeholder="Enter a team, category, or vendor"
@@ -240,25 +278,38 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
                 }
               }}
             />
+            {renderErrorProperty()}
           </div>
-          <div className="flex flex-col mt-2 w-full max-h-[300px] overflow-scroll hide-scrollbar">
+          <div className="flex flex-col mt-2 w-full max-h-[200px] overflow-y-scroll hide-scrollbar">
             {results?.map(renderResultProperty)}
           </div>
-          <div className="px-12 w-full mt-6">
-            <p className="text-primary text-xs mb-2 font-semibold">Target Amount</p>
-            <div className="flex flex-row justify-end">
-              <div className="flex flex-row items-center px-1 py-2 border-b border-Gray-11">
-                <p className="text-Gray-3 text-base mr-2.5">$</p>
-                <input
-                  className={classNames(
-                    'text-Gray-1 placeholder-Gray-6 outline-none border-none text-base',
-                    amountInputWidth,
-                  )}
-                  placeholder="10,000"
-                  onChange={onChangeInput}
-                  value={amount}
-                />
-              </div>
+          <div className="flex flex-col space-y-2 px-12 w-full mt-6">
+            <p className="text-primary text-xs font-semibold">Target Name*</p>
+            <div className="flex flex-col p-2 border-b border-Gray-11">
+              <input
+                className={classNames(
+                  'text-Gray-1 flex-1 placeholder-Gray-6 outline-none border-none text-sm w-auto',
+                )}
+                placeholder="Ex: Direct marketing & online advertising"
+                onChange={onChangeInputName}
+                value={targetName}
+              />
+            </div>
+            {renderErrorName()}
+          </div>
+          <div className="px-12 w-full mt-6 space-y-2">
+            <p className="text-primary text-xs font-semibold">Amount</p>
+            <div className="flex flex-row items-center px-1 py-2 border-b border-Gray-11">
+              <p className="text-Gray-3 text-base mr-2.5">$</p>
+              <input
+                className={classNames(
+                  'text-Gray-1 placeholder-Gray-6 outline-none border-none text-base',
+                  amountInputWidth,
+                )}
+                placeholder="10,000"
+                onChange={onChangeInputAmount}
+                value={amount}
+              />
             </div>
           </div>
         </div>
