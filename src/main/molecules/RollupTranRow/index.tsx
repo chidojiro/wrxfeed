@@ -47,6 +47,29 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
   );
   const totalAmount: number = tran?.amountUsd;
 
+  const renderExpensedTag = () => {
+    if (tran.recordType?.toLowerCase() === 'Expense Report'.toLowerCase()) {
+      return (
+        <div className="flex flex-row items-center space-x-1">
+          <p className="text-Gray-6 text-sm font-normal">·</p>
+          <p className="text-Accent-2 text-xs font-normal">Expensed</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const renderDateTag = () => {
+    return (
+      <div className="flex flex-row items-center space-x-1">
+        <p className="text-Gray-6 text-sm font-normal">·</p>
+        <p className="text-Gray-6 text-xs font-normal">
+          {dayjs(tran?.transDate).format(DATE_FORMAT)}
+        </p>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col mt-px w-auto overflow-hidden">
       <button
@@ -61,12 +84,10 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
         <div className="flex w-5 h-5 justify-center items-center">
           <DownSmall className={classNames(isOpen ? 'rotate-180' : '')} />
         </div>
-        <div className="flex flex-1 h-5 overflow-hidden flex-row items-center ml-1.5">
+        <div className="flex flex-1 h-5 overflow-hidden flex-row items-center mx-1.5 space-x-1">
           <p className="text-Gray-3 text-xs font-semibold text-left truncate">{tran?.vendorName}</p>
-          <p className="text-Gray-6 text-sm font-normal mx-1">·</p>
-          <p className="text-Gray-6 text-xs font-normal">
-            {dayjs(tran?.transDate).format(DATE_FORMAT)}
-          </p>
+          {renderExpensedTag()}
+          {renderDateTag()}
         </div>
         <div
           className="flex flex-row justify-center items-center rounded-full bg-Green-8 px-2.5 py-0.5 h-5 mr-2.5 min-h-[20px]"
