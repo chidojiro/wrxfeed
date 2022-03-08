@@ -13,14 +13,14 @@ export const MainMenu: GroupTab[] = [
     icon: FeedIcon,
     tabs: [
       {
-        name: 'Company',
-        location: { pathname: '/company' },
+        name: 'For you',
+        location: { pathname: '/for-you' },
         icon: FeedIcon,
         isShowCounter: true,
       },
       {
-        name: 'For you',
-        location: { pathname: '/for-you' },
+        name: 'Company',
+        location: { pathname: '/company' },
         icon: FeedIcon,
         isShowCounter: true,
       },
