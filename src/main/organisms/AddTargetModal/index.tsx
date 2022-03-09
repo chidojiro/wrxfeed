@@ -23,7 +23,7 @@ export type AddTargetModalProps = {
   open: boolean;
   onClose: () => void;
   onCancel: () => void;
-  deleteTarget: (id: number, data: PutTargetParams) => void;
+  deleteTarget: (id: number) => void;
   postTarget: (data: PostTargetParams) => void;
   putTarget: (id: number, data: PutTargetParams) => void;
   itemEditing: Target | null;
@@ -75,25 +75,18 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       amount: amountInput,
       depId,
       props,
-      name,
+      title: name,
     });
   };
-  const onDeleteTarget = (targetId: number, amountInput: number, tags: SearchResult[]) => {
-    const props: TargetProp[] = tags.map((tag: SearchResult) => {
-      return {
-        id: tag?.directoryId,
-        type: tag?.type,
-        name: tag?.title ?? '',
-      };
-    });
-    deleteTarget(targetId, {
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
-      amount: amountInput,
-      props,
-    });
+  const onDeleteTarget = (targetId: number) => {
+    deleteTarget(targetId);
   };
-  const onSaveTarget = (targetId: number, amountInput: number, tags: SearchResult[]) => {
+  const onSaveTarget = (
+    targetId: number,
+    amountInput: number,
+    tags: SearchResult[],
+    name: string,
+  ) => {
     const props: TargetProp[] = tags.map((tag: SearchResult) => {
       return {
         id: tag?.directoryId,
@@ -107,6 +100,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       amount: amountInput,
       depId,
       props,
+      title: name,
     });
   };
 
@@ -154,8 +148,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   };
   const onClickDelete = () => {
     if (!itemEditing) return;
-    const tags = tagInputRef.current?.getItems() || [];
-    onDeleteTarget(itemEditing?.id, parseInt(amount, 10), tags);
+    onDeleteTarget(itemEditing?.id);
   };
   const onClickCancel = () => {
     onCancel();
@@ -173,7 +166,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     const amountNumber = replaceAll(amount, ',', '');
     const amountInt = parseInt(amountNumber, 10);
     if (isEdit) {
-      onSaveTarget(itemEditing?.id, amountInt, tags);
+      onSaveTarget(itemEditing?.id, amountInt, tags, targetName);
       return;
     }
     onCreateTarget(amountInt, tags, targetName);

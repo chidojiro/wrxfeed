@@ -23,7 +23,7 @@ interface TargetHookValues {
   isGetTargets: boolean;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
-  deleteTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  deleteTarget: (id: number) => Promise<void>;
   isPostTarget: boolean;
   isPutTarget: boolean;
   isDeleteTarget: boolean;
@@ -116,11 +116,11 @@ export function useTarget(
     }
   };
 
-  const deleteTarget = async (id: number, data: PutTargetParams) => {
+  const deleteTarget = async (id: number) => {
     if (isPutTarget) return;
     try {
       setDeleteTarget(true);
-      await ApiClient.deleteTarget(id, data);
+      await ApiClient.deleteTarget(id);
       const newTargets = targets.filter((item: Target) => item?.id !== id);
       setTargets(newTargets);
       cbDelete.onSuccess();
