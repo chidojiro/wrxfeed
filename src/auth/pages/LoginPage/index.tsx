@@ -47,7 +47,7 @@ const LoginPage: React.VFC = () => {
 
   useEffect(() => {
     if (identity?.token) {
-      const nextRoute = identity?.lastLoginAt === null ? Routes.Onboard.path : Routes.Company.path;
+      const nextRoute = identity?.lastLoginAt === null ? Routes.Onboard.path : Routes.ForYou.path;
       const callbackUrl = from?.pathname || (nextRoute as string);
       redirect(callbackUrl);
     }

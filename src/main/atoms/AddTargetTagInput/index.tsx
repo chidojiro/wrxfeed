@@ -114,7 +114,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
   return (
     <div className="flex flex-col">
       <div className="relative bg-Gray-12 flex flex-row items-center rounded-sm">
-        <div className="flex flex-grow flex-wrap items-center p-2 focus-within:z-10 max-h-60 overflow-y-scroll">
+        <div className="flex flex-grow flex-wrap items-center p-2 focus-within:z-10 max-h-36 overflow-y-scroll">
           {items.map((item) => (
             <InputTag
               key={item?.id}

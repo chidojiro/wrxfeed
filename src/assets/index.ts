@@ -23,6 +23,8 @@ import { ReactComponent as Bank } from '@assets/icons/outline/bank.svg';
 import { ReactComponent as CategoryIcon } from '@assets/icons/outline/category-icon.svg';
 import { ReactComponent as TeamIcon } from '@assets/icons/outline/team-icon.svg';
 import { ReactComponent as LoopIcon } from '@assets/icons/outline/loop.svg';
+import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
+import { ReactComponent as AlertRed } from '@assets/icons/solid/alert-red.svg';
 
 export {
   InviteIcon,
@@ -50,4 +52,6 @@ export {
   CategoryIcon,
   TeamIcon,
   LoopIcon,
+  ExclamationCircle,
+  AlertRed,
 };
