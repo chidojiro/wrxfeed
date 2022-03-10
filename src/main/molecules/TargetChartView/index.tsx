@@ -1,4 +1,4 @@
-import { classNames } from '@common/utils';
+import { classNames, formatCurrency } from '@common/utils';
 import React from 'react';
 import { BasicsEditCircle } from '@assets/index';
 import {
@@ -10,9 +10,11 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { FeedItem } from '@main/entity';
 
 interface TargetChartViewProps {
   className?: string;
+  feedItem: FeedItem;
 }
 
 export type SymbolNote = {
@@ -69,7 +71,7 @@ const data = [
   },
 ];
 
-const TargetChartView: React.VFC<TargetChartViewProps> = ({ className }) => {
+const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem }) => {
   const onClickEditTarget = () => undefined;
 
   const symbolNoteData: SymbolNote[] = [
@@ -174,7 +176,9 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className }) => {
         <div className="flex flex-row space-x-4 w-auto">
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Current Spend</p>
-            <p className="text-xl text-primary font-bold mt-1">$60,400.76</p>
+            <p className="text-xl text-primary font-bold mt-1">
+              {`$ ${formatCurrency(feedItem?.total)}`}
+            </p>
           </div>
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Target</p>

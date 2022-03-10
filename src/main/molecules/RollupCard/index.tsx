@@ -211,19 +211,22 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         className="bg-white flex flex-col filter shadow-md rounded-card overflow-hidden"
         aria-labelledby={`rollup-title-${feedItem?.id}`}
       >
-        <div className="flex flex-row">
+        <div className="flex flex-col border-b">
           <div
-            className={classNames(
-              isHidden ? 'bg-purple-8' : 'bg-white',
-              'flex-grow w-4/5 px-6 py-5 border-b border-Gray-11',
-            )}
+            className="h-4 w-full"
             style={{
               background: deptGradientBg,
             }}
+          />
+          <div
+            className={classNames(
+              isHidden ? 'bg-purple-8' : 'bg-white',
+              'flex-grow px-6 py-5 border-Gray-11',
+            )}
           >
             <div className="flex items-center space-x-3">
               <div className="flex items-center min-w-0 flex-1 ">
-                <p className="text-base text-white">
+                <p className="text-base text-primary">
                   <button
                     type="button"
                     className="hover:underline text-left font-bold"
@@ -245,7 +248,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               <div className="flex-shrink-0 self-center flex items-center">
                 <h2
                   id={`question-title-${feedItem?.id}`}
-                  className="text-base font-semibold text-white mr-3"
+                  className="text-base font-semibold text-primary mr-3"
                 >
                   {`$ ${formatCurrency(feedItem?.total)}`}
                 </h2>
@@ -254,7 +257,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                     <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
                       <span className="sr-only">Open options</span>
                       <MoreVerticalIcon
-                        className="fill-current text-white path-no-filled"
+                        className="fill-current text-primary path-no-filled"
                         aria-hidden="true"
                         viewBox="0 0 15 15"
                       />
@@ -267,7 +270,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             <h2
               aria-hidden="true"
               id={`question-title-${feedItem?.id}`}
-              className="mt-1 text-xs font-normal text-white cursor-pointer hover:underline"
+              className="mt-1 text-xs font-normal text-primary cursor-pointer hover:underline"
               onClick={() => {
                 if (onClickDepartment) {
                   onClickDepartment(feedItem?.department);
@@ -283,7 +286,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             </h2>
           </div>
         </div>
-        {SHOW_TARGET_FEED_CHART && <TargetChartView />}
+        {SHOW_TARGET_FEED_CHART && <TargetChartView feedItem={feedItem} />}
         <RollupTransactions trans={feedItem?.transactions} />
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
