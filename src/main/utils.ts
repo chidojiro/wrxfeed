@@ -413,7 +413,10 @@ export const getUniqueListBy = (arr: any[], objectKey: string): any[] => {
 };
 
 export const getTargetName = (target: Target): string => {
-  const { props = [] } = target;
+  const { props = [], title } = target;
+  if (typeof title === 'string' && title.length > 0) {
+    return title;
+  }
   if (!Array.isArray(props) || props.length === 0) return 'Invalid target!';
   let targetName = target.props[0].name;
   if (props.length === 1) return targetName;
