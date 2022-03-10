@@ -133,6 +133,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       setDefaultTags(defaultTagsTemp);
     }
     setAmount(formatCurrency(itemEditing?.amount?.toString() || '', '0,0', '0'));
+    setTargetName(itemEditing?.title ?? '');
   }, [itemEditing]);
 
   const onSearchContact = useCallback(
