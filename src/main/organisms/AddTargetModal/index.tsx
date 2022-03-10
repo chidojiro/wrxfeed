@@ -73,7 +73,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
       amount: amountInput,
-      depId,
+      dep: depId,
       props,
       name,
     });
@@ -105,7 +105,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
       amount: amountInput,
-      depId,
+      dep: depId,
       props,
     });
   };
@@ -117,6 +117,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         onClear();
         setKeyword('');
         setAmount('');
+        setTargetName('');
         setDefaultTags([]);
       }, 400);
     }

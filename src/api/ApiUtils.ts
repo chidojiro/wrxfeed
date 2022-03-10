@@ -546,9 +546,9 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getDepartmentById = async (depId: number): Promise<Department> => {
+  getDepartmentById = async (dep: number): Promise<Department> => {
     const res = await this.request<Department>({
-      url: `/feed/departments/${depId}`,
+      url: `/feed/departments/${dep}`,
       method: 'GET',
     });
     return res.data;
