@@ -81,7 +81,7 @@ export interface ApiClient {
   getTargets: (filters?: TargetFilter) => Promise<Target[]>;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
-  deleteTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  deleteTarget: (id: number) => Promise<void>;
   // Subscription
   getSubscriptions: () => Promise<Subscription>;
   updateSubscriptions: (data: SubscriptionParams) => Promise<Subscription>;
@@ -172,6 +172,7 @@ export interface TargetFilter extends Pagination {
 }
 
 export interface PutTargetParams {
+  title: string;
   month: number;
   year: number;
   amount: number;
@@ -197,7 +198,7 @@ export interface PostTargetParams {
   amount: number | null;
   depId?: number;
   props: TargetProp[];
-  name: string;
+  title: string;
 }
 
 export interface SubscriptionParams {

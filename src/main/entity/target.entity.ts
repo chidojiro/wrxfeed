@@ -7,4 +7,5 @@ export type Target = {
   amount: number | null;
   total: number | null;
   props: TargetProp[];
+  isPrimary?: boolean;
 };
