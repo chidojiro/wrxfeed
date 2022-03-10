@@ -414,13 +414,10 @@ export default class ApiUtils implements ApiClient {
     });
   };
 
-  deleteTarget = async (id: number, data: PutTargetParams): Promise<void> => {
+  deleteTarget = async (id: number): Promise<void> => {
     await this.request<void>({
       url: `/target/targets/${id}`,
       method: 'DELETE',
-      data: {
-        ...data,
-      },
     });
   };
 
