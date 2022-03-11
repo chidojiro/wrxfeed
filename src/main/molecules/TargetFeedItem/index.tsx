@@ -1,37 +1,34 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
-import { Menu } from '@headlessui/react';
-import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
 // hooks
-import { useIdentity, usePermission } from '@identity/hooks';
+import { useIdentity } from '@identity/hooks';
 import { useFeedComment } from '@main/hooks/feedComment.hook';
 // constants
-import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity';
+import { Category, Department, FeedItem, Vendor, Visibility, Target } from '@main/entity';
 import { CommentFormModel } from '@main/types';
-import { useMention } from '@main/hooks';
+import { useMention, useTarget } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
-import { classNames, formatCurrency } from '@common/utils';
+import { classNames } from '@common/utils';
 import { commentEditorRawParser, getDepartmentBgColor } from '@main/utils';
-import { ProtectedFeatures } from '@identity/constants';
+import { SHOW_TARGET_FEED_CHART } from '@src/config';
 // components
-import NotifyBanner from '@common/molecules/NotifyBanner';
 import CommentBox from '@main/molecules/CommentBox';
-import PopoverMenu from '@main/atoms/PopoverMenu';
-import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/organisms/FeedBackModal';
 import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentViewAll from '@main/atoms/CommentViewAll';
+import TargetChartView from '@main/molecules/TargetChartView';
 import RollupTransactions from '@main/molecules/RollupTransactions';
 // assets
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
-import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
+import { CalendarMinus } from '@assets';
+import AddTargetModal from '@main/organisms/AddTargetModal';
 
-export interface RollupCardProps {
+export interface TargetFeedItemProps {
   feedItem: FeedItem;
   onClickDepartment?: (department?: Department) => void;
   onClickVendor?: (vendor?: Vendor) => void;
@@ -50,12 +47,15 @@ interface ConfirmModalProps {
 const INITIAL_COMMENT_NUMBER = 2;
 const LIMIT_GET_COMMENT = 20;
 
-const RollupCard: React.VFC<RollupCardProps> = ({
-  feedItem,
-  onClickDepartment,
-  onClickCategory,
-  updateCategory,
-}) => {
+const initFilter = {
+  offset: 0,
+  limit: 0,
+  year: new Date().getFullYear(),
+  month: new Date().getMonth() + 1,
+  timestamp: Date.now(),
+};
+
+const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepartment }) => {
   const identity = useIdentity();
   const [filterComment, setFilterComment] = useState<Pagination>({
     offset: 0,
@@ -69,12 +69,12 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
   const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
   const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
+  const [showAddTarget, setShowAddTarget] = useState<boolean>(false);
+  const [itemEditing, setItemEditing] = useState<Target | null>(null);
   // Data hooks
   const { mentions } = useMention();
-  const { checkPermission } = usePermission();
   // Variables
   const isHidden = feedItem?.category.visibility === Visibility.HIDDEN;
-  const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
 
   const {
     comments,
@@ -86,6 +86,15 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   } = useFeedComment(feedItem, filterComment);
 
   const hasComment = comments?.length > 0;
+
+  const { postTarget, putTarget, deleteTarget, isPostTarget, isPutTarget, isDeleteTarget } =
+    useTarget(
+      initFilter,
+      { onSuccess: () => undefined, onError: () => undefined },
+      { onSuccess: () => undefined, onError: () => undefined },
+      { onSuccess: () => undefined, onError: () => undefined },
+      false,
+    );
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
     const contentState = values?.content as EditorState;
@@ -103,45 +112,6 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     });
   };
 
-  const handleHideCategory = async () => {
-    setConfirmModal(undefined);
-    if (updateCategory) {
-      await updateCategory({ id: feedItem?.category.id, visibility: Visibility.HIDDEN });
-    }
-    NotifyBanner.info('You have hidden this line item!');
-  };
-
-  const openHideCategoryConfirmation = () => {
-    setConfirmModal({
-      title: 'Hide this from the entire company?',
-      description:
-        'Only you will be able to see this category. Other teammates will not be able to see this.',
-      confirmAction: handleHideCategory,
-      confirmLabel: 'Hide',
-    });
-  };
-
-  const handleShowCategory = async () => {
-    setConfirmModal(undefined);
-    if (updateCategory) {
-      await updateCategory({ id: feedItem?.category.id, visibility: Visibility.VISIBLE });
-    }
-    NotifyBanner.info('You have unhidden this line item!');
-  };
-
-  const openShowCategoryConfirmation = () => {
-    setConfirmModal({
-      title: 'Unhide this category?',
-      description: 'This will unhide the category and it will be visible to the entire company.',
-      confirmAction: handleShowCategory,
-      confirmLabel: 'Unhide',
-    });
-  };
-
-  const handleShareFeedback = () => {
-    openFeedbackModal(true);
-  };
-
   const handleAttachFile = (file: File) => {
     setUploadFileOptions({
       filename: `${feedItem?.id}-${Date.now()}-${file.name}`,
@@ -151,55 +121,51 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     setAttachFileComment(file);
   };
 
-  const handleCopyFeedLink = () => {
-    navigator.clipboard.writeText(`${window.location.host}/feed/${feedItem?.id}`);
-    toast.success('Feed link has been copied');
-  };
-
-  const renderMenuItems = () => {
-    const items = [];
-    if (hideCategoryPermission) {
-      items.push(
-        isHidden ? (
-          <PopoverMenuItem
-            key="show-category"
-            value="show-category"
-            label="Show Category"
-            onClick={openShowCategoryConfirmation}
-          />
-        ) : (
-          <PopoverMenuItem
-            key="hide-category"
-            value="hide-category"
-            label="Hide Category"
-            onClick={openHideCategoryConfirmation}
-          />
-        ),
-      );
-    }
-    items.push(
-      <PopoverMenuItem
-        key="issue-with-this-item"
-        value="issue-with-this-item"
-        label="Issue With This Item"
-        onClick={handleShareFeedback}
-      />,
-      <PopoverMenuItem
-        key="copy-feed-link"
-        value="copy-feed-link"
-        label="Copy Link"
-        onClick={handleCopyFeedLink}
-      />,
-    );
-    return items;
-  };
-
   const departmentName =
     feedItem?.department?.parent?.name ?? feedItem?.department?.name ?? 'unknown';
   const deptGradientBg = useMemo(
     () => getDepartmentBgColor(departmentName ?? '', undefined, true),
     [departmentName],
   );
+
+  const hideAddTargetModal = () => {
+    setItemEditing(null);
+    setShowAddTarget(false);
+  };
+
+  const onClickEditTarget = () => {
+    setShowAddTarget(true);
+  };
+
+  const renderEditorNamePopover = () => (
+    <div className="invisible group-hover:visible absolute -top-10 left-0">
+      <div className="bg-primary p-2 rounded-sm">
+        <p className="text text-white text-xs truncate font-semibold">Matt Lock</p>
+      </div>
+      <svg
+        className="absolute text-primary h-2 left-3 top-full"
+        x="0px"
+        y="0px"
+        viewBox="0 0 255 255"
+        xmlSpace="preserve"
+      >
+        <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
+      </svg>
+    </div>
+  );
+
+  const renderEditorAvatar = () => {
+    return (
+      <div className="flex w-6 h-6 group relative">
+        <img
+          alt="editor-avatar"
+          className="w-6 h-6 rounded-full"
+          src="https://media.gq.com/photos/56bcb218cdf2db6945d2ef93/4:3/w_2000,h_1500,c_limit/bieber-coverstory-square.jpg"
+        />
+        {renderEditorNamePopover()}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -209,26 +175,23 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         className="bg-white flex flex-col filter shadow-md rounded-card overflow-hidden"
         aria-labelledby={`rollup-title-${feedItem?.id}`}
       >
-        <div className="flex flex-row">
+        <div className="flex flex-col">
           <div
-            className={classNames(
-              isHidden ? 'bg-purple-8' : 'bg-white',
-              'flex-grow w-4/5 px-6 py-5 border-b border-Gray-11',
-            )}
+            className="h-4 w-full"
             style={{
               background: deptGradientBg,
             }}
+          />
+          <div
+            className={classNames(
+              isHidden ? 'bg-purple-8' : 'bg-white',
+              'flex-col space-y-2 px-8 py-6',
+            )}
           >
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center min-w-0 flex-1 ">
-                <p className="text-base text-white">
-                  <button
-                    type="button"
-                    className="hover:underline text-left font-bold"
-                    onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
-                  >
-                    {feedItem?.category?.name}
-                  </button>
+            <div className="flex flex-row items-center space-x-2">
+              <div className="flex items-center min-w-0 flex-1">
+                <p className="text-base text-primary text-left font-bold line-clamp-2 overflow-ellipsis">
+                  Neuron Limited, Postage and Courier
                 </p>
                 {isHidden && (
                   <div className="flex flex-row items-center bg-Gray-12 py-0.5 px-2 ml-2 rounded-full">
@@ -240,47 +203,38 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                   </div>
                 )}
               </div>
-              <div className="flex-shrink-0 self-center flex items-center">
-                <h2
-                  id={`question-title-${feedItem?.id}`}
-                  className="text-base font-semibold text-white mr-3"
-                >
-                  {`$ ${formatCurrency(feedItem?.total)}`}
+              <div className="flex-row space-x-2 self-center flex items-center">
+                <h2 id={`question-title-${feedItem?.id}`} className="text-xs text-Gray-6">
+                  {feedItem?.month && dayjs().format('MMMM YYYY')}
                 </h2>
-                <Menu as="div" className="relative inline-block z-20 text-left">
-                  <div>
-                    <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
-                      <span className="sr-only">Open options</span>
-                      <MoreVerticalIcon
-                        className="fill-current text-white path-no-filled"
-                        aria-hidden="true"
-                        viewBox="0 0 15 15"
-                      />
-                    </Menu.Button>
-                  </div>
-                  <PopoverMenu>{renderMenuItems()}</PopoverMenu>
-                </Menu>
+                <button
+                  type="button"
+                  className="w-6 h-6 rounded-full bg-Gray-12 flex justify-center items-center"
+                >
+                  <CalendarMinus className="w-3 h-3" width={12} height={12} />
+                </button>
               </div>
             </div>
-            <h2
-              aria-hidden="true"
-              id={`question-title-${feedItem?.id}`}
-              className="mt-1 text-xs font-normal text-white cursor-pointer hover:underline"
-              onClick={() => {
-                if (onClickDepartment) {
-                  onClickDepartment(feedItem?.department);
-                }
-              }}
-            >
-              {`${feedItem?.department?.name} · ${
-                feedItem?.month &&
-                dayjs()
-                  .month(feedItem?.month - 1)
-                  .format('MMMM')
-              }`}
-            </h2>
+            <div className="flex flex-row space-x-2 items-center h-6">
+              {renderEditorAvatar()}
+              <h2
+                aria-hidden="true"
+                id={`question-title-${feedItem?.id}`}
+                className="mt-1 text-xs font-normal text-Gray-6 cursor-pointer hover:underline"
+                onClick={() => {
+                  if (onClickDepartment) {
+                    onClickDepartment(feedItem?.department);
+                  }
+                }}
+              >
+                Last edited Yesterday at 9:15AM
+              </h2>
+            </div>
           </div>
         </div>
+        {SHOW_TARGET_FEED_CHART && (
+          <TargetChartView feedItem={feedItem} onEdit={onClickEditTarget} />
+        )}
         <RollupTransactions trans={feedItem?.transactions} />
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
@@ -347,8 +301,19 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           onFileUploaded={onSubmitComment}
         />
       )}
+      <AddTargetModal
+        open={showAddTarget}
+        onClose={() => hideAddTargetModal()}
+        onCancel={() => hideAddTargetModal()}
+        deleteTarget={deleteTarget}
+        postTarget={postTarget}
+        putTarget={putTarget}
+        itemEditing={itemEditing}
+        isCreatingOrSaving={isPostTarget || isPutTarget}
+        isDeleting={isDeleteTarget}
+      />
     </>
   );
 };
 
-export default React.memo(RollupCard);
+export default React.memo(TargetFeedItem);

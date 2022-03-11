@@ -15,6 +15,7 @@ import { FeedItem } from '@main/entity';
 interface TargetChartViewProps {
   className?: string;
   feedItem: FeedItem;
+  onEdit: () => void;
 }
 
 export type SymbolNote = {
@@ -71,9 +72,7 @@ const data = [
   },
 ];
 
-const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem }) => {
-  const onClickEditTarget = () => undefined;
-
+const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
   const symbolNoteData: SymbolNote[] = [
     {
       id: 'FebLine',
@@ -163,7 +162,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem 
       <button
         type="button"
         className="flex ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
-        onClick={onClickEditTarget}
+        onClick={onEdit}
       >
         <BasicsEditCircle className="w-4 h-4" />
         <p className="text-xs text-Gray-3 font-normal">Edit</p>
@@ -171,7 +170,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem 
     );
   };
   return (
-    <>
+    <div className="flex flex-col space-y-4">
       <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
         <div className="flex flex-row space-x-4 w-auto">
           <div className="flex flex-col min-w-[128px]">
@@ -190,10 +189,8 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem 
         </div>
         {renderChartVisualize()}
       </div>
-      <div className="flex flex-col py-4 mt-4">
-        <div className="bg-Gray-11 h-px w-full" />
-      </div>
-    </>
+      <div className="bg-Gray-11 h-px w-full" />
+    </div>
   );
 };
 

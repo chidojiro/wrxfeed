@@ -29,13 +29,13 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({ trans }) => {
   const renderLoadMore = () => {
     if (!hasMore) {
       return (
-        <div className="flex h-4 w-full items-center mt-1">
+        <div className="flex h-px w-full items-center">
           <div className="bg-Gray-11 h-px w-auto flex-1" />
         </div>
       );
     }
     return (
-      <div className="flex w-full h-4 flex-row items-center mt-1">
+      <div className="flex w-full h-5 flex-row items-center mt-4">
         <div className="bg-Gray-11 h-px w-auto flex-1" />
         <button
           onClick={onClickLoadMore}
@@ -49,16 +49,18 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({ trans }) => {
     );
   };
   return (
-    <ul className="flex flex-col mt-4">
-      {transactions.map((item: Transaction) => {
-        return (
-          <li key={`RollupTransactions-item-${item?.id}`}>
-            <RollupTranRow tran={item} />
-          </li>
-        );
-      })}
+    <div className="flex flex-col">
+      <ul className="flex flex-col py-4">
+        {transactions.map((item: Transaction) => {
+          return (
+            <li key={`RollupTransactions-item-${item?.id}`}>
+              <RollupTranRow tran={item} />
+            </li>
+          );
+        })}
+      </ul>
       {renderLoadMore()}
-    </ul>
+    </div>
   );
 };
 
