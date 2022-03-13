@@ -1,3 +1,4 @@
+export const BUILD_ENV = process.env.SSE_NOTI_ENDPOINT || 'dev';
 export const APP_NAME = 'Gravity';
 export const API_BASE_URL = '/api';
 export const GOOGLE_CLIENT_ID =
