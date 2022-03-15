@@ -2,20 +2,22 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
-import VendorList from '@main/organisms/VendorList';
-import { FeedFilters, Pagination } from '@api/types';
+
+import { useApi } from '@api';
+import { useFeed } from '@main/hooks/feed.hook';
+import { useQuery } from '@common/hooks';
 import { useVendor } from '@main/hooks/vendor.hook';
 import { FilterKeys } from '@main/hooks';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import TargetPanel from '@main/organisms/TargetPanel';
+
+import { FeedFilters, Pagination } from '@api/types';
 import { Category, Department, Vendor } from '@main/entity';
 import { MainGroups } from '@common/constants';
-import { useQuery } from '@common/hooks';
-import FeedList from '@main/organisms/FeedList';
-import { useFeed } from '@main/hooks/feed.hook';
-import { useApi } from '@api';
 import { scrollToTop } from '@main/utils';
+
+import FeedList from '@main/organisms/FeedList';
+import MainLayout from '@common/templates/MainLayout';
+import VendorList from '@main/organisms/VendorList';
+import { ChevronLeftIcon } from '@assets';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -157,9 +159,6 @@ const VendorsPage: React.VFC = () => {
           updateCategory={updateCategory}
         />
       )}
-      <MainRightSide>
-        <TargetPanel />
-      </MainRightSide>
     </MainLayout>
   );
 };
