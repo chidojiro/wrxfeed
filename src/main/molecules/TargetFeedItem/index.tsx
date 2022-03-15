@@ -137,23 +137,6 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
     setShowAddTarget(true);
   };
 
-  const renderEditorNamePopover = () => (
-    <div className="invisible group-hover:visible absolute -top-10 left-0">
-      <div className="bg-primary p-2 rounded-sm">
-        <p className="text text-white text-xs truncate font-semibold">Matt Lock</p>
-      </div>
-      <svg
-        className="absolute text-primary h-2 left-3 top-full"
-        x="0px"
-        y="0px"
-        viewBox="0 0 255 255"
-        xmlSpace="preserve"
-      >
-        <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
-      </svg>
-    </div>
-  );
-
   const renderEditorAvatar = () => {
     return (
       <div className="flex w-6 h-6 group relative">
@@ -162,7 +145,46 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
           className="w-6 h-6 rounded-full"
           src="https://media.gq.com/photos/56bcb218cdf2db6945d2ef93/4:3/w_2000,h_1500,c_limit/bieber-coverstory-square.jpg"
         />
-        {renderEditorNamePopover()}
+        <div className="invisible group-hover:visible absolute -top-10 left-0">
+          <div className="bg-primary p-2 rounded-sm">
+            <p className="text text-white text-xs truncate font-semibold">Matt Lock</p>
+          </div>
+          <svg
+            className="absolute text-primary h-2 left-3 top-full"
+            x="0px"
+            y="0px"
+            viewBox="0 0 255 255"
+            xmlSpace="preserve"
+          >
+            <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
+          </svg>
+        </div>
+      </div>
+    );
+  };
+
+  const renderTargetName = () => {
+    return (
+      <div className="group relative">
+        <p className="text-base text-primary text-left font-bold line-clamp-2 overflow-ellipsis">
+          Neuron Limited, Postage and Courier
+        </p>
+        <div className="invisible group-hover:visible absolute bottom-8 left-0">
+          <div className="bg-primary p-2 rounded-sm">
+            <p className="text text-white text-2xs font-semibold">
+              Neuron Limited, Postage and Courier Neuron
+            </p>
+          </div>
+          <svg
+            className="absolute text-primary h-2 right-8 top-full"
+            x="0px"
+            y="0px"
+            viewBox="0 0 255 255"
+            xmlSpace="preserve"
+          >
+            <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
+          </svg>
+        </div>
       </div>
     );
   };
@@ -172,12 +194,12 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
       <article
         ref={containerRef}
         key={feedItem.id}
-        className="bg-white flex flex-col filter shadow-md rounded-card overflow-hidden"
+        className="bg-white flex flex-col filter shadow-md rounded-card"
         aria-labelledby={`rollup-title-${feedItem?.id}`}
       >
         <div className="flex flex-col">
           <div
-            className="h-4 w-full"
+            className="h-4 w-full rounded-t-card"
             style={{
               background: deptGradientBg,
             }}
@@ -190,9 +212,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
           >
             <div className="flex flex-row items-center space-x-2">
               <div className="flex items-center min-w-0 flex-1">
-                <p className="text-base text-primary text-left font-bold line-clamp-2 overflow-ellipsis">
-                  Neuron Limited, Postage and Courier
-                </p>
+                {renderTargetName()}
                 {isHidden && (
                   <div className="flex flex-row items-center bg-Gray-12 py-0.5 px-2 ml-2 rounded-full">
                     <EyeHideIcon
