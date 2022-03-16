@@ -13,9 +13,8 @@ import { FilterKeys } from '@main/hooks';
 import { scrollToTop } from '@main/utils';
 import { MainGroups } from '@common/constants';
 
-import TargetPanel from '@main/organisms/TargetPanel';
 import FeedList from '@main/organisms/FeedList';
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
+import MainLayout from '@common/templates/MainLayout';
 import DepartmentList from '@main/organisms/DepartmentList';
 import TeamHome from '@main/organisms/TeamHome';
 
@@ -163,9 +162,6 @@ const DepartmentsPage: React.VFC = () => {
           />
         </>
       )}
-      <MainRightSide>
-        <TargetPanel />
-      </MainRightSide>
     </MainLayout>
   );
 };
