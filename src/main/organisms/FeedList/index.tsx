@@ -5,6 +5,7 @@ import ListLoading from '@main/atoms/ListLoading';
 import ListEndComponent from '@main/atoms/ListEndComponent';
 import RollupCard from '@main/molecules/RollupCard';
 import { FeedFilters } from '@api/types';
+import TargetFeedItem from '@main/molecules/TargetFeedItem';
 
 interface FeedListProps {
   style?: CSSProperties;
@@ -70,6 +71,7 @@ const FeedList: React.VFC<FeedListProps> = ({
       LoadingComponent={<ListLoading />}
     >
       <ul className="pb-2 sm:pb-5 space-y-4">
+        {feeds.length > 0 && <TargetFeedItem feedItem={feeds[0]} />}
         {feeds.map((feed) => (
           <li key={feed.id}>
             <RollupCard

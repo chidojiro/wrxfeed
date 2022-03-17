@@ -245,3 +245,11 @@ svg.path-no-stroke > path {
     right: -8%;
   }
 }
+
+.dashed-line {
+  margin:5px 0;
+  height:2px;
+  background:
+    repeating-linear-gradient(to right,#6565FB 0,#6565FB 5px,transparent 5px,transparent 7px)
+    /*5px red then 2px transparent -> repeat this!*/
+}
