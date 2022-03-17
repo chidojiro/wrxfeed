@@ -243,9 +243,9 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               <div className="flex-shrink-0 self-center flex items-center">
                 <h2
                   id={`question-title-${feedItem?.id}`}
-                  className="text-base font-semibold text-white mr-3"
+                  className="text-lg font-semibold text-white mr-3"
                 >
-                  {`$ ${formatCurrency(feedItem?.total)}`}
+                  {`$${formatCurrency(feedItem?.total)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block z-20 text-left">
                   <div>
@@ -262,23 +262,28 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                 </Menu>
               </div>
             </div>
-            <h2
-              aria-hidden="true"
-              id={`question-title-${feedItem?.id}`}
-              className="mt-1 text-xs font-normal text-white cursor-pointer hover:underline"
-              onClick={() => {
-                if (onClickDepartment) {
-                  onClickDepartment(feedItem?.department);
-                }
-              }}
-            >
-              {`${feedItem?.department?.name} · ${
-                feedItem?.month &&
-                dayjs()
-                  .month(feedItem?.month - 1)
-                  .format('MMMM')
-              }`}
-            </h2>
+            <div className="flex flex-row items-center justify-between mt-1 text-xs font-normal text-white">
+              <h2
+                aria-hidden="true"
+                id={`question-title-${feedItem?.id}`}
+                className="cursor-pointer hover:underline"
+                onClick={() => {
+                  if (onClickDepartment) {
+                    onClickDepartment(feedItem?.department);
+                  }
+                }}
+              >
+                {`${feedItem?.department?.name} · ${
+                  feedItem?.month &&
+                  dayjs()
+                    .month(feedItem?.month - 1)
+                    .format('MMMM')
+                }`}
+              </h2>
+              <h2 className="cursor-pointer hover:underline mr-7">
+                {`Last Month: $${formatCurrency(feedItem?.lastMonthTotal)}`}
+              </h2>
+            </div>
           </div>
         </div>
         {Array.isArray(feedItem?.transactions) && feedItem?.transactions?.length > 0 && (
