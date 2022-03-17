@@ -161,14 +161,14 @@ export interface DepartmentFilter extends Pagination {
 }
 export interface CategoryFilter extends Pagination {
   term?: string;
-  dep?: number; // department id
+  dep?: number;
 }
 
 export interface TargetFilter extends Pagination {
   year: number;
   month: number;
   timestamp?: number;
-  dep?: number; // department id
+  dep?: number;
 }
 
 export interface PutTargetParams {
@@ -176,7 +176,7 @@ export interface PutTargetParams {
   month: number;
   year: number;
   amount: number;
-  depId?: number;
+  dep?: number;
   props: TargetProp[];
 }
 
@@ -196,7 +196,7 @@ export interface PostTargetParams {
   month: number;
   year: number;
   amount: number | null;
-  depId?: number;
+  dep?: number;
   props: TargetProp[];
   title: string;
 }

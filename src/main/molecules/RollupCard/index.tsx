@@ -281,7 +281,9 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             </h2>
           </div>
         </div>
-        <RollupTransactions trans={feedItem?.transactions} />
+        {Array.isArray(feedItem?.transactions) && feedItem?.transactions?.length > 0 && (
+          <RollupTransactions trans={feedItem?.transactions} />
+        )}
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
             <CommentViewAll
@@ -335,18 +337,16 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         onClose={() => openFeedbackModal(false)}
         itemId={feedItem?.id}
       />
-      {feedItem.transactions.length > 0 && (
-        <AttachmentModal
-          depName={feedItem?.department?.name}
-          catName={feedItem?.category?.name}
-          open={!!attachFileComment}
-          file={attachFileComment}
-          mentionData={mentions}
-          uploadOptions={uploadFileOptions}
-          onClose={() => setAttachFileComment(null)}
-          onFileUploaded={onSubmitComment}
-        />
-      )}
+      <AttachmentModal
+        depName={feedItem?.department?.name}
+        catName={feedItem?.category?.name}
+        open={!!attachFileComment}
+        file={attachFileComment}
+        mentionData={mentions}
+        uploadOptions={uploadFileOptions}
+        onClose={() => setAttachFileComment(null)}
+        onFileUploaded={onSubmitComment}
+      />
     </>
   );
 };

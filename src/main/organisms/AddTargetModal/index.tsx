@@ -73,7 +73,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
       amount: amountInput,
-      depId,
+      dep: depId,
       props,
       title: name,
     });
@@ -98,7 +98,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
       amount: amountInput,
-      depId,
+      dep: depId,
       props,
       title: name,
     });
@@ -111,6 +111,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         onClear();
         setKeyword('');
         setAmount('');
+        setTargetName('');
         setDefaultTags([]);
       }, 400);
     }
@@ -132,6 +133,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       setDefaultTags(defaultTagsTemp);
     }
     setAmount(formatCurrency(itemEditing?.amount?.toString() || '', '0,0', '0'));
+    setTargetName(itemEditing?.title ?? '');
   }, [itemEditing]);
 
   const onSearchContact = useCallback(

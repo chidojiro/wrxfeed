@@ -26,6 +26,7 @@ import { ReactComponent as LoopIcon } from '@assets/icons/outline/loop.svg';
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as AlertRed } from '@assets/icons/solid/alert-red.svg';
 import { ReactComponent as CalendarMinus } from '@assets/icons/solid/calendar-minus.svg';
+import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 
 export {
   InviteIcon,
@@ -56,4 +57,5 @@ export {
   ExclamationCircle,
   AlertRed,
   CalendarMinus,
+  ChevronLeftIcon,
 };

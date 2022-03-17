@@ -10,7 +10,7 @@ interface RollupTransactionsProps {
 const RollupTransactions: React.VFC<RollupTransactionsProps> = ({ trans }) => {
   const [position, setPosition] = useState(10);
   const [transactions, setTransactions] = useState(trans.slice(0, position));
-  const [hasMore, setHasMore] = useState(trans.length > 10);
+  const [hasMore, setHasMore] = useState(trans?.length > 10);
 
   const onClickLoadMore = () => {
     if (!hasMore) {
