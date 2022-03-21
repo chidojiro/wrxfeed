@@ -10,6 +10,7 @@ import {
 import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
+import { convertToHTML } from 'draft-convert';
 
 import { TransLineItem, Target, TranStatusNameColor, TranStatusType } from '@main/entity';
 import { TargetPropType } from '@api/types';
@@ -130,6 +131,29 @@ export function commentEditorRawParser(contentState: ContentState): string {
     [],
   );
   return rawTextBlocks.join('\n');
+}
+
+/**
+ * Convert ContentState of editor to html included mention format
+ */
+export function commentEditorHtmlParser(contentState: ContentState): string {
+  const { blocks, entityMap } = convertToRaw(contentState);
+  let htmlContent = convertToHTML(contentState);
+  // Find mention blocks and replace to html
+  blocks.forEach((block) => {
+    if (block.entityRanges.length) {
+      block.entityRanges.forEach((entityRange) => {
+        const entity = entityMap[entityRange.key];
+        if (entity.type === 'mention') {
+          // Create mention tag and replace
+          const entityData = entityMap[entityRange.key].data.mention as MentionData;
+          const mention = mentionTagCreator(entityData.id as number, entityData.name);
+          htmlContent = htmlContent.replace(entityData.name, mention);
+        }
+      });
+    }
+  });
+  return htmlContent;
 }
 
 /**
