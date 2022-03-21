@@ -94,7 +94,6 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     const isDirty = contentState.getCurrentContent().hasText() || !!values?.attachment;
     if (!isDirty) return;
     const parsedContent = commentEditorHtmlParser(contentState.getCurrentContent());
-    // console.log(parsedContent, convertToHTML(contentState.getCurrentContent()));
     addComment({
       content: parsedContent,
       attachment: values.attachment,
