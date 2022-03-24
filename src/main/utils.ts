@@ -10,6 +10,7 @@ import {
 import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
+import { convertFromHTML, convertToHTML } from 'draft-convert';
 
 import { TransLineItem, Target, TranStatusNameColor, TranStatusType } from '@main/entity';
 import { TargetPropType } from '@api/types';
@@ -133,6 +134,29 @@ export function commentEditorRawParser(contentState: ContentState): string {
 }
 
 /**
+ * Convert ContentState of editor to html included mention format
+ */
+export function commentEditorHtmlParser(contentState: ContentState): string {
+  const { blocks, entityMap } = convertToRaw(contentState);
+  let htmlContent = convertToHTML(contentState);
+  // Find mention blocks and replace to html
+  blocks.forEach((block) => {
+    if (block.entityRanges.length) {
+      block.entityRanges.forEach((entityRange) => {
+        const entity = entityMap[entityRange.key];
+        if (entity.type === 'mention') {
+          // Create mention tag and replace
+          const entityData = entityMap[entityRange.key].data.mention as MentionData;
+          const mention = mentionTagCreator(entityData.id as number, entityData.name);
+          htmlContent = htmlContent.replace(entityData.name, mention);
+        }
+      });
+    }
+  });
+  return htmlContent;
+}
+
+/**
  * Get Indices for entity ranges
  */
 const getIndicesOf = (searchStr: string, str: string, caseSensitive?: boolean) => {
@@ -163,7 +187,7 @@ const getIndicesOf = (searchStr: string, str: string, caseSensitive?: boolean) =
  * Get entity ranges of mention in text
  */
 const getMentionEntityRanges = (text: string, mentionName: string, mentionKey: number) => {
-  const indices = getIndicesOf(mentionName, text);
+  const indices = getIndicesOf(mentionName, text, true);
   if (indices.length > 0) {
     return indices.map((offset) => ({
       key: mentionKey,
@@ -212,6 +236,47 @@ export function commentTextToContentState(text: string): ContentState {
     return convertFromRaw(rawContent);
   }
   return ContentState.createFromText(text);
+}
+
+/**
+ * Convert a comment html to Draftjs ContentState
+ */
+export function commentHtmlToContentState(text: string): ContentState {
+  const mentionMatches = text.match(MentionRegex);
+  // No mentions => convert from html only
+  if (!mentionMatches?.length) {
+    return convertFromHTML(text);
+  }
+  // In case of mentions
+  const rawText = text.replace(MentionRegex, mentionNameReplacer);
+  // Create content state with mention entities
+  const rawContent = convertToRaw(convertFromHTML(rawText));
+  // Create mention draft raw entities
+  const rawMentionState = mentionMatches.reduce<{ [key: string]: RawDraftEntity }>(
+    (map, tag, idx) => {
+      const entity = rawMentionEntityCreator(tag);
+      if (!entity) return map;
+      return { ...map, [idx]: entity };
+    },
+    {},
+  );
+  rawContent.entityMap = rawMentionState;
+  // Map mention entities to content blocks
+  rawContent.blocks = rawContent.blocks.map((block) => {
+    const ranges: RawDraftEntityRange[] = [];
+    Object.keys(rawMentionState).forEach((key) => {
+      const entityRanges = getMentionEntityRanges(
+        block.text,
+        rawMentionState[key].data.mention.name,
+        parseInt(key, 10),
+      );
+      if (entityRanges) {
+        ranges.push(...entityRanges);
+      }
+    });
+    return { ...block, entityRanges: ranges };
+  });
+  return convertFromRaw(rawContent);
 }
 
 /**
