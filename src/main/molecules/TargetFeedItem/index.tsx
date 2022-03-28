@@ -11,7 +11,7 @@ import { CommentFormModel } from '@main/types';
 import { useMention, useTarget } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import { classNames } from '@common/utils';
-import { commentEditorRawParser, getDepartmentBgColor } from '@main/utils';
+import { commentEditorRawParser, getDepartmentBgColor, getTargetName } from '@main/utils';
 import { SHOW_TARGET_FEED_CHART } from '@src/config';
 // components
 import CommentBox from '@main/molecules/CommentBox';
@@ -27,6 +27,7 @@ import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclama
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
 import { CalendarMinus } from '@assets';
 import AddTargetModal from '@main/organisms/AddTargetModal';
+import UserAvatar from '@main/atoms/UserAvatar';
 
 export interface TargetFeedItemProps {
   feedItem: FeedItem;
@@ -137,43 +138,40 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
     setShowAddTarget(true);
   };
 
-  const renderEditorAvatar = () => {
+  const renderEditorAvatar = (target: Target) => {
+    const updaterName = target?.updater?.fullName ?? '';
     return (
       <div className="flex w-6 h-6 group relative">
-        <img
-          alt="editor-avatar"
-          className="w-6 h-6 rounded-full"
-          src="https://media.gq.com/photos/56bcb218cdf2db6945d2ef93/4:3/w_2000,h_1500,c_limit/bieber-coverstory-square.jpg"
-        />
-        <div className="invisible group-hover:visible absolute -top-10 left-0">
-          <div className="bg-primary p-2 rounded-sm">
-            <p className="text text-white text-xs truncate font-semibold">Matt Lock</p>
+        <UserAvatar user={target?.updater} />
+        {typeof updaterName === 'string' && updaterName?.length > 0 && (
+          <div className="invisible group-hover:visible absolute -top-10 left-0">
+            <div className="bg-primary p-2 rounded-sm">
+              <p className="text text-white text-xs truncate font-semibold">{updaterName}</p>
+            </div>
+            <svg
+              className="absolute text-primary h-2 left-3 top-full"
+              x="0px"
+              y="0px"
+              viewBox="0 0 255 255"
+              xmlSpace="preserve"
+            >
+              <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
+            </svg>
           </div>
-          <svg
-            className="absolute text-primary h-2 left-3 top-full"
-            x="0px"
-            y="0px"
-            viewBox="0 0 255 255"
-            xmlSpace="preserve"
-          >
-            <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
-          </svg>
-        </div>
+        )}
       </div>
     );
   };
 
-  const renderTargetName = () => {
+  const renderTargetName = (target: Target) => {
     return (
       <div className="group relative">
         <p className="text-base text-primary text-left font-bold line-clamp-2 overflow-ellipsis">
-          Neuron Limited, Postage and Courier
+          {getTargetName(target)}
         </p>
         <div className="invisible group-hover:visible absolute bottom-8 left-0">
           <div className="bg-primary p-2 rounded-sm">
-            <p className="text text-white text-2xs font-semibold">
-              Neuron Limited, Postage and Courier Neuron
-            </p>
+            <p className="text text-white text-2xs font-semibold">{getTargetName(target)}</p>
           </div>
           <svg
             className="absolute text-primary h-2 right-8 top-full"
@@ -212,7 +210,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
           >
             <div className="flex flex-row items-center space-x-2">
               <div className="flex items-center min-w-0 flex-1">
-                {renderTargetName()}
+                {renderTargetName(feedItem?.target)}
                 {isHidden && (
                   <div className="flex flex-row items-center bg-Gray-12 py-0.5 px-2 ml-2 rounded-full">
                     <EyeHideIcon
@@ -236,7 +234,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
               </div>
             </div>
             <div className="flex flex-row space-x-2 items-center h-6">
-              {renderEditorAvatar()}
+              {renderEditorAvatar(feedItem?.target)}
               <h2
                 aria-hidden="true"
                 id={`question-title-${feedItem?.id}`}

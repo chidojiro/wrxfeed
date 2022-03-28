@@ -280,9 +280,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                     .format('MMMM')
                 }`}
               </h2>
-              <h2 className="cursor-pointer hover:underline mr-7">
-                {`Last Month: $${formatCurrency(feedItem?.lastMonthTotal)}`}
-              </h2>
+              <h2 className="mr-7">{`Last Month: $${formatCurrency(feedItem?.lastMonthTotal)}`}</h2>
             </div>
           </div>
         </div>

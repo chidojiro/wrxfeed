@@ -42,4 +42,7 @@ export type User = {
   createdAt?: string;
   updatedAt?: string;
   deletedAt?: string;
+  lastLoginAt?: string;
+  depId?: number;
+  bio?: string;
 };

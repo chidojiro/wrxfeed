@@ -1,9 +1,12 @@
-import React from 'react';
-import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
+import React, { useEffect, useState } from 'react';
+import { LineChart, Line, ResponsiveContainer, Tooltip, TooltipProps, YAxis } from 'recharts';
 
 import { classNames, formatCurrency } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
-import { FeedItem } from '@main/entity';
+import { ChartDataPoint, FeedItem, ChartLegend, ChartLineProps, ChartLevel } from '@main/entity';
+import { getChartDataFromTransactions, getChartLevels } from '@main/utils';
+import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
+import dayjs from 'dayjs';
 
 interface TargetChartViewProps {
   className?: string;
@@ -11,88 +14,35 @@ interface TargetChartViewProps {
   onEdit: () => void;
 }
 
-export type SymbolNote = {
-  id: number | string;
-  color: string;
-  name: string;
-  type?: string;
-};
-
-export const targetChartData = [];
-
-const data = [
-  {
-    name: 'Feb 4',
-    dec: 0,
-    jan: 0,
-    feb: 0,
-  },
-  {
-    name: 'Feb 8',
-    dec: 87,
-    jan: 69,
-    feb: 300,
-  },
-  {
-    name: 'Feb 12',
-    dec: 620,
-    jan: 400,
-    feb: 600,
-  },
-  {
-    name: 'Feb 16',
-    dec: 1670,
-    jan: 780,
-    feb: 1520,
-  },
-  {
-    name: 'Feb 20',
-    dec: 2181,
-    jan: 1890,
-  },
-  {
-    name: 'Feb 24',
-    dec: 2500,
-    jan: 2390,
-  },
-  {
-    name: 'Feb 28',
-    dec: 2800,
-    jan: 3490,
-  },
-];
-
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
-  const symbolNoteData: SymbolNote[] = [
-    {
-      id: 'FebLine',
-      color: '#6565FB',
-      name: 'Feb',
-      type: '',
-    },
-    {
-      id: 'JanLine',
-      color: '#BEC1C7',
-      name: 'Jan',
-      type: '',
-    },
-    {
-      id: 'DevLine',
-      color: '#EFEFF1',
-      name: 'Dec',
-      type: '',
-    },
-    {
-      id: 'TargetLine',
-      color: '#6565FB',
-      name: 'Target',
-      type: 'divide-dashed',
-    },
-  ];
+  const today = new Date();
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+  const [chartLegends, setChartLegends] = useState<ChartLegend[]>([]);
+  const [chartLines, setChartLines] = useState<ChartLineProps[]>([]);
+  const [chartLevels, setChartLevels] = useState<ChartLevel[]>([]);
+  const [chartMaxValue, setChartMaxValue] = useState<number>(100000);
+  const [targetBottom, setTargetBottom] = useState('50%');
+  useEffect(() => {
+    const { data, legends, lines, maxValue } = getChartDataFromTransactions(feedItem.transactions);
+    const targetAmount = feedItem.target.amount ?? 0;
+    setChartData(data);
+    setChartLegends(legends);
+    setChartLines(lines);
 
-  const renderSymbolNote = (item: SymbolNote) => {
+    let maxValueForChart = maxValue;
+    if (targetAmount > maxValue) {
+      maxValueForChart = targetAmount * 1.2;
+    }
+    setChartMaxValue(maxValueForChart);
+    const levels = getChartLevels(maxValueForChart);
+    setChartLevels(levels);
+
+    setTargetBottom(`${Math.round((targetAmount / maxValueForChart) * 100)}%`);
+  }, [feedItem]);
+
+  const renderChartLegend = (item: ChartLegend) => {
     return (
-      <div className="flex flex-row items-center space-x-2">
+      <div key={`renderChartLegend-${item.id}`} className="flex flex-row items-center space-x-2">
         <div
           className={classNames('flex w-6 h-1', item?.type ?? '')}
           style={{ backgroundColor: item?.color }}
@@ -104,46 +54,13 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
 
   const renderChartSymbolNote = () => {
     return (
-      <div className="flex flex-row justify-center mt-2 py-2 px-[50px] space-x-8">
-        {symbolNoteData.map(renderSymbolNote)}
+      <div className="flex flex-row justify-center mt-6 py-2 px-[50px] space-x-8">
+        {chartLegends.map(renderChartLegend)}
       </div>
     );
   };
-  const dataLevels = [
-    {
-      id: 0,
-      value: 0,
-      title: '0',
-    },
-    {
-      id: 1,
-      value: 25000,
-      title: '25k',
-    },
-    {
-      id: 2,
-      value: 50000,
-      title: '50k',
-    },
-    {
-      id: 3,
-      value: 75000,
-      title: '75k',
-      isTarget: true,
-    },
-    {
-      id: 4,
-      value: 100000,
-      title: '100k',
-    },
-    {
-      id: 5,
-      value: 125000,
-      title: '125k',
-    },
-  ];
 
-  const renderTooltipContent = () => {
+  const renderTooltipContent = ({ label }: TooltipProps<ValueType, NameType>) => {
     const topTransactions = [
       {
         id: 0,
@@ -161,11 +78,12 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
         amountUsd: 1788.69,
       },
     ];
+    const dateString: string = dayjs(today).date(parseInt(label, 10)).format('MMM DD, YYYY');
     return (
       <div className="flex bg-primary px-6 py-2 rounded-sm">
         <div className="flex flex-col space-y-1">
           <div className="flex flex-row items-center space-x-1">
-            <p className="text-white text-2xs font-semibold">Feb 16, 2022</p>
+            <p className="text-white text-2xs font-semibold">{dateString}</p>
             <p className="text-white text-2xs font-normal">(Top 3 transactions)</p>
           </div>
           {topTransactions.map((tran) => {
@@ -188,10 +106,10 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
 
   const renderChartVisualize = () => {
     return (
-      <div className="flex flex-col mt-2 w-full h-[479px]">
+      <div className="flex flex-col mt-2 w-full h-[514px]">
         <div className="flex relative flex-col flex-1 py-6">
           <div className="absolute flex w-full h-[396px] justify-between flex-col-reverse">
-            {dataLevels.map((level) => {
+            {chartLevels.map((level) => {
               const textColor = level?.isTarget ? 'text-Accent-2' : 'text-Gray-6';
               return (
                 <div
@@ -210,47 +128,60 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
                 </div>
               );
             })}
+            <div
+              key="dataLevels-dashed-line"
+              style={{
+                bottom: targetBottom,
+              }}
+              className="flex absolute flex-row space-x-4 items-center w-full"
+            >
+              <p className={classNames('text-xs font-semibold text-right w-8', 'text-Accent-2')} />
+              <div className={classNames('flex flex-1 w-auto h-px', 'dashed-line')} />
+            </div>
           </div>
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" className="">
             <LineChart
               width={500}
               height={300}
-              data={data}
+              data={chartData}
               margin={{
                 top: 5,
                 right: 10,
                 left: 50,
-                bottom: 5,
+                bottom: 10,
               }}
             >
+              <YAxis domain={[0, chartMaxValue]} width={0} height={0} className="opacity-0" />
               <Tooltip cursor position={{ y: 5 }} content={renderTooltipContent} />
-              <Line
-                name="Dec"
-                type="linear"
-                dataKey="dec"
-                strokeWidth={4}
-                stroke="#E7E8EC"
-                dot={false}
-              />
-              <Line
-                name="Jan"
-                type="linear"
-                dataKey="jan"
-                strokeWidth={4}
-                stroke="#C5C8CD"
-                dot={false}
-              />
-              <Line
-                name="Feb"
-                type="linear"
-                dataKey="feb"
-                strokeWidth={4}
-                stroke="#6565FB"
-                // activeDot={{ r: 8 }}
-                dot={false}
-              />
+              {chartLines.map((line: ChartLineProps) => {
+                return (
+                  <Line
+                    key={`ChartLine-${line.name}`}
+                    name={line.name}
+                    type="linear"
+                    dataKey={line.dataKey}
+                    strokeWidth={4}
+                    stroke={line.stroke}
+                    dot={false}
+                  />
+                );
+              })}
             </LineChart>
           </ResponsiveContainer>
+        </div>
+        <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around pl-28">
+          <div className="w-20 h-7 flex justify-center items-center">
+            <p>{dayjs(today).date(7).format('MMM D')}</p>
+          </div>
+          <div className="w-20 h-7 flex justify-center items-center">
+            <p>{dayjs(today).date(14).format('MMM D')}</p>
+          </div>
+          <div className="w-20 h-7 flex justify-center items-center">
+            <p>{dayjs(today).date(21).format('MMM D')}</p>
+          </div>
+          <div className="w-20 h-7 flex justify-center items-center">
+            <p>{dayjs(today).date(28).format('MMM D')}</p>
+          </div>
         </div>
         {renderChartSymbolNote()}
       </div>
@@ -275,12 +206,14 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Current Spend</p>
             <p className="text-xl text-primary font-bold mt-1">
-              {`$ ${formatCurrency(feedItem?.total)}`}
+              {`$ ${formatCurrency(feedItem?.target?.total ?? '0')}`}
             </p>
           </div>
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Target</p>
-            <p className="text-xl text-primary font-bold mt-1">$75,000</p>
+            <p className="text-xl text-primary font-bold mt-1">
+              {`$ ${formatCurrency(feedItem?.target?.amount ?? '0')}`}
+            </p>
           </div>
           <div className="flex flex-1 justify-end flex-col items-end">
             {renderEditTargetButton()}

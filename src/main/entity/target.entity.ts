@@ -1,12 +1,15 @@
 import { TargetProp } from '@api/types';
+import { User } from '@main/entity/user.entity';
 
 export type Target = {
   id: number;
-  title: string;
+  name: string | null;
   month: number;
   year: number;
   amount: number | null;
   total: number | null;
   props: TargetProp[];
   isPrimary?: boolean;
+  creator: User;
+  updater: User;
 };

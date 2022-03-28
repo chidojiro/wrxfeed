@@ -75,7 +75,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       amount: amountInput,
       dep: depId,
       props,
-      title: name,
+      name,
     });
   };
   const onDeleteTarget = (targetId: number) => {
@@ -133,7 +133,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       setDefaultTags(defaultTagsTemp);
     }
     setAmount(formatCurrency(itemEditing?.amount?.toString() || '', '0,0', '0'));
-    setTargetName(itemEditing?.title ?? '');
+    setTargetName(itemEditing?.name ?? '');
   }, [itemEditing]);
 
   const onSearchContact = useCallback(
