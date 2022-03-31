@@ -460,10 +460,6 @@ export const getChartDataFromTransactions = (
   const allLineItems: TransLineItem[] = trans.reduce<TransLineItem[]>((pre, currentTran) => {
     return [...pre, ...(currentTran.lineItems ?? [])];
   }, []);
-  // const tranByTime: TransLineItem[] = allLineItems.sort(
-  //   (a: TransLineItem, b: TransLineItem) =>
-  //     new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
-  // );
   let totalCurrentMonth = 0;
   let totalPre1Month = 0;
   let totalPre2Month = 0;

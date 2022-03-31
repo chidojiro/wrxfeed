@@ -135,6 +135,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
   };
 
   const onClickEditTarget = () => {
+    setItemEditing(feedItem.target);
     setShowAddTarget(true);
   };
 

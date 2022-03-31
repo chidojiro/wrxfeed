@@ -22,6 +22,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
   const [chartLevels, setChartLevels] = useState<ChartLevel[]>([]);
   const [chartMaxValue, setChartMaxValue] = useState<number>(100000);
   const [targetBottom, setTargetBottom] = useState('50%');
+
   useEffect(() => {
     const { data, legends, lines, maxValue } = getChartDataFromTransactions(feedItem.transactions);
     const targetAmount = feedItem.target.amount ?? 0;
