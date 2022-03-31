@@ -8,7 +8,14 @@ import React, {
   useState,
 } from 'react';
 
-import { convertToRaw, DraftHandleValue, EditorProps, EditorState, KeyBindingUtil } from 'draft-js';
+import {
+  convertToRaw,
+  DraftHandleValue,
+  EditorProps,
+  EditorState,
+  KeyBindingUtil,
+  RichUtils,
+} from 'draft-js';
 import Editor from '@draft-js-plugins/editor';
 import createMentionPlugin, {
   defaultSuggestionsFilter,
@@ -93,6 +100,17 @@ const CommentInput: React.ForwardRefRenderFunction<Editor, CommentInputProps> = 
     return 'not-handled';
   };
 
+  const handleKeyCommand = (command: string, editorState: EditorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+
+    if (newState) {
+      onChange(newState);
+      return 'handled';
+    }
+
+    return 'not-handled';
+  };
+
   const onOpenChange = useCallback((_open: boolean) => {
     setOpenMention(_open);
   }, []);
@@ -124,6 +142,7 @@ const CommentInput: React.ForwardRefRenderFunction<Editor, CommentInputProps> = 
       <Editor
         ref={combinedRef}
         handleReturn={handleReturn}
+        handleKeyCommand={handleKeyCommand}
         editorKey="editor"
         plugins={plugins}
         onChange={handleEditorChange}

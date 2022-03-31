@@ -13,7 +13,7 @@ import { CommentFormModel } from '@main/types';
 import { useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import { classNames, formatCurrency } from '@common/utils';
-import { commentEditorRawParser, getDepartmentBgColor } from '@main/utils';
+import { commentEditorHtmlParser, getDepartmentBgColor } from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
 // components
 import NotifyBanner from '@common/molecules/NotifyBanner';
@@ -91,8 +91,11 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     const contentState = values?.content as EditorState;
     const isDirty = contentState.getCurrentContent().hasText() || !!values?.attachment;
     if (!isDirty) return;
-    const parsedContent = commentEditorRawParser(contentState.getCurrentContent());
-    addComment({ content: parsedContent, attachment: values.attachment }).then();
+    const parsedContent = commentEditorHtmlParser(contentState.getCurrentContent());
+    addComment({
+      content: parsedContent,
+      attachment: values.attachment,
+    }).then();
   };
 
   const loadAllComments = () => {
