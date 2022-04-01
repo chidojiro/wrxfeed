@@ -28,6 +28,7 @@ import { ReactComponent as AlertRed } from '@assets/icons/solid/alert-red.svg';
 import { ReactComponent as CalendarMinus } from '@assets/icons/solid/calendar-minus.svg';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { ReactComponent as IntersectIcon } from '@assets/icons/outline/intersect.svg';
+import { ReactComponent as LeftSmallIcon } from '@assets/icons/outline/left-small.svg';
 
 export {
   InviteIcon,
@@ -60,4 +61,5 @@ export {
   CalendarMinus,
   ChevronLeftIcon,
   IntersectIcon,
+  LeftSmallIcon,
 };
