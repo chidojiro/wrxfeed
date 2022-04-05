@@ -22,7 +22,7 @@ export const hashLineItemsByMonths = (
   return trans.reduce<{ [key: string]: TransLineItem[][] }>(
     (preHash, currentTran) =>
       currentTran.lineItems?.reduce<{ [key: string]: TransLineItem[][] }>((pre, currentItem) => {
-        const itemDate = dayjs(currentItem.updatedAt);
+        const itemDate = dayjs(currentItem.updatedAt); // Why trans date is updatedAt? Seem like messy data
         if (!itemDate.isValid()) return pre;
         const month = itemDate.format(monthFormat);
         const date = itemDate.date();
@@ -58,6 +58,7 @@ export const getLineChartDataInMonth = (trans: Transaction[]): LineChartData => 
     })
     .map((_, index) => {
       const dayName = lineItemHashByMonths[currentMonth]?.[index]?.[0]?.description ?? '';
+      // Total by month
       totalCurrentMonth += Math.round(
         lineItemHashByMonths[currentMonth]?.[index]?.reduce(
           (total, item) => total + (item?.amountUsd ?? 0),
@@ -76,6 +77,14 @@ export const getLineChartDataInMonth = (trans: Transaction[]): LineChartData => 
           0,
         ) ?? 0,
       );
+      // Don't draw data line if date index greater than today
+      if (index > today.date() - 1) {
+        return {
+          name: dayName,
+          [pre1Month]: totalPre1Month,
+          [pre2Month]: totalPre2Month,
+        };
+      }
       return {
         name: dayName,
         [currentMonth]: totalCurrentMonth,
