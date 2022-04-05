@@ -17,31 +17,3 @@ export type FeedItem = {
   lastInteraction: string;
   target: Target;
 };
-
-export type ChartDataPoint = {
-  name: string;
-  [key: string]: number | string;
-};
-
-export type ChartLegend = {
-  id: number | string;
-  color: string;
-  name: string;
-  type?: string;
-};
-
-export type ChartLineProps = {
-  name: string;
-  type: string;
-  dataKey: string;
-  strokeWidth: number;
-  stroke: string;
-  dot: boolean;
-};
-
-export type ChartLevel = {
-  id: number;
-  value: number;
-  title: string | number;
-  isTarget?: boolean;
-};
