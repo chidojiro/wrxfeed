@@ -13,7 +13,7 @@ import { nFormatter } from './utils';
 /**
  * Group line items of transactions by month
  * A group of month will contain full date of month [1,...,31]
- * Ex: {'Mar': [undefined, <item>, ...], 'Apr': [<item>, <item>, ...]}
+ * Ex: {'Mar': [[], [<item>, <item>], ...], 'Apr': [[<item>], [<item>], ...]}
  */
 export const hashLineItemsByMonths = (
   trans: Transaction[],
