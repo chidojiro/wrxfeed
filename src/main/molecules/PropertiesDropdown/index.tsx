@@ -1,7 +1,7 @@
 import { TargetPropType } from '@api/types';
 import { classNames } from '@common/utils';
 import { getColorByPropertyType, getIconByResultType, getPropTypeDisplayName } from '@main/utils';
-import React, { Fragment, useRef, useState, useCallback, useEffect } from 'react';
+import React, { Fragment, useState, useCallback, useEffect } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
 import { SearchResult } from '@main/types';
@@ -21,10 +21,9 @@ interface PropertiesDropdownProps {
   title: string;
   type: TargetPropType;
   dropdownEdge?: DropdownEdge;
-  default?: SearchResult[];
+  defaultItems?: SearchResult[];
 }
 
-type AddTargetTagInputHandler = React.ElementRef<typeof AddTargetTagInput>;
 const DEBOUNCE_WAIT = 0;
 
 const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
@@ -35,9 +34,14 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
   type,
   dropdownEdge = DropdownEdge.LEFT,
 }) => {
-  const tagInputRef = useRef<AddTargetTagInputHandler>(null);
   const [keyword, setKeyword] = useState<string>('');
-  const { results } = useSearch({ keyword });
+  const [items, setItems] = useState<SearchResult[]>([]);
+  const { results } = useSearch({
+    keyword,
+    searchCate: type === TargetPropType.CATEGORY,
+    searchDept: type === TargetPropType.DEPARTMENT,
+    searchVend: type === TargetPropType.VENDOR,
+  });
   const [showErrorProperty, setShowErrorProperty] = useState<boolean>(false);
 
   const onSearchKeyword = useCallback(
@@ -63,14 +67,19 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
     );
   };
 
-  const renderResultProperty = (result: SearchResult) => {
+  const renderSearchResult = (result: SearchResult) => {
     const IconByType = getIconByResultType(result?.type);
     return (
       <button
-        onClick={() => tagInputRef.current?.addItem(result)}
+        onClick={() => {
+          const isIncluded = items.includes(result);
+          if (!isIncluded) {
+            setItems((pre) => [...pre, result]);
+          }
+        }}
         key={result?.id}
         type="button"
-        className="hover:bg-Gray-12 px-7 py-2.5 flex flex-row items-center text-xs group"
+        className="hover:bg-Gray-12 px-7 py-2.5 h-10 flex flex-row items-center text-xs group w-full"
       >
         <div className="flex w-5 h-5 justify-center items-center">
           <IconByType
@@ -79,11 +88,72 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
             viewBox="2 2 20 20"
           />
         </div>
-        <p className="text-Gray-1 ml-8 truncate">{result?.title}</p>
+        <p className="text-Gray-1 ml-2 truncate">{result?.title}</p>
         <p className="text-Gray-6 ml-2 invisible group-hover:visible">
           {`- ${getPropTypeDisplayName(result?.type)}`}
         </p>
       </button>
+    );
+  };
+  const renderItemSelected = (itemSelected: SearchResult) => {
+    return (
+      <button
+        type="button"
+        className="flex flex-row h-[30px] items-center mb-1 space-x-1 px-2 py-1 rounded-sm"
+        style={{ backgroundColor: colorByType }}
+      >
+        <IconComponent
+          className="w-5 h-5 fill-current path-no-filled text-white object-scale-down"
+          width={20}
+          height={20}
+          viewBox="0 0 20 20"
+        />
+        <p className="text-white text-left text-3xs font-semibold truncate max-w-[86px]">
+          {itemSelected?.title}
+        </p>
+        <button
+          type="button"
+          className="text-xs text-white font-bold ml-2"
+          onClick={() => {
+            setItems((pre) => pre.filter((item: SearchResult) => item.id !== itemSelected.id));
+          }}
+        >
+          &times;
+        </button>
+      </button>
+    );
+  };
+  const renderButton = () => {
+    if (items.length === 0) {
+      return (
+        <button
+          type="button"
+          className="flex flex-row h-[30px] items-center space-x-1 px-2 py-1 rounded-sm"
+          style={{ backgroundColor: colorByType }}
+        >
+          <IconComponent
+            className="w-5 h-5 fill-current path-no-filled text-white object-scale-down"
+            width={20}
+            height={20}
+            viewBox="0 0 20 20"
+          />
+          <p className="text-white text-left text-3xs font-semibold truncate max-w-[86px]">
+            {title}
+          </p>
+          <button
+            type="button"
+            className="text-xs text-white font-bold ml-2"
+            onClick={() => undefined}
+          >
+            &times;
+          </button>
+        </button>
+      );
+    }
+    return (
+      <div className="flex flex-col items-start hide-scrollbar max-h-[120px] overflow-y-scroll">
+        {items?.map(renderItemSelected)}
+      </div>
     );
   };
   return (
@@ -92,26 +162,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
         {({ open }) => (
           <>
             <Popover.Button className={classNames('', open ? '' : '')}>
-              <button
-                type="button"
-                className="flex flex-row h-[30px] items-center space-x-1 px-2 py-1 rounded-sm"
-                style={{ backgroundColor: colorByType }}
-              >
-                <IconComponent
-                  className="w-5 h-5 fill-current path-no-filled text-white object-scale-down"
-                  width={20}
-                  height={20}
-                  viewBox="0 0 20 20"
-                />
-                <p className="text-white text-3xs font-semibold">{title}</p>
-                <button
-                  type="button"
-                  className="text-xs text-white font-bold ml-2"
-                  onClick={() => undefined}
-                >
-                  &times;
-                </button>
-              </button>
+              {renderButton()}
             </Popover.Button>
             <Popover.Panel className="absolute z-50">
               <Transition
@@ -133,7 +184,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
                   <AddTargetTagInput placeholder={title} onTextChange={debounceSearchRequest} />
                   {renderErrorProperty()}
                   <div className="flex flex-col mt-2 w-full max-h-[200px] overflow-y-scroll hide-scrollbar">
-                    {results?.map(renderResultProperty)}
+                    {results?.map(renderSearchResult)}
                   </div>
                 </div>
               </Transition>

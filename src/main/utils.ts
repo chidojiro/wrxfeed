@@ -30,6 +30,7 @@ import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
 import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
+import { SearchResult } from './types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -666,4 +667,11 @@ export const getChartLevels = (maxValue: number): ChartLevel[] => {
     });
   }
   return levels;
+};
+
+export const genReviewSentenceFromProperties = (
+  props: SearchResult[],
+  except: SearchResult[],
+): string => {
+  return props.toString() + except.toString();
 };

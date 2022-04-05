@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, KeyboardEventHandler } from 'react';
 
 import { classNames, formatCurrency, replaceAll } from '@common/utils';
 
@@ -16,6 +16,7 @@ import { AlertRed, TeamIcon, CategoryIcon, Bank } from '@assets';
 import PropertiesDropdown, { DropdownEdge } from '@main/molecules/PropertiesDropdown';
 import ExceptDropdown from '@main/molecules/ExceptDropdown';
 import MultiMonthDropdown from '@main/molecules/MultiMonthDropdown';
+import ExceptList from '@main/molecules/ExceptList';
 
 export type AddTargetModalProps = {
   open: boolean;
@@ -46,8 +47,11 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   depId,
 }) => {
   const tagInputRef = useRef<AddTargetTagInputHandler>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const [amount, setAmount] = useState<string>('');
+  const [exceptItems, setExceptItems] = useState<SearchResult[]>([]);
   const [targetName, setTargetName] = useState<string>('');
+  const [isEditName, setEditName] = useState<boolean>(false);
 
   const [showErrorName, setShowErrorName] = useState<boolean>(false);
 
@@ -155,17 +159,12 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     }
     onCreateTarget(amountInt, tags, targetName);
   };
-  // const onChangeInputAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setAmount(formatCurrency(event.target.value, '0,0', '0'));
-  // };
   const onChangeInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTargetName(event.target.value);
     if (showErrorName) {
       setShowErrorName(false);
     }
   };
-
-  // const amountInputWidth = amount?.length > 9 ? 'w-36' : 'w-20';
   const buttonTitleCreateOrSave = itemEditing === null ? 'Create' : 'Save';
 
   const renderIconNextOrLoading = () => {
@@ -193,6 +192,13 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     );
   };
 
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (['Enter'].includes(event.key)) {
+      event.preventDefault();
+      nameInputRef.current?.blur();
+    }
+  };
+
   const createReadyState = enableCreate ? 'bg-primary' : 'bg-Gray-6';
   return (
     <Modal
@@ -204,14 +210,23 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       <div className="flex flex-col w-[685px] outline-none pt-4">
         <div className="flex flex-col space-y-2 px-10 py-4 w-full">
           <p className="text-primary text-xs font-semibold">Target Name*</p>
-          <div className="flex flex-col h-[38px] px-2.5 bg-Gray-12 w-auto">
+          <div
+            className={classNames(
+              'flex flex-col h-[38px] px-2.5 w-auto',
+              isEditName ? 'bg-Gray-12' : 'border-b border-Gray-11',
+            )}
+          >
             <input
+              ref={nameInputRef}
               className={classNames(
                 'text-primary flex-1 bg-transparent placeholder-Gray-6 outline-none border-none text-sm w-auto',
               )}
+              onKeyDown={handleKeyDown}
               placeholder="e.g Direct marketing & online advertising"
               onChange={onChangeInputName}
               value={targetName}
+              onFocus={() => setEditName(true)}
+              onBlur={() => setEditName(false)}
             />
           </div>
           {renderErrorName()}
@@ -223,31 +238,48 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               You're targeting all spend within Consumer Products.
             </span>
           </p>
-          <div className="flex flex-row py-1 items-center space-x-2 px-2">
-            <p className="text-Gray-6 text-xs">Target Is</p>
+          <div className="flex flex-row py-1 space-x-2 px-2">
+            <div className="flex items-center justify-center w-[50px] h-[30px]">
+              <p className="text-Gray-6 text-xs">Target Is</p>
+            </div>
             <PropertiesDropdown
               IconComponent={Bank}
               title="All Vendors"
               type={TargetPropType.VENDOR}
-              default={defaultTags}
+              defaultItems={defaultTags.filter((item) => item.type === TargetPropType.VENDOR)}
             />
-            <p className="text-Gray-6 text-xs w-6 h-4 text-center">in</p>
+            <div className="flex items-center justify-center w-6 h-[30px]">
+              <p className="text-Gray-6 text-xs text-center">in</p>
+            </div>
             <PropertiesDropdown
               IconComponent={CategoryIcon}
               title="All Categories"
               type={TargetPropType.CATEGORY}
-              default={defaultTags}
+              defaultItems={defaultTags.filter((item) => item.type === TargetPropType.CATEGORY)}
             />
-            <p className="text-Gray-6 text-xs w-6 h-4 text-center">for</p>
+            <div className="flex items-center justify-center w-6 h-[30px]">
+              <p className="text-Gray-6 text-xs text-center">for</p>
+            </div>
             <PropertiesDropdown
               IconComponent={TeamIcon}
-              title="All Categories"
+              title="Consumer Products"
               type={TargetPropType.DEPARTMENT}
               dropdownEdge={DropdownEdge.RIGHT}
-              default={defaultTags}
+              defaultItems={defaultTags.filter((item) => item.type === TargetPropType.DEPARTMENT)}
             />
-            <ExceptDropdown title="Except" />
+            <ExceptDropdown
+              title="Except"
+              onItemAdd={(item: SearchResult) => setExceptItems((pre) => [...pre, item])}
+            />
           </div>
+          <ExceptList
+            items={exceptItems}
+            onRemoveItem={(itemRemove: SearchResult) => {
+              setExceptItems((pre) =>
+                pre.filter((item: SearchResult) => item.id !== itemRemove.id),
+              );
+            }}
+          />
         </div>
         <div className="flex flex-row pt-2 px-10 justify-between">
           <div className="flex flex-row items-center space-x-2 py-3">
