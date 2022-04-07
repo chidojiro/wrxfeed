@@ -14,11 +14,13 @@ import { convertFromHTML, convertToHTML } from 'draft-convert';
 
 import { TransLineItem, Target, TranStatusNameColor, TranStatusType } from '@main/entity';
 import { TargetPeriod, TargetPropType } from '@api/types';
+import cloneDeep from 'lodash.clonedeep';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
 import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
+import { SearchResult } from './types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -496,6 +498,30 @@ export const getTargetName = (target: Target): string => {
 
 export const getTransactionColor = (status: string): TranStatusType => {
   return TranStatusNameColor[status];
+};
+
+export const getItemsSentence = (items: SearchResult[], pre = ''): string => {
+  const cloneItems = cloneDeep(items);
+  if (cloneItems.length === 0) return '';
+  if (cloneItems.length === 1) return pre + cloneItems[0].title;
+  if (cloneItems.length === 2) return `${pre} ${cloneItems[0].title} and ${cloneItems[1].title}`;
+  const popped = cloneItems.pop();
+  return `${cloneItems.map((item: SearchResult) => item.title).join(', ')} and ${popped?.title}`;
+};
+
+export const genReviewSentenceFromProperties = (
+  vend: SearchResult[] = [],
+  team: SearchResult[] = [],
+  cat: SearchResult[] = [],
+  except: SearchResult[] = [],
+): string => {
+  const vendorSen = getItemsSentence(vend);
+  const catSen = getItemsSentence(cat, ' spend within ');
+  const teamSen = getItemsSentence(team, ' for ');
+  const exceptSen = getItemsSentence(except, ', except ');
+
+  const sentence = `You're targeting all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`;
+  return sentence;
 };
 
 export const getPeriodsByYear = (year: number): TargetPeriod[] => {
