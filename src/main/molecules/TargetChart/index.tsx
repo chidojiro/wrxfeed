@@ -5,20 +5,21 @@ import { ChartLineProps, LineChartData } from '@main/types';
 import { getChartLevels } from '@main/chart.utils';
 import { classNames } from '@common/utils';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
-import { TransLineItem } from '@main/entity';
 
 const MIN_Y_VALUE = 500;
 
-interface TargetChartViewProps {
+interface TargetChartProps<T> {
   className?: string;
-  chartData: LineChartData<TransLineItem[]>;
+  chartData: LineChartData<T>;
   targetAmount: number;
   showTargetLine?: boolean;
   renderXAxis?: () => JSX.Element;
   renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element | null;
 }
 
-const TargetChart: React.VFC<TargetChartViewProps> = ({
+const TargetChart: <T extends unknown>(
+  p: TargetChartProps<T>,
+) => React.ReactElement<TargetChartProps<T>> = ({
   className,
   chartData,
   targetAmount = 0,
