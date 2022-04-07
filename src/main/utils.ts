@@ -24,7 +24,8 @@ import {
   ChartLineProps,
   ChartLevel,
 } from '@main/entity';
-import { TargetPropType } from '@api/types';
+import { TargetPeriod, TargetPropType } from '@api/types';
+import cloneDeep from 'lodash.clonedeep';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
@@ -669,9 +670,37 @@ export const getChartLevels = (maxValue: number): ChartLevel[] => {
   return levels;
 };
 
+export const getItemsSentence = (items: SearchResult[], pre = ''): string => {
+  const cloneItems = cloneDeep(items);
+  if (cloneItems.length === 0) return '';
+  if (cloneItems.length === 1) return pre + cloneItems[0].title;
+  if (cloneItems.length === 2) return `${pre} ${cloneItems[0].title} and ${cloneItems[1].title}`;
+  const popped = cloneItems.pop();
+  return `${cloneItems.map((item: SearchResult) => item.title).join(', ')} and ${popped?.title}`;
+};
+
 export const genReviewSentenceFromProperties = (
-  props: SearchResult[],
-  except: SearchResult[],
+  vend: SearchResult[] = [],
+  team: SearchResult[] = [],
+  cat: SearchResult[] = [],
+  except: SearchResult[] = [],
 ): string => {
-  return props.toString() + except.toString();
+  const vendorSen = getItemsSentence(vend);
+  const catSen = getItemsSentence(cat, ' spend within ');
+  const teamSen = getItemsSentence(team, ' for ');
+  const exceptSen = getItemsSentence(except, ', except ');
+
+  const sentence = `You're targeting all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`;
+  return sentence;
+};
+
+export const getPeriodsByYear = (year: number): TargetPeriod[] => {
+  const periods = [];
+  for (let index = 1; index <= 12; index += 1) {
+    periods.push({
+      year,
+      month: index,
+    });
+  }
+  return periods;
 };

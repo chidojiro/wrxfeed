@@ -1,8 +1,8 @@
+import React, { Fragment, useState, useCallback, useEffect } from 'react';
+import { Popover, Transition } from '@headlessui/react';
 import { TargetPropType } from '@api/types';
 import { classNames } from '@common/utils';
 import { getColorByPropertyType, getIconByResultType, getPropTypeDisplayName } from '@main/utils';
-import React, { Fragment, useState, useCallback, useEffect } from 'react';
-import { Popover, Transition } from '@headlessui/react';
 import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
 import { SearchResult } from '@main/types';
 import { useSearch } from '@main/hooks/search.hook';
@@ -22,6 +22,7 @@ interface PropertiesDropdownProps {
   type: TargetPropType;
   dropdownEdge?: DropdownEdge;
   defaultItems?: SearchResult[];
+  onChangeItems?: (items: SearchResult[]) => void;
 }
 
 const DEBOUNCE_WAIT = 0;
@@ -33,6 +34,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
   title,
   type,
   dropdownEdge = DropdownEdge.LEFT,
+  onChangeItems,
 }) => {
   const [keyword, setKeyword] = useState<string>('');
   const [items, setItems] = useState<SearchResult[]>([]);
@@ -43,6 +45,12 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
     searchVend: type === TargetPropType.VENDOR,
   });
   const [showErrorProperty, setShowErrorProperty] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof onChangeItems === 'function') {
+      onChangeItems(items);
+    }
+  }, [items, onChangeItems]);
 
   const onSearchKeyword = useCallback(
     (value: string) => {
@@ -108,7 +116,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
           height={20}
           viewBox="0 0 20 20"
         />
-        <p className="text-white text-left text-3xs font-semibold truncate max-w-[86px]">
+        <p className="text-white text-left text-3xs font-semibold truncate max-w-[100px]">
           {itemSelected?.title}
         </p>
         <button

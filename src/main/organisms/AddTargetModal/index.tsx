@@ -4,7 +4,13 @@ import React, { useEffect, useRef, useState, KeyboardEventHandler } from 'react'
 import { classNames, formatCurrency, replaceAll } from '@common/utils';
 
 import { SearchResult } from '@main/types';
-import { PostTargetParams, PutTargetParams, TargetProp, TargetPropType } from '@api/types';
+import {
+  CalcSpendProp,
+  PostTargetParams,
+  PutTargetParams,
+  TargetProp,
+  TargetPropType,
+} from '@api/types';
 import { Target } from '@main/entity';
 
 import Modal from '@common/atoms/Modal';
@@ -17,6 +23,7 @@ import PropertiesDropdown, { DropdownEdge } from '@main/molecules/PropertiesDrop
 import ExceptDropdown from '@main/molecules/ExceptDropdown';
 import MultiMonthDropdown from '@main/molecules/MultiMonthDropdown';
 import ExceptList from '@main/molecules/ExceptList';
+import { genReviewSentenceFromProperties } from '@main/utils';
 
 export type AddTargetModalProps = {
   open: boolean;
@@ -50,6 +57,11 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [amount, setAmount] = useState<string>('');
   const [exceptItems, setExceptItems] = useState<SearchResult[]>([]);
+  const [vendItems, setVendItems] = useState<SearchResult[]>([]);
+  const [catItems, setCatItems] = useState<SearchResult[]>([]);
+  const [teamItems, setTeamItems] = useState<SearchResult[]>([]);
+  const [allProps, setAllProps] = useState<CalcSpendProp[]>([]);
+
   const [targetName, setTargetName] = useState<string>('');
   const [isEditName, setEditName] = useState<boolean>(false);
 
@@ -115,6 +127,29 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       if (timeout) clearTimeout(timeout);
     };
   }, [open]);
+
+  useEffect(() => {
+    const propsCheck: CalcSpendProp[] = [...vendItems, ...teamItems, ...catItems].map(
+      (item: SearchResult) => {
+        return {
+          id: item.directoryId,
+          exclude: false,
+          type: item.type,
+          name: item.title,
+        };
+      },
+    );
+    for (let index = 0; index < exceptItems.length; index += 1) {
+      const item = exceptItems[index];
+      propsCheck.push({
+        id: item.directoryId,
+        exclude: true,
+        type: item.type,
+        name: item.title,
+      });
+    }
+    setAllProps(propsCheck);
+  }, [vendItems, teamItems, catItems, exceptItems]);
 
   useEffect(() => {
     if (itemEditing && itemEditing?.props.length > 0) {
@@ -199,6 +234,22 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     }
   };
 
+  const reviewSentence = genReviewSentenceFromProperties(
+    vendItems,
+    teamItems,
+    catItems,
+    exceptItems,
+  );
+
+  const renderReviewSentence = () => {
+    return (
+      <p className="text-primary text-xs font-semibold">
+        Properties*:
+        <span className="text-Gray-3 font-normal ml-1">{reviewSentence}</span>
+      </p>
+    );
+  };
+
   const createReadyState = enableCreate ? 'bg-primary' : 'bg-Gray-6';
   return (
     <Modal
@@ -232,12 +283,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
           {renderErrorName()}
         </div>
         <div className="flex flex-col space-y-3 px-10 py-4 w-full">
-          <p className="text-primary text-xs font-semibold">
-            Properties*:
-            <span className="text-Gray-3 font-normal ml-1">
-              You're targeting all spend within Consumer Products.
-            </span>
-          </p>
+          {renderReviewSentence()}
           <div className="flex flex-row py-1 space-x-2 px-2">
             <div className="flex items-center justify-center w-[50px] h-[30px]">
               <p className="text-Gray-6 text-xs">Target Is</p>
@@ -247,6 +293,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               title="All Vendors"
               type={TargetPropType.VENDOR}
               defaultItems={defaultTags.filter((item) => item.type === TargetPropType.VENDOR)}
+              onChangeItems={setVendItems}
             />
             <div className="flex items-center justify-center w-6 h-[30px]">
               <p className="text-Gray-6 text-xs text-center">in</p>
@@ -256,6 +303,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               title="All Categories"
               type={TargetPropType.CATEGORY}
               defaultItems={defaultTags.filter((item) => item.type === TargetPropType.CATEGORY)}
+              onChangeItems={setCatItems}
             />
             <div className="flex items-center justify-center w-6 h-[30px]">
               <p className="text-Gray-6 text-xs text-center">for</p>
@@ -266,6 +314,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               type={TargetPropType.DEPARTMENT}
               dropdownEdge={DropdownEdge.RIGHT}
               defaultItems={defaultTags.filter((item) => item.type === TargetPropType.DEPARTMENT)}
+              onChangeItems={setTeamItems}
             />
             <ExceptDropdown
               title="Except"
@@ -284,7 +333,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         <div className="flex flex-row pt-2 px-10 justify-between">
           <div className="flex flex-row items-center space-x-2 py-3">
             <p className="text-primary text-xs font-semibold w-14">Months*</p>
-            <MultiMonthDropdown />
+            <MultiMonthDropdown props={allProps} />
           </div>
           <div className="flex flex-row items-center space-x-2">
             <div className="flex flex-row items-center space-x-2">

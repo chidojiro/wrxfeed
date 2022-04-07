@@ -82,6 +82,7 @@ export interface ApiClient {
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
   deleteTarget: (id: number) => Promise<void>;
+  patchCalcSpending: (data: PatchCalcSpendingFilters) => Promise<TargetPeriod[]>;
   // Subscription
   getSubscriptions: () => Promise<Subscription>;
   updateSubscriptions: (data: SubscriptionParams) => Promise<Subscription>;
@@ -180,6 +181,24 @@ export interface PutTargetParams {
   props: TargetProp[];
 }
 
+export type CalcSpendProp = {
+  id: number;
+  exclude: boolean;
+  type: TargetPropType;
+  name: string;
+};
+
+export type TargetPeriod = {
+  month: number;
+  year: number;
+  amount?: number;
+  total?: number;
+};
+export interface PatchCalcSpendingFilters {
+  props: CalcSpendProp[];
+  periods: TargetPeriod[];
+}
+
 export enum TargetPropType {
   DEPARTMENT = 'DEPARTMENT',
   CATEGORY = 'CATEGORY',
@@ -193,12 +212,13 @@ export interface TargetProp {
 }
 
 export interface PostTargetParams {
+  name: string;
   month: number;
   year: number;
   amount: number | null;
   dep?: number;
   props: TargetProp[];
-  name: string;
+  periods?: TargetPeriod[];
 }
 
 export interface SubscriptionParams {

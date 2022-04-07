@@ -1,22 +1,47 @@
 /* eslint-disable react/no-unescaped-entities */
-import { classNames } from '@common/utils';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Popover, Transition } from '@headlessui/react';
-import { BasicsDownSmall, LeftSmallIcon } from '@assets';
 import dayjs from 'dayjs';
+
+import { classNames } from '@common/utils';
+import { useMultiMonth } from '@main/hooks/multiMonth.hook';
+import { TargetPeriod, PatchCalcSpendingFilters, CalcSpendProp } from '@api/types';
 import Loading from '@common/atoms/Loading';
+import MonthTargetInput from '@main/atoms/MonthTargetInput';
 import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-2.svg';
+import { BasicsDownSmall, LeftSmallIcon } from '@assets';
+import { getPeriodsByYear } from '@main/utils';
 
 interface MultiMonthDropdownProps {
   className?: string;
   classPopover?: string;
+  props: CalcSpendProp[];
 }
 
 const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
   className = '',
   classPopover = '',
+  props,
 }) => {
   const [curYear, setCurYear] = useState(2022);
+  const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
+  const [minMonth, setMinMonth] = useState<number>(0);
+  const [maxMonth, setMaxMonth] = useState<number>(0);
+  const monthsInYear = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+  const [filter, setFilter] = useState<PatchCalcSpendingFilters>({
+    props,
+    periods: getPeriodsByYear(curYear),
+  });
+  const { months: monthsData = [], isLoading } = useMultiMonth(filter);
+
+  useEffect(() => {
+    setFilter({
+      props,
+      periods: getPeriodsByYear(curYear),
+    });
+  }, [curYear, props]);
+
   useEffect(() => {
     const today = new Date();
     setCurYear(today.getFullYear());
@@ -42,9 +67,99 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
       <ArrowRight className="w-4 h-4 ml-2 fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />
     );
   };
-  // const onChangeInputAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setAmount(formatCurrency(event.target.value, '0,0', '0'));
-  // };
+
+  useEffect(() => {
+    let min = 12;
+    let max = 0;
+    for (let i = 0; i < selectedMonths.length; i += 1) {
+      if (selectedMonths[i] < min) {
+        min = selectedMonths[i];
+      }
+      if (selectedMonths[i] > max) {
+        max = selectedMonths[i];
+      }
+    }
+    setMinMonth(min);
+    setMaxMonth(max);
+  }, [selectedMonths]);
+
+  const renderMonthName = () => {
+    return (
+      <div className="flex flex-1 flex-col">
+        {monthsInYear.map((month: number, indexMonth: number) => {
+          const isIncluded = selectedMonths.includes(month);
+          const isInRange = month >= minMonth && month <= maxMonth;
+          const onClickSelectMonth = () => {
+            if (isIncluded) {
+              setSelectedMonths((pre) => pre.filter((item: number) => item !== month));
+            } else {
+              setSelectedMonths((pre) => [...pre, month]);
+            }
+          };
+          let borderStyle = 'border-l border-r border-Accent-2';
+          if (month === minMonth) borderStyle = `${borderStyle} border-t`;
+          if (month === maxMonth) borderStyle = `${borderStyle} border-b`;
+
+          return (
+            <div key={`month-${month}`} className={classNames('flex flex-col ')}>
+              <button
+                onClick={onClickSelectMonth}
+                type="button"
+                className={classNames(
+                  'w-24 h-7 px-2 py-1 text-left flex flex-col justify-center items-start',
+                  isInRange ? borderStyle : '',
+                )}
+              >
+                <p className="text-sm text-Gray-3">
+                  {dayjs()
+                    .month(month - 1)
+                    .format('MMMM')}
+                </p>
+              </button>
+              {indexMonth !== 11 && (
+                <div
+                  className={classNames(
+                    'h-1 w-full',
+                    isInRange && indexMonth !== maxMonth - 1
+                      ? 'border-l border-r border-Accent-2'
+                      : '',
+                  )}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+  const renderLastYearSpend = () => {
+    return (
+      <div className="flex flex-1 flex-col space-y-1">
+        {monthsInYear.map((month: number) => {
+          const isInRange = month >= minMonth && month <= maxMonth;
+          const monthMatched = monthsData.filter((item: TargetPeriod) => item.month === month);
+          const lastYearSpend =
+            monthMatched.length > 0 ? parseFloat(monthMatched[0].total?.toString() ?? '0') : 0;
+          return (
+            <div
+              key={`renderLastYearSpend-${month}`}
+              className="w-24 h-7 px-2 py-1 text-right flex flex-col justify-center items-end"
+            >
+              {isInRange && <p className="text-sm text-Gray-6">{`$${lastYearSpend.toFixed(2)}`}</p>}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+  const titleSelect =
+    minMonth !== 0 && maxMonth !== 0
+      ? `${dayjs()
+          .month(minMonth - 1)
+          .format('MMM, YYYY')} - ${dayjs()
+          .month(maxMonth - 1)
+          .format('MMM, YYYY')}`
+      : 'Select';
   return (
     <div className={classNames(className)}>
       <Popover as="div" className="flex-shrink-0 relative">
@@ -56,7 +171,7 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
                   type="button"
                   className="rounded-sm border border-Gray-11 space-x-1 px-2 flex h-[30px] flex-row items-center"
                 >
-                  <p className="text-Gray-3 text-xs">Select</p>
+                  <p className="text-Gray-3 text-xs">{titleSelect}</p>
                   <BasicsDownSmall className="w-5 h-5" width={20} height={20} viewBox="0 0 20 20" />
                 </button>
               </Popover.Button>
@@ -84,8 +199,11 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
                         height={16}
                         viewBox="0 0 16 16"
                       />
-                      <div className="flex flex-1 justify-center items-center">
-                        <p className="text-primary text-xs font-semibold">{curYear}</p>
+                      <div className="flex flex-1 flex-row justify-center items-center">
+                        <p className="text-primary text-xs font-semibold ml-4">{curYear}</p>
+                        <div className="w-4 h-4 flex justify-center items-center">
+                          {isLoading && <Loading width={8} height={8} />}
+                        </div>
                       </div>
                       <LeftSmallIcon
                         className="w-4 h-4 rotate-180"
@@ -101,37 +219,17 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
                       <p>Target</p>
                     </div>
                     <div className="flex flex-row space-x-2 py-2 px-[22px]">
+                      {renderMonthName()}
+                      {renderLastYearSpend()}
                       <div className="flex flex-1 flex-col space-y-1">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1].map((month) => {
+                        {monthsInYear.map((month) => {
+                          const isInRange = month >= minMonth && month <= maxMonth;
                           return (
-                            <div
-                              key={`month-${month}`}
-                              className="w-24 h-7 text-left flex flex-col justify-center items-start"
-                            >
-                              <p className="text-sm text-Gray-3">
-                                {dayjs()
-                                  .month(month - 1)
-                                  .format('MMMM')}
-                              </p>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <div className="flex flex-1">
-                        <div />
-                      </div>
-                      <div className="flex flex-1 flex-col space-y-1">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1].map((month) => {
-                          return (
-                            <div
-                              key={`month-${month}`}
-                              className="w-24 h-7 flex px-1 justify-center items-center border-2 border-Gray-12 hover:bg-Gray-12"
-                            >
-                              <input
-                                className="flex text-right flex-1 w-5 bg-transparent outline-none placeholder-Gray-12"
-                                placeholder="$0"
-                              />
-                            </div>
+                            <MonthTargetInput
+                              key={`month-amount-${month}`}
+                              month={month}
+                              isInRange={isInRange}
+                            />
                           );
                         })}
                       </div>
