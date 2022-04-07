@@ -10,28 +10,15 @@ import {
 import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
-import dayjs from 'dayjs';
 import { convertFromHTML, convertToHTML } from 'draft-convert';
 
-import {
-  TransLineItem,
-  Target,
-  TranStatusNameColor,
-  TranStatusType,
-  Transaction,
-  ChartDataPoint,
-  ChartLegend,
-  ChartLineProps,
-  ChartLevel,
-} from '@main/entity';
+import { TransLineItem, Target, TranStatusNameColor, TranStatusType } from '@main/entity';
 import { TargetPeriod, TargetPropType } from '@api/types';
-import cloneDeep from 'lodash.clonedeep';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
 import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
-import { SearchResult } from './types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -509,189 +496,6 @@ export const getTargetName = (target: Target): string => {
 
 export const getTransactionColor = (status: string): TranStatusType => {
   return TranStatusNameColor[status];
-};
-
-export const getChartDataFromTransactions = (
-  trans: Transaction[],
-): {
-  data: ChartDataPoint[];
-  legends: ChartLegend[];
-  lines: ChartLineProps[];
-  maxValue: number;
-} => {
-  let maxValue = 0;
-  const currentMonth: number = new Date().getMonth() + 1;
-  const pre1Month: number = currentMonth === 1 ? 12 : currentMonth - 1;
-  const pre2Month: number = pre1Month === 1 ? 12 : pre1Month - 1;
-
-  const allLineItems: TransLineItem[] = trans.reduce<TransLineItem[]>((pre, currentTran) => {
-    return [...pre, ...(currentTran.lineItems ?? [])];
-  }, []);
-  let totalCurrentMonth = 0;
-  let totalPre1Month = 0;
-  let totalPre2Month = 0;
-  const data: ChartDataPoint[] = Array(31).fill({
-    name: '',
-    [`${currentMonth}`]: 0,
-    [`${pre1Month}`]: 0,
-    [`${pre2Month}`]: 0,
-  });
-  data.forEach((day, index) => {
-    const monthNumber = dayjs(day.updatedAt).month() + 1;
-    const transInThisDay = allLineItems.filter(
-      (tran: TransLineItem) => index === dayjs(tran.updatedAt).date() - 1,
-    );
-    let dayName = '';
-    transInThisDay.forEach((tranThisDay: TransLineItem) => {
-      dayName = tranThisDay.description ?? '';
-      if (monthNumber === currentMonth) {
-        totalCurrentMonth += Math.round(tranThisDay?.amountUsd ?? 0) ?? 0;
-      }
-      if (monthNumber === pre1Month) {
-        totalPre1Month += Math.round(tranThisDay?.amountUsd ?? 0) ?? 0;
-      }
-      if (monthNumber === pre2Month) {
-        totalPre2Month += Math.round(tranThisDay?.amountUsd ?? 0) ?? 0;
-      }
-    });
-    data[index] = {
-      ...data[index],
-      name: dayName,
-      [`${currentMonth}`]: totalCurrentMonth,
-      [`${pre1Month}`]: totalPre1Month,
-      [`${pre2Month}`]: totalPre2Month,
-    };
-  });
-  [totalCurrentMonth, totalPre1Month, totalPre2Month].forEach((total) => {
-    if (total > maxValue) {
-      maxValue = total;
-    }
-  });
-  const legends: ChartLegend[] = [
-    {
-      id: `chartLegends-${currentMonth}`,
-      color: '#6565FB',
-      name: dayjs()
-        .month(currentMonth - 1)
-        .format('MMM'),
-      type: '',
-    },
-    {
-      id: `chartLegends-${pre1Month}`,
-      color: '#BEC1C7',
-      name: dayjs()
-        .month(pre1Month - 1)
-        .format('MMM'),
-      type: '',
-    },
-    {
-      id: `chartLegends-${pre2Month}`,
-      color: '#EFEFF1',
-      name: dayjs()
-        .month(pre2Month - 1)
-        .format('MMM'),
-      type: '',
-    },
-    {
-      id: 'TargetLine',
-      color: '',
-      name: 'Target',
-      type: 'dashed-line-legend',
-    },
-  ];
-  const lines: ChartLineProps[] = [
-    {
-      name: dayjs()
-        .month(pre2Month - 1)
-        .format('MMM'),
-      type: 'linear',
-      dataKey: `${pre2Month}`,
-      strokeWidth: 4,
-      stroke: '#E7E8EC',
-      dot: false,
-    },
-    {
-      name: dayjs()
-        .month(pre1Month - 1)
-        .format('MMM'),
-      type: 'linear',
-      dataKey: `${pre1Month}`,
-      strokeWidth: 4,
-      stroke: '#C5C8CD',
-      dot: false,
-    },
-    {
-      name: dayjs()
-        .month(currentMonth - 1)
-        .format('MMM'),
-      type: 'linear',
-      dataKey: `${currentMonth}`,
-      strokeWidth: 4,
-      stroke: '#6565FB',
-      dot: false,
-    },
-  ];
-  const positiveMax = Math.abs(maxValue);
-  if (positiveMax >= 1000000000) {
-    maxValue = Math.ceil(positiveMax / 1000000000) * 1000000000; // Billion
-  }
-  if (positiveMax >= 1000000) {
-    maxValue = Math.ceil(positiveMax / 1000000) * 1000000; // Millions
-  }
-  if (positiveMax >= 1000) {
-    const remember = 1000;
-    maxValue = Math.ceil(positiveMax / 1000); // Thousands
-    maxValue = Math.ceil(maxValue / 5) * 5 * remember;
-  }
-  return { data, legends, lines, maxValue };
-};
-
-export const getChartLevels = (maxValue: number): ChartLevel[] => {
-  // const maxAndTarget = maxValue - targetAmount;
-  const numberLevel = 5; // Math.floor(maxValue / maxAndTarget);
-  // if (numberLevel > 5) {
-  //   numberLevel = 5;
-  // }
-  // if (numberLevel < 4) {
-  //   numberLevel *= 2;
-  // }
-  const levelValue = maxValue / numberLevel;
-
-  const levels: ChartLevel[] = [];
-  for (let index = 0; index < numberLevel + 1; index += 1) {
-    const valueForThisLevel = levelValue * index;
-    levels.push({
-      id: index,
-      value: valueForThisLevel,
-      title: nFormatter(valueForThisLevel),
-      isTarget: false,
-    });
-  }
-  return levels;
-};
-
-export const getItemsSentence = (items: SearchResult[], pre = ''): string => {
-  const cloneItems = cloneDeep(items);
-  if (cloneItems.length === 0) return '';
-  if (cloneItems.length === 1) return pre + cloneItems[0].title;
-  if (cloneItems.length === 2) return `${pre} ${cloneItems[0].title} and ${cloneItems[1].title}`;
-  const popped = cloneItems.pop();
-  return `${cloneItems.map((item: SearchResult) => item.title).join(', ')} and ${popped?.title}`;
-};
-
-export const genReviewSentenceFromProperties = (
-  vend: SearchResult[] = [],
-  team: SearchResult[] = [],
-  cat: SearchResult[] = [],
-  except: SearchResult[] = [],
-): string => {
-  const vendorSen = getItemsSentence(vend);
-  const catSen = getItemsSentence(cat, ' spend within ');
-  const teamSen = getItemsSentence(team, ' for ');
-  const exceptSen = getItemsSentence(except, ', except ');
-
-  const sentence = `You're targeting all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`;
-  return sentence;
 };
 
 export const getPeriodsByYear = (year: number): TargetPeriod[] => {

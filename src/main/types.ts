@@ -38,3 +38,40 @@ export type SearchResult = {
   type: TargetPropType;
   directoryId: number;
 };
+
+// Chart types
+export type ChartDataPoint = {
+  name: string;
+  [key: string]: number | string;
+};
+
+export type ChartLegend = {
+  id: number | string;
+  color: string;
+  name: string;
+  type?: string;
+};
+
+export type ChartLineProps = {
+  name: string;
+  type: string;
+  dataKey: string;
+  strokeWidth: number;
+  stroke: string;
+  strokeDasharray?: string;
+  dot: boolean;
+};
+
+export type ChartLevel = {
+  id: number;
+  value: number;
+  title: string | number;
+  isTarget?: boolean;
+};
+
+export type LineChartData = {
+  data: ChartDataPoint[];
+  legends: ChartLegend[];
+  lines: ChartLineProps[];
+  maxValue: number;
+};

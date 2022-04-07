@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { LineChart, Line, ResponsiveContainer, Tooltip, TooltipProps, YAxis } from 'recharts';
 
 import { classNames, formatCurrency } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
-import { ChartDataPoint, FeedItem, ChartLegend, ChartLineProps, ChartLevel } from '@main/entity';
-import { getChartDataFromTransactions, getChartLevels } from '@main/utils';
-import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
+import { FeedItem } from '@main/entity';
+import { ChartLegend, LineChartData } from '@main/types';
+import { getLineChartDataInMonth } from '@main/chart.utils';
 import dayjs from 'dayjs';
+import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
+import { TooltipProps } from 'recharts';
+import TargetChart from '../TargetChart';
 
 interface TargetChartViewProps {
   className?: string;
@@ -16,50 +18,61 @@ interface TargetChartViewProps {
 
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
   const today = new Date();
-  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
-  const [chartLegends, setChartLegends] = useState<ChartLegend[]>([]);
-  const [chartLines, setChartLines] = useState<ChartLineProps[]>([]);
-  const [chartLevels, setChartLevels] = useState<ChartLevel[]>([]);
-  const [chartMaxValue, setChartMaxValue] = useState<number>(100000);
-  const [targetBottom, setTargetBottom] = useState('50%');
+  const [chartData, setChartData] = useState<LineChartData>();
 
   useEffect(() => {
-    const { data, legends, lines, maxValue } = getChartDataFromTransactions(feedItem.transactions);
-    const targetAmount = feedItem.target.amount ?? 0;
+    const data = getLineChartDataInMonth(feedItem.transactions);
     setChartData(data);
-    setChartLegends(legends);
-    setChartLines(lines);
-
-    let maxValueForChart = maxValue;
-    if (targetAmount > maxValue) {
-      maxValueForChart = targetAmount * 1.2;
-    }
-    setChartMaxValue(maxValueForChart);
-    const levels = getChartLevels(maxValueForChart);
-    setChartLevels(levels);
-
-    setTargetBottom(`${Math.round((targetAmount / maxValueForChart) * 100)}%`);
   }, [feedItem]);
 
-  const renderChartLegend = (item: ChartLegend) => {
+  const renderEditTargetButton = () => {
     return (
-      <div key={`renderChartLegend-${item.id}`} className="flex flex-row items-center space-x-2">
-        <div
-          className={classNames('flex w-6 h-1', item?.type ?? '')}
-          style={{ backgroundColor: item?.color }}
-        />
-        <p className="text-Gray-3 text-xs font-semibold">{item?.name}</p>
+      <button
+        type="button"
+        className="flex ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
+        onClick={onEdit}
+      >
+        <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
+        <p className="text-xs text-Gray-3 font-normal">Edit</p>
+      </button>
+    );
+  };
+
+  const renderChartLegends = () => {
+    return (
+      <div className="flex flex-row justify-center mt-6 py-2 px-[50px] space-x-8">
+        {chartData?.legends.map((legend: ChartLegend) => (
+          <div
+            key={`renderChartLegend-${legend.id}`}
+            className="flex flex-row items-center space-x-2"
+          >
+            <div
+              className={classNames('flex w-6 h-1', legend?.type ?? '')}
+              style={{ backgroundColor: legend?.color }}
+            />
+            <p className="text-Gray-3 text-xs font-semibold">{legend?.name}</p>
+          </div>
+        ))}
       </div>
     );
   };
 
-  const renderChartSymbolNote = () => {
-    return (
-      <div className="flex flex-row justify-center mt-6 py-2 px-[50px] space-x-8">
-        {chartLegends.map(renderChartLegend)}
+  const renderXAxis = () => (
+    <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around pl-28">
+      <div className="w-20 h-7 flex justify-center items-center">
+        <p>{dayjs(today).date(7).format('MMM D')}</p>
       </div>
-    );
-  };
+      <div className="w-20 h-7 flex justify-center items-center">
+        <p>{dayjs(today).date(14).format('MMM D')}</p>
+      </div>
+      <div className="w-20 h-7 flex justify-center items-center">
+        <p>{dayjs(today).date(21).format('MMM D')}</p>
+      </div>
+      <div className="w-20 h-7 flex justify-center items-center">
+        <p>{dayjs(today).date(28).format('MMM D')}</p>
+      </div>
+    </div>
+  );
 
   const renderTooltipContent = ({ label }: TooltipProps<ValueType, NameType>) => {
     const topTransactions = [
@@ -104,102 +117,6 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
       </div>
     );
   };
-
-  const renderChartVisualize = () => {
-    return (
-      <div className="flex flex-col mt-2 w-full h-[514px]">
-        <div className="flex relative flex-col flex-1 py-6">
-          <div className="absolute flex w-full h-[396px] justify-between flex-col-reverse">
-            {chartLevels.map((level) => {
-              const textColor = level?.isTarget ? 'text-Accent-2' : 'text-Gray-6';
-              return (
-                <div
-                  key={`dataLevels-${level?.id}`}
-                  className="flex flex-row space-x-4 items-center w-full"
-                >
-                  <p className={classNames('text-xs font-semibold text-right w-8', textColor)}>
-                    {level?.title}
-                  </p>
-                  <div
-                    className={classNames(
-                      'flex flex-1 w-auto h-px',
-                      level?.isTarget ? 'dashed-line' : 'bg-Gray-11',
-                    )}
-                  />
-                </div>
-              );
-            })}
-            <div
-              key="dataLevels-dashed-line"
-              style={{
-                bottom: targetBottom,
-              }}
-              className="flex absolute flex-row space-x-4 items-center w-full"
-            >
-              <p className={classNames('text-xs font-semibold text-right w-8', 'text-Accent-2')} />
-              <div className={classNames('flex flex-1 w-auto h-px', 'dashed-line')} />
-            </div>
-          </div>
-          <ResponsiveContainer width="100%" height="100%" className="">
-            <LineChart
-              width={500}
-              height={300}
-              data={chartData}
-              margin={{
-                top: 5,
-                right: 10,
-                left: 50,
-                bottom: 10,
-              }}
-            >
-              <YAxis domain={[0, chartMaxValue]} width={0} height={0} className="opacity-0" />
-              <Tooltip cursor position={{ y: 5 }} content={renderTooltipContent} />
-              {chartLines.map((line: ChartLineProps) => {
-                return (
-                  <Line
-                    key={`ChartLine-${line.name}`}
-                    name={line.name}
-                    type="linear"
-                    dataKey={line.dataKey}
-                    strokeWidth={4}
-                    stroke={line.stroke}
-                    dot={false}
-                  />
-                );
-              })}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around pl-28">
-          <div className="w-20 h-7 flex justify-center items-center">
-            <p>{dayjs(today).date(7).format('MMM D')}</p>
-          </div>
-          <div className="w-20 h-7 flex justify-center items-center">
-            <p>{dayjs(today).date(14).format('MMM D')}</p>
-          </div>
-          <div className="w-20 h-7 flex justify-center items-center">
-            <p>{dayjs(today).date(21).format('MMM D')}</p>
-          </div>
-          <div className="w-20 h-7 flex justify-center items-center">
-            <p>{dayjs(today).date(28).format('MMM D')}</p>
-          </div>
-        </div>
-        {renderChartSymbolNote()}
-      </div>
-    );
-  };
-  const renderEditTargetButton = () => {
-    return (
-      <button
-        type="button"
-        className="flex ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
-        onClick={onEdit}
-      >
-        <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
-        <p className="text-xs text-Gray-3 font-normal">Edit</p>
-      </button>
-    );
-  };
   return (
     <div className="flex flex-col space-y-4">
       <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
@@ -220,7 +137,18 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
             {renderEditTargetButton()}
           </div>
         </div>
-        {renderChartVisualize()}
+        {chartData && (
+          <>
+            <TargetChart
+              chartData={chartData}
+              targetAmount={feedItem.target.amount ?? 0}
+              renderXAxis={renderXAxis}
+              renderTooltip={renderTooltipContent}
+              showTargetLine
+            />
+            {renderChartLegends()}
+          </>
+        )}
       </div>
       <div className="bg-Gray-11 h-px w-full" />
     </div>

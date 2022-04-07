@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
-import { ChartDataPoint, FeedItem } from '@main/entity';
+import { FeedItem } from '@main/entity';
+import { ChartDataPoint } from '@main/types';
 
 export const rollupsState = atom<FeedItem[]>({
   key: 'main/rollups',
