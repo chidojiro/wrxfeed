@@ -40,9 +40,9 @@ export type SearchResult = {
 };
 
 // Chart types
-export type ChartDataPoint = {
+export type ChartDataPoint<T = undefined> = {
   name: string;
-  [key: string]: number | string;
+  [key: string]: number | string | T;
 };
 
 export type ChartLegend = {
@@ -69,8 +69,8 @@ export type ChartLevel = {
   isTarget?: boolean;
 };
 
-export type LineChartData = {
-  data: ChartDataPoint[];
+export type LineChartData<T = undefined> = {
+  data: ChartDataPoint<T>[];
   legends: ChartLegend[];
   lines: ChartLineProps[];
   maxValue: number;
