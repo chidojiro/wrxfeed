@@ -25,7 +25,7 @@ export const hashLineItemsByMonths = (
   return trans.reduce<{ [key: string]: TransLineItem[][] }>(
     (preHash, currentTran) =>
       currentTran.lineItems?.reduce<{ [key: string]: TransLineItem[][] }>((pre, currentItem) => {
-        const itemDate = dayjs(currentTran.transDate, ITEM_DATE_FORMAT); // Why trans date is updatedAt? Seem like messy data
+        const itemDate = dayjs(currentTran.transDate, ITEM_DATE_FORMAT);
         if (!itemDate.isValid()) return pre;
         const month = itemDate.format(monthFormat);
         const date = itemDate.date();
