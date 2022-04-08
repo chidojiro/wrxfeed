@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { classNames, formatCurrency } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
-import { FeedItem } from '@main/entity';
+import { FeedItem, TransLineItem } from '@main/entity';
 import { ChartLegend, LineChartData } from '@main/types';
 import { getLineChartDataInMonth } from '@main/chart.utils';
 import dayjs from 'dayjs';
@@ -18,7 +18,7 @@ interface TargetChartViewProps {
 
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
   const today = new Date();
-  const [chartData, setChartData] = useState<LineChartData>();
+  const [chartData, setChartData] = useState<LineChartData<TransLineItem[]>>();
 
   useEffect(() => {
     const data = getLineChartDataInMonth(feedItem.transactions);
@@ -74,48 +74,40 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
     </div>
   );
 
-  const renderTooltipContent = ({ label }: TooltipProps<ValueType, NameType>) => {
-    const topTransactions = [
-      {
-        id: 0,
-        vendorName: 'Amazon Business EU S.à.r.l',
-        amountUsd: 10067.87,
-      },
-      {
-        id: 1,
-        vendorName: 'SHI International Corp',
-        amountUsd: 7067.87,
-      },
-      {
-        id: 2,
-        vendorName: 'Centralpoint',
-        amountUsd: 1788.69,
-      },
-    ];
-    const dateString: string = dayjs(today).date(parseInt(label, 10)).format('MMM DD, YYYY');
-    return (
-      <div className="flex bg-primary px-6 py-2 rounded-sm">
-        <div className="flex flex-col space-y-1">
-          <div className="flex flex-row items-center space-x-1">
-            <p className="text-white text-2xs font-semibold">{dateString}</p>
-            <p className="text-white text-2xs font-normal">(Top 3 transactions)</p>
+  const renderTooltipContent = (props: TooltipProps<ValueType, NameType>) => {
+    const { active, payload } = props;
+    const thisMonthData = payload?.find((data) => data.name === dayjs().format('MMM'));
+    if (active && thisMonthData) {
+      const dateString: string = thisMonthData.payload?.name;
+      const topTransactions: TransLineItem[] = thisMonthData.payload?.topTrans;
+      const subTitle = topTransactions?.length
+        ? `(Top ${topTransactions?.length} transactions)`
+        : '';
+      return (
+        <div className="flex bg-primary px-6 py-2 rounded-sm">
+          <div className="flex flex-col space-y-1">
+            <div className="flex flex-row items-center space-x-1">
+              <p className="text-white text-2xs font-semibold">{dateString}</p>
+              <p className="text-white text-2xs font-normal">{subTitle}</p>
+            </div>
+            {topTransactions?.map((tran) => {
+              return (
+                <div
+                  key={`topTransactions-${tran.id}`}
+                  className="flex flex-row justify-between items-center space-x-0.5"
+                >
+                  <p className="text-Gray-6 text-2xs min-w-[160px]">{tran.vendorName}</p>
+                  <p className="text-white text-2xs font-semibold w-18 text-right">
+                    {tran.amountUsd}
+                  </p>
+                </div>
+              );
+            })}
           </div>
-          {topTransactions.map((tran) => {
-            return (
-              <div
-                key={`topTransactions-${tran.id}`}
-                className="flex flex-row justify-between items-center space-x-0.5"
-              >
-                <p className="text-Gray-6 text-2xs min-w-[160px]">{tran.vendorName}</p>
-                <p className="text-white text-2xs font-semibold w-18 text-right">
-                  {tran.amountUsd}
-                </p>
-              </div>
-            );
-          })}
         </div>
-      </div>
-    );
+      );
+    }
+    return null;
   };
   return (
     <div className="flex flex-col space-y-4">

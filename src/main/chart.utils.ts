@@ -10,6 +10,9 @@ import {
 } from '@main/types';
 import { nFormatter } from './utils';
 
+const ITEM_DATE_FORMAT = 'YYYY-MM-DD';
+const DATA_DATE_FORMAT = 'MMM DD, YYYY';
+
 /**
  * Group line items of transactions by month
  * A group of month will contain full date of month [1,...,31]
@@ -22,7 +25,7 @@ export const hashLineItemsByMonths = (
   return trans.reduce<{ [key: string]: TransLineItem[][] }>(
     (preHash, currentTran) =>
       currentTran.lineItems?.reduce<{ [key: string]: TransLineItem[][] }>((pre, currentItem) => {
-        const itemDate = dayjs(currentItem.updatedAt); // Why trans date is updatedAt? Seem like messy data
+        const itemDate = dayjs(currentTran.transDate, ITEM_DATE_FORMAT);
         if (!itemDate.isValid()) return pre;
         const month = itemDate.format(monthFormat);
         const date = itemDate.date();
@@ -38,7 +41,7 @@ export const hashLineItemsByMonths = (
   );
 };
 
-export const getLineChartDataInMonth = (trans: Transaction[]): LineChartData => {
+export const getLineChartDataInMonth = (trans: Transaction[]): LineChartData<TransLineItem[]> => {
   const monthFormat = 'MMM';
   const today = dayjs(new Date());
   const currentMonth: string = today.format(monthFormat);
@@ -49,7 +52,7 @@ export const getLineChartDataInMonth = (trans: Transaction[]): LineChartData => 
   let totalCurrentMonth = 0;
   let totalPre1Month = 0;
   let totalPre2Month = 0;
-  const data: ChartDataPoint[] = Array(31)
+  const data: ChartDataPoint<TransLineItem[]>[] = Array(31) // 3 months always contain 1 month with 31 days
     .fill({
       name: '',
       [currentMonth]: 0,
@@ -57,7 +60,10 @@ export const getLineChartDataInMonth = (trans: Transaction[]): LineChartData => 
       [pre2Month]: 0,
     })
     .map((_, index) => {
-      const dayName = lineItemHashByMonths[currentMonth]?.[index]?.[0]?.description ?? '';
+      const dayName = dayjs(today)
+        .date(index + 1)
+        .format(DATA_DATE_FORMAT);
+
       // Total by month
       totalCurrentMonth += Math.round(
         lineItemHashByMonths[currentMonth]?.[index]?.reduce(
@@ -77,6 +83,10 @@ export const getLineChartDataInMonth = (trans: Transaction[]): LineChartData => 
           0,
         ) ?? 0,
       );
+      // Top 3 transactions this date of month
+      const topTrans = lineItemHashByMonths[currentMonth]?.[index]
+        ?.sort((a, b) => (a?.amountUsd ?? 0) - (b?.amountUsd ?? 0))
+        .slice(0, 3);
       // Don't draw data line if date index greater than today
       if (index > today.date() - 1) {
         return {
@@ -87,6 +97,7 @@ export const getLineChartDataInMonth = (trans: Transaction[]): LineChartData => 
       }
       return {
         name: dayName,
+        topTrans,
         [currentMonth]: totalCurrentMonth,
         [pre1Month]: totalPre1Month,
         [pre2Month]: totalPre2Month,
