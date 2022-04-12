@@ -13,13 +13,14 @@ import { Match } from 'linkify-it';
 import { convertFromHTML, convertToHTML } from 'draft-convert';
 
 import { TransLineItem, Target, TranStatusNameColor, TranStatusType } from '@main/entity';
-import { TargetPeriod, TargetPropType } from '@api/types';
+import { TargetPeriod, TargetProp, TargetPropType } from '@api/types';
 import cloneDeep from 'lodash.clonedeep';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
 import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
+import { MonthAndAmount } from './entity/target.entity';
 import { SearchResult } from './types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
@@ -533,4 +534,42 @@ export const getPeriodsByYear = (year: number): TargetPeriod[] => {
     });
   }
   return periods;
+};
+
+export const getPropsAndPeriodsFromItemSelected = (
+  propSelected: SearchResult[],
+  excepts: SearchResult[],
+  monthsAmounts: MonthAndAmount[],
+  curYear: number,
+): { props: TargetProp[]; periods: TargetPeriod[] } => {
+  const props: TargetProp[] = propSelected.map((prop: SearchResult) => {
+    return {
+      id: prop?.directoryId,
+      type: prop?.type,
+      name: prop?.title ?? '',
+      exclude: false,
+    };
+  });
+  excepts.forEach((except: SearchResult) => {
+    props.push({
+      id: except?.directoryId,
+      type: except?.type,
+      name: except?.title ?? '',
+      exclude: true,
+    });
+  });
+  const periods: TargetPeriod[] = [];
+  monthsAmounts.forEach((month: MonthAndAmount) => {
+    if (month.amount > 0) {
+      periods.push({
+        month: month.month,
+        year: curYear,
+        amount: month.amount,
+      });
+    }
+  });
+  return {
+    props,
+    periods,
+  };
 };

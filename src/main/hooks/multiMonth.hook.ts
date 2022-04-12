@@ -15,6 +15,9 @@ export function useMultiMonth(filter: PatchCalcSpendingFilters): MultiMonthHookV
   const errorHandler = useErrorHandler();
 
   const getCalcSpending = useCallback(async () => {
+    if (filter.props.length === 0) {
+      return;
+    }
     try {
       setLoading(true);
       const data = await ApiClient.patchCalcSpending(filter);

@@ -1,8 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useRef, useState, KeyboardEventHandler } from 'react';
 
-import { classNames, formatCurrency, replaceAll } from '@common/utils';
-
+import { classNames } from '@common/utils';
 import { SearchResult } from '@main/types';
 import {
   CalcSpendProp,
@@ -11,11 +10,10 @@ import {
   TargetProp,
   TargetPropType,
 } from '@api/types';
-import { Target } from '@main/entity';
+import { Target, MonthAndAmount } from '@main/entity';
 
 import Modal from '@common/atoms/Modal';
 import Loading from '@common/atoms/Loading';
-import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
 import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-2.svg';
 import { ReactComponent as CarbonTrashCan } from '@assets/icons/outline/carbon-trash-can.svg';
 import { AlertRed, TeamIcon, CategoryIcon, Bank } from '@assets';
@@ -23,7 +21,7 @@ import PropertiesDropdown, { DropdownEdge } from '@main/molecules/PropertiesDrop
 import ExceptDropdown from '@main/molecules/ExceptDropdown';
 import MultiMonthDropdown from '@main/molecules/MultiMonthDropdown';
 import ExceptList from '@main/molecules/ExceptList';
-import { genReviewSentenceFromProperties } from '@main/utils';
+import { genReviewSentenceFromProperties, getPropsAndPeriodsFromItemSelected } from '@main/utils';
 
 export type AddTargetModalProps = {
   open: boolean;
@@ -39,8 +37,6 @@ export type AddTargetModalProps = {
   depId?: number | undefined;
 };
 
-type AddTargetTagInputHandler = React.ElementRef<typeof AddTargetTagInput>;
-
 const AddTargetModal: React.FC<AddTargetModalProps> = ({
   open = false,
   onClose,
@@ -53,39 +49,38 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   isDeleting,
   depId,
 }) => {
-  const tagInputRef = useRef<AddTargetTagInputHandler>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
-  const [amount, setAmount] = useState<string>('');
+
   const [exceptItems, setExceptItems] = useState<SearchResult[]>([]);
   const [vendItems, setVendItems] = useState<SearchResult[]>([]);
   const [catItems, setCatItems] = useState<SearchResult[]>([]);
   const [teamItems, setTeamItems] = useState<SearchResult[]>([]);
   const [allProps, setAllProps] = useState<CalcSpendProp[]>([]);
+  const [monthsAmounts, setMonthsAmount] = useState<MonthAndAmount[]>([]);
+  const [curYear, setCurYear] = useState(new Date().getFullYear());
 
   const [targetName, setTargetName] = useState<string>('');
   const [isEditName, setEditName] = useState<boolean>(false);
 
   const [showErrorName, setShowErrorName] = useState<boolean>(false);
-
-  const isEdit = itemEditing !== null;
   const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
   const [enableCreate] = useState<boolean>(false);
 
-  const onCreateTarget = (amountInput: number | null, tags: SearchResult[], name: string) => {
-    const props: TargetProp[] = tags.map((tag: SearchResult) => {
-      return {
-        id: tag?.directoryId,
-        type: tag?.type,
-        name: tag?.title ?? '',
-      };
-    });
+  const isEdit = itemEditing !== null;
+
+  const onCreateTarget = (name: string, propSelected: SearchResult[], excepts: SearchResult[]) => {
+    const { props, periods } = getPropsAndPeriodsFromItemSelected(
+      propSelected,
+      excepts,
+      monthsAmounts,
+      curYear,
+    );
     postTarget({
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
-      amount: amountInput,
-      dep: depId,
-      props,
       name,
+      depId,
+      isPrimary: false,
+      props,
+      periods,
     });
   };
   const onDeleteTarget = (targetId: number) => {
@@ -93,24 +88,22 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   };
   const onSaveTarget = (
     targetId: number,
-    amountInput: number,
-    tags: SearchResult[],
     name: string,
+    propSelected: SearchResult[],
+    excepts: SearchResult[],
   ) => {
-    const props: TargetProp[] = tags.map((tag: SearchResult) => {
-      return {
-        id: tag?.directoryId,
-        type: tag?.type,
-        name: tag?.title ?? '',
-      };
-    });
+    const { props, periods } = getPropsAndPeriodsFromItemSelected(
+      propSelected,
+      excepts,
+      monthsAmounts,
+      curYear,
+    );
     putTarget(targetId, {
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
-      amount: amountInput,
-      dep: depId,
+      name,
+      depId,
       props,
-      title: name,
+      isPrimary: false,
+      periods,
     });
   };
 
@@ -118,7 +111,6 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     let timeout: NodeJS.Timeout;
     if (!open) {
       timeout = setTimeout(() => {
-        setAmount('');
         setTargetName('');
         setDefaultTags([]);
       }, 400);
@@ -163,7 +155,6 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       });
       setDefaultTags(defaultTagsTemp);
     }
-    setAmount(formatCurrency(itemEditing?.amount?.toString() || '', '0,0', '0'));
     setTargetName(itemEditing?.name ?? '');
   }, [itemEditing]);
 
@@ -178,21 +169,19 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     onCancel();
   };
   const onClickCreateOrSave = () => {
-    const tags = tagInputRef.current?.getItems() || [];
-    if (tags.length === 0) {
+    const propSelected = [...vendItems, ...catItems, ...teamItems];
+    if (propSelected.length === 0) {
       return;
     }
     if (targetName.length === 0) {
       setShowErrorName(true);
       return;
     }
-    const amountNumber = replaceAll(amount, ',', '');
-    const amountInt = parseInt(amountNumber, 10);
     if (isEdit) {
-      onSaveTarget(itemEditing?.id, amountInt, tags, targetName);
+      onSaveTarget(itemEditing?.id, targetName, propSelected, exceptItems);
       return;
     }
-    onCreateTarget(amountInt, tags, targetName);
+    onCreateTarget(targetName, propSelected, exceptItems);
   };
   const onChangeInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTargetName(event.target.value);
@@ -333,7 +322,15 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         <div className="flex flex-row pt-2 px-10 justify-between">
           <div className="flex flex-row items-center space-x-2 py-3">
             <p className="text-primary text-xs font-semibold w-14">Months*</p>
-            <MultiMonthDropdown props={allProps} />
+            <MultiMonthDropdown
+              props={allProps}
+              monthsAmountSaved={monthsAmounts}
+              yearSaved={curYear}
+              onApply={(data, year) => {
+                setMonthsAmount(data);
+                setCurYear(year);
+              }}
+            />
           </div>
           <div className="flex flex-row items-center space-x-2">
             <div className="flex flex-row items-center space-x-2">

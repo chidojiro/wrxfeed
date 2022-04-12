@@ -91,9 +91,9 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
   const { postTarget, putTarget, deleteTarget, isPostTarget, isPutTarget, isDeleteTarget } =
     useTarget(
       initFilter,
-      { onSuccess: () => undefined, onError: () => undefined },
-      { onSuccess: () => undefined, onError: () => undefined },
-      { onSuccess: () => undefined, onError: () => undefined },
+      { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
+      { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
+      { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
       false,
     );
 

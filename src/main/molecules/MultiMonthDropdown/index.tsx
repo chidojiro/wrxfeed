@@ -1,10 +1,19 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { Fragment, useEffect, useState } from 'react';
+import React, {
+  Fragment,
+  useEffect,
+  useState,
+  ForwardRefRenderFunction,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import { Popover, Transition } from '@headlessui/react';
+import cloneDeep from 'lodash.clonedeep';
 import dayjs from 'dayjs';
 
 import { classNames } from '@common/utils';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
+import { MonthAndAmount } from '@main/entity';
 import { TargetPeriod, PatchCalcSpendingFilters, CalcSpendProp } from '@api/types';
 import Loading from '@common/atoms/Loading';
 import MonthTargetInput from '@main/atoms/MonthTargetInput';
@@ -12,21 +21,94 @@ import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-
 import { BasicsDownSmall, LeftSmallIcon } from '@assets';
 import { getPeriodsByYear } from '@main/utils';
 
+export const defaultMonthAndAmount = [
+  {
+    month: 1,
+    amount: 0,
+  },
+  {
+    month: 2,
+    amount: 0,
+  },
+  {
+    month: 3,
+    amount: 0,
+  },
+  {
+    month: 4,
+    amount: 0,
+  },
+  {
+    month: 5,
+    amount: 0,
+  },
+  {
+    month: 6,
+    amount: 0,
+  },
+  {
+    month: 7,
+    amount: 0,
+  },
+  {
+    month: 8,
+    amount: 0,
+  },
+  {
+    month: 9,
+    amount: 0,
+  },
+  {
+    month: 10,
+    amount: 0,
+  },
+  {
+    month: 11,
+    amount: 0,
+  },
+  {
+    month: 12,
+    amount: 0,
+  },
+];
+
 interface MultiMonthDropdownProps {
   className?: string;
   classPopover?: string;
   props: CalcSpendProp[];
+  onApply?: (data: MonthAndAmount[], year: number) => void;
+  monthsAmountSaved: MonthAndAmount[];
+  yearSaved: number;
 }
 
-const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
-  className = '',
-  classPopover = '',
-  props,
-}) => {
-  const [curYear, setCurYear] = useState(2022);
+export type MultiMonthData = {
+  months: MonthAndAmount[];
+  year: number;
+};
+
+export interface MultiMonthDropdownHandler {
+  getData?: () => MultiMonthData;
+}
+
+const MultiMonthDropdown: ForwardRefRenderFunction<
+  MultiMonthDropdownHandler,
+  MultiMonthDropdownProps
+> = (
+  {
+    className = '',
+    classPopover = '',
+    props = [],
+    onApply = () => undefined,
+    monthsAmountSaved,
+    yearSaved,
+  },
+  ref,
+) => {
+  const [curYear, setCurYear] = useState(yearSaved);
   const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
   const [minMonth, setMinMonth] = useState<number>(0);
   const [maxMonth, setMaxMonth] = useState<number>(0);
+  const [monthsAmounts, setMonthsAmount] = useState<MonthAndAmount[]>(defaultMonthAndAmount);
   const monthsInYear = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   const [filter, setFilter] = useState<PatchCalcSpendingFilters>({
@@ -34,6 +116,8 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
     periods: getPeriodsByYear(curYear),
   });
   const { months: monthsData = [], isLoading } = useMultiMonth(filter);
+
+  useImperativeHandle(ref, () => ({}));
 
   useEffect(() => {
     setFilter({
@@ -55,10 +139,18 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
   const onClickCancel = () => {};
   const onClickApply = (callClose: () => void) => {
     callClose();
+    onApply(monthsAmounts, curYear);
   };
 
-  const enableCreate = true;
-  const createReadyState = enableCreate ? 'bg-primary' : 'bg-Gray-6';
+  const onChangeMonthInput = (month: number, amount: number) => {
+    const clonePreState = cloneDeep(monthsAmounts);
+    const curAmount = clonePreState[month - 1].amount;
+    if (amount !== curAmount) {
+      clonePreState[month - 1].amount = amount;
+      setMonthsAmount(clonePreState);
+    }
+  };
+
   const renderIconNextOrLoading = () => {
     const isCreatingOrSaving = false;
     if (isCreatingOrSaving)
@@ -87,24 +179,14 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
     return (
       <div className="flex flex-1 flex-col">
         {monthsInYear.map((month: number, indexMonth: number) => {
-          const isIncluded = selectedMonths.includes(month);
           const isInRange = month >= minMonth && month <= maxMonth;
-          const onClickSelectMonth = () => {
-            if (isIncluded) {
-              setSelectedMonths((pre) => pre.filter((item: number) => item !== month));
-            } else {
-              setSelectedMonths((pre) => [...pre, month]);
-            }
-          };
           let borderStyle = 'border-l border-r border-Accent-2';
           if (month === minMonth) borderStyle = `${borderStyle} border-t`;
           if (month === maxMonth) borderStyle = `${borderStyle} border-b`;
 
           return (
             <div key={`month-${month}`} className={classNames('flex flex-col ')}>
-              <button
-                onClick={onClickSelectMonth}
-                type="button"
+              <div
                 className={classNames(
                   'w-24 h-7 px-2 py-1 text-left flex flex-col justify-center items-start',
                   isInRange ? borderStyle : '',
@@ -115,7 +197,7 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
                     .month(month - 1)
                     .format('MMMM')}
                 </p>
-              </button>
+              </div>
               {indexMonth !== 11 && (
                 <div
                   className={classNames(
@@ -160,13 +242,14 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
           .month(maxMonth - 1)
           .format('MMM, YYYY')}`
       : 'Select';
+  const applyReadyState = selectedMonths.length > 0 ? 'bg-primary' : 'bg-Gray-6';
   return (
     <div className={classNames(className)}>
       <Popover as="div" className="flex-shrink-0 relative">
         {({ open, close }) => {
           return (
             <>
-              <Popover.Button className={classNames('', open ? '' : '')}>
+              <Popover.Button onClick={() => {}} className={classNames('', open ? '' : '')}>
                 <button
                   type="button"
                   className="rounded-sm border border-Gray-11 space-x-1 px-2 flex h-[30px] flex-row items-center"
@@ -224,11 +307,28 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
                       <div className="flex flex-1 flex-col space-y-1">
                         {monthsInYear.map((month) => {
                           const isInRange = month >= minMonth && month <= maxMonth;
+                          const amountSaved = monthsAmountSaved.find(
+                            (item: MonthAndAmount) => item.month === month,
+                          )?.amount;
                           return (
                             <MonthTargetInput
                               key={`month-amount-${month}`}
                               month={month}
+                              defaultAmount={amountSaved}
                               isInRange={isInRange}
+                              onChange={(amount) => onChangeMonthInput(month, amount)}
+                              onSelect={() => {
+                                const isIncluded = selectedMonths.includes(month);
+                                if (!isIncluded) {
+                                  setSelectedMonths((pre) => [...pre, month]);
+                                }
+                              }}
+                              onUnselect={() => {
+                                const isIncluded = selectedMonths.includes(month);
+                                if (isIncluded) {
+                                  setSelectedMonths((pre) => pre.filter((item) => item !== month));
+                                }
+                              }}
                             />
                           );
                         })}
@@ -254,7 +354,7 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
                         onClick={() => onClickApply(close)}
                         className={classNames(
                           'flex flex-row items-center px-4 h-7 rounded-sm hover:bg-primary',
-                          createReadyState,
+                          applyReadyState,
                         )}
                       >
                         <p className="text-white text-xs font-semibold">Apply</p>
@@ -272,4 +372,4 @@ const MultiMonthDropdown: React.VFC<MultiMonthDropdownProps> = ({
   );
 };
 
-export default MultiMonthDropdown;
+export default forwardRef(MultiMonthDropdown);

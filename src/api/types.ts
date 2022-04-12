@@ -172,13 +172,19 @@ export interface TargetFilter extends Pagination {
   dep?: number;
 }
 
-export interface PutTargetParams {
-  title: string;
-  month: number;
-  year: number;
-  amount: number;
-  dep?: number;
+export interface PostTargetParams {
+  name: string;
+  depId?: number;
+  isPrimary: boolean;
   props: TargetProp[];
+  periods?: TargetPeriod[];
+}
+export interface PutTargetParams {
+  name: string;
+  depId?: number;
+  isPrimary: boolean;
+  props: TargetProp[];
+  periods: TargetPeriod[];
 }
 
 export type CalcSpendProp = {
@@ -209,16 +215,7 @@ export interface TargetProp {
   id: number;
   type: TargetPropType;
   name: string;
-}
-
-export interface PostTargetParams {
-  name: string;
-  month: number;
-  year: number;
-  amount: number | null;
-  dep?: number;
-  props: TargetProp[];
-  periods?: TargetPeriod[];
+  exclude?: boolean;
 }
 
 export interface SubscriptionParams {
