@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { ReferenceLine, Label, TooltipProps } from 'recharts';
 
 import { classNames, formatCurrency } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
-import { FeedItem, TransLineItem } from '@main/entity';
+import { FeedItem, Transaction, TransLineItem } from '@main/entity';
 import { ChartLegend, LineChartData } from '@main/types';
 import { getLineChartDataInMonth } from '@main/chart.utils';
+import { nFormatter } from '@main/utils';
 import dayjs from 'dayjs';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
-import { TooltipProps } from 'recharts';
 import TargetChart from '../TargetChart';
 
 interface TargetChartViewProps {
@@ -18,7 +19,10 @@ interface TargetChartViewProps {
 
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
   const today = new Date();
-  const [chartData, setChartData] = useState<LineChartData<TransLineItem[]>>();
+  const [chartData, setChartData] = useState<LineChartData<Transaction[]>>();
+  const targetAmount = Math.round(feedItem?.target?.amount ?? 0);
+  const isExceedTarget = (chartData?.metadata?.totalCurrentMonth ?? 0) > targetAmount;
+  const targetLineColor = isExceedTarget ? '#FF5F68' : '#6565FB';
 
   useEffect(() => {
     const data = getLineChartDataInMonth(feedItem.transactions);
@@ -109,6 +113,25 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
     }
     return null;
   };
+
+  const renderTargetLine = () =>
+    targetAmount ? (
+      <ReferenceLine
+        y={targetAmount}
+        stroke={targetLineColor}
+        strokeDasharray="5 5"
+        strokeWidth={2}
+      >
+        <Label
+          value={nFormatter(targetAmount)}
+          position="left"
+          offset={18}
+          className="text-xs font-semibold text-right"
+          fill={targetLineColor}
+        />
+      </ReferenceLine>
+    ) : null;
+
   return (
     <div className="flex flex-col space-y-4">
       <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
@@ -133,10 +156,10 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
           <>
             <TargetChart
               chartData={chartData}
-              targetAmount={feedItem.target.amount ?? 0}
+              maxYValue={targetAmount}
               renderXAxis={renderXAxis}
               renderTooltip={renderTooltipContent}
-              showTargetLine
+              renderReferenceLines={renderTargetLine}
             />
             {renderChartLegends()}
           </>

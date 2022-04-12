@@ -74,4 +74,7 @@ export type LineChartData<T = undefined> = {
   legends: ChartLegend[];
   lines: ChartLineProps[];
   maxValue: number;
+  metadata?: {
+    [key: string]: string | number | undefined;
+  };
 };
