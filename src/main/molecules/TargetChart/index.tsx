@@ -6,32 +6,30 @@ import { getChartLevels } from '@main/chart.utils';
 import { classNames } from '@common/utils';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
 
-const MIN_Y_VALUE = 500;
+const MIN_Y_VALUE = 100;
 
-interface TargetChartViewProps {
+interface TargetChartProps<T> {
   className?: string;
-  chartData: LineChartData;
-  targetAmount: number;
-  showTargetLine?: boolean;
+  chartData: LineChartData<T>;
+  maxYValue: number;
   renderXAxis?: () => JSX.Element;
-  renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element;
+  renderReferenceLines?: () => JSX.Element | null;
+  renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element | null;
 }
 
-const TargetChart: React.VFC<TargetChartViewProps> = ({
+const TargetChart: <T extends unknown>(
+  p: TargetChartProps<T>,
+) => React.ReactElement<TargetChartProps<T>> = ({
   className,
   chartData,
-  targetAmount = 0,
-  showTargetLine,
+  maxYValue,
   renderXAxis,
+  renderReferenceLines,
   renderTooltip,
 }) => {
   const { data, lines, maxValue } = chartData;
-  const maxValueForChart = Math.max(
-    targetAmount > maxValue ? targetAmount * 1.2 : maxValue,
-    MIN_Y_VALUE,
-  );
+  const maxValueForChart = Math.max(maxYValue > maxValue ? maxYValue * 1.2 : maxValue, MIN_Y_VALUE);
   const chartLevels = getChartLevels(maxValueForChart);
-  const targetBottom = Math.round((targetAmount / maxValueForChart) * 100);
 
   return (
     <div className="flex flex-col mt-2 w-full h-[514px]">
@@ -56,18 +54,6 @@ const TargetChart: React.VFC<TargetChartViewProps> = ({
               </div>
             );
           })}
-          {showTargetLine && (
-            <div
-              key="dataLevels-dashed-line"
-              style={{
-                bottom: targetBottom,
-              }}
-              className="flex absolute flex-row space-x-4 items-center w-full"
-            >
-              <p className={classNames('text-xs font-semibold text-right w-8', 'text-Accent-2')} />
-              <div className={classNames('flex flex-1 w-auto h-px', 'dashed-line')} />
-            </div>
-          )}
         </div>
         <ResponsiveContainer width="100%" height="100%" className={className}>
           <LineChart
@@ -83,6 +69,7 @@ const TargetChart: React.VFC<TargetChartViewProps> = ({
           >
             <YAxis domain={[0, maxValueForChart]} width={0} height={0} className="opacity-0" />
             <Tooltip cursor position={{ y: 5 }} content={renderTooltip} />
+            {renderReferenceLines && renderReferenceLines()}
             {lines.map((line: ChartLineProps) => {
               return (
                 <Line

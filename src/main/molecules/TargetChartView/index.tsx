@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { ReferenceLine, Label, TooltipProps } from 'recharts';
 
 import { classNames, formatCurrency } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
-import { FeedItem } from '@main/entity';
+import { FeedItem, Transaction, TransLineItem } from '@main/entity';
 import { ChartLegend, LineChartData } from '@main/types';
 import { getLineChartDataInMonth } from '@main/chart.utils';
+import { nFormatter } from '@main/utils';
 import dayjs from 'dayjs';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
-import { TooltipProps } from 'recharts';
 import TargetChart from '../TargetChart';
 
 interface TargetChartViewProps {
@@ -18,7 +19,10 @@ interface TargetChartViewProps {
 
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
   const today = new Date();
-  const [chartData, setChartData] = useState<LineChartData>();
+  const [chartData, setChartData] = useState<LineChartData<Transaction[]>>();
+  const targetAmount = Math.round(feedItem?.target?.amount ?? 0);
+  const isExceedTarget = (chartData?.metadata?.totalCurrentMonth ?? 0) > targetAmount;
+  const targetLineColor = isExceedTarget ? '#FF5F68' : '#6565FB';
 
   useEffect(() => {
     const data = getLineChartDataInMonth(feedItem.transactions);
@@ -74,49 +78,60 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
     </div>
   );
 
-  const renderTooltipContent = ({ label }: TooltipProps<ValueType, NameType>) => {
-    const topTransactions = [
-      {
-        id: 0,
-        vendorName: 'Amazon Business EU S.à.r.l',
-        amountUsd: 10067.87,
-      },
-      {
-        id: 1,
-        vendorName: 'SHI International Corp',
-        amountUsd: 7067.87,
-      },
-      {
-        id: 2,
-        vendorName: 'Centralpoint',
-        amountUsd: 1788.69,
-      },
-    ];
-    const dateString: string = dayjs(today).date(parseInt(label, 10)).format('MMM DD, YYYY');
-    return (
-      <div className="flex bg-primary px-6 py-2 rounded-sm">
-        <div className="flex flex-col space-y-1">
-          <div className="flex flex-row items-center space-x-1">
-            <p className="text-white text-2xs font-semibold">{dateString}</p>
-            <p className="text-white text-2xs font-normal">(Top 3 transactions)</p>
+  const renderTooltipContent = (props: TooltipProps<ValueType, NameType>) => {
+    const { active, payload } = props;
+    const thisMonthData = payload?.find((data) => data.name === dayjs().format('MMM'));
+    if (active && thisMonthData) {
+      const dateString: string = thisMonthData.payload?.name;
+      const topTransactions: TransLineItem[] = thisMonthData.payload?.topTrans;
+      const subTitle = topTransactions?.length
+        ? `(Top ${topTransactions?.length} transactions)`
+        : '';
+      return (
+        <div className="flex bg-primary px-6 py-2 rounded-sm">
+          <div className="flex flex-col space-y-1">
+            <div className="flex flex-row items-center space-x-1">
+              <p className="text-white text-2xs font-semibold">{dateString}</p>
+              <p className="text-white text-2xs font-normal">{subTitle}</p>
+            </div>
+            {topTransactions?.map((tran) => {
+              return (
+                <div
+                  key={`topTransactions-${tran.id}`}
+                  className="flex flex-row justify-between items-center space-x-0.5"
+                >
+                  <p className="text-Gray-6 text-2xs min-w-[160px]">{tran.vendorName}</p>
+                  <p className="text-white text-2xs font-semibold w-18 text-right">
+                    {tran.amountUsd}
+                  </p>
+                </div>
+              );
+            })}
           </div>
-          {topTransactions.map((tran) => {
-            return (
-              <div
-                key={`topTransactions-${tran.id}`}
-                className="flex flex-row justify-between items-center space-x-0.5"
-              >
-                <p className="text-Gray-6 text-2xs min-w-[160px]">{tran.vendorName}</p>
-                <p className="text-white text-2xs font-semibold w-18 text-right">
-                  {tran.amountUsd}
-                </p>
-              </div>
-            );
-          })}
         </div>
-      </div>
-    );
+      );
+    }
+    return null;
   };
+
+  const renderTargetLine = () =>
+    targetAmount ? (
+      <ReferenceLine
+        y={targetAmount}
+        stroke={targetLineColor}
+        strokeDasharray="5 5"
+        strokeWidth={2}
+      >
+        <Label
+          value={nFormatter(targetAmount)}
+          position="left"
+          offset={18}
+          className="text-xs font-semibold text-right"
+          fill={targetLineColor}
+        />
+      </ReferenceLine>
+    ) : null;
+
   return (
     <div className="flex flex-col space-y-4">
       <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
@@ -141,10 +156,10 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
           <>
             <TargetChart
               chartData={chartData}
-              targetAmount={feedItem.target.amount ?? 0}
+              maxYValue={targetAmount}
               renderXAxis={renderXAxis}
               renderTooltip={renderTooltipContent}
-              showTargetLine
+              renderReferenceLines={renderTargetLine}
             />
             {renderChartLegends()}
           </>
