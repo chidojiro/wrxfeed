@@ -198,7 +198,7 @@ export type TargetPeriod = {
   month: number;
   year: number;
   amount?: number;
-  total?: number;
+  total?: number; // TODO: require backend return number type
 };
 export interface PatchCalcSpendingFilters {
   props: CalcSpendProp[];

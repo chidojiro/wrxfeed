@@ -14,7 +14,7 @@ export type Target = {
   updater: User;
 };
 
-export type MonthAndAmount = {
+export type TargetMonth = {
   month: number;
   amount: number;
 };

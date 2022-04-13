@@ -155,6 +155,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
         {chartData && (
           <>
             <TargetChart
+              containerStyle={{ height: 514 }}
               chartData={chartData}
               maxYValue={targetAmount}
               renderXAxis={renderXAxis}

@@ -1,16 +1,20 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useRef, useState, KeyboardEventHandler } from 'react';
+import React, { useEffect, useRef, useState, KeyboardEventHandler, useMemo } from 'react';
+import { TooltipProps } from 'recharts';
+import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
+import dayjs from 'dayjs';
 
-import { classNames } from '@common/utils';
-import { SearchResult } from '@main/types';
+import { classNames, formatCurrency, round } from '@common/utils';
+import { LineChartData, SearchResult } from '@main/types';
 import {
   CalcSpendProp,
+  PatchCalcSpendingFilters,
   PostTargetParams,
   PutTargetParams,
   TargetProp,
   TargetPropType,
 } from '@api/types';
-import { Target, MonthAndAmount } from '@main/entity';
+import { Target, TargetMonth } from '@main/entity';
 
 import Modal from '@common/atoms/Modal';
 import Loading from '@common/atoms/Loading';
@@ -21,7 +25,16 @@ import PropertiesDropdown, { DropdownEdge } from '@main/molecules/PropertiesDrop
 import ExceptDropdown from '@main/molecules/ExceptDropdown';
 import MultiMonthDropdown from '@main/molecules/MultiMonthDropdown';
 import ExceptList from '@main/molecules/ExceptList';
-import { genReviewSentenceFromProperties, getPropsAndPeriodsFromItemSelected } from '@main/utils';
+import {
+  genReviewSentenceFromProperties,
+  getPeriodsByYear,
+  getPropsAndPeriodsFromItemSelected,
+} from '@main/utils';
+import TargetChart from '@main/molecules/TargetChart';
+import { GlobalSearchType, searchState } from '@main/states/search.state';
+import { useRecoilValue } from 'recoil';
+import { useMultiMonth } from '@main/hooks/multiMonth.hook';
+import { getTargetMonthsLineChartData } from '@main/chart.utils';
 
 export type AddTargetModalProps = {
   open: boolean;
@@ -56,8 +69,38 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [catItems, setCatItems] = useState<SearchResult[]>([]);
   const [teamItems, setTeamItems] = useState<SearchResult[]>([]);
   const [allProps, setAllProps] = useState<CalcSpendProp[]>([]);
-  const [monthsAmounts, setMonthsAmount] = useState<MonthAndAmount[]>([]);
+  const [targetMonths, setTargetMonths] = useState<TargetMonth[]>([]);
   const [curYear, setCurYear] = useState(new Date().getFullYear());
+  // Need API to improve then
+  const globalSearch: GlobalSearchType = useRecoilValue<GlobalSearchType>(searchState);
+  const allDirectoriesResult: { [key: string]: SearchResult[] } = useMemo(() => {
+    const allVendResult = globalSearch.vendors.map((vend) => ({
+      id: `${TargetPropType.VENDOR.toUpperCase()}-${vend?.id}`,
+      title: vend?.name,
+      type: TargetPropType.VENDOR,
+      directoryId: vend?.id,
+      name: 'ss',
+    }));
+    const allTeamResult = globalSearch.departments.map((dept) => ({
+      id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${dept?.id}`,
+      title: dept?.name,
+      type: TargetPropType.DEPARTMENT,
+      directoryId: dept?.id,
+      name: 'ss',
+    }));
+    const allCatResult = globalSearch.categories.map((cat) => ({
+      id: `${TargetPropType.CATEGORY.toUpperCase()}-${cat?.id}`,
+      title: cat?.name,
+      type: TargetPropType.CATEGORY,
+      directoryId: cat?.id,
+      name: 'ss',
+    }));
+    return {
+      allVendors: allVendResult,
+      allTeams: allTeamResult,
+      allCategories: allCatResult,
+    };
+  }, [globalSearch]);
 
   const [targetName, setTargetName] = useState<string>('');
   const [isEditName, setEditName] = useState<boolean>(false);
@@ -66,13 +109,44 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
   const [enableCreate] = useState<boolean>(false);
 
+  const thisYearSpendFilter = useMemo<PatchCalcSpendingFilters>(
+    () => ({
+      props: allProps,
+      periods: getPeriodsByYear(curYear),
+    }),
+    [allProps, curYear],
+  );
+  const lastYearSpendFilter = useMemo<PatchCalcSpendingFilters>(
+    () => ({
+      props: allProps,
+      periods: getPeriodsByYear(curYear - 1),
+    }),
+    [allProps, curYear],
+  );
+  const { months: thisYearSpendData = [], fetch: fetchThisYearSpendData } = useMultiMonth(
+    thisYearSpendFilter,
+    true,
+  );
+  const {
+    months: lastYearSpendData = [],
+    isLoading: lastYearDataLoading,
+    fetch: fetchLastYearSpendData,
+  } = useMultiMonth(lastYearSpendFilter, true);
+
   const isEdit = itemEditing !== null;
+  const chartData: LineChartData = useMemo(() => {
+    return getTargetMonthsLineChartData(thisYearSpendData, lastYearSpendData, targetMonths);
+  }, [thisYearSpendData, lastYearSpendData, targetMonths]);
+
+  // Variables
+  const totalTarget = round(targetMonths.reduce((total, target) => total + target.amount, 0));
+  const totalCurrentSpend = round(chartData.metadata?.currentSpend ?? 0);
 
   const onCreateTarget = (name: string, propSelected: SearchResult[], excepts: SearchResult[]) => {
     const { props, periods } = getPropsAndPeriodsFromItemSelected(
       propSelected,
       excepts,
-      monthsAmounts,
+      targetMonths,
       curYear,
     );
     postTarget({
@@ -95,7 +169,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     const { props, periods } = getPropsAndPeriodsFromItemSelected(
       propSelected,
       excepts,
-      monthsAmounts,
+      targetMonths,
       curYear,
     );
     putTarget(targetId, {
@@ -113,15 +187,24 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       timeout = setTimeout(() => {
         setTargetName('');
         setDefaultTags([]);
+        setTargetMonths([]);
       }, 400);
+    } else {
+      // fetch data
+      fetchThisYearSpendData();
+      fetchLastYearSpendData();
     }
     return () => {
       if (timeout) clearTimeout(timeout);
     };
-  }, [open]);
+  }, [fetchThisYearSpendData, fetchLastYearSpendData, open]);
 
   useEffect(() => {
-    const propsCheck: CalcSpendProp[] = [...vendItems, ...teamItems, ...catItems].map(
+    // Check to load all vendors, teams, cats for target
+    const vendors = vendItems.length ? vendItems : allDirectoriesResult.allVendors;
+    const teams = teamItems.length ? teamItems : allDirectoriesResult.allTeams;
+    const categories = catItems.length ? catItems : allDirectoriesResult.allCategories;
+    const propsCheck: CalcSpendProp[] = [...vendors, ...teams, ...categories].map(
       (item: SearchResult) => {
         return {
           id: item.directoryId,
@@ -141,7 +224,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       });
     }
     setAllProps(propsCheck);
-  }, [vendItems, teamItems, catItems, exceptItems]);
+  }, [vendItems, teamItems, catItems, exceptItems, allDirectoriesResult]);
 
   useEffect(() => {
     if (itemEditing && itemEditing?.props.length > 0) {
@@ -240,6 +323,57 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   };
 
   const createReadyState = enableCreate ? 'bg-primary' : 'bg-Gray-6';
+
+  const renderTooltipContent = (props: TooltipProps<ValueType, NameType>) => {
+    const { active, payload } = props;
+    const thisYear = dayjs().year();
+    if (active && payload) {
+      const dataPoints = payload[0]?.payload;
+      const thisYearLabel = `${dataPoints?.name ?? 'unknown'}, ${thisYear}`;
+      const lastYearLabel = `${dataPoints?.name ?? 'unknown'}, ${thisYear - 1}`;
+      return (
+        <div className="flex bg-primary p-2 rounded-sm">
+          <div className="flex flex-col">
+            <div className="flex flex-row items-center">
+              <p className="text-white text-3xs font-semibold">{thisYearLabel}</p>
+            </div>
+            <div
+              key="target"
+              className="flex flex-row flex-grow justify-between items-center space-x-10"
+            >
+              <p className="text-white text-2xs">Target Amount</p>
+              <p className="text-white text-2xs text-right">
+                {`$${formatCurrency(dataPoints?.target ?? 0)}`}
+              </p>
+            </div>
+            <div
+              key="this-year"
+              className="flex flex-row flex-grow justify-between items-center space-x-10"
+            >
+              <p className="text-white text-2xs">Current Spend</p>
+              <p className="text-white text-2xs text-right">
+                {`$${formatCurrency(dataPoints?.thisYear ?? 0)}`}
+              </p>
+            </div>
+
+            <div className="flex flex-row items-center mt-1">
+              <p className="text-Gray-6 text-3xs font-semibold">{lastYearLabel}</p>
+            </div>
+            <div
+              key="last-year"
+              className="flex flex-row flex-grow justify-between items-center space-x-10"
+            >
+              <p className="text-Gray-6 text-2xs">Last Year’s Spend</p>
+              <p className="text-Gray-6 text-2xs text-right">
+                {`$${formatCurrency(dataPoints?.lastYear ?? 0)}`}
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
   return (
     <Modal
       open={open}
@@ -324,10 +458,12 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
             <p className="text-primary text-xs font-semibold w-14">Months*</p>
             <MultiMonthDropdown
               props={allProps}
-              monthsAmountSaved={monthsAmounts}
-              yearSaved={curYear}
+              targetMonths={targetMonths}
+              year={curYear}
+              lastYearData={lastYearSpendData}
+              isLoadingData={lastYearDataLoading}
               onApply={(data, year) => {
-                setMonthsAmount(data);
+                setTargetMonths(data);
                 setCurYear(year);
               }}
             />
@@ -347,17 +483,21 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
             </div>
           </div>
         </div>
-        <div className="flex justify-center items-center w-auto mx-6 py-8 h-[271px] border border-Gray-12 rounded-2.5xl">
-          <p>Chart</p>
+        <div className="relative flex justify-center items-center w-auto mx-6 p-4 h-[271px] border border-Gray-12 rounded-2.5xl">
+          <TargetChart chartData={chartData} renderTooltip={renderTooltipContent} />
         </div>
         <div className="flex flex-row pt-4 pb-6 px-10 space-x-4 items-center justify-end text-primary text-xs font-semibold">
           <p className="">
             Current Spend:
-            <span className="text-Gray-3 font-normal ml-1">$0</span>
+            <span className="text-Gray-3 font-normal ml-1">
+              {`$${formatCurrency(totalCurrentSpend, '0,0', '0')}`}
+            </span>
           </p>
           <p className="">
             Total Target Amount:
-            <span className="text-Gray-3 font-normal ml-1">$0</span>
+            <span className="text-Gray-3 font-normal ml-1">
+              {`$${formatCurrency(totalTarget, '0,0', '0')}`}
+            </span>
           </p>
         </div>
         <hr className="divider divider-horizontal w-full" />

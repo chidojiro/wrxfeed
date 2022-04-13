@@ -20,7 +20,7 @@ import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
 import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
-import { MonthAndAmount } from './entity/target.entity';
+import { TargetMonth } from './entity/target.entity';
 import { SearchResult } from './types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
@@ -539,7 +539,7 @@ export const getPeriodsByYear = (year: number): TargetPeriod[] => {
 export const getPropsAndPeriodsFromItemSelected = (
   propSelected: SearchResult[],
   excepts: SearchResult[],
-  monthsAmounts: MonthAndAmount[],
+  targetMonths: TargetMonth[],
   curYear: number,
 ): { props: TargetProp[]; periods: TargetPeriod[] } => {
   const props: TargetProp[] = propSelected.map((prop: SearchResult) => {
@@ -559,7 +559,7 @@ export const getPropsAndPeriodsFromItemSelected = (
     });
   });
   const periods: TargetPeriod[] = [];
-  monthsAmounts.forEach((month: MonthAndAmount) => {
+  targetMonths.forEach((month: TargetMonth) => {
     if (month.amount > 0) {
       periods.push({
         month: month.month,

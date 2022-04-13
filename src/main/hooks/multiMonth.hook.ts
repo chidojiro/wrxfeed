@@ -6,9 +6,13 @@ import { PatchCalcSpendingFilters, TargetPeriod } from '@api/types';
 interface MultiMonthHookValues {
   months: TargetPeriod[];
   isLoading: boolean;
+  fetch: () => Promise<void>;
 }
 
-export function useMultiMonth(filter: PatchCalcSpendingFilters): MultiMonthHookValues {
+export function useMultiMonth(
+  filter: PatchCalcSpendingFilters,
+  isLazy?: boolean,
+): MultiMonthHookValues {
   const [months, setMonths] = useState<TargetPeriod[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const ApiClient = useApi();
@@ -30,7 +34,9 @@ export function useMultiMonth(filter: PatchCalcSpendingFilters): MultiMonthHookV
   }, [ApiClient, errorHandler, filter]);
 
   useEffect(() => {
-    getCalcSpending().then();
-  }, [getCalcSpending]);
-  return { months, isLoading };
+    if (!isLazy) {
+      getCalcSpending().then();
+    }
+  }, [getCalcSpending, isLazy]);
+  return { months, isLoading, fetch: getCalcSpending };
 }

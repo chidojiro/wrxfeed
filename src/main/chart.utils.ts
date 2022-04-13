@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import dayjs from 'dayjs';
-import { Transaction } from '@main/entity';
+import { Transaction, TargetMonth } from '@main/entity';
 import {
   ChartDataPoint,
   ChartLegend,
@@ -8,6 +8,8 @@ import {
   ChartLevel,
   LineChartData,
 } from '@main/types';
+import { TargetPeriod } from '@api/types';
+import { round } from '@common/utils';
 import { nFormatter } from './utils';
 
 const ITEM_DATE_FORMAT = 'YYYY-MM-DD';
@@ -190,4 +192,111 @@ export const getChartLevels = (maxValue: number): ChartLevel[] => {
     });
   }
   return levels;
+};
+
+export const getTargetMonthsLineChartData = (
+  thisYearSpend: TargetPeriod[],
+  lastYearSpend: TargetPeriod[],
+  targetMonths: TargetMonth[],
+): LineChartData => {
+  const monthFormat = 'MMM';
+  const thisMonth = dayjs().month();
+  const targetMonthsSize = targetMonths.length;
+  let startMonth = -1;
+  let endMonth = -1;
+  let maxValue = 0;
+  let totalThisYearSpend = 0;
+
+  const data: ChartDataPoint[] = targetMonths.reduce<ChartDataPoint[]>((preVal, _, index) => {
+    // start month has been set => reverse array to find end month index
+    const indexFlag = startMonth !== -1 ? targetMonthsSize - index + startMonth : index;
+    const targetMonth: TargetMonth = targetMonths[indexFlag];
+    const month = dayjs().month(indexFlag).format(monthFormat);
+    // Generate data point
+    const dataPoint =
+      indexFlag > thisMonth
+        ? {
+            name: month,
+            lastYear: round(lastYearSpend[indexFlag]?.total ?? 0, 2),
+            target: round(targetMonth.amount ?? 0, 2),
+          }
+        : {
+            name: month,
+            thisYear: round(thisYearSpend[indexFlag]?.total ?? 0, 2),
+            lastYear: round(lastYearSpend[indexFlag]?.total ?? 0, 2),
+            target: round(targetMonth.amount ?? 0, 2),
+          };
+    // Find max value
+    if (targetMonth.amount) {
+      maxValue = Math.max(
+        maxValue,
+        round(thisYearSpend[indexFlag]?.total ?? 0),
+        round(lastYearSpend[indexFlag]?.total ?? 0),
+        round(targetMonth.amount ?? 0),
+      );
+    }
+    // Only add months in selected range (start and end with non-zero amount)
+    // Criteria 1: Start month didn't set and the month doesn't have a target amount (0) => ignore
+    if (startMonth === -1 && !targetMonth.amount) {
+      return preVal;
+    }
+    // Criteria 2: Start month didn't set and the month has a target amount
+    if (startMonth === -1 && targetMonth.amount) {
+      // Set start month
+      startMonth = indexFlag;
+      // Sum total this year spend
+      totalThisYearSpend += dataPoint.thisYear ?? 0;
+      // Add data point
+      return [dataPoint];
+    }
+    /** *** Start month has been set => reverse array until reach start month **** */
+    // Criteria 3: End month didn't set and the month doesn't have a target amount (0) => ignore
+    if (endMonth === -1 && !targetMonth.amount) {
+      return preVal;
+    }
+    // Criteria 4: End month didn't set and the month has a target amount
+    if (endMonth === -1 && targetMonth.amount) {
+      // Set end month
+      endMonth = indexFlag;
+      // Sum total this year spend
+      totalThisYearSpend += dataPoint.thisYear ?? 0;
+      // Add data point
+      return [...preVal, dataPoint];
+    }
+    // Criteria 4: Start month and end month have been set => just add data point at second position
+    preVal.splice(1, 0, dataPoint);
+    // Sum total this year spend
+    totalThisYearSpend += dataPoint.thisYear ?? 0;
+    return preVal;
+  }, []);
+
+  const lines: ChartLineProps[] = [
+    {
+      name: 'target',
+      type: 'linear',
+      dataKey: 'target',
+      strokeWidth: 2,
+      strokeDasharray: '8 8',
+      stroke: '#FF5F68',
+      dot: false,
+    },
+    {
+      name: 'lastYear',
+      type: 'linear',
+      dataKey: 'lastYear',
+      strokeWidth: 3,
+      stroke: '#DFE1E6',
+      dot: false,
+    },
+    {
+      name: 'thisYear',
+      type: 'linear',
+      dataKey: 'thisYear',
+      strokeWidth: 3,
+      stroke: '#6565FB',
+      dot: false,
+    },
+  ];
+
+  return { data, legends: [], lines, maxValue, metadata: { currentSpend: totalThisYearSpend } };
 };
