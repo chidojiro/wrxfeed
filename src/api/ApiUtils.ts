@@ -32,6 +32,7 @@ import {
   TargetFilter,
   PostTargetParams,
   PutTargetParams,
+  PatchCalcSpendingFilters,
   SubscriptionParams,
   NotificationsResponse,
   FeedItemFilters,
@@ -39,6 +40,7 @@ import {
   AddFeedCommentParams,
   FeedFilters,
   CategoryFilter,
+  TargetPeriod,
 } from '@api/types';
 import {
   AuthProfile,
@@ -398,9 +400,7 @@ export default class ApiUtils implements ApiClient {
     await this.request<void>({
       url: '/target/targets',
       method: 'POST',
-      data: {
-        ...data,
-      },
+      data,
     });
   };
 
@@ -408,9 +408,7 @@ export default class ApiUtils implements ApiClient {
     await this.request<void>({
       url: `/target/targets/${id}`,
       method: 'PUT',
-      data: {
-        ...data,
-      },
+      data,
     });
   };
 
@@ -419,6 +417,15 @@ export default class ApiUtils implements ApiClient {
       url: `/target/targets/${id}`,
       method: 'DELETE',
     });
+  };
+
+  patchCalcSpending = async (data: PatchCalcSpendingFilters): Promise<TargetPeriod[]> => {
+    const res = await this.request<TargetPeriod[]>({
+      url: '/target/spending',
+      method: 'PATCH',
+      data,
+    });
+    return res.data;
   };
 
   getTransactionById = async (id: number): Promise<Transaction> => {

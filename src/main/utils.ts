@@ -13,12 +13,16 @@ import { Match } from 'linkify-it';
 import { convertFromHTML, convertToHTML } from 'draft-convert';
 
 import { TransLineItem, Target, TranStatusNameColor, TranStatusType } from '@main/entity';
-import { TargetPropType } from '@api/types';
+import { TargetPeriod, TargetProp, TargetPropType } from '@api/types';
+import cloneDeep from 'lodash.clonedeep';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
 import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
+import { TeamIcon, CategoryIcon, Bank } from '@assets';
+import { TargetMonth } from './entity/target.entity';
+import { SearchResult } from './types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -444,6 +448,15 @@ export const getIconByResultType = (
   return BasicsSearchSmall;
 };
 
+export const getPropIconByType = (
+  type: TargetPropType,
+): React.FC<React.SVGAttributes<SVGElement>> => {
+  if (type === TargetPropType.VENDOR) return Bank;
+  if (type === TargetPropType.DEPARTMENT) return TeamIcon;
+  if (type === TargetPropType.CATEGORY) return CategoryIcon;
+  return BasicsSearchSmall;
+};
+
 export const getWidthInputByLength = (length: number): number => {
   if (length > 19) return 48;
   if (length > 13) return 36;
@@ -477,7 +490,10 @@ export const getUniqueListBy = (arr: any[], objectKey: string): any[] => {
   return [...new Map(arr.map((item: any) => [item[objectKey], item])).values()];
 };
 
-export const getTargetName = (target: Target): string => {
+export const getTargetName = (target?: Target): string => {
+  if (!target) {
+    return '';
+  }
   const { props = [], name } = target;
   if (typeof name === 'string' && name.length > 1) {
     return name;
@@ -496,4 +512,77 @@ export const getTargetName = (target: Target): string => {
 
 export const getTransactionColor = (status: string): TranStatusType => {
   return TranStatusNameColor[status];
+};
+
+export const getItemsSentence = (items: SearchResult[], pre = ''): string => {
+  const cloneItems = cloneDeep(items);
+  if (cloneItems.length === 0) return '';
+  if (cloneItems.length === 1) return pre + cloneItems[0].title;
+  if (cloneItems.length === 2) return `${pre} ${cloneItems[0].title} and ${cloneItems[1].title}`;
+  const popped = cloneItems.pop();
+  return `${cloneItems.map((item: SearchResult) => item.title).join(', ')} and ${popped?.title}`;
+};
+
+export const genReviewSentenceFromProperties = (
+  vend: SearchResult[] = [],
+  team: SearchResult[] = [],
+  cat: SearchResult[] = [],
+  except: SearchResult[] = [],
+): string => {
+  const vendorSen = getItemsSentence(vend);
+  const catSen = getItemsSentence(cat, ' spend within ');
+  const teamSen = getItemsSentence(team, ' for ');
+  const exceptSen = getItemsSentence(except, ', except ');
+
+  const sentence = `You're targeting all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`;
+  return sentence;
+};
+
+export const getPeriodsByYear = (year: number): TargetPeriod[] => {
+  const periods = [];
+  for (let index = 1; index <= 12; index += 1) {
+    periods.push({
+      year,
+      month: index,
+    });
+  }
+  return periods;
+};
+
+export const getPropsAndPeriodsFromItemSelected = (
+  propSelected: SearchResult[],
+  excepts: SearchResult[],
+  targetMonths: TargetMonth[],
+  curYear: number,
+): { props: TargetProp[]; periods: TargetPeriod[] } => {
+  const props: TargetProp[] = propSelected.map((prop: SearchResult) => {
+    return {
+      id: prop?.directoryId,
+      type: prop?.type,
+      name: prop?.title ?? '',
+      exclude: false,
+    };
+  });
+  excepts.forEach((except: SearchResult) => {
+    props.push({
+      id: except?.directoryId,
+      type: except?.type,
+      name: except?.title ?? '',
+      exclude: true,
+    });
+  });
+  const periods: TargetPeriod[] = [];
+  targetMonths.forEach((month: TargetMonth) => {
+    if (month.amount > 0) {
+      periods.push({
+        month: month.month,
+        year: curYear,
+        amount: month.amount,
+      });
+    }
+  });
+  return {
+    props,
+    periods,
+  };
 };

@@ -131,3 +131,14 @@ export const emailMatches = (text: string): RegExpMatchArray | null => {
 export const replaceAll = (str: string, find: string, replace: string): string => {
   return str.replace(new RegExp(find, 'g'), replace);
 };
+
+export const round = (number: number | string, decimals = 0): number => {
+  const decimalPow = 10 ** decimals;
+  let num: number;
+  if (typeof number === 'string') {
+    num = parseFloat(number);
+  } else {
+    num = number;
+  }
+  return Math.round((num + Number.EPSILON) * decimalPow) / decimalPow;
+};

@@ -62,7 +62,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
   };
 
   const renderXAxis = () => (
-    <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around pl-28">
+    <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around mt-4 pl-[98px]">
       <div className="w-20 h-7 flex justify-center items-center">
         <p>{dayjs(today).date(7).format('MMM D')}</p>
       </div>
@@ -155,6 +155,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
         {chartData && (
           <>
             <TargetChart
+              containerClass="mt-8 mb-2 h-[514px]"
               chartData={chartData}
               maxYValue={targetAmount}
               renderXAxis={renderXAxis}

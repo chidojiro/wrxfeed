@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { LineChart, Line, ResponsiveContainer, Tooltip, YAxis, TooltipProps } from 'recharts';
 
 import { ChartLineProps, LineChartData } from '@main/types';
@@ -8,10 +8,19 @@ import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipConten
 
 const MIN_Y_VALUE = 100;
 
+const INITIAL_DATA: LineChartData = {
+  data: [],
+  lines: [],
+  legends: [],
+  maxValue: 0,
+};
+
 interface TargetChartProps<T> {
   className?: string;
-  chartData: LineChartData<T>;
-  maxYValue: number;
+  containerStyle?: CSSProperties;
+  containerClass?: string;
+  chartData?: LineChartData<T>;
+  maxYValue?: number;
   renderXAxis?: () => JSX.Element;
   renderReferenceLines?: () => JSX.Element | null;
   renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element | null;
@@ -21,19 +30,27 @@ const TargetChart: <T extends unknown>(
   p: TargetChartProps<T>,
 ) => React.ReactElement<TargetChartProps<T>> = ({
   className,
+  containerStyle,
+  containerClass,
   chartData,
   maxYValue,
   renderXAxis,
   renderReferenceLines,
   renderTooltip,
 }) => {
-  const { data, lines, maxValue } = chartData;
-  const maxValueForChart = Math.max(maxYValue > maxValue ? maxYValue * 1.2 : maxValue, MIN_Y_VALUE);
+  const { data, lines, maxValue } = chartData || INITIAL_DATA;
+  const maxValueForChart = Math.max(
+    (maxYValue ?? 0) > maxValue ? (maxYValue ?? 0) * 1.2 : maxValue,
+    MIN_Y_VALUE,
+  );
   const chartLevels = getChartLevels(maxValueForChart);
 
   return (
-    <div className="flex flex-col mt-2 w-full h-[514px]">
-      <div className="flex relative flex-col flex-1 my-6">
+    <div
+      style={containerStyle}
+      className={classNames('flex flex-col w-full h-full', containerClass || '')}
+    >
+      <div className="flex relative flex-col flex-1">
         <div className="absolute flex w-full h-full justify-between flex-col-reverse">
           {chartLevels.map((level) => {
             const textColor = level?.isTarget ? 'text-Accent-2' : 'text-Gray-6';
@@ -68,7 +85,7 @@ const TargetChart: <T extends unknown>(
             }}
           >
             <YAxis domain={[0, maxValueForChart]} width={0} height={0} className="opacity-0" />
-            <Tooltip cursor position={{ y: 5 }} content={renderTooltip} />
+            {data.length && <Tooltip cursor position={{ y: 5 }} content={renderTooltip} />}
             {renderReferenceLines && renderReferenceLines()}
             {lines.map((line: ChartLineProps) => {
               return (
@@ -77,7 +94,7 @@ const TargetChart: <T extends unknown>(
                   name={line.name}
                   type="linear"
                   dataKey={line.dataKey}
-                  strokeWidth={4}
+                  strokeWidth={line.strokeWidth}
                   stroke={line.stroke}
                   strokeDasharray={line.strokeDasharray}
                   dot={line.dot}

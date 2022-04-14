@@ -13,3 +13,8 @@ export type Target = {
   creator: User;
   updater: User;
 };
+
+export type TargetMonth = {
+  month: number;
+  amount: number;
+};
