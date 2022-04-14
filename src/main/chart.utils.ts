@@ -207,9 +207,9 @@ export const getTargetMonthsLineChartData = (
   let maxValue = 0;
   let totalThisYearSpend = 0;
 
-  const data: ChartDataPoint[] = targetMonths.reduce<ChartDataPoint[]>((preVal, _, index) => {
+  let data: ChartDataPoint[] = targetMonths.reduce<ChartDataPoint[]>((preVal, _, index) => {
     // start month has been set => reverse array to find end month index
-    const indexFlag = startMonth !== -1 ? targetMonthsSize - index + startMonth : index;
+    const indexFlag: number = startMonth !== -1 ? targetMonthsSize - index + startMonth : index;
     const targetMonth: TargetMonth = targetMonths[indexFlag];
     const month = dayjs().month(indexFlag).format(monthFormat);
     // Generate data point
@@ -269,6 +269,11 @@ export const getTargetMonthsLineChartData = (
     totalThisYearSpend += dataPoint.thisYear ?? 0;
     return preVal;
   }, []);
+
+  // Duplicate data point to draw a line if there is one data point
+  if (data.length === 1) {
+    data = [data[0], data[0]];
+  }
 
   const lines: ChartLineProps[] = [
     {
