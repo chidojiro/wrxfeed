@@ -35,6 +35,7 @@ import { GlobalSearchType, searchState } from '@main/states/search.state';
 import { useRecoilValue } from 'recoil';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
 import { getTargetMonthsLineChartData } from '@main/chart.utils';
+import range from 'lodash.range';
 
 export type AddTargetModalProps = {
   open: boolean;
@@ -141,6 +142,9 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   // Variables
   const totalTarget = round(targetMonths.reduce((total, target) => total + target.amount, 0));
   const totalCurrentSpend = round(chartData.metadata?.currentSpend ?? 0);
+  const updatedTargetMonths = targetMonths.filter((target) => target.amount > 0);
+  const startMonth = updatedTargetMonths[0]?.month ?? 1;
+  const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
   const onCreateTarget = (name: string, propSelected: SearchResult[], excepts: SearchResult[]) => {
     const { props, periods } = getPropsAndPeriodsFromItemSelected(
@@ -324,6 +328,43 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
 
   const createReadyState = enableCreate ? 'bg-primary' : 'bg-Gray-6';
 
+  const renderXAxis = () =>
+    startMonth === endMonth ? (
+      <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]">
+        <div key="x-first-date" className="h-7 flex justify-start items-center">
+          <p>
+            {dayjs()
+              .month(startMonth - 1)
+              .date(1)
+              .format('MMM D')}
+          </p>
+        </div>
+        <div key="x-last-date" className="h-7 flex justify-end items-center">
+          <p>
+            {dayjs()
+              .month(startMonth - 1)
+              .endOf('month')
+              .format('MMM D')}
+          </p>
+        </div>
+      </div>
+    ) : (
+      <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]">
+        {range(startMonth, endMonth + 1).map((month) => (
+          <div
+            key={`x-${month}`}
+            className="w-[25px] h-7 flex justify-center items-center first:justify-start last:justify-end"
+          >
+            <p>
+              {dayjs()
+                .month(month - 1)
+                .format('MMM')}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
+
   const renderTooltipContent = (props: TooltipProps<ValueType, NameType>) => {
     const { active, payload } = props;
     const thisYear = dayjs().year();
@@ -483,8 +524,13 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
             </div>
           </div>
         </div>
-        <div className="relative flex justify-center items-center w-auto mx-6 p-4 h-[271px] border border-Gray-12 rounded-2.5xl">
-          <TargetChart chartData={chartData} renderTooltip={renderTooltipContent} />
+        <div className="relative flex justify-center items-center w-auto mx-6 px-4 py-6 h-[271px] border border-Gray-12 rounded-2.5xl">
+          <TargetChart
+            containerClass="mb-4 mt-6"
+            chartData={chartData}
+            renderTooltip={renderTooltipContent}
+            renderXAxis={renderXAxis}
+          />
         </div>
         <div className="flex flex-row pt-4 pb-6 px-10 space-x-4 items-center justify-end text-primary text-xs font-semibold">
           <p className="">

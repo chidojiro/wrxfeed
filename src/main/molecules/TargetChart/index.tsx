@@ -18,6 +18,7 @@ const INITIAL_DATA: LineChartData = {
 interface TargetChartProps<T> {
   className?: string;
   containerStyle?: CSSProperties;
+  containerClass?: string;
   chartData?: LineChartData<T>;
   maxYValue?: number;
   renderXAxis?: () => JSX.Element;
@@ -30,6 +31,7 @@ const TargetChart: <T extends unknown>(
 ) => React.ReactElement<TargetChartProps<T>> = ({
   className,
   containerStyle,
+  containerClass,
   chartData,
   maxYValue,
   renderXAxis,
@@ -44,8 +46,11 @@ const TargetChart: <T extends unknown>(
   const chartLevels = getChartLevels(maxValueForChart);
 
   return (
-    <div style={containerStyle} className="flex flex-col mt-2 w-full h-full">
-      <div className="flex relative flex-col flex-1 my-6">
+    <div
+      style={containerStyle}
+      className={classNames('flex flex-col w-full h-full', containerClass || '')}
+    >
+      <div className="flex relative flex-col flex-1">
         <div className="absolute flex w-full h-full justify-between flex-col-reverse">
           {chartLevels.map((level) => {
             const textColor = level?.isTarget ? 'text-Accent-2' : 'text-Gray-6';
@@ -80,7 +85,7 @@ const TargetChart: <T extends unknown>(
             }}
           >
             <YAxis domain={[0, maxValueForChart]} width={0} height={0} className="opacity-0" />
-            <Tooltip cursor position={{ y: 5 }} content={renderTooltip} />
+            {data.length && <Tooltip cursor position={{ y: 5 }} content={renderTooltip} />}
             {renderReferenceLines && renderReferenceLines()}
             {lines.map((line: ChartLineProps) => {
               return (
