@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useCallback, useEffect } from 'react';
+import React, { Fragment, useState, useCallback, useEffect, useRef } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { TargetPropType } from '@api/types';
 import { classNames } from '@common/utils';
@@ -17,6 +17,9 @@ export enum DropdownEdge {
 interface PropertiesDropdownProps {
   className?: string;
   classPopover?: string;
+  showError?: boolean;
+  closeError?: () => void;
+  placeholder?: string;
   IconComponent: React.FC<React.SVGAttributes<SVGElement>>;
   title: string;
   type: TargetPropType;
@@ -30,6 +33,9 @@ const DEBOUNCE_WAIT = 0;
 const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
   className = '',
   classPopover = '',
+  showError = false,
+  closeError = () => undefined,
+  placeholder = '',
   IconComponent,
   title,
   type,
@@ -38,13 +44,20 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
 }) => {
   const [keyword, setKeyword] = useState<string>('');
   const [items, setItems] = useState<SearchResult[]>([]);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
   const { results } = useSearch({
     keyword,
     searchCate: type === TargetPropType.CATEGORY,
     searchDept: type === TargetPropType.DEPARTMENT,
     searchVend: type === TargetPropType.VENDOR,
   });
-  const [showErrorProperty, setShowErrorProperty] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (showError) {
+      buttonRef?.current?.click();
+    }
+  }, [showError]);
 
   useEffect(() => {
     if (typeof onChangeItems === 'function') {
@@ -55,20 +68,19 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
   const onSearchKeyword = useCallback(
     (value: string) => {
       setKeyword(value);
+      if (showError) {
+        closeError();
+      }
     },
-    [setKeyword],
+    [closeError, showError],
   );
   const debounceSearchRequest = useDebounce(onSearchKeyword, DEBOUNCE_WAIT, [onSearchKeyword]);
   const colorByType = getColorByPropertyType(type);
 
-  useEffect(() => {
-    setShowErrorProperty(false);
-  }, []);
-
   const renderErrorProperty = () => {
-    if (!showErrorProperty) return null;
+    if (!showError) return null;
     return (
-      <div className="flex flex-row items-center px-2 space-x-1">
+      <div className="flex flex-row items-center px-2 space-x-1 mt-2">
         <AlertRed width={15} height={15} className="w-4 h-4" viewBox="0 0 15 15" />
         <p className="text-xs text-Gray-6">Targets need at least one property</p>
       </div>
@@ -169,7 +181,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
       <Popover as="div" className="flex-shrink-0 relative">
         {({ open }) => (
           <>
-            <Popover.Button className={classNames('', open ? '' : '')}>
+            <Popover.Button ref={buttonRef} className={classNames('', open ? '' : '')}>
               {renderButton()}
             </Popover.Button>
             <Popover.Panel className="absolute z-50">
@@ -189,7 +201,10 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
                     classPopover,
                   )}
                 >
-                  <AddTargetTagInput placeholder={title} onTextChange={debounceSearchRequest} />
+                  <AddTargetTagInput
+                    placeholder={placeholder}
+                    onTextChange={debounceSearchRequest}
+                  />
                   {renderErrorProperty()}
                   <div className="flex flex-col mt-2 w-full max-h-[200px] overflow-y-scroll hide-scrollbar">
                     {results?.map(renderSearchResult)}

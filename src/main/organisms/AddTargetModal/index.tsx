@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState, KeyboardEventHandler, useMemo } fro
 import { TooltipProps } from 'recharts';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
 import dayjs from 'dayjs';
+import { useRecoilValue } from 'recoil';
+import range from 'lodash.range';
 
 import { classNames, formatCurrency, round } from '@common/utils';
 import { LineChartData, SearchResult } from '@main/types';
@@ -32,10 +34,8 @@ import {
 } from '@main/utils';
 import TargetChart from '@main/molecules/TargetChart';
 import { GlobalSearchType, searchState } from '@main/states/search.state';
-import { useRecoilValue } from 'recoil';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
 import { getTargetMonthsLineChartData } from '@main/chart.utils';
-import range from 'lodash.range';
 
 export type AddTargetModalProps = {
   open: boolean;
@@ -71,6 +71,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [teamItems, setTeamItems] = useState<SearchResult[]>([]);
   const [allProps, setAllProps] = useState<CalcSpendProp[]>([]);
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>([]);
+  const [showNoMonthError, setNoMonthError] = useState<boolean>(false);
   const [curYear, setCurYear] = useState(new Date().getFullYear());
   // Need API to improve then
   const globalSearch: GlobalSearchType = useRecoilValue<GlobalSearchType>(searchState);
@@ -108,7 +109,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
 
   const [showErrorName, setShowErrorName] = useState<boolean>(false);
   const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
-  const [enableCreate] = useState<boolean>(false);
+  const [showErrorProp, setShowErrorProp] = useState<boolean>(false);
 
   const thisYearSpendFilter = useMemo<PatchCalcSpendingFilters>(
     () => ({
@@ -257,11 +258,16 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   };
   const onClickCreateOrSave = () => {
     const propSelected = [...vendItems, ...catItems, ...teamItems];
-    if (propSelected.length === 0) {
-      return;
-    }
     if (targetName.length === 0) {
       setShowErrorName(true);
+      return;
+    }
+    if (propSelected.length === 0) {
+      setShowErrorProp(true);
+      return;
+    }
+    if (targetMonths.length === 0) {
+      setNoMonthError(true);
       return;
     }
     if (isEdit) {
@@ -326,7 +332,10 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     );
   };
 
-  const createReadyState = enableCreate ? 'bg-primary' : 'bg-Gray-6';
+  const createReadyState =
+    targetMonths.length > 0 && allProps.length > 0 && targetName.length > 0
+      ? 'bg-primary'
+      : 'bg-Gray-6';
 
   const renderXAxis = () =>
     startMonth === endMonth ? (
@@ -350,7 +359,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       </div>
     ) : (
       <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]">
-        {range(startMonth, endMonth + 1).map((month) => (
+        {range(startMonth, endMonth + 1).map((month: number) => (
           <div
             key={`x-${month}`}
             className="w-[25px] h-7 flex justify-center items-center first:justify-start last:justify-end"
@@ -404,7 +413,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               key="last-year"
               className="flex flex-row flex-grow justify-between items-center space-x-10"
             >
-              <p className="text-Gray-6 text-2xs">Last Year’s Spend</p>
+              <p className="text-Gray-6 text-2xs">Last Year's Spend</p>
               <p className="text-Gray-6 text-2xs text-right">
                 {`$${formatCurrency(dataPoints?.lastYear ?? 0)}`}
               </p>
@@ -415,6 +424,17 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     }
     return null;
   };
+
+  const renderNoMonthError = () => {
+    if (!showNoMonthError) return null;
+    return (
+      <div className="flex flex-row items-center px-12 space-x-1 mb-2">
+        <AlertRed width={15} height={15} className="w-4 h-4" viewBox="0 0 15 15" />
+        <p className="text-xs text-Gray-6">Select at least one month</p>
+      </div>
+    );
+  };
+
   return (
     <Modal
       open={open}
@@ -449,10 +469,13 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         <div className="flex flex-col space-y-3 px-10 py-4 w-full">
           {renderReviewSentence()}
           <div className="flex flex-row py-1 space-x-2 px-2">
-            <div className="flex items-center justify-center w-[50px] h-[30px]">
+            <div className="flex items-center justify-center w-14 min-w-[50px] h-[30px]">
               <p className="text-Gray-6 text-xs">Target Is</p>
             </div>
             <PropertiesDropdown
+              showError={showErrorProp}
+              closeError={() => setShowErrorProp(false)}
+              placeholder="Enter a vendor"
               IconComponent={Bank}
               title="All Vendors"
               type={TargetPropType.VENDOR}
@@ -463,6 +486,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               <p className="text-Gray-6 text-xs text-center">in</p>
             </div>
             <PropertiesDropdown
+              placeholder="Enter a category"
               IconComponent={CategoryIcon}
               title="All Categories"
               type={TargetPropType.CATEGORY}
@@ -473,8 +497,9 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               <p className="text-Gray-6 text-xs text-center">for</p>
             </div>
             <PropertiesDropdown
+              placeholder="Enter a team"
               IconComponent={TeamIcon}
-              title="Consumer Products"
+              title="All Teams"
               type={TargetPropType.DEPARTMENT}
               dropdownEdge={DropdownEdge.RIGHT}
               defaultItems={defaultTags.filter((item) => item.type === TargetPropType.DEPARTMENT)}
@@ -482,6 +507,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
             />
             <ExceptDropdown
               title="Except"
+              placeholder="Enter a team, category, or vendor"
               onItemAdd={(item: SearchResult) => setExceptItems((pre) => [...pre, item])}
             />
           </div>
@@ -506,6 +532,9 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               onApply={(data, year) => {
                 setTargetMonths(data);
                 setCurYear(year);
+                if (data.length > 0) {
+                  setNoMonthError(false);
+                }
               }}
             />
           </div>
@@ -524,6 +553,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
             </div>
           </div>
         </div>
+        {renderNoMonthError()}
         <div className="relative flex justify-center items-center w-auto mx-6 px-4 py-6 h-[271px] border border-Gray-12 rounded-2.5xl">
           <TargetChart
             containerClass="mb-4 mt-6"

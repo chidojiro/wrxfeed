@@ -10,6 +10,7 @@ import { useSearch } from '@main/hooks/search.hook';
 interface ExceptDropdownProps {
   className?: string;
   classPopover?: string;
+  placeholder?: string;
   title: string;
   onItemAdd: (item: SearchResult) => void;
 }
@@ -17,6 +18,7 @@ interface ExceptDropdownProps {
 const ExceptDropdown: React.VFC<ExceptDropdownProps> = ({
   className = '',
   classPopover = '',
+  placeholder = 'Except',
   title,
   onItemAdd,
 }) => {
@@ -85,7 +87,7 @@ const ExceptDropdown: React.VFC<ExceptDropdownProps> = ({
                   )}
                 >
                   <p className="text-primary font-semibold text-xs">{title}</p>
-                  <AddTargetTagInput placeholder={title} onTextChange={onSearchKeyword} />
+                  <AddTargetTagInput placeholder={placeholder} onTextChange={onSearchKeyword} />
                   <div className="flex flex-col mt-2 w-full max-h-[200px] overflow-y-scroll hide-scrollbar">
                     {results?.map(renderSearchResult)}
                   </div>

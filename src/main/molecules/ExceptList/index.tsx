@@ -1,7 +1,7 @@
 import React from 'react';
 import { classNames } from '@common/utils';
 import { SearchResult } from '@main/types';
-import { getColorByPropertyType, getIconByResultType } from '@main/utils';
+import { getColorByPropertyType, getPropIconByType } from '@main/utils';
 
 interface ExceptListProps {
   className?: string;
@@ -22,7 +22,7 @@ const ExceptList: React.VFC<ExceptListProps> = ({
       </div>
       <div className="flex flex-grow flex-wrap items-center focus-within:z-10 overflow-y-scroll">
         {items.map((item: SearchResult) => {
-          const IconByType = getIconByResultType(item?.type);
+          const IconByType = getPropIconByType(item?.type);
           const colorByType = getColorByPropertyType(item?.type);
           return (
             <button

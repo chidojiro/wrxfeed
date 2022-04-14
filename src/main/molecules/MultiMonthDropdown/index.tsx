@@ -303,7 +303,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
                       {renderMonthName()}
                       {renderLastYearSpend()}
                       <div className="flex flex-1 flex-col space-y-1">
-                        {monthsInYear.map((month) => {
+                        {monthsInYear.map((month: number) => {
                           const isInRange = month >= minMonth && month <= maxMonth;
                           const amountSaved = targetMonthValues.find(
                             (item: TargetMonth) => item.month === month,

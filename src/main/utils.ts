@@ -20,6 +20,7 @@ import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
 import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
+import { TeamIcon, CategoryIcon, Bank } from '@assets';
 import { TargetMonth } from './entity/target.entity';
 import { SearchResult } from './types';
 
@@ -447,6 +448,15 @@ export const getIconByResultType = (
   return BasicsSearchSmall;
 };
 
+export const getPropIconByType = (
+  type: TargetPropType,
+): React.FC<React.SVGAttributes<SVGElement>> => {
+  if (type === TargetPropType.VENDOR) return Bank;
+  if (type === TargetPropType.DEPARTMENT) return TeamIcon;
+  if (type === TargetPropType.CATEGORY) return CategoryIcon;
+  return BasicsSearchSmall;
+};
+
 export const getWidthInputByLength = (length: number): number => {
   if (length > 19) return 48;
   if (length > 13) return 36;
@@ -480,7 +490,10 @@ export const getUniqueListBy = (arr: any[], objectKey: string): any[] => {
   return [...new Map(arr.map((item: any) => [item[objectKey], item])).values()];
 };
 
-export const getTargetName = (target: Target): string => {
+export const getTargetName = (target?: Target): string => {
+  if (!target) {
+    return '';
+  }
   const { props = [], name } = target;
   if (typeof name === 'string' && name.length > 1) {
     return name;
