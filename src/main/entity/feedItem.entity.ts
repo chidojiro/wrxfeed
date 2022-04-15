@@ -1,4 +1,4 @@
-import { Category, Department, Transaction } from '.';
+import { Target, Category, Department, Transaction } from '@main/entity';
 
 export type FeedItem = {
   id: number;
@@ -6,6 +6,7 @@ export type FeedItem = {
   year?: number;
   month?: number;
   total?: number;
+  lastMonthTotal?: number;
   firstDate?: string;
   lastDate?: string;
   department: Department;
@@ -13,4 +14,6 @@ export type FeedItem = {
   depId?: number;
   catId?: number;
   transactions: Transaction[];
+  lastInteraction: string;
+  target: Target;
 };

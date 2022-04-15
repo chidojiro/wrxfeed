@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 
@@ -32,8 +32,8 @@ const CompanyPage: React.VFC = () => {
   const history = useHistory();
   const location = useLocation();
   const { readAllTransactions, getVendorById, getCategoryById, getDepartmentById } = useApi();
-  const [feedFilters, setFeedFilters] = React.useState<FeedFilters>(INIT_FEED_FILTER);
-  const [filterTitle, setFilterTitle] = React.useState('');
+  const [feedFilters, setFeedFilters] = useState<FeedFilters>(INIT_FEED_FILTER);
+  const [filterTitle, setFilterTitle] = useState('');
   const filterKey = FilterKeys.find((key) => query.get(key));
 
   const {

@@ -32,6 +32,7 @@ import {
   TargetFilter,
   PostTargetParams,
   PutTargetParams,
+  PatchCalcSpendingFilters,
   SubscriptionParams,
   NotificationsResponse,
   FeedItemFilters,
@@ -39,6 +40,7 @@ import {
   AddFeedCommentParams,
   FeedFilters,
   CategoryFilter,
+  TargetPeriod,
 } from '@api/types';
 import {
   AuthProfile,
@@ -398,9 +400,7 @@ export default class ApiUtils implements ApiClient {
     await this.request<void>({
       url: '/target/targets',
       method: 'POST',
-      data: {
-        ...data,
-      },
+      data,
     });
   };
 
@@ -408,20 +408,24 @@ export default class ApiUtils implements ApiClient {
     await this.request<void>({
       url: `/target/targets/${id}`,
       method: 'PUT',
-      data: {
-        ...data,
-      },
+      data,
     });
   };
 
-  deleteTarget = async (id: number, data: PutTargetParams): Promise<void> => {
+  deleteTarget = async (id: number): Promise<void> => {
     await this.request<void>({
       url: `/target/targets/${id}`,
       method: 'DELETE',
-      data: {
-        ...data,
-      },
     });
+  };
+
+  patchCalcSpending = async (data: PatchCalcSpendingFilters): Promise<TargetPeriod[]> => {
+    const res = await this.request<TargetPeriod[]>({
+      url: '/target/spending',
+      method: 'PATCH',
+      data,
+    });
+    return res.data;
   };
 
   getTransactionById = async (id: number): Promise<Transaction> => {
@@ -546,9 +550,9 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getDepartmentById = async (depId: number): Promise<Department> => {
+  getDepartmentById = async (dep: number): Promise<Department> => {
     const res = await this.request<Department>({
-      url: `/feed/departments/${depId}`,
+      url: `/feed/departments/${dep}`,
       method: 'GET',
     });
     return res.data;

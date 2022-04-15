@@ -81,7 +81,8 @@ export interface ApiClient {
   getTargets: (filters?: TargetFilter) => Promise<Target[]>;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
-  deleteTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  deleteTarget: (id: number) => Promise<void>;
+  patchCalcSpending: (data: PatchCalcSpendingFilters) => Promise<TargetPeriod[]>;
   // Subscription
   getSubscriptions: () => Promise<Subscription>;
   updateSubscriptions: (data: SubscriptionParams) => Promise<Subscription>;
@@ -161,22 +162,47 @@ export interface DepartmentFilter extends Pagination {
 }
 export interface CategoryFilter extends Pagination {
   term?: string;
-  dep?: number; // department id
+  dep?: number;
 }
 
 export interface TargetFilter extends Pagination {
   year: number;
   month: number;
   timestamp?: number;
-  dep?: number; // department id
+  dep?: number;
 }
 
+export interface PostTargetParams {
+  name: string;
+  depId?: number;
+  isPrimary: boolean;
+  props: TargetProp[];
+  periods?: TargetPeriod[];
+}
 export interface PutTargetParams {
+  name: string;
+  depId?: number;
+  isPrimary: boolean;
+  props: TargetProp[];
+  periods: TargetPeriod[];
+}
+
+export type CalcSpendProp = {
+  id: number;
+  exclude: boolean;
+  type: TargetPropType;
+  name: string;
+};
+
+export type TargetPeriod = {
   month: number;
   year: number;
-  amount: number;
-  depId?: number;
-  props: TargetProp[];
+  amount?: number;
+  total?: number; // TODO: require backend return number type
+};
+export interface PatchCalcSpendingFilters {
+  props: CalcSpendProp[];
+  periods: TargetPeriod[];
 }
 
 export enum TargetPropType {
@@ -189,15 +215,7 @@ export interface TargetProp {
   id: number;
   type: TargetPropType;
   name: string;
-}
-
-export interface PostTargetParams {
-  month: number;
-  year: number;
-  amount: number | null;
-  depId?: number;
-  props: TargetProp[];
-  name: string;
+  exclude?: boolean;
 }
 
 export interface SubscriptionParams {

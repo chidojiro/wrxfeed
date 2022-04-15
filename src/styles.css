@@ -245,3 +245,40 @@ svg.path-no-stroke > path {
     right: -8%;
   }
 }
+
+.dashed-line {
+  margin: 5px 0;
+  height: 2px;
+  background: repeating-linear-gradient(
+    to right,
+    #6565fb 0,
+    #6565fb 5px,
+    transparent 5px,
+    transparent 7px
+  );
+  /*5px red then 2px transparent -> repeat this!*/
+}
+
+.dashed-line-legend {
+  margin: 5px 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    to right,
+    #6565fb 0,
+    #6565fb 5px,
+    transparent 5px,
+    transparent 7px
+  );
+}
+
+.dashed-line-target {
+  margin: 5px 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    to right,
+    #FF5F68 0,
+    #FF5F68 5px,
+    transparent 5px,
+    transparent 7px
+  );
+}

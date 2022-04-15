@@ -2,19 +2,20 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React, { useState, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
-import TargetPanel from '@main/organisms/TargetPanel';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { useHistory, useParams } from 'react-router-dom';
-import RollupCard from '@main/molecules/RollupCard';
-import { Category, Department, FeedItem, Vendor } from '@main/entity';
-import { useApi } from '@api';
-import { isApiError } from '@error/utils';
 import { useErrorHandler } from 'react-error-boundary';
 import { toast } from 'react-toastify';
-import Loading from '@common/atoms/Loading';
+
+import { useApi } from '@api';
 import { ApiErrorCode } from '@error/types';
 import { MainGroups } from '@common/constants';
+import { isApiError } from '@error/utils';
+import { Category, Department, FeedItem, Vendor } from '@main/entity';
+
+import MainLayout from '@common/templates/MainLayout';
+import RollupCard from '@main/molecules/RollupCard';
+import Loading from '@common/atoms/Loading';
+import { ChevronLeftIcon } from '@assets';
 
 const FeedPage: React.VFC = () => {
   const history = useHistory();
@@ -120,9 +121,6 @@ const FeedPage: React.VFC = () => {
         <h1 className="text-Gray-1 text-xl font-bold">Notifications</h1>
       </div>
       {renderFeed()}
-      <MainRightSide>
-        <TargetPanel />
-      </MainRightSide>
     </MainLayout>
   );
 };
