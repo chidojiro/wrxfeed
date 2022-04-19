@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useCallback, useEffect, useRef } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { TargetPropType } from '@api/types';
@@ -41,9 +42,10 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
   type,
   dropdownEdge = DropdownEdge.LEFT,
   onChangeItems,
+  defaultItems,
 }) => {
   const [keyword, setKeyword] = useState<string>('');
-  const [items, setItems] = useState<SearchResult[]>([]);
+  const [items, setItems] = useState<SearchResult[]>(defaultItems ?? []);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const { results } = useSearch({

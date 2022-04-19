@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState, KeyboardEventHandler, useMemo } fro
 import { TooltipProps } from 'recharts';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
 import dayjs from 'dayjs';
-import { useRecoilValue } from 'recoil';
 import range from 'lodash.range';
 
 import { classNames, formatCurrency, round } from '@common/utils';
@@ -16,7 +15,7 @@ import {
   TargetProp,
   TargetPropType,
 } from '@api/types';
-import { Target, TargetMonth } from '@main/entity';
+import { Department, Target, TargetMonth } from '@main/entity';
 
 import Modal from '@common/atoms/Modal';
 import Loading from '@common/atoms/Loading';
@@ -33,7 +32,6 @@ import {
   getPropsAndPeriodsFromItemSelected,
 } from '@main/utils';
 import TargetChart from '@main/molecules/TargetChart';
-import { GlobalSearchType, searchState } from '@main/states/search.state';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
 import { getTargetMonthsLineChartData } from '@main/chart.utils';
 
@@ -49,6 +47,7 @@ export type AddTargetModalProps = {
   isDeleting: boolean;
   initTags?: SearchResult[];
   depId?: number | undefined;
+  department?: Department;
 };
 
 const AddTargetModal: React.FC<AddTargetModalProps> = ({
@@ -62,6 +61,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   isCreatingOrSaving,
   isDeleting,
   depId,
+  department,
 }) => {
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -70,61 +70,38 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [catItems, setCatItems] = useState<SearchResult[]>([]);
   const [teamItems, setTeamItems] = useState<SearchResult[]>([]);
   const [allProps, setAllProps] = useState<CalcSpendProp[]>([]);
+
+  const [openMultiMonth, setOpenMultiMonth] = useState<boolean>(false);
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>([]);
   const [showNoMonthError, setNoMonthError] = useState<boolean>(false);
   const [curYear, setCurYear] = useState(new Date().getFullYear());
-  // Need API to improve then
-  const globalSearch: GlobalSearchType = useRecoilValue<GlobalSearchType>(searchState);
-  const allDirectoriesResult: { [key: string]: SearchResult[] } = useMemo(() => {
-    const allVendResult = globalSearch.vendors.map((vend) => ({
-      id: `${TargetPropType.VENDOR.toUpperCase()}-${vend?.id}`,
-      title: vend?.name,
-      type: TargetPropType.VENDOR,
-      directoryId: vend?.id,
-      name: 'ss',
-    }));
-    const allTeamResult = globalSearch.departments.map((dept) => ({
-      id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${dept?.id}`,
-      title: dept?.name,
-      type: TargetPropType.DEPARTMENT,
-      directoryId: dept?.id,
-      name: 'ss',
-    }));
-    const allCatResult = globalSearch.categories.map((cat) => ({
-      id: `${TargetPropType.CATEGORY.toUpperCase()}-${cat?.id}`,
-      title: cat?.name,
-      type: TargetPropType.CATEGORY,
-      directoryId: cat?.id,
-      name: 'ss',
-    }));
-    return {
-      allVendors: allVendResult,
-      allTeams: allTeamResult,
-      allCategories: allCatResult,
-    };
-  }, [globalSearch]);
 
   const [targetName, setTargetName] = useState<string>('');
   const [isEditName, setEditName] = useState<boolean>(false);
-
   const [showErrorName, setShowErrorName] = useState<boolean>(false);
-  const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
+
+  const [defaultTags, setDefaultTags] = useState<SearchResult[]>(
+    department
+      ? [
+          {
+            id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${department.id}`,
+            title: department.name,
+            type: TargetPropType.DEPARTMENT,
+            directoryId: department.id,
+          },
+        ]
+      : [],
+  );
   const [showErrorProp, setShowErrorProp] = useState<boolean>(false);
 
-  const thisYearSpendFilter = useMemo<PatchCalcSpendingFilters>(
-    () => ({
-      props: allProps,
-      periods: getPeriodsByYear(curYear),
-    }),
-    [allProps, curYear],
-  );
-  const lastYearSpendFilter = useMemo<PatchCalcSpendingFilters>(
-    () => ({
-      props: allProps,
-      periods: getPeriodsByYear(curYear - 1),
-    }),
-    [allProps, curYear],
-  );
+  const [thisYearSpendFilter, setThisYearFilter] = useState<PatchCalcSpendingFilters>(() => ({
+    props: allProps,
+    periods: getPeriodsByYear(curYear),
+  }));
+  const [lastYearSpendFilter, setLastYearFilter] = useState<PatchCalcSpendingFilters>(() => ({
+    props: allProps,
+    periods: getPeriodsByYear(curYear - 1),
+  }));
   const { months: thisYearSpendData = [], fetch: fetchThisYearSpendData } = useMultiMonth(
     thisYearSpendFilter,
     true,
@@ -134,6 +111,19 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     isLoading: lastYearDataLoading,
     fetch: fetchLastYearSpendData,
   } = useMultiMonth(lastYearSpendFilter, true);
+
+  useEffect(() => {
+    if (openMultiMonth) {
+      setThisYearFilter({
+        props: allProps,
+        periods: getPeriodsByYear(curYear),
+      });
+      setLastYearFilter({
+        props: allProps,
+        periods: getPeriodsByYear(curYear - 1),
+      });
+    }
+  }, [allProps, curYear, openMultiMonth]);
 
   const isEdit = itemEditing !== null;
   const chartData: LineChartData = useMemo(() => {
@@ -206,9 +196,9 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
 
   useEffect(() => {
     // Check to load all vendors, teams, cats for target
-    const vendors = vendItems.length ? vendItems : allDirectoriesResult.allVendors;
-    const teams = teamItems.length ? teamItems : allDirectoriesResult.allTeams;
-    const categories = catItems.length ? catItems : allDirectoriesResult.allCategories;
+    const vendors = vendItems.length ? vendItems : []; // allDirectoriesResult.allVendors;
+    const teams = teamItems.length ? teamItems : []; // allDirectoriesResult.allTeams;
+    const categories = catItems.length ? catItems : []; // allDirectoriesResult.allCategories;
     const propsCheck: CalcSpendProp[] = [...vendors, ...teams, ...categories].map(
       (item: SearchResult) => {
         return {
@@ -229,7 +219,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       });
     }
     setAllProps(propsCheck);
-  }, [vendItems, teamItems, catItems, exceptItems, allDirectoriesResult]);
+  }, [vendItems, teamItems, catItems, exceptItems]);
 
   useEffect(() => {
     if (itemEditing && itemEditing?.props.length > 0) {
@@ -508,6 +498,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
             <ExceptDropdown
               title="Except"
               placeholder="Enter a team, category, or vendor"
+              selected={[...vendItems, ...catItems, ...teamItems]}
               onItemAdd={(item: SearchResult) => setExceptItems((pre) => [...pre, item])}
             />
           </div>
@@ -524,6 +515,8 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
           <div className="flex flex-row items-center space-x-2 py-3">
             <p className="text-primary text-xs font-semibold w-14">Months*</p>
             <MultiMonthDropdown
+              open={openMultiMonth}
+              setOpen={setOpenMultiMonth}
               props={allProps}
               targetMonths={targetMonths}
               year={curYear}

@@ -330,6 +330,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
         itemEditing={itemEditing}
         isCreatingOrSaving={isPostTarget || isPutTarget}
         isDeleting={isDeleteTarget}
+        department={feedItem.department}
       />
     </>
   );

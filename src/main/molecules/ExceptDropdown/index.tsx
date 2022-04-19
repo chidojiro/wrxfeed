@@ -11,6 +11,7 @@ interface ExceptDropdownProps {
   className?: string;
   classPopover?: string;
   placeholder?: string;
+  selected: SearchResult[];
   title: string;
   onItemAdd: (item: SearchResult) => void;
 }
@@ -19,12 +20,14 @@ const ExceptDropdown: React.VFC<ExceptDropdownProps> = ({
   className = '',
   classPopover = '',
   placeholder = 'Except',
+  selected,
   title,
   onItemAdd,
 }) => {
   const [keyword, setKeyword] = useState<string>('');
   const { results } = useSearch({
     keyword,
+    except: selected,
   });
   const onSearchKeyword = useCallback(
     (value: string) => {
