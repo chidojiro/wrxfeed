@@ -1,7 +1,12 @@
 import React, { useMemo } from 'react';
 
 import { Target } from '@main/entity';
-import { getDepartmentBgColor, getTargetName, nFormatter } from '@main/utils';
+import {
+  getDepartmentBgColor,
+  getTargetAmountAndTotal,
+  getTargetName,
+  nFormatter,
+} from '@main/utils';
 import { classNames } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
 
@@ -16,7 +21,8 @@ export interface TargetRowProps {
 const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
   const targetName = getTargetName(target);
   const deptBgClass = useMemo(() => getDepartmentBgColor(targetName ?? ''), [targetName]);
-  const isActive = (target?.amount ?? 0) > 0 && target?.id !== null;
+  const { amount, total } = getTargetAmountAndTotal(target);
+  const isActive = (amount ?? 0) > 0 && target?.id !== null;
 
   const renderEditButton = () => {
     return (
@@ -35,7 +41,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
   const inactiveTarget = 'rgba(209,213,219,0.3)';
 
   if (!isActive) {
-    const totalSpent = target?.total ?? 0;
+    const totalSpent = total ?? 0;
     let targetAmount = TARGET_PLACEHOLDER;
     const percent = (totalSpent / targetAmount) * 100;
     const percentLength = percent < 75 ? `${percent}%` : '75%';
@@ -64,8 +70,8 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
     );
   }
 
-  const totalSpent = target?.total ?? 0;
-  const targetAmount = target?.amount ?? 0;
+  const totalSpent = total ?? 0;
+  const targetAmount = amount ?? 0;
 
   let percent = (totalSpent / targetAmount) * 100;
   const currentCurrency = nFormatter(totalSpent);

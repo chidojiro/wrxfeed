@@ -18,7 +18,7 @@ import FeedList from '@main/organisms/FeedList';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 
-const LIMIT = 1;
+const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
   offset: 0,
   limit: LIMIT,

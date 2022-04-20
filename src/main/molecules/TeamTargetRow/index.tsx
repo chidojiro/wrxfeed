@@ -1,7 +1,12 @@
 import React, { useMemo } from 'react';
 
 import { Target } from '@main/entity';
-import { getDepartmentBgColor, getTargetName, nFormatter } from '@main/utils';
+import {
+  getDepartmentBgColor,
+  getTargetName,
+  nFormatter,
+  getTargetAmountAndTotal,
+} from '@main/utils';
 import { classNames } from '@common/utils';
 
 import ExceedBar from '@main/atoms/ExceedBar';
@@ -19,10 +24,11 @@ interface TeamTargetRowProps {
 const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) => {
   const targetName = getTargetName(target);
   const deptBgClass = useMemo(() => getDepartmentBgColor(targetName ?? ''), [targetName]);
-  const isActive = (target?.amount ?? 0) > 0 && target?.id !== null;
+  const { amount, total } = getTargetAmountAndTotal(target);
+  const isActive = (amount ?? 0) > 0 && target?.id !== null;
 
-  const totalSpent = target?.total ?? 0;
-  const targetAmount = target?.amount ?? 0;
+  const totalSpent = total ?? 0;
+  const targetAmount = amount ?? 0;
   const isExceeds = totalSpent > targetAmount;
 
   const renderEditButton = () => {
