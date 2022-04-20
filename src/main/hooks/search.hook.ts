@@ -21,6 +21,7 @@ export function useSearch({
   searchVend = true,
   ignoreEmptyKeyword = true,
   searchType = SearchTypes.Local,
+  except = null,
 }: SearchFilters): SearchHookValues {
   const globalSearch: GlobalSearchType = useRecoilValue<GlobalSearchType>(searchState);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -43,16 +44,15 @@ export function useSearch({
           if (!dept.name.toLowerCase().includes(keyword.toLowerCase())) {
             return arr;
           }
-          return [
-            ...arr,
-            {
-              id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${dept?.id}`,
-              title: dept?.name,
-              type: TargetPropType.DEPARTMENT,
-              directoryId: dept?.id,
-              name: 'ss',
-            },
-          ];
+          const addItem = {
+            id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${dept?.id}`,
+            title: dept?.name,
+            type: TargetPropType.DEPARTMENT,
+            directoryId: dept?.id,
+            name: 'ss',
+          };
+          if (except && except.includes(addItem)) return arr;
+          return [...arr, addItem];
         }, []);
 
     const categories: SearchResult[] = !searchCate
@@ -61,16 +61,15 @@ export function useSearch({
           if (!cat.name.toLowerCase().includes(keyword.toLowerCase())) {
             return arr;
           }
-          return [
-            ...arr,
-            {
-              id: `${TargetPropType.CATEGORY.toUpperCase()}-${cat?.id}`,
-              title: cat?.name,
-              type: TargetPropType.CATEGORY,
-              directoryId: cat?.id,
-              name: 'ss',
-            },
-          ];
+          const addItem = {
+            id: `${TargetPropType.CATEGORY.toUpperCase()}-${cat?.id}`,
+            title: cat?.name,
+            type: TargetPropType.CATEGORY,
+            directoryId: cat?.id,
+            name: 'ss',
+          };
+          if (except && except.includes(addItem)) return arr;
+          return [...arr, addItem];
         }, []);
 
     const vendors: SearchResult[] = !searchVend
@@ -79,23 +78,31 @@ export function useSearch({
           if (!vend.name.toLowerCase().includes(keyword.toLowerCase())) {
             return arr;
           }
-          return [
-            ...arr,
-            {
-              id: `${TargetPropType.VENDOR.toUpperCase()}-${vend?.id}`,
-              title: vend?.name,
-              type: TargetPropType.VENDOR,
-              directoryId: vend?.id,
-              name: 'ss',
-            },
-          ];
+          const addItem = {
+            id: `${TargetPropType.VENDOR.toUpperCase()}-${vend?.id}`,
+            title: vend?.name,
+            type: TargetPropType.VENDOR,
+            directoryId: vend?.id,
+            name: 'ss',
+          };
+          if (except && except.includes(addItem)) return arr;
+          return [...arr, addItem];
         }, []);
 
     const sumResult = [...departments, ...categories, ...vendors];
     setResults(sumResult);
     setNoResult(sumResult.length === 0);
     setLoading(false);
-  }, [keyword, searchDept, globalSearch, searchCate, searchVend, ignoreEmptyKeyword, searchType]);
+  }, [
+    keyword,
+    searchDept,
+    globalSearch,
+    searchCate,
+    searchVend,
+    ignoreEmptyKeyword,
+    searchType,
+    except,
+  ]);
 
   useEffect(() => {
     searchByKeyword().then();

@@ -22,7 +22,7 @@ import {
   ProfileFormModel,
   SearchTypes,
 } from '@auth/types';
-import { InviteFormModel, FeedBackFormModel } from '@main/types';
+import { InviteFormModel, FeedBackFormModel, SearchResult } from '@main/types';
 
 export interface ApiClient {
   // Authentication API
@@ -261,4 +261,5 @@ export interface SearchFilters {
   searchCate?: boolean;
   ignoreEmptyKeyword?: boolean;
   searchType?: SearchTypes;
+  except?: SearchResult[] | null;
 }
