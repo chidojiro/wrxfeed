@@ -21,7 +21,7 @@ export function useSearch({
   searchVend = true,
   ignoreEmptyKeyword = true,
   searchType = SearchTypes.Local,
-  except = [],
+  except = null,
 }: SearchFilters): SearchHookValues {
   const globalSearch: GlobalSearchType = useRecoilValue<GlobalSearchType>(searchState);
   const [isLoading, setLoading] = useState<boolean>(false);

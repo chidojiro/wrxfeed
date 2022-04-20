@@ -13,7 +13,7 @@ import { CommentFormModel } from '@main/types';
 import { useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import { classNames, formatCurrency } from '@common/utils';
-import { commentEditorHtmlParser, getDepartmentBgColor } from '@main/utils';
+import { commentEditorHtmlParser, getDepartmentBgColor, getTotalFeedItem } from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
 // components
 import NotifyBanner from '@common/molecules/NotifyBanner';
@@ -62,6 +62,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     limit: INITIAL_COMMENT_NUMBER,
   });
 
+  const { total } = getTotalFeedItem(feedItem);
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
@@ -109,7 +110,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const handleHideCategory = async () => {
     setConfirmModal(undefined);
     if (updateCategory) {
-      await updateCategory({ id: feedItem?.category.id, visibility: Visibility.HIDDEN });
+      await updateCategory({ id: feedItem?.category?.id, visibility: Visibility.HIDDEN });
     }
     NotifyBanner.info('You have hidden this line item!');
   };
@@ -127,7 +128,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const handleShowCategory = async () => {
     setConfirmModal(undefined);
     if (updateCategory) {
-      await updateCategory({ id: feedItem?.category.id, visibility: Visibility.VISIBLE });
+      await updateCategory({ id: feedItem?.category?.id, visibility: Visibility.VISIBLE });
     }
     NotifyBanner.info('You have unhidden this line item!');
   };
@@ -248,7 +249,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                   id={`question-title-${feedItem?.id}`}
                   className="text-lg font-semibold text-white mr-3"
                 >
-                  {`$${formatCurrency(feedItem?.total)}`}
+                  {`$${formatCurrency(total)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block z-20 text-left">
                   <div>

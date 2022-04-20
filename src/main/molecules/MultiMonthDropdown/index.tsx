@@ -221,7 +221,6 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
     return (
       <div className="flex flex-1 flex-col space-y-1">
         {monthsInYear.map((month: number) => {
-          const isInRange = month >= minMonth && month <= maxMonth;
           const monthMatched = lastYearData.filter((item: TargetPeriod) => item.month === month);
           const lastYearSpend =
             monthMatched.length > 0 ? parseFloat(monthMatched[0].total?.toString() ?? '0') : 0;
@@ -230,7 +229,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
               key={`renderLastYearSpend-${month}`}
               className="w-24 h-7 px-2 py-1 text-right flex flex-col justify-center items-end"
             >
-              {isInRange && <p className="text-sm text-Gray-6">{`$${lastYearSpend.toFixed(2)}`}</p>}
+              <p className="text-sm text-Gray-6">{`$${formatCurrency(lastYearSpend)}`}</p>
             </div>
           );
         })}

@@ -56,7 +56,7 @@ const initFilter = {
   timestamp: Date.now(),
 };
 
-const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepartment }) => {
+const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
   const identity = useIdentity();
   const [filterComment, setFilterComment] = useState<Pagination>({
     offset: 0,
@@ -75,7 +75,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
   // Data hooks
   const { mentions } = useMention();
   // Variables
-  const isHidden = feedItem?.category.visibility === Visibility.HIDDEN;
+  const isHidden = feedItem?.category?.visibility === Visibility.HIDDEN;
 
   const {
     comments,
@@ -239,14 +239,9 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onClickDepar
               <h2
                 aria-hidden="true"
                 id={`question-title-${feedItem?.id}`}
-                className="mt-1 text-xs font-normal text-Gray-6 cursor-pointer hover:underline"
-                onClick={() => {
-                  if (onClickDepartment) {
-                    onClickDepartment(feedItem?.department);
-                  }
-                }}
+                className="mt-1 text-xs font-normal text-Gray-6 cursor-pointer"
               >
-                Last edited Yesterday at 9:15AM
+                {`Last edited at ${dayjs(feedItem.lastInteraction).format('MM/DD/YYYY')}`}
               </h2>
             </div>
           </div>

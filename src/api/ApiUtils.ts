@@ -390,7 +390,9 @@ export default class ApiUtils implements ApiClient {
       url: '/target/targets',
       method: 'GET',
       params: {
-        ...filters,
+        year: filters?.year,
+        month: filters?.month,
+        dep: filters?.dep,
       },
     });
     return res.data;

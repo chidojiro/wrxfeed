@@ -6,7 +6,7 @@ import { BasicsEditCircle } from '@assets';
 import { FeedItem, Transaction, TransLineItem } from '@main/entity';
 import { ChartLegend, LineChartData } from '@main/types';
 import { getLineChartDataInMonth } from '@main/chart.utils';
-import { nFormatter } from '@main/utils';
+import { getTargetAmountAndTotal, nFormatter } from '@main/utils';
 import dayjs from 'dayjs';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
 import TargetChart from '../TargetChart';
@@ -20,7 +20,8 @@ interface TargetChartViewProps {
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
   const today = new Date();
   const [chartData, setChartData] = useState<LineChartData<Transaction[]>>();
-  const targetAmount = Math.round(feedItem?.target?.amount ?? 0);
+  const { amount, total } = getTargetAmountAndTotal(feedItem?.target);
+  const targetAmount = Math.round(amount ?? 0);
   const isExceedTarget = (chartData?.metadata?.totalCurrentMonth ?? 0) > targetAmount;
   const targetLineColor = isExceedTarget ? '#FF5F68' : '#6565FB';
 
@@ -139,13 +140,13 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Current Spend</p>
             <p className="text-xl text-primary font-bold mt-1">
-              {`$ ${formatCurrency(feedItem?.target?.total ?? '0')}`}
+              {`$ ${formatCurrency(total ?? '0')}`}
             </p>
           </div>
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Target</p>
             <p className="text-xl text-primary font-bold mt-1">
-              {`$ ${formatCurrency(feedItem?.target?.amount ?? '0')}`}
+              {`$ ${formatCurrency(amount ?? '0')}`}
             </p>
           </div>
           <div className="flex flex-1 justify-end flex-col items-end">

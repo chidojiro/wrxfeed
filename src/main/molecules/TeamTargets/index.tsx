@@ -176,6 +176,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
         isDeleting={isDeleteTarget}
         initTags={[prePopulatedProps]}
         depId={depId}
+        department={dept}
       />
     </div>
   );

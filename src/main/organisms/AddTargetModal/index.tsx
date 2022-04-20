@@ -80,18 +80,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [isEditName, setEditName] = useState<boolean>(false);
   const [showErrorName, setShowErrorName] = useState<boolean>(false);
 
-  const [defaultTags, setDefaultTags] = useState<SearchResult[]>(
-    department
-      ? [
-          {
-            id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${department.id}`,
-            title: department.name,
-            type: TargetPropType.DEPARTMENT,
-            directoryId: department.id,
-          },
-        ]
-      : [],
-  );
+  const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
   const [showErrorProp, setShowErrorProp] = useState<boolean>(false);
 
   const [thisYearSpendFilter, setThisYearFilter] = useState<PatchCalcSpendingFilters>(() => ({
@@ -111,6 +100,21 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     isLoading: lastYearDataLoading,
     fetch: fetchLastYearSpendData,
   } = useMultiMonth(lastYearSpendFilter, true);
+
+  useEffect(() => {
+    if (department) {
+      const addDept = {
+        id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${department.id}`,
+        title: department.name,
+        type: TargetPropType.DEPARTMENT,
+        directoryId: department.id,
+      };
+      if (defaultTags.filter((item) => item.id === addDept.id).length === 0) {
+        setDefaultTags((pre) => [...pre, addDept]);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [department, open]);
 
   useEffect(() => {
     if (openMultiMonth) {

@@ -261,5 +261,5 @@ export interface SearchFilters {
   searchCate?: boolean;
   ignoreEmptyKeyword?: boolean;
   searchType?: SearchTypes;
-  except?: SearchResult[];
+  except?: SearchResult[] | null;
 }

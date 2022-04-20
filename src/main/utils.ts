@@ -12,7 +12,14 @@ import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
 import { convertFromHTML, convertToHTML } from 'draft-convert';
 
-import { TransLineItem, Target, TranStatusNameColor, TranStatusType } from '@main/entity';
+import {
+  TransLineItem,
+  Target,
+  TranStatusNameColor,
+  TranStatusType,
+  FeedItem,
+  Transaction,
+} from '@main/entity';
 import { TargetPeriod, TargetProp, TargetPropType } from '@api/types';
 import cloneDeep from 'lodash.clonedeep';
 
@@ -478,14 +485,6 @@ export const getPropTypeDisplayName = (type: TargetPropType): string => {
   return '#6565FB';
 };
 
-export const stackTargetsBySpend = (data: Target[]): Target[] => {
-  let targetStacked = data.sort((a: Target, b: Target) => (b?.total ?? 0) - (a?.total ?? 0));
-  targetStacked = data.sort(
-    (a: Target, b: Target) => (b?.id !== null ? 1 : 0) - (a?.id !== null ? 1 : 0),
-  );
-  return targetStacked;
-};
-
 export const getUniqueListBy = (arr: any[], objectKey: string): any[] => {
   return [...new Map(arr.map((item: any) => [item[objectKey], item])).values()];
 };
@@ -585,4 +584,40 @@ export const getPropsAndPeriodsFromItemSelected = (
     props,
     periods,
   };
+};
+
+export const getTargetAmountAndTotal = (target: Target): { amount: number; total: number } => {
+  const today = new Date();
+  const monthInReal = today.getMonth() + 1;
+  const monthMatched: TargetPeriod[] = target.periods.filter(
+    (period: TargetPeriod) => period.month === monthInReal,
+  );
+  if (monthMatched.length > 0) {
+    return {
+      amount: monthMatched[0].amount ?? 0,
+      total: monthMatched[0].total ?? 0,
+    };
+  }
+  return { amount: 0, total: 0 };
+};
+
+export const stackTargetsBySpend = (data: Target[]): Target[] => {
+  let targetStacked = data.sort((a: Target, b: Target) => {
+    const { total: totalA } = getTargetAmountAndTotal(a);
+    const { total: totalB } = getTargetAmountAndTotal(b);
+    return (totalB ?? 0) - (totalA ?? 0);
+  });
+  targetStacked = data.sort(
+    (a: Target, b: Target) => (b?.id !== null ? 1 : 0) - (a?.id !== null ? 1 : 0),
+  );
+  return targetStacked;
+};
+
+export const getTotalFeedItem = (feed: FeedItem): { total: number } => {
+  const { transactions } = feed;
+  let total = 0;
+  transactions.forEach((tran: Transaction) => {
+    total += tran.amountUsd;
+  });
+  return { total };
 };

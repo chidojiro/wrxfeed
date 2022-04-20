@@ -7,7 +7,6 @@ import { getColorByPropertyType, getIconByResultType, getPropTypeDisplayName } f
 import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
 import { SearchResult } from '@main/types';
 import { useSearch } from '@main/hooks/search.hook';
-import { useDebounce } from '@common/hooks';
 import { AlertRed } from '@assets';
 
 export enum DropdownEdge {
@@ -28,8 +27,6 @@ interface PropertiesDropdownProps {
   defaultItems?: SearchResult[];
   onChangeItems?: (items: SearchResult[]) => void;
 }
-
-const DEBOUNCE_WAIT = 0;
 
 const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
   className = '',
@@ -76,7 +73,6 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
     },
     [closeError, showError],
   );
-  const debounceSearchRequest = useDebounce(onSearchKeyword, DEBOUNCE_WAIT, [onSearchKeyword]);
   const colorByType = getColorByPropertyType(type);
 
   const renderErrorProperty = () => {
@@ -99,7 +95,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
             setItems((pre) => [...pre, result]);
           }
         }}
-        key={result?.id}
+        key={`renderSearchResult-${result?.id}`}
         type="button"
         className="hover:bg-Gray-12 px-7 py-2.5 h-10 flex flex-row items-center text-xs group w-full"
       >
@@ -121,6 +117,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
     return (
       <button
         type="button"
+        key={`renderItemSelected-${itemSelected.id}`}
         className="flex flex-row h-[30px] items-center mb-1 space-x-1 px-2 py-1 rounded-sm"
         style={{ backgroundColor: colorByType }}
       >
@@ -134,6 +131,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
           {itemSelected?.title}
         </p>
         <button
+          key={`renderItemSelected-close-${itemSelected.id}`}
           type="button"
           className="text-xs text-white font-bold ml-2"
           onClick={() => {
@@ -203,10 +201,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
                     classPopover,
                   )}
                 >
-                  <AddTargetTagInput
-                    placeholder={placeholder}
-                    onTextChange={debounceSearchRequest}
-                  />
+                  <AddTargetTagInput placeholder={placeholder} onTextChange={onSearchKeyword} />
                   {renderErrorProperty()}
                   <div className="flex flex-col mt-2 w-full max-h-[200px] overflow-y-scroll hide-scrollbar">
                     {results?.map(renderSearchResult)}
