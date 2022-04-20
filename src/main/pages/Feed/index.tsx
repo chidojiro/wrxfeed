@@ -15,7 +15,6 @@ import { Category, Department, FeedItem, Vendor } from '@main/entity';
 import MainLayout from '@common/templates/MainLayout';
 import RollupCard from '@main/molecules/RollupCard';
 import Loading from '@common/atoms/Loading';
-import { ChevronLeftIcon } from '@assets';
 
 const FeedPage: React.VFC = () => {
   const history = useHistory();
@@ -47,10 +46,6 @@ const FeedPage: React.VFC = () => {
   useEffect(() => {
     getFeedItem(parseInt(feedId, 10));
   }, [feedId]);
-
-  const onClickGoBack = (): void => {
-    history.push('/notifications');
-  };
 
   const onClickCategory = (category?: Category) => {
     history.push({
@@ -116,10 +111,6 @@ const FeedPage: React.VFC = () => {
   return (
     <MainLayout>
       <h1 className="sr-only">Rollups</h1>
-      <div className="flex items-center space-x-4 pb-8 pl-4 sm:pl-0">
-        <ChevronLeftIcon onClick={onClickGoBack} />
-        <h1 className="text-Gray-1 text-xl font-bold">Notifications</h1>
-      </div>
       {renderFeed()}
     </MainLayout>
   );
