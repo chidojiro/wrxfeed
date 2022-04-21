@@ -522,6 +522,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               open={openMultiMonth}
               setOpen={setOpenMultiMonth}
               props={allProps}
+              periods={itemEditing?.periods}
               targetMonths={targetMonths}
               year={curYear}
               lastYearData={lastYearSpendData}

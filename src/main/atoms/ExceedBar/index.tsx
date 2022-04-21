@@ -6,26 +6,15 @@ interface ExceedBarProps {
   color?: string;
 }
 
-const ExceedBar: React.VFC<ExceedBarProps> = ({ className = '', color }) => {
-  const renderDashed = (item: number, index: number) => {
-    return (
-      <div key={`ExceedBar-${item}-${index}`} className="w-px h-24 bg-white rotate-40">
-        <div />
-      </div>
-    );
-  };
+const ExceedBar: React.VFC<ExceedBarProps> = ({ className = '' }) => {
   return (
     <div
       className={classNames(
-        'bg-red-500 space-x-1 flex flex-row items-center overflow-hidden',
+        'space-x-1 flex flex-row items-center overflow-hidden',
+        'zebra-stripes',
         className,
       )}
-      style={{
-        backgroundColor: color,
-      }}
-    >
-      {Array(30).fill(0).map(renderDashed)}
-    </div>
+    />
   );
 };
 

@@ -9,7 +9,7 @@ import { useFeedComment } from '@main/hooks/feedComment.hook';
 import { Category, Department, FeedItem, Vendor, Visibility, Target } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { useMention, useTarget } from '@main/hooks';
-import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
+import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@api/types';
 import { classNames } from '@common/utils';
 import { commentEditorRawParser, getDepartmentBgColor, getTargetName } from '@main/utils';
 import { SHOW_TARGET_FEED_CHART } from '@src/config';
@@ -28,6 +28,7 @@ import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.sv
 import { CalendarMinus } from '@assets';
 import AddTargetModal from '@main/organisms/AddTargetModal';
 import UserAvatar from '@main/atoms/UserAvatar';
+import cloneDeep from 'lodash.clonedeep';
 
 export interface TargetFeedItemProps {
   feedItem: FeedItem;
@@ -66,16 +67,18 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
+  const [curFeed, setCurFeed] = useState<FeedItem>(feedItem);
   const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
   const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
   const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
   const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
   const [showAddTarget, setShowAddTarget] = useState<boolean>(false);
   const [itemEditing, setItemEditing] = useState<Target | null>(null);
+  const setIntervalRef = useRef<PutTargetParams | undefined>();
   // Data hooks
   const { mentions } = useMention();
   // Variables
-  const isHidden = feedItem?.category?.visibility === Visibility.HIDDEN;
+  const isHidden = curFeed?.category?.visibility === Visibility.HIDDEN;
 
   const {
     comments,
@@ -84,18 +87,38 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
     editComment,
     addComment,
     hasMore: hasMoreComment,
-  } = useFeedComment(feedItem, filterComment);
+  } = useFeedComment(curFeed, filterComment);
 
   const hasComment = comments?.length > 0;
+
+  const onSuccessPutTarget = () => {
+    const dataPutTarget = setIntervalRef.current;
+    setShowAddTarget(false);
+    // auto update this target feed item after put success
+    const curFeedClone = cloneDeep(curFeed);
+    curFeedClone.target = {
+      ...curFeedClone.target,
+      ...(dataPutTarget?.name ? { name: dataPutTarget?.name } : {}),
+      ...(dataPutTarget?.props ? { props: dataPutTarget?.props } : {}),
+      ...(dataPutTarget?.periods ? { periods: dataPutTarget?.periods } : {}),
+    };
+
+    setCurFeed(curFeedClone);
+  };
 
   const { postTarget, putTarget, deleteTarget, isPostTarget, isPutTarget, isDeleteTarget } =
     useTarget(
       initFilter,
       { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
-      { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
+      { onSuccess: () => onSuccessPutTarget(), onError: () => undefined },
       { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
       false,
     );
+
+  const handlePutTarget = (id: number, data: PutTargetParams) => {
+    putTarget(id, data);
+    setIntervalRef.current = data;
+  };
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
     const contentState = values?.content as EditorState;
@@ -115,7 +138,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
 
   const handleAttachFile = (file: File) => {
     setUploadFileOptions({
-      filename: `${feedItem?.id}-${Date.now()}-${file.name}`,
+      filename: `${curFeed?.id}-${Date.now()}-${file.name}`,
       contentType: file.type,
       uploadType: UploadTypes.Attachments,
     });
@@ -123,7 +146,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
   };
 
   const departmentName =
-    feedItem?.department?.parent?.name ?? feedItem?.department?.name ?? 'unknown';
+    curFeed?.department?.parent?.name ?? curFeed?.department?.name ?? 'unknown';
   const deptGradientBg = useMemo(
     () => getDepartmentBgColor(departmentName ?? '', undefined, true),
     [departmentName],
@@ -135,7 +158,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
   };
 
   const onClickEditTarget = () => {
-    setItemEditing(feedItem.target);
+    setItemEditing(curFeed.target);
     setShowAddTarget(true);
   };
 
@@ -192,9 +215,9 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
     <>
       <article
         ref={containerRef}
-        key={feedItem.id}
+        key={curFeed.id}
         className="bg-white flex flex-col filter shadow-md rounded-card"
-        aria-labelledby={`rollup-title-${feedItem?.id}`}
+        aria-labelledby={`rollup-title-${curFeed?.id}`}
       >
         <div className="flex flex-col">
           <div
@@ -211,7 +234,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
           >
             <div className="flex flex-row items-center space-x-2">
               <div className="flex items-center min-w-0 flex-1">
-                {renderTargetName(feedItem?.target)}
+                {renderTargetName(curFeed?.target)}
                 {isHidden && (
                   <div className="flex flex-row items-center bg-Gray-12 py-0.5 px-2 ml-2 rounded-full">
                     <EyeHideIcon
@@ -223,8 +246,8 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
                 )}
               </div>
               <div className="flex-row space-x-2 self-center flex items-center">
-                <h2 id={`question-title-${feedItem?.id}`} className="text-xs text-Gray-6">
-                  {feedItem?.month && dayjs().format('MMMM YYYY')}
+                <h2 id={`question-title-${curFeed?.id}`} className="text-xs text-Gray-6">
+                  {curFeed?.month && dayjs().format('MMMM YYYY')}
                 </h2>
                 <button
                   type="button"
@@ -235,21 +258,21 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
               </div>
             </div>
             <div className="flex flex-row space-x-2 items-center h-6">
-              {renderEditorAvatar(feedItem?.target)}
+              {renderEditorAvatar(curFeed?.target)}
               <h2
                 aria-hidden="true"
-                id={`question-title-${feedItem?.id}`}
+                id={`question-title-${curFeed?.id}`}
                 className="mt-1 text-xs font-normal text-Gray-6 cursor-pointer"
               >
-                {`Last edited at ${dayjs(feedItem.lastInteraction).format('MM/DD/YYYY')}`}
+                {`Last edited at ${dayjs(curFeed.lastInteraction).format('MM/DD/YYYY')}`}
               </h2>
             </div>
           </div>
         </div>
         {SHOW_TARGET_FEED_CHART && (
-          <TargetChartView feedItem={feedItem} onEdit={onClickEditTarget} />
+          <TargetChartView feedItem={curFeed} onEdit={onClickEditTarget} />
         )}
-        <RollupTransactions trans={feedItem?.transactions} />
+        <RollupTransactions trans={curFeed?.transactions} />
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
             <CommentViewAll
@@ -278,7 +301,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
         </div>
         <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4 mt-1 sm:mt-2">
           <CommentBox
-            id={feedItem.id.toString()}
+            id={curFeed.id.toString()}
             className="bg-white"
             onAttachFile={handleAttachFile}
             mentionData={mentions}
@@ -301,12 +324,12 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
       <FeedBackModal
         open={isOpenFeedbackModal}
         onClose={() => openFeedbackModal(false)}
-        itemId={feedItem?.id}
+        itemId={curFeed?.id}
       />
-      {feedItem.transactions.length > 0 && (
+      {curFeed.transactions.length > 0 && (
         <AttachmentModal
-          depName={feedItem?.department?.name}
-          catName={feedItem?.category?.name}
+          depName={curFeed?.department?.name}
+          catName={curFeed?.category?.name}
           open={!!attachFileComment}
           file={attachFileComment}
           mentionData={mentions}
@@ -321,11 +344,11 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
         onCancel={() => hideAddTargetModal()}
         deleteTarget={deleteTarget}
         postTarget={postTarget}
-        putTarget={putTarget}
+        putTarget={handlePutTarget}
         itemEditing={itemEditing}
         isCreatingOrSaving={isPostTarget || isPutTarget}
         isDeleting={isDeleteTarget}
-        department={feedItem.department}
+        department={curFeed.department}
       />
     </>
   );

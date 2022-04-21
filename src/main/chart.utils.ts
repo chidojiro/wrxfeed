@@ -207,6 +207,9 @@ export const getTargetMonthsLineChartData = (
   let maxValue = 0;
   let totalThisYearSpend = 0;
 
+  const thisYearSorted = thisYearSpend?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
+  const lastYearSorted = lastYearSpend?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
+
   let data: ChartDataPoint[] = targetMonths.reduce<ChartDataPoint[]>((preVal, _, index) => {
     // start month has been set => reverse array to find end month index
     const indexFlag: number = startMonth !== -1 ? targetMonthsSize - index + startMonth : index;
@@ -217,20 +220,20 @@ export const getTargetMonthsLineChartData = (
       indexFlag > thisMonth
         ? {
             name: month,
-            lastYear: round(lastYearSpend[indexFlag]?.total ?? 0, 2),
+            lastYear: round(lastYearSorted[indexFlag]?.total ?? 0, 2),
             target: round(targetMonth.amount ?? 0, 2),
           }
         : {
             name: month,
-            thisYear: round(thisYearSpend[indexFlag]?.total ?? 0, 2),
-            lastYear: round(lastYearSpend[indexFlag]?.total ?? 0, 2),
+            thisYear: round(thisYearSorted[indexFlag]?.total ?? 0, 2),
+            lastYear: round(lastYearSorted[indexFlag]?.total ?? 0, 2),
             target: round(targetMonth.amount ?? 0, 2),
           };
     // Find max value
     if (targetMonth.amount) {
       maxValue = Math.max(
         maxValue,
-        round(thisYearSpend[indexFlag]?.total ?? 0),
+        round(thisYearSorted[indexFlag]?.total ?? 0),
         round(lastYearSpend[indexFlag]?.total ?? 0),
         round(targetMonth.amount ?? 0),
       );
