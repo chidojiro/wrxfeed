@@ -20,7 +20,14 @@ interface TransactionHookValues {
   newFeedCount: FeedCount | null;
 }
 
-export const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
+export const FilterKeys: string[] = [
+  'department',
+  'category',
+  'vendor',
+  'rootDepartment',
+  'month',
+  'year',
+];
 
 export function useTransaction(filter: TransactionFilter): TransactionHookValues {
   const [transactions, setTransactions] = useState<Transaction[]>([]);

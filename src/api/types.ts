@@ -252,6 +252,8 @@ export interface FeedFilters {
   vendor?: number;
   category?: number;
   rootDepartment?: number;
+  month?: number;
+  year?: number;
 }
 
 export interface SearchFilters {
