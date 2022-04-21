@@ -80,6 +80,7 @@ interface MultiMonthDropdownProps {
   open: boolean;
   setOpen: (newState: boolean) => void;
   props: CalcSpendProp[];
+  periods?: TargetPeriod[];
   onApply?: (data: TargetMonth[], year: number) => void;
   targetMonths: TargetMonth[];
   year: number;
@@ -118,6 +119,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
   {
     className = '',
     classPopover = '',
+    periods,
     onApply = () => undefined,
     open,
     setOpen,
@@ -148,6 +150,19 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
     const today = new Date();
     setCurYear(today.getFullYear());
   }, []);
+
+  useEffect(() => {
+    if (periods && periods.length > 0) {
+      const clonePreState = cloneDeep(targetMonthValues);
+      periods.forEach((period: TargetPeriod) => {
+        if (period.amount) {
+          clonePreState[period.month - 1].amount = period.amount;
+        }
+      });
+      setTargetMonthValues(clonePreState);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [periods]);
 
   const onClickApply = () => {
     setOpen(false);

@@ -282,3 +282,15 @@ svg.path-no-stroke > path {
     transparent 7px
   );
 }
+
+.zebra-stripes {
+  background-image: repeating-linear-gradient(-60deg,
+      transparent,
+      transparent 0px,
+      #FF5F68 2px,
+      #FF5F68 6px);
+  /* with multiple color stop lengths */
+  /* background-image: repeating-linear-gradient(-45deg,
+      transparent 0 20px,
+      black 20px 40px); */
+}

@@ -37,7 +37,7 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
 
           <main
             className={classNames(
-              'relative pt-12 md:border-l md:border-Gray-11 md:pl-6 md:col-span-8 max-w-3xl',
+              'relative pt-12 md:border-l md:border-Gray-11 md:pl-6 md:col-span-8 lg:col-span-8 xl:col-span-6 max-w-3xl',
               rightSide ? 'xl:col-span-6' : '',
             )}
           >
