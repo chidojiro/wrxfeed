@@ -140,15 +140,10 @@ const ForYouPage: React.VFC = () => {
         onClick={refetchNewItems}
       />
       <h1 className="sr-only">For you feed</h1>
-
-      {filterKey ? (
+      {filterKey && (
         <div className="flex items-center space-x-4 pb-8">
           <ChevronLeftIcon className="cursor-pointer" onClick={clearFilter} />
           <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
-        </div>
-      ) : (
-        <div className="flex items-center space-x-4 pb-8">
-          <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>
         </div>
       )}
       <FeedList

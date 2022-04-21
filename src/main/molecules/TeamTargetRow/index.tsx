@@ -114,7 +114,7 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) =
     const exceedNumber = targetAmount - totalSpent;
     const exceedNumberCurrency = nFormatter(Math.round(Math.abs(exceedNumber) * 100) / 100);
     return (
-      <p className="text-system-alert font-bold font-regular group-hover:hidden ml-auto text-3xs truncate">
+      <p className="text-system-alert font-bold font-regular group-hover:hidden ml-auto text-3xs truncate text-right w-52">
         {`Exceeds target by ${exceedNumberCurrency}`}
       </p>
     );
@@ -122,7 +122,7 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) =
   return (
     <div className="flex flex-1 flex-col w-full justify-center pt-4 pb-4.5 px-6 group border-b border-Gray-11">
       <div className="flex flex-row items-center mb-2 w-full">
-        <p className="text-2xs text-Gray-3 font-normal line-clamp-1 overflow-ellipsis">
+        <p className="text-2xs text-Gray-3 font-normal line-clamp-1 overflow-ellipsis mr-2">
           {targetName ?? '...'}
         </p>
         {renderAlertText()}
