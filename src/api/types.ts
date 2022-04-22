@@ -187,12 +187,12 @@ export interface PutTargetParams {
   periods: TargetPeriod[];
 }
 
-export type CalcSpendProp = {
+export interface TargetProp {
   id: number;
-  exclude: boolean;
   type: TargetPropType;
   name: string;
-};
+  exclude?: boolean;
+}
 
 export type TargetPeriod = {
   month: number;
@@ -201,7 +201,7 @@ export type TargetPeriod = {
   total?: number; // TODO: require backend return number type
 };
 export interface PatchCalcSpendingFilters {
-  props: CalcSpendProp[];
+  props: TargetProp[];
   periods: TargetPeriod[];
 }
 
@@ -209,13 +209,6 @@ export enum TargetPropType {
   DEPARTMENT = 'DEPARTMENT',
   CATEGORY = 'CATEGORY',
   VENDOR = 'VENDOR',
-}
-
-export interface TargetProp {
-  id: number;
-  type: TargetPropType;
-  name: string;
-  exclude?: boolean;
 }
 
 export interface SubscriptionParams {

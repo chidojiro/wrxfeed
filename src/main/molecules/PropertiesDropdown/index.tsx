@@ -134,7 +134,8 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
           key={`renderItemSelected-close-${itemSelected.id}`}
           type="button"
           className="text-xs text-white font-bold ml-2"
-          onClick={() => {
+          onClick={(event) => {
+            event.stopPropagation();
             setItems((pre) => pre.filter((item: SearchResult) => item.id !== itemSelected.id));
           }}
         >

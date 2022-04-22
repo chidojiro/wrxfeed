@@ -288,7 +288,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                   }`}
                 </span>
               </h2>
-              <h2 className="mr-7">{`Last Month: $${formatCurrency(feedItem?.lastMonthTotal)}`}</h2>
+              <h2 className="mr-7">{`Last Month: $${formatCurrency(feedItem?.prevMonthSpend)}`}</h2>
             </div>
           </div>
         </div>

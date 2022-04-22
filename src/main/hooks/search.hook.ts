@@ -44,14 +44,13 @@ export function useSearch({
           if (!dept.name.toLowerCase().includes(keyword.toLowerCase())) {
             return arr;
           }
-          const addItem = {
+          const addItem: SearchResult = {
             id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${dept?.id}`,
             title: dept?.name,
             type: TargetPropType.DEPARTMENT,
             directoryId: dept?.id,
-            name: 'ss',
           };
-          if (except && except.includes(addItem)) return arr;
+          // if (except && except.filter((item) => item.id === addItem.id).length > 0) return arr;
           return [...arr, addItem];
         }, []);
 
@@ -66,9 +65,8 @@ export function useSearch({
             title: cat?.name,
             type: TargetPropType.CATEGORY,
             directoryId: cat?.id,
-            name: 'ss',
           };
-          if (except && except.includes(addItem)) return arr;
+          // if (except && except.includes(addItem)) return arr;
           return [...arr, addItem];
         }, []);
 
@@ -83,7 +81,6 @@ export function useSearch({
             title: vend?.name,
             type: TargetPropType.VENDOR,
             directoryId: vend?.id,
-            name: 'ss',
           };
           if (except && except.includes(addItem)) return arr;
           return [...arr, addItem];

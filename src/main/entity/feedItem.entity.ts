@@ -5,10 +5,7 @@ export type FeedItem = {
   type: string;
   year?: number;
   month?: number;
-  // total?: number;
-  lastMonthTotal?: number;
-  // firstDate?: string;
-  // lastDate?: string;
+  prevMonthSpend?: number;
   department: Department;
   category: Category;
   depId?: number;
