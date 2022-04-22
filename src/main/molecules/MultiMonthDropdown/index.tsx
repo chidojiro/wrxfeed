@@ -15,71 +15,19 @@ import { useOnClickOutside } from '@dwarvesf/react-hooks';
 
 import { classNames, formatCurrency, round } from '@common/utils';
 import { TargetMonth } from '@main/entity';
-import { TargetPeriod, CalcSpendProp } from '@api/types';
+import { TargetPeriod, TargetProp } from '@api/types';
 import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-2.svg';
 import { BasicsDownSmall, LeftSmallIcon } from '@assets';
 import Loading from '@common/atoms/Loading';
 import MonthTargetInput from '@main/atoms/MonthTargetInput';
-
-export const defaultTargetMonths = [
-  {
-    month: 1,
-    amount: 0,
-  },
-  {
-    month: 2,
-    amount: 0,
-  },
-  {
-    month: 3,
-    amount: 0,
-  },
-  {
-    month: 4,
-    amount: 0,
-  },
-  {
-    month: 5,
-    amount: 0,
-  },
-  {
-    month: 6,
-    amount: 0,
-  },
-  {
-    month: 7,
-    amount: 0,
-  },
-  {
-    month: 8,
-    amount: 0,
-  },
-  {
-    month: 9,
-    amount: 0,
-  },
-  {
-    month: 10,
-    amount: 0,
-  },
-  {
-    month: 11,
-    amount: 0,
-  },
-  {
-    month: 12,
-    amount: 0,
-  },
-];
-
-const monthsInYear = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+import { defaultTargetMonths, monthsInYear } from '@common/constants';
 
 interface MultiMonthDropdownProps {
   className?: string;
   classPopover?: string;
   open: boolean;
   setOpen: (newState: boolean) => void;
-  props: CalcSpendProp[];
+  props: TargetProp[];
   periods?: TargetPeriod[];
   onApply?: (data: TargetMonth[], year: number) => void;
   targetMonths: TargetMonth[];
@@ -139,7 +87,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
     targetMonths.length ? targetMonths : defaultTargetMonths,
   );
   // Variables
-  const totalAmount = round(targetMonthValues.reduce((total, target) => total + target.amount, 0));
+  const totalAmount = round(targetMonthValues.reduce((total, target) => total + target?.amount, 0));
   const titleSelect = getButtonTitle(minMonth, maxMonth);
   const applyEnableState = selectedMonths.length > 0 && !isLoadingData ? 'bg-primary' : 'bg-Gray-6';
 
@@ -155,8 +103,8 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
     if (periods && periods.length > 0) {
       const clonePreState = cloneDeep(targetMonthValues);
       periods.forEach((period: TargetPeriod) => {
-        if (period.amount) {
-          clonePreState[period.month - 1].amount = period.amount;
+        if (period?.amount && clonePreState[period?.month - 1] && clonePreState[period.month - 1]) {
+          clonePreState[period?.month - 1].amount = period?.amount;
         }
       });
       setTargetMonthValues(clonePreState);
@@ -171,8 +119,8 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
 
   const onChangeMonthInput = (month: number, amount: number) => {
     const clonePreState = cloneDeep(targetMonthValues);
-    const curAmount = clonePreState[month - 1].amount;
-    if (amount !== curAmount) {
+    const curAmount = clonePreState[month - 1]?.amount;
+    if (amount !== curAmount && clonePreState[month - 1]) {
       clonePreState[month - 1].amount = amount;
       setTargetMonthValues(clonePreState);
     }
@@ -288,9 +236,9 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
                 <LeftSmallIcon className="w-4 h-4" width={16} height={16} viewBox="0 0 16 16" />
                 <div className="flex flex-1 flex-row justify-center items-center">
                   <p className="text-primary text-xs font-semibold ml-4">{curYear}</p>
-                  <div className="w-4 h-4 flex justify-center items-center">
+                  {/* <div className="w-4 h-4 flex justify-center items-center">
                     {isLoadingData && <Loading width={8} height={8} />}
-                  </div>
+                  </div> */}
                 </div>
                 <LeftSmallIcon
                   className="w-4 h-4 rotate-180"
@@ -304,7 +252,12 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
                 <p>Last Year's Spend</p>
                 <p>Target</p>
               </div>
-              <div className="flex flex-row space-x-2 py-2 px-[22px]">
+              <div
+                className={classNames(
+                  'flex flex-row space-x-2 py-2 px-[22px] relative',
+                  isLoadingData ? 'opacity-50' : '',
+                )}
+              >
                 {renderMonthName()}
                 {renderLastYearSpend()}
                 <div className="flex flex-1 flex-col space-y-1">
@@ -336,6 +289,14 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
                     );
                   })}
                 </div>
+                <div
+                  className={classNames(
+                    'absolute z-10 flex w-full h-full justify-center items-center',
+                    isLoadingData ? '' : 'pointer-events-none',
+                  )}
+                >
+                  {isLoadingData && <Loading width={36} height={36} className="mr-12" />}
+                </div>
               </div>
               <div className="flex flex-col items-end justify-between text-xs text-primary px-6 pt-2 h-8">
                 <p className="text-primary font-semibold">
@@ -357,7 +318,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
                 <button
                   type="button"
                   disabled={isLoadingData}
-                  onClick={() => onClickApply()}
+                  onClick={onClickApply}
                   className={classNames(
                     'flex flex-row items-center px-4 h-7 rounded-sm',
                     applyEnableState,

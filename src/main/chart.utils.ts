@@ -221,30 +221,30 @@ export const getTargetMonthsLineChartData = (
         ? {
             name: month,
             lastYear: round(lastYearSorted[indexFlag]?.total ?? 0, 2),
-            target: round(targetMonth.amount ?? 0, 2),
+            target: round(targetMonth?.amount ?? 0, 2),
           }
         : {
             name: month,
             thisYear: round(thisYearSorted[indexFlag]?.total ?? 0, 2),
             lastYear: round(lastYearSorted[indexFlag]?.total ?? 0, 2),
-            target: round(targetMonth.amount ?? 0, 2),
+            target: round(targetMonth?.amount ?? 0, 2),
           };
     // Find max value
-    if (targetMonth.amount) {
+    if (targetMonth?.amount) {
       maxValue = Math.max(
         maxValue,
         round(thisYearSorted[indexFlag]?.total ?? 0),
         round(lastYearSpend[indexFlag]?.total ?? 0),
-        round(targetMonth.amount ?? 0),
+        round(targetMonth?.amount ?? 0),
       );
     }
     // Only add months in selected range (start and end with non-zero amount)
     // Criteria 1: Start month didn't set and the month doesn't have a target amount (0) => ignore
-    if (startMonth === -1 && !targetMonth.amount) {
+    if (startMonth === -1 && !targetMonth?.amount) {
       return preVal;
     }
     // Criteria 2: Start month didn't set and the month has a target amount
-    if (startMonth === -1 && targetMonth.amount) {
+    if (startMonth === -1 && targetMonth?.amount) {
       // Set start month
       startMonth = indexFlag;
       // Sum total this year spend
@@ -254,11 +254,11 @@ export const getTargetMonthsLineChartData = (
     }
     /** *** Start month has been set => reverse array until reach start month **** */
     // Criteria 3: End month didn't set and the month doesn't have a target amount (0) => ignore
-    if (endMonth === -1 && !targetMonth.amount) {
+    if (endMonth === -1 && !targetMonth?.amount) {
       return preVal;
     }
     // Criteria 4: End month didn't set and the month has a target amount
-    if (endMonth === -1 && targetMonth.amount) {
+    if (endMonth === -1 && targetMonth?.amount) {
       // Set end month
       endMonth = indexFlag;
       // Sum total this year spend
