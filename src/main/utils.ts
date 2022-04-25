@@ -325,7 +325,7 @@ const DEPT_COLORS = [
   '#DF6622',
   '#F64C32',
 ];
-export const getDepartmentBgColor = (
+export const getColorByText = (
   name: string,
   id: number | undefined = undefined,
   gradient = false,

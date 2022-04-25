@@ -11,7 +11,7 @@ import { CommentFormModel } from '@main/types';
 import { useMention, useTarget } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@api/types';
 import { classNames } from '@common/utils';
-import { commentEditorRawParser, getDepartmentBgColor, getTargetName } from '@main/utils';
+import { commentEditorRawParser, getColorByText, getTargetName } from '@main/utils';
 import { SHOW_TARGET_FEED_CHART } from '@src/config';
 // components
 import CommentBox from '@main/molecules/CommentBox';
@@ -146,12 +146,8 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
     setAttachFileComment(file);
   };
 
-  const departmentName =
-    curFeed?.department?.parent?.name ?? curFeed?.department?.name ?? 'unknown';
-  const deptGradientBg = useMemo(
-    () => getDepartmentBgColor(departmentName ?? '', undefined, true),
-    [departmentName],
-  );
+  const catName = curFeed?.category?.name ?? 'unknown';
+  const gradientBg = useMemo(() => getColorByText(catName ?? '', undefined, true), [catName]);
 
   const hideAddTargetModal = () => {
     setItemEditing(null);
@@ -224,7 +220,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
           <div
             className="h-4 w-full rounded-t-card"
             style={{
-              background: deptGradientBg,
+              background: gradientBg,
             }}
           />
           <div

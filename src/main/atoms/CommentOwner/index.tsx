@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { User } from '@main/entity';
 import { classNames, formatDate } from '@common/utils';
-import { getDepartmentBgColor, getNameAbbreviation } from '@main/utils';
+import { getColorByText, getNameAbbreviation } from '@main/utils';
 import { profileState } from '@auth/containers/ProfileEditForm/states';
 
 export interface CommentOwnerProps {
@@ -21,7 +21,7 @@ const CommentOwner: React.VFC<CommentOwnerProps> = ({
 }) => {
   const profile = useRecoilValue(profileState);
   const avatarBgColor = React.useMemo(
-    () => getDepartmentBgColor(owner?.fullName ?? ''),
+    () => getColorByText(owner?.fullName ?? ''),
     [owner?.fullName],
   );
   const renderAvaOrShortName = () => {

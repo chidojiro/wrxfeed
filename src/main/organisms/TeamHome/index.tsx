@@ -5,7 +5,7 @@ import { MouseEventHandler } from 'react-router/node_modules/@types/react';
 
 import { useSubscription } from '@main/hooks/subscription.hook';
 
-import { getDepartmentBgColor } from '@main/utils';
+import { getColorByText } from '@main/utils';
 import { Department } from '@main/entity';
 
 import Button from '@common/atoms/Button';
@@ -36,7 +36,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect, depId 
   const isFollow: boolean | null | undefined = deptSelect && isFollowing('departments', deptSelect);
 
   const deptGradientBg = useMemo(
-    () => getDepartmentBgColor(deptSelect?.name ?? '', depId, true),
+    () => getColorByText(deptSelect?.name ?? '', depId, true),
     [depId, deptSelect?.name],
   );
   const renderFollowButton = () => {

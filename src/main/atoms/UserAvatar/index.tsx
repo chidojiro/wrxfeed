@@ -2,7 +2,7 @@ import React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { profileState } from '@auth/containers/ProfileEditForm/states';
-import { getDepartmentBgColor, getNameAbbreviation } from '@main/utils';
+import { getColorByText, getNameAbbreviation } from '@main/utils';
 import { User } from '@main/entity';
 import { classNames } from '@common/utils';
 
@@ -15,10 +15,7 @@ export interface UserAvatarProps {
 
 const UserAvatar: React.VFC<UserAvatarProps> = ({ size, className = '', user }) => {
   const profile = useRecoilValue(profileState);
-  const avatarBgColor = React.useMemo(
-    () => getDepartmentBgColor(user?.fullName ?? ''),
-    [user?.fullName],
-  );
+  const avatarBgColor = React.useMemo(() => getColorByText(user?.fullName ?? ''), [user?.fullName]);
 
   const sizeToWidthHeight =
     size && size > 0

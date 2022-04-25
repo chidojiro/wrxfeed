@@ -13,7 +13,7 @@ import { CommentFormModel } from '@main/types';
 import { useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import { classNames, formatCurrency } from '@common/utils';
-import { commentEditorHtmlParser, getDepartmentBgColor, getTotalFeedItem } from '@main/utils';
+import { commentEditorHtmlParser, getColorByText, getTotalFeedItem } from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
 // components
 import NotifyBanner from '@common/molecules/NotifyBanner';
@@ -199,12 +199,8 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     return items;
   };
 
-  const departmentName =
-    feedItem?.department?.parent?.name ?? feedItem?.department?.name ?? 'unknown';
-  const deptGradientBg = useMemo(
-    () => getDepartmentBgColor(departmentName ?? '', undefined, true),
-    [departmentName],
-  );
+  const catName = feedItem?.category?.name ?? 'unknown';
+  const itemGradientBg = useMemo(() => getColorByText(catName ?? '', undefined, true), [catName]);
 
   return (
     <>
@@ -221,7 +217,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               'flex-grow w-4/5 px-6 py-5 border-b border-Gray-11',
             )}
             style={{
-              background: deptGradientBg,
+              background: itemGradientBg,
             }}
           >
             <div className="flex items-center space-x-3">
