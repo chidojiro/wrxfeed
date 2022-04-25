@@ -267,24 +267,28 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               </div>
             </div>
             <div className="flex flex-row items-center justify-between mt-1 text-xs font-normal text-white">
-              <h2
-                aria-hidden="true"
-                id={`question-title-${feedItem?.id}`}
-                className="cursor-pointer hover:underline"
-                onClick={() => {
-                  if (onClickDepartment) {
-                    onClickDepartment(feedItem?.department);
-                  }
-                }}
-              >
-                {`${feedItem?.department?.name} · ${
-                  feedItem?.month &&
-                  dayjs()
-                    .month(feedItem?.month - 1)
-                    .format('MMMM')
-                }`}
+              <h2 id={`question-title-${feedItem?.id}`}>
+                <span
+                  className="cursor-pointer hover:underline"
+                  aria-hidden="true"
+                  onClick={() => {
+                    if (onClickDepartment) {
+                      onClickDepartment(feedItem?.department);
+                    }
+                  }}
+                >
+                  {`${feedItem?.department?.name}`}
+                </span>
+                <span>
+                  {` · ${
+                    feedItem?.month &&
+                    dayjs()
+                      .month(feedItem?.month - 1)
+                      .format('MMMM')
+                  }`}
+                </span>
               </h2>
-              <h2 className="mr-7">{`Last Month: $${formatCurrency(feedItem?.lastMonthTotal)}`}</h2>
+              <h2 className="mr-7">{`Last Month: $${formatCurrency(feedItem?.prevMonthSpend)}`}</h2>
             </div>
           </div>
         </div>

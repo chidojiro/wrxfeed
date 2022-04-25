@@ -5,15 +5,10 @@ import { ChartLineProps, LineChartData } from '@main/types';
 import { getChartLevels } from '@main/chart.utils';
 import { classNames } from '@common/utils';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
+import Loading from '@common/atoms/Loading';
+import { INITIAL_CHART_DATA } from '@common/constants';
 
 const MIN_Y_VALUE = 100;
-
-const INITIAL_DATA: LineChartData = {
-  data: [],
-  lines: [],
-  legends: [],
-  maxValue: 0,
-};
 
 interface TargetChartProps<T> {
   className?: string;
@@ -24,6 +19,7 @@ interface TargetChartProps<T> {
   renderXAxis?: () => JSX.Element;
   renderReferenceLines?: () => JSX.Element | null;
   renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element | null;
+  loading?: boolean;
 }
 
 const TargetChart: <T extends unknown>(
@@ -37,8 +33,9 @@ const TargetChart: <T extends unknown>(
   renderXAxis,
   renderReferenceLines,
   renderTooltip,
+  loading = false,
 }) => {
-  const { data, lines, maxValue } = chartData || INITIAL_DATA;
+  const { data, lines, maxValue } = chartData || INITIAL_CHART_DATA;
   const maxValueForChart = Math.max(
     (maxYValue ?? 0) > maxValue ? (maxYValue ?? 0) * 1.2 : maxValue,
     MIN_Y_VALUE,
@@ -103,6 +100,9 @@ const TargetChart: <T extends unknown>(
             })}
           </LineChart>
         </ResponsiveContainer>
+        <div className="absolute z-10 w-full h-full flex justify-center items-center pointer-events-none">
+          {loading && <Loading width={36} height={36} />}
+        </div>
       </div>
       {renderXAxis && renderXAxis()}
     </div>

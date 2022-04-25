@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useApi } from '@api';
 import { useErrorHandler } from '@error/hooks';
-import { PatchCalcSpendingFilters, TargetPeriod } from '@api/types';
+import { TargetProp, PatchCalcSpendingFilters, TargetPeriod } from '@api/types';
 
 interface MultiMonthHookValues {
   months: TargetPeriod[];
@@ -18,20 +18,27 @@ export function useMultiMonth(
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
-  const getCalcSpending = useCallback(async () => {
-    if (filter.props.length === 0) {
-      return;
-    }
-    try {
-      setLoading(true);
-      const data = await ApiClient.patchCalcSpending(filter);
-      setMonths(data);
-    } catch (error) {
-      await errorHandler(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [ApiClient, errorHandler, filter]);
+  const getCalcSpending = useCallback(
+    async (preProps?: TargetProp[]) => {
+      if (preProps && preProps.length > 0) {
+        // eslint-disable-next-line no-param-reassign
+        filter.props = preProps;
+      }
+      if (filter.props.length === 0) {
+        return;
+      }
+      try {
+        setLoading(true);
+        const data = await ApiClient.patchCalcSpending(filter);
+        setMonths(data);
+      } catch (error) {
+        await errorHandler(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [ApiClient, errorHandler, filter],
+  );
 
   useEffect(() => {
     if (!isLazy) {

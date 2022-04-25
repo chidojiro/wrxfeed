@@ -21,9 +21,17 @@ const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
   defaultAmount,
 }) => {
   const amountInputRef = useRef<HTMLInputElement>(null);
-  const [amount, setAmount] = useState<string>(defaultAmount ? defaultAmount.toString() : '');
+  const [amount, setAmount] = useState<string>(
+    defaultAmount ? formatCurrency(defaultAmount, '0,0', '') : '',
+  );
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (defaultAmount) {
+      onSelect();
+    }
+  }, [defaultAmount]);
 
   useEffect(() => {
     if (!mounted) {
@@ -34,12 +42,7 @@ const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
       onSelect();
     } else if (amount.length > 0) {
       const amountInt = parseInt(replaceAll(amount, ',', ''), 10);
-      if (amountInt <= 0) {
-        onUnselect();
-        setAmount('');
-      } else {
-        onChange(amountInt);
-      }
+      onChange(amountInt);
     } else if (amount.length === 0) {
       onUnselect();
     }
@@ -47,7 +50,7 @@ const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setAmount(`${formatCurrency(newValue, '0,0', '0')}`);
+    setAmount(`${formatCurrency(newValue, '0,0', '')}`);
   };
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (['Enter'].includes(event.key)) {

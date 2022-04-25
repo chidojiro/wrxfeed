@@ -260,9 +260,8 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
             <div className="flex flex-row space-x-2 items-center h-6">
               {renderEditorAvatar(curFeed?.target)}
               <h2
-                aria-hidden="true"
                 id={`question-title-${curFeed?.id}`}
-                className="mt-1 text-xs font-normal text-Gray-6 cursor-pointer"
+                className="mt-1 text-xs font-normal text-Gray-6"
               >
                 {`Last edited at ${dayjs(curFeed.lastInteraction).format('MM/DD/YYYY')}`}
               </h2>

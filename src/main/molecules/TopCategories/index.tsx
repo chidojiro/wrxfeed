@@ -7,6 +7,8 @@ import { Category } from '@main/entity';
 import { CategoryIcon } from '@assets/index';
 import { CategoryFilter } from '@api/types';
 import Loading from '@common/atoms/Loading';
+import { useHistory } from 'react-router-dom';
+import { MainGroups } from '@common/constants';
 
 const LIMIT = 6;
 const INIT_PAGINATION = Object.freeze({
@@ -20,16 +22,27 @@ interface TopCategoriesProps {
 }
 
 const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departmentId }) => {
+  const history = useHistory();
   const [filter] = useState<CategoryFilter>({
     ...INIT_PAGINATION,
     dep: departmentId,
   });
   const { categories = [], isLoading } = useCategory(filter);
+  const onSelect = (category: Category) => {
+    history.push({
+      pathname: `/categories/${category?.id}`,
+      search: `?route=${MainGroups.Directories}&department=${departmentId}&month=${category?.month}&year=${category?.year}`,
+    });
+  };
   const renderTopCategoryItem = (category: Category) => {
     return (
       <div
         key={`TopCategories-${category.id}`}
-        className="flex flex-row items-center px-6 py-4 border-b border-t border-t-white border-b-Gray-11 hover:border-Accent-4 bg-white hover:shadow-topCategoryHover hover:z-10"
+        className="flex flex-row items-center px-6 py-4 border-b border-t border-t-white border-b-Gray-11 hover:border-Accent-4 bg-white hover:shadow-topCategoryHover hover:z-10 hover:cursor-pointer"
+        onClick={() => {
+          onSelect(category);
+        }}
+        aria-hidden="true"
       >
         <p className="text-Gray-3 text-xs font-semibold">{category?.name}</p>
         <p className="mx-1 text-Gray-6 text-sm">·</p>

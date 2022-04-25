@@ -8,11 +8,11 @@ import range from 'lodash.range';
 import { classNames, formatCurrency, round } from '@common/utils';
 import { LineChartData, SearchResult } from '@main/types';
 import {
-  CalcSpendProp,
+  TargetProp,
   PatchCalcSpendingFilters,
   PostTargetParams,
   PutTargetParams,
-  TargetProp,
+  TargetPeriod,
   TargetPropType,
 } from '@api/types';
 import { Department, Target, TargetMonth } from '@main/entity';
@@ -34,6 +34,8 @@ import {
 import TargetChart from '@main/molecules/TargetChart';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
 import { getTargetMonthsLineChartData } from '@main/chart.utils';
+import { defaultTargetMonths, INITIAL_CHART_DATA } from '@common/constants';
+import cloneDeep from 'lodash.clonedeep';
 
 export type AddTargetModalProps = {
   open: boolean;
@@ -49,6 +51,16 @@ export type AddTargetModalProps = {
   depId?: number | undefined;
   department?: Department;
 };
+
+const THIS_YEAR = new Date().getFullYear();
+const THIS_YEAR_INIT_FILTER = Object.freeze({
+  props: [],
+  periods: getPeriodsByYear(THIS_YEAR),
+});
+const LAST_YEAR_INIT_FILTER = Object.freeze({
+  props: [],
+  periods: getPeriodsByYear(THIS_YEAR - 1),
+});
 
 const AddTargetModal: React.FC<AddTargetModalProps> = ({
   open = false,
@@ -69,12 +81,12 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [vendItems, setVendItems] = useState<SearchResult[]>([]);
   const [catItems, setCatItems] = useState<SearchResult[]>([]);
   const [teamItems, setTeamItems] = useState<SearchResult[]>([]);
-  const [allProps, setAllProps] = useState<CalcSpendProp[]>([]);
+  const [allProps, setAllProps] = useState<TargetProp[]>([]);
 
   const [openMultiMonth, setOpenMultiMonth] = useState<boolean>(false);
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>([]);
   const [showNoMonthError, setNoMonthError] = useState<boolean>(false);
-  const [curYear, setCurYear] = useState(new Date().getFullYear());
+  const [curYear, setCurYear] = useState(THIS_YEAR);
 
   const [targetName, setTargetName] = useState<string>('');
   const [isEditName, setEditName] = useState<boolean>(false);
@@ -82,19 +94,18 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
 
   const [defaultTags, setDefaultTags] = useState<SearchResult[]>([]);
   const [showErrorProp, setShowErrorProp] = useState<boolean>(false);
+  const checkGetPreFillData = useRef(false);
 
-  const [thisYearSpendFilter, setThisYearFilter] = useState<PatchCalcSpendingFilters>(() => ({
-    props: allProps,
-    periods: getPeriodsByYear(curYear),
-  }));
-  const [lastYearSpendFilter, setLastYearFilter] = useState<PatchCalcSpendingFilters>(() => ({
-    props: allProps,
-    periods: getPeriodsByYear(curYear - 1),
-  }));
-  const { months: thisYearSpendData = [], fetch: fetchThisYearSpendData } = useMultiMonth(
-    thisYearSpendFilter,
-    true,
-  );
+  const [thisYearSpendFilter, setThisYearFilter] =
+    useState<PatchCalcSpendingFilters>(THIS_YEAR_INIT_FILTER);
+  const [lastYearSpendFilter, setLastYearFilter] =
+    useState<PatchCalcSpendingFilters>(LAST_YEAR_INIT_FILTER);
+
+  const {
+    months: thisYearSpendData = [],
+    fetch: fetchThisYearSpendData,
+    isLoading: thisYearDataLoading,
+  } = useMultiMonth(thisYearSpendFilter, true);
   const {
     months: lastYearSpendData = [],
     isLoading: lastYearDataLoading,
@@ -117,7 +128,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   }, [department, open]);
 
   useEffect(() => {
-    if (openMultiMonth) {
+    if (checkGetPreFillData.current) {
       setThisYearFilter({
         props: allProps,
         periods: getPeriodsByYear(curYear),
@@ -127,7 +138,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         periods: getPeriodsByYear(curYear - 1),
       });
     }
-  }, [allProps, curYear, openMultiMonth]);
+  }, [allProps, curYear]);
 
   const isEdit = itemEditing !== null;
   const chartData: LineChartData = useMemo(() => {
@@ -187,6 +198,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         setTargetName('');
         setDefaultTags([]);
         setTargetMonths([]);
+        checkGetPreFillData.current = false;
       }, 400);
     } else {
       // fetch data
@@ -203,7 +215,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     const vendors = vendItems.length ? vendItems : []; // allDirectoriesResult.allVendors;
     const teams = teamItems.length ? teamItems : []; // allDirectoriesResult.allTeams;
     const categories = catItems.length ? catItems : []; // allDirectoriesResult.allCategories;
-    const propsCheck: CalcSpendProp[] = [...vendors, ...teams, ...categories].map(
+    const propsCheck: TargetProp[] = [...vendors, ...teams, ...categories].map(
       (item: SearchResult) => {
         return {
           id: item.directoryId,
@@ -225,6 +237,14 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     setAllProps(propsCheck);
   }, [vendItems, teamItems, catItems, exceptItems]);
 
+  const applyDataThenGenChart = (data: TargetMonth[], year: number) => {
+    setTargetMonths(data);
+    setCurYear(year);
+    if (data.length > 0) {
+      setNoMonthError(false);
+    }
+  };
+
   useEffect(() => {
     if (itemEditing && itemEditing?.props.length > 0) {
       const defaultTagsTemp = itemEditing?.props.map((prop: TargetProp) => {
@@ -238,6 +258,27 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       setDefaultTags(defaultTagsTemp);
     }
     setTargetName(itemEditing?.name ?? '');
+  }, [itemEditing]);
+
+  useEffect(() => {
+    if (itemEditing && itemEditing?.periods.length > 0 && itemEditing.props.length > 0) {
+      setThisYearFilter({
+        props: itemEditing?.props,
+        periods: getPeriodsByYear(THIS_YEAR),
+      });
+      setLastYearFilter({
+        props: itemEditing?.props,
+        periods: getPeriodsByYear(THIS_YEAR - 1),
+      });
+      const dataMonth = cloneDeep(defaultTargetMonths);
+      itemEditing?.periods.forEach((period: TargetPeriod) => {
+        if (period?.amount && dataMonth[period?.month - 1] && dataMonth[period.month - 1]) {
+          dataMonth[period?.month - 1].amount = period?.amount;
+        }
+      });
+      setTargetMonths(dataMonth);
+      checkGetPreFillData.current = true;
+    }
   }, [itemEditing]);
 
   const onCloseModal = () => {
@@ -526,14 +567,8 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               targetMonths={targetMonths}
               year={curYear}
               lastYearData={lastYearSpendData}
-              isLoadingData={lastYearDataLoading}
-              onApply={(data, year) => {
-                setTargetMonths(data);
-                setCurYear(year);
-                if (data.length > 0) {
-                  setNoMonthError(false);
-                }
-              }}
+              isLoadingData={lastYearDataLoading || thisYearDataLoading}
+              onApply={applyDataThenGenChart}
             />
           </div>
           <div className="flex flex-row items-center space-x-2">
@@ -555,9 +590,10 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         <div className="relative flex justify-center items-center w-auto mx-6 px-4 py-6 h-[271px] border border-Gray-12 rounded-2.5xl">
           <TargetChart
             containerClass="mb-4 mt-6"
-            chartData={chartData}
+            chartData={thisYearSpendData.length > 0 ? chartData : INITIAL_CHART_DATA}
             renderTooltip={renderTooltipContent}
             renderXAxis={renderXAxis}
+            loading={lastYearDataLoading || thisYearDataLoading}
           />
         </div>
         <div className="flex flex-row pt-4 pb-6 px-10 space-x-4 items-center justify-end text-primary text-xs font-semibold">

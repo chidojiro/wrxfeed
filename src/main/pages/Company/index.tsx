@@ -16,6 +16,7 @@ import MainLayout from '@common/templates/MainLayout';
 import FeedList from '@main/organisms/FeedList';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { MainGroups } from '@common/constants';
 
 const LIMIT = 20;
 const INIT_PAGINATION = {
@@ -120,6 +121,15 @@ const CompanyPage: React.VFC = () => {
   }, [setFeedFilters, filterKey]);
 
   const handleFilter = (key: keyof FeedFilters, value?: Department | Category | Vendor): void => {
+    // Update according to AP-889 https://heyarrow.atlassian.net/browse/AP-889
+    if (key === 'department') {
+      history.push({
+        pathname: `/departments/${value?.id}`,
+        search: `?route=${MainGroups.Directories}`,
+      });
+      return;
+    }
+
     const queryString = `?${key}=${value?.id}`;
     history.push({
       pathname: history.location.pathname,
