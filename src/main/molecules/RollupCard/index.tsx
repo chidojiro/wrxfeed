@@ -74,7 +74,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const { mentions } = useMention();
   const { checkPermission } = usePermission();
   // Variables
-  const isHidden = feedItem?.category.visibility === Visibility.HIDDEN;
+  const isHidden = feedItem?.category?.visibility === Visibility.HIDDEN;
   const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
 
   const {
