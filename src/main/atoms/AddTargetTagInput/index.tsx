@@ -114,7 +114,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
   return (
     <div className="flex flex-col">
       <div className="relative bg-Gray-12 flex flex-row items-center rounded-sm">
-        <div className="flex flex-grow flex-wrap items-center p-2 focus-within:z-10 max-h-60 overflow-y-scroll">
+        <div className="flex flex-grow flex-wrap items-center p-2 focus-within:z-10 h-[38px] overflow-y-scroll">
           {items.map((item) => (
             <InputTag
               key={item?.id}
@@ -126,7 +126,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
           <input
             ref={searchInputRef}
             type="text"
-            className="max-w-full min-w-[280px] py-1 rounded-none text-sm text-Gray-1 focus:outline-none bg-transparent"
+            className="max-w-full min-w-[280px] rounded-none text-sm text-Gray-6 focus:outline-none bg-transparent"
             value={value}
             placeholder={placeholder}
             onChange={handleChange}

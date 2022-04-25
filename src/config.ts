@@ -1,3 +1,4 @@
+export const BUILD_ENV = process.env.BUILD_ENV || 'dev';
 export const APP_NAME = 'Gravity';
 export const API_BASE_URL = '/api';
 export const GOOGLE_CLIENT_ID =
@@ -16,4 +17,4 @@ export const ENABLE_SUBSCRIPTION_SIDE_BAR = true;
 export const AUTO_ADD_USER_DEPARTMENT_SIDE_BAR = true;
 export const TEAM_SUGGEST_RANDOM_NUMBER = 4;
 export const REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT = 30000;
-export const SHOW_TARGET_FEED_CHART = false;
+export const SHOW_TARGET_FEED_CHART = true;

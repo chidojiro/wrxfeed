@@ -5,6 +5,7 @@ import ListLoading from '@main/atoms/ListLoading';
 import ListEndComponent from '@main/atoms/ListEndComponent';
 import RollupCard from '@main/molecules/RollupCard';
 import { FeedFilters } from '@api/types';
+import TargetFeedItem from '@main/molecules/TargetFeedItem';
 
 interface FeedListProps {
   style?: CSSProperties;
@@ -17,6 +18,11 @@ interface FeedListProps {
   updateCategory?: (category: Partial<Category>) => Promise<void>;
   EndComponent?: React.FunctionComponent | undefined;
   EmptyStateComponent?: React.FunctionComponent | undefined;
+}
+
+export enum FeedItemType {
+  target = 'target',
+  transaction = 'transaction',
 }
 
 const FeedList: React.VFC<FeedListProps> = ({
@@ -70,19 +76,35 @@ const FeedList: React.VFC<FeedListProps> = ({
       LoadingComponent={<ListLoading />}
     >
       <ul className="pb-2 sm:pb-5 space-y-4">
-        {feeds.map((feed) => (
-          <li key={feed.id}>
-            <RollupCard
-              key={feed.id}
-              feedItem={feed}
-              updateCategory={updateCategory}
-              onClickVendor={(value) => onFilter && onFilter('vendor', value)}
-              onClickDepartment={(value) => onFilter && onFilter('department', value)}
-              onClickCategory={(value) => onFilter && onFilter('category', value)}
-              onClickRootDept={(value) => onFilter && onFilter('rootDepartment', value)}
-            />
-          </li>
-        ))}
+        {feeds.map((feed) => {
+          if (feed.type === FeedItemType.target) {
+            return (
+              <TargetFeedItem
+                key={`TargetFeedItem-${feed.id}`}
+                feedItem={feed}
+                updateCategory={updateCategory}
+                onClickVendor={(value) => onFilter && onFilter('vendor', value)}
+                onClickDepartment={(value) => onFilter && onFilter('department', value)}
+                onClickCategory={(value) => onFilter && onFilter('category', value)}
+                onClickRootDept={(value) => onFilter && onFilter('rootDepartment', value)}
+              />
+            );
+          }
+          if (feed.type === FeedItemType.transaction) {
+            return (
+              <RollupCard
+                key={`RollupCard-${feed.id}`}
+                feedItem={feed}
+                updateCategory={updateCategory}
+                onClickVendor={(value) => onFilter && onFilter('vendor', value)}
+                onClickDepartment={(value) => onFilter && onFilter('department', value)}
+                onClickCategory={(value) => onFilter && onFilter('category', value)}
+                onClickRootDept={(value) => onFilter && onFilter('rootDepartment', value)}
+              />
+            );
+          }
+          return null;
+        })}
       </ul>
       {!isLoading && !feeds.length && renderEmptyList}
       {!isLoading && feeds.length > 0 && !hasMore && renderEndComponent}

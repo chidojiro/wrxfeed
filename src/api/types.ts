@@ -22,7 +22,7 @@ import {
   ProfileFormModel,
   SearchTypes,
 } from '@auth/types';
-import { InviteFormModel, FeedBackFormModel } from '@main/types';
+import { InviteFormModel, FeedBackFormModel, SearchResult } from '@main/types';
 
 export interface ApiClient {
   // Authentication API
@@ -81,7 +81,8 @@ export interface ApiClient {
   getTargets: (filters?: TargetFilter) => Promise<Target[]>;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
-  deleteTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  deleteTarget: (id: number) => Promise<void>;
+  patchCalcSpending: (data: PatchCalcSpendingFilters) => Promise<TargetPeriod[]>;
   // Subscription
   getSubscriptions: () => Promise<Subscription>;
   updateSubscriptions: (data: SubscriptionParams) => Promise<Subscription>;
@@ -161,42 +162,53 @@ export interface DepartmentFilter extends Pagination {
 }
 export interface CategoryFilter extends Pagination {
   term?: string;
-  dep?: number; // department id
+  dep?: number;
 }
 
 export interface TargetFilter extends Pagination {
   year: number;
   month: number;
   timestamp?: number;
-  dep?: number; // department id
+  dep?: number;
 }
 
-export interface PutTargetParams {
-  month: number;
-  year: number;
-  amount: number;
+export interface PostTargetParams {
+  name: string;
   depId?: number;
+  isPrimary: boolean;
   props: TargetProp[];
+  periods?: TargetPeriod[];
 }
-
-export enum TargetPropType {
-  DEPARTMENT = 'DEPARTMENT',
-  CATEGORY = 'CATEGORY',
-  VENDOR = 'VENDOR',
+export interface PutTargetParams {
+  name: string;
+  depId?: number;
+  isPrimary: boolean;
+  props: TargetProp[];
+  periods: TargetPeriod[];
 }
 
 export interface TargetProp {
   id: number;
   type: TargetPropType;
   name: string;
+  exclude?: boolean;
 }
 
-export interface PostTargetParams {
+export type TargetPeriod = {
   month: number;
   year: number;
-  amount: number | null;
-  depId?: number;
+  amount?: number;
+  total?: number; // TODO: require backend return number type
+};
+export interface PatchCalcSpendingFilters {
   props: TargetProp[];
+  periods: TargetPeriod[];
+}
+
+export enum TargetPropType {
+  DEPARTMENT = 'DEPARTMENT',
+  CATEGORY = 'CATEGORY',
+  VENDOR = 'VENDOR',
 }
 
 export interface SubscriptionParams {
@@ -233,6 +245,8 @@ export interface FeedFilters {
   vendor?: number;
   category?: number;
   rootDepartment?: number;
+  month?: number;
+  year?: number;
 }
 
 export interface SearchFilters {
@@ -242,4 +256,5 @@ export interface SearchFilters {
   searchCate?: boolean;
   ignoreEmptyKeyword?: boolean;
   searchType?: SearchTypes;
+  except?: SearchResult[] | null;
 }

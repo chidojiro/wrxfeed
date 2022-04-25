@@ -128,7 +128,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
       <ul className="flex flex-col">
         {targets.map((item: Target, index: number) => (
           <TargetRow
-            key={`target-${item?.id}-${item?.month}`}
+            key={`target-${item?.id}-${item.id}`}
             target={item}
             index={index}
             onClickEdit={() => onClickEdit(item)}

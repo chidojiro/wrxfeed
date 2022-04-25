@@ -13,9 +13,8 @@ import { CommentFormModel } from '@main/types';
 import { useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import { classNames, formatCurrency } from '@common/utils';
-import { commentEditorRawParser, getDepartmentBgColor } from '@main/utils';
+import { commentEditorHtmlParser, getDepartmentBgColor, getTotalFeedItem } from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
-import { SHOW_TARGET_FEED_CHART } from '@src/config';
 // components
 import NotifyBanner from '@common/molecules/NotifyBanner';
 import CommentBox from '@main/molecules/CommentBox';
@@ -26,7 +25,6 @@ import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentViewAll from '@main/atoms/CommentViewAll';
-import TargetChartView from '@main/molecules/TargetChartView';
 import RollupTransactions from '@main/molecules/RollupTransactions';
 // assets
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
@@ -64,6 +62,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     limit: INITIAL_COMMENT_NUMBER,
   });
 
+  const { total } = getTotalFeedItem(feedItem);
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
@@ -75,7 +74,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const { mentions } = useMention();
   const { checkPermission } = usePermission();
   // Variables
-  const isHidden = feedItem?.category.visibility === Visibility.HIDDEN;
+  const isHidden = feedItem?.category?.visibility === Visibility.HIDDEN;
   const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
 
   const {
@@ -93,8 +92,11 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     const contentState = values?.content as EditorState;
     const isDirty = contentState.getCurrentContent().hasText() || !!values?.attachment;
     if (!isDirty) return;
-    const parsedContent = commentEditorRawParser(contentState.getCurrentContent());
-    addComment({ content: parsedContent, attachment: values.attachment }).then();
+    const parsedContent = commentEditorHtmlParser(contentState.getCurrentContent());
+    addComment({
+      content: parsedContent,
+      attachment: values.attachment,
+    }).then();
   };
 
   const loadAllComments = () => {
@@ -108,7 +110,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const handleHideCategory = async () => {
     setConfirmModal(undefined);
     if (updateCategory) {
-      await updateCategory({ id: feedItem?.category.id, visibility: Visibility.HIDDEN });
+      await updateCategory({ id: feedItem?.category?.id, visibility: Visibility.HIDDEN });
     }
     NotifyBanner.info('You have hidden this line item!');
   };
@@ -126,7 +128,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const handleShowCategory = async () => {
     setConfirmModal(undefined);
     if (updateCategory) {
-      await updateCategory({ id: feedItem?.category.id, visibility: Visibility.VISIBLE });
+      await updateCategory({ id: feedItem?.category?.id, visibility: Visibility.VISIBLE });
     }
     NotifyBanner.info('You have unhidden this line item!');
   };
@@ -227,9 +229,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                   <button
                     type="button"
                     className="hover:underline text-left font-bold"
-                    onClick={() => {
-                      return onClickDepartment && onClickDepartment(feedItem?.department);
-                    }}
+                    onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
                   >
                     {feedItem?.category?.name}
                   </button>
@@ -247,9 +247,9 @@ const RollupCard: React.VFC<RollupCardProps> = ({
               <div className="flex-shrink-0 self-center flex items-center">
                 <h2
                   id={`question-title-${feedItem?.id}`}
-                  className="text-base font-semibold text-white mr-3"
+                  className="text-lg font-semibold text-white mr-3"
                 >
-                  {`$ ${formatCurrency(feedItem?.total)}`}
+                  {`$${formatCurrency(total)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block z-20 text-left">
                   <div>
@@ -266,23 +266,35 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                 </Menu>
               </div>
             </div>
-            <h2
-              aria-hidden="true"
-              id={`question-title-${feedItem?.id}`}
-              className="mt-1 text-xs font-normal text-white cursor-pointer hover:underline"
-              onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
-            >
-              {`${feedItem?.department?.name} · ${
-                feedItem?.month &&
-                dayjs()
-                  .month(feedItem?.month - 1)
-                  .format('MMMM')
-              }`}
-            </h2>
+            <div className="flex flex-row items-center justify-between mt-1 text-xs font-normal text-white">
+              <h2 id={`question-title-${feedItem?.id}`}>
+                <span
+                  className="cursor-pointer hover:underline"
+                  aria-hidden="true"
+                  onClick={() => {
+                    if (onClickDepartment) {
+                      onClickDepartment(feedItem?.department);
+                    }
+                  }}
+                >
+                  {`${feedItem?.department?.name}`}
+                </span>
+                <span>
+                  {` · ${
+                    feedItem?.month &&
+                    dayjs()
+                      .month(feedItem?.month - 1)
+                      .format('MMMM')
+                  }`}
+                </span>
+              </h2>
+              <h2 className="mr-7">{`Last Month: $${formatCurrency(feedItem?.prevMonthSpend)}`}</h2>
+            </div>
           </div>
         </div>
-        {SHOW_TARGET_FEED_CHART && <TargetChartView />}
-        <RollupTransactions trans={feedItem?.transactions} />
+        {Array.isArray(feedItem?.transactions) && feedItem?.transactions?.length > 0 && (
+          <RollupTransactions trans={feedItem?.transactions} />
+        )}
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
             <CommentViewAll
@@ -336,18 +348,16 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         onClose={() => openFeedbackModal(false)}
         itemId={feedItem?.id}
       />
-      {feedItem.transactions.length > 0 && (
-        <AttachmentModal
-          depName={feedItem?.department?.name}
-          catName={feedItem?.category?.name}
-          open={!!attachFileComment}
-          file={attachFileComment}
-          mentionData={mentions}
-          uploadOptions={uploadFileOptions}
-          onClose={() => setAttachFileComment(null)}
-          onFileUploaded={onSubmitComment}
-        />
-      )}
+      <AttachmentModal
+        depName={feedItem?.department?.name}
+        catName={feedItem?.category?.name}
+        open={!!attachFileComment}
+        file={attachFileComment}
+        mentionData={mentions}
+        uploadOptions={uploadFileOptions}
+        onClose={() => setAttachFileComment(null)}
+        onFileUploaded={onSubmitComment}
+      />
     </>
   );
 };

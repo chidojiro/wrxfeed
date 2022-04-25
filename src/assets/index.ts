@@ -23,6 +23,12 @@ import { ReactComponent as Bank } from '@assets/icons/outline/bank.svg';
 import { ReactComponent as CategoryIcon } from '@assets/icons/outline/category-icon.svg';
 import { ReactComponent as TeamIcon } from '@assets/icons/outline/team-icon.svg';
 import { ReactComponent as LoopIcon } from '@assets/icons/outline/loop.svg';
+import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
+import { ReactComponent as AlertRed } from '@assets/icons/solid/alert-red.svg';
+import { ReactComponent as CalendarMinus } from '@assets/icons/solid/calendar-minus.svg';
+import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { ReactComponent as IntersectIcon } from '@assets/icons/outline/intersect.svg';
+import { ReactComponent as LeftSmallIcon } from '@assets/icons/outline/left-small.svg';
 
 export {
   InviteIcon,
@@ -50,4 +56,10 @@ export {
   CategoryIcon,
   TeamIcon,
   LoopIcon,
+  ExclamationCircle,
+  AlertRed,
+  CalendarMinus,
+  ChevronLeftIcon,
+  IntersectIcon,
+  LeftSmallIcon,
 };

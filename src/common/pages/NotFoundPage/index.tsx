@@ -18,7 +18,7 @@ const NotFoundPage: React.VFC = () => {
             </div>
             <div className="mt-10 flex space-x-3 sm:border-l sm:border-transparent sm:pl-6">
               <Link
-                to="/company"
+                to="/for-you"
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-Gray-3 hover:bg-Gray-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-6"
               >
                 Go back home

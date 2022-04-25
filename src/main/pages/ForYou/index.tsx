@@ -17,6 +17,7 @@ import MainLayout from '@common/templates/MainLayout';
 import FeedList from '@main/organisms/FeedList';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { MainGroups } from '@common/constants';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -95,6 +96,15 @@ const ForYouPage: React.VFC = () => {
   };
 
   const handleFilter = (key: keyof FeedFilters, value?: Department | Category | Vendor): void => {
+    // Update according to AP-889 https://heyarrow.atlassian.net/browse/AP-889
+    if (key === 'department') {
+      history.push({
+        pathname: `/departments/${value?.id}`,
+        search: `?route=${MainGroups.Directories}`,
+      });
+      return;
+    }
+
     const queryString = `?${key}=${value?.id}`;
     history.push({
       pathname: history.location.pathname,
@@ -140,15 +150,10 @@ const ForYouPage: React.VFC = () => {
         onClick={refetchNewItems}
       />
       <h1 className="sr-only">For you feed</h1>
-
-      {filterKey ? (
+      {filterKey && (
         <div className="flex items-center space-x-4 pb-8">
           <ChevronLeftIcon className="cursor-pointer" onClick={clearFilter} />
           <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
-        </div>
-      ) : (
-        <div className="flex items-center space-x-4 pb-8">
-          <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>
         </div>
       )}
       <FeedList

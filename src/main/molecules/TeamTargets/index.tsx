@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { useTarget } from '@main/hooks';
@@ -33,6 +33,8 @@ interface TeamTargetsProps {
 const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId }) => {
   const [showAddTarget, setShowAddTarget] = useState<boolean>(false);
   const [itemEditing, setItemEditing] = useState<Target | null>(null);
+  const [targetView, setTargetView] = useState<ReactNode[]>([]);
+  const [havePrimary, setHavePrimary] = useState<boolean>(false);
 
   const [filter, setFilter] = useState<TargetFilter>({
     ...initFilter,
@@ -92,6 +94,46 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
     false,
   );
 
+  useEffect(() => {
+    const targetViewTemp: ReactNode[] = [];
+    const startCount = havePrimary ? 1 : 0;
+    for (let i = startCount; i < targets.length; i += 1) {
+      const item = targets[i];
+      const nextItem = targets[i + 1];
+      const left = targets.length - (i + 1);
+      if (left > 0) {
+        targetViewTemp.push(
+          <div className="flex flex-col sm:flex-row w-full" key={`targetView-${item?.id}`}>
+            <TeamTargetRow target={item} onClickEdit={() => onClickEdit(item)} />
+            <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
+            <TeamTargetRow target={nextItem} onClickEdit={() => onClickEdit(nextItem)} />
+          </div>,
+        );
+        i += 1;
+      }
+      if (left === 0) {
+        targetViewTemp.push(
+          <div className="flex flex-col sm:flex-row w-full" key={`targetView-${item?.id}`}>
+            <TeamTargetRow className="w-6/12" target={item} onClickEdit={() => onClickEdit(item)} />
+            <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
+            <EmptyTarget className="w-6/12" onClickNewTarget={onClickNewTarget} />
+          </div>,
+        );
+      }
+    }
+    if (targetViewTemp.length === 0) {
+      targetViewTemp.push(
+        <div key="targetView-EmptyTarget">
+          <EmptyTarget onClickNewTarget={onClickNewTarget} />
+        </div>,
+      );
+    }
+    setTargetView(targetViewTemp);
+    if (targets.length > 0) {
+      setHavePrimary(!!targets[0].isPrimary);
+    }
+  }, [havePrimary, targets]);
+
   const renderAddNewTargetButton = () => {
     return (
       <button
@@ -103,42 +145,6 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
         <p className="text-xs text-Gray-3 font-normal">New</p>
       </button>
     );
-  };
-
-  const renderSmallTargets = (data: Target[]) => {
-    const targetView: ReactNode[] = [];
-    for (let i = 1; i < data.length; i += 1) {
-      const item = data[i];
-      const nextItem = data[i + 1];
-      const left = data.length - (i + 1);
-      if (left > 0) {
-        targetView.push(
-          <div className="flex flex-col sm:flex-row w-full" key={`targetView-${item?.id}`}>
-            <TeamTargetRow target={item} onClickEdit={() => onClickEdit(item)} />
-            <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
-            <TeamTargetRow target={nextItem} onClickEdit={() => onClickEdit(nextItem)} />
-          </div>,
-        );
-        i += 1;
-      }
-      if (left === 0) {
-        targetView.push(
-          <div className="flex flex-col sm:flex-row w-full" key={`targetView-${item?.id}`}>
-            <TeamTargetRow className="w-6/12" target={item} onClickEdit={() => onClickEdit(item)} />
-            <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
-            <EmptyTarget className="w-6/12" onClickNewTarget={onClickNewTarget} />
-          </div>,
-        );
-      }
-    }
-    if (targetView.length === 0) {
-      targetView.push(
-        <div key="targetView-EmptyTarget">
-          <EmptyTarget onClickNewTarget={onClickNewTarget} />
-        </div>,
-      );
-    }
-    return targetView;
   };
 
   const prePopulatedProps: SearchResult = {
@@ -154,8 +160,10 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
         <p className="text-Gray-3 font-semibold">Team Targets</p>
         {renderAddNewTargetButton()}
       </div>
-      {targets.length > 0 && <TeamTargetRow target={targets[0]} onClickEdit={onClickEdit} />}
-      {renderSmallTargets(targets)}
+      {targets.length > 0 && havePrimary && (
+        <TeamTargetRow target={targets[0]} onClickEdit={onClickEdit} />
+      )}
+      {targetView}
       <AddTargetModal
         open={showAddTarget}
         onClose={() => hideAddTargetModal()}
@@ -168,6 +176,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
         isDeleting={isDeleteTarget}
         initTags={[prePopulatedProps]}
         depId={depId}
+        department={dept}
       />
     </div>
   );

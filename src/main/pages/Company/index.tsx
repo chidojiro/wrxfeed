@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 
@@ -16,8 +16,9 @@ import MainLayout from '@common/templates/MainLayout';
 import FeedList from '@main/organisms/FeedList';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import { MainGroups } from '@common/constants';
 
-const LIMIT = 10;
+const LIMIT = 20;
 const INIT_PAGINATION = {
   offset: 0,
   limit: LIMIT,
@@ -32,8 +33,8 @@ const CompanyPage: React.VFC = () => {
   const history = useHistory();
   const location = useLocation();
   const { readAllTransactions, getVendorById, getCategoryById, getDepartmentById } = useApi();
-  const [feedFilters, setFeedFilters] = React.useState<FeedFilters>(INIT_FEED_FILTER);
-  const [filterTitle, setFilterTitle] = React.useState('');
+  const [feedFilters, setFeedFilters] = useState<FeedFilters>(INIT_FEED_FILTER);
+  const [filterTitle, setFilterTitle] = useState('');
   const filterKey = FilterKeys.find((key) => query.get(key));
 
   const {
@@ -120,6 +121,15 @@ const CompanyPage: React.VFC = () => {
   }, [setFeedFilters, filterKey]);
 
   const handleFilter = (key: keyof FeedFilters, value?: Department | Category | Vendor): void => {
+    // Update according to AP-889 https://heyarrow.atlassian.net/browse/AP-889
+    if (key === 'department') {
+      history.push({
+        pathname: `/departments/${value?.id}`,
+        search: `?route=${MainGroups.Directories}`,
+      });
+      return;
+    }
+
     const queryString = `?${key}=${value?.id}`;
     history.push({
       pathname: history.location.pathname,
