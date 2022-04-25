@@ -78,7 +78,8 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
   // Data hooks
   const { mentions } = useMention();
   // Variables
-  const isHidden = curFeed?.category?.visibility === Visibility.HIDDEN;
+  const isHidden =
+    curFeed?.category !== null && curFeed?.category?.visibility === Visibility.HIDDEN;
 
   const {
     comments,
