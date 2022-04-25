@@ -34,6 +34,7 @@ module.exports = {
         'Gray-1': '#0F0D15',
         'Gray-2': '#273240',
         'Gray-3': '#374151',
+        'Gray-3-50': 'rgba(55, 65, 81, 0.5)',
         'Gray-4': '#9EA0AA',
         'Gray-5': '#d1d5db',
         'Gray-6': '#7D8490',
