@@ -152,8 +152,8 @@ svg.path-no-stroke > path {
 }
 
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
@@ -205,6 +205,17 @@ svg.path-no-stroke > path {
   animation: fill-bar2 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite;
 }
 
+.linear-team-page-0 {
+  background-image: #ff0000;
+  background-image: radial-gradient(at 99% 32%, hsla(28, 100%, 74%, 1) 0, transparent 50%),
+    radial-gradient(at 80% 0%, hsla(189, 100%, 56%, 1) 0, transparent 50%),
+    radial-gradient(at 0% 50%, hsla(355, 85%, 93%, 1) 0, transparent 50%),
+    radial-gradient(at 74% 25%, hsla(340, 100%, 76%, 1) 0, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(22, 100%, 77%, 1) 0, transparent 50%),
+    radial-gradient(at 80% 100%, hsla(242, 100%, 70%, 1) 0, transparent 50%),
+    radial-gradient(at 0% 0%, hsla(343, 100%, 76%, 1) 0, transparent 50%);
+}
+
 @keyframes fill-bar1 {
   0% {
     left: -35%;
@@ -233,4 +244,53 @@ svg.path-no-stroke > path {
     left: 107%;
     right: -8%;
   }
+}
+
+.dashed-line {
+  margin: 5px 0;
+  height: 2px;
+  background: repeating-linear-gradient(
+    to right,
+    #6565fb 0,
+    #6565fb 5px,
+    transparent 5px,
+    transparent 7px
+  );
+  /*5px red then 2px transparent -> repeat this!*/
+}
+
+.dashed-line-legend {
+  margin: 5px 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    to right,
+    #6565fb 0,
+    #6565fb 5px,
+    transparent 5px,
+    transparent 7px
+  );
+}
+
+.dashed-line-target {
+  margin: 5px 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    to right,
+    #FF5F68 0,
+    #FF5F68 5px,
+    transparent 5px,
+    transparent 7px
+  );
+}
+
+.zebra-stripes {
+  background-image: repeating-linear-gradient(-60deg,
+      transparent,
+      transparent 0px,
+      #FF5F68 2px,
+      #FF5F68 6px);
+  /* with multiple color stop lengths */
+  /* background-image: repeating-linear-gradient(-45deg,
+      transparent 0 20px,
+      black 20px 40px); */
 }

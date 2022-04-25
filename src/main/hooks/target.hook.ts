@@ -23,7 +23,7 @@ interface TargetHookValues {
   isGetTargets: boolean;
   postTarget: (data: PostTargetParams) => Promise<void>;
   putTarget: (id: number, data: PutTargetParams) => Promise<void>;
-  deleteTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  deleteTarget: (id: number) => Promise<void>;
   isPostTarget: boolean;
   isPutTarget: boolean;
   isDeleteTarget: boolean;
@@ -33,14 +33,18 @@ export function useTarget(
   cbPost: TargetCallback,
   cbPut: TargetCallback,
   cbDelete: TargetCallback,
+  isSaveGlobal?: boolean,
 ): TargetHookValues {
-  const [targets, setTargets] = useRecoilState<Target[]>(targetState);
-  // const [targets, setTargets] = useState<Target[]>([]);
+  const [targetsGlobal, setTargetsGlobal] = useRecoilState<Target[]>(targetState);
+  const [targetsLocal, setTargetsLocal] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isGetTargets, setGetTargets] = useState<boolean>(false);
   const [isPostTarget, setPostTarget] = useState<boolean>(false);
   const [isPutTarget, setPutTarget] = useState<boolean>(false);
   const [isDeleteTarget, setDeleteTarget] = useState<boolean>(false);
+
+  const targets = isSaveGlobal ? targetsGlobal : targetsLocal;
+  const setTargets = isSaveGlobal ? setTargetsGlobal : setTargetsLocal;
 
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
@@ -112,11 +116,11 @@ export function useTarget(
     }
   };
 
-  const deleteTarget = async (id: number, data: PutTargetParams) => {
+  const deleteTarget = async (id: number) => {
     if (isPutTarget) return;
     try {
       setDeleteTarget(true);
-      await ApiClient.deleteTarget(id, data);
+      await ApiClient.deleteTarget(id);
       const newTargets = targets.filter((item: Target) => item?.id !== id);
       setTargets(newTargets);
       cbDelete.onSuccess();

@@ -10,14 +10,26 @@ import {
 import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
+import { convertFromHTML, convertToHTML } from 'draft-convert';
 
-import { TransLineItem, Target } from '@main/entity';
-import { TargetPropType } from '@api/types';
+import {
+  TransLineItem,
+  Target,
+  TranStatusNameColor,
+  TranStatusType,
+  FeedItem,
+  Transaction,
+} from '@main/entity';
+import { TargetPeriod, TargetProp, TargetPropType } from '@api/types';
+import cloneDeep from 'lodash.clonedeep';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
-import { ReactComponent as Suitcase } from '@assets/icons/outline/suitcase.svg';
+import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
+import { TeamIcon, CategoryIcon, Bank } from '@assets';
+import { TargetMonth } from './entity/target.entity';
+import { SearchResult } from './types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -133,6 +145,29 @@ export function commentEditorRawParser(contentState: ContentState): string {
 }
 
 /**
+ * Convert ContentState of editor to html included mention format
+ */
+export function commentEditorHtmlParser(contentState: ContentState): string {
+  const { blocks, entityMap } = convertToRaw(contentState);
+  let htmlContent = convertToHTML(contentState);
+  // Find mention blocks and replace to html
+  blocks.forEach((block) => {
+    if (block.entityRanges.length) {
+      block.entityRanges.forEach((entityRange) => {
+        const entity = entityMap[entityRange.key];
+        if (entity.type === 'mention') {
+          // Create mention tag and replace
+          const entityData = entityMap[entityRange.key].data.mention as MentionData;
+          const mention = mentionTagCreator(entityData.id as number, entityData.name);
+          htmlContent = htmlContent.replace(entityData.name, mention);
+        }
+      });
+    }
+  });
+  return htmlContent;
+}
+
+/**
  * Get Indices for entity ranges
  */
 const getIndicesOf = (searchStr: string, str: string, caseSensitive?: boolean) => {
@@ -163,7 +198,7 @@ const getIndicesOf = (searchStr: string, str: string, caseSensitive?: boolean) =
  * Get entity ranges of mention in text
  */
 const getMentionEntityRanges = (text: string, mentionName: string, mentionKey: number) => {
-  const indices = getIndicesOf(mentionName, text);
+  const indices = getIndicesOf(mentionName, text, true);
   if (indices.length > 0) {
     return indices.map((offset) => ({
       key: mentionKey,
@@ -215,6 +250,62 @@ export function commentTextToContentState(text: string): ContentState {
 }
 
 /**
+ * Convert a comment html to Draftjs ContentState
+ */
+export function commentHtmlToContentState(text: string): ContentState {
+  const mentionMatches = text.match(MentionRegex);
+  // No mentions => convert from html only
+  if (!mentionMatches?.length) {
+    return convertFromHTML(text);
+  }
+  // In case of mentions
+  const rawText = text.replace(MentionRegex, mentionNameReplacer);
+  // Create content state with mention entities
+  const rawContent = convertToRaw(convertFromHTML(rawText));
+  // Create mention draft raw entities
+  const rawMentionState = mentionMatches.reduce<{ [key: string]: RawDraftEntity }>(
+    (map, tag, idx) => {
+      const entity = rawMentionEntityCreator(tag);
+      if (!entity) return map;
+      return { ...map, [idx]: entity };
+    },
+    {},
+  );
+  rawContent.entityMap = rawMentionState;
+  // Map mention entities to content blocks
+  rawContent.blocks = rawContent.blocks.map((block) => {
+    const ranges: RawDraftEntityRange[] = [];
+    Object.keys(rawMentionState).forEach((key) => {
+      const entityRanges = getMentionEntityRanges(
+        block.text,
+        rawMentionState[key].data.mention.name,
+        parseInt(key, 10),
+      );
+      if (entityRanges) {
+        ranges.push(...entityRanges);
+      }
+    });
+    return { ...block, entityRanges: ranges };
+  });
+  return convertFromRaw(rawContent);
+}
+
+/**
+ * Get department bg color based on name
+ */
+const DEPT_GRADIENT_COLORS = [
+  'linear-gradient(90.91deg, #F4A27F 0.49%, #F28C6E 20.72%, #DB7271 40.14%, #9A5FAF 65.43%, #6A6AF2 80.23%, #9656AC 102.35%, #9656AC 105.59%)',
+  'linear-gradient(90.64deg, #F08299 0.34%, #EF707E 20.62%, #CB8595 40.08%, #B7BAB8 65.42%, #C4BFAD 80.26%, #DDB495 98.34%, #DDB495 105.67%)',
+  'linear-gradient(90.64deg, #B9A6D7 0.34%, #998DD5 20.62%, #7B78D8 40.08%, #5154DB 65.42%, #3C3FDC 80.26%, #5255DE 98.34%, #9656AC 105.67%)',
+  'linear-gradient(90.64deg, #CF88AF 0.34%, #BD8CB5 20.62%, #AB85B1 40.08%, #9E79AD 65.42%, #9B76A6 80.26%, #977FAC 98.34%, #9656AC 105.67%)',
+  'linear-gradient(90.64deg, #B4BBD6 0.34%, #A0AFC9 20.62%, #7E87D1 40.08%, #6F6EE0 65.42%, #7475DC 80.26%, #8E82CF 98.34%, #9686D0 105.67%)',
+  'linear-gradient(90.64deg, #60B6C1 0.34%, #61BFC2 20.62%, #60BBC2 40.08%, #4E88A3 65.42%, #5387AA 80.26%, #6C9AB8 98.34%, #7CB1E3 105.67%)',
+  'linear-gradient(90.64deg, #9FF2C2 0.34%, #7BCAD1 20.62%, #59A5DE 40.08%, #2B72F2 65.42%, #2065F6 80.26%, #2065F6 98.34%, #2065F6 105.67%)',
+  'linear-gradient(90.64deg, #D98551 0.34%, #D27449 20.62%, #D7834C 40.08%, #E9AE57 65.42%, #F0C35D 80.26%, #F6D160 98.34%, #F8D85F 105.67%)',
+  'linear-gradient(90.64deg, #777BBB 0.34%, #6071C2 20.62%, #636CC9 40.08%, #7964D6 65.42%, #825FDE 80.26%, #855CE5 98.34%, #855DE4 105.67%)',
+  'linear-gradient(90.64deg, #77D3F9 0.34%, #6CBFE4 20.62%, #5291BC 40.08%, #3F6BC0 65.42%, #3C61D9 80.26%, #3E6ABA 98.34%, #3E6ABC 105.67%)',
+];
+/**
  * Get department bg color based on name
  */
 const DEPT_COLORS = [
@@ -234,7 +325,11 @@ const DEPT_COLORS = [
   '#DF6622',
   '#F64C32',
 ];
-export function getDepartmentBgColor(name: string): string {
+export const getDepartmentBgColor = (
+  name: string,
+  id: number | undefined = undefined,
+  gradient = false,
+): string => {
   let hash = 0;
   let i;
 
@@ -243,11 +338,14 @@ export function getDepartmentBgColor(name: string): string {
     hash += name.charCodeAt(i);
   }
 
-  // there are 15 pre-defined colors of department. Position starts from 1
-  const bgColorPos = hash % DEPT_COLORS.length;
+  const colorsData = gradient ? DEPT_GRADIENT_COLORS : DEPT_COLORS;
 
-  return DEPT_COLORS[bgColorPos];
-}
+  // there are 15 pre-defined colors of department. Position starts from 1
+  const preDefined = id || hash;
+  const bgColorPos = preDefined % colorsData.length;
+
+  return colorsData[bgColorPos];
+};
 
 export function isURL(str: string): boolean {
   const pattern = new RegExp(
@@ -343,9 +441,18 @@ export const getVendorNameFromLineItem = (item: TransLineItem): string => {
 export const getIconByResultType = (
   type: TargetPropType,
 ): React.FC<React.SVGAttributes<SVGElement>> => {
-  if (type === TargetPropType.VENDOR) return Suitcase;
+  if (type === TargetPropType.VENDOR) return VendorIcon;
   if (type === TargetPropType.DEPARTMENT) return GroupUsers;
   if (type === TargetPropType.CATEGORY) return Files;
+  return BasicsSearchSmall;
+};
+
+export const getPropIconByType = (
+  type: TargetPropType,
+): React.FC<React.SVGAttributes<SVGElement>> => {
+  if (type === TargetPropType.VENDOR) return Bank;
+  if (type === TargetPropType.DEPARTMENT) return TeamIcon;
+  if (type === TargetPropType.CATEGORY) return CategoryIcon;
   return BasicsSearchSmall;
 };
 
@@ -370,14 +477,139 @@ export const getPropTypeDisplayName = (type: TargetPropType): string => {
   return '#6565FB';
 };
 
+export const getUniqueListBy = (arr: any[], objectKey: string): any[] => {
+  return [...new Map(arr.map((item: any) => [item[objectKey], item])).values()];
+};
+
+export const getTargetName = (target?: Target): string => {
+  if (!target) {
+    return '';
+  }
+  const { props = [], name } = target;
+  if (typeof name === 'string' && name.length > 1) {
+    return name;
+  }
+  if (!Array.isArray(props) || props.length === 0) return 'Invalid target!';
+  if (typeof target.props[0].name !== 'string' || target.props[0].name.length < 1) {
+    return 'This target have no name!';
+  }
+  let targetName = target.props[0].name;
+  if (props.length === 1) return targetName;
+  for (let i = 1; i < props?.length; i += 1) {
+    targetName += `, ${props[i].name}`;
+  }
+  return targetName;
+};
+
+export const getTransactionColor = (status: string): TranStatusType => {
+  return TranStatusNameColor[status];
+};
+
+export const getItemsSentence = (items: SearchResult[], pre = ''): string => {
+  const cloneItems = cloneDeep(items);
+  if (cloneItems.length === 0) return '';
+  if (cloneItems.length === 1) return pre + cloneItems[0].title;
+  if (cloneItems.length === 2) return `${pre} ${cloneItems[0].title} and ${cloneItems[1].title}`;
+  const popped = cloneItems.pop();
+  return `${cloneItems.map((item: SearchResult) => item.title).join(', ')} and ${popped?.title}`;
+};
+
+export const genReviewSentenceFromProperties = (
+  vend: SearchResult[] = [],
+  team: SearchResult[] = [],
+  cat: SearchResult[] = [],
+  except: SearchResult[] = [],
+): string => {
+  const vendorSen = getItemsSentence(vend);
+  const catSen = getItemsSentence(cat, ' spend within ');
+  const teamSen = getItemsSentence(team, ' for ');
+  const exceptSen = getItemsSentence(except, ', except ');
+
+  const sentence = `You're targeting all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`;
+  return sentence;
+};
+
+export const getPeriodsByYear = (year: number): TargetPeriod[] => {
+  const periods = [];
+  for (let index = 1; index <= 12; index += 1) {
+    periods.push({
+      year,
+      month: index,
+    });
+  }
+  return periods;
+};
+
+export const getPropsAndPeriodsFromItemSelected = (
+  propSelected: SearchResult[],
+  excepts: SearchResult[],
+  targetMonths: TargetMonth[],
+  curYear: number,
+): { props: TargetProp[]; periods: TargetPeriod[] } => {
+  const props: TargetProp[] = propSelected.map((prop: SearchResult) => {
+    return {
+      id: prop?.directoryId,
+      type: prop?.type,
+      name: prop?.title ?? '',
+      exclude: false,
+    };
+  });
+  excepts.forEach((except: SearchResult) => {
+    props.push({
+      id: except?.directoryId,
+      type: except?.type,
+      name: except?.title ?? '',
+      exclude: true,
+    });
+  });
+  const periods: TargetPeriod[] = [];
+  targetMonths.forEach((month: TargetMonth) => {
+    if (month.amount > 0) {
+      periods.push({
+        month: month.month,
+        year: curYear,
+        amount: month.amount,
+      });
+    }
+  });
+  return {
+    props,
+    periods,
+  };
+};
+
+export const getTargetAmountAndTotal = (target: Target): { amount: number; total: number } => {
+  const today = new Date();
+  const monthInReal = today.getMonth() + 1;
+  const monthMatched: TargetPeriod[] = target.periods.filter(
+    (period: TargetPeriod) => period.month === monthInReal,
+  );
+  if (monthMatched.length > 0) {
+    return {
+      amount: monthMatched[0].amount ?? 0,
+      total: monthMatched[0].total ?? 0,
+    };
+  }
+  return { amount: 0, total: 0 };
+};
+
 export const stackTargetsBySpend = (data: Target[]): Target[] => {
-  let targetStacked = data.sort((a: Target, b: Target) => (b?.total ?? 0) - (a?.total ?? 0));
+  let targetStacked = data.sort((a: Target, b: Target) => {
+    const { total: totalA } = getTargetAmountAndTotal(a);
+    const { total: totalB } = getTargetAmountAndTotal(b);
+    return (totalB ?? 0) - (totalA ?? 0);
+  });
   targetStacked = data.sort(
     (a: Target, b: Target) => (b?.id !== null ? 1 : 0) - (a?.id !== null ? 1 : 0),
   );
   return targetStacked;
 };
 
-export const getUniqueListBy = (arr: any[], objectKey: string): any[] => {
-  return [...new Map(arr.map((item: any) => [item[objectKey], item])).values()];
+export const getTotalFeedItem = (feed: FeedItem): { total: number } => {
+  const { transactions } = feed;
+  let total = 0;
+  transactions.forEach((tran: Transaction) => {
+    total += tran.amountUsd;
+  });
+  return { total };
 };

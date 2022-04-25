@@ -5,7 +5,7 @@ import { useComment, useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
-import { commentEditorRawParser } from '@main/utils';
+import { commentEditorHtmlParser } from '@main/utils';
 import { classNames, formatCurrency, formatDate } from '@common/utils';
 // Tailwind components
 import { Menu } from '@headlessui/react';
@@ -79,7 +79,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
     const contentState = values?.content as EditorState;
     const isDirty = contentState.getCurrentContent().hasText() || !!values?.attachment;
     if (!isDirty) return;
-    const parsedContent = commentEditorRawParser(contentState.getCurrentContent());
+    const parsedContent = commentEditorHtmlParser(contentState.getCurrentContent());
     addComment({ content: parsedContent, attachment: values.attachment }).then();
   };
 

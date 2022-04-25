@@ -1,18 +1,21 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import { Menu } from '@headlessui/react';
 import { toast } from 'react-toastify';
-// Constants
+import dayjs from 'dayjs';
+// hooks
+import { useIdentity, usePermission } from '@identity/hooks';
+import { useFeedComment } from '@main/hooks/feedComment.hook';
+// constants
 import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { useMention } from '@main/hooks';
-import { FeedItemFilters, GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
-import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
-import { commentEditorRawParser } from '@main/utils';
+import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
+import { classNames, formatCurrency } from '@common/utils';
+import { commentEditorHtmlParser, getDepartmentBgColor, getTotalFeedItem } from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
-// Tailwind components
-import DepartmentColorSection from '@main/atoms/DepartmentColorSection';
+// components
 import NotifyBanner from '@common/molecules/NotifyBanner';
 import CommentBox from '@main/molecules/CommentBox';
 import PopoverMenu from '@main/atoms/PopoverMenu';
@@ -22,16 +25,11 @@ import AttachmentModal from '@main/organisms/CommentAttachmentModal';
 import ConfirmModal from '@main/atoms/ConfirmModal';
 import CommentItem from '@main/molecules/CommentItem';
 import CommentViewAll from '@main/atoms/CommentViewAll';
-import RollupLineItemList from '@main/molecules/RollupLineItemList';
-// Icons
+import RollupTransactions from '@main/molecules/RollupTransactions';
+// assets
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
-// Hooks
-import { useIdentity, usePermission } from '@identity/hooks';
-import { useFeedItem } from '@main/hooks/feedItem.hook';
-import { useFeedComment } from '@main/hooks/feedComment.hook';
-import dayjs from 'dayjs';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -49,14 +47,6 @@ interface ConfirmModalProps {
   confirmLabel: string;
 }
 
-const LIMIT_GET_TRANS = 12;
-const LIMIT_GET_TRANS_FULL = 50;
-const MAX_USER_CLICK_LOAD_MORE = 2;
-const INIT_PAGINATION_TRANS = Object.freeze({
-  offset: 0,
-  limit: LIMIT_GET_TRANS,
-});
-
 const INITIAL_COMMENT_NUMBER = 2;
 const LIMIT_GET_COMMENT = 20;
 
@@ -64,20 +54,15 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   feedItem,
   onClickDepartment,
   onClickCategory,
-  onClickRootDept,
   updateCategory,
-  onClickVendor,
 }) => {
   const identity = useIdentity();
   const [filterComment, setFilterComment] = useState<Pagination>({
     offset: 0,
     limit: INITIAL_COMMENT_NUMBER,
   });
-  const [filterTrans, setFilterTrans] = React.useState<FeedItemFilters>({
-    id: feedItem?.id,
-    page: INIT_PAGINATION_TRANS,
-  });
-  const { lineItems, isLoading: isLoadingTrans, hasMore: hasMoreTrans } = useFeedItem(filterTrans);
+
+  const { total } = getTotalFeedItem(feedItem);
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
@@ -107,8 +92,11 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     const contentState = values?.content as EditorState;
     const isDirty = contentState.getCurrentContent().hasText() || !!values?.attachment;
     if (!isDirty) return;
-    const parsedContent = commentEditorRawParser(contentState.getCurrentContent());
-    addComment({ content: parsedContent, attachment: values.attachment }).then();
+    const parsedContent = commentEditorHtmlParser(contentState.getCurrentContent());
+    addComment({
+      content: parsedContent,
+      attachment: values.attachment,
+    }).then();
   };
 
   const loadAllComments = () => {
@@ -122,7 +110,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const handleHideCategory = async () => {
     setConfirmModal(undefined);
     if (updateCategory) {
-      await updateCategory({ id: feedItem?.category.id, visibility: Visibility.HIDDEN });
+      await updateCategory({ id: feedItem?.category?.id, visibility: Visibility.HIDDEN });
     }
     NotifyBanner.info('You have hidden this line item!');
   };
@@ -140,7 +128,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const handleShowCategory = async () => {
     setConfirmModal(undefined);
     if (updateCategory) {
-      await updateCategory({ id: feedItem?.category.id, visibility: Visibility.VISIBLE });
+      await updateCategory({ id: feedItem?.category?.id, visibility: Visibility.VISIBLE });
     }
     NotifyBanner.info('You have unhidden this line item!');
   };
@@ -210,136 +198,109 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     return items;
   };
 
-  const onLoadMoreTransaction = React.useCallback(() => {
-    if (!hasMoreTrans || isLoadingTrans) return;
-    // If there are more than 24 (12*2) items, users can click "see more" a third time to load the rest of the lineItems.
-    setFilterTrans((prevFilter) => ({
-      ...prevFilter,
-      page: {
-        limit:
-          lineItems.length >= LIMIT_GET_TRANS * MAX_USER_CLICK_LOAD_MORE
-            ? LIMIT_GET_TRANS_FULL
-            : prevFilter?.page?.limit ?? 0,
-        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
-      },
-    }));
-  }, [hasMoreTrans, isLoadingTrans, lineItems.length]);
-
-  const renderDateRangeRollup = () => {
-    if (dayjs(feedItem?.firstDate).isSame(dayjs(feedItem?.lastDate))) {
-      return (
-        <p className="mt-1 text-xs text-Gray-6">
-          <time dateTime={feedItem?.firstDate}>
-            {feedItem?.firstDate ? dayjs(feedItem?.firstDate).format(DATE_FORMAT) : 'Unknown'}
-          </time>
-        </p>
-      );
-    }
-    return (
-      <p className="mt-1 text-xs text-Gray-6">
-        <time dateTime={feedItem?.firstDate}>
-          {feedItem?.firstDate ? dayjs(feedItem?.firstDate).format(DATE_FORMAT) : 'Unknown'}
-        </time>
-        {feedItem?.lastDate && (
-          <span>
-            {' - '}
-            <time dateTime={feedItem?.lastDate}>
-              {feedItem?.lastDate ? dayjs(feedItem?.lastDate).format(DATE_FORMAT) : 'Present'}
-            </time>
-          </span>
-        )}
-      </p>
-    );
-  };
+  const departmentName =
+    feedItem?.department?.parent?.name ?? feedItem?.department?.name ?? 'unknown';
+  const deptGradientBg = useMemo(
+    () => getDepartmentBgColor(departmentName ?? '', undefined, true),
+    [departmentName],
+  );
 
   return (
     <>
       <article
         ref={containerRef}
         key={feedItem.id}
-        className="bg-white flex flex-col filter shadow-md"
+        className="bg-white flex flex-col filter shadow-md rounded-card overflow-hidden"
         aria-labelledby={`rollup-title-${feedItem?.id}`}
       >
-        {/* Rollup detail */}
         <div className="flex flex-row">
-          <DepartmentColorSection department={feedItem?.department} onClick={onClickRootDept} />
           <div
             className={classNames(
               isHidden ? 'bg-purple-8' : 'bg-white',
               'flex-grow w-4/5 px-6 py-5 border-b border-Gray-11',
             )}
+            style={{
+              background: deptGradientBg,
+            }}
           >
             <div className="flex items-center space-x-3">
-              <div className="flex items-center min-w-0 flex-1">
-                <p className="text-xs text-Gray-6">
+              <div className="flex items-center min-w-0 flex-1 ">
+                <p className="text-base text-white">
                   <button
                     type="button"
-                    className="hover:underline text-left"
-                    onClick={() => {
-                      return onClickDepartment && onClickDepartment(feedItem?.department);
-                    }}
+                    className="hover:underline text-left font-bold"
+                    onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
                   >
-                    {feedItem?.department?.name}
+                    {feedItem?.category?.name}
                   </button>
                 </p>
                 {isHidden && (
-                  <>
+                  <div className="flex flex-row items-center bg-Gray-12 py-0.5 px-2 ml-2 rounded-full">
                     <EyeHideIcon
                       viewBox="-2 -2 19 19"
-                      className="fill-current path-no-filled stroke-current path-no-stroke text-system-alert ml-3 mr-1"
+                      className="fill-current path-no-filled stroke-current path-no-stroke text-system-alert mr-1"
                     />
                     <span className="text-xs text-Gray-6">Hidden</span>
-                  </>
+                  </div>
                 )}
               </div>
               <div className="flex-shrink-0 self-center flex items-center">
                 <h2
                   id={`question-title-${feedItem?.id}`}
-                  className="text-base font-semibold text-Gray-2 mr-3"
+                  className="text-lg font-semibold text-white mr-3"
                 >
-                  {`$ ${formatCurrency(feedItem?.total)}`}
+                  {`$${formatCurrency(total)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block z-20 text-left">
                   <div>
                     <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
                       <span className="sr-only">Open options</span>
-                      <MoreVerticalIcon aria-hidden="true" viewBox="0 0 15 15" />
+                      <MoreVerticalIcon
+                        className="fill-current text-white path-no-filled"
+                        aria-hidden="true"
+                        viewBox="0 0 15 15"
+                      />
                     </Menu.Button>
                   </div>
                   <PopoverMenu>{renderMenuItems()}</PopoverMenu>
                 </Menu>
               </div>
             </div>
-            <h2
-              aria-hidden="true"
-              id={`question-title-${feedItem?.id}`}
-              className="mt-1 text-base font-semibold text-Gray-2 cursor-pointer hover:underline"
-              onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
-            >
-              {feedItem?.category?.name}
-            </h2>
-            {renderDateRangeRollup()}
+            <div className="flex flex-row items-center justify-between mt-1 text-xs font-normal text-white">
+              <h2
+                aria-hidden="true"
+                id={`question-title-${feedItem?.id}`}
+                className="cursor-pointer hover:underline"
+                onClick={() => {
+                  if (onClickDepartment) {
+                    onClickDepartment(feedItem?.department);
+                  }
+                }}
+              >
+                {`${feedItem?.department?.name} · ${
+                  feedItem?.month &&
+                  dayjs()
+                    .month(feedItem?.month - 1)
+                    .format('MMMM')
+                }`}
+              </h2>
+              <h2 className="mr-7">{`Last Month: $${formatCurrency(feedItem?.lastMonthTotal)}`}</h2>
+            </div>
           </div>
         </div>
-        <RollupLineItemList
-          lineItems={lineItems}
-          rollupsClass="bg-white"
-          className="mb-1 sm:mb-2.5"
-          hasMore={hasMoreTrans}
-          onLoadMore={onLoadMoreTransaction}
-          isLoadMore={isLoadingTrans}
-          onClickVendor={onClickVendor}
-        />
-        <div className="space-y-4 px-4 sm:px-12 mt-1">
+        {Array.isArray(feedItem?.transactions) && feedItem?.transactions?.length > 0 && (
+          <RollupTransactions trans={feedItem?.transactions} />
+        )}
+        <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
             <CommentViewAll
               onClick={loadAllComments}
               loading={isLoadingComments}
-              className="mt-1"
+              className="mt-2.5"
             />
           )}
           {hasComment && (
-            <ul>
+            <ul className="flex flex-col mt-1.5">
               {comments?.map((comment) => (
                 <li key={comment.id}>
                   <CommentItem
@@ -366,7 +327,6 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           />
         </div>
       </article>
-
       <ConfirmModal
         open={!!confirmModal}
         icon={<ExclamationCircle />}
@@ -384,17 +344,16 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         onClose={() => openFeedbackModal(false)}
         itemId={feedItem?.id}
       />
-      {lineItems.length > 0 && (
-        <AttachmentModal
-          lineItem={lineItems[0]}
-          open={!!attachFileComment}
-          file={attachFileComment}
-          mentionData={mentions}
-          uploadOptions={uploadFileOptions}
-          onClose={() => setAttachFileComment(null)}
-          onFileUploaded={onSubmitComment}
-        />
-      )}
+      <AttachmentModal
+        depName={feedItem?.department?.name}
+        catName={feedItem?.category?.name}
+        open={!!attachFileComment}
+        file={attachFileComment}
+        mentionData={mentions}
+        uploadOptions={uploadFileOptions}
+        onClose={() => setAttachFileComment(null)}
+        onFileUploaded={onSubmitComment}
+      />
     </>
   );
 };

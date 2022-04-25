@@ -9,7 +9,7 @@ import CommentText from '@main/atoms/CommentText';
 import CommentImage from '@main/atoms/CommentImage';
 import { DocumentDownloadIcon } from '@heroicons/react/outline';
 import Microlink from '@microlink/react';
-import { extractHyperlinks, commentTextToContentState, commentEditorRawParser } from '@main/utils';
+import { extractHyperlinks, commentEditorHtmlParser, commentHtmlToContentState } from '@main/utils';
 import { MICRO_LINK_API_KEY } from '@src/config';
 import { Menu } from '@headlessui/react';
 import PopoverMenu from '@main/atoms/PopoverMenu';
@@ -66,7 +66,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
     .join('-');
   const hyperlinks = extractHyperlinks(comment.content);
   const contentState = useMemo(() => {
-    return commentTextToContentState(comment.content);
+    return commentHtmlToContentState(comment.content);
   }, [comment.content]);
 
   const escFunction = useCallback((event) => {
@@ -105,7 +105,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
       setEditing(false);
       return;
     }
-    const parsedContent = commentEditorRawParser(newContentState.getCurrentContent());
+    const parsedContent = commentEditorHtmlParser(newContentState.getCurrentContent());
     onEdit({ ...comment, content: parsedContent });
     setEditing(false);
   };

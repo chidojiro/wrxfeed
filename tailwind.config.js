@@ -11,8 +11,19 @@ module.exports = {
   },
   theme: {
     extend: {
+      borderRadius: {
+        'card': '10px',
+        '2.5xl': '20px'
+      },
+      transitionProperty: {
+        height: 'height'
+      },
+      rotate: {
+        '40': '40deg',
+      },
       fontSize: {
-        '2xs': '0.625rem',
+        '2xs': '0.6875rem',
+        '3xs': '0.625rem',
       },
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
@@ -26,6 +37,7 @@ module.exports = {
         'Gray-4': '#9EA0AA',
         'Gray-5': '#d1d5db',
         'Gray-6': '#7D8490',
+        'Gray-7': '#eceef1',
         'Gray-8': '#a5a3a9',
         'Gray-11': '#DFE1E6',
         'Gray-12': '#F3F4F6',
@@ -40,11 +52,15 @@ module.exports = {
         'Green-2': '#13b9b9',
         'Green-3': 'rgba(19, 185, 185, 0.3)',
         'Green-4': '#10B981',
+        'Green-8': '#D1FAE5',
         'Green-12': '#D7F3D8',
+        'Green-400': '#34D399',
+        'Green-800': '#065F46',
 
         'Accent-1': '#3363FF',
         'Accent-2': '#6565FB',
         'Accent-3': '#DEE6FF',
+        'Accent-4': '#9797FC',
 
         'LightBG': '#F9FAFB',
         'Highlight': '#DDFF55',
@@ -73,12 +89,16 @@ module.exports = {
       },
       spacing: {
         'navbar': '56px',
+        '4.5': '18px',
+        '18': '72px',
       },
       shadow: {
 
       },
       boxShadow: {
         dropdown: '0 1px 1px 0 rgba(9, 30, 66, 0.31), 0 3px 5px 0 rgba(9, 30, 66, 0.2)',
+        topCategoryHover: '-4px 10px 8px 0 rgba(101, 101, 251, 0.03), 0 3px 10px 0 rgba(101, 101, 251, 0.1);',
+        propertyDropdown: '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
       }
     },
   },

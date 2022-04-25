@@ -26,14 +26,18 @@ dayjs.updateLocale('en', {
     d: '1d',
     dd: '%dd',
     M: '1mo',
-    MM: '%dm',
+    MM: '%dmo',
     y: '1y',
     yy: '%dy',
   },
 });
 
-export function formatCurrency(n?: number): string {
-  return n ? numeral(n).format('0,0.00') : '0.00';
+export function formatCurrency(
+  n?: string | number,
+  format = '0,0.00',
+  defaultValue = '0.00',
+): string {
+  return n ? numeral(n).format(format) : defaultValue;
 }
 
 export function hasSubArray(master: string[], sub: string[]): boolean {
@@ -128,7 +132,13 @@ export const replaceAll = (str: string, find: string, replace: string): string =
   return str.replace(new RegExp(find, 'g'), replace);
 };
 
-export const formatToCurrency = (value: string, currency = '$'): string => {
-  const result = replaceAll(value, ',', '').replace(new RegExp(/[^0-9]+/, 'g'), ',');
-  return `${currency}${result.replace(new RegExp(/\B(?=(\d{3})+(?!\d))/, 'g'), ',')}`;
+export const round = (number: number | string, decimals = 0): number => {
+  const decimalPow = 10 ** decimals;
+  let num: number;
+  if (typeof number === 'string') {
+    num = parseFloat(number);
+  } else {
+    num = number;
+  }
+  return Math.round((num + Number.EPSILON) * decimalPow) / decimalPow;
 };

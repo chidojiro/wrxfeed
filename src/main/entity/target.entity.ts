@@ -1,10 +1,17 @@
-import { TargetProp } from '@api/types';
+import { TargetProp, TargetPeriod } from '@api/types';
+import { User } from '@main/entity/user.entity';
 
 export type Target = {
   id: number;
-  month: number;
-  year: number;
-  amount: number | null;
-  total: number | null;
+  isPrimary?: boolean;
+  name: string | null;
+  periods: TargetPeriod[];
   props: TargetProp[];
+  creator: User;
+  updater: User;
+};
+
+export type TargetMonth = {
+  month: number;
+  amount: number;
 };

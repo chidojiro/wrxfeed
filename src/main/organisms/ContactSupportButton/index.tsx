@@ -1,6 +1,6 @@
+import React from 'react';
 import { classNames } from '@common/utils';
 import { ReactComponent as EnvelopeIcon } from '@assets/icons/outline/envelope.svg';
-import React from 'react';
 import { EMAIL_SUPPORT_ADDRESS } from '@src/config';
 
 export interface ContactSupportButtonProps {

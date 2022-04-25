@@ -6,18 +6,17 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 import { FeedFilters } from '@api/types';
 import { Category, Department, Vendor } from '@main/entity';
+import { classNames } from '@common/utils';
 
 import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@main/hooks';
 import { useFeed } from '@main/hooks/feed.hook';
 import { useQuery } from '@common/hooks';
 import { useApi } from '@api';
 
-import MainLayout, { MainRightSide } from '@common/templates/MainLayout';
+import MainLayout from '@common/templates/MainLayout';
 import FeedList from '@main/organisms/FeedList';
-import TargetPanel from '@main/organisms/TargetPanel';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import { classNames } from '@common/utils';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -134,22 +133,17 @@ const ForYouPage: React.VFC = () => {
   };
 
   return (
-    <MainLayout className="flex flex-col">
+    <MainLayout className="flex flex-col" rightSide={false}>
       <NewFeedIndicator
         isVisible={!!newFeedNumber}
         counter={newFeedNumber}
         onClick={refetchNewItems}
       />
       <h1 className="sr-only">For you feed</h1>
-
-      {filterKey ? (
+      {filterKey && (
         <div className="flex items-center space-x-4 pb-8">
           <ChevronLeftIcon className="cursor-pointer" onClick={clearFilter} />
           <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
-        </div>
-      ) : (
-        <div className="flex items-center space-x-4 pb-8">
-          <h1 className="text-Gray-3 text-xl font-semibold ml-4 sm:ml-0">For you</h1>
         </div>
       )}
       <FeedList
@@ -162,9 +156,6 @@ const ForYouPage: React.VFC = () => {
         EndComponent={() => renderForYouEndList()}
         EmptyStateComponent={() => renderForYouEndList()}
       />
-      <MainRightSide>
-        <TargetPanel />
-      </MainRightSide>
     </MainLayout>
   );
 };
