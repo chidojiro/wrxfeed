@@ -74,7 +74,8 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   const { mentions } = useMention();
   const { checkPermission } = usePermission();
   // Variables
-  const isHidden = feedItem?.category && feedItem?.category?.visibility === Visibility.HIDDEN;
+  const isHidden =
+    feedItem?.category !== null && feedItem?.category?.visibility === Visibility.HIDDEN;
   const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
 
   const {
@@ -209,7 +210,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
     <>
       <article
         ref={containerRef}
-        key={feedItem.id}
+        key={feedItem?.id}
         className="bg-white flex flex-col filter shadow-md rounded-card overflow-hidden"
         aria-labelledby={`rollup-title-${feedItem?.id}`}
       >
@@ -323,7 +324,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
         </div>
         <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4 mt-1 sm:mt-2">
           <CommentBox
-            id={feedItem.id.toString()}
+            id={feedItem?.id.toString()}
             className="bg-white"
             onAttachFile={handleAttachFile}
             mentionData={mentions}
