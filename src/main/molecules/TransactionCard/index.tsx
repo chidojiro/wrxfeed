@@ -72,7 +72,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   const hasComment = !!total;
   const hiddenCommentCount = total - comments.length;
   const canCollapseComments = total > INITIAL_COMMENT_NUMBER;
-  const isHidden = transaction.category.visibility === Visibility.HIDDEN;
+  const isHidden = transaction?.category?.visibility === Visibility.HIDDEN;
   const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
