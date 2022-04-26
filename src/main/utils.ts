@@ -589,10 +589,10 @@ export const getPropsAndPeriodsFromItemSelected = (
 export const getTargetAmountAndTotal = (target: Target): { amount: number; total: number } => {
   const today = new Date();
   const monthInReal = today.getMonth() + 1;
-  const monthMatched: TargetPeriod[] = target.periods.filter(
+  const monthMatched: TargetPeriod[] = target.periods?.filter(
     (period: TargetPeriod) => period.month === monthInReal,
   );
-  if (monthMatched.length > 0) {
+  if (monthMatched?.length > 0) {
     return {
       amount: monthMatched[0].amount ?? 0,
       total: monthMatched[0].total ?? 0,

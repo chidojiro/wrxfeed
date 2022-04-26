@@ -1,11 +1,20 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useState, useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { GlobalSearchType, searchState } from '@main/states/search.state';
 import { SearchResult } from '@main/types';
 import { Category, Department, Vendor } from '@main/entity';
 import { SearchFilters, TargetPropType } from '@api/types';
+import { getApiClient } from '@api/utils';
 import { SearchTypes } from '@auth/types';
+import { toast } from 'react-toastify';
+
+const LIMIT = 9999;
+const INIT_PAGINATION = Object.freeze({
+  offset: 0,
+  limit: LIMIT,
+});
 
 interface SearchHookValues {
   isLoading: boolean;
@@ -23,7 +32,7 @@ export function useSearch({
   searchType = SearchTypes.Local,
   except = null,
 }: SearchFilters): SearchHookValues {
-  const globalSearch: GlobalSearchType = useRecoilValue<GlobalSearchType>(searchState);
+  const [globalSearch, setGlobalSearch] = useRecoilState<GlobalSearchType>(searchState);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [noResult, setNoResult] = useState<boolean>(false);
@@ -31,7 +40,7 @@ export function useSearch({
   const onClear = () => setResults([]);
 
   const searchByKeyword = useCallback(async () => {
-    if (ignoreEmptyKeyword && keyword.trim().length < 1) return;
+    if (isLoading || (ignoreEmptyKeyword && keyword.trim().length < 1)) return;
 
     if (searchType === SearchTypes.Api) {
       return;
@@ -91,6 +100,7 @@ export function useSearch({
     setNoResult(sumResult.length === 0);
     setLoading(false);
   }, [
+    isLoading,
     keyword,
     searchDept,
     globalSearch,
@@ -100,6 +110,47 @@ export function useSearch({
     searchType,
     except,
   ]);
+
+  async function fetchAllSearchData() {
+    try {
+      setLoading(true);
+      const apiClient = await getApiClient();
+      // eslint-disable-next-line prefer-const
+      let [departments, categories, vendors] = await Promise.all([
+        apiClient.getDepartments(INIT_PAGINATION),
+        apiClient.getCategories(INIT_PAGINATION),
+        apiClient.getVendors(INIT_PAGINATION),
+      ]);
+
+      if (departments.length > 0) {
+        const childrenData = await Promise.all(
+          departments.map((dept) =>
+            apiClient.getDepartments({ parent: dept.id, ...INIT_PAGINATION }),
+          ),
+        );
+        const children: Department[] = childrenData.reduce((pre, cur) => [...pre, ...cur]);
+        departments = [...departments, ...children];
+      }
+
+      setGlobalSearch({
+        departments,
+        categories,
+        vendors,
+        isLoaded: true,
+      });
+    } catch {
+      toast.error('Fail to load global search data');
+    } finally {
+      setLoading(false);
+      searchByKeyword();
+    }
+  }
+
+  useEffect(() => {
+    if (!globalSearch.isLoaded) {
+      fetchAllSearchData();
+    }
+  }, []);
 
   useEffect(() => {
     searchByKeyword().then();
