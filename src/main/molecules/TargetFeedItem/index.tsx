@@ -233,12 +233,12 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
               <div className="flex items-center min-w-0 flex-1">
                 {renderTargetName(curFeed?.target)}
                 {isHidden && (
-                  <div className="flex flex-row items-center bg-Gray-12 py-0.5 px-2 ml-2 rounded-full">
+                  <div className="flex flex-row items-center bg-Gray-3-50 py-0.5 px-2 ml-2 rounded-full">
                     <EyeHideIcon
                       viewBox="-2 -2 19 19"
                       className="fill-current path-no-filled stroke-current path-no-stroke text-system-alert mr-1"
                     />
-                    <span className="text-xs text-Gray-6">Hidden</span>
+                    <span className="text-xs font-medium text-white px-1">Hidden</span>
                   </div>
                 )}
               </div>
