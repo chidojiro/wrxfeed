@@ -50,6 +50,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
     searchCate: type === TargetPropType.CATEGORY,
     searchDept: type === TargetPropType.DEPARTMENT,
     searchVend: type === TargetPropType.VENDOR,
+    ignoreEmptyKeyword: false,
   });
 
   useEffect(() => {
