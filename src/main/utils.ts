@@ -291,9 +291,9 @@ export function commentHtmlToContentState(text: string): ContentState {
 }
 
 /**
- * Get department bg color based on name
+ * Get predefined bg gradient colors
  */
-const DEPT_GRADIENT_COLORS = [
+const BG_GRADIENT_COLORS = [
   'linear-gradient(90.91deg, #F4A27F 0.49%, #F28C6E 20.72%, #DB7271 40.14%, #9A5FAF 65.43%, #6A6AF2 80.23%, #9656AC 102.35%, #9656AC 105.59%)',
   'linear-gradient(90.64deg, #F08299 0.34%, #EF707E 20.62%, #CB8595 40.08%, #B7BAB8 65.42%, #C4BFAD 80.26%, #DDB495 98.34%, #DDB495 105.67%)',
   'linear-gradient(90.64deg, #B9A6D7 0.34%, #998DD5 20.62%, #7B78D8 40.08%, #5154DB 65.42%, #3C3FDC 80.26%, #5255DE 98.34%, #9656AC 105.67%)',
@@ -306,9 +306,9 @@ const DEPT_GRADIENT_COLORS = [
   'linear-gradient(90.64deg, #77D3F9 0.34%, #6CBFE4 20.62%, #5291BC 40.08%, #3F6BC0 65.42%, #3C61D9 80.26%, #3E6ABA 98.34%, #3E6ABC 105.67%)',
 ];
 /**
- * Get department bg color based on name
+ * Get predefined bg solid colors
  */
-const DEPT_COLORS = [
+const BG_SOLID_COLORS = [
   '#254252',
   '#14213D',
   '#1F1A44',
@@ -325,7 +325,7 @@ const DEPT_COLORS = [
   '#DF6622',
   '#F64C32',
 ];
-export const getDepartmentBgColor = (
+export const getColorByText = (
   name: string,
   id: number | undefined = undefined,
   gradient = false,
@@ -338,7 +338,7 @@ export const getDepartmentBgColor = (
     hash += name.charCodeAt(i);
   }
 
-  const colorsData = gradient ? DEPT_GRADIENT_COLORS : DEPT_COLORS;
+  const colorsData = gradient ? BG_GRADIENT_COLORS : BG_SOLID_COLORS;
 
   // there are 15 pre-defined colors of department. Position starts from 1
   const preDefined = id || hash;
