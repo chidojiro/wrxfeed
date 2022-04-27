@@ -10,7 +10,7 @@ import { getApiClient } from '@api/utils';
 import { SearchTypes } from '@auth/types';
 import { toast } from 'react-toastify';
 
-const LIMIT = 9999;
+const LIMIT = 999;
 const INIT_PAGINATION = Object.freeze({
   offset: 0,
   limit: LIMIT,
@@ -122,15 +122,15 @@ export function useSearch({
         apiClient.getVendors(INIT_PAGINATION),
       ]);
 
-      if (departments.length > 0) {
-        const childrenData = await Promise.all(
-          departments.map((dept) =>
-            apiClient.getDepartments({ parent: dept.id, ...INIT_PAGINATION }),
-          ),
-        );
-        const children: Department[] = childrenData.reduce((pre, cur) => [...pre, ...cur]);
-        departments = [...departments, ...children];
-      }
+      // if (departments.length > 0) {
+      //   const childrenData = await Promise.all(
+      //     departments.map((dept) =>
+      //       apiClient.getDepartments({ parent: dept.id, ...INIT_PAGINATION }),
+      //     ),
+      //   );
+      //   const children: Department[] = childrenData.reduce((pre, cur) => [...pre, ...cur]);
+      //   departments = [...departments, ...children];
+      // }
 
       setGlobalSearch({
         departments,
