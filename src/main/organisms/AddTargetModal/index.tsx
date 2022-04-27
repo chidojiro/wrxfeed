@@ -246,7 +246,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   };
 
   useEffect(() => {
-    if (itemEditing && itemEditing?.props.length > 0) {
+    if (itemEditing && itemEditing?.props?.length > 0) {
       const defaultTagsTemp = itemEditing?.props.map((prop: TargetProp) => {
         return {
           id: `${prop?.type.toUpperCase()}-${prop?.id}`,
@@ -261,7 +261,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   }, [itemEditing]);
 
   useEffect(() => {
-    if (itemEditing && itemEditing?.periods.length > 0 && itemEditing.props.length > 0) {
+    if (itemEditing && itemEditing?.periods?.length > 0 && itemEditing?.props?.length > 0) {
       setThisYearFilter({
         props: itemEditing?.props,
         periods: getPeriodsByYear(THIS_YEAR),
@@ -272,7 +272,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       });
       const dataMonth = cloneDeep(defaultTargetMonths);
       itemEditing?.periods.forEach((period: TargetPeriod) => {
-        if (period?.amount && dataMonth[period?.month - 1] && dataMonth[period.month - 1]) {
+        if (period?.amount && dataMonth[period?.month - 1] && dataMonth[period?.month - 1]) {
           dataMonth[period?.month - 1].amount = period?.amount;
         }
       });
