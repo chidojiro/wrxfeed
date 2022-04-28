@@ -74,6 +74,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   isDeleting,
   depId,
   department,
+  initTags,
 }) => {
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,7 +85,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [allProps, setAllProps] = useState<TargetProp[]>([]);
 
   const [openMultiMonth, setOpenMultiMonth] = useState<boolean>(false);
-  const [targetMonths, setTargetMonths] = useState<TargetMonth[]>([]);
+  const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
   const [showNoMonthError, setNoMonthError] = useState<boolean>(false);
   const [curYear, setCurYear] = useState(THIS_YEAR);
 
@@ -148,7 +149,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   // Variables
   const totalTarget = round(targetMonths.reduce((total, target) => total + target.amount, 0));
   const totalCurrentSpend = round(chartData.metadata?.currentSpend ?? 0);
-  const updatedTargetMonths = targetMonths.filter((target) => target.amount > 0);
+  const updatedTargetMonths = targetMonths.filter((target) => target?.amount >= 0);
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
@@ -193,17 +194,17 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
-    if (!open) {
+    if (open) {
+      // fetch data
+      fetchThisYearSpendData();
+      fetchLastYearSpendData();
+    } else {
       timeout = setTimeout(() => {
         setTargetName('');
         setDefaultTags([]);
         setTargetMonths([]);
         checkGetPreFillData.current = false;
       }, 400);
-    } else {
-      // fetch data
-      fetchThisYearSpendData();
-      fetchLastYearSpendData();
     }
     return () => {
       if (timeout) clearTimeout(timeout);
@@ -211,11 +212,10 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   }, [fetchThisYearSpendData, fetchLastYearSpendData, open]);
 
   useEffect(() => {
-    // Check to load all vendors, teams, cats for target
-    const vendors = vendItems.length ? vendItems : []; // allDirectoriesResult.allVendors;
-    const teams = teamItems.length ? teamItems : []; // allDirectoriesResult.allTeams;
-    const categories = catItems.length ? catItems : []; // allDirectoriesResult.allCategories;
-    const propsCheck: TargetProp[] = [...vendors, ...teams, ...categories].map(
+    const vendors = vendItems.length ? vendItems : [];
+    const teams = teamItems.length ? teamItems : [];
+    const categories = catItems.length ? catItems : [];
+    const propsCheck: TargetProp[] = [...vendors, ...teams, ...categories, ...(initTags ?? [])].map(
       (item: SearchResult) => {
         return {
           id: item.directoryId,
@@ -234,8 +234,14 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         name: item.title,
       });
     }
-    setAllProps(propsCheck);
-  }, [vendItems, teamItems, catItems, exceptItems]);
+    if (initTags && initTags?.length > 0) {
+      checkGetPreFillData.current = true;
+    }
+    const propsCheckUnique = propsCheck.filter(
+      (value, index, self) => index === self.findIndex((prop) => prop.id === value.id),
+    );
+    setAllProps(propsCheckUnique);
+  }, [vendItems, teamItems, catItems, exceptItems, initTags]);
 
   const applyDataThenGenChart = (data: TargetMonth[], year: number) => {
     setTargetMonths(data);

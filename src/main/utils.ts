@@ -572,7 +572,7 @@ export const getPropsAndPeriodsFromItemSelected = (
   });
   const periods: TargetPeriod[] = [];
   targetMonths.forEach((month: TargetMonth) => {
-    if (month.amount > 0) {
+    if (month?.amount >= 0) {
       periods.push({
         month: month.month,
         year: curYear,
