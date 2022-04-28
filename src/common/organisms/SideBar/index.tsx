@@ -1,9 +1,12 @@
-import React from 'react';
-import { useRecoilValue } from 'recoil';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useLocation, Link as RouterLink, useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { menuItemsValue, newFeedCountState } from '@main/states/sidemenu.state';
 import { useSubscription } from '@main/hooks/subscription.hook';
+import { getApiClient } from '@api/utils';
 import { GroupTab, LeftTab } from '@common/types';
 import { classNames } from '@common/utils';
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
@@ -15,7 +18,7 @@ const SideBar: React.VFC = () => {
   const { unsubscribe } = useSubscription();
 
   const menuItems: GroupTab[] = useRecoilValue(menuItemsValue);
-  const newFeedCount = useRecoilValue(newFeedCountState);
+  const [newFeedCount, setFeedCount] = useRecoilState(newFeedCountState);
 
   const currentTab = menuItems.reduce<LeftTab | null>((cur, root) => {
     if (cur) return cur;
@@ -28,6 +31,31 @@ const SideBar: React.VFC = () => {
       ) ?? null
     );
   }, null);
+
+  async function getFeedCount() {
+    try {
+      const apiClient = await getApiClient();
+      const companyRequest = apiClient.getUnreadLineItemsCount({
+        page: { offset: 0, limit: 1 },
+      });
+      const forYouRequest = apiClient.getUnreadLineItemsCount({
+        forYou: 1,
+        page: { offset: 0, limit: 1 },
+      });
+      const [companyCount, forYouCount] = await Promise.all([companyRequest, forYouRequest]);
+
+      setFeedCount({
+        '/company': companyCount ?? 0,
+        '/for-you': forYouCount ?? 0,
+      });
+    } catch {
+      toast.error('Fail to load feed count');
+    }
+  }
+
+  useEffect(() => {
+    getFeedCount();
+  }, []);
 
   const renderCounter = (item: LeftTab) => {
     const isCurrentTab = currentTab?.location.pathname === item.location.pathname;

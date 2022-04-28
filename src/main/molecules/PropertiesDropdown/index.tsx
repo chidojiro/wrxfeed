@@ -8,11 +8,14 @@ import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
 import { SearchResult } from '@main/types';
 import { useSearch } from '@main/hooks/search.hook';
 import { AlertRed } from '@assets';
+import { useDebounce } from '@common/hooks';
 
 export enum DropdownEdge {
   LEFT = 'left-0',
   RIGHT = '-right-32',
 }
+
+const DEBOUNCE_WAIT = 500;
 
 interface PropertiesDropdownProps {
   className?: string;
@@ -50,6 +53,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
     searchCate: type === TargetPropType.CATEGORY,
     searchDept: type === TargetPropType.DEPARTMENT,
     searchVend: type === TargetPropType.VENDOR,
+    ignoreEmptyKeyword: false,
   });
 
   useEffect(() => {
@@ -73,6 +77,9 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
     },
     [closeError, showError],
   );
+
+  const debounceSearchRequest = useDebounce(onSearchKeyword, DEBOUNCE_WAIT, [onSearchKeyword]);
+
   const colorByType = getColorByPropertyType(type);
 
   const renderErrorProperty = () => {
@@ -202,7 +209,10 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
                     classPopover,
                   )}
                 >
-                  <AddTargetTagInput placeholder={placeholder} onTextChange={onSearchKeyword} />
+                  <AddTargetTagInput
+                    placeholder={placeholder}
+                    onTextChange={debounceSearchRequest}
+                  />
                   {renderErrorProperty()}
                   <div className="flex flex-col mt-2 w-full max-h-[200px] overflow-y-scroll hide-scrollbar">
                     {results?.map(renderSearchResult)}

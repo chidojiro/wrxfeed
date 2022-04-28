@@ -56,6 +56,7 @@ export const NotifyBannerContainer: VFC<NotifyBannerOptions> = ({ timeout, topOf
 
   const resetStates = useCallback(() => {
     setVisible(false);
+    setMessage('');
     timeoutRef.current = DEFAULT_TIMEOUT;
     topOffsetRef.current = topOffset ?? 0;
     backgroundColorRef.current = DEFAULT_BACKGROUND;
@@ -79,7 +80,7 @@ export const NotifyBannerContainer: VFC<NotifyBannerOptions> = ({ timeout, topOf
     <div
       aria-live="assertive"
       style={{ top: topOffsetRef.current }}
-      className="fixed inset-0 flex items-start pointer-events-none"
+      className="z-20 fixed inset-0 flex items-start pointer-events-none"
     >
       <div className="w-full flex flex-col items-start">
         <Transition

@@ -1,12 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { Target } from '@main/entity';
-import {
-  getDepartmentBgColor,
-  getTargetName,
-  nFormatter,
-  getTargetAmountAndTotal,
-} from '@main/utils';
+import { getColorByText, getTargetName, nFormatter, getTargetAmountAndTotal } from '@main/utils';
 import { classNames } from '@common/utils';
 
 import ExceedBar from '@main/atoms/ExceedBar';
@@ -23,7 +18,7 @@ interface TeamTargetRowProps {
 
 const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) => {
   const targetName = getTargetName(target);
-  const deptBgClass = useMemo(() => getDepartmentBgColor(targetName ?? ''), [targetName]);
+  const deptBgClass = useMemo(() => getColorByText(targetName ?? ''), [targetName]);
   const { amount, total } = getTargetAmountAndTotal(target);
   const isActive = (amount ?? 0) > 0 && target?.id !== null;
 
@@ -45,8 +40,8 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) =
   };
   const renderCurrentPerTotalBar = () => {
     let percent = (totalSpent / targetAmount) * 100;
-    const currentCurrency = nFormatter(totalSpent);
-    const totalAmountCurrency = nFormatter(targetAmount);
+    const currentCurrency = nFormatter(+totalSpent.toFixed(2));
+    const totalAmountCurrency = nFormatter(+targetAmount.toFixed(2));
 
     if (isExceeds) {
       percent = (targetAmount / totalSpent) * 100;

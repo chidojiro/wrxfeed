@@ -38,8 +38,15 @@ const ForYouPage: React.VFC = () => {
   const { readAllTransactions } = useApi();
 
   const [feedFilters, setFeedFilters] = React.useState<FeedFilters>(INIT_FOR_YOU_FILTER);
-  const { feeds, hasMore, isLoading, setNewFeedCount, upsertNewFeedCount, newFeedCount } =
-    useFeed(feedFilters);
+  const {
+    feeds,
+    hasMore,
+    isLoading,
+    setNewFeedCount,
+    upsertNewFeedCount,
+    newFeedCount,
+    updateCategory,
+  } = useFeed(feedFilters);
 
   const filterKey = FilterKeys.find((key) => query.get(key));
   const [filterTitle, setFilterTitle] = React.useState('');
@@ -162,6 +169,7 @@ const ForYouPage: React.VFC = () => {
         isLoading={isLoading}
         hasMore={hasMore}
         onFilter={handleFilter}
+        updateCategory={updateCategory}
         endMessage="Add to your feed by following more teams."
         EndComponent={() => renderForYouEndList()}
         EmptyStateComponent={() => renderForYouEndList()}
