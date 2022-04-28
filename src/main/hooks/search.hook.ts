@@ -10,7 +10,7 @@ import { getApiClient } from '@api/utils';
 import { SearchTypes } from '@auth/types';
 import { toast } from 'react-toastify';
 
-const LIMIT = 999;
+const LIMIT = 2999;
 const INIT_PAGINATION = Object.freeze({
   offset: 0,
   limit: LIMIT,
@@ -59,7 +59,7 @@ export function useSearch({
             type: TargetPropType.DEPARTMENT,
             directoryId: dept?.id,
           };
-          // if (except && except.filter((item) => item.id === addItem.id).length > 0) return arr;
+          if (except && except.filter((item) => item?.id === addItem?.id).length > 0) return arr;
           return [...arr, addItem];
         }, []);
 
@@ -69,13 +69,13 @@ export function useSearch({
           if (!cat.name.toLowerCase().includes(keyword.toLowerCase())) {
             return arr;
           }
-          const addItem = {
+          const addItem: SearchResult = {
             id: `${TargetPropType.CATEGORY.toUpperCase()}-${cat?.id}`,
             title: cat?.name,
             type: TargetPropType.CATEGORY,
             directoryId: cat?.id,
           };
-          // if (except && except.includes(addItem)) return arr;
+          if (except && except.filter((item) => item?.id === addItem?.id).length > 0) return arr;
           return [...arr, addItem];
         }, []);
 
@@ -85,13 +85,13 @@ export function useSearch({
           if (!vend.name.toLowerCase().includes(keyword.toLowerCase())) {
             return arr;
           }
-          const addItem = {
+          const addItem: SearchResult = {
             id: `${TargetPropType.VENDOR.toUpperCase()}-${vend?.id}`,
             title: vend?.name,
             type: TargetPropType.VENDOR,
             directoryId: vend?.id,
           };
-          if (except && except.includes(addItem)) return arr;
+          if (except && except.filter((item) => item?.id === addItem?.id).length > 0) return arr;
           return [...arr, addItem];
         }, []);
 
