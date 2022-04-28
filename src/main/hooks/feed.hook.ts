@@ -82,7 +82,11 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
           return newFeeds;
         });
       } catch (error) {
-        await errorHandler(error);
+        if (isBadRequest(error)) {
+          toast.error('Can not update category!');
+        } else {
+          await errorHandler(error);
+        }
       }
     },
     [ApiClient, errorHandler],
