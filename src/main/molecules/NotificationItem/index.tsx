@@ -2,7 +2,7 @@ import { Notification, NotifyStatus } from '@main/entity';
 import React from 'react';
 import { classNames, distanceToNow } from '@common/utils';
 import CommentText from '@main/atoms/CommentText';
-import { getDepartmentBgColor, getNameAbbreviation } from '@main/utils';
+import { getColorByText, getNameAbbreviation } from '@main/utils';
 
 export interface NotificationItemProps {
   item: Notification;
@@ -12,10 +12,7 @@ export interface NotificationItemProps {
 }
 
 const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) => {
-  const avatarBgColor = React.useMemo(
-    () => getDepartmentBgColor(item?.content ?? ''),
-    [item?.content],
-  );
+  const avatarBgColor = React.useMemo(() => getColorByText(item?.content ?? ''), [item?.content]);
   const isNew = item.status === NotifyStatus.UNREAD;
 
   const renderAvatarOrShortname = () => {

@@ -167,7 +167,7 @@ export interface CategoryFilter extends Pagination {
 
 export interface TargetFilter extends Pagination {
   year: number;
-  month: number;
+  month?: number;
   timestamp?: number;
   dep?: number;
 }

@@ -20,6 +20,8 @@ export interface RollupTranRowProps {
   onClickVendor?: (vendor: Vendor) => void;
 }
 
+const A_WEEK_IN_MILISECONDS = 1000 * 60 * 60 * 24 * 7;
+
 const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -70,6 +72,14 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
     );
   };
 
+  const renderUnreadIndicator = () => {
+    if (tran?.transDate && Date.now() - Date.parse(tran?.transDate) <= A_WEEK_IN_MILISECONDS) {
+      return <div className="flex w-1.5 h-1.5 bg-Green-400 rounded-full" />;
+    }
+
+    return null;
+  };
+
   return (
     <div className="flex flex-col mt-px w-auto overflow-hidden">
       <button
@@ -84,6 +94,7 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
         <div className="flex w-5 h-5 justify-center items-center">
           <DownSmall className={classNames(isOpen ? 'rotate-180' : '')} />
         </div>
+        {renderUnreadIndicator()}
         <div className="flex flex-1 h-5 overflow-hidden flex-row items-center mx-1.5 space-x-1">
           <p className="text-Gray-3 text-xs font-semibold text-left truncate">{tran?.vendorName}</p>
           {renderExpensedTag()}

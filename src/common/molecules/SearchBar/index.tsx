@@ -13,6 +13,8 @@ import { MainGroups } from '@common/constants';
 import { getIconByResultType, getPropTypeDisplayName } from '@main/utils';
 import { classNames } from '@common/utils';
 
+import Loading from '@common/atoms/Loading';
+
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
 import { ReactComponent as ArrowRight2 } from '@assets/icons/outline/arrow-right-2.svg';
@@ -29,7 +31,7 @@ const SearchBar: React.VFC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const isSearching = keyword?.length > 0;
 
-  const { results, onClear } = useSearch({ keyword });
+  const { results, isLoading, onClear } = useSearch({ keyword });
 
   const onCloseDropDownResultsView = () => {
     onClear();
@@ -109,11 +111,20 @@ const SearchBar: React.VFC = () => {
     if (isEmptyResult) {
       return (
         <div className="flex mx-6 px-1 my-2 w-full flex-row items-center space-x-3 py-1 h-6">
-          <QuestionCircle width={15} height={15} />
-          <p className="text-sm text-Gray-3">
-            No results found.
-            <span className="text-Gray-6"> Try searching for a team, category, or vendor.</span>
-          </p>
+          {isLoading ? (
+            <>
+              <Loading width={15} height={15} />
+              <p className="text-sm text-Gray-3">Loading...</p>
+            </>
+          ) : (
+            <>
+              <QuestionCircle width={15} height={15} />
+              <p className="text-sm text-Gray-3">
+                No results found.
+                <span className="text-Gray-6"> Try searching for a team, category, or vendor.</span>
+              </p>
+            </>
+          )}
         </div>
       );
     }

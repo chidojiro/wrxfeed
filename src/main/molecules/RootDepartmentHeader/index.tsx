@@ -4,7 +4,7 @@ import { Department } from '@main/entity';
 // Icons
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
-import { getDepartmentBgColor } from '@main/utils';
+import { getColorByText } from '@main/utils';
 
 interface DirectoryItem {
   item: Department;
@@ -21,7 +21,7 @@ const RootDepartmentHeader: VFC<DirectoryItem> = ({
   onFollow,
   onUnfollow,
 }) => {
-  const deptBgColor = getDepartmentBgColor(item?.name ?? '');
+  const deptBgColor = getColorByText(item?.name ?? '');
 
   const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
