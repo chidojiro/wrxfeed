@@ -3,9 +3,10 @@ import React, { Fragment, useState, useCallback } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
 import { IntersectIcon } from '@assets';
-import { getIconByResultType, getPropTypeDisplayName } from '@main/utils';
 import { SearchResult } from '@main/types';
 import { useSearch } from '@main/hooks/search.hook';
+import useRoveFocus from '@main/hooks/focus.hook';
+import PropertyDropdownItem from '@main/atoms/PropertyDropdownItem';
 
 interface ExceptDropdownProps {
   className?: string;
@@ -25,41 +26,21 @@ const ExceptDropdown: React.VFC<ExceptDropdownProps> = ({
   onItemAdd,
 }) => {
   const [keyword, setKeyword] = useState<string>('');
+
   const { results } = useSearch({
     keyword,
     except: selected,
   });
+
+  const [focus, setFocus] = useRoveFocus(results?.length + 1);
+
   const onSearchKeyword = useCallback(
     (value: string) => {
       setKeyword(value);
     },
     [setKeyword],
   );
-  const renderSearchResult = (result: SearchResult) => {
-    const IconByType = getIconByResultType(result?.type);
-    return (
-      <button
-        onClick={() => {
-          onItemAdd(result);
-        }}
-        key={result?.id}
-        type="button"
-        className="hover:bg-Gray-12 px-7 py-2.5 h-10 flex flex-row items-center text-xs group w-full"
-      >
-        <div className="flex w-5 h-5 justify-center items-center">
-          <IconByType
-            className="w-5 h-5 object-scale-down"
-            style={{ width: 20, height: 20 }}
-            viewBox="2 2 20 20"
-          />
-        </div>
-        <p className="text-Gray-1 ml-2 truncate">{result?.title}</p>
-        <p className="text-Gray-6 ml-2 invisible group-hover:visible">
-          {`- ${getPropTypeDisplayName(result?.type)}`}
-        </p>
-      </button>
-    );
-  };
+
   return (
     <div className={classNames(className)}>
       <Popover as="div" className="flex-shrink-0 relative">
@@ -90,9 +71,24 @@ const ExceptDropdown: React.VFC<ExceptDropdownProps> = ({
                   )}
                 >
                   <p className="text-primary font-semibold text-xs">{title}</p>
-                  <AddTargetTagInput placeholder={placeholder} onTextChange={onSearchKeyword} />
+                  <AddTargetTagInput
+                    focus={focus === 0}
+                    placeholder={placeholder}
+                    autoFocus
+                    setFocus={setFocus}
+                    onTextChange={onSearchKeyword}
+                  />
                   <div className="flex flex-col mt-2 w-full max-h-[200px] overflow-y-scroll hide-scrollbar">
-                    {results?.map(renderSearchResult)}
+                    {results?.map((result, index) => (
+                      <PropertyDropdownItem
+                        key={`renderSearchResult-${result?.id}`}
+                        result={result}
+                        focus={focus === index + 1}
+                        onClickHandler={() => {
+                          onItemAdd(result);
+                        }}
+                      />
+                    ))}
                   </div>
                 </div>
               </Transition>

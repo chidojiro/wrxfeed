@@ -88,7 +88,6 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
   );
   // Variables
   const totalAmount = round(targetMonthValues.reduce((total, target) => total + target?.amount, 0));
-  const titleSelect = getButtonTitle(minMonth, maxMonth);
   const applyEnableState = selectedMonths.length > 0 && !isLoadingData ? 'bg-primary' : 'bg-Gray-6';
 
   useImperativeHandle(ref, () => ({}));
@@ -97,6 +96,31 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
   useEffect(() => {
     const today = new Date();
     setCurYear(today.getFullYear());
+  }, []);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (periods) {
+      timeout = setTimeout(() => {
+        let min = 12;
+        let max = 0;
+        for (let i = 0; i < periods.length; i += 1) {
+          const { amount, month } = periods[i];
+          if (amount && amount > 0 && month < min) {
+            min = month;
+          }
+          if (amount && amount > 0 && month > max) {
+            max = month;
+          }
+        }
+        setMinMonth(min);
+        setMaxMonth(max);
+      }, 500);
+    }
+    return () => {
+      clearTimeout(timeout);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -206,132 +230,130 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
 
   return (
     <div className={classNames('flex-shrink-0 relative', className)} ref={useableViewRef}>
-      <>
-        <button
-          onClick={onClickOpenModal}
-          type="button"
-          className="rounded-sm border border-Gray-11 space-x-1 px-2 flex h-[30px] flex-row items-center"
+      <button
+        onClick={onClickOpenModal}
+        type="button"
+        className="rounded-sm border border-Gray-11 space-x-1 px-2 flex h-[30px] flex-row items-center"
+      >
+        <p className="text-Gray-3 text-xs">{getButtonTitle(minMonth, maxMonth)}</p>
+        <BasicsDownSmall className="w-5 h-5" width={20} height={20} viewBox="0 0 20 20" />
+      </button>
+      <div className="absolute z-50">
+        <Transition
+          as={Fragment}
+          show={open}
+          enter="transition ease-out duration-100"
+          enterFrom="transform opacity-0 scale-95"
+          enterTo="transform opacity-100 scale-100"
+          leave="transition ease-in duration-75"
+          leaveFrom="transform opacity-100 scale-100"
+          leaveTo="transform opacity-0 scale-95"
         >
-          <p className="text-Gray-3 text-xs">{titleSelect}</p>
-          <BasicsDownSmall className="w-5 h-5" width={20} height={20} viewBox="0 0 20 20" />
-        </button>
-        <div className="absolute z-50">
-          <Transition
-            as={Fragment}
-            show={open}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
+          <div
+            className={classNames(
+              'flex w-[348px] h-[528px] flex-col absolute z-50 mt-2 left-0 shadow-propertyDropdown border border-Gray-11 rounded-sm bg-white',
+              classPopover,
+            )}
           >
-            <div
-              className={classNames(
-                'flex w-[348px] h-[528px] flex-col absolute z-50 mt-2 left-0 shadow-propertyDropdown border border-Gray-11 rounded-sm bg-white',
-                classPopover,
-              )}
-            >
-              <div className="flex flex-row items-center px-4 border-b border-Gray-11 h-8">
-                <LeftSmallIcon className="w-4 h-4" width={16} height={16} viewBox="0 0 16 16" />
-                <div className="flex flex-1 flex-row justify-center items-center">
-                  <p className="text-primary text-xs font-semibold ml-4">{curYear}</p>
-                  {/* <div className="w-4 h-4 flex justify-center items-center">
+            <div className="flex flex-row items-center px-4 border-b border-Gray-11 h-8">
+              <LeftSmallIcon className="w-4 h-4" width={16} height={16} viewBox="0 0 16 16" />
+              <div className="flex flex-1 flex-row justify-center items-center">
+                <p className="text-primary text-xs font-semibold ml-4">{curYear}</p>
+                {/* <div className="w-4 h-4 flex justify-center items-center">
                     {isLoadingData && <Loading width={8} height={8} />}
                   </div> */}
-                </div>
-                <LeftSmallIcon
-                  className="w-4 h-4 rotate-180"
-                  width={16}
-                  height={16}
-                  viewBox="0 0 16 16"
-                />
               </div>
-              <div className="flex flex-row items-center justify-between text-xs text-Gray-6 px-7 pt-2 h-8">
-                <p>Month</p>
-                <p>Last Year's Spend</p>
-                <p>Target</p>
+              <LeftSmallIcon
+                className="w-4 h-4 rotate-180"
+                width={16}
+                height={16}
+                viewBox="0 0 16 16"
+              />
+            </div>
+            <div className="flex flex-row items-center justify-between text-xs text-Gray-6 px-7 pt-2 h-8">
+              <p>Month</p>
+              <p>Last Year's Spend</p>
+              <p>Target</p>
+            </div>
+            <div
+              className={classNames(
+                'flex flex-row space-x-2 py-2 px-[22px] relative',
+                isLoadingData ? 'opacity-50' : '',
+              )}
+            >
+              {renderMonthName()}
+              {renderLastYearSpend()}
+              <div className="flex flex-1 flex-col space-y-1">
+                {monthsInYear.map((month: number) => {
+                  const isInRange = month >= minMonth && month <= maxMonth;
+                  const amountSaved = targetMonthValues.find(
+                    (item: TargetMonth) => item.month === month,
+                  )?.amount;
+                  return (
+                    <MonthTargetInput
+                      key={`month-amount-${month}`}
+                      month={month}
+                      defaultAmount={amountSaved}
+                      isInRange={isInRange}
+                      onChange={(amount) => onChangeMonthInput(month, amount)}
+                      onSelect={() => {
+                        const isIncluded = selectedMonths.includes(month);
+                        if (!isIncluded) {
+                          setSelectedMonths((pre) => [...pre, month]);
+                        }
+                      }}
+                      onUnselect={() => {
+                        const isIncluded = selectedMonths.includes(month);
+                        if (isIncluded) {
+                          setSelectedMonths((pre) => pre.filter((item) => item !== month));
+                        }
+                      }}
+                    />
+                  );
+                })}
               </div>
               <div
                 className={classNames(
-                  'flex flex-row space-x-2 py-2 px-[22px] relative',
-                  isLoadingData ? 'opacity-50' : '',
+                  'absolute z-10 flex w-full h-full justify-center items-center',
+                  isLoadingData ? '' : 'pointer-events-none',
                 )}
               >
-                {renderMonthName()}
-                {renderLastYearSpend()}
-                <div className="flex flex-1 flex-col space-y-1">
-                  {monthsInYear.map((month: number) => {
-                    const isInRange = month >= minMonth && month <= maxMonth;
-                    const amountSaved = targetMonthValues.find(
-                      (item: TargetMonth) => item.month === month,
-                    )?.amount;
-                    return (
-                      <MonthTargetInput
-                        key={`month-amount-${month}`}
-                        month={month}
-                        defaultAmount={amountSaved}
-                        isInRange={isInRange}
-                        onChange={(amount) => onChangeMonthInput(month, amount)}
-                        onSelect={() => {
-                          const isIncluded = selectedMonths.includes(month);
-                          if (!isIncluded) {
-                            setSelectedMonths((pre) => [...pre, month]);
-                          }
-                        }}
-                        onUnselect={() => {
-                          const isIncluded = selectedMonths.includes(month);
-                          if (isIncluded) {
-                            setSelectedMonths((pre) => pre.filter((item) => item !== month));
-                          }
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-                <div
-                  className={classNames(
-                    'absolute z-10 flex w-full h-full justify-center items-center',
-                    isLoadingData ? '' : 'pointer-events-none',
-                  )}
-                >
-                  {isLoadingData && <Loading width={36} height={36} className="mr-12" />}
-                </div>
-              </div>
-              <div className="flex flex-col items-end justify-between text-xs text-primary px-6 pt-2 h-8">
-                <p className="text-primary font-semibold">
-                  Total Target Amount:
-                  <span className="font-normal text-Gray-3 ml-1">
-                    {`$${formatCurrency(totalAmount, '0,0')}`}
-                  </span>
-                </p>
-              </div>
-              <hr className="divider divider-horizontal w-full" />
-              <div className="flex flex-row w-full px-4 items-center h-11">
-                <button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="flex px-4 h-7 items-center rounded-sm hover:bg-Gray-12 mr-3 ml-auto"
-                >
-                  <p className="text-Gray-6 text-xs font-semibold">Cancel</p>
-                </button>
-                <button
-                  type="button"
-                  disabled={isLoadingData}
-                  onClick={onClickApply}
-                  className={classNames(
-                    'flex flex-row items-center px-4 h-7 rounded-sm',
-                    applyEnableState,
-                  )}
-                >
-                  <p className="text-white text-xs font-semibold">Apply</p>
-                  <ArrowRight className="w-4 h-4 ml-2 fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />
-                </button>
+                {isLoadingData && <Loading width={36} height={36} className="mr-12" />}
               </div>
             </div>
-          </Transition>
-        </div>
-      </>
+            <div className="flex flex-col items-end justify-between text-xs text-primary px-6 pt-2 h-8">
+              <p className="text-primary font-semibold">
+                Total Target Amount:
+                <span className="font-normal text-Gray-3 ml-1">
+                  {`$${formatCurrency(totalAmount, '0,0')}`}
+                </span>
+              </p>
+            </div>
+            <hr className="divider divider-horizontal w-full" />
+            <div className="flex flex-row w-full px-4 items-center h-11">
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="flex px-4 h-7 items-center rounded-sm hover:bg-Gray-12 mr-3 ml-auto"
+              >
+                <p className="text-Gray-6 text-xs font-semibold">Cancel</p>
+              </button>
+              <button
+                type="button"
+                disabled={isLoadingData}
+                onClick={onClickApply}
+                className={classNames(
+                  'flex flex-row items-center px-4 h-7 rounded-sm',
+                  applyEnableState,
+                )}
+              >
+                <p className="text-white text-xs font-semibold">Apply</p>
+                <ArrowRight className="w-4 h-4 ml-2 fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />
+              </button>
+            </div>
+          </div>
+        </Transition>
+      </div>
     </div>
   );
 };

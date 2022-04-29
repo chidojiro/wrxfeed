@@ -48,6 +48,9 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({ trans }) => {
       </div>
     );
   };
+  if (transactions.length === 0) {
+    return null;
+  }
   return (
     <div className="flex flex-col">
       <ul className="flex flex-col py-4">
