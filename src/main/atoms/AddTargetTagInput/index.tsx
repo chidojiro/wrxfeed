@@ -11,7 +11,6 @@ import React, {
 } from 'react';
 
 import { getColorByPropertyType } from '@main/utils';
-
 import Loading from '@common/atoms/Loading';
 import { SearchResult } from '@main/types';
 import InputTag from '../InputTag';
@@ -61,7 +60,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
   useEffect(() => {
     if (focus) {
       // Move element into view when it is focused
-      if (searchInputRef) {
+      if (searchInputRef && searchInputRef?.current) {
         searchInputRef?.current.focus();
       }
     }
@@ -73,7 +72,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
       setFocus(0);
       setValue('');
     }
-  }, [autoFocus, searchInputRef]);
+  }, [autoFocus, searchInputRef, setFocus]);
 
   useEffect(() => {
     if (typeof onItemsChange === 'function') onItemsChange(items);

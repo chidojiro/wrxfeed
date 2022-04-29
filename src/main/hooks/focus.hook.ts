@@ -2,9 +2,6 @@ import { useCallback, useState, useEffect, Dispatch, SetStateAction } from 'reac
 
 function useRoveFocus(size: number): [number, Dispatch<SetStateAction<number>>] {
   const [currentFocus, setCurrentFocus] = useState(0);
-
-  console.log('useRoveFocus.currentFocus: ', currentFocus);
-
   const handleKeyDown = useCallback(
     (e) => {
       if (e.keyCode === 40) {

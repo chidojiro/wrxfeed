@@ -4,6 +4,7 @@ import { TooltipProps } from 'recharts';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
 import dayjs from 'dayjs';
 import range from 'lodash.range';
+import cloneDeep from 'lodash.clonedeep';
 
 import { classNames, formatCurrency, round } from '@common/utils';
 import { LineChartData, SearchResult } from '@main/types';
@@ -35,7 +36,6 @@ import TargetChart from '@main/molecules/TargetChart';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
 import { getTargetMonthsLineChartData } from '@main/chart.utils';
 import { defaultTargetMonths, INITIAL_CHART_DATA } from '@common/constants';
-import cloneDeep from 'lodash.clonedeep';
 
 export type AddTargetModalProps = {
   open: boolean;

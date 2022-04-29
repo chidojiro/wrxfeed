@@ -19,12 +19,12 @@ const PropertyDropdownItem: VFC<PropertyDropdownItemProps> = ({
   items,
   setItems,
 }) => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (focus) {
       // Move element into view when it is focused
-      if (ref) {
+      if (ref && ref.current) {
         ref.current.focus();
       }
     }
