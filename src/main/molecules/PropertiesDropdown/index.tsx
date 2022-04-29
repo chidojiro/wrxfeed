@@ -197,12 +197,15 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
                     {results?.map((result, index) => (
                       <PropertyDropdownItem
                         key={`renderSearchResult-${result?.id}`}
-                        index={index}
                         result={result}
                         focus={focus === index + 1}
-                        setFocus={setFocus}
-                        items={items}
-                        setItems={setItems}
+                        onClickHandler={() => {
+                          setFocus(index);
+                          const isIncluded = items.includes(result);
+                          if (!isIncluded) {
+                            setItems((pre) => [...pre, result]);
+                          }
+                        }}
                       />
                     ))}
                   </div>

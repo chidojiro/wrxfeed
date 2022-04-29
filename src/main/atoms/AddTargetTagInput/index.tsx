@@ -61,7 +61,7 @@ const AddTargetTagInput: ForwardRefRenderFunction<
   useEffect(() => {
     if (focus) {
       // Move element into view when it is focused
-      if (searchInputRef) {
+      if (searchInputRef && searchInputRef?.current) {
         searchInputRef?.current.focus();
       }
     }
