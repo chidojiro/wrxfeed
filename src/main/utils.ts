@@ -424,8 +424,7 @@ export const getVendorNameFromLineItem = (item: TransLineItem): string => {
 
   const des = item?.description;
 
-  const employeeName: string | undefined = item?.transaction?.createdByName;
-  const isConcurByCreatedByName: string | undefined = employeeName;
+  const isConcurByCreatedByName = item?.transaction?.createdByName;
   const isConcurByRecordType =
     item?.transaction?.recordType?.toLowerCase() === 'Expense Report'.toLowerCase();
 
@@ -434,14 +433,7 @@ export const getVendorNameFromLineItem = (item: TransLineItem): string => {
   if ((isConcurByCreatedByName || isConcurByRecordType) && checkDesIncludeSymbol) {
     const descriptionWithoutVendor = des?.substring(0, des?.lastIndexOf('|')) || '';
     const vendorNameFromDescription = des?.substring(des?.indexOf('|') + 1, des.length - 1) || '';
-    if (vendorNameFromDescription.trim().length > 1) {
-      // If there is no employee name for the expense the item should not add the "expense by" part.
-      vendorName = `${descriptionWithoutVendor} expense by ${vendorNameFromDescription}.`;
-    } else if (employeeName && employeeName?.length > 1) {
-      vendorName = `${descriptionWithoutVendor} expense by ${employeeName}.`;
-    } else {
-      vendorName = descriptionWithoutVendor;
-    }
+    vendorName = `${descriptionWithoutVendor} expense by ${vendorNameFromDescription}.`;
   }
   return vendorName;
 };
@@ -572,7 +564,7 @@ export const getPropsAndPeriodsFromItemSelected = (
   });
   const periods: TargetPeriod[] = [];
   targetMonths.forEach((month: TargetMonth) => {
-    if (month.amount > 0) {
+    if (month?.amount >= 0) {
       periods.push({
         month: month.month,
         year: curYear,

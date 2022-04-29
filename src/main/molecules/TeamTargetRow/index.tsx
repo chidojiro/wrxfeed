@@ -40,8 +40,8 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) =
   };
   const renderCurrentPerTotalBar = () => {
     let percent = (totalSpent / targetAmount) * 100;
-    const currentCurrency = nFormatter(totalSpent);
-    const totalAmountCurrency = nFormatter(targetAmount);
+    const currentCurrency = nFormatter(+totalSpent.toFixed(2));
+    const totalAmountCurrency = nFormatter(+targetAmount.toFixed(2));
 
     if (isExceeds) {
       percent = (targetAmount / totalSpent) * 100;

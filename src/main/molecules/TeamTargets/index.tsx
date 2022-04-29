@@ -4,15 +4,15 @@ import { toast } from 'react-toastify';
 
 import { useTarget } from '@main/hooks';
 
-import { classNames } from '@common/utils';
 import { Department, Target } from '@main/entity';
 import { TargetFilter, TargetPropType } from '@api/types';
-import { SearchResult } from '@main/types';
 
 import AddTargetModal from '@main/organisms/AddTargetModal';
-import TeamTargetRow from '@main/molecules/TeamTargetRow';
-import EmptyTarget from '@main/molecules/EmptyTarget';
 import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
+import { classNames } from '@common/utils';
+import { SearchResult } from '@main/types';
+import TeamTargetRow from '../TeamTargetRow';
+import EmptyTarget from '../EmptyTarget';
 
 const GET_TARGETS_LIMIT = 6;
 

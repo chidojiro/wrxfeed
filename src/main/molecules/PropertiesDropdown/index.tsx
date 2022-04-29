@@ -10,11 +10,14 @@ import { useSearch } from '@main/hooks/search.hook';
 import { AlertRed } from '@assets';
 import useRoveFocus from '@main/hooks/focus.hook';
 import PropertyDropdownItem from '@main/atoms/PropertyDropdownItem';
+import { useDebounce } from '@common/hooks';
 
 export enum DropdownEdge {
   LEFT = 'left-0',
   RIGHT = '-right-32',
 }
+
+const DEBOUNCE_WAIT = 500;
 
 interface PropertiesDropdownProps {
   className?: string;
@@ -78,6 +81,9 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
     },
     [closeError, showError],
   );
+
+  const debounceSearchRequest = useDebounce(onSearchKeyword, DEBOUNCE_WAIT, [onSearchKeyword]);
+
   const colorByType = getColorByPropertyType(type);
 
   const renderErrorProperty = () => {
@@ -182,9 +188,9 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
                   <AddTargetTagInput
                     focus={focus === 0}
                     placeholder={placeholder}
-                    onTextChange={onSearchKeyword}
                     autoFocus
                     setFocus={setFocus}
+                    onTextChange={debounceSearchRequest}
                   />
                   {renderErrorProperty()}
                   <div className="flex flex-col mt-2 w-full max-h-[200px] overflow-y-scroll hide-scrollbar">

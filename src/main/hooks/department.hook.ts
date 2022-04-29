@@ -5,7 +5,7 @@ import { useApi } from '@api';
 import { Pagination, DepartmentFilter } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 
-import { isApiError } from '@error/utils';
+import { isBadRequest, isApiError } from '@error/utils';
 import { Department } from '@main/entity';
 
 const DEPT_PAGINATION: Pagination = {
@@ -61,6 +61,8 @@ export function useDepartment(filters: DepartmentFilter): DepartmentHookValues {
     } catch (error: unknown) {
       if (isApiError(error)) {
         toast.error(error?.details?.message);
+      } else if (isBadRequest(error)) {
+        toast.error('Can not get departments');
       } else {
         await errorHandler(error);
       }
