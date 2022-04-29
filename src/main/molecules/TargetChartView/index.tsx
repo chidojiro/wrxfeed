@@ -134,7 +134,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
     ) : null;
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 mb-1">
       <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
         <div className="flex flex-row space-x-4 w-auto">
           <div className="flex flex-col min-w-[128px]">
