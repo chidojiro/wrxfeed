@@ -278,6 +278,25 @@ export const getTargetMonthsLineChartData = (
     data = [data[0], data[0]];
   }
 
+  // Data points is 0 (target wasn't set) => show previous year and current year spending data
+  if (data.length === 0) {
+    data = lastYearSorted.map((lastYearData, index) => {
+      const month = dayjs().month(index).format(monthFormat);
+      return index > thisMonth
+        ? {
+            name: month,
+            lastYear: round(lastYearData?.total ?? 0, 2),
+            target: 0,
+          }
+        : {
+            name: month,
+            thisYear: round(thisYearSorted[index]?.total ?? 0, 2),
+            lastYear: round(lastYearData?.total ?? 0, 2),
+            target: 0,
+          };
+    });
+  }
+
   const lines: ChartLineProps[] = [
     {
       name: 'target',
