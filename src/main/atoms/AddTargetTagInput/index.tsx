@@ -6,6 +6,8 @@ import React, {
   useState,
   useEffect,
   useRef,
+  Dispatch,
+  SetStateAction,
 } from 'react';
 
 import { getColorByPropertyType } from '@main/utils';
@@ -23,6 +25,8 @@ interface AddTargetTagInputProps {
   defaultItems?: SearchResult[];
   autoFocus?: boolean;
   onItemsChange?: (items: SearchResult[]) => void;
+  focus: boolean;
+  setFocus: Dispatch<SetStateAction<number>>;
 }
 
 export interface AddTargetTagInputHandler {
@@ -43,6 +47,8 @@ const AddTargetTagInput: ForwardRefRenderFunction<
     defaultItems,
     autoFocus = false,
     onItemsChange,
+    focus,
+    setFocus,
   },
   ref,
 ) => {
@@ -53,8 +59,19 @@ const AddTargetTagInput: ForwardRefRenderFunction<
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (focus) {
+      // Move element into view when it is focused
+      if (searchInputRef) {
+        searchInputRef?.current.focus();
+      }
+    }
+  }, [focus]);
+
+  useEffect(() => {
     if (searchInputRef?.current && autoFocus) {
       setTimeout(() => searchInputRef.current?.focus(), 200);
+      setFocus(0);
+      setValue('');
     }
   }, [autoFocus, searchInputRef]);
 
