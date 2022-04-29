@@ -1,31 +1,25 @@
 import { SearchResult } from '@main/types';
 import { getIconByResultType, getPropTypeDisplayName } from '@main/utils';
-import React, { Dispatch, SetStateAction, useEffect, useRef, VFC } from 'react';
+import React, { useEffect, useRef, VFC } from 'react';
 
 interface PropertyDropdownItemProps {
-  index: number;
   result: SearchResult;
   focus: boolean;
-  setFocus: Dispatch<SetStateAction<number>>;
-  items: SearchResult[];
-  setItems: Dispatch<SetStateAction<SearchResult[]>>;
+  onClickHandler: () => void;
 }
 
 const PropertyDropdownItem: VFC<PropertyDropdownItemProps> = ({
-  index,
   result,
   focus,
-  setFocus,
-  items,
-  setItems,
+  onClickHandler,
 }) => {
   const ref = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (focus) {
       // Move element into view when it is focused
-      if (ref && ref.current) {
-        ref.current.focus();
+      if (ref && ref?.current) {
+        ref?.current.focus();
       }
     }
   }, [focus]);
@@ -34,13 +28,7 @@ const PropertyDropdownItem: VFC<PropertyDropdownItemProps> = ({
   return (
     <button
       ref={ref}
-      onClick={() => {
-        setFocus(index);
-        const isIncluded = items.includes(result);
-        if (!isIncluded) {
-          setItems((pre) => [...pre, result]);
-        }
-      }}
+      onClick={onClickHandler}
       type="button"
       className="hover:bg-Gray-12 px-7 py-2.5 h-10 flex flex-row items-center text-xs group w-full"
       tabIndex={focus ? 0 : -1}
