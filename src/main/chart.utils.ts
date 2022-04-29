@@ -10,6 +10,7 @@ import {
 } from '@main/types';
 import { TargetPeriod } from '@api/types';
 import { round } from '@common/utils';
+import range from 'lodash.range';
 import { nFormatter } from './utils';
 
 const ITEM_DATE_FORMAT = 'YYYY-MM-DD';
@@ -208,7 +209,16 @@ export const getTargetMonthsLineChartData = (
   let totalThisYearSpend = 0;
 
   const thisYearSorted = thisYearSpend?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
-  const lastYearSorted = lastYearSpend?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
+  const lastYearSorted = range(0, 12).map((monthIdx) => {
+    const lastYearData = lastYearSpend.find((e) => e?.month - 1 === monthIdx);
+    return (
+      lastYearData || {
+        year: lastYearSpend[0]?.year || dayjs().year() - 1,
+        month: monthIdx + 1,
+        amount: 0,
+      }
+    );
+  });
 
   let data: ChartDataPoint[] = targetMonths.reduce<ChartDataPoint[]>((preVal, _, index) => {
     // start month has been set => reverse array to find end month index
@@ -276,6 +286,25 @@ export const getTargetMonthsLineChartData = (
   // Duplicate data point to draw a line if there is one data point
   if (data.length === 1) {
     data = [data[0], data[0]];
+  }
+
+  // Data points is 0 (target wasn't set) => show previous year and current year spending data
+  if (data.length === 0) {
+    data = lastYearSorted.map((lastYearData, index) => {
+      const month = dayjs().month(index).format(monthFormat);
+      return index > thisMonth
+        ? {
+            name: month,
+            lastYear: round(lastYearData?.total ?? 0, 2),
+            target: 0,
+          }
+        : {
+            name: month,
+            thisYear: round(thisYearSorted[index]?.total ?? 0, 2),
+            lastYear: round(lastYearData?.total ?? 0, 2),
+            target: 0,
+          };
+    });
   }
 
   const lines: ChartLineProps[] = [
