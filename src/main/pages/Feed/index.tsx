@@ -6,6 +6,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useErrorHandler } from 'react-error-boundary';
 import { toast } from 'react-toastify';
 
+import { useQuery } from '@common/hooks';
 import { useApi } from '@api';
 import { ApiErrorCode } from '@error/types';
 import { MainGroups } from '@common/constants';
@@ -15,14 +16,17 @@ import { Category, Department, FeedItem, Vendor } from '@main/entity';
 import MainLayout from '@common/templates/MainLayout';
 import RollupCard from '@main/molecules/RollupCard';
 import Loading from '@common/atoms/Loading';
+import TargetFeedItem from '@main/molecules/TargetFeedItem';
 
 const FeedPage: React.VFC = () => {
   const history = useHistory();
   const ApiClient = useApi();
+  const query = useQuery();
   const { id: feedId } = useParams<{ id: string }>();
   const [feedItem, setFeedItem] = useState<FeedItem | undefined>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const errorHandler = useErrorHandler();
+  const route = query.get('route');
 
   const getFeedItem = async (id: number) => {
     try {
@@ -45,7 +49,7 @@ const FeedPage: React.VFC = () => {
 
   useEffect(() => {
     getFeedItem(parseInt(feedId, 10));
-  }, [feedId]);
+  }, [feedId, route]);
 
   const onClickCategory = (category?: Category) => {
     history.push({
@@ -95,7 +99,7 @@ const FeedPage: React.VFC = () => {
 
     return (
       <div className="w-full h-full overflow-scroll hide-scrollbar">
-        <ul>
+        {feedItem.type === 'transactions' ? (
           <RollupCard
             onClickCategory={onClickCategory}
             onClickDepartment={onClickDepartment}
@@ -103,7 +107,9 @@ const FeedPage: React.VFC = () => {
             onClickVendor={onClickVendor}
             feedItem={feedItem}
           />
-        </ul>
+        ) : (
+          <TargetFeedItem feedItem={feedItem} />
+        )}
       </div>
     );
   };
