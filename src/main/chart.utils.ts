@@ -292,6 +292,12 @@ export const getTargetMonthsLineChartData = (
   if (data.length === 0) {
     data = lastYearSorted.map((lastYearData, index) => {
       const month = dayjs().month(index).format(monthFormat);
+      // Find max value
+      maxValue = Math.max(
+        maxValue,
+        round(thisYearSorted[index]?.total ?? 0),
+        round(lastYearData?.total ?? 0),
+      );
       return index > thisMonth
         ? {
             name: month,
