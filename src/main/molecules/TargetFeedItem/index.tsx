@@ -12,7 +12,6 @@ import { useMention, useTarget } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@api/types';
 import { classNames } from '@common/utils';
 import { commentEditorRawParser, getColorByText, getTargetName } from '@main/utils';
-import { SHOW_TARGET_FEED_CHART } from '@src/config';
 // components
 import CommentBox from '@main/molecules/CommentBox';
 import FeedBackModal from '@main/organisms/FeedBackModal';
@@ -265,10 +264,8 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
             </div>
           </div>
         </div>
-        {SHOW_TARGET_FEED_CHART && (
-          <TargetChartView feedItem={curFeed} onEdit={onClickEditTarget} />
-        )}
-        <RollupTransactions trans={curFeed?.transactions} />
+        <TargetChartView feedItem={curFeed} onEdit={onClickEditTarget} />
+        <RollupTransactions trans={curFeed?.transactions} showTopDivider />
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
             <CommentViewAll
