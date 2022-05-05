@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import dayjs from 'dayjs';
@@ -11,7 +11,7 @@ import { CommentFormModel } from '@main/types';
 import { useMention, useTarget } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@api/types';
 import { classNames } from '@common/utils';
-import { commentEditorRawParser, getColorByText, getTargetName } from '@main/utils';
+import { commentEditorRawParser, getTargetName } from '@main/utils';
 // components
 import CommentBox from '@main/molecules/CommentBox';
 import FeedBackModal from '@main/organisms/FeedBackModal';
@@ -145,8 +145,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
     setAttachFileComment(file);
   };
 
-  const catName = curFeed?.category?.name ?? 'unknown';
-  const gradientBg = useMemo(() => getColorByText(catName ?? '', undefined, true), [catName]);
+  const gradientBg = 'linear-gradient(125.45deg, #CA77B3 18.62%, #514EE7 74.47%)';
 
   const hideAddTargetModal = () => {
     setItemEditing(null);
