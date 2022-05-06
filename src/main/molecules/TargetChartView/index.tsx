@@ -45,7 +45,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
 
   const renderChartLegends = () => {
     return (
-      <div className="flex flex-row justify-center mt-6 py-2 px-[50px] space-x-8">
+      <div className="flex flex-row justify-center mt-2 py-2 px-[50px] space-x-8">
         {chartData?.legends.map((legend: ChartLegend) => (
           <div
             key={`renderChartLegend-${legend.id}`}
@@ -63,7 +63,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
   };
 
   const renderXAxis = () => (
-    <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around mt-4 pl-[98px]">
+    <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[90px]">
       <div className="w-20 h-7 flex justify-center items-center">
         <p>{dayjs(today).date(7).format('MMM D')}</p>
       </div>
@@ -134,7 +134,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
     ) : null;
 
   return (
-    <div className="flex flex-col space-y-4 mb-1">
+    <div className="flex flex-col space-y-4">
       <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
         <div className="flex flex-row space-x-4 w-auto">
           <div className="flex flex-col min-w-[128px]">
@@ -155,19 +155,20 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
         </div>
         {chartData && (
           <>
-            <TargetChart
-              containerClass="mt-8 mb-2 h-[514px]"
-              chartData={chartData}
-              maxYValue={targetAmount}
-              renderXAxis={renderXAxis}
-              renderTooltip={renderTooltipContent}
-              renderReferenceLines={renderTargetLine}
-            />
+            <div className="relative flex justify-center items-center w-auto mx-[-8px] mt-2.5 pr-4 pb-4 pl-2 pt-3 h-[240px] border border-Gray-12 rounded-2.5xl">
+              <TargetChart
+                containerClass="mt-8 mb-2"
+                chartData={chartData}
+                maxYValue={targetAmount}
+                renderXAxis={renderXAxis}
+                renderTooltip={renderTooltipContent}
+                renderReferenceLines={renderTargetLine}
+              />
+            </div>
             {renderChartLegends()}
           </>
         )}
       </div>
-      <div className="bg-Gray-11 h-px w-full" />
     </div>
   );
 };

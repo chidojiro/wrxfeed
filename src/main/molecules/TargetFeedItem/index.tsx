@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import dayjs from 'dayjs';
@@ -11,8 +11,7 @@ import { CommentFormModel } from '@main/types';
 import { useMention, useTarget } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@api/types';
 import { classNames } from '@common/utils';
-import { commentEditorRawParser, getColorByText, getTargetName } from '@main/utils';
-import { SHOW_TARGET_FEED_CHART } from '@src/config';
+import { commentEditorRawParser, getTargetName } from '@main/utils';
 // components
 import CommentBox from '@main/molecules/CommentBox';
 import FeedBackModal from '@main/organisms/FeedBackModal';
@@ -146,8 +145,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
     setAttachFileComment(file);
   };
 
-  const catName = curFeed?.category?.name ?? 'unknown';
-  const gradientBg = useMemo(() => getColorByText(catName ?? '', undefined, true), [catName]);
+  const gradientBg = 'linear-gradient(125.45deg, #CA77B3 18.62%, #514EE7 74.47%)';
 
   const hideAddTargetModal = () => {
     setItemEditing(null);
@@ -265,10 +263,8 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
             </div>
           </div>
         </div>
-        {SHOW_TARGET_FEED_CHART && (
-          <TargetChartView feedItem={curFeed} onEdit={onClickEditTarget} />
-        )}
-        <RollupTransactions trans={curFeed?.transactions} />
+        <TargetChartView feedItem={curFeed} onEdit={onClickEditTarget} />
+        <RollupTransactions trans={curFeed?.transactions} showTopDivider />
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
             <CommentViewAll
