@@ -290,7 +290,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           </div>
         </div>
         {Array.isArray(feedItem?.transactions) && feedItem?.transactions?.length > 0 && (
-          <RollupTransactions trans={feedItem?.transactions} />
+          <RollupTransactions trans={feedItem?.transactions} autoShowTrans />
         )}
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
