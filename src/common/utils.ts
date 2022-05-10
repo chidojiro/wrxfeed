@@ -142,3 +142,18 @@ export const round = (number: number | string, decimals = 0): number => {
   }
   return Math.round((num + Number.EPSILON) * decimalPow) / decimalPow;
 };
+
+export const roundAxis = (number: number | string): number => {
+  let decimals = 0;
+  if (parseFloat(`${number}`) >= 1000000) {
+    decimals = 1;
+  }
+  const decimalPow = 10 ** decimals;
+  let num: number;
+  if (typeof number === 'string') {
+    num = parseFloat(number);
+  } else {
+    num = number;
+  }
+  return Math.round((num + Number.EPSILON) * decimalPow) / decimalPow;
+};
