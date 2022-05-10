@@ -18,7 +18,7 @@ import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@common/constants';
 
-const LIMIT = 20;
+const LIMIT = 5;
 const INIT_PAGINATION = {
   offset: 0,
   limit: LIMIT,
