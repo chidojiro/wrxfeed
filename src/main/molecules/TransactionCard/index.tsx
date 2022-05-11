@@ -5,8 +5,8 @@ import { useComment, useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
-import { commentEditorHtmlParser } from '@main/utils';
-import { classNames, formatCurrency, formatDate } from '@common/utils';
+import { commentEditorHtmlParser, decimalLogic, DecimalType } from '@main/utils';
+import { classNames, formatDate } from '@common/utils';
 // Tailwind components
 import { Menu } from '@headlessui/react';
 import DepartmentColorSection from '@main/atoms/DepartmentColorSection';
@@ -218,7 +218,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
                   id={`question-title-${transaction.id}`}
                   className="text-base font-semibold text-Gray-2 mr-3"
                 >
-                  {`$ ${formatCurrency(transaction?.amountFx)}`}
+                  {`${decimalLogic(transaction?.amountFx, DecimalType.SummedNumbers)}`}
                 </h2>
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
