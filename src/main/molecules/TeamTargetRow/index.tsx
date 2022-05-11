@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 import { Target } from '@main/entity';
 import { getColorByText, getTargetName, nFormatter, getTargetAmountAndTotal } from '@main/utils';
@@ -8,7 +9,6 @@ import Routes from '@src/routes';
 import ExceedBar from '@main/atoms/ExceedBar';
 import { BasicsEditCircle } from '@assets/index';
 import { TargetPeriod } from '@api/types';
-import dayjs from 'dayjs';
 
 const SYSTEM_ALERT_COLOR = '#ff5f68';
 const INACTIVE_TARGET_COLOR = '#d1d5db';
@@ -50,7 +50,7 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) =
   const targetName = getTargetName(target);
   const history = useHistory();
   const deptBgClass = useMemo(() => getColorByText(targetName ?? ''), [targetName]);
-  const { amount, total } = getTargetAmountAndTotal(target, true);
+  const { amount, total } = getTargetAmountAndTotal(target);
   const isActive = (amount ?? 0) > 0 && target?.id !== null;
 
   const totalSpent = total ?? 0;
