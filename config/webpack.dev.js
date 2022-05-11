@@ -26,7 +26,7 @@ module.exports = (env) => {
       },
     },
     plugins: [
-      // follow buorkTsChild performance best practice
+      // follow build performance best practice
       new ForkTsCheckerWebpackPlugin({
         typescript: {
           build: true,
@@ -42,7 +42,7 @@ module.exports = (env) => {
           devServer: false,
         },
       }),
-      new FeckerNotifierWebpackPlugin({ title: 'TypeScript', excludeWarnings: true }),
+      new ForkTsCheckerNotifierWebpackPlugin({ title: 'TypeScript', excludeWarnings: true }),
     ],
   });
 };
