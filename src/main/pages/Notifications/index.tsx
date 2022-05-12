@@ -1,11 +1,12 @@
 import React from 'react';
 import * as Sentry from '@sentry/react';
-import MainLayout from '@common/templates/MainLayout';
-import { Pagination } from '@api/types';
+import { useHistory } from 'react-router-dom';
+
 import { useNotification } from '@main/hooks';
 import Routes from '@src/routes';
+import { Pagination } from '@api/types';
 import { Notification } from '@main/entity';
-import { useHistory } from 'react-router-dom';
+import MainLayout from '@common/templates/MainLayout';
 import NotificationList from '../../organisms/NotificationList';
 
 const LIMIT_GET_NOTIFICATIONS = 30;

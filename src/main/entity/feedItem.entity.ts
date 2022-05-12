@@ -14,3 +14,8 @@ export type FeedItem = {
   lastInteraction: string;
   target: Target;
 };
+
+export enum FeedType {
+  TransFeed = 'TransFeed',
+  TargetFeed = 'TargetFeed',
+}

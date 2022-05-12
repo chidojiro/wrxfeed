@@ -467,6 +467,7 @@ export default class ApiUtils implements ApiClient {
         rootDep: filters?.rootDepartment,
         cat: filters?.category,
         vend: filters?.vendor,
+        targetId: filters?.targetId,
         month: filters?.month,
         year: filters?.year,
       },

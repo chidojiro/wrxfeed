@@ -238,6 +238,7 @@ export interface FeedFilters {
   page?: Pagination;
   forYou?: number;
   department?: number;
+  targetId?: number;
   vendor?: number;
   category?: number;
   rootDepartment?: number;
