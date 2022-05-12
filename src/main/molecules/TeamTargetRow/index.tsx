@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-import { Target } from '@main/entity';
+import { FeedType, Target } from '@main/entity';
 import { getColorByText, getTargetName, nFormatter, getTargetAmountAndTotal } from '@main/utils';
 import { classNames } from '@common/utils';
 import Routes from '@src/routes';
@@ -58,7 +58,9 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ target, onClickEdit }) =
   const isExceeds = totalSpent > targetAmount;
 
   const onClickTarget = () => {
-    history.push(`${(Routes.Feed.path as string).replace(':id', `${target.id}?route=Target`)}`);
+    history.push(
+      `${(Routes.Feed.path as string).replace(':id', `${target.id}?route=${FeedType.TargetFeed}`)}`,
+    );
     // history.push({
     //   pathname: `/departments/${value?.id.toString()}`,
     //   search: `?route=${MainGroups.Directories}`,

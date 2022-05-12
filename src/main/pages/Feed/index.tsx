@@ -11,7 +11,7 @@ import { useApi } from '@api';
 import { ApiErrorCode } from '@error/types';
 import { MainGroups } from '@common/constants';
 import { isApiError } from '@error/utils';
-import { Category, Department, FeedItem, Vendor } from '@main/entity';
+import { Category, Department, FeedItem, FeedType, Vendor } from '@main/entity';
 
 import MainLayout from '@common/templates/MainLayout';
 import RollupCard from '@main/molecules/RollupCard';
@@ -47,8 +47,39 @@ const FeedPage: React.VFC = () => {
     }
   };
 
+  const getTargetFeedItem = async (targetId: number) => {
+    try {
+      setLoading(true);
+      const res = await ApiClient.getFeeds({
+        page: {
+          offset: 0,
+          limit: 10,
+        },
+        targetId,
+      });
+      if (res.length > 0) {
+        setFeedItem(res[0]);
+      }
+    } catch (error: unknown) {
+      if (isApiError(error)) {
+        if (error.code === ApiErrorCode.Notfound) {
+          history.push('/404');
+        } else {
+          toast.error(error.details?.message);
+          errorHandler(error);
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    getFeedItem(parseInt(feedId, 10));
+    if (route === FeedType.TargetFeed) {
+      getTargetFeedItem(parseInt(feedId, 10));
+    } else {
+      getFeedItem(parseInt(feedId, 10));
+    }
   }, [feedId, route]);
 
   const onClickCategory = (category?: Category) => {
@@ -99,7 +130,7 @@ const FeedPage: React.VFC = () => {
 
     return (
       <div className="w-full h-full overflow-scroll hide-scrollbar">
-        {feedItem.type === 'transactions' ? (
+        {feedItem.type === 'transaction' ? (
           <RollupCard
             onClickCategory={onClickCategory}
             onClickDepartment={onClickDepartment}
