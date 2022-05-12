@@ -6,12 +6,12 @@ import range from 'lodash.range';
 
 import { defaultTargetMonths } from '@common/constants';
 import { PatchCalcSpendingFilters, TargetPeriod } from '@api/types';
-import { classNames, formatCurrency } from '@common/utils';
+import { classNames } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
 import { FeedItem, TargetMonth } from '@main/entity';
 import { LineChartData } from '@main/types';
 import { getTargetMonthsLineChartData } from '@main/chart.utils';
-import { getPeriodsByYear, getTargetAmountAndTotal } from '@main/utils';
+import { decimalLogic, DecimalType, getPeriodsByYear, getTargetAmountAndTotal } from '@main/utils';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
 import TargetChart from '../TargetChart';
@@ -162,7 +162,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
                 <p className="text-white text-2xs">Target</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {`$${formatCurrency(dataPoints?.target ?? 0)}`}
+                {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers)}
               </p>
             </div>
             <div
@@ -174,7 +174,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
                 <p className="text-white text-2xs">Current</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {`$${formatCurrency(dataPoints?.thisYear ?? 0)}`}
+                {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers)}
               </p>
             </div>
             <div
@@ -186,7 +186,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
                 <p className="text-white text-2xs">Last Year</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {`$${formatCurrency(dataPoints?.lastYear ?? 0)}`}
+                {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers)}
               </p>
             </div>
           </div>
@@ -203,13 +203,13 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Current Spend</p>
             <p className="text-xl text-primary font-bold mt-1">
-              {`$ ${formatCurrency(total ?? '0')}`}
+              {decimalLogic(total ?? '0', DecimalType.SummedNumbers)}
             </p>
           </div>
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Target</p>
             <p className="text-xl text-primary font-bold mt-1">
-              {`$ ${formatCurrency(amount ?? '0')}`}
+              {decimalLogic(amount ?? '0', DecimalType.SummedNumbers)}
             </p>
           </div>
           <div className="flex flex-1 justify-end flex-col items-end">
