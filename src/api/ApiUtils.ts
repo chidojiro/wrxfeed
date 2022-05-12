@@ -22,7 +22,7 @@ import {
   GetUploadTokenBody,
   Pagination,
   ResetPasswordDto,
-  TransactionFilter,
+  TransactionBody,
   UploadToken,
   GetUsersFilter,
   GetContactsFilter,
@@ -160,19 +160,11 @@ export default class ApiUtils implements ApiClient {
     return resp.data;
   };
 
-  getTransactions = async (filters?: TransactionFilter): Promise<Transaction[]> => {
-    const params = {
-      ...filters?.pagination,
-      dep: filters?.department,
-      ven: filters?.vendor,
-      cat: filters?.category,
-      rootDep: filters?.rootDepartment,
-    };
-    const url = filters?.forYou ? '/feed/transactions/for-you' : '/feed/transactions';
+  getTransactions = async (body?: TransactionBody): Promise<Transaction[]> => {
     const res = await this.request<Transaction[]>({
-      url,
-      method: 'GET',
-      params,
+      url: '/feed/transactions',
+      method: 'PATCH',
+      data: body,
     });
     return res.data;
   };

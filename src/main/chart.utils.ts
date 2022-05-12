@@ -1,20 +1,14 @@
 /* eslint-disable no-param-reassign */
 import dayjs from 'dayjs';
 import { Transaction, TargetMonth } from '@main/entity';
-import {
-  ChartDataPoint,
-  ChartLegend,
-  ChartLineProps,
-  ChartLevel,
-  LineChartData,
-} from '@main/types';
+import { ChartDataPoint, ChartLineProps, ChartLevel, LineChartData } from '@main/types';
 import { TargetPeriod } from '@api/types';
 import { round } from '@common/utils';
 import range from 'lodash.range';
 import { nFormatter } from './utils';
 
 const ITEM_DATE_FORMAT = 'YYYY-MM-DD';
-const DATA_DATE_FORMAT = 'MMM DD, YYYY';
+const DATA_DATE_FORMAT = 'MMM DD';
 
 /**
  * Group transactions by month
@@ -40,122 +34,85 @@ export const hashTransactionsByMonths = (
   }, {});
 };
 
-export const getLineChartDataInMonth = (trans: Transaction[]): LineChartData<Transaction[]> => {
+export const getLineChartDataInMonth = (
+  thisYearTrans: Transaction[],
+  lastYearTrans: Transaction[],
+  target: TargetMonth,
+): LineChartData => {
   const monthFormat = 'MMM';
-  const today = dayjs(new Date());
-  const currentMonth: string = today.format(monthFormat);
-  const pre1Month: string = today.subtract(1, 'month').format(monthFormat);
-  const pre2Month: string = today.subtract(2, 'month').format(monthFormat);
+  const targetDate = dayjs().set('month', target.month - 1);
+  const monthStr: string = targetDate.format(monthFormat);
+  const isThisMonth = dayjs().month() === target.month - 1;
 
-  const transHashByMonths = hashTransactionsByMonths(trans, monthFormat);
-  let totalCurrentMonth = 0;
-  let totalPre1Month = 0;
-  let totalPre2Month = 0;
-  const data: ChartDataPoint<Transaction[]>[] = Array(31) // 3 months always contain 1 month with 31 days
+  const thisYearTransMatrix = hashTransactionsByMonths(thisYearTrans, monthFormat)[monthStr];
+  const lastYearTransMatrix = hashTransactionsByMonths(lastYearTrans, monthFormat)[monthStr];
+  let totalThisYear = 0;
+  let totalLastYear = 0;
+  const data: ChartDataPoint[] = Array(targetDate.daysInMonth())
     .fill({
       name: '',
-      [currentMonth]: 0,
-      [pre1Month]: 0,
-      [pre2Month]: 0,
+      thisYear: 0,
+      lastYear: 0,
+      target: target.amount,
     })
     .map((_, index) => {
-      const dayName = dayjs(today)
+      const dayName = dayjs(targetDate)
         .date(index + 1)
         .format(DATA_DATE_FORMAT);
 
       // Total by month
-      totalCurrentMonth += Math.round(
-        transHashByMonths[currentMonth]?.[index]?.reduce(
-          (total, item) => total + (item?.amountUsd ?? 0),
+      totalThisYear += Math.round(
+        thisYearTransMatrix?.[index]?.reduce((total, item) => total + (item?.amountUsd ?? 0), 0) ??
           0,
-        ) ?? 0,
       );
-      totalPre1Month += Math.round(
-        transHashByMonths[pre1Month]?.[index]?.reduce(
-          (total, item) => total + (item?.amountUsd ?? 0),
+      totalLastYear += Math.round(
+        lastYearTransMatrix?.[index]?.reduce((total, item) => total + (item?.amountUsd ?? 0), 0) ??
           0,
-        ) ?? 0,
       );
-      totalPre2Month += Math.round(
-        transHashByMonths[pre2Month]?.[index]?.reduce(
-          (total, item) => total + (item?.amountUsd ?? 0),
-          0,
-        ) ?? 0,
-      );
-      // Top 3 transactions this date of month
-      const topTrans = transHashByMonths[currentMonth]?.[index]
-        ?.sort((a, b) => (b?.amountUsd ?? 0) - (a?.amountUsd ?? 0))
-        .slice(0, 3);
       // Don't draw data line if date index greater than today
-      if (index > today.date() - 1) {
+      if (isThisMonth && index > targetDate.date() - 1) {
         return {
           name: dayName,
-          [pre1Month]: totalPre1Month,
-          [pre2Month]: totalPre2Month,
+          lastYear: totalLastYear,
+          target: target.amount,
         };
       }
       return {
         name: dayName,
-        topTrans,
-        [currentMonth]: totalCurrentMonth,
-        [pre1Month]: totalPre1Month,
-        [pre2Month]: totalPre2Month,
+        thisYear: totalThisYear,
+        lastYear: totalLastYear,
+        target: target.amount,
       };
     });
-  const legends: ChartLegend[] = [
-    {
-      id: `chartLegends-${currentMonth}`,
-      color: '#6565FB',
-      name: currentMonth,
-      type: '',
-    },
-    {
-      id: `chartLegends-${pre1Month}`,
-      color: '#BEC1C7',
-      name: pre1Month,
-      type: '',
-    },
-    {
-      id: `chartLegends-${pre2Month}`,
-      color: '#EFEFF1',
-      name: pre2Month,
-      type: '',
-    },
-    {
-      id: 'TargetLine',
-      color: '',
-      name: 'Target',
-      type: 'dashed-line-legend',
-    },
-  ];
   const lines: ChartLineProps[] = [
     {
-      name: pre2Month,
+      name: 'target',
       type: 'linear',
-      dataKey: pre2Month,
-      strokeWidth: 4,
-      stroke: '#E7E8EC',
+      dataKey: 'target',
+      strokeWidth: 2,
+      strokeDasharray: '8 8',
+      stroke: '#FF5F68',
       dot: false,
     },
     {
-      name: pre1Month,
+      name: 'lastYear',
       type: 'linear',
-      dataKey: pre1Month,
-      strokeWidth: 4,
-      stroke: '#C5C8CD',
+      dataKey: 'lastYear',
+      strokeWidth: 3,
+      stroke: '#DFE1E6',
       dot: false,
     },
     {
-      name: currentMonth,
+      name: 'thisYear',
       type: 'linear',
-      dataKey: currentMonth,
-      strokeWidth: 4,
+      dataKey: 'thisYear',
+      strokeWidth: 3,
       stroke: '#6565FB',
       dot: false,
     },
   ];
 
-  let maxValue = Math.max(totalCurrentMonth, totalPre1Month, totalPre2Month);
+  let maxValue = Math.max(totalThisYear, totalLastYear, target.amount);
   const positiveMax = Math.abs(maxValue);
   if (positiveMax >= 1000000000) {
     maxValue = Math.ceil(positiveMax / 1000000000) * 1000000000; // Billion
@@ -168,7 +125,7 @@ export const getLineChartDataInMonth = (trans: Transaction[]): LineChartData<Tra
     maxValue = Math.ceil(positiveMax / 1000); // Thousands
     maxValue = Math.ceil(maxValue / 5) * 5 * remember;
   }
-  return { data, legends, lines, maxValue, metadata: { totalCurrentMonth } };
+  return { data, legends: [], lines, maxValue };
 };
 
 export const getChartLevels = (maxValue: number): ChartLevel[] => {

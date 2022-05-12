@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useRef, useState, KeyboardEventHandler, useMemo } from 'react';
 import { TooltipProps } from 'recharts';
@@ -15,6 +16,7 @@ import {
   PutTargetParams,
   TargetPeriod,
   TargetPropType,
+  TransactionBody,
 } from '@api/types';
 import { Department, Target, TargetMonth } from '@main/entity';
 
@@ -34,8 +36,9 @@ import {
 } from '@main/utils';
 import TargetChart from '@main/molecules/TargetChart';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
-import { getTargetMonthsLineChartData } from '@main/chart.utils';
+import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@main/chart.utils';
 import { defaultTargetMonths, INITIAL_CHART_DATA } from '@common/constants';
+import { useTransaction } from '@main/hooks';
 
 export type AddTargetModalProps = {
   open: boolean;
@@ -101,7 +104,6 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     useState<PatchCalcSpendingFilters>(THIS_YEAR_INIT_FILTER);
   const [lastYearSpendFilter, setLastYearFilter] =
     useState<PatchCalcSpendingFilters>(LAST_YEAR_INIT_FILTER);
-
   const {
     months: thisYearSpendData = [],
     fetch: fetchThisYearSpendData,
@@ -112,6 +114,27 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     isLoading: lastYearDataLoading,
     fetch: fetchLastYearSpendData,
   } = useMultiMonth(lastYearSpendFilter, true);
+
+  const [lastYearTransPayload, setLastYearTransPayload] = useState<TransactionBody>();
+  const { transactions: lastYearTrans } = useTransaction(lastYearTransPayload);
+  const [thisYearTransPayload, setThisYearTransPayload] = useState<TransactionBody>();
+  const { transactions: thisYearTrans } = useTransaction(thisYearTransPayload);
+
+  const updatedTargetMonths = targetMonths.filter((target) => target?.amount > 0); // TODO: if you want to accept zero target, let define an empty value like null, undefined, '', -1... then you can use >= here
+  const startMonth = updatedTargetMonths[0]?.month ?? 1;
+  const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
+
+  const isEdit = itemEditing !== null;
+  const chartData: LineChartData = useMemo(() => {
+    if (startMonth === endMonth) {
+      return getLineChartDataInMonth(thisYearTrans, lastYearTrans, targetMonths[startMonth - 1]);
+    }
+    return getTargetMonthsLineChartData(thisYearSpendData, lastYearSpendData, targetMonths);
+  }, [thisYearSpendData, lastYearSpendData, targetMonths, lastYearTrans, thisYearTrans]);
+
+  // Variables
+  const totalTarget = round(targetMonths.reduce((total, target) => total + target.amount, 0));
+  const totalCurrentSpend = round(chartData.metadata?.currentSpend ?? 0);
 
   useEffect(() => {
     if (department) {
@@ -140,18 +163,6 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       });
     }
   }, [allProps, curYear]);
-
-  const isEdit = itemEditing !== null;
-  const chartData: LineChartData = useMemo(() => {
-    return getTargetMonthsLineChartData(thisYearSpendData, lastYearSpendData, targetMonths);
-  }, [thisYearSpendData, lastYearSpendData, targetMonths]);
-
-  // Variables
-  const totalTarget = round(targetMonths.reduce((total, target) => total + target.amount, 0));
-  const totalCurrentSpend = round(chartData.metadata?.currentSpend ?? 0);
-  const updatedTargetMonths = targetMonths.filter((target) => target?.amount > 0); // TODO: if you want to accept zero target, let define an empty value like null, undefined, '', -1... then you can use >= here
-  const startMonth = updatedTargetMonths[0]?.month ?? 1;
-  const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
   const onCreateTarget = (name: string, propSelected: SearchResult[], excepts: SearchResult[]) => {
     const { props, periods } = getPropsAndPeriodsFromItemSelected(
@@ -287,16 +298,34 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     }
   }, [itemEditing]);
 
+  useEffect(() => {
+    if (targetMonths?.length && startMonth === endMonth) {
+      const props = allProps.length ? allProps : itemEditing?.props;
+      const thisYear = dayjs().year();
+      setLastYearTransPayload({
+        periods: [{ month: startMonth, year: thisYear - 1 }],
+        props,
+      });
+      setThisYearTransPayload({
+        periods: [{ month: startMonth, year: thisYear }],
+        props,
+      });
+    }
+  }, [startMonth, endMonth, allProps]);
+
   const onCloseModal = () => {
     if (typeof onClose === 'function') onClose();
   };
+
   const onClickDelete = () => {
     if (!itemEditing) return;
     onDeleteTarget(itemEditing?.id);
   };
+
   const onClickCancel = () => {
     onCancel();
   };
+
   const onClickCreateOrSave = () => {
     const propSelected = [...vendItems, ...catItems, ...teamItems];
     if (targetName.length === 0) {
@@ -378,24 +407,21 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       ? 'bg-primary'
       : 'bg-Gray-6';
 
-  const renderXAxis = () =>
-    startMonth === endMonth ? (
-      <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]">
-        <div key="x-first-date" className="h-7 flex justify-start items-center">
-          <p>
-            {dayjs()
-              .month(startMonth - 1)
-              .date(1)
-              .format('MMM D')}
-          </p>
+  const renderXAxis = () => {
+    const targetDate = dayjs().set('month', startMonth - 1);
+    return startMonth === endMonth ? (
+      <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[90px]">
+        <div className="w-20 h-7 flex justify-center items-center">
+          <p>{targetDate.date(7).format('MMM D')}</p>
         </div>
-        <div key="x-last-date" className="h-7 flex justify-end items-center">
-          <p>
-            {dayjs()
-              .month(startMonth - 1)
-              .endOf('month')
-              .format('MMM D')}
-          </p>
+        <div className="w-20 h-7 flex justify-center items-center">
+          <p>{targetDate.date(14).format('MMM D')}</p>
+        </div>
+        <div className="w-20 h-7 flex justify-center items-center">
+          <p>{targetDate.date(21).format('MMM D')}</p>
+        </div>
+        <div className="w-20 h-7 flex justify-center items-center">
+          <p>{targetDate.date(28).format('MMM D')}</p>
         </div>
       </div>
     ) : (
@@ -414,6 +440,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         ))}
       </div>
     );
+  };
 
   const renderTooltipContent = (props: TooltipProps<ValueType, NameType>) => {
     const { active, payload } = props;

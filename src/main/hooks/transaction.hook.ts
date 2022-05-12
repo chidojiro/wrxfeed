@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useApi } from '@api';
 import usePusher from '@api/hooks/usePusher';
-import { TransactionFilter } from '@api/types';
+import { TransactionBody } from '@api/types';
 import { useErrorHandler } from '@error/hooks';
 import { isBadRequest } from '@error/utils';
 import { useIdentity } from '@identity/hooks';
@@ -13,7 +13,6 @@ import { SetterOrUpdater, useRecoilState } from 'recoil';
 
 interface TransactionHookValues {
   transactions: Transaction[];
-  hasMore: boolean;
   isLoading: boolean;
   updateCategory: (category: Partial<Category>) => Promise<void>;
   upsertNewFeedCount: (key: string, count: number) => void;
@@ -30,32 +29,19 @@ export const FilterKeys: string[] = [
   'year',
 ];
 
-export function useTransaction(filter: TransactionFilter): TransactionHookValues {
+export function useTransaction(params?: TransactionBody): TransactionHookValues {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [newFeedCount, setNewFeedCount] = useRecoilState<FeedCount>(newFeedCountState);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
   const getTransactions = useCallback(async () => {
+    if (!params) return;
     try {
       setLoading(true);
-      // Reset list if new filter coming
-      if (!filter.pagination?.offset) {
-        setTransactions([]);
-      }
-      if (filter.pagination?.limit) {
-        const res = await ApiClient.getTransactions(filter);
-        if (filter.pagination?.offset) {
-          setTransactions((prevTrans) => [...prevTrans, ...res]);
-        } else {
-          setTransactions(res);
-        }
-        setHasMore(!!res.length);
-      } else {
-        setHasMore(false);
-      }
+      const res = await ApiClient.getTransactions(params);
+      setTransactions(res);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get transactions');
@@ -65,7 +51,7 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, errorHandler, filter]);
+  }, [ApiClient, errorHandler, params]);
 
   const updateCategory = useCallback(
     async (category: Partial<Category>) => {
@@ -104,12 +90,11 @@ export function useTransaction(filter: TransactionFilter): TransactionHookValues
   };
 
   useEffect(() => {
-    // getTransactions().then();
+    getTransactions().then();
   }, [getTransactions]);
 
   return {
     transactions,
-    hasMore,
     isLoading,
     newFeedCount,
     upsertNewFeedCount,
