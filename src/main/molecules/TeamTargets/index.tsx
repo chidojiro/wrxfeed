@@ -129,9 +129,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
       );
     }
     setTargetView(targetViewTemp);
-    if (targets.length > 0) {
-      setHavePrimary(!!targets[0].isPrimary);
-    }
+    setHavePrimary(targets.length > 0);
   }, [havePrimary, targets]);
 
   const renderAddNewTargetButton = () => {
