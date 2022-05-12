@@ -7,9 +7,10 @@ import { toast } from 'react-toastify';
 import { menuItemsValue, newFeedCountState } from '@main/states/sidemenu.state';
 import { useSubscription } from '@main/hooks/subscription.hook';
 import { getApiClient } from '@api/utils';
-import { GroupTab, LeftTab } from '@common/types';
+import { GroupTab, LeftTab, SectionTab } from '@common/types';
 import { classNames } from '@common/utils';
 import { ReactComponent as CloseIcon } from '@assets/icons/outline/basics-x-small.svg';
+import { AddSmallIcon, Bank } from '@assets';
 
 const SideBar: React.VFC = () => {
   const history = useHistory();
@@ -17,20 +18,25 @@ const SideBar: React.VFC = () => {
 
   const { unsubscribe } = useSubscription();
 
-  const menuItems: GroupTab[] = useRecoilValue(menuItemsValue);
+  const menuItems: SectionTab[] = useRecoilValue(menuItemsValue);
   const [newFeedCount, setFeedCount] = useRecoilState(newFeedCountState);
 
-  const currentTab = menuItems.reduce<LeftTab | null>((cur, root) => {
-    if (cur) return cur;
-    return (
-      root.tabs.find((tab) =>
-        tab.strict
-          ? location.pathname === tab.location.pathname &&
-            location.search.includes(tab.location.search ?? '')
-          : location.pathname.startsWith(tab.location.pathname),
-      ) ?? null
-    );
-  }, null);
+  const currentTab: LeftTab = {
+    name: '',
+    location: { pathname: location.pathname },
+    icon: Bank,
+  };
+  // const currentTab = menuItems[0].groups.reduce<LeftTab | null>((cur, root) => {
+  //   if (cur) return cur;
+  //   return (
+  //     root.tabs.find((tab) =>
+  //       tab.strict
+  //         ? location.pathname === tab.location.pathname &&
+  //           location.search.includes(tab.location.search ?? '')
+  //         : location.pathname.startsWith(tab.location.pathname),
+  //     ) ?? null
+  //   );
+  // }, null);
 
   async function getFeedCount() {
     try {
@@ -74,11 +80,92 @@ const SideBar: React.VFC = () => {
     );
   };
 
+  const renderTabs = (tabs: LeftTab[], showTabIcon = false) => {
+    return (
+      <>
+        {tabs.map((leftTab: LeftTab) => {
+          const { icon: TabIcon } = leftTab;
+          const isCurrentTab = currentTab?.location.pathname === leftTab.location.pathname;
+          return (
+            <RouterLink
+              key={`tabs-${leftTab?.name}-${leftTab.location.pathname}`}
+              to={leftTab.location}
+              className={classNames(
+                isCurrentTab ? 'text-Accent-2 font-semibold' : 'text-Gray-3 font-regular',
+                'flex flex-row items-center',
+              )}
+            >
+              <div className="ml-1 group-scope flex flex-1 w-full flex-row hover:bg-Gray-7 justify-between py-3 items-center pl-12 pr-3 text-sm rounded-sm">
+                {TabIcon && showTabIcon ? (
+                  <div className="flex w-5 h-5 justify-center items-center">
+                    <TabIcon
+                      className={classNames(
+                        'flex-shrink-0 h-4 w-4 fill-current path-no-filled text-Gray-3 opacity-100',
+                      )}
+                      aria-hidden="true"
+                      width={16}
+                      height={16}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex-shrink-0 h-5 w-5" />
+                )}
+                <span className="w-full truncate sm:ml-2 md:ml-4 ">{leftTab.name}</span>
+                {leftTab.removable && (
+                  <span
+                    aria-hidden="true"
+                    className="relative"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      if (leftTab.subscription) {
+                        unsubscribe(leftTab.subscription.type, leftTab.subscription.item);
+                        history.replace(leftTab.location.pathname); // Remove Feeds from search query
+                      }
+                    }}
+                  >
+                    <CloseIcon
+                      className="group-scope-hover:visible invisible mr-2"
+                      width={16}
+                      height={16}
+                      viewBox="0 0 16 16"
+                    />
+                    <div className="flex absolute inset-0 group-scope">
+                      <div className="invisible group-scope-hover:visible absolute -top-8 -right-2.5">
+                        <div className="bg-primary px-2 py-1 rounded-sm">
+                          <p className="text text-white text-2xs truncate font-semibold">
+                            Unfollow
+                          </p>
+                        </div>
+                        <svg
+                          className="absolute text-primary h-2 right-5 top-full"
+                          x="0px"
+                          y="0px"
+                          viewBox="0 0 255 255"
+                          xmlSpace="preserve"
+                        >
+                          <polygon className="fill-current" points="0,0 127.5,127.5 255,0" />
+                        </svg>
+                      </div>
+                    </div>
+                  </span>
+                )}
+                {leftTab?.isShowCounter && renderCounter(leftTab)}
+              </div>
+              <div
+                className={classNames('h-6 w-1 rounded-full', isCurrentTab ? 'bg-Accent-2' : '')}
+              />
+            </RouterLink>
+          );
+        })}
+      </>
+    );
+  };
+
   return (
     <nav aria-label="Sidebar" className="divide-y divide-gray-300 flex flex-1 overflow-hidden">
       <div className="flex w-full flex-1 flex-col py-8 pb-40 space-y-6 h-auto overflow-scroll hide-scrollbar">
-        {menuItems.map((menuItem: GroupTab) => {
-          const { tabs } = menuItem;
+        {menuItems.map((menuItem: SectionTab) => {
+          const { groups, tabs: tabsInSection } = menuItem;
           return (
             <div key={menuItem.name}>
               <div
@@ -89,27 +176,18 @@ const SideBar: React.VFC = () => {
                   {menuItem.name}
                 </h3>
               </div>
-              {tabs.map((leftTab: LeftTab) => {
-                const { icon: IconView } = leftTab;
-                const isCurrentTab = currentTab?.location.pathname === leftTab.location.pathname;
+              {renderTabs(tabsInSection, true)}
+              {groups?.map((group: GroupTab) => {
+                const { tabs: tabsInGroup, icon: GroupIcon, addItemRoute, addItemTitle } = group;
+                if (!tabsInGroup || !Array.isArray(tabsInGroup)) return null;
                 return (
-                  <RouterLink
-                    key={`tabs-${leftTab?.name}-${leftTab.location.pathname}`}
-                    to={leftTab.location}
-                    className={classNames(
-                      isCurrentTab ? 'text-Accent-2 font-semibold' : 'text-Gray-3 font-regular',
-                      'flex flex-row items-center',
-                    )}
-                  >
-                    <div className="ml-1 group flex flex-1 w-full flex-row hover:bg-Gray-7 justify-between py-3 items-center pl-12 pr-3 text-sm rounded-sm">
-                      {IconView ? (
+                  <div key={`GroupTab-${group.name}`}>
+                    <div className="ml-1 group flex flex-1 w-full flex-row justify-between py-3 items-center pl-12 pr-3 text-sm rounded-sm">
+                      {GroupIcon ? (
                         <div className="flex w-5 h-5 justify-center items-center">
-                          <IconView
+                          <GroupIcon
                             className={classNames(
-                              'flex-shrink-0 h-4 w-4 fill-current path-no-filled',
-                              isCurrentTab
-                                ? 'text-Accent-2 opacity-100'
-                                : 'text-Gray-3 opacity-100',
+                              'flex-shrink-0 h-4 w-4 fill-current path-no-filled text-Gray-3 opacity-100',
                             )}
                             aria-hidden="true"
                             width={16}
@@ -119,35 +197,34 @@ const SideBar: React.VFC = () => {
                       ) : (
                         <div className="flex-shrink-0 h-5 w-5" />
                       )}
-                      <span className="w-full truncate sm: ml-2 md:ml-4 ">{leftTab.name}</span>
-                      {leftTab.removable && (
-                        <span
-                          aria-hidden="true"
-                          onClick={(event) => {
-                            event.preventDefault();
-                            if (leftTab.subscription) {
-                              unsubscribe(leftTab.subscription.type, leftTab.subscription.item);
-                              history.replace(leftTab.location.pathname); // Remove Feeds from search query
-                            }
-                          }}
-                        >
-                          <CloseIcon
-                            className="group-hover:visible invisible mr-2"
+                      <span className="w-full truncate sm: ml-2 md:ml-4 ">{group.name}</span>
+                    </div>
+                    {renderTabs(tabsInGroup)}
+                    {addItemRoute && (
+                      <RouterLink
+                        key={`add-button-${group?.name}`}
+                        to={addItemRoute}
+                        className={classNames(
+                          'text-Gray-6 font-regular',
+                          'flex flex-row items-center',
+                        )}
+                      >
+                        <div className="ml-1 group flex flex-1 w-full flex-row hover:bg-Gray-7 justify-between py-3 items-center pl-12 pr-3 text-sm rounded-sm">
+                          <div className="h-5 w-14" />
+                          <AddSmallIcon
+                            className={classNames(
+                              'flex-shrink-0 h-4 w-4 fill-current path-no-filled text-Gray-6 opacity-100',
+                            )}
+                            aria-hidden="true"
                             width={16}
                             height={16}
-                            viewBox="0 0 16 16"
                           />
-                        </span>
-                      )}
-                      {leftTab?.isShowCounter && renderCounter(leftTab)}
-                    </div>
-                    <div
-                      className={classNames(
-                        'h-6 w-1 rounded-full',
-                        isCurrentTab ? 'bg-Accent-2' : '',
-                      )}
-                    />
-                  </RouterLink>
+                          <span className="w-full truncate sm:ml-2">{addItemTitle}</span>
+                        </div>
+                        <div className="h-6 w-1" />
+                      </RouterLink>
+                    )}
+                  </div>
                 );
               })}
             </div>
