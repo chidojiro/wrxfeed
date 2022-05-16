@@ -6,23 +6,27 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useErrorHandler } from 'react-error-boundary';
 import { toast } from 'react-toastify';
 
+import { useQuery } from '@common/hooks';
 import { useApi } from '@api';
 import { ApiErrorCode } from '@error/types';
 import { MainGroups } from '@common/constants';
 import { isApiError } from '@error/utils';
-import { Category, Department, FeedItem, Vendor } from '@main/entity';
+import { Category, Department, FeedItem, FeedType, Vendor } from '@main/entity';
 
 import MainLayout from '@common/templates/MainLayout';
 import RollupCard from '@main/molecules/RollupCard';
 import Loading from '@common/atoms/Loading';
+import TargetFeedItem from '@main/molecules/TargetFeedItem';
 
 const FeedPage: React.VFC = () => {
   const history = useHistory();
   const ApiClient = useApi();
+  const query = useQuery();
   const { id: feedId } = useParams<{ id: string }>();
   const [feedItem, setFeedItem] = useState<FeedItem | undefined>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const errorHandler = useErrorHandler();
+  const route = query.get('route');
 
   const getFeedItem = async (id: number) => {
     try {
@@ -43,9 +47,40 @@ const FeedPage: React.VFC = () => {
     }
   };
 
+  const getTargetFeedItem = async (targetId: number) => {
+    try {
+      setLoading(true);
+      const res = await ApiClient.getFeeds({
+        page: {
+          offset: 0,
+          limit: 10,
+        },
+        targetId,
+      });
+      if (res.length > 0) {
+        setFeedItem(res[0]);
+      }
+    } catch (error: unknown) {
+      if (isApiError(error)) {
+        if (error.code === ApiErrorCode.Notfound) {
+          history.push('/404');
+        } else {
+          toast.error(error.details?.message);
+          errorHandler(error);
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    getFeedItem(parseInt(feedId, 10));
-  }, [feedId]);
+    if (route === FeedType.TargetFeed) {
+      getTargetFeedItem(parseInt(feedId, 10));
+    } else {
+      getFeedItem(parseInt(feedId, 10));
+    }
+  }, [feedId, route]);
 
   const onClickCategory = (category?: Category) => {
     history.push({
@@ -95,7 +130,7 @@ const FeedPage: React.VFC = () => {
 
     return (
       <div className="w-full h-full overflow-scroll hide-scrollbar">
-        <ul>
+        {feedItem.type === 'transaction' ? (
           <RollupCard
             onClickCategory={onClickCategory}
             onClickDepartment={onClickDepartment}
@@ -103,7 +138,9 @@ const FeedPage: React.VFC = () => {
             onClickVendor={onClickVendor}
             feedItem={feedItem}
           />
-        </ul>
+        ) : (
+          <TargetFeedItem feedItem={feedItem} />
+        )}
       </div>
     );
   };

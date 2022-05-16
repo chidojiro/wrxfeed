@@ -583,26 +583,12 @@ export const getPropsAndPeriodsFromItemSelected = (
   };
 };
 
-export const getTargetAmountAndTotal = (
-  target: Target,
-  allMonth = false,
-): { amount: number; total: number } => {
-  if (allMonth) {
-    let allMonthAmount = 0;
-    let allMonthTotal = 0;
-    target.periods.forEach((period: TargetPeriod) => {
-      allMonthAmount += period.amount ?? 0;
-      allMonthTotal += period.total ?? 0;
-    });
-    return { amount: allMonthAmount, total: allMonthTotal };
-  }
-
+export const getTargetAmountAndTotal = (target: Target): { amount: number; total: number } => {
   const today = new Date();
   const monthInReal = today.getMonth() + 1;
   const monthMatched: TargetPeriod[] = target.periods?.filter(
     (period: TargetPeriod) => period.month === monthInReal,
   );
-
   if (monthMatched?.length > 0) {
     return {
       amount: monthMatched[0].amount ?? 0,
