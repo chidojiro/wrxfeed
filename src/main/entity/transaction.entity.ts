@@ -143,6 +143,7 @@ export type Department = {
   id: number;
   name: string;
   parent?: Department;
+  avatar?: string;
 };
 
 export type Category = {
@@ -152,11 +153,13 @@ export type Category = {
   year?: number;
   month?: number;
   amount?: number;
+  avatar?: string;
 };
 
 export type Vendor = {
   id: number;
   name: string;
+  avatar?: string;
 };
 
 export type TranMeta = {

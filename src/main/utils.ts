@@ -332,10 +332,8 @@ export const getColorByText = (
   gradient = false,
 ): string => {
   let hash = 0;
-  let i;
 
-  /* eslint-disable no-bitwise */
-  for (i = 0; i < name.length; i += 1) {
+  for (let i = 0; i < name.length; i += 1) {
     hash += name.charCodeAt(i);
   }
 

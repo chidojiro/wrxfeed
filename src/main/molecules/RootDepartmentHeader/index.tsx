@@ -21,7 +21,7 @@ const RootDepartmentHeader: VFC<DirectoryItem> = ({
   onFollow,
   onUnfollow,
 }) => {
-  const deptBgColor = getColorByText(item?.name ?? '');
+  const deptBgColor = React.useMemo(() => getColorByText(item?.name ?? '', item.id, true), [item]);
 
   const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -39,13 +39,15 @@ const RootDepartmentHeader: VFC<DirectoryItem> = ({
   return (
     <div
       aria-hidden="true"
-      style={{ backgroundColor: deptBgColor }}
+      style={{
+        background: deptBgColor,
+      }}
       className="flex justify-between items-center px-4 py-4 sm:pl-6 cursor-pointer"
       onClick={onClick}
     >
       <h3 className="text-sm text-white uppercase font-semibold">{item.name || 'Unknown'}</h3>
       {isFollowing ? (
-        <Button onClick={handleUnfollow}>
+        <Button onClick={handleUnfollow} className="rounded-full border-white">
           <TickIcon
             width={16}
             height={16}
@@ -55,7 +57,7 @@ const RootDepartmentHeader: VFC<DirectoryItem> = ({
           <span className="text-white">Following</span>
         </Button>
       ) : (
-        <Button onClick={handleFollow}>
+        <Button onClick={handleFollow} className="rounded-full border-white">
           <AddIcon
             width={16}
             height={16}

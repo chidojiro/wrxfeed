@@ -1,12 +1,11 @@
-import React, { MouseEventHandler, VFC } from 'react';
+import React, { MouseEventHandler } from 'react';
 import Button from '@common/atoms/Button';
 import { Category, Department, Vendor } from '@main/entity';
 // Icons
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
-import { getColorByText, getNameAbbreviation } from '@main/utils';
 
-interface DirectoryItem {
+interface DepartmentItemProps {
   item: Department | Category | Vendor;
   disableFollow?: boolean;
   isFollowing?: boolean;
@@ -15,7 +14,7 @@ interface DirectoryItem {
   onUnfollow?: MouseEventHandler<HTMLButtonElement>;
 }
 
-const DirectoryItem: VFC<DirectoryItem> = ({
+const DepartmentItem: React.VFC<DepartmentItemProps> = ({
   item,
   isFollowing,
   disableFollow = false,
@@ -23,11 +22,6 @@ const DirectoryItem: VFC<DirectoryItem> = ({
   onFollow,
   onUnfollow,
 }) => {
-  const avatarBgColor = React.useMemo(
-    () => getColorByText(item?.name ?? '', item.id, true),
-    [item],
-  );
-
   const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
     if (onFollow) {
@@ -42,33 +36,12 @@ const DirectoryItem: VFC<DirectoryItem> = ({
     }
   };
 
-  const renderAvatarOrShortName = () => {
-    const shortName = getNameAbbreviation(item?.name);
-    const isHaveAvatar = item?.avatar;
-    return (
-      <div
-        className="w-8 h-8 flex justify-center items-center rounded-full"
-        style={{ background: avatarBgColor }}
-      >
-        {isHaveAvatar && (
-          <img
-            className="flex w-8 h-8 rounded-full"
-            alt="DirectoryItem-avatar"
-            src={isHaveAvatar}
-          />
-        )}
-        {!isHaveAvatar && <p className="text-xs font-semibold text-white">{shortName}</p>}
-      </div>
-    );
-  };
-
   return (
     <div
       aria-hidden="true"
-      className="flex items-center space-x-2 cursor-pointer px-4 py-3 min-h-16 sm:px-6 bg-white border border-Gray-11 w-full text-sm text-Gray-3 shadow overflow-hidden sm:rounded-card"
+      className="flex items-center space-x-2 cursor-pointer py-3 min-h-16 px-2 sm:px-6 w-full text-sm text-Gray-3"
       onClick={onClick}
     >
-      {renderAvatarOrShortName()}
       <div className="flex flex-1">
         <p className="text-sm font-medium text-Gray-1">{item?.name}</p>
       </div>
@@ -98,4 +71,4 @@ const DirectoryItem: VFC<DirectoryItem> = ({
   );
 };
 
-export default DirectoryItem;
+export default DepartmentItem;
