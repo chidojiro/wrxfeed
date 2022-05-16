@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { useIdentity } from '@identity/hooks';
 import { useFeedComment } from '@main/hooks/feedComment.hook';
 // constants
-import { Category, Department, FeedItem, Vendor, Visibility, Target } from '@main/entity';
+import { Category, Department, FeedItem, Vendor, Visibility, Target, User } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { useMention, useTarget } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@api/types';
@@ -94,6 +94,11 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
   const onSuccessPutTarget = () => {
     const dataPutTarget = setIntervalRef.current;
     setShowAddTarget(false);
+    const updater: User = {
+      id: identity?.id,
+      avatar: identity?.avatar,
+      fullName: identity?.fullName,
+    };
     // auto update this target feed item after put success
     const curFeedClone = cloneDeep(curFeed);
     curFeedClone.target = {
@@ -101,6 +106,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
       ...(dataPutTarget?.name ? { name: dataPutTarget?.name } : {}),
       ...(dataPutTarget?.props ? { props: dataPutTarget?.props } : {}),
       ...(dataPutTarget?.periods ? { periods: dataPutTarget?.periods } : {}),
+      updater,
     };
 
     setCurFeed(curFeedClone);
@@ -258,7 +264,9 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
                 id={`question-title-${curFeed?.id}`}
                 className="mt-1 text-xs font-normal text-Gray-6"
               >
-                {`Last edited at ${dayjs(curFeed.lastInteraction).format('MM/DD/YYYY')}`}
+                {`${curFeed?.target.updater?.fullName ?? 'Unknown'} edited at ${dayjs(
+                  curFeed.lastInteraction,
+                ).format('MM/DD/YYYY')}`}
               </h2>
             </div>
           </div>
