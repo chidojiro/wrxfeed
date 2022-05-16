@@ -28,21 +28,19 @@ const CategoryList: React.VFC<CategoryListProps> = ({
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}
     >
-      <div className="bg-white shadow overflow-hidden sm:rounded-sm">
-        <ul className="divide-y divide-gray-200">
-          {categories.map((category) => (
-            <li key={category.id} className="px-4 py-4 sm:px-6">
-              <DirectoryItem
-                item={category}
-                onClick={() => onSelect && onSelect(category)}
-                isFollowing={isFollowing('categories', category)}
-                onFollow={() => subscribe('categories', category)}
-                onUnfollow={() => unsubscribe('categories', category)}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="flex flex-col space-y-6 px-0.5">
+        {categories.map((category) => (
+          <li key={category.id} className="">
+            <DirectoryItem
+              item={category}
+              onClick={() => onSelect && onSelect(category)}
+              isFollowing={isFollowing('categories', category)}
+              onFollow={() => subscribe('categories', category)}
+              onUnfollow={() => unsubscribe('categories', category)}
+            />
+          </li>
+        ))}
+      </ul>
     </InfiniteScroller>
   );
 };
