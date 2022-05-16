@@ -188,7 +188,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
                 <p className="text-white text-2xs">Target</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers)}
+                {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers, '$')}
               </p>
             </div>
             <div
@@ -200,7 +200,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
                 <p className="text-white text-2xs">Current</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers)}
+                {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers, '$')}
               </p>
             </div>
             <div
@@ -212,7 +212,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
                 <p className="text-white text-2xs">Last Year</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers)}
+                {decimalLogic(dataPoints?.lastYear ?? 0, DecimalType.SummedNumbers, '$')}
               </p>
             </div>
           </div>
