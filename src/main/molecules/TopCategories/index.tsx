@@ -32,7 +32,7 @@ const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departme
   const onSelect = (category: Category) => {
     history.push({
       pathname: `/categories/${category?.id}`,
-      search: `?route=${MainGroups.Directories}&department=${departmentId}&month=${category?.month}&year=${category?.year}`,
+      search: `?route=${MainGroups.Following}&department=${departmentId}&month=${category?.month}&year=${category?.year}`,
     });
   };
   const renderTopCategoryItem = (category: Category) => {

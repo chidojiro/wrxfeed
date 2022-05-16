@@ -107,7 +107,7 @@ const ForYouPage: React.VFC = () => {
     if (key === 'department') {
       history.push({
         pathname: `/departments/${value?.id}`,
-        search: `?route=${MainGroups.Directories}`,
+        search: `?route=${MainGroups.Following}`,
       });
       return;
     }

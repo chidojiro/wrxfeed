@@ -10,6 +10,10 @@ module.exports = {
     applyComplexClasses: true,
   },
   theme: {
+    groupLevel: 10,
+    groupScope: "scope",
+    groupVariants: ["hover", "focus"],
+
     extend: {
       borderRadius: {
         'card': '10px',
@@ -106,5 +110,6 @@ module.exports = {
   variants: {},
   plugins: [
     require('@tailwindcss/line-clamp'),
+    require("tailwindcss-nested-groups"),
   ],
 }
