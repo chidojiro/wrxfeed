@@ -30,6 +30,8 @@ import ExceptDropdown from '@main/molecules/ExceptDropdown';
 import MultiMonthDropdown from '@main/molecules/MultiMonthDropdown';
 import ExceptList from '@main/molecules/ExceptList';
 import {
+  decimalLogic,
+  DecimalType,
   genReviewSentenceFromProperties,
   getPeriodsByYear,
   getPropsAndPeriodsFromItemSelected,
@@ -461,7 +463,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
             >
               <p className="text-white text-2xs">Target Amount</p>
               <p className="text-white text-2xs text-right">
-                {`$${formatCurrency(dataPoints?.target ?? 0)}`}
+                {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers, '$')}
               </p>
             </div>
             <div
@@ -470,7 +472,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
             >
               <p className="text-white text-2xs">Current Spend</p>
               <p className="text-white text-2xs text-right">
-                {`$${formatCurrency(dataPoints?.thisYear ?? 0)}`}
+                {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers, '$')}
               </p>
             </div>
 
@@ -483,7 +485,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
             >
               <p className="text-Gray-6 text-2xs">Last Year's Spend</p>
               <p className="text-Gray-6 text-2xs text-right">
-                {`$${formatCurrency(dataPoints?.lastYear ?? 0)}`}
+                {decimalLogic(dataPoints?.lastYear ?? 0, DecimalType.SummedNumbers, '$')}
               </p>
             </div>
           </div>

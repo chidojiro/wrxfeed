@@ -640,8 +640,7 @@ export const decimalLogic = (
     result = n ? numeral(n).format(format) : defaultValue;
     if (parseFloat(`${n}`) >= 1000000) {
       result = nFormatter(parseFloat(`${n}`), '', 1);
-    }
-    if (parseFloat(`${n}`) >= 1000) {
+    } else if (parseFloat(`${n}`) >= 100) {
       result = nFormatter(parseFloat(`${n}`), '', 0);
     }
   }
@@ -652,8 +651,7 @@ export const decimalLogic = (
     result = n ? numeral(n).format(format) : defaultValue;
     if (parseFloat(`${n}`) >= 1000000) {
       result = nFormatter(parseFloat(`${n}`), '', 2);
-    }
-    if (parseFloat(`${n}`) >= 1000) {
+    } else if (parseFloat(`${n}`) >= 1000) {
       result = nFormatter(parseFloat(`${n}`), '', 1);
     }
   }
