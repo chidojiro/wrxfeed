@@ -10,10 +10,14 @@ module.exports = {
     applyComplexClasses: true,
   },
   theme: {
+    groupLevel: 10,
+    groupScope: "scope",
+    groupVariants: ["hover", "focus"],
+
     extend: {
       borderRadius: {
         'card': '10px',
-        '2.5xl': '20px'
+        '2.5xl': '20px',
       },
       transitionProperty: {
         height: 'height'
@@ -93,10 +97,8 @@ module.exports = {
         '4.5': '18px',
         '18': '72px',
       },
-      shadow: {
-
-      },
       boxShadow: {
+        shadowCard: '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
         dropdown: '0 1px 1px 0 rgba(9, 30, 66, 0.31), 0 3px 5px 0 rgba(9, 30, 66, 0.2)',
         topCategoryHover: '-4px 10px 8px 0 rgba(101, 101, 251, 0.03), 0 3px 10px 0 rgba(101, 101, 251, 0.1);',
         propertyDropdown: '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
@@ -106,5 +108,6 @@ module.exports = {
   variants: {},
   plugins: [
     require('@tailwindcss/line-clamp'),
+    require("tailwindcss-nested-groups"),
   ],
 }

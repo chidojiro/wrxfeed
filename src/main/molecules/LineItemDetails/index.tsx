@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 import { Menu } from '@headlessui/react';
 
 import { FeedBackType } from '@main/types';
-import { getVendorNameFromLineItem, isEmptyOrSpaces } from '@main/utils';
+import { decimalLogic, DecimalType, getVendorNameFromLineItem, isEmptyOrSpaces } from '@main/utils';
 import { TransLineItem } from '@main/entity';
-import { classNames, formatCurrency } from '@common/utils';
+import { classNames } from '@common/utils';
 
 import Loading from '@common/atoms/Loading';
 import PopoverMenu from '@main/atoms/PopoverMenu';
@@ -65,7 +65,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     {
       id: 'converted-amount',
       key: 'Amount USD',
-      value: `$${formatCurrency(item?.amountUsd)}`,
+      value: `${decimalLogic(item?.amountUsd, DecimalType.DetailView, '$')}`,
     },
     {
       id: 'modified-at',

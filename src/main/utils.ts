@@ -11,6 +11,7 @@ import { MentionData } from '@draft-js-plugins/mention';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
 import { convertFromHTML, convertToHTML } from 'draft-convert';
+import numeral from 'numeral';
 
 import {
   TransLineItem,
@@ -331,10 +332,8 @@ export const getColorByText = (
   gradient = false,
 ): string => {
   let hash = 0;
-  let i;
 
-  /* eslint-disable no-bitwise */
-  for (i = 0; i < name.length; i += 1) {
+  for (let i = 0; i < name.length; i += 1) {
     hash += name.charCodeAt(i);
   }
 
@@ -372,19 +371,23 @@ export const getNameAbbreviation = (name?: string): string => {
     .toUpperCase();
 };
 
-export const nFormatter = (num: number, withCurrency = '$'): string => {
+export const nFormatter = (num: number, withCurrency = '$', toFixed = 1): string => {
   const isNegative = num < 0 ? '-' : '';
   const positiveNum = Math.abs(num);
   if (positiveNum >= 1000000000) {
     return `${isNegative}${withCurrency}${(positiveNum / 1000000000)
-      .toFixed(1)
+      .toFixed(toFixed)
       .replace(/\.0$/, '')}B`;
   }
   if (positiveNum >= 1000000) {
-    return `${isNegative}${withCurrency}${(positiveNum / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+    return `${isNegative}${withCurrency}${(positiveNum / 1000000)
+      .toFixed(toFixed)
+      .replace(/\.0$/, '')}M`;
   }
   if (positiveNum >= 1000) {
-    return `${isNegative}${withCurrency}${(positiveNum / 1000).toFixed(1).replace(/\.0$/, '')}K`;
+    return `${isNegative}${withCurrency}${(positiveNum / 1000)
+      .toFixed(toFixed)
+      .replace(/\.0$/, '')}K`;
   }
   return `${isNegative}${withCurrency}${num}`;
 };
@@ -578,26 +581,12 @@ export const getPropsAndPeriodsFromItemSelected = (
   };
 };
 
-export const getTargetAmountAndTotal = (
-  target: Target,
-  allMonth = false,
-): { amount: number; total: number } => {
-  if (allMonth) {
-    let allMonthAmount = 0;
-    let allMonthTotal = 0;
-    target.periods.forEach((period: TargetPeriod) => {
-      allMonthAmount += period.amount ?? 0;
-      allMonthTotal += period.total ?? 0;
-    });
-    return { amount: allMonthAmount, total: allMonthTotal };
-  }
-
+export const getTargetAmountAndTotal = (target: Target): { amount: number; total: number } => {
   const today = new Date();
   const monthInReal = today.getMonth() + 1;
   const monthMatched: TargetPeriod[] = target.periods?.filter(
     (period: TargetPeriod) => period.month === monthInReal,
   );
-
   if (monthMatched?.length > 0) {
     return {
       amount: monthMatched[0].amount ?? 0,
@@ -626,4 +615,49 @@ export const getTotalFeedItem = (feed: FeedItem): { total: number } => {
     total += tran.amountUsd;
   });
   return { total };
+};
+
+export const DecimalType = {
+  DetailView: 'DetailView',
+  ChartAxis: 'ChartAxis',
+  SummedNumbers: 'SummedNumbers',
+};
+
+export const decimalLogic = (
+  n?: string | number,
+  type = DecimalType.DetailView,
+  withCurrency = '$ ',
+  toNumber = false,
+): string | number => {
+  let format = '0,0.00';
+  let defaultValue = '0.00';
+
+  let result = n ? numeral(n).format(format) : defaultValue;
+
+  if (type === DecimalType.ChartAxis) {
+    format = '0,0';
+    defaultValue = '0';
+    result = n ? numeral(n).format(format) : defaultValue;
+    if (parseFloat(`${n}`) >= 1000000) {
+      result = nFormatter(parseFloat(`${n}`), '', 1);
+    } else if (parseFloat(`${n}`) >= 100) {
+      result = nFormatter(parseFloat(`${n}`), '', 0);
+    }
+  }
+
+  if (type === DecimalType.SummedNumbers) {
+    format = '0,00';
+    defaultValue = '0';
+    result = n ? numeral(n).format(format) : defaultValue;
+    if (parseFloat(`${n}`) >= 1000000) {
+      result = nFormatter(parseFloat(`${n}`), '', 2);
+    } else if (parseFloat(`${n}`) >= 1000) {
+      result = nFormatter(parseFloat(`${n}`), '', 1);
+    }
+  }
+
+  if (toNumber) {
+    return result + 0;
+  }
+  return withCurrency + result;
 };

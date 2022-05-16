@@ -6,12 +6,12 @@ import { useSetRecoilState } from 'recoil';
 
 import EventEmitter, { EventName } from '@main/EventEmitter';
 import { Transaction, TranStatusType, Vendor } from '@main/entity';
-import { classNames, DATE_FORMAT, formatCurrency } from '@common/utils';
+import { classNames, DATE_FORMAT } from '@common/utils';
 
 import TranLineItemsList from '@main/molecules/TranLineItemsList';
 import { ReactComponent as DownSmall } from '@assets/icons/outline/down-small.svg';
 import { lineItemSelectState } from '@main/states/lineItems.state';
-import { getTransactionColor } from '@main/utils';
+import { decimalLogic, DecimalType, getTransactionColor } from '@main/utils';
 
 export interface RollupTranRowProps {
   tran: Transaction;
@@ -20,7 +20,7 @@ export interface RollupTranRowProps {
   onClickVendor?: (vendor: Vendor) => void;
 }
 
-const A_WEEK_IN_MILISECONDS = 1000 * 60 * 60 * 24 * 7;
+const A_WEEK_IN_MILLISECONDS = 1000 * 60 * 60 * 24 * 7;
 
 const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
@@ -73,7 +73,7 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
   };
 
   const renderUnreadIndicator = () => {
-    if (tran?.transDate && Date.now() - Date.parse(tran?.transDate) <= A_WEEK_IN_MILISECONDS) {
+    if (tran?.transDate && Date.now() - Date.parse(tran?.transDate) <= A_WEEK_IN_MILLISECONDS) {
       return <div className="flex w-1.5 h-1.5 bg-Green-400 rounded-full" />;
     }
 
@@ -118,7 +118,7 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
         <p className="text-Gray-3 text-xs font-semibold w-18 text-right">
           {totalAmount === null || totalAmount === undefined
             ? 'Error'
-            : `$${formatCurrency(totalAmount)}`}
+            : `${decimalLogic(totalAmount, DecimalType.DetailView, '$')}`}
         </p>
         <p
           onClick={onClickDetails}

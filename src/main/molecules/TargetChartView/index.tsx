@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useMemo } from 'react';
 import { TooltipProps } from 'recharts';
 import dayjs from 'dayjs';
@@ -5,14 +6,15 @@ import cloneDeep from 'lodash.clonedeep';
 import range from 'lodash.range';
 
 import { defaultTargetMonths } from '@common/constants';
-import { PatchCalcSpendingFilters, TargetPeriod } from '@api/types';
-import { classNames, formatCurrency } from '@common/utils';
+import { PatchCalcSpendingFilters, TargetPeriod, TransactionBody } from '@api/types';
+import { classNames } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
 import { FeedItem, TargetMonth } from '@main/entity';
 import { LineChartData } from '@main/types';
-import { getTargetMonthsLineChartData } from '@main/chart.utils';
-import { getPeriodsByYear, getTargetAmountAndTotal } from '@main/utils';
+import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@main/chart.utils';
+import { decimalLogic, DecimalType, getPeriodsByYear, getTargetAmountAndTotal } from '@main/utils';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
+import { useTransaction } from '@main/hooks/transaction.hook';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
 import TargetChart from '../TargetChart';
 
@@ -33,7 +35,6 @@ interface TargetChartViewProps {
 }
 
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
-  const today = new Date();
   // const [chartData, setChartData] = useState<LineChartData<Transaction[]>>();
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
   const { amount, total } = getTargetAmountAndTotal(feedItem?.target);
@@ -50,10 +51,17 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
     useMultiMonth(thisYearSpendFilter);
   const { months: lastYearSpendData = [], isLoading: lastYearDataLoading } =
     useMultiMonth(lastYearSpendFilter);
+  const [lastYearTransPayload, setLastYearTransPayload] = useState<TransactionBody>();
+  const { transactions: lastYearTrans } = useTransaction(lastYearTransPayload);
+  const [thisYearTransPayload, setThisYearTransPayload] = useState<TransactionBody>();
+  const { transactions: thisYearTrans } = useTransaction(thisYearTransPayload);
 
   const chartData: LineChartData = useMemo(() => {
+    if (startMonth === endMonth) {
+      return getLineChartDataInMonth(thisYearTrans, lastYearTrans, targetMonths[startMonth - 1]);
+    }
     return getTargetMonthsLineChartData(thisYearSpendData, lastYearSpendData, targetMonths);
-  }, [thisYearSpendData, lastYearSpendData, targetMonths]);
+  }, [thisYearSpendData, lastYearSpendData, targetMonths, thisYearTrans, lastYearTrans]);
 
   useEffect(() => {
     const {
@@ -77,6 +85,22 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
       setTargetMonths(dataMonth);
     }
   }, [feedItem]);
+
+  useEffect(() => {
+    const {
+      target: { periods, props },
+    } = feedItem;
+    if (periods.length && startMonth === endMonth) {
+      setLastYearTransPayload({
+        periods: [{ month: periods[0].month, year: periods[0].year - 1 }],
+        props,
+      });
+      setThisYearTransPayload({
+        periods,
+        props,
+      });
+    }
+  }, [startMonth, endMonth]);
 
   const renderEditTargetButton = () => {
     return (
@@ -110,20 +134,21 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
     );
   };
 
-  const renderXAxis = () =>
-    startMonth === endMonth ? (
+  const renderXAxis = () => {
+    const targetDate = dayjs().set('month', startMonth - 1);
+    return startMonth === endMonth ? (
       <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[90px]">
         <div className="w-20 h-7 flex justify-center items-center">
-          <p>{dayjs(today).date(7).format('MMM D')}</p>
+          <p>{targetDate.date(7).format('MMM D')}</p>
         </div>
         <div className="w-20 h-7 flex justify-center items-center">
-          <p>{dayjs(today).date(14).format('MMM D')}</p>
+          <p>{targetDate.date(14).format('MMM D')}</p>
         </div>
         <div className="w-20 h-7 flex justify-center items-center">
-          <p>{dayjs(today).date(21).format('MMM D')}</p>
+          <p>{targetDate.date(21).format('MMM D')}</p>
         </div>
         <div className="w-20 h-7 flex justify-center items-center">
-          <p>{dayjs(today).date(28).format('MMM D')}</p>
+          <p>{targetDate.date(28).format('MMM D')}</p>
         </div>
       </div>
     ) : (
@@ -142,6 +167,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
         ))}
       </div>
     );
+  };
 
   const renderTooltipContent = (props: TooltipProps<ValueType, NameType>) => {
     const { active, payload } = props;
@@ -162,7 +188,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
                 <p className="text-white text-2xs">Target</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {`$${formatCurrency(dataPoints?.target ?? 0)}`}
+                {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers, '$')}
               </p>
             </div>
             <div
@@ -174,7 +200,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
                 <p className="text-white text-2xs">Current</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {`$${formatCurrency(dataPoints?.thisYear ?? 0)}`}
+                {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers, '$')}
               </p>
             </div>
             <div
@@ -186,7 +212,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
                 <p className="text-white text-2xs">Last Year</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {`$${formatCurrency(dataPoints?.lastYear ?? 0)}`}
+                {decimalLogic(dataPoints?.lastYear ?? 0, DecimalType.SummedNumbers, '$')}
               </p>
             </div>
           </div>
@@ -203,13 +229,13 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Current Spend</p>
             <p className="text-xl text-primary font-bold mt-1">
-              {`$ ${formatCurrency(total ?? '0')}`}
+              {decimalLogic(total ?? '0', DecimalType.SummedNumbers)}
             </p>
           </div>
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Target</p>
             <p className="text-xl text-primary font-bold mt-1">
-              {`$ ${formatCurrency(amount ?? '0')}`}
+              {decimalLogic(amount ?? '0', DecimalType.SummedNumbers)}
             </p>
           </div>
           <div className="flex flex-1 justify-end flex-col items-end">

@@ -110,7 +110,7 @@ const VendorsPage: React.VFC = () => {
     setVendor(value);
     history.push({
       pathname: `/vendors/${value?.id.toString()}`,
-      search: `?route=${MainGroups.Directories}`,
+      search: `?route=${MainGroups.Following}`,
     });
   };
 

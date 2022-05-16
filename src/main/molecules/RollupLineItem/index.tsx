@@ -8,8 +8,8 @@ import { useIntersection } from '@common/hooks';
 
 import EventEmitter, { EventName } from '@main/EventEmitter';
 import { TransLineItem, Vendor } from '@main/entity';
-import { classNames, formatCurrency } from '@common/utils';
-import { getVendorNameFromLineItem } from '@main/utils';
+import { classNames } from '@common/utils';
+import { decimalLogic, DecimalType, getVendorNameFromLineItem } from '@main/utils';
 import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@src/config';
 
 import { lineItemSelectState } from '@main/states/lineItems.state';
@@ -101,7 +101,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick }) =
       <p className="text-Gray-6 text-xs font-normal ml-auto mr-11">
         {lineItem?.amountUsd === null || lineItem?.amountUsd === undefined
           ? 'Error'
-          : `$${formatCurrency(lineItem?.amountUsd)}`}
+          : `${decimalLogic(lineItem?.amountUsd, DecimalType.DetailView, '$')}`}
       </p>
     </button>
   );
