@@ -18,11 +18,12 @@ export interface RollupTranRowProps {
   onClick?: (tran: Transaction) => void;
   onClickMessage?: () => void;
   onClickVendor?: (vendor: Vendor) => void;
+  feedId: number;
 }
 
 const A_WEEK_IN_MILISECONDS = 1000 * 60 * 60 * 24 * 7;
 
-const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
+const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, feedId }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
   const setLineItemSelect = useSetRecoilState(lineItemSelectState);
@@ -39,6 +40,7 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick }) => {
       setLineItemSelect(lineItems[0]);
       EventEmitter.dispatch(EventName.SHOW_LINE_ITEM_DETAILS, {
         item: lineItems[0],
+        feedId,
       });
     }
   };

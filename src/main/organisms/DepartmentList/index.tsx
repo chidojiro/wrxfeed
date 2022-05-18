@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Department } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
@@ -6,6 +6,9 @@ import { DepartmentSection } from '@main/hooks/department.hook';
 import DirectoryItem from '@main/molecules/DirectoryItem';
 import RootDepartmentHeader from '@main/molecules/RootDepartmentHeader';
 import { useSubscription } from '@main/hooks/subscription.hook';
+
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
 
 interface DepartmentListProps {
   departments: DepartmentSection[];
@@ -25,6 +28,17 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
 }) => {
   const { subscribe, batchSubscribe, unsubscribe, batchUnsubscribe, isFollowing } =
     useSubscription();
+
+  const identity = useIdentity();
+
+  useEffect(() => {
+    mixpanel.track('Team Directory View', {
+      source: 'Team Directory View',
+      user_id: identity?.id,
+      email: identity?.email,
+      company: identity?.company?.id,
+    });
+  }, []);
 
   const renderDeptSection = (dept: DepartmentSection) => (
     <div className="shadow-md" key={dept.id}>

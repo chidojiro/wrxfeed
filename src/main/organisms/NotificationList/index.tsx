@@ -1,9 +1,12 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useEffect } from 'react';
 import NotificationItem from '@main/molecules/NotificationItem';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Notification } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
 import ListEndComponent from '@main/atoms/ListEndComponent';
+
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
 
 interface NotificationListProps {
   style?: CSSProperties;
@@ -22,6 +25,17 @@ const NotificationList: React.VFC<NotificationListProps> = ({
   onClickNotification,
   hasMore,
 }) => {
+  const identity = useIdentity();
+
+  useEffect(() => {
+    mixpanel.track('Notifications', {
+      source: 'Notifications View',
+      user_id: identity?.id,
+      email: identity?.email,
+      company: identity?.company?.id,
+    });
+  }, []);
+
   const renderEmptyList = () => (
     <div className="pb-5 text-center">
       <svg

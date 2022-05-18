@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Category } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
 import DirectoryItem from '@main/molecules/DirectoryItem';
 import { useSubscription } from '@main/hooks/subscription.hook';
+
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
 
 interface CategoryListProps {
   categories: Category[];
@@ -20,6 +23,17 @@ const CategoryList: React.VFC<CategoryListProps> = ({
   onSelect,
 }) => {
   const { subscribe, unsubscribe, isFollowing } = useSubscription();
+
+  const identity = useIdentity();
+
+  useEffect(() => {
+    mixpanel.track('Category Directory View', {
+      source: 'Category Directory View',
+      user_id: identity?.id,
+      email: identity?.email,
+      company: identity?.company?.id,
+    });
+  }, []);
 
   return (
     <InfiniteScroller

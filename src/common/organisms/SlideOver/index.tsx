@@ -17,6 +17,9 @@ import { slideOverOpenState } from '@main/states/slideOver.state';
 import LineItemDetails from '@main/molecules/LineItemDetails';
 import EventEmitter, { EventName } from '@main/EventEmitter';
 
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
+
 export interface SelectItemProps {
   item: TransLineItem;
 }
@@ -38,9 +41,12 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
+  const identity = useIdentity();
+
   const handleOpenSlide = (
     props: SelectItemProps | unknown,
     curItem: TransLineItem | undefined,
+    feedId?: number | undefined,
   ) => {
     if (props && typeof props === 'object') {
       const lineItemProps = props as SelectItemProps;
@@ -51,6 +57,15 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
       if (!open) {
         setOpen(true);
       }
+
+      mixpanel.track('Feed View', {
+        source: 'Feed Detail View',
+        user_id: identity?.id,
+        email: identity?.email,
+        company: identity?.company?.id,
+        feed_id: feedId,
+        line_item_id: lineItemProps.item.id,
+      });
     }
   };
 
@@ -80,10 +95,12 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
   }, [item, open]);
 
   useEffect(() => {
-    EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) => handleOpenSlide(prop, item));
+    EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop, feedId) =>
+      handleOpenSlide(prop, item, feedId as number),
+    );
     return () => {
-      EventEmitter.unsubscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop) =>
-        handleOpenSlide(prop, item),
+      EventEmitter.unsubscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop, feedId) =>
+        handleOpenSlide(prop, item, feedId as number),
       );
     };
   }, [item]);

@@ -12,6 +12,9 @@ import { isBadRequest } from '@error/utils';
 import { Category, FeedItem } from '@main/entity';
 import { USE_CONTACT_BUTTON_MESSAGE } from '@error/errorMessages';
 
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
+
 interface FeedHookValues {
   feeds: FeedItem[];
   hasMore: boolean;
@@ -30,6 +33,7 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const cleanData = () => setFeeds([]);
+  const identity = useIdentity();
 
   const getFeeds = useCallback(async () => {
     try {
@@ -38,6 +42,14 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
         const res = await ApiClient.getFeeds(filters);
         if (filters?.page?.offset !== 0) {
           setFeeds((prevTrans) => [...prevTrans, ...res]);
+
+          mixpanel.track('Feed View', {
+            source: 'Feed Load More',
+            user_id: identity?.id,
+            email: identity?.email,
+            company: identity?.company?.id,
+            total_feed_items: res.length,
+          });
         } else {
           setFeeds(res);
         }

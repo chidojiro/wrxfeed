@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
+import mixpanel from 'mixpanel-browser';
 import App from '@common/containers/App';
 import { BUILD_ENV } from '@src/config';
 
@@ -14,6 +15,10 @@ Sentry.init({
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production
   tracesSampleRate: 1.0,
+});
+
+mixpanel.init('a232b3ef63bd4babc471979d4504c5ae', {
+  debug: !(BUILD_ENV === 'prod' || BUILD_ENV === 'production'),
 });
 
 ReactDOM.render(

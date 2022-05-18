@@ -17,6 +17,8 @@ import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
 import NotInvited from '@auth/molecules/NotInvited';
 import NotifyBanner from '@common/molecules/NotifyBanner';
 
+import mixpanel from 'mixpanel-browser';
+
 export interface LocationState {
   fromInvite?: boolean;
   message?: string;
@@ -76,6 +78,12 @@ const LoginPage: React.VFC = () => {
               familyName: googleProfile?.familyName,
             },
           },
+        });
+
+        mixpanel.track('Log In', {
+          source: 'Log in with Google',
+          user_id: googleProfile?.googleId,
+          email: googleProfile?.email,
         });
       }
     } catch (error: unknown) {

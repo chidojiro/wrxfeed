@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Vendor } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
 import DirectoryItem from '@main/molecules/DirectoryItem';
 import { useSubscription } from '@main/hooks/subscription.hook';
+
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
 
 interface VendorListProps {
   vendors: Vendor[];
@@ -15,6 +18,17 @@ interface VendorListProps {
 
 const VendorList: React.VFC<VendorListProps> = ({ vendors, isLoading, onLoadMore, onSelect }) => {
   const { subscribe, unsubscribe, isFollowing } = useSubscription();
+
+  const identity = useIdentity();
+
+  useEffect(() => {
+    mixpanel.track('Vendor Directory View', {
+      source: 'Vendor Directory View',
+      user_id: identity?.id,
+      email: identity?.email,
+      company: identity?.company?.id,
+    });
+  }, []);
 
   return (
     <InfiniteScroller

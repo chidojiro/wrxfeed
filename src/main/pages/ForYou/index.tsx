@@ -19,6 +19,9 @@ import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@common/constants';
 
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
+
 const LIMIT = 5;
 const INIT_PAGINATION = Object.freeze({
   offset: 0,
@@ -30,6 +33,9 @@ const INIT_FOR_YOU_FILTER = Object.freeze({
 });
 
 const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
+
+const MIXPANEL_FEED_VIEW_TAG = 'Feed View';
+const MIXPANEL_FEED_VIEW_FOR_YOU_SOURCE_TAG = 'For You Feed View';
 
 const ForYouPage: React.VFC = () => {
   const history = useHistory();
@@ -47,6 +53,8 @@ const ForYouPage: React.VFC = () => {
     newFeedCount,
     updateCategory,
   } = useFeed(feedFilters);
+
+  const identity = useIdentity();
 
   const filterKey = FilterKeys.find((key) => query.get(key));
   const [filterTitle, setFilterTitle] = React.useState('');
@@ -77,6 +85,14 @@ const ForYouPage: React.VFC = () => {
       readAllTransactions().then(() => {
         upsertNewFeedCount(location.pathname, 0);
       });
+
+    // First time load
+    mixpanel.track(MIXPANEL_FEED_VIEW_TAG, {
+      source: MIXPANEL_FEED_VIEW_FOR_YOU_SOURCE_TAG,
+      user_id: identity?.id,
+      email: identity?.email,
+      company: identity?.company?.id,
+    });
   }, []);
 
   useEffect(() => {
