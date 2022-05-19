@@ -12,7 +12,7 @@ import { BasicsEditCircle } from '@assets';
 import { FeedItem, TargetMonth } from '@main/entity';
 import { LineChartData } from '@main/types';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@main/chart.utils';
-import { decimalLogic, DecimalType, getPeriodsByYear, getTargetAmountAndTotal } from '@main/utils';
+import { decimalLogic, DecimalType, getPeriodsByYear } from '@main/utils';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
 import { useTransaction } from '@main/hooks/transaction.hook';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
@@ -37,7 +37,16 @@ interface TargetChartViewProps {
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
   // const [chartData, setChartData] = useState<LineChartData<Transaction[]>>();
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
-  const { amount, total } = getTargetAmountAndTotal(feedItem?.target);
+  const { amount, total } = feedItem?.target.periods.reduce(
+    (sum, targetPeriod) => ({
+      amount: sum.amount + (targetPeriod.amount ?? 0),
+      total: sum.total + (targetPeriod.total ?? 0),
+    }),
+    {
+      amount: 0,
+      total: 0,
+    },
+  );
   const targetAmount = Math.round(amount ?? 0);
   const updatedTargetMonths = targetMonths.filter((target) => target?.amount > 0); // TODO: if you want to accept zero target, let define an empty value like null, undefined, '', -1... then you can use >= here
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
