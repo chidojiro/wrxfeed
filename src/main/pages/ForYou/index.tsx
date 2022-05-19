@@ -19,6 +19,9 @@ import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@common/constants';
 
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
+
 const LIMIT = 5;
 const INIT_PAGINATION = Object.freeze({
   offset: 0,
@@ -47,6 +50,8 @@ const ForYouPage: React.VFC = () => {
     newFeedCount,
     updateCategory,
   } = useFeed(feedFilters);
+
+  const identity = useIdentity();
 
   const filterKey = FilterKeys.find((key) => query.get(key));
   const [filterTitle, setFilterTitle] = React.useState('');
@@ -77,6 +82,13 @@ const ForYouPage: React.VFC = () => {
       readAllTransactions().then(() => {
         upsertNewFeedCount(location.pathname, 0);
       });
+
+    // First time load
+    mixpanel.track('For You Feed View', {
+      user_id: identity?.id,
+      email: identity?.email,
+      company: identity?.company?.id,
+    });
   }, []);
 
   useEffect(() => {

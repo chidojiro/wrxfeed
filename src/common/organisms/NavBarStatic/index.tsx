@@ -11,6 +11,9 @@ import { NotifyPopover, UserProfilePopover } from '@main/molecules';
 import { InviteModal } from '@main/organisms';
 import { UserPlusIcon } from '@assets/index';
 
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
+
 interface NavBarStaticProps {
   className?: string;
   companyName?: string;
@@ -43,11 +46,19 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
   const history = useHistory();
   const [isOpenInviteModal, openInviteModal] = useState(false);
 
+  const identity = useIdentity();
+
   const onClickNotification = () => {
     history.push(routes?.Notifications?.path as string);
   };
   const onClickInviteButton = () => {
     openInviteModal(true);
+
+    mixpanel.track('Invite Button Click', {
+      user_id: identity?.id,
+      email: identity?.email,
+      company: identity?.company?.id,
+    });
   };
 
   const renderInviteButton = () => {
