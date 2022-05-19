@@ -43,8 +43,7 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
         if (filters?.page?.offset !== 0) {
           setFeeds((prevTrans) => [...prevTrans, ...res]);
 
-          mixpanel.track('Feed View', {
-            source: 'Feed Load More',
+          mixpanel.track('Feed Load More', {
             user_id: identity?.id,
             email: identity?.email,
             company: identity?.company?.id,
@@ -66,6 +65,7 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ApiClient, errorHandler, filters]);
 
   const upsertNewFeedCount = (key: string, value: number) => {

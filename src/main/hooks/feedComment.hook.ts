@@ -70,8 +70,7 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
       }
       setComments((prevComments) => [...prevComments, res]);
 
-      mixpanel.track('Feed View', {
-        source: 'Feed Add Comment',
+      mixpanel.track('Feed Add Comment', {
         user_id: identity?.id,
         email: identity?.email,
         company: identity?.company?.id,

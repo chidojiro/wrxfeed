@@ -63,8 +63,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         }
         setSubscription(newSubscription);
 
-        mixpanel.track('Follows (Subscriptions)', {
-          source: `${type} Remove Subscription`,
+        mixpanel.track(`${type} Remove Subscription`, {
           user_id: identity?.id,
           email: identity?.email,
           company: identity?.company?.id,
@@ -155,8 +154,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         }
         setSubscription(newSubscription);
 
-        mixpanel.track('Follows (Subscriptions)', {
-          source: `${type} Add Subscription`,
+        mixpanel.track(`${type} Add Subscription`, {
           user_id: identity?.id,
           email: identity?.email,
           company: identity?.company?.id,

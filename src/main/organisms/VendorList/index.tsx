@@ -23,11 +23,11 @@ const VendorList: React.VFC<VendorListProps> = ({ vendors, isLoading, onLoadMore
 
   useEffect(() => {
     mixpanel.track('Vendor Directory View', {
-      source: 'Vendor Directory View',
       user_id: identity?.id,
       email: identity?.email,
       company: identity?.company?.id,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

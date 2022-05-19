@@ -33,11 +33,11 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
 
   useEffect(() => {
     mixpanel.track('Team Directory View', {
-      source: 'Team Directory View',
       user_id: identity?.id,
       email: identity?.email,
       company: identity?.company?.id,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const renderDeptSection = (dept: DepartmentSection) => (

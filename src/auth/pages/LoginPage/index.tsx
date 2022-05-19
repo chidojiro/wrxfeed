@@ -81,7 +81,6 @@ const LoginPage: React.VFC = () => {
         });
 
         mixpanel.track('Log In', {
-          source: 'Log in with Google',
           user_id: googleProfile?.googleId,
           email: googleProfile?.email,
         });

@@ -34,9 +34,6 @@ const INIT_FOR_YOU_FILTER = Object.freeze({
 
 const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
-const MIXPANEL_FEED_VIEW_TAG = 'Feed View';
-const MIXPANEL_FEED_VIEW_FOR_YOU_SOURCE_TAG = 'For You Feed View';
-
 const ForYouPage: React.VFC = () => {
   const history = useHistory();
   const query = useQuery();
@@ -87,8 +84,7 @@ const ForYouPage: React.VFC = () => {
       });
 
     // First time load
-    mixpanel.track(MIXPANEL_FEED_VIEW_TAG, {
-      source: MIXPANEL_FEED_VIEW_FOR_YOU_SOURCE_TAG,
+    mixpanel.track('For You Feed View', {
       user_id: identity?.id,
       email: identity?.email,
       company: identity?.company?.id,

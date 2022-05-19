@@ -58,8 +58,7 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
         setOpen(true);
       }
 
-      mixpanel.track('Feed View', {
-        source: 'Feed Detail View',
+      mixpanel.track('Feed Detail View', {
         user_id: identity?.id,
         email: identity?.email,
         company: identity?.company?.id,

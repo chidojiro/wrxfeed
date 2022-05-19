@@ -93,8 +93,7 @@ const CompanyPage: React.VFC = () => {
   };
 
   useEffect(() => {
-    mixpanel.track('Feed View', {
-      source: 'Company Feed View',
+    mixpanel.track('Company Feed View', {
       user_id: identity?.id,
       email: identity?.email,
       company: identity?.company?.id,

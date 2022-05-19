@@ -28,11 +28,11 @@ const CategoryList: React.VFC<CategoryListProps> = ({
 
   useEffect(() => {
     mixpanel.track('Category Directory View', {
-      source: 'Category Directory View',
       user_id: identity?.id,
       email: identity?.email,
       company: identity?.company?.id,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

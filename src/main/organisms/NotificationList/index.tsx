@@ -28,12 +28,12 @@ const NotificationList: React.VFC<NotificationListProps> = ({
   const identity = useIdentity();
 
   useEffect(() => {
-    mixpanel.track('Notifications', {
-      source: 'Notifications View',
+    mixpanel.track('Notifications View', {
       user_id: identity?.id,
       email: identity?.email,
       company: identity?.company?.id,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const renderEmptyList = () => (

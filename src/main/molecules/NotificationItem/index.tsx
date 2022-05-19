@@ -45,8 +45,7 @@ const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) =
       onClick={() => {
         onClick(item);
 
-        mixpanel.track('Notifications', {
-          source: 'Notification Click',
+        mixpanel.track('Notification Click', {
           user_id: identity?.id,
           email: identity?.email,
           company: identity?.company?.id,
