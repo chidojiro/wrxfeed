@@ -6,6 +6,7 @@ import { useOnClickOutside } from '@dwarvesf/react-hooks';
 
 import { useDebounce } from '@common/hooks';
 import { useSearch } from '@main/hooks/search.hook';
+import useRoveFocus from '@main/hooks/focus.hook';
 
 import { SearchResult } from '@main/types';
 import { TargetPropType } from '@api/types';
@@ -32,6 +33,8 @@ const SearchBar: React.VFC = () => {
   const isSearching = keyword?.length > 0;
 
   const { results, isLoading, onClear } = useSearch({ keyword });
+
+  const [focus, setRoveFocus] = useRoveFocus(results?.length + 1);
 
   const onCloseDropDownResultsView = () => {
     onClear();
@@ -81,16 +84,20 @@ const SearchBar: React.VFC = () => {
     }
   };
 
-  const renderResultRow = (result: SearchResult) => {
+  const renderResultRow = (result: SearchResult, index: number) => {
     const IconByType = getIconByResultType(result?.type);
     return (
       <button
-        onClick={() => onPressResultRow(result)}
+        onClick={() => {
+          onPressResultRow(result);
+          setRoveFocus(index + 1);
+        }}
         type="button"
         key={result?.id}
         className={classNames(
           'relative group py-2 px-6 w-full flex flex-row items-center hover:bg-Gray-12',
         )}
+        tabIndex={focus ? 0 : -1}
       >
         <IconByType className="w-6 h-6" />
         <div className="flex flex-1 items-center ml-2">
@@ -128,7 +135,7 @@ const SearchBar: React.VFC = () => {
         </div>
       );
     }
-    return results.map(renderResultRow);
+    return results.map((result, index) => renderResultRow(result, index));
   };
 
   return (
@@ -156,7 +163,10 @@ const SearchBar: React.VFC = () => {
                 autoCorrect="off"
                 autoCapitalize="off"
                 onChange={debounceSearchRequest}
-                onFocus={() => setFocus(true)}
+                onFocus={() => {
+                  setFocus(true);
+                  setRoveFocus(0);
+                }}
                 onBlur={() => setFocus(false)}
               />
               {(isFocus || isSearching) && (
