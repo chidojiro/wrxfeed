@@ -3,9 +3,9 @@ import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Department } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
 import { DepartmentSection } from '@main/hooks/department.hook';
-import DirectoryItem from '@main/molecules/DirectoryItem';
 import RootDepartmentHeader from '@main/molecules/RootDepartmentHeader';
 import { useSubscription } from '@main/hooks/subscription.hook';
+import DepartmentItem from '@main/molecules/DepartmentItem';
 
 import mixpanel from 'mixpanel-browser';
 import { useIdentity } from '@identity/hooks';
@@ -41,7 +41,7 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
   }, []);
 
   const renderDeptSection = (dept: DepartmentSection) => (
-    <div className="shadow-md" key={dept.id}>
+    <div className="shadow-md rounded-card overflow-hidden" key={dept.id}>
       <RootDepartmentHeader
         item={dept}
         isFollowing={isFollowing('departments', dept)}
@@ -50,11 +50,11 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
         onUnfollow={() => batchUnsubscribe({ departments: [dept, ...dept.children] })}
       />
       {!!dept.children.length && (
-        <div className="bg-white overflow-hidden sm:rounded-sm">
+        <div className="bg-white">
           <ul className="divide-y divide-gray-200">
             {dept.children.map((child) => (
-              <li key={child.id} className="px-4 py-4 sm:pl-16">
-                <DirectoryItem
+              <li key={child.id} className="sm:pl-4">
+                <DepartmentItem
                   item={child}
                   isFollowing={isFollowing('departments', child)}
                   onClick={() => onSelect && onSelect(child)}
@@ -71,7 +71,7 @@ const DepartmentList: React.VFC<DepartmentListProps> = ({
 
   return (
     <InfiniteScroller
-      className="pb-14 mr-0.5 overflow-hidden"
+      className="pb-14 mr-0.5 overflow-hidden px-2 sm:px-0"
       onLoadMore={onLoadMore}
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}

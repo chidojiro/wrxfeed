@@ -21,7 +21,7 @@ export interface RollupTranRowProps {
   feedId: number;
 }
 
-const A_WEEK_IN_MILISECONDS = 1000 * 60 * 60 * 24 * 7;
+const A_WEEK_IN_MILLISECONDS = 1000 * 60 * 60 * 24 * 7;
 
 const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, feedId }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
@@ -75,7 +75,7 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, feedId })
   };
 
   const renderUnreadIndicator = () => {
-    if (tran?.transDate && Date.now() - Date.parse(tran?.transDate) <= A_WEEK_IN_MILISECONDS) {
+    if (tran?.transDate && Date.now() - Date.parse(tran?.transDate) <= A_WEEK_IN_MILLISECONDS) {
       return <div className="flex w-1.5 h-1.5 bg-Green-400 rounded-full" />;
     }
 

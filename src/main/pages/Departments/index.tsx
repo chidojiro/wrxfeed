@@ -120,7 +120,7 @@ const DepartmentsPage: React.VFC = () => {
   const handleDepartmentSelect = (value?: Department): void => {
     history.push({
       pathname: `/departments/${value?.id.toString()}`,
-      search: `?route=${MainGroups.Directories}`,
+      search: `?route=${MainGroups.Following}`,
     });
     scrollToTop();
   };

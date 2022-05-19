@@ -332,10 +332,8 @@ export const getColorByText = (
   gradient = false,
 ): string => {
   let hash = 0;
-  let i;
 
-  /* eslint-disable no-bitwise */
-  for (i = 0; i < name.length; i += 1) {
+  for (let i = 0; i < name.length; i += 1) {
     hash += name.charCodeAt(i);
   }
 
@@ -373,25 +371,19 @@ export const getNameAbbreviation = (name?: string): string => {
     .toUpperCase();
 };
 
-export const nFormatter = (num: number, withCurrency = '$', toFixed = 1): string => {
+export const nFormatter = (num: number, withCurrency = '$', format = '0.0'): string => {
   const isNegative = num < 0 ? '-' : '';
   const positiveNum = Math.abs(num);
   if (positiveNum >= 1000000000) {
-    return `${isNegative}${withCurrency}${(positiveNum / 1000000000)
-      .toFixed(toFixed)
-      .replace(/\.0$/, '')}B`;
+    return `${isNegative}${withCurrency}${numeral(positiveNum / 1000000000).format(format)}B`;
   }
   if (positiveNum >= 1000000) {
-    return `${isNegative}${withCurrency}${(positiveNum / 1000000)
-      .toFixed(toFixed)
-      .replace(/\.0$/, '')}M`;
+    return `${isNegative}${withCurrency}${numeral(positiveNum / 1000000).format(format)}M`;
   }
   if (positiveNum >= 1000) {
-    return `${isNegative}${withCurrency}${(positiveNum / 1000)
-      .toFixed(toFixed)
-      .replace(/\.0$/, '')}K`;
+    return `${isNegative}${withCurrency}${numeral(positiveNum / 1000).format(format)}K`;
   }
-  return `${isNegative}${withCurrency}${num}`;
+  return `${isNegative}${withCurrency}${numeral(num).format(format)}`;
 };
 
 export const scrollToTop = (): void => {
@@ -628,7 +620,7 @@ export const DecimalType = {
 export const decimalLogic = (
   n?: string | number,
   type = DecimalType.DetailView,
-  withCurrency = '$ ',
+  withCurrency = '$',
   toNumber = false,
 ): string | number => {
   let format = '0,0.00';
@@ -641,22 +633,20 @@ export const decimalLogic = (
     defaultValue = '0';
     result = n ? numeral(n).format(format) : defaultValue;
     if (parseFloat(`${n}`) >= 1000000) {
-      result = nFormatter(parseFloat(`${n}`), '', 1);
-    }
-    if (parseFloat(`${n}`) >= 1000) {
-      result = nFormatter(parseFloat(`${n}`), '', 0);
+      result = nFormatter(parseFloat(`${n}`), '', '0,0.0');
+    } else if (parseFloat(`${n}`) >= 100) {
+      result = nFormatter(parseFloat(`${n}`), '', '0,0');
     }
   }
 
   if (type === DecimalType.SummedNumbers) {
-    format = '0,00';
-    defaultValue = '0';
+    format = '0,00.0';
+    defaultValue = '0.0';
     result = n ? numeral(n).format(format) : defaultValue;
     if (parseFloat(`${n}`) >= 1000000) {
-      result = nFormatter(parseFloat(`${n}`), '', 2);
-    }
-    if (parseFloat(`${n}`) >= 1000) {
-      result = nFormatter(parseFloat(`${n}`), '', 1);
+      result = nFormatter(parseFloat(`${n}`), '', '0,0.00');
+    } else if (parseFloat(`${n}`) >= 1000) {
+      result = nFormatter(parseFloat(`${n}`), '', '0,0.0');
     }
   }
 

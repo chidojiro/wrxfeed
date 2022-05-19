@@ -114,7 +114,7 @@ const CategoriesPage: React.VFC = () => {
     setCategory(value);
     history.push({
       pathname: `/categories/${value?.id.toString()}`,
-      search: `?route=${MainGroups.Directories}`,
+      search: `?route=${MainGroups.Following}`,
     });
   };
 

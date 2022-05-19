@@ -85,25 +85,25 @@ const FeedPage: React.VFC = () => {
   const onClickCategory = (category?: Category) => {
     history.push({
       pathname: `/categories/${category?.id.toString()}`,
-      search: `?route=${MainGroups.Directories}`,
+      search: `?route=${MainGroups.Following}`,
     });
   };
   const onClickDepartment = (department?: Department) => {
     history.push({
       pathname: `/departments/${department?.id.toString()}`,
-      search: `?route=${MainGroups.Directories}`,
+      search: `?route=${MainGroups.Following}`,
     });
   };
   const onClickRootDept = (rootDept?: Department) => {
     history.push({
       pathname: `/departments/${rootDept?.id.toString()}`,
-      search: `?route=${MainGroups.Directories}`,
+      search: `?route=${MainGroups.Following}`,
     });
   };
   const onClickVendor = (vendor?: Vendor) => {
     history.push({
       pathname: `/vendors/${vendor?.id.toString()}`,
-      search: `?route=${MainGroups.Directories}`,
+      search: `?route=${MainGroups.Following}`,
     });
   };
 

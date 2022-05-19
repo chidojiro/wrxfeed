@@ -5,7 +5,7 @@ import { ChartDataPoint, ChartLineProps, ChartLevel, LineChartData } from '@main
 import { TargetPeriod } from '@api/types';
 import { round } from '@common/utils';
 import range from 'lodash.range';
-import { nFormatter } from './utils';
+import { decimalLogic, DecimalType } from './utils';
 
 const ITEM_DATE_FORMAT = 'YYYY-MM-DD';
 const DATA_DATE_FORMAT = 'MMM DD';
@@ -145,7 +145,7 @@ export const getChartLevels = (maxValue: number): ChartLevel[] => {
     levels.push({
       id: index,
       value: valueForThisLevel,
-      title: nFormatter(valueForThisLevel),
+      title: decimalLogic(valueForThisLevel, DecimalType.ChartAxis, '$'),
       isTarget: false,
     });
   }
