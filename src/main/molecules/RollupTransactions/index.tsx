@@ -8,12 +8,14 @@ interface RollupTransactionsProps {
   trans: Transaction[];
   autoShowTrans?: boolean;
   showTopDivider?: boolean;
+  feedId: number;
 }
 
 const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
   trans,
   autoShowTrans = false,
   showTopDivider = false,
+  feedId,
 }) => {
   const [position, setPosition] = useState(autoShowTrans ? 10 : 0);
   const [transactions, setTransactions] = useState(trans.slice(0, position));
@@ -70,7 +72,7 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
         {transactions.map((item: Transaction) => {
           return (
             <li key={`RollupTransactions-item-${item?.id}`}>
-              <RollupTranRow tran={item} />
+              <RollupTranRow feedId={feedId} tran={item} />
             </li>
           );
         })}
