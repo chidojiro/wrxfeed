@@ -42,7 +42,7 @@ const RootDepartmentHeader: VFC<DirectoryItem> = ({
       style={{
         background: deptBgColor,
       }}
-      className="flex justify-between items-center px-4 py-4 sm:pl-6 cursor-pointer"
+      className="flex justify-between items-center px-4 py-4 sm:px-6 cursor-pointer"
       onClick={onClick}
     >
       <h3 className="text-sm text-white uppercase font-semibold">{item.name || 'Unknown'}</h3>

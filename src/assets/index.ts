@@ -30,6 +30,7 @@ import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron
 import { ReactComponent as IntersectIcon } from '@assets/icons/outline/intersect.svg';
 import { ReactComponent as LeftSmallIcon } from '@assets/icons/outline/left-small.svg';
 import { ReactComponent as AddSmallIcon } from '@assets/icons/outline/add-small.svg';
+import { ReactComponent as TargetIcon } from '@assets/icons/outline/target.svg';
 
 export {
   InviteIcon,
@@ -64,4 +65,5 @@ export {
   IntersectIcon,
   LeftSmallIcon,
   AddSmallIcon,
+  TargetIcon,
 };
