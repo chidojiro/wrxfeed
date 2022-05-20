@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import dayjs from 'dayjs';
+import { useHistory } from 'react-router-dom';
 
 import { useCategory } from '@main/hooks/category.hook';
-import { classNames, formatCurrency } from '@common/utils';
+import { classNames } from '@common/utils';
 import { Category } from '@main/entity';
 import { CategoryIcon } from '@assets/index';
 import { CategoryFilter } from '@api/types';
 import Loading from '@common/atoms/Loading';
-import { useHistory } from 'react-router-dom';
 import { MainGroups } from '@common/constants';
+import { decimalLogic, DecimalType } from '@main/utils';
 
 const LIMIT = 6;
 const INIT_PAGINATION = Object.freeze({
@@ -31,7 +32,7 @@ const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departme
   const onSelect = (category: Category) => {
     history.push({
       pathname: `/categories/${category?.id}`,
-      search: `?route=${MainGroups.Directories}&department=${departmentId}&month=${category?.month}&year=${category?.year}`,
+      search: `?route=${MainGroups.Following}&department=${departmentId}&month=${category?.month}&year=${category?.year}`,
     });
   };
   const renderTopCategoryItem = (category: Category) => {
@@ -54,7 +55,7 @@ const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departme
             : '...'}
         </p>
         <p className="text-Gray-3 text-xs font-semibold ml-auto">
-          {`$${formatCurrency(category?.amount ?? 0)}`}
+          {`${decimalLogic(category?.amount ?? 0, DecimalType.SummedNumbers)}`}
         </p>
       </div>
     );

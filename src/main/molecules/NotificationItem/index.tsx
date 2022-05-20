@@ -4,6 +4,9 @@ import { classNames, distanceToNow } from '@common/utils';
 import CommentText from '@main/atoms/CommentText';
 import { getColorByText, getNameAbbreviation } from '@main/utils';
 
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
+
 export interface NotificationItemProps {
   item: Notification;
   index?: number;
@@ -14,6 +17,7 @@ export interface NotificationItemProps {
 const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) => {
   const avatarBgColor = React.useMemo(() => getColorByText(item?.content ?? ''), [item?.content]);
   const isNew = item.status === NotifyStatus.UNREAD;
+  const identity = useIdentity();
 
   const renderAvatarOrShortname = () => {
     const shortName = getNameAbbreviation(item?.causedByUser?.fullName);
@@ -40,6 +44,12 @@ const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) =
       type="button"
       onClick={() => {
         onClick(item);
+
+        mixpanel.track('Notification Click', {
+          user_id: identity?.id,
+          email: identity?.email,
+          company: identity?.company?.id,
+        });
       }}
       className={classNames(
         'flex flex-row min-h-16 pl-3 pr-5 py-4 w-full',

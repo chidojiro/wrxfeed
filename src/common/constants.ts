@@ -1,17 +1,15 @@
-import { GroupTab } from '@common/types';
-import { FeedIcon, DirectoryIcon, Bank, CategoryIcon, TeamIcon } from '@assets/index';
+import { SectionTab } from '@common/types';
+import { FeedIcon, Bank, CategoryIcon, TeamIcon } from '@assets/index';
 import { LineChartData } from '@main/types';
 
 export enum MainGroups {
   Feeds = 'Feeds',
-  Teams = 'Teams',
-  Directories = 'Directories',
+  Following = 'Following',
 }
 
-export const MainMenu: GroupTab[] = [
+export const MainMenu: SectionTab[] = [
   {
     name: MainGroups.Feeds,
-    icon: FeedIcon,
     tabs: [
       {
         name: 'For you',
@@ -26,19 +24,30 @@ export const MainMenu: GroupTab[] = [
         isShowCounter: true,
       },
     ],
+    groups: [],
   },
   {
-    name: MainGroups.Teams,
-    icon: TeamIcon,
+    name: MainGroups.Following,
     tabs: [],
-  },
-  {
-    name: MainGroups.Directories,
-    icon: DirectoryIcon,
-    tabs: [
-      { name: 'Teams', location: { pathname: '/departments' }, icon: TeamIcon },
-      { name: 'Categories', location: { pathname: '/categories' }, icon: CategoryIcon },
-      { name: 'Vendors', location: { pathname: '/vendors' }, icon: Bank },
+    groups: [
+      {
+        name: 'Teams',
+        icon: TeamIcon,
+        tabs: [],
+        addItemRoute: '/departments',
+      },
+      {
+        name: 'Categories',
+        icon: CategoryIcon,
+        tabs: [],
+        addItemRoute: '/categories',
+      },
+      {
+        name: 'Vendors',
+        icon: Bank,
+        tabs: [],
+        addItemRoute: '/vendors',
+      },
     ],
   },
 ];

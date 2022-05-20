@@ -11,6 +11,9 @@ import { NotifyPopover, UserProfilePopover } from '@main/molecules';
 import { InviteModal } from '@main/organisms';
 import { UserPlusIcon } from '@assets/index';
 
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
+
 interface NavBarStaticProps {
   className?: string;
   companyName?: string;
@@ -43,11 +46,19 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
   const history = useHistory();
   const [isOpenInviteModal, openInviteModal] = useState(false);
 
+  const identity = useIdentity();
+
   const onClickNotification = () => {
     history.push(routes?.Notifications?.path as string);
   };
   const onClickInviteButton = () => {
     openInviteModal(true);
+
+    mixpanel.track('Invite Button Click', {
+      user_id: identity?.id,
+      email: identity?.email,
+      company: identity?.company?.id,
+    });
   };
 
   const renderInviteButton = () => {
@@ -87,12 +98,10 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
         <>
           <div className="mx-auto max-w-3xl md:max-w-[1440px]">
             <div className="relative flex justify-between h-navbar md:grid md:grid-cols-12">
-              <div className="flex flex-col justify-center items-center md:col-span-3">
-                <div className="flex-shrink-0 flex items-center lg:ml-4 xl:ml-12">
-                  <h1 className={classNames('text-lg font-bold text-white', companyStyle)}>
-                    {companyName}
-                  </h1>
-                </div>
+              <div className="flex flex-col justify-center md:col-span-3 pl-2 sm:pl-12 pr-3">
+                <h1 className={classNames('text-lg font-bold text-white', companyStyle)}>
+                  {companyName}
+                </h1>
               </div>
               <div className="flex items-center min-w-0 flex-1 md:pl-6 md:col-span-6 lg:col-span-6">
                 {searchBar && <SearchBar />}

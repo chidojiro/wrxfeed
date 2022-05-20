@@ -12,8 +12,14 @@ import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity
 import { CommentFormModel } from '@main/types';
 import { useMention } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
-import { classNames, formatCurrency } from '@common/utils';
-import { commentEditorHtmlParser, getColorByText, getTotalFeedItem } from '@main/utils';
+import { classNames } from '@common/utils';
+import {
+  commentEditorHtmlParser,
+  decimalLogic,
+  DecimalType,
+  getColorByText,
+  getTotalFeedItem,
+} from '@main/utils';
 import { ProtectedFeatures } from '@identity/constants';
 // components
 import NotifyBanner from '@common/molecules/NotifyBanner';
@@ -246,7 +252,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                   id={`question-title-${feedItem?.id}`}
                   className="text-lg font-semibold text-white mr-3"
                 >
-                  {`$${formatCurrency(total)}`}
+                  {`${decimalLogic(total, DecimalType.SummedNumbers, '$')}`}
                 </h2>
                 <Menu as="div" className="relative inline-block z-20 text-left">
                   <div>
@@ -285,12 +291,18 @@ const RollupCard: React.VFC<RollupCardProps> = ({
                   }`}
                 </span>
               </h2>
-              <h2 className="mr-7">{`Last Month: $${formatCurrency(feedItem?.prevMonthSpend)}`}</h2>
+              <h2 className="mr-7">
+                {`Last Month: ${decimalLogic(
+                  feedItem?.prevMonthSpend,
+                  DecimalType.SummedNumbers,
+                  '$',
+                )}`}
+              </h2>
             </div>
           </div>
         </div>
         {Array.isArray(feedItem?.transactions) && feedItem?.transactions?.length > 0 && (
-          <RollupTransactions trans={feedItem?.transactions} />
+          <RollupTransactions feedId={feedItem?.id} trans={feedItem?.transactions} autoShowTrans />
         )}
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (

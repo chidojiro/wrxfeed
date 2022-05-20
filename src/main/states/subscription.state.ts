@@ -11,7 +11,11 @@ export const subscriptionState = atom<Subscription>({
         const apiClient = await getApiClient();
         return await apiClient.getSubscriptions();
       } catch {
-        return {};
+        return {
+          departments: [],
+          categories: [],
+          vendors: [],
+        };
       }
     },
   }),

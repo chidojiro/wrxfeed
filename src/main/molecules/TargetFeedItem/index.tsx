@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import dayjs from 'dayjs';
@@ -6,13 +6,12 @@ import dayjs from 'dayjs';
 import { useIdentity } from '@identity/hooks';
 import { useFeedComment } from '@main/hooks/feedComment.hook';
 // constants
-import { Category, Department, FeedItem, Vendor, Visibility, Target } from '@main/entity';
+import { Category, Department, FeedItem, Vendor, Visibility, Target, User } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { useMention, useTarget } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@api/types';
 import { classNames } from '@common/utils';
-import { commentEditorRawParser, getColorByText, getTargetName } from '@main/utils';
-import { SHOW_TARGET_FEED_CHART } from '@src/config';
+import { commentEditorRawParser, getTargetName } from '@main/utils';
 // components
 import CommentBox from '@main/molecules/CommentBox';
 import FeedBackModal from '@main/organisms/FeedBackModal';
@@ -95,6 +94,11 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
   const onSuccessPutTarget = () => {
     const dataPutTarget = setIntervalRef.current;
     setShowAddTarget(false);
+    const updater: User = {
+      id: identity?.id,
+      avatar: identity?.avatar,
+      fullName: identity?.fullName,
+    };
     // auto update this target feed item after put success
     const curFeedClone = cloneDeep(curFeed);
     curFeedClone.target = {
@@ -102,6 +106,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
       ...(dataPutTarget?.name ? { name: dataPutTarget?.name } : {}),
       ...(dataPutTarget?.props ? { props: dataPutTarget?.props } : {}),
       ...(dataPutTarget?.periods ? { periods: dataPutTarget?.periods } : {}),
+      updater,
     };
 
     setCurFeed(curFeedClone);
@@ -146,8 +151,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
     setAttachFileComment(file);
   };
 
-  const catName = curFeed?.category?.name ?? 'unknown';
-  const gradientBg = useMemo(() => getColorByText(catName ?? '', undefined, true), [catName]);
+  const gradientBg = 'linear-gradient(125.45deg, #CA77B3 18.62%, #514EE7 74.47%)';
 
   const hideAddTargetModal = () => {
     setItemEditing(null);
@@ -260,15 +264,15 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
                 id={`question-title-${curFeed?.id}`}
                 className="mt-1 text-xs font-normal text-Gray-6"
               >
-                {`Last edited at ${dayjs(curFeed.lastInteraction).format('MM/DD/YYYY')}`}
+                {`${curFeed?.target.updater?.fullName ?? 'Unknown'} edited at ${dayjs(
+                  curFeed.lastInteraction,
+                ).format('MM/DD/YYYY')}`}
               </h2>
             </div>
           </div>
         </div>
-        {SHOW_TARGET_FEED_CHART && (
-          <TargetChartView feedItem={curFeed} onEdit={onClickEditTarget} />
-        )}
-        <RollupTransactions trans={curFeed?.transactions} />
+        <TargetChartView feedItem={curFeed} onEdit={onClickEditTarget} />
+        <RollupTransactions feedId={curFeed?.id} trans={curFeed?.transactions} showTopDivider />
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
             <CommentViewAll

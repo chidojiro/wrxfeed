@@ -61,19 +61,19 @@ const SearchBar: React.VFC = () => {
       case TargetPropType.DEPARTMENT:
         history.push({
           pathname: `/departments/${result?.directoryId}`,
-          search: `?route=${MainGroups.Directories}`,
+          search: `?route=${MainGroups.Following}`,
         });
         break;
       case TargetPropType.CATEGORY:
         history.push({
           pathname: `/categories/${result?.directoryId}`,
-          search: `?route=${MainGroups.Directories}`,
+          search: `?route=${MainGroups.Following}`,
         });
         break;
       case TargetPropType.VENDOR:
         history.push({
           pathname: `/vendors/${result?.directoryId}`,
-          search: `?route=${MainGroups.Directories}`,
+          search: `?route=${MainGroups.Following}`,
         });
         break;
       default:

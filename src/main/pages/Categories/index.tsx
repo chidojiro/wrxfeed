@@ -36,7 +36,7 @@ const CategoriesPage: React.VFC = () => {
   const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
     catId
       ? {
-          page: INIT_PAGINATION,
+          page: { offset: 0, limit: 0 },
           category: parseInt(catId, 10),
         }
       : {
@@ -114,7 +114,7 @@ const CategoriesPage: React.VFC = () => {
     setCategory(value);
     history.push({
       pathname: `/categories/${value?.id.toString()}`,
-      search: `?route=${MainGroups.Directories}`,
+      search: `?route=${MainGroups.Following}`,
     });
   };
 

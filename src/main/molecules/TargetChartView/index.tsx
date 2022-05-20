@@ -1,15 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { ReferenceLine, Label, TooltipProps } from 'recharts';
-
-import { classNames, formatCurrency } from '@common/utils';
-import { BasicsEditCircle } from '@assets';
-import { FeedItem, Transaction, TransLineItem } from '@main/entity';
-import { ChartLegend, LineChartData } from '@main/types';
-import { getLineChartDataInMonth } from '@main/chart.utils';
-import { getTargetAmountAndTotal, nFormatter } from '@main/utils';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState, useMemo } from 'react';
+import { TooltipProps } from 'recharts';
 import dayjs from 'dayjs';
+import cloneDeep from 'lodash.clonedeep';
+import range from 'lodash.range';
+
+import { defaultTargetMonths } from '@common/constants';
+import { PatchCalcSpendingFilters, TargetPeriod, TransactionBody } from '@api/types';
+import { classNames } from '@common/utils';
+import { BasicsEditCircle } from '@assets';
+import { FeedItem, TargetMonth } from '@main/entity';
+import { LineChartData } from '@main/types';
+import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@main/chart.utils';
+import { decimalLogic, DecimalType, getPeriodsByYear } from '@main/utils';
+import { useMultiMonth } from '@main/hooks/multiMonth.hook';
+import { useTransaction } from '@main/hooks/transaction.hook';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
 import TargetChart from '../TargetChart';
+
+const THIS_YEAR = new Date().getFullYear();
+const THIS_YEAR_INIT_FILTER = Object.freeze({
+  props: [],
+  periods: getPeriodsByYear(THIS_YEAR),
+});
+const LAST_YEAR_INIT_FILTER = Object.freeze({
+  props: [],
+  periods: getPeriodsByYear(THIS_YEAR - 1),
+});
 
 interface TargetChartViewProps {
   className?: string;
@@ -18,17 +35,81 @@ interface TargetChartViewProps {
 }
 
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
-  const today = new Date();
-  const [chartData, setChartData] = useState<LineChartData<Transaction[]>>();
-  const { amount, total } = getTargetAmountAndTotal(feedItem?.target);
+  // const [chartData, setChartData] = useState<LineChartData<Transaction[]>>();
+  const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
+  const { amount, total } = feedItem?.target.periods.reduce(
+    (sum, targetPeriod) => ({
+      amount: sum.amount + (targetPeriod.amount ?? 0),
+      total: sum.total + (targetPeriod.total ?? 0),
+    }),
+    {
+      amount: 0,
+      total: 0,
+    },
+  );
   const targetAmount = Math.round(amount ?? 0);
-  const isExceedTarget = (chartData?.metadata?.totalCurrentMonth ?? 0) > targetAmount;
-  const targetLineColor = isExceedTarget ? '#FF5F68' : '#6565FB';
+  const updatedTargetMonths = targetMonths.filter((target) => target?.amount > 0); // TODO: if you want to accept zero target, let define an empty value like null, undefined, '', -1... then you can use >= here
+  const startMonth = updatedTargetMonths[0]?.month ?? 1;
+  const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
+
+  const [thisYearSpendFilter, setThisYearFilter] =
+    useState<PatchCalcSpendingFilters>(THIS_YEAR_INIT_FILTER);
+  const [lastYearSpendFilter, setLastYearFilter] =
+    useState<PatchCalcSpendingFilters>(LAST_YEAR_INIT_FILTER);
+  const { months: thisYearSpendData = [], isLoading: thisYearDataLoading } =
+    useMultiMonth(thisYearSpendFilter);
+  const { months: lastYearSpendData = [], isLoading: lastYearDataLoading } =
+    useMultiMonth(lastYearSpendFilter);
+  const [lastYearTransPayload, setLastYearTransPayload] = useState<TransactionBody>();
+  const { transactions: lastYearTrans } = useTransaction(lastYearTransPayload);
+  const [thisYearTransPayload, setThisYearTransPayload] = useState<TransactionBody>();
+  const { transactions: thisYearTrans } = useTransaction(thisYearTransPayload);
+
+  const chartData: LineChartData = useMemo(() => {
+    if (startMonth === endMonth) {
+      return getLineChartDataInMonth(thisYearTrans, lastYearTrans, targetMonths[startMonth - 1]);
+    }
+    return getTargetMonthsLineChartData(thisYearSpendData, lastYearSpendData, targetMonths);
+  }, [thisYearSpendData, lastYearSpendData, targetMonths, thisYearTrans, lastYearTrans]);
 
   useEffect(() => {
-    const data = getLineChartDataInMonth(feedItem.transactions);
-    setChartData(data);
+    const {
+      target: { periods, props },
+    } = feedItem;
+    if (periods?.length > 0 && props?.length > 0) {
+      setThisYearFilter({
+        props,
+        periods: getPeriodsByYear(THIS_YEAR),
+      });
+      setLastYearFilter({
+        props,
+        periods: getPeriodsByYear(THIS_YEAR - 1),
+      });
+      const dataMonth = cloneDeep(defaultTargetMonths);
+      periods.forEach((period: TargetPeriod) => {
+        if (period?.amount && dataMonth[period?.month - 1] && dataMonth[period?.month - 1]) {
+          dataMonth[period?.month - 1].amount = period?.amount;
+        }
+      });
+      setTargetMonths(dataMonth);
+    }
   }, [feedItem]);
+
+  useEffect(() => {
+    const {
+      target: { periods, props },
+    } = feedItem;
+    if (periods.length && startMonth === endMonth) {
+      setLastYearTransPayload({
+        periods: [{ month: periods[0].month, year: periods[0].year - 1 }],
+        props,
+      });
+      setThisYearTransPayload({
+        periods,
+        props,
+      });
+    }
+  }, [startMonth, endMonth]);
 
   const renderEditTargetButton = () => {
     return (
@@ -45,93 +126,110 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
 
   const renderChartLegends = () => {
     return (
-      <div className="flex flex-row justify-center mt-6 py-2 px-[50px] space-x-8">
-        {chartData?.legends.map((legend: ChartLegend) => (
+      <div className="flex flex-row justify-center mt-2 py-2 px-[50px] space-x-8">
+        <div className="flex flex-row items-center space-x-2">
+          <div className="w-4 h-1 dashed-line-target" />
+          <p className="text-xs text-Gray-6">Target</p>
+        </div>
+        <div className="flex flex-row items-center space-x-2">
+          <div className="w-4 h-1 bg-Accent-2" />
+          <p className="text-xs text-Gray-6">Current</p>
+        </div>
+        <div className="flex flex-row items-center space-x-2">
+          <div className="w-4 h-1 bg-Gray-11" />
+          <p className="text-xs text-Gray-6">Last Year</p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderXAxis = () => {
+    const targetDate = dayjs().set('month', startMonth - 1);
+    return startMonth === endMonth ? (
+      <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[90px]">
+        <div className="w-20 h-7 flex justify-center items-center">
+          <p>{targetDate.date(7).format('MMM D')}</p>
+        </div>
+        <div className="w-20 h-7 flex justify-center items-center">
+          <p>{targetDate.date(14).format('MMM D')}</p>
+        </div>
+        <div className="w-20 h-7 flex justify-center items-center">
+          <p>{targetDate.date(21).format('MMM D')}</p>
+        </div>
+        <div className="w-20 h-7 flex justify-center items-center">
+          <p>{targetDate.date(28).format('MMM D')}</p>
+        </div>
+      </div>
+    ) : (
+      <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]">
+        {range(startMonth, endMonth + 1).map((month: number) => (
           <div
-            key={`renderChartLegend-${legend.id}`}
-            className="flex flex-row items-center space-x-2"
+            key={`x-${month}`}
+            className="w-[25px] h-7 flex justify-center items-center first:justify-start last:justify-end"
           >
-            <div
-              className={classNames('flex w-6 h-1', legend?.type ?? '')}
-              style={{ backgroundColor: legend?.color }}
-            />
-            <p className="text-Gray-3 text-xs font-semibold">{legend?.name}</p>
+            <p>
+              {dayjs()
+                .month(month - 1)
+                .format('MMM')}
+            </p>
           </div>
         ))}
       </div>
     );
   };
 
-  const renderXAxis = () => (
-    <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around mt-4 pl-[98px]">
-      <div className="w-20 h-7 flex justify-center items-center">
-        <p>{dayjs(today).date(7).format('MMM D')}</p>
-      </div>
-      <div className="w-20 h-7 flex justify-center items-center">
-        <p>{dayjs(today).date(14).format('MMM D')}</p>
-      </div>
-      <div className="w-20 h-7 flex justify-center items-center">
-        <p>{dayjs(today).date(21).format('MMM D')}</p>
-      </div>
-      <div className="w-20 h-7 flex justify-center items-center">
-        <p>{dayjs(today).date(28).format('MMM D')}</p>
-      </div>
-    </div>
-  );
-
   const renderTooltipContent = (props: TooltipProps<ValueType, NameType>) => {
     const { active, payload } = props;
-    const thisMonthData = payload?.find((data) => data.name === dayjs().format('MMM'));
-    if (active && thisMonthData) {
-      const dateString: string = thisMonthData.payload?.name;
-      const topTransactions: TransLineItem[] = thisMonthData.payload?.topTrans;
-      const subTitle = topTransactions?.length
-        ? `(Top ${topTransactions?.length} transactions)`
-        : '';
+    if (active && payload) {
+      const dataPoints = payload[0]?.payload;
       return (
-        <div className="flex bg-primary px-6 py-2 rounded-sm">
+        <div className="flex bg-primary p-2 rounded-sm">
           <div className="flex flex-col space-y-1">
-            <div className="flex flex-row items-center space-x-1">
-              <p className="text-white text-2xs font-semibold">{dateString}</p>
-              <p className="text-white text-2xs font-normal">{subTitle}</p>
+            <div className="flex flex-row items-center">
+              <p className="text-white text-3xs font-semibold">{dataPoints?.name ?? 'unknown'}</p>
             </div>
-            {topTransactions?.map((tran) => {
-              return (
-                <div
-                  key={`topTransactions-${tran.id}`}
-                  className="flex flex-row justify-between items-center space-x-0.5"
-                >
-                  <p className="text-Gray-6 text-2xs min-w-[160px]">{tran.vendorName}</p>
-                  <p className="text-white text-2xs font-semibold w-18 text-right">
-                    {tran.amountUsd}
-                  </p>
-                </div>
-              );
-            })}
+            <div
+              key="target"
+              className="flex flex-row flex-grow justify-between items-center space-x-10"
+            >
+              <div className="flex flex-row items-center space-x-1">
+                <div className="w-1 h-1 rounded bg-system-alert" />
+                <p className="text-white text-2xs">Target</p>
+              </div>
+              <p className="text-white text-2xs text-right font-semibold">
+                {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers, '$')}
+              </p>
+            </div>
+            <div
+              key="this-year"
+              className="flex flex-row flex-grow justify-between items-center space-x-10"
+            >
+              <div className="flex flex-row items-center space-x-1">
+                <div className="w-1 h-1 rounded bg-Accent-2" />
+                <p className="text-white text-2xs">Current</p>
+              </div>
+              <p className="text-white text-2xs text-right font-semibold">
+                {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers, '$')}
+              </p>
+            </div>
+            <div
+              key="last-year"
+              className="flex flex-row flex-grow justify-between items-center space-x-10"
+            >
+              <div className="flex flex-row items-center space-x-1">
+                <div className="w-1 h-1 rounded bg-Gray-11" />
+                <p className="text-white text-2xs">Last Year</p>
+              </div>
+              <p className="text-white text-2xs text-right font-semibold">
+                {decimalLogic(dataPoints?.lastYear ?? 0, DecimalType.SummedNumbers, '$')}
+              </p>
+            </div>
           </div>
         </div>
       );
     }
     return null;
   };
-
-  const renderTargetLine = () =>
-    targetAmount ? (
-      <ReferenceLine
-        y={targetAmount}
-        stroke={targetLineColor}
-        strokeDasharray="5 5"
-        strokeWidth={2}
-      >
-        <Label
-          value={nFormatter(targetAmount)}
-          position="left"
-          offset={18}
-          className="text-xs font-semibold text-right"
-          fill={targetLineColor}
-        />
-      </ReferenceLine>
-    ) : null;
 
   return (
     <div className="flex flex-col space-y-4">
@@ -140,13 +238,13 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Current Spend</p>
             <p className="text-xl text-primary font-bold mt-1">
-              {`$ ${formatCurrency(total ?? '0')}`}
+              {decimalLogic(total ?? '0', DecimalType.SummedNumbers)}
             </p>
           </div>
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Target</p>
             <p className="text-xl text-primary font-bold mt-1">
-              {`$ ${formatCurrency(amount ?? '0')}`}
+              {decimalLogic(amount ?? '0', DecimalType.SummedNumbers)}
             </p>
           </div>
           <div className="flex flex-1 justify-end flex-col items-end">
@@ -155,19 +253,20 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
         </div>
         {chartData && (
           <>
-            <TargetChart
-              containerClass="mt-8 mb-2 h-[514px]"
-              chartData={chartData}
-              maxYValue={targetAmount}
-              renderXAxis={renderXAxis}
-              renderTooltip={renderTooltipContent}
-              renderReferenceLines={renderTargetLine}
-            />
+            <div className="relative flex justify-center items-center w-auto mx-[-8px] mt-2.5 pr-4 pb-4 pl-2 pt-3 h-[240px] border border-Gray-12 rounded-2.5xl">
+              <TargetChart
+                containerClass="mt-8 mb-2"
+                chartData={chartData}
+                maxYValue={targetAmount}
+                renderXAxis={renderXAxis}
+                renderTooltip={renderTooltipContent}
+                loading={lastYearDataLoading || thisYearDataLoading}
+              />
+            </div>
             {renderChartLegends()}
           </>
         )}
       </div>
-      <div className="bg-Gray-11 h-px w-full" />
     </div>
   );
 };

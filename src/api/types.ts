@@ -37,7 +37,7 @@ export interface ApiClient {
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   acceptInvitation: (id: string) => Promise<void>;
   // Feed
-  getTransactions: (filters?: TransactionFilter) => Promise<Transaction[]>;
+  getTransactions: (body?: TransactionBody) => Promise<Transaction[]>;
   getUnreadLineItemsCount: (filters?: FeedFilters) => Promise<number>;
   readAllTransactions: () => Promise<void>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
@@ -117,13 +117,9 @@ export interface CommentFilters {
   pagination?: Pagination;
 }
 
-export interface TransactionFilter {
-  department?: number;
-  vendor?: number;
-  category?: number;
-  rootDepartment?: number;
-  forYou?: boolean;
-  pagination?: Pagination;
+export interface TransactionBody {
+  props?: TargetProp[];
+  periods?: TargetPeriod[];
 }
 
 export enum UploadTypes {
@@ -242,6 +238,7 @@ export interface FeedFilters {
   page?: Pagination;
   forYou?: number;
   department?: number;
+  targetId?: number;
   vendor?: number;
   category?: number;
   rootDepartment?: number;
