@@ -6,6 +6,7 @@ import { useIdentity } from '@identity/hooks';
 import { Comment, FeedItem } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import mixpanel from 'mixpanel-browser';
 
 interface CommentHookValues {
   comments: Comment[];
@@ -68,6 +69,14 @@ export function useFeedComment(feed: FeedItem, page?: Pagination): CommentHookVa
         };
       }
       setComments((prevComments) => [...prevComments, res]);
+
+      mixpanel.track('Feed Add Comment', {
+        user_id: identity?.id,
+        email: identity?.email,
+        company: identity?.company?.id,
+        feed_id: feed.id,
+        total_feed_comments: comments.length + 1,
+      });
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');

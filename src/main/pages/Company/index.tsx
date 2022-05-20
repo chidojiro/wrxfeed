@@ -18,6 +18,9 @@ import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@common/constants';
 
+import mixpanel from 'mixpanel-browser';
+import { useIdentity } from '@identity/hooks';
+
 const LIMIT = 5;
 const INIT_PAGINATION = {
   offset: 0,
@@ -46,6 +49,8 @@ const CompanyPage: React.VFC = () => {
     upsertNewFeedCount,
     setNewFeedCount,
   } = useFeed(feedFilters);
+
+  const identity = useIdentity();
 
   const newFeedNumber = newFeedCount ? newFeedCount[location.pathname] : 0;
   const handleLoadMore = useCallback(() => {
@@ -86,6 +91,14 @@ const CompanyPage: React.VFC = () => {
       setFilterTitle(department?.name);
     }
   };
+
+  useEffect(() => {
+    mixpanel.track('Company Feed View', {
+      user_id: identity?.id,
+      email: identity?.email,
+      company: identity?.company?.id,
+    });
+  }, []);
 
   useEffect(() => {
     if (filterKey && feeds.length > 0) {
