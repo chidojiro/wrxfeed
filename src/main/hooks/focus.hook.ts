@@ -4,6 +4,7 @@ function useRoveFocus(size: number): [number, Dispatch<SetStateAction<number>>] 
   const [currentFocus, setCurrentFocus] = useState(0);
   const handleKeyDown = useCallback(
     (e) => {
+      console.log('current focus: ', currentFocus);
       if (e.keyCode === 40) {
         // Down arrow
         e.preventDefault();
