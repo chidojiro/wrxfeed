@@ -25,6 +25,7 @@ const SearchBarResultItem: VFC<SearchBarResultItemProps> = ({ result, focus, onC
   const IconByType = getIconByResultType(result?.type);
   return (
     <button
+      ref={ref}
       onClick={onClickHandler}
       type="button"
       key={result?.id}
