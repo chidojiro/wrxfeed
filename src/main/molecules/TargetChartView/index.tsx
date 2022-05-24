@@ -48,7 +48,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
     },
   );
   const targetAmount = Math.round(amount ?? 0);
-  const updatedTargetMonths = targetMonths.filter((target) => target?.amount > 0); // TODO: if you want to accept zero target, let define an empty value like null, undefined, '', -1... then you can use >= here
+  const updatedTargetMonths = targetMonths.filter((target) => target?.amount !== undefined); // TODO: if you want to accept zero target, let define an empty value like null, undefined, '', -1... then you can use >= here
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
@@ -87,7 +87,11 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
       });
       const dataMonth = cloneDeep(defaultTargetMonths);
       periods.forEach((period: TargetPeriod) => {
-        if (period?.amount && dataMonth[period?.month - 1] && dataMonth[period?.month - 1]) {
+        if (
+          period?.amount !== undefined &&
+          dataMonth[period?.month - 1] &&
+          dataMonth[period?.month - 1]
+        ) {
           dataMonth[period?.month - 1].amount = period?.amount;
         }
       });
