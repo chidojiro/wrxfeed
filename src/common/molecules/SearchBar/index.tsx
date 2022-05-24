@@ -1,24 +1,23 @@
 /* eslint-disable react/jsx-curly-newline */
-import React, { Fragment, useState, useCallback, useRef } from 'react';
+import React, { Fragment, useState, useCallback, useRef, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
 import { useHistory } from 'react-router-dom';
 import { useOnClickOutside } from '@dwarvesf/react-hooks';
 
 import { useDebounce } from '@common/hooks';
 import { useSearch } from '@main/hooks/search.hook';
+import useRoveFocus from '@main/hooks/focus.hook';
 
 import { SearchResult } from '@main/types';
 import { TargetPropType } from '@api/types';
 import { MainGroups } from '@common/constants';
-import { getIconByResultType, getPropTypeDisplayName } from '@main/utils';
-import { classNames } from '@common/utils';
 
 import Loading from '@common/atoms/Loading';
 
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
-import { ReactComponent as ArrowRight2 } from '@assets/icons/outline/arrow-right-2.svg';
 import { ReactComponent as QuestionCircle } from '@assets/icons/solid/question-circle.svg';
+import SearchBarResultItem from '@main/atoms/SearchBarResultItem';
 
 const DEBOUNCE_WAIT = 0;
 
@@ -32,6 +31,17 @@ const SearchBar: React.VFC = () => {
   const isSearching = keyword?.length > 0;
 
   const { results, isLoading, onClear } = useSearch({ keyword });
+
+  const [focus, setRoveFocus] = useRoveFocus(results?.length + 1);
+
+  useEffect(() => {
+    if (focus === 0) {
+      // Move element into view when it is focused
+      if (searchInputRef?.current) {
+        searchInputRef?.current.focus();
+      }
+    }
+  }, [focus]);
 
   const onCloseDropDownResultsView = () => {
     onClear();
@@ -81,31 +91,6 @@ const SearchBar: React.VFC = () => {
     }
   };
 
-  const renderResultRow = (result: SearchResult) => {
-    const IconByType = getIconByResultType(result?.type);
-    return (
-      <button
-        onClick={() => onPressResultRow(result)}
-        type="button"
-        key={result?.id}
-        className={classNames(
-          'relative group py-2 px-6 w-full flex flex-row items-center hover:bg-Gray-12',
-        )}
-      >
-        <IconByType className="w-6 h-6" />
-        <div className="flex flex-1 items-center ml-2">
-          <p className="text-Gray-3 text-sm">{result?.title}</p>
-          <p className="text-Gray-6 text-sm ml-2 invisible group-hover:visible">
-            {`- ${getPropTypeDisplayName(result?.type)}`}
-          </p>
-        </div>
-        <div className="flex ml-auto">
-          <ArrowRight2 className="h-4 w-4 text-Accent-1 invisible group-hover:visible" />
-        </div>
-      </button>
-    );
-  };
-
   const isEmptyResult = isFocus && isSearching && results.length === 0;
   const renderResultsOrEmpty = () => {
     if (isEmptyResult) {
@@ -128,7 +113,16 @@ const SearchBar: React.VFC = () => {
         </div>
       );
     }
-    return results.map(renderResultRow);
+    return results.map((result, index) => (
+      <SearchBarResultItem
+        key={`renderSearchResult-${result?.id}`}
+        result={result}
+        focus={focus === index + 1}
+        onClickHandler={() => {
+          onPressResultRow(result);
+        }}
+      />
+    ));
   };
 
   return (
@@ -156,7 +150,10 @@ const SearchBar: React.VFC = () => {
                 autoCorrect="off"
                 autoCapitalize="off"
                 onChange={debounceSearchRequest}
-                onFocus={() => setFocus(true)}
+                onFocus={() => {
+                  setFocus(true);
+                  setRoveFocus(0);
+                }}
                 onBlur={() => setFocus(false)}
               />
               {(isFocus || isSearching) && (

@@ -35,6 +35,7 @@ import {
   genReviewSentenceFromProperties,
   getPeriodsByYear,
   getPropsAndPeriodsFromItemSelected,
+  getTargetName,
 } from '@main/utils';
 import TargetChart from '@main/molecules/TargetChart';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
@@ -276,7 +277,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       });
       setDefaultTags(defaultTagsTemp);
     }
-    setTargetName(itemEditing?.name ?? '');
+    setTargetName(itemEditing ? getTargetName(itemEditing) : '');
   }, [itemEditing]);
 
   useEffect(() => {

@@ -1,9 +1,10 @@
 import { SectionTab } from '@common/types';
-import { FeedIcon, Bank, CategoryIcon, TeamIcon } from '@assets/index';
+import { FeedIcon, Bank, CategoryIcon, TeamIcon, TargetIcon } from '@assets/index';
 import { LineChartData } from '@main/types';
 
 export enum MainGroups {
   Feeds = 'Feeds',
+  Boards = 'Boards',
   Following = 'Following',
 }
 
@@ -21,6 +22,18 @@ export const MainMenu: SectionTab[] = [
         name: 'Company',
         location: { pathname: '/company' },
         icon: FeedIcon,
+        isShowCounter: true,
+      },
+    ],
+    groups: [],
+  },
+  {
+    name: MainGroups.Boards,
+    tabs: [
+      {
+        name: 'Targets',
+        location: { pathname: '/dashboard' },
+        icon: TargetIcon,
         isShowCounter: true,
       },
     ],

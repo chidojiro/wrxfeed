@@ -6,6 +6,8 @@ import Login from '@auth/pages/LoginPage';
 import AcceptInvitation from '@auth/pages/AcceptInvitation';
 
 import Onboard from '@auth/pages/OnboardPage';
+import NotFoundPage from '@common/pages/NotFoundPage';
+
 import ForYou from '@main/pages/ForYou';
 import Departments from '@main/pages/Departments';
 import Categories from '@main/pages/Categories';
@@ -13,7 +15,7 @@ import Vendors from '@main/pages/Vendors';
 import Feed from '@main/pages/Feed';
 import Notifications from '@main/pages/Notifications';
 import Company from '@main/pages/Company';
-import NotFoundPage from '@common/pages/NotFoundPage';
+import Dashboard from '@main/pages/Dashboard';
 
 export interface RouteItem<T> {
   path: string | readonly string[];
@@ -78,6 +80,11 @@ const routes: Route = {
   Company: {
     path: '/company',
     component: Company,
+    permissions: [UserRole.ADMIN, UserRole.USER],
+  },
+  Dashboard: {
+    path: '/dashboard',
+    component: Dashboard,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
 };

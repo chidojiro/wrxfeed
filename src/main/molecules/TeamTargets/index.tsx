@@ -42,7 +42,8 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
   });
 
   const onClickNewTarget = () => setShowAddTarget(true);
-  const onClickEdit = (target: Target) => {
+  const onClickEdit = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, target: Target) => {
+    event.stopPropagation();
     setItemEditing(target);
     setShowAddTarget(true);
   };
@@ -103,18 +104,36 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
       const left = targets.length - (i + 1);
       if (left > 0) {
         targetViewTemp.push(
-          <div className="flex flex-col sm:flex-row w-full" key={`targetView-${item?.id}`}>
-            <TeamTargetRow target={item} onClickEdit={() => onClickEdit(item)} />
-            <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
-            <TeamTargetRow target={nextItem} onClickEdit={() => onClickEdit(nextItem)} />
+          <div
+            className="flex flex-col sm:flex-row w-full max-w-full overflow-hidden"
+            key={`targetView-${item?.id}`}
+          >
+            <TeamTargetRow
+              className="border-r border-Gray-11 w-1/2"
+              target={item}
+              onClickEdit={(event) => onClickEdit(event, item)}
+            />
+            {/* <div className="hidden sm:flex w-px h-auto bg-Gray-11" /> */}
+            <TeamTargetRow
+              className="w-1/2"
+              target={nextItem}
+              onClickEdit={(event) => onClickEdit(event, nextItem)}
+            />
           </div>,
         );
         i += 1;
       }
       if (left === 0) {
         targetViewTemp.push(
-          <div className="flex flex-col sm:flex-row w-full" key={`targetView-${item?.id}`}>
-            <TeamTargetRow className="w-6/12" target={item} onClickEdit={() => onClickEdit(item)} />
+          <div
+            className="flex flex-col sm:flex-row w-full max-w-full"
+            key={`targetView-${item?.id}`}
+          >
+            <TeamTargetRow
+              className="w-6/12"
+              target={item}
+              onClickEdit={(event) => onClickEdit(event, item)}
+            />
             <div className="hidden sm:flex w-px h-auto bg-Gray-11" />
             <EmptyTarget className="w-6/12" onClickNewTarget={onClickNewTarget} />
           </div>,
