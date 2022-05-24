@@ -385,6 +385,7 @@ export default class ApiUtils implements ApiClient {
         year: filters?.year,
         month: filters?.month,
         dep: filters?.dep,
+        forYou: filters?.forYou,
       },
     });
     return res.data;
