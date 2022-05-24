@@ -16,7 +16,7 @@ const SearchBarResultItem: VFC<SearchBarResultItemProps> = ({ result, focus, onC
   useEffect(() => {
     if (focus) {
       // Move element into view when it is focused
-      if (ref && ref?.current) {
+      if (ref?.current) {
         ref?.current.focus();
       }
     }

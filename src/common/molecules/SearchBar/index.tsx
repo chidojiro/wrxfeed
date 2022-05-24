@@ -37,7 +37,7 @@ const SearchBar: React.VFC = () => {
   useEffect(() => {
     if (focus === 0) {
       // Move element into view when it is focused
-      if (searchInputRef && searchInputRef?.current) {
+      if (searchInputRef?.current) {
         searchInputRef?.current.focus();
       }
     }
