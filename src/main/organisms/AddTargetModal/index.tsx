@@ -123,7 +123,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [thisYearTransPayload, setThisYearTransPayload] = useState<TransactionBody>();
   const { transactions: thisYearTrans } = useTransaction(thisYearTransPayload);
 
-  const updatedTargetMonths = targetMonths.filter((target) => target?.amount !== undefined); // TODO: if you want to accept zero target, let define an empty value like null, undefined, '', -1... then you can use >= here
+  const updatedTargetMonths = targetMonths.filter((target) => target?.amount !== undefined);
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
