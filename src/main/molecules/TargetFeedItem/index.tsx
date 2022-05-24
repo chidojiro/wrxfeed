@@ -267,7 +267,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
             </div>
           </div>
         </div>
-        <TargetChartView feedItem={curFeed} onEdit={onClickEditTarget} />
+        <TargetChartView target={curFeed.target} onEdit={onClickEditTarget} />
         <RollupTransactions feedId={curFeed?.id} trans={curFeed?.transactions} showTopDivider />
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (

@@ -103,6 +103,7 @@ module.exports = {
         dropdown: '0 1px 1px 0 rgba(9, 30, 66, 0.31), 0 3px 5px 0 rgba(9, 30, 66, 0.2)',
         topCategoryHover: '-4px 10px 8px 0 rgba(101, 101, 251, 0.03), 0 3px 10px 0 rgba(101, 101, 251, 0.1);',
         propertyDropdown: '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
+        targetHover: '0px 3px 10px rgba(101, 101, 251, 0.1), -4px 10px 8px rgba(101, 101, 251, 0.03)',
       }
     },
   },

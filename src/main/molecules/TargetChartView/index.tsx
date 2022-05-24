@@ -9,7 +9,7 @@ import { defaultTargetMonths } from '@common/constants';
 import { PatchCalcSpendingFilters, TargetPeriod, TransactionBody } from '@api/types';
 import { classNames } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
-import { FeedItem, TargetMonth } from '@main/entity';
+import { Target, TargetMonth } from '@main/entity';
 import { LineChartData } from '@main/types';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@main/chart.utils';
 import { decimalLogic, DecimalType, getPeriodsByYear } from '@main/utils';
@@ -30,14 +30,14 @@ const LAST_YEAR_INIT_FILTER = Object.freeze({
 
 interface TargetChartViewProps {
   className?: string;
-  feedItem: FeedItem;
+  target: Target;
   onEdit: () => void;
 }
 
-const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
+const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, onEdit }) => {
   // const [chartData, setChartData] = useState<LineChartData<Transaction[]>>();
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
-  const { amount, total } = feedItem?.target.periods.reduce(
+  const { amount, total } = target.periods.reduce(
     (sum, targetPeriod) => ({
       amount: sum.amount + (targetPeriod.amount ?? 0),
       total: sum.total + (targetPeriod.total ?? 0),
@@ -47,7 +47,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
       total: 0,
     },
   );
-  const updatedTargetMonths = targetMonths.filter((target) => target?.amount !== undefined);
+  const updatedTargetMonths = targetMonths.filter((item) => item?.amount !== undefined);
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
@@ -72,9 +72,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
   }, [thisYearSpendData, lastYearSpendData, targetMonths, thisYearTrans, lastYearTrans]);
 
   useEffect(() => {
-    const {
-      target: { periods, props },
-    } = feedItem;
+    const { periods, props } = target;
     if (periods?.length > 0 && props?.length > 0) {
       setThisYearFilter({
         props,
@@ -96,12 +94,10 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
       });
       setTargetMonths(dataMonth);
     }
-  }, [feedItem]);
+  }, [target]);
 
   useEffect(() => {
-    const {
-      target: { periods, props },
-    } = feedItem;
+    const { periods, props } = target;
     if (periods.length && startMonth === endMonth) {
       setLastYearTransPayload({
         periods: [{ month: periods[0].month, year: periods[0].year - 1 }],
