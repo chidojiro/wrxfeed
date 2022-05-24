@@ -18,10 +18,10 @@ export const getMultiMonthRange = (periods: TargetPeriod[]): string => {
   let max = 0;
   for (let i = 0; i < periods.length; i += 1) {
     const { amount, month } = periods[i];
-    if (amount && amount > 0 && month < min) {
+    if (amount !== undefined && month < min) {
       min = month;
     }
-    if (amount && amount > 0 && month > max) {
+    if (amount !== undefined && month > max) {
       max = month;
     }
   }

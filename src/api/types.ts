@@ -80,7 +80,7 @@ export interface ApiClient {
   // targets
   getTargets: (filters?: TargetFilter) => Promise<Target[]>;
   postTarget: (data: PostTargetParams) => Promise<void>;
-  putTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  putTarget: (id: number, data: PutTargetParams) => Promise<Target>;
   deleteTarget: (id: number) => Promise<void>;
   patchCalcSpending: (data: PatchCalcSpendingFilters) => Promise<TargetPeriod[]>;
   // Subscription

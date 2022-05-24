@@ -13,5 +13,5 @@ export type Target = {
 
 export type TargetMonth = {
   month: number;
-  amount: number;
+  amount?: number;
 };

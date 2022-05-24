@@ -14,7 +14,7 @@ import { stackTargetsBySpend } from '@main/utils';
 import cloneDeep from 'lodash.clonedeep';
 
 interface TargetCallback {
-  onSuccess: () => void;
+  onSuccess: (target?: Target) => void;
   onError?: (error: unknown) => void;
 }
 interface TargetHookValues {
@@ -100,8 +100,8 @@ export function useTarget(
     if (isPutTarget) return;
     try {
       setPutTarget(true);
-      await ApiClient.putTarget(id, data);
-      cbPut.onSuccess();
+      const newTarget = await ApiClient.putTarget(id, data);
+      cbPut.onSuccess(newTarget);
     } catch (error) {
       if (cbPut.onError) {
         cbPut.onError(error);
