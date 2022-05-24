@@ -30,9 +30,9 @@ interface TargetHookValues {
 }
 export function useTarget(
   filter: TargetFilter,
-  cbPost: TargetCallback,
-  cbPut: TargetCallback,
-  cbDelete: TargetCallback,
+  cbPost?: TargetCallback,
+  cbPut?: TargetCallback,
+  cbDelete?: TargetCallback,
   isSaveGlobal?: boolean,
 ): TargetHookValues {
   const [targetsGlobal, setTargetsGlobal] = useRecoilState<Target[]>(targetState);
@@ -81,9 +81,9 @@ export function useTarget(
     try {
       setPostTarget(true);
       await ApiClient.postTarget(data);
-      cbPost.onSuccess();
+      cbPost?.onSuccess();
     } catch (error) {
-      if (cbPost.onError) {
+      if (cbPost && cbPost.onError) {
         cbPost.onError(error);
       }
       if (isApiError(error)) {
@@ -101,10 +101,10 @@ export function useTarget(
     try {
       setPutTarget(true);
       const newTarget = await ApiClient.putTarget(id, data);
-      cbPut.onSuccess(newTarget);
+      cbPut?.onSuccess(newTarget);
     } catch (error) {
-      if (cbPut.onError) {
-        cbPut.onError(error);
+      if (cbPut?.onError) {
+        cbPut?.onError(error);
       }
       if (isApiError(error)) {
         toast.error(error.details?.message);
@@ -123,10 +123,10 @@ export function useTarget(
       await ApiClient.deleteTarget(id);
       const newTargets = targets.filter((item: Target) => item?.id !== id);
       setTargets(newTargets);
-      cbDelete.onSuccess();
+      cbDelete?.onSuccess();
     } catch (error) {
-      if (cbDelete.onError) {
-        cbDelete.onError(error);
+      if (cbDelete?.onError) {
+        cbDelete?.onError(error);
       }
       if (isApiError(error)) {
         toast.error(error.details?.message);
