@@ -47,7 +47,6 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
       total: 0,
     },
   );
-  const targetAmount = Math.round(amount ?? 0);
   const updatedTargetMonths = targetMonths.filter((target) => target?.amount !== undefined);
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
@@ -261,7 +260,6 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
               <TargetChart
                 containerClass="mt-8 mb-2"
                 chartData={chartData}
-                maxYValue={targetAmount}
                 renderXAxis={renderXAxis}
                 renderTooltip={renderTooltipContent}
                 loading={lastYearDataLoading || thisYearDataLoading}
