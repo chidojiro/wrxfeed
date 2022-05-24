@@ -53,7 +53,7 @@ export const getLineChartDataInMonth = (
       name: '',
       thisYear: 0,
       lastYear: 0,
-      target: target.amount,
+      target: target.amount ?? 0,
     })
     .map((_, index) => {
       const dayName = dayjs(targetDate)
@@ -74,14 +74,14 @@ export const getLineChartDataInMonth = (
         return {
           name: dayName,
           lastYear: totalLastYear,
-          target: target.amount,
+          target: target.amount ?? 0,
         };
       }
       return {
         name: dayName,
         thisYear: totalThisYear,
         lastYear: totalLastYear,
-        target: target.amount,
+        target: target.amount ?? 0,
       };
     });
   const lines: ChartLineProps[] = [
@@ -112,7 +112,7 @@ export const getLineChartDataInMonth = (
     },
   ];
 
-  let maxValue = Math.max(totalThisYear, totalLastYear, target.amount);
+  let maxValue = Math.max(totalThisYear, totalLastYear, target.amount ?? 0);
   const positiveMax = Math.abs(maxValue);
   if (positiveMax >= 1000000000) {
     maxValue = Math.ceil(positiveMax / 1000000000) * 1000000000; // Billion
@@ -197,7 +197,7 @@ export const getTargetMonthsLineChartData = (
             target: round(targetMonth?.amount ?? 0, 2),
           };
     // Find max value
-    if (targetMonth?.amount) {
+    if (targetMonth?.amount !== undefined) {
       maxValue = Math.max(
         maxValue,
         round(thisYearSorted[indexFlag]?.total ?? 0),
@@ -206,12 +206,12 @@ export const getTargetMonthsLineChartData = (
       );
     }
     // Only add months in selected range (start and end with non-zero amount)
-    // Criteria 1: Start month didn't set and the month doesn't have a target amount (0) => ignore
-    if (startMonth === -1 && !targetMonth?.amount) {
+    // Criteria 1: Start month didn't set and the month doesn't have a target amount (undefined) => ignore
+    if (startMonth === -1 && targetMonth?.amount === undefined) {
       return preVal;
     }
     // Criteria 2: Start month didn't set and the month has a target amount
-    if (startMonth === -1 && targetMonth?.amount) {
+    if (startMonth === -1 && targetMonth?.amount !== undefined) {
       // Set start month
       startMonth = indexFlag;
       // Sum total this year spend
@@ -220,12 +220,12 @@ export const getTargetMonthsLineChartData = (
       return [dataPoint];
     }
     /** *** Start month has been set => reverse array until reach start month **** */
-    // Criteria 3: End month didn't set and the month doesn't have a target amount (0) => ignore
-    if (endMonth === -1 && !targetMonth?.amount) {
+    // Criteria 3: End month didn't set and the month doesn't have a target amount (undefined) => ignore
+    if (endMonth === -1 && targetMonth?.amount === undefined) {
       return preVal;
     }
     // Criteria 4: End month didn't set and the month has a target amount
-    if (endMonth === -1 && targetMonth?.amount) {
+    if (endMonth === -1 && targetMonth?.amount !== undefined) {
       // Set end month
       endMonth = indexFlag;
       // Sum total this year spend

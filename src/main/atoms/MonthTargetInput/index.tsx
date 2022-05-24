@@ -6,10 +6,10 @@ interface MonthTargetInputProps {
   month: number;
   isInRange?: boolean;
   className?: string;
-  onChange: (amount: number) => void;
+  onChange: (amount?: number) => void;
   onSelect: () => void;
   onUnselect: () => void;
-  defaultAmount: number | undefined;
+  defaultAmount?: number;
 }
 
 const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
@@ -22,31 +22,15 @@ const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
 }) => {
   const amountInputRef = useRef<HTMLInputElement>(null);
   const [amount, setAmount] = useState<string>(
-    defaultAmount ? formatCurrency(defaultAmount, '0,0', '') : '',
+    defaultAmount !== undefined ? formatCurrency(defaultAmount, '0,0', '0') : '',
   );
   const [isFocus, setIsFocus] = useState<boolean>(false);
-  const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    if (defaultAmount) {
+    if (defaultAmount !== undefined) {
       onSelect();
     }
   }, [defaultAmount]);
-
-  useEffect(() => {
-    if (!mounted) {
-      setMounted(true);
-      return;
-    }
-    if (isFocus) {
-      onSelect();
-    } else if (amount.length > 0) {
-      const amountInt = parseInt(replaceAll(amount, ',', ''), 10);
-      onChange(amountInt);
-    } else if (amount.length === 0) {
-      onUnselect();
-    }
-  }, [isFocus, onSelect, onUnselect]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -56,13 +40,25 @@ const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
     if (['Enter'].includes(event.key)) {
       event.preventDefault();
       amountInputRef.current?.blur();
-      const amountInt = parseInt(replaceAll(amount, ',', ''), 10);
-      onChange(amountInt);
     }
   };
+
   const onFocus = () => {
     setIsFocus(true);
+    onSelect();
   };
+
+  const onBlur = () => {
+    setIsFocus(false);
+    if (amount.length > 0) {
+      const amountInt = parseInt(replaceAll(amount, ',', ''), 10);
+      onChange(amountInt);
+    } else if (amount.length === 0) {
+      onUnselect();
+      onChange();
+    }
+  };
+
   return (
     <div
       className={classNames(
@@ -81,7 +77,7 @@ const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
         onKeyDown={handleKeyDown}
         value={amount.length > 0 ? `${amount}` : ''}
         onFocus={onFocus}
-        onBlur={() => setIsFocus(false)}
+        onBlur={onBlur}
       />
     </div>
   );

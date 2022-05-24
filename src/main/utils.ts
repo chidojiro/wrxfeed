@@ -560,12 +560,17 @@ export const getPropsAndPeriodsFromItemSelected = (
     });
   });
   const periods: TargetPeriod[] = [];
-  targetMonths.forEach((month: TargetMonth) => {
-    if (month?.amount >= 0) {
+  const availableMonths = targetMonths
+    .filter((target) => target.amount !== undefined)
+    .map((target) => target.month);
+  const minMonth = Math.min(...availableMonths);
+  const maxMonth = Math.max(...availableMonths);
+  targetMonths.forEach((target: TargetMonth) => {
+    if (target.month >= minMonth && target.month <= maxMonth) {
       periods.push({
-        month: month.month,
+        month: target.month,
         year: curYear,
-        amount: month.amount,
+        amount: target.amount ?? 0,
       });
     }
   });
