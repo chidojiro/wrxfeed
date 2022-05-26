@@ -12,6 +12,8 @@ import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
 import { convertFromHTML, convertToHTML } from 'draft-convert';
 import numeral from 'numeral';
+import cloneDeep from 'lodash.clonedeep';
+import dayjs from 'dayjs';
 
 import {
   TransLineItem,
@@ -24,7 +26,6 @@ import {
   TargetDic,
 } from '@main/entity';
 import { TargetPeriod, TargetProp, TargetPropType } from '@api/types';
-import cloneDeep from 'lodash.clonedeep';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
@@ -582,25 +583,24 @@ export const getPropsAndPeriodsFromItemSelected = (
   };
 };
 
-export const getTargetAmountAndTotal = (target: Target): { amount: number; total: number } => {
-  const today = new Date();
-  const monthInReal = today.getMonth() + 1;
-  const monthMatched: TargetPeriod[] = target.periods?.filter(
-    (period: TargetPeriod) => period.month === monthInReal,
+export const getTargetPeriodsAmountTotal = (target: Target): { amount: number; total: number } => {
+  const { amount, total } = target.periods.reduce(
+    (sum, targetPeriod) => ({
+      amount: sum.amount + (targetPeriod.amount ?? 0),
+      total: sum.total + (targetPeriod.total ?? 0),
+    }),
+    {
+      amount: 0,
+      total: 0,
+    },
   );
-  if (monthMatched?.length > 0) {
-    return {
-      amount: monthMatched[0].amount ?? 0,
-      total: monthMatched[0].total ?? 0,
-    };
-  }
-  return { amount: 0, total: 0 };
+  return { amount, total };
 };
 
 export const stackTargetsBySpend = (data: Target[]): Target[] => {
   let targetStacked = data.sort((a: Target, b: Target) => {
-    const { total: totalA } = getTargetAmountAndTotal(a);
-    const { total: totalB } = getTargetAmountAndTotal(b);
+    const { total: totalA } = getTargetPeriodsAmountTotal(a);
+    const { total: totalB } = getTargetPeriodsAmountTotal(b);
     return (totalB ?? 0) - (totalA ?? 0);
   });
   targetStacked = data.sort(
@@ -686,4 +686,31 @@ export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
     };
   });
   return results;
+};
+
+export const getMultiMonthRange = (periods: TargetPeriod[]): string => {
+  let min = 12;
+  let max = 0;
+  for (let i = 0; i < periods.length; i += 1) {
+    const { amount, month } = periods[i];
+    if (amount !== undefined && month < min) {
+      min = month;
+    }
+    if (amount !== undefined && month > max) {
+      max = month;
+    }
+  }
+
+  let name = '...';
+  if (min !== 0) {
+    name = dayjs()
+      .month(min - 1)
+      .format('MMM');
+  }
+  if (max !== 0 && max !== min) {
+    name += ` - ${dayjs()
+      .month(max - 1)
+      .format('MMM')}`;
+  }
+  return name;
 };

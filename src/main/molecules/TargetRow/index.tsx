@@ -1,7 +1,12 @@
 import React, { useMemo } from 'react';
 
 import { Target } from '@main/entity';
-import { getColorByText, getTargetAmountAndTotal, getTargetName, nFormatter } from '@main/utils';
+import {
+  getColorByText,
+  getTargetPeriodsAmountTotal,
+  getTargetName,
+  nFormatter,
+} from '@main/utils';
 import { classNames } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
 
@@ -16,7 +21,7 @@ export interface TargetRowProps {
 const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
   const targetName = getTargetName(target);
   const deptBgClass = useMemo(() => getColorByText(targetName ?? ''), [targetName]);
-  const { amount, total } = getTargetAmountAndTotal(target);
+  const { amount, total } = getTargetPeriodsAmountTotal(target);
   const isActive = (amount ?? 0) > 0 && target?.id !== null;
 
   const renderEditButton = () => {

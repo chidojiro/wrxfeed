@@ -1,44 +1,21 @@
 import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-import dayjs from 'dayjs';
 
 import { FeedType, Target } from '@main/entity';
-import { getColorByText, getTargetName, nFormatter, getTargetAmountAndTotal } from '@main/utils';
+import {
+  getColorByText,
+  getTargetName,
+  nFormatter,
+  getTargetPeriodsAmountTotal,
+  getMultiMonthRange,
+} from '@main/utils';
 import { classNames } from '@common/utils';
 import Routes from '@src/routes';
 import ExceedBar from '@main/atoms/ExceedBar';
 import { BasicsEditCircle } from '@assets/index';
-import { TargetPeriod } from '@api/types';
 
 const SYSTEM_ALERT_COLOR = '#ff5f68';
 const INACTIVE_TARGET_COLOR = '#d1d5db';
-
-export const getMultiMonthRange = (periods: TargetPeriod[]): string => {
-  let min = 12;
-  let max = 0;
-  for (let i = 0; i < periods.length; i += 1) {
-    const { amount, month } = periods[i];
-    if (amount !== undefined && month < min) {
-      min = month;
-    }
-    if (amount !== undefined && month > max) {
-      max = month;
-    }
-  }
-
-  let name = '...';
-  if (min !== 0) {
-    name = dayjs()
-      .month(min - 1)
-      .format('MMM');
-  }
-  if (max !== 0 && max !== min) {
-    name += ` - ${dayjs()
-      .month(max - 1)
-      .format('MMM')}`;
-  }
-  return name;
-};
 
 interface TeamTargetRowProps {
   className?: string;
@@ -50,7 +27,7 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ className = '', target, 
   const targetName = getTargetName(target);
   const history = useHistory();
   const deptBgClass = useMemo(() => getColorByText(targetName ?? ''), [targetName]);
-  const { amount, total } = getTargetAmountAndTotal(target);
+  const { amount, total } = getTargetPeriodsAmountTotal(target);
   const isActive = (amount ?? 0) > 0 && target?.id !== null;
 
   const totalSpent = total ?? 0;
@@ -63,7 +40,7 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ className = '', target, 
     );
   };
 
-  const renderEditButton = () => {
+  const renderEditOrMonthRange = () => {
     return (
       <>
         <button
@@ -76,7 +53,7 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ className = '', target, 
         </button>
         {!isExceeds && (
           <div className="flex-col items-end ml-auto w-24 flex group-hover:hidden">
-            <p className="text-2xs text-Gray-6">{getMultiMonthRange(target.periods)}</p>
+            <p className="text-2xs text-Gray-6">{getMultiMonthRange(target?.periods)}</p>
           </div>
         )}
       </>
@@ -173,7 +150,7 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ className = '', target, 
           {targetName ?? '...'}
         </p>
         {renderAlertText()}
-        {renderEditButton()}
+        {renderEditOrMonthRange()}
       </div>
       {renderCurrentPerTotalBar()}
     </button>
