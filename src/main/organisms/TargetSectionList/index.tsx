@@ -106,7 +106,7 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
                         className="mt-1 text-xs font-normal text-Gray-6"
                       >
                         {`${item.updater?.fullName ?? 'Unknown'} edited at ${dayjs(
-                          item.lastInteraction,
+                          item?.updatedAt ?? item?.lastInteraction,
                         ).format('MM/DD/YYYY')}`}
                       </h2>
                     </div>

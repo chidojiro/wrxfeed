@@ -10,6 +10,7 @@ export type Target = {
   props: TargetProp[];
   creator: User;
   updater: User;
+  updatedAt?: string;
   lastInteraction?: string;
   department?: Department;
 };
