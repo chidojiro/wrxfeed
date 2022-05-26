@@ -12,6 +12,8 @@ import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
 import { convertFromHTML, convertToHTML } from 'draft-convert';
 import numeral from 'numeral';
+import cloneDeep from 'lodash.clonedeep';
+import dayjs from 'dayjs';
 
 import {
   TransLineItem,
@@ -20,9 +22,10 @@ import {
   TranStatusType,
   FeedItem,
   Transaction,
+  TargetByTeam,
+  TargetDic,
 } from '@main/entity';
 import { TargetPeriod, TargetProp, TargetPropType } from '@api/types';
-import cloneDeep from 'lodash.clonedeep';
 
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
@@ -560,12 +563,17 @@ export const getPropsAndPeriodsFromItemSelected = (
     });
   });
   const periods: TargetPeriod[] = [];
-  targetMonths.forEach((month: TargetMonth) => {
-    if (month?.amount >= 0) {
+  const availableMonths = targetMonths
+    .filter((target) => target.amount !== undefined)
+    .map((target) => target.month);
+  const minMonth = Math.min(...availableMonths);
+  const maxMonth = Math.max(...availableMonths);
+  targetMonths.forEach((target: TargetMonth) => {
+    if (target.month >= minMonth && target.month <= maxMonth) {
       periods.push({
-        month: month.month,
+        month: target.month,
         year: curYear,
-        amount: month.amount,
+        amount: target.amount ?? 0,
       });
     }
   });
@@ -575,25 +583,24 @@ export const getPropsAndPeriodsFromItemSelected = (
   };
 };
 
-export const getTargetAmountAndTotal = (target: Target): { amount: number; total: number } => {
-  const today = new Date();
-  const monthInReal = today.getMonth() + 1;
-  const monthMatched: TargetPeriod[] = target.periods?.filter(
-    (period: TargetPeriod) => period.month === monthInReal,
+export const getTargetPeriodsAmountTotal = (target: Target): { amount: number; total: number } => {
+  const { amount, total } = target.periods.reduce(
+    (sum, targetPeriod) => ({
+      amount: sum.amount + (targetPeriod.amount ?? 0),
+      total: sum.total + (targetPeriod.total ?? 0),
+    }),
+    {
+      amount: 0,
+      total: 0,
+    },
   );
-  if (monthMatched?.length > 0) {
-    return {
-      amount: monthMatched[0].amount ?? 0,
-      total: monthMatched[0].total ?? 0,
-    };
-  }
-  return { amount: 0, total: 0 };
+  return { amount, total };
 };
 
 export const stackTargetsBySpend = (data: Target[]): Target[] => {
   let targetStacked = data.sort((a: Target, b: Target) => {
-    const { total: totalA } = getTargetAmountAndTotal(a);
-    const { total: totalB } = getTargetAmountAndTotal(b);
+    const { total: totalA } = getTargetPeriodsAmountTotal(a);
+    const { total: totalB } = getTargetPeriodsAmountTotal(b);
     return (totalB ?? 0) - (totalA ?? 0);
   });
   targetStacked = data.sort(
@@ -654,4 +661,56 @@ export const decimalLogic = (
     return result + 0;
   }
   return withCurrency + result;
+};
+
+export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
+  const targetByTeam: TargetDic = {};
+  data.forEach((item: Target) => {
+    const deptId = item.department?.id;
+    // eslint-disable-next-line no-prototype-builtins
+    if (deptId && targetByTeam.hasOwnProperty(deptId)) {
+      targetByTeam[deptId].push(item);
+    } else if (deptId) {
+      targetByTeam[deptId] = [item];
+    }
+  });
+  const results: TargetByTeam[] = Object.keys(targetByTeam).map((key: string) => {
+    const depId = parseInt(key, 10);
+    const targets = targetByTeam[depId];
+    return {
+      department: {
+        id: depId,
+        name: targets.length > 0 ? targets[0].department?.name ?? '...' : '...',
+      },
+      targets,
+    };
+  });
+  return results;
+};
+
+export const getMultiMonthRange = (periods: TargetPeriod[]): string => {
+  let min = 12;
+  let max = 0;
+  for (let i = 0; i < periods.length; i += 1) {
+    const { amount, month } = periods[i];
+    if (amount !== undefined && month < min) {
+      min = month;
+    }
+    if (amount !== undefined && month > max) {
+      max = month;
+    }
+  }
+
+  let name = '...';
+  if (min !== 0) {
+    name = dayjs()
+      .month(min - 1)
+      .format('MMM');
+  }
+  if (max !== 0 && max !== min) {
+    name += ` - ${dayjs()
+      .month(max - 1)
+      .format('MMM')}`;
+  }
+  return name;
 };

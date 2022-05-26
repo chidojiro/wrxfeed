@@ -73,7 +73,6 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
   const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
   const [showAddTarget, setShowAddTarget] = useState<boolean>(false);
   const [itemEditing, setItemEditing] = useState<Target | null>(null);
-  const setIntervalRef = useRef<PutTargetParams | undefined>();
   // Data hooks
   const { mentions } = useMention();
   // Variables
@@ -91,8 +90,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
 
   const hasComment = comments?.length > 0;
 
-  const onSuccessPutTarget = () => {
-    const dataPutTarget = setIntervalRef.current;
+  const onSuccessPutTarget = (target?: Target) => {
     setShowAddTarget(false);
     const updater: User = {
       id: identity?.id,
@@ -103,12 +101,11 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
     const curFeedClone = cloneDeep(curFeed);
     curFeedClone.target = {
       ...curFeedClone.target,
-      ...(dataPutTarget?.name ? { name: dataPutTarget?.name } : {}),
-      ...(dataPutTarget?.props ? { props: dataPutTarget?.props } : {}),
-      ...(dataPutTarget?.periods ? { periods: dataPutTarget?.periods } : {}),
+      ...(target?.name ? { name: target?.name } : {}),
+      ...(target?.props ? { props: target?.props } : {}),
+      ...(target?.periods ? { periods: target?.periods } : {}),
       updater,
     };
-
     setCurFeed(curFeedClone);
   };
 
@@ -116,14 +113,13 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
     useTarget(
       initFilter,
       { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
-      { onSuccess: () => onSuccessPutTarget(), onError: () => undefined },
+      { onSuccess: (target) => onSuccessPutTarget(target), onError: () => undefined },
       { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
       false,
     );
 
   const handlePutTarget = (id: number, data: PutTargetParams) => {
     putTarget(id, data);
-    setIntervalRef.current = data;
   };
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
@@ -271,7 +267,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
             </div>
           </div>
         </div>
-        <TargetChartView feedItem={curFeed} onEdit={onClickEditTarget} />
+        <TargetChartView target={curFeed.target} onEdit={onClickEditTarget} />
         <RollupTransactions feedId={curFeed?.id} trans={curFeed?.transactions} showTopDivider />
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
