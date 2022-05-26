@@ -12,7 +12,12 @@ import { BasicsEditCircle } from '@assets';
 import { Target, TargetMonth } from '@main/entity';
 import { LineChartData } from '@main/types';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@main/chart.utils';
-import { decimalLogic, DecimalType, getPeriodsByYear } from '@main/utils';
+import {
+  decimalLogic,
+  DecimalType,
+  getPeriodsByYear,
+  getTargetPeriodsAmountTotal,
+} from '@main/utils';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
 import { useTransaction } from '@main/hooks/transaction.hook';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
@@ -36,16 +41,7 @@ interface TargetChartViewProps {
 
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, onEdit }) => {
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
-  const { amount, total } = target.periods.reduce(
-    (sum, targetPeriod) => ({
-      amount: sum.amount + (targetPeriod.amount ?? 0),
-      total: sum.total + (targetPeriod.total ?? 0),
-    }),
-    {
-      amount: 0,
-      total: 0,
-    },
-  );
+  const { amount, total } = getTargetPeriodsAmountTotal(target);
   const updatedTargetMonths = targetMonths.filter((item) => item?.amount !== undefined);
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;

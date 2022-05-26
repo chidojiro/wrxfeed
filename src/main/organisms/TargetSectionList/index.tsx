@@ -6,7 +6,7 @@ import ListEndComponent from '@main/atoms/ListEndComponent';
 import MiniChartView from '@main/molecules/MiniChartView';
 import EditorAvatar from '@main/atoms/EditorAvatar';
 import dayjs from 'dayjs';
-import { decimalLogic, DecimalType } from '@main/utils';
+import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@main/utils';
 import TargetFeedName from '@main/atoms/TargetFeedName';
 import { TeamIcon } from '@assets';
 
@@ -72,16 +72,7 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
     return (
       <>
         {targetsByTeam.map((item: Target) => {
-          const { amount, total } = item.periods.reduce(
-            (sum, targetPeriod) => ({
-              amount: sum.amount + (targetPeriod.amount ?? 0),
-              total: sum.total + (targetPeriod.total ?? 0),
-            }),
-            {
-              amount: 0,
-              total: 0,
-            },
-          );
+          const { amount, total } = getTargetPeriodsAmountTotal(item);
           return (
             <div
               key={`Dashboard-TargetChartView-${item.id}`}
