@@ -1,5 +1,6 @@
 import { TargetProp, TargetPeriod } from '@api/types';
 import { User } from '@main/entity/user.entity';
+import { Department } from './transaction.entity';
 
 export type Target = {
   id: number;
@@ -9,9 +10,20 @@ export type Target = {
   props: TargetProp[];
   creator: User;
   updater: User;
+  updatedAt?: string;
+  lastInteraction?: string;
+  department?: Department;
 };
 
 export type TargetMonth = {
   month: number;
   amount?: number;
 };
+
+export interface TargetByTeam {
+  department: Department;
+  targets: Target[];
+}
+export interface TargetDic {
+  [key: string]: Target[];
+}

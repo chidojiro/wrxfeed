@@ -14,6 +14,7 @@ interface MainLayoutProps {
   showNavBar?: boolean;
   showSlideOver?: boolean;
   rightSide?: boolean;
+  mainClass?: string;
 }
 
 const MainLayout: React.VFC<MainLayoutProps> = ({
@@ -22,6 +23,7 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
   showNavBar = true,
   showSlideOver = true,
   rightSide = true,
+  mainClass = '',
 }) => {
   useEffect(() => {
     scrollToTop();
@@ -37,16 +39,18 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
 
           <main
             className={classNames(
-              'relative pt-12 md:border-l md:border-Gray-11 md:pl-6 md:col-span-8 lg:col-span-8 xl:col-span-6 max-w-3xl',
-              rightSide ? 'xl:col-span-6' : '',
+              'relative pt-10 md:border-l md:border-Gray-11 md:pl-6 md:col-span-8 lg:col-span-8 xl:col-span-6 max-w-3xl',
+              mainClass,
             )}
           >
             {children}
           </main>
 
-          <aside className="hidden xl:block xl:col-span-3 lg:pl-5">
-            {rightSide && <div id="main-right-side" className="sticky top-14" />}
-          </aside>
+          {rightSide && (
+            <aside className="hidden xl:block xl:col-span-3 lg:pl-5">
+              <div id="main-right-side" className="sticky top-14" />
+            </aside>
+          )}
         </div>
         {showSlideOver && <SlideOver />}
       </div>

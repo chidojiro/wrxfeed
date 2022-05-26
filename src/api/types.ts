@@ -166,6 +166,7 @@ export interface TargetFilter extends Pagination {
   month?: number;
   timestamp?: number;
   dep?: number;
+  forYou?: number;
 }
 
 export interface PostTargetParams {
