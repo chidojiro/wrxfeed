@@ -20,6 +20,7 @@ interface TargetChartProps<T> {
   renderReferenceLines?: () => JSX.Element | null;
   renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element | null;
   loading?: boolean;
+  levelLabelClass?: string;
 }
 
 const TargetChart: <T extends unknown>(
@@ -34,6 +35,7 @@ const TargetChart: <T extends unknown>(
   renderReferenceLines,
   renderTooltip,
   loading = false,
+  levelLabelClass = '',
 }) => {
   const { data, lines, maxValue } = chartData || INITIAL_CHART_DATA;
   const maxValueForChart = Math.max(
@@ -56,7 +58,13 @@ const TargetChart: <T extends unknown>(
                 key={`dataLevels-${level?.id}`}
                 className="flex flex-row space-x-4 items-center w-full"
               >
-                <p className={classNames('text-xs font-semibold text-right w-8', textColor)}>
+                <p
+                  className={classNames(
+                    'text-xs font-semibold text-right w-8',
+                    textColor,
+                    levelLabelClass,
+                  )}
+                >
                   {level?.title}
                 </p>
                 <div

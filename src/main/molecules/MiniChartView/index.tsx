@@ -8,7 +8,6 @@ import range from 'lodash.range';
 import { defaultTargetMonths } from '@common/constants';
 import { PatchCalcSpendingFilters, TargetPeriod, TransactionBody } from '@api/types';
 import { classNames } from '@common/utils';
-import { BasicsEditCircle } from '@assets';
 import { Target, TargetMonth } from '@main/entity';
 import { LineChartData } from '@main/types';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@main/chart.utils';
@@ -28,24 +27,21 @@ const LAST_YEAR_INIT_FILTER = Object.freeze({
   periods: getPeriodsByYear(THIS_YEAR - 1),
 });
 
-interface TargetChartViewProps {
+interface MiniChartViewProps {
   className?: string;
   target: Target;
   onEdit: () => void;
+  legendLabelClass?: string;
+  xAxisClass?: string;
 }
 
-const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, onEdit }) => {
+const MiniChartView: React.VFC<MiniChartViewProps> = ({
+  className = '',
+  target,
+  legendLabelClass = '',
+  xAxisClass = '',
+}) => {
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
-  const { amount, total } = target.periods.reduce(
-    (sum, targetPeriod) => ({
-      amount: sum.amount + (targetPeriod.amount ?? 0),
-      total: sum.total + (targetPeriod.total ?? 0),
-    }),
-    {
-      amount: 0,
-      total: 0,
-    },
-  );
   const updatedTargetMonths = targetMonths.filter((item) => item?.amount !== undefined);
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
@@ -109,33 +105,20 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, o
     }
   }, [startMonth, endMonth]);
 
-  const renderEditTargetButton = () => {
-    return (
-      <button
-        type="button"
-        className="flex ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
-        onClick={onEdit}
-      >
-        <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
-        <p className="text-xs text-Gray-3 font-normal">Edit</p>
-      </button>
-    );
-  };
-
   const renderChartLegends = () => {
     return (
       <div className="flex flex-row justify-center mt-2 py-2 px-[50px] space-x-8">
         <div className="flex flex-row items-center space-x-2">
           <div className="w-4 h-1 dashed-line-target" />
-          <p className="text-xs text-Gray-6">Target</p>
+          <p className={classNames('text-xs text-Gray-6', legendLabelClass)}>Target</p>
         </div>
         <div className="flex flex-row items-center space-x-2">
           <div className="w-4 h-1 bg-Accent-2" />
-          <p className="text-xs text-Gray-6">Current</p>
+          <p className={classNames('text-xs text-Gray-6', legendLabelClass)}>Current</p>
         </div>
         <div className="flex flex-row items-center space-x-2">
           <div className="w-4 h-1 bg-Gray-11" />
-          <p className="text-xs text-Gray-6">Last Year</p>
+          <p className={classNames('text-xs text-Gray-6', legendLabelClass)}>Last Year</p>
         </div>
       </div>
     );
@@ -144,7 +127,12 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, o
   const renderXAxis = () => {
     const targetDate = dayjs().set('month', startMonth - 1);
     return startMonth === endMonth ? (
-      <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[90px]">
+      <div
+        className={classNames(
+          'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[90px]',
+          xAxisClass,
+        )}
+      >
         <div className="w-20 h-7 flex justify-center items-center">
           <p>{targetDate.date(7).format('MMM D')}</p>
         </div>
@@ -159,7 +147,12 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, o
         </div>
       </div>
     ) : (
-      <div className="flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]">
+      <div
+        className={classNames(
+          'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]',
+          xAxisClass,
+        )}
+      >
         {range(startMonth, endMonth + 1).map((month: number) => (
           <div
             key={`x-${month}`}
@@ -230,42 +223,24 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, o
   };
 
   return (
-    <div className="flex flex-col space-y-4">
-      <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
-        <div className="flex flex-row space-x-4 w-auto">
-          <div className="flex flex-col min-w-[128px]">
-            <p className="text-xs text-Gray-3">Current Spend</p>
-            <p className="text-xl text-primary font-bold mt-1">
-              {decimalLogic(total ?? '0', DecimalType.SummedNumbers)}
-            </p>
+    <div className={classNames('flex flex-1 flex-col w-full', className)}>
+      {chartData && (
+        <>
+          <div className="relative flex flex-1 flex-col justify-center items-center w-auto mx-[-8px] pr-4 pb-1 pl-2 pt-1 h-[184px] border border-Gray-12 rounded-2.5xl">
+            <TargetChart
+              containerClass="flex flex-col mt-2"
+              chartData={chartData}
+              renderXAxis={renderXAxis}
+              renderTooltip={renderTooltipContent}
+              loading={lastYearDataLoading || thisYearDataLoading}
+              levelLabelClass="text-Gray-6 text-2xs font-normal"
+            />
           </div>
-          <div className="flex flex-col min-w-[128px]">
-            <p className="text-xs text-Gray-3">Target</p>
-            <p className="text-xl text-primary font-bold mt-1">
-              {decimalLogic(amount ?? '0', DecimalType.SummedNumbers)}
-            </p>
-          </div>
-          <div className="flex flex-1 justify-end flex-col items-end">
-            {renderEditTargetButton()}
-          </div>
-        </div>
-        {chartData && (
-          <>
-            <div className="relative flex justify-center items-center w-auto mx-[-8px] mt-2.5 pr-4 pb-4 pl-2 pt-3 h-[240px] border border-Gray-12 rounded-2.5xl">
-              <TargetChart
-                containerClass="mt-8 mb-2"
-                chartData={chartData}
-                renderXAxis={renderXAxis}
-                renderTooltip={renderTooltipContent}
-                loading={lastYearDataLoading || thisYearDataLoading}
-              />
-            </div>
-            {renderChartLegends()}
-          </>
-        )}
-      </div>
+          {renderChartLegends()}
+        </>
+      )}
     </div>
   );
 };
 
-export default TargetChartView;
+export default MiniChartView;

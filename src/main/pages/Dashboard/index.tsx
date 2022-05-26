@@ -3,11 +3,11 @@ import * as Sentry from '@sentry/react';
 
 import { useTarget } from '@main/hooks';
 import { TargetFilter } from '@api/types';
-import { Department, Target } from '@main/entity';
 import MainLayout from '@common/templates/MainLayout';
 import TargetSectionList from '@main/organisms/TargetSectionList';
+import { filterTargetsToTargetByTeam } from '@main/utils';
 
-const GET_TARGETS_LIMIT = 20;
+const GET_TARGETS_LIMIT = 40;
 
 const initFilter: TargetFilter = {
   offset: 0,
@@ -17,14 +17,13 @@ const initFilter: TargetFilter = {
   timestamp: Date.now(),
 };
 
-export interface TargetByTeam {
-  department: Department;
-  targets: Target[];
-}
-
 const DashboardPage: React.VFC = () => {
   const [filter, setFilter] = useState<TargetFilter>(initFilter);
   const { targets, hasMore, isGetTargets } = useTarget(filter);
+
+  const targetByTeam = React.useMemo(() => {
+    return filterTargetsToTargetByTeam(targets);
+  }, [targets]);
 
   const handleLoadMore = React.useCallback(() => {
     if (!hasMore || isGetTargets) return;
@@ -38,7 +37,13 @@ const DashboardPage: React.VFC = () => {
   return (
     <MainLayout rightSide={false} mainClass="md:col-span-9 lg:col-span-9 xl:col-span-9 max-w-7xl">
       <h1 className="sr-only">Dashboard Page</h1>
-      <TargetSectionList data={targets} isLoading={isGetTargets} onLoadMore={handleLoadMore} />
+      <TargetSectionList
+        data={targetByTeam}
+        isLoading={isGetTargets}
+        hasMore={hasMore}
+        onLoadMore={handleLoadMore}
+        enableLoadMore={false}
+      />
     </MainLayout>
   );
 };

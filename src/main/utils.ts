@@ -20,6 +20,8 @@ import {
   TranStatusType,
   FeedItem,
   Transaction,
+  TargetByTeam,
+  TargetDic,
 } from '@main/entity';
 import { TargetPeriod, TargetProp, TargetPropType } from '@api/types';
 import cloneDeep from 'lodash.clonedeep';
@@ -659,4 +661,29 @@ export const decimalLogic = (
     return result + 0;
   }
   return withCurrency + result;
+};
+
+export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
+  const targetByTeam: TargetDic = {};
+  data.forEach((item: Target) => {
+    const deptId = item.department?.id;
+    // eslint-disable-next-line no-prototype-builtins
+    if (deptId && targetByTeam.hasOwnProperty(deptId)) {
+      targetByTeam[deptId].push(item);
+    } else if (deptId) {
+      targetByTeam[deptId] = [item];
+    }
+  });
+  const results: TargetByTeam[] = Object.keys(targetByTeam).map((key: string) => {
+    const depId = parseInt(key, 10);
+    const targets = targetByTeam[depId];
+    return {
+      department: {
+        id: depId,
+        name: targets.length > 0 ? targets[0].department?.name ?? '...' : '...',
+      },
+      targets,
+    };
+  });
+  return results;
 };

@@ -1,15 +1,20 @@
 import React, { CSSProperties } from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
-import { Target } from '@main/entity';
+import { Target, TargetByTeam } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
 import ListEndComponent from '@main/atoms/ListEndComponent';
-import TargetChartView from '@main/molecules/TargetChartView';
+import MiniChartView from '@main/molecules/MiniChartView';
+import EditorAvatar from '@main/atoms/EditorAvatar';
+import dayjs from 'dayjs';
+import { decimalLogic, DecimalType } from '@main/utils';
+import TargetFeedName from '@main/atoms/TargetFeedName';
+import { TeamIcon } from '@assets';
 
 interface TargetSectionListProps {
   style?: CSSProperties;
-  data: Target[];
+  data: TargetByTeam[];
   isLoading?: boolean;
-  enableLazyLoad?: boolean;
+  enableLoadMore?: boolean;
   hasMore?: boolean;
   endMessage?: string;
   onLoadMore?: () => void;
@@ -26,7 +31,7 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
   style,
   data,
   isLoading,
-  enableLazyLoad,
+  enableLoadMore,
   hasMore,
   endMessage,
   onLoadMore,
@@ -63,21 +68,24 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
   );
   const gradientBg = 'linear-gradient(125.45deg, #CA77B3 18.62%, #514EE7 74.47%)';
 
-  return (
-    <InfiniteScroller
-      className="flex flex-1 flex-col"
-      style={style}
-      threshold={500}
-      onLoadMore={() => enableLazyLoad && onLoadMore}
-      isLoading={isLoading}
-      LoadingComponent={<ListLoading />}
-    >
-      <ul className="flex flex-1 flex-row flex-wrap">
-        {data.map((item) => {
+  const renderTargetsByTeam = (targetsByTeam: Target[]) => {
+    return (
+      <>
+        {targetsByTeam.map((item: Target) => {
+          const { amount, total } = item.periods.reduce(
+            (sum, targetPeriod) => ({
+              amount: sum.amount + (targetPeriod.amount ?? 0),
+              total: sum.total + (targetPeriod.total ?? 0),
+            }),
+            {
+              amount: 0,
+              total: 0,
+            },
+          );
           return (
             <div
               key={`Dashboard-TargetChartView-${item.id}`}
-              className="bg-white w-[500px] h-[292px] rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col mx-1 overflow-hidden my-3 border border-transparent hover:border-Accent-4"
+              className="bg-white w-[500px] h-[292px] rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col mx-1 overflow-hidden mb-6 border border-transparent hover:border-Accent-4"
             >
               <div
                 className="flex h-2 w-full rounded-t-card"
@@ -85,8 +93,83 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
                   background: gradientBg,
                 }}
               />
-              <div className="flex flex-1 flex-col overflow-hidden mb-2">
-                <TargetChartView target={item} onEdit={() => undefined} />
+              <div className="flex flex-1 flex-col overflow-hidden mb-2 space-y-2">
+                <div className="flex flex-row pl-6 pr-2 mt-[7px] space-x-1">
+                  <div className="flex flex-col flex-1 h-12 max-h-12">
+                    <div className="flex flex-row items-center h-6">
+                      <TargetFeedName target={item} />
+                    </div>
+                    <div className="flex flex-row space-x-2 items-center h-6 max-h-6">
+                      <EditorAvatar updater={item.updater} />
+                      <h2
+                        id={`question-title-${item?.id}`}
+                        className="mt-1 text-xs font-normal text-Gray-6"
+                      >
+                        {`${item.updater?.fullName ?? 'Unknown'} edited at ${dayjs(
+                          item.lastInteraction,
+                        ).format('MM/DD/YYYY')}`}
+                      </h2>
+                    </div>
+                  </div>
+                  <div className="flex flex-row mt-auto">
+                    <div className="flex flex-col w-20 max-w-20 h-9">
+                      <p className="text-2xs text-Gray-6">Spend</p>
+                      <p className="text-sm text-primary font-semibold mt-1">
+                        {decimalLogic(total ?? '0', DecimalType.SummedNumbers)}
+                      </p>
+                    </div>
+                    <div className="flex flex-col w-20 max-w-20 h-9">
+                      <p className="text-2xs text-Gray-6">Total Target</p>
+                      <p className="text-sm text-primary font-semibold mt-1">
+                        {decimalLogic(amount ?? '0', DecimalType.SummedNumbers)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-1 flex-col px-4.5">
+                  <MiniChartView
+                    target={item}
+                    onEdit={() => undefined}
+                    className=""
+                    xAxisClass="font-normal text-2xs"
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </>
+    );
+  };
+
+  return (
+    <InfiniteScroller
+      className="flex flex-1 flex-col"
+      style={style}
+      threshold={500}
+      onLoadMore={() => {
+        if (enableLoadMore && onLoadMore) {
+          onLoadMore();
+        }
+      }}
+      isLoading={isLoading}
+      LoadingComponent={<ListLoading />}
+    >
+      <ul className="flex flex-1 flex-col">
+        {data.map((item: TargetByTeam) => {
+          return (
+            <div className="flex flex-col space-y-2" key={`targets-by-team-${item.department.id}`}>
+              <div className="flex flex-row items-center px-2 space-x-2 h-7 max-h-7">
+                <TeamIcon
+                  className="w-4 h-4 fill-current path-no-filled text-Gray-3 opacity-100"
+                  aria-hidden="true"
+                  width={16}
+                  height={16}
+                />
+                <p className="text-Gray-3 font-normal">{item?.department?.name}</p>
+              </div>
+              <div className="flex flex-1 flex-row flex-wrap">
+                {renderTargetsByTeam(item.targets)}
               </div>
             </div>
           );
