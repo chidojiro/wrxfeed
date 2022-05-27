@@ -7,7 +7,7 @@ import MainLayout from '@common/templates/MainLayout';
 import TargetSectionList from '@main/organisms/TargetSectionList';
 import { filterTargetsToTargetByTeam } from '@main/utils';
 
-const GET_TARGETS_LIMIT = 10;
+const GET_TARGETS_LIMIT = 20;
 
 const initFilter: TargetFilter = {
   offset: 0,
