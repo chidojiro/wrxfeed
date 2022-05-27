@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
+import cloneDeep from 'lodash.clonedeep';
 
 import { menuItemsValue, newFeedCountState } from '@main/states/sidemenu.state';
 import { getApiClient } from '@api/utils';
@@ -10,7 +11,7 @@ import GroupTabSideBar from '@common/molecules/GroupTabSideBar';
 import TabListSideBar from '@common/molecules/TabListSideBar';
 
 const SideBar: React.VFC = () => {
-  const menuItems: SectionTab[] = useRecoilValue(menuItemsValue);
+  const [menuItems, setMenuItems] = useRecoilState(menuItemsValue);
   const setFeedCount = useSetRecoilState(newFeedCountState);
   async function getFeedCount() {
     try {
@@ -37,6 +38,12 @@ const SideBar: React.VFC = () => {
     getFeedCount();
   }, []);
 
+  const onClickExpandGroupTab = (groupIndex: number) => {
+    const newMenuState = cloneDeep(menuItems);
+    newMenuState[2].groups[groupIndex].isOpened = !menuItems[2].groups[groupIndex].isOpened;
+    setMenuItems(newMenuState);
+  };
+
   return (
     <nav aria-label="Sidebar" className="divide-y divide-gray-300 flex flex-1 overflow-hidden">
       <div className="flex w-full flex-1 flex-col py-8 pb-40 space-y-6 h-auto overflow-scroll hide-scrollbar">
@@ -53,8 +60,12 @@ const SideBar: React.VFC = () => {
                 </h3>
               </div>
               <TabListSideBar tabs={tabsInSection} showTabIcon />
-              {groups?.map((group: GroupTab) => (
-                <GroupTabSideBar key={`GroupTab-${group?.name}`} group={group} />
+              {groups?.map((group: GroupTab, groupIndex: number) => (
+                <GroupTabSideBar
+                  key={`GroupTab-${group?.name}`}
+                  group={group}
+                  onClickExpand={() => onClickExpandGroupTab(groupIndex)}
+                />
               ))}
             </div>
           );

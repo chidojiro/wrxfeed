@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import * as Sentry from '@sentry/react';
 
 import { useTarget } from '@main/hooks';
@@ -7,7 +7,7 @@ import MainLayout from '@common/templates/MainLayout';
 import TargetSectionList from '@main/organisms/TargetSectionList';
 import { filterTargetsToTargetByTeam } from '@main/utils';
 
-const GET_TARGETS_LIMIT = 40;
+const GET_TARGETS_LIMIT = 10;
 
 const initFilter: TargetFilter = {
   offset: 0,
@@ -18,7 +18,7 @@ const initFilter: TargetFilter = {
 };
 
 const DashboardPage: React.VFC = () => {
-  const [filter, setFilter] = useState<TargetFilter>(initFilter);
+  const [filter, setFilter] = React.useState<TargetFilter>(initFilter);
   const { targets, hasMore, isGetTargets } = useTarget(filter);
 
   const targetByTeam = React.useMemo(() => {
@@ -42,7 +42,7 @@ const DashboardPage: React.VFC = () => {
         isLoading={isGetTargets}
         hasMore={hasMore}
         onLoadMore={handleLoadMore}
-        enableLoadMore={false}
+        enableLoadMore
       />
     </MainLayout>
   );

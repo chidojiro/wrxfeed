@@ -57,7 +57,7 @@ const UserAvatar: React.VFC<UserAvatarProps> = ({ size, className = '', user }) 
     <div
       className={classNames('flex w-6 h-6 rounded-full justify-center items-center', className)}
       style={{
-        backgroundColor: avatarBgColor,
+        backgroundColor: user?.fullName ? avatarBgColor : '#DFE1E6',
         ...sizeToWidthHeight,
       }}
     >
