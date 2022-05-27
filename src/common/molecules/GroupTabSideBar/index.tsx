@@ -19,7 +19,6 @@ const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({
   onClickExpand = () => undefined,
 }) => {
   const { tabs: tabsInGroup, icon: GroupIcon, addItemRoute } = group;
-  // const [isOpen, setOpen] = React.useState<boolean>(true);
   const history = useHistory();
 
   const onClickGroupTab = () => {
@@ -27,7 +26,6 @@ const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({
       return;
     }
     onClickExpand();
-    // setOpen((pre) => !pre);
   };
 
   if (!tabsInGroup || !Array.isArray(tabsInGroup)) return null;
