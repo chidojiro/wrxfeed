@@ -26,6 +26,7 @@ import {
   PhoneIcon,
   BasicsEditCircle,
 } from '@assets';
+import Tooltip from '@common/atoms/Tooltip';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -143,9 +144,11 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   const renderAvatarIcon = (fullName: string) => {
     const shortName = getNameAbbreviation(fullName);
     return (
-      <div className="flex h-8 w-8 rounded-full bg-purple-5 justify-center items-center">
-        <div className="flex text-white text-xs font-semibold">{shortName}</div>
-      </div>
+      <Tooltip message={fullName}>
+        <div className="flex h-8 w-8 rounded-full bg-purple-5 justify-center items-center">
+          <div className="flex text-white text-xs font-semibold">{shortName}</div>
+        </div>
+      </Tooltip>
     );
   };
 
