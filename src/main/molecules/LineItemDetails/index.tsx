@@ -183,9 +183,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
         </div>
 
         <div className="flex flex-col px-8 pt-8 pb-5">
-          <div className="flex flex-row w-full">
+          <div className="flex flex-row w-full group">
             {renderVendorName()}
-            {renderEditVendorInfoButton()}
+            <div className="block hidden group-hover:block">{renderEditVendorInfoButton()}</div>
           </div>
           <div className="flex flex-row w-full mt-2 mb-2">
             <div className="flex mr-4 text-xs">
@@ -210,15 +210,18 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
           </div>
 
           <div className="flex flex-col mt-6 rounded-lg border border-gray-500 p-3">
-            <div className="flex flex-row w-full text-sm text-gray-500">
+            <div className="flex flex-row w-full text-sm text-gray-500 group mb-2 h-7">
               <p className="flex-auto text-base font-bold text-Gray-3 truncate text-ellipsis mr-2">
                 {item?.description}
               </p>
               {!!loading && <Loading className="ml-4" width={12} height={12} />}
-              {renderTransactionType()}
-              <p className="text-base text-Gray-3 font-bold text-right">
-                {`${decimalLogic(item?.amountUsd, DecimalType.DetailView, '$')}`}
-              </p>
+              <div className="block hidden group-hover:block">{renderEditVendorInfoButton()}</div>
+              <div className="flex group-hover:hidden">
+                {renderTransactionType()}
+                <p className="text-base text-Gray-3 font-bold text-right">
+                  {`${decimalLogic(item?.amountUsd, DecimalType.DetailView, '$')}`}
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-row w-full mt-2 mb-2">
