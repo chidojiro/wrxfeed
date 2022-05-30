@@ -33,6 +33,9 @@ import { ReactComponent as LeftSmallIcon } from '@assets/icons/outline/left-smal
 import { ReactComponent as AddSmallIcon } from '@assets/icons/outline/add-small.svg';
 import { ReactComponent as TargetIcon } from '@assets/icons/outline/target.svg';
 import { ReactComponent as DetailLogoDefault } from '@assets/icons/solid/details-logo-default.svg';
+import { ReactComponent as ChainLinkIcon } from '@assets/icons/outline/chain-link.svg';
+import { ReactComponent as PhoneIcon } from '@assets/icons/outline/phone.svg';
+import { ReactComponent as EmailIcon } from '@assets/icons/outline/email.svg';
 
 export {
   InviteIcon,
@@ -70,4 +73,7 @@ export {
   TargetIcon,
   DetailLogoDefault,
   BasicsXRegular,
+  ChainLinkIcon,
+  PhoneIcon,
+  EmailIcon,
 };

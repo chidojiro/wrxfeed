@@ -160,6 +160,9 @@ export type Vendor = {
   id: number;
   name: string;
   avatar?: string;
+  contactEmail?: string;
+  contactNumber?: string;
+  website?: string;
 };
 
 export type TranMeta = {

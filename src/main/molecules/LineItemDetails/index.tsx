@@ -13,6 +13,9 @@ import FeedBackModal from '@main/organisms/FeedBackModal';
 import { ReactComponent as BasicsXRegular } from '@assets/icons/outline/basics-x.svg';
 import { ReactComponent as DetailLogoDefault } from '@assets/icons/solid/details-logo-default.svg';
 import { ReactComponent as BasicTickSmall } from '@assets/icons/solid/basics-tick-small.svg';
+import { ReactComponent as ChainLinkIcon } from '@assets/icons/outline/chain-link.svg';
+import { ReactComponent as EmailIcon } from '@assets/icons/outline/email.svg';
+import { ReactComponent as PhoneIcon } from '@assets/icons/outline/phone.svg';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -142,7 +145,28 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
         </div>
 
         <div className="flex flex-1 flex-col px-8 pt-8 pb-5">
-          <div className="flex flex-row w-full justify-between mt-6">{renderVendorName()}</div>
+          <div className="flex-row w-full justify-between font-bold">{renderVendorName()}</div>
+          <div className="flex flex-row w-full mt-2 mb-2">
+            <div className="flex mr-4 text-xs">
+              <ChainLinkIcon
+                className="mr-1 stroke-current text-gray-500 align-middle"
+                width={20}
+                height={20}
+              />
+              <span>{item?.vendor?.website}</span>
+            </div>
+            <div className="flex mr-4 text-xs">
+              <EmailIcon className="mr-1 stroke-current text-gray-500" width={20} height={20} />
+              <span>{item?.vendor?.contactEmail}</span>
+            </div>
+            <div className="flex text-xs">
+              <PhoneIcon className="stroke-current text-gray-500" width={20} height={20} />
+              <span>{item?.vendor?.contactNumber}</span>
+            </div>
+          </div>
+          <div className="flex-row w-full text-sm text-gray-500 rounded-lg border border-gray-500 p-3">
+            Add a vendor description
+          </div>
           <div className="flex flex-col mt-6">
             <p className="text-sm font-semibold text-Gray-3">Description</p>
             <p className="text-sm font-regular text-Gray-6 mt-2 max-h-72 text-ellipsis">
