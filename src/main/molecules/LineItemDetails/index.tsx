@@ -245,7 +245,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                 return (
                   <div
                     key={row?.key}
-                    className="flex w-full py-3.5 max-h-32 flex-row items-center justify-between border-b border-b-Gray-28"
+                    className="flex w-full py-3.5 max-h-32 flex-row items-center justify-between border-b border-b-Gray-28 last:border-b-0"
                   >
                     <p className="text-Gray-6 text-sm min-w-max">{row?.key}</p>
                     <p className="text-Gray-3 line-clamp-5 text-ellipsis overflow-hidden text-sm text-right ml-6">
