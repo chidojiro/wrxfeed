@@ -14,6 +14,7 @@ import UserAvaDefaultIcon from '@assets/icons/solid/userAvaDefault.png';
 import { ReactComponent as BasicsEditCircle } from '@assets/icons/solid/basics-edit-circle.svg';
 import { ReactComponent as BasicsDownSmall } from '@assets/icons/outline/basics-down-small.svg';
 import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
+import { ReactComponent as BasicsXRegular } from '@assets/icons/outline/basics-x.svg';
 import { ReactComponent as MessageTextAlt } from '@assets/icons/solid/message-text-alt.svg';
 import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
@@ -31,6 +32,7 @@ import { ReactComponent as IntersectIcon } from '@assets/icons/outline/intersect
 import { ReactComponent as LeftSmallIcon } from '@assets/icons/outline/left-small.svg';
 import { ReactComponent as AddSmallIcon } from '@assets/icons/outline/add-small.svg';
 import { ReactComponent as TargetIcon } from '@assets/icons/outline/target.svg';
+import { ReactComponent as DetailLogoDefault } from '@assets/icons/solid/details-logo-default.svg';
 
 export {
   InviteIcon,
@@ -66,4 +68,6 @@ export {
   LeftSmallIcon,
   AddSmallIcon,
   TargetIcon,
+  DetailLogoDefault,
+  BasicsXRegular,
 };

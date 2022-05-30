@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from 'react';
 import dayjs from 'dayjs';
-import { Menu } from '@headlessui/react';
 
 import { FeedBackType } from '@main/types';
 import { decimalLogic, DecimalType, getVendorNameFromLineItem, isEmptyOrSpaces } from '@main/utils';
@@ -9,12 +8,11 @@ import { TransLineItem } from '@main/entity';
 import { classNames } from '@common/utils';
 
 import Loading from '@common/atoms/Loading';
-import PopoverMenu from '@main/atoms/PopoverMenu';
-import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
 import FeedBackModal from '@main/organisms/FeedBackModal';
 
-import { ReactComponent as MoreVertical } from '@assets/icons/outline/more-vertical.svg';
-import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x.svg';
+import { ReactComponent as BasicsXRegular } from '@assets/icons/outline/basics-x.svg';
+import { ReactComponent as DetailLogoDefault } from '@assets/icons/solid/details-logo-default.svg';
+import { ReactComponent as BasicTickSmall } from '@assets/icons/solid/basics-tick-small.svg';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -104,7 +102,6 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     },
   ];
 
-  const onClickMore = () => undefined;
   const onClickCloseSlideOver = () => {
     setOpen(false);
   };
@@ -114,43 +111,37 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     return <h1 className="text-base font-semibold text-Gray-3">{vendorName}</h1>;
   };
 
-  const handleShareFeedback = () => {
-    openFeedbackModal(true);
-  };
-
-  const renderMenuItems = () => {
-    const items = [];
-    items.push(
-      <PopoverMenuItem
-        key="issue-with-this-item"
-        value="issue-with-this-item"
-        label="Issue With This Item"
-        onClick={handleShareFeedback}
-      />,
-    );
-    return items;
-  };
-
   return (
     <div className={classNames('flex flex-1 flex-row', className)}>
       <div className="h-full flex flex-1 flex-col bg-white shadow-xl overflow-y-scroll">
-        <div className="flex flex-1 flex-col px-8 pt-8 pb-5">
-          <div className="flex flex-row items-center w-full justify-between">
-            <button type="button" onClick={onClickCloseSlideOver} className="flex w-4 h-4">
-              <BasicsXSmall className="w-4 h-4" width={20} height={20} />
-            </button>
-            <button type="button" onClick={onClickMore}>
-              <Menu as="div" className="relative inline-block z-10 text-left">
-                <div>
-                  <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
-                    <span className="sr-only">Open options</span>
-                    <MoreVertical className="fill-current text-Gray-6" width={15} height={15} />
-                  </Menu.Button>
-                </div>
-                <PopoverMenu>{renderMenuItems()}</PopoverMenu>
-              </Menu>
-            </button>
+        <div
+          className="w-full h-28 flex p-8"
+          style={{
+            background:
+              'linear-gradient(124.66deg, #E081E2 7.8%, #A26ECC 27.02%, #835EBF 83.43%, #8945AF 95.9%)',
+          }}
+        >
+          <div className="flex-1 w-24 h-24">
+            <DetailLogoDefault className="w-24 h-24" />
           </div>
+          <div className="flex rounded-full border border-white py-3 px-6 text-white text-sm">
+            <BasicTickSmall
+              className="mr-2.5 w-4 h-4 stroke-current text-white"
+              width={20}
+              height={20}
+            />
+            <span>Following</span>
+          </div>
+          <button type="button" onClick={onClickCloseSlideOver} className="flex-1 w-4 h-4">
+            <BasicsXRegular
+              className="w-4 h-4 float-right stroke-current text-white"
+              width={20}
+              height={20}
+            />
+          </button>
+        </div>
+
+        <div className="flex flex-1 flex-col px-8 pt-8 pb-5">
           <div className="flex flex-row w-full justify-between mt-6">{renderVendorName()}</div>
           <div className="flex flex-col mt-6">
             <p className="text-sm font-semibold text-Gray-3">Description</p>
