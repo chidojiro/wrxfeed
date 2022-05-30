@@ -163,6 +163,7 @@ export type Vendor = {
   contactEmail?: string;
   contactNumber?: string;
   website?: string;
+  description?: string;
 };
 
 export type TranMeta = {

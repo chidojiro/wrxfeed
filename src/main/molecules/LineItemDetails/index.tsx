@@ -205,11 +205,11 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               <span>{item?.vendor?.contactNumber}</span>
             </div>
           </div>
-          <div className="flex-row w-full text-sm text-gray-500 rounded-lg border border-gray-500 p-3">
-            Add a vendor description
+          <div className="flex-row w-full text-sm text-gray-500 rounded-lg border border-gray-200 p-3">
+            {item?.vendor?.description ?? 'Add a vendor description'}
           </div>
 
-          <div className="flex flex-col mt-6 rounded-lg border border-gray-500 p-3">
+          <div className="flex flex-col mt-6 rounded-lg border border-gray-200 p-3 bg-gray-50">
             <div className="flex flex-row w-full text-sm text-gray-500 group mb-2 h-7">
               <p className="flex-auto text-base font-bold text-Gray-3 truncate text-ellipsis mr-2">
                 {item?.description}
@@ -258,9 +258,6 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                 );
               })}
             </ul>
-          </div>
-          <div className="mt-auto flex flex-row justify-end">
-            <p className="text-Gray-11 text-xs">{item?.transaction?.id ?? '...'}</p>
           </div>
         </div>
       </div>
