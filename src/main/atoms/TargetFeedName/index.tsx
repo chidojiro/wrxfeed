@@ -11,12 +11,12 @@ export interface TargetFeedNameProps {
 const TargetFeedName: React.VFC<TargetFeedNameProps> = ({ className = '', target }) => {
   return (
     <div className={classNames('group relative', className)}>
-      <p className="text-base text-primary text-left font-bold line-clamp-2 overflow-ellipsis">
+      <p className="text-base text-primary text-left font-bold line-clamp-1 overflow-ellipsis">
         {getTargetName(target)}
       </p>
       <div className="invisible group-hover:visible absolute bottom-8 left-0">
         <div className="bg-primary p-2 rounded-sm">
-          <p className="text text-white text-2xs font-semibold">{getTargetName(target)}</p>
+          <p className="text text-white text-2xs font-semibold z-30">{getTargetName(target)}</p>
         </div>
         <svg
           className="absolute text-primary h-2 right-8 top-full"
