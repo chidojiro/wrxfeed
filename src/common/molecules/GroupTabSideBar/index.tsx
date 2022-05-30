@@ -3,7 +3,6 @@ import { Link as RouterLink, useHistory } from 'react-router-dom';
 
 import { GroupTab } from '@common/types';
 import { classNames } from '@common/utils';
-
 import { ReactComponent as DownSmall } from '@assets/icons/outline/down-small.svg';
 import { AddSmallIcon } from '@assets';
 import TabListSideBar from '../TabListSideBar';
@@ -11,18 +10,22 @@ import TabListSideBar from '../TabListSideBar';
 interface GroupTabSideBarProps {
   className?: string;
   group: GroupTab;
+  onClickExpand?: () => void;
 }
 
-const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({ className, group }) => {
+const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({
+  className,
+  group,
+  onClickExpand = () => undefined,
+}) => {
   const { tabs: tabsInGroup, icon: GroupIcon, addItemRoute } = group;
-  const [isOpen, setOpen] = React.useState<boolean>(true);
   const history = useHistory();
 
   const onClickGroupTab = () => {
     if (tabsInGroup?.length === 0) {
       return;
     }
-    setOpen((pre) => !pre);
+    onClickExpand();
   };
 
   if (!tabsInGroup || !Array.isArray(tabsInGroup)) return null;
@@ -36,7 +39,7 @@ const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({ className, group }) 
       >
         <div className="flex w-5 h-5 justify-center items-center mr-1.5">
           {tabsInGroup?.length > 0 && (
-            <DownSmall className={classNames(isOpen ? 'rotate-180' : '')} />
+            <DownSmall className={classNames(group.isOpened ? 'rotate-180' : '')} />
           )}
         </div>
         {GroupIcon ? (
@@ -92,7 +95,7 @@ const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({ className, group }) 
           </div>
         </span>
       </button>
-      <TabListSideBar tabs={tabsInGroup} isOpen={isOpen} />
+      <TabListSideBar tabs={tabsInGroup} isOpen={group.isOpened} />
       {addItemRoute && (
         <RouterLink
           key={`add-button-${group?.name}`}

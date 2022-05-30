@@ -55,7 +55,6 @@ const TabListSideBar: React.VFC<TabListSideBarProps> = ({
   };
 
   const onClickLeftTab = (newLocation: string) => {
-    // dont use <Link/> because it will refresh the page
     history.push(newLocation);
   };
 
@@ -82,7 +81,7 @@ const TabListSideBar: React.VFC<TabListSideBarProps> = ({
                   <TabIcon
                     className={classNames(
                       'flex-shrink-0 h-4 w-4 fill-current path-no-filled opacity-100',
-                      isCurrentTab ? 'text-Accent-1' : 'text-Gray-3',
+                      isCurrentTab ? 'text-Accent-2' : 'text-Gray-3',
                     )}
                     aria-hidden="true"
                     width={16}

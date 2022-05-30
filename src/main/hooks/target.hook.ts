@@ -63,7 +63,7 @@ export function useTarget(
         }
       });
       setTargets(stackTargetsBySpend(newTargets));
-      setHasMore(!!res.length);
+      setHasMore(res.length >= filter.limit);
       setGetTargets(false);
     } catch (error) {
       if (isApiError(error)) {
