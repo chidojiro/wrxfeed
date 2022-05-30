@@ -6,6 +6,7 @@ import { FeedBackType } from '@main/types';
 import {
   decimalLogic,
   DecimalType,
+  getNameAbbreviation,
   getTransactionColor,
   getVendorNameFromLineItem,
   isEmptyOrSpaces,
@@ -139,6 +140,15 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     );
   };
 
+  const renderAvatarIcon = (fullName: string) => {
+    const shortName = getNameAbbreviation(fullName);
+    return (
+      <div className="flex h-8 w-8 rounded-full bg-purple-5 justify-center items-center">
+        <div className="flex text-white text-xs font-semibold">{shortName}</div>
+      </div>
+    );
+  };
+
   return (
     <div className={classNames('flex flex-1 flex-row', className)}>
       <div className="h-full flex flex-1 flex-col bg-white shadow-xl overflow-y-scroll">
@@ -209,17 +219,19 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
             </div>
 
             <div className="flex flex-row w-full mt-2 mb-2">
-              <div className="flex-initial text-xs text-Gray-6 mr-1">
-                Created by:&nbsp;
-                {item?.transaction?.createdByName}
+              <div className="flex flex-row flex-initial text-xs text-Gray-6 mr-1">
+                <p>Created by:</p>
+                {renderAvatarIcon(item?.transaction?.createdByName ?? '')}
               </div>
-              <div className="flex-0 text-xs text-Gray-6 mr-1">
-                Approver:&nbsp;
-                {item?.transaction?.billApproverName}
+              <div className="flex flex-row flex-0 text-xs text-Gray-6 mr-1">
+                <p>Approver:</p>
+                {renderAvatarIcon(item?.transaction?.billApproverName ?? '')}
               </div>
-              <div className="flex-0 text-xs text-Gray-6">
-                Transaction Date:&nbsp;
-                {dayjs(item?.transDate).format('MMM D, YYYY')}
+              <div className="flex flex-row flex-0 text-xs text-Gray-6">
+                <p>
+                  Transaction Date:&nbsp;
+                  {dayjs(item?.transDate).format('MMM D, YYYY')}
+                </p>
               </div>
             </div>
 
