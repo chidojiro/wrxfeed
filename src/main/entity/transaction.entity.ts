@@ -164,6 +164,7 @@ export type Vendor = {
   contactNumber?: string;
   website?: string;
   description?: string;
+  categories?: Category[];
 };
 
 export type TranMeta = {

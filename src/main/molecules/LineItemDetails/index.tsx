@@ -263,7 +263,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
             </ul>
           </div>
 
-          <div className="flex flex-col mt-6 p-3">
+          <div className="flex flex-col p-3">
             <p className="text-sm font-bold text-Gray-3">Line Items from this transaction</p>
             {!!loading && <Loading className="ml-4" width={12} height={12} />}
             <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
@@ -293,6 +293,25 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                 );
               })}
             </ul>
+          </div>
+
+          <div className="flex flex-col px-3">
+            <p className="text-sm font-bold text-Gray-3">
+              {`${getVendorNameFromLineItem(item)} also appears in these categories`}
+            </p>
+            {!!loading && <Loading className="ml-4" width={12} height={12} />}
+            <div className="flex flex-wrap">
+              {item?.vendor?.categories?.map((category) => {
+                return (
+                  <span
+                    className="text-xs bg-purple-600 rounded px-2 mx-2 my-1 text-white"
+                    key={category.id}
+                  >
+                    {category.name}
+                  </span>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
