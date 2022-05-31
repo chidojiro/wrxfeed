@@ -152,6 +152,8 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     );
   };
 
+  console.log('transaction lines: ', item?.transaction?.lineItems);
+
   return (
     <div className={classNames('flex flex-1 flex-row', className)}>
       <div className="h-full flex flex-1 flex-col bg-white shadow-xl overflow-y-scroll">
@@ -257,6 +259,23 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                   </div>
                 );
               })}
+            </ul>
+
+            <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
+              {Array.isArray(item?.transaction?.lineItems) &&
+                item?.transaction?.lineItems?.map((row: TransLineItem) => {
+                  return (
+                    <div
+                      key={row?.id}
+                      className="flex w-full py-3.5 max-h-32 flex-row items-center justify-between border-b border-b-Gray-28 last:border-b-0"
+                    >
+                      <p className="text-Gray-6 text-sm min-w-max">{row?.category}</p>
+                      <p className="text-Gray-3 line-clamp-5 text-ellipsis overflow-hidden text-sm text-right ml-6">
+                        {`${decimalLogic(row?.amountUsd, DecimalType.DetailView, '$')}`}
+                      </p>
+                    </div>
+                  );
+                })}
             </ul>
           </div>
         </div>

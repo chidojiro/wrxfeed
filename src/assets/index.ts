@@ -37,6 +37,7 @@ import { ReactComponent as ChainLinkIcon } from '@assets/icons/outline/chain-lin
 import { ReactComponent as PhoneIcon } from '@assets/icons/outline/phone.svg';
 import { ReactComponent as EmailIcon } from '@assets/icons/outline/email.svg';
 import { ReactComponent as BasicTickSmall } from '@assets/icons/solid/basics-tick-small.svg';
+import { ReactComponent as StackItemsIcon } from '@assets/icons/solid/stack-items-icon.svg';
 
 export {
   InviteIcon,
@@ -78,4 +79,5 @@ export {
   PhoneIcon,
   EmailIcon,
   BasicTickSmall,
+  StackItemsIcon,
 };
