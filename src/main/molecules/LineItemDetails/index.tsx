@@ -25,6 +25,7 @@ import {
   EmailIcon,
   PhoneIcon,
   BasicsEditCircle,
+  StackItemsIcon,
 } from '@assets';
 import Tooltip from '@common/atoms/Tooltip';
 
@@ -152,7 +153,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     );
   };
 
-  console.log('transaction lines: ', item?.transaction?.lineItems);
+  const lineItems = item?.transaction?.lineItems || [];
 
   return (
     <div className={classNames('flex flex-1 flex-row', className)}>
@@ -260,22 +261,37 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                 );
               })}
             </ul>
+          </div>
 
+          <div className="flex flex-col mt-6 p-3">
+            <p className="text-sm font-bold text-Gray-3">Line Items from this transaction</p>
+            {!!loading && <Loading className="ml-4" width={12} height={12} />}
             <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
-              {Array.isArray(item?.transaction?.lineItems) &&
-                item?.transaction?.lineItems?.map((row: TransLineItem) => {
-                  return (
-                    <div
-                      key={row?.id}
-                      className="flex w-full py-3.5 max-h-32 flex-row items-center justify-between border-b border-b-Gray-28 last:border-b-0"
-                    >
-                      <p className="text-Gray-6 text-sm min-w-max">{row?.category}</p>
-                      <p className="text-Gray-3 line-clamp-5 text-ellipsis overflow-hidden text-sm text-right ml-6">
+              {lineItems.map((row: TransLineItem) => {
+                return (
+                  <div
+                    key={row?.id}
+                    className="flex w-full py-3.5 max-h-32 flex-col items-center justify-between border-b border-b-Gray-28 last:border-b-0"
+                  >
+                    <div className="flex w-full mb-2">
+                      <StackItemsIcon
+                        className="flex-initial w-4 h-4 mr-2"
+                        width={20}
+                        height={20}
+                      />
+                      <p className="text-Gray-6 text-xs min-w-max">{row?.category?.name}</p>
+                    </div>
+                    <div className="flex w-full">
+                      <p className="flex-initial text-Gray-6 text-sm min-w-max">
+                        {row?.description}
+                      </p>
+                      <p className="flex-1 float-right text-Gray-3 line-clamp-5 text-ellipsis overflow-hidden text-sm text-right ml-6">
                         {`${decimalLogic(row?.amountUsd, DecimalType.DetailView, '$')}`}
                       </p>
                     </div>
-                  );
-                })}
+                  </div>
+                );
+              })}
             </ul>
           </div>
         </div>
