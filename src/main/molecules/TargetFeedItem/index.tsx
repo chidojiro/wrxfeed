@@ -11,7 +11,7 @@ import { CommentFormModel } from '@main/types';
 import { useMention, useTarget } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@api/types';
 import { classNames } from '@common/utils';
-import { commentEditorRawParser, getTargetName } from '@main/utils';
+import { commentEditorRawParser, getMultiMonthRange, getTargetName } from '@main/utils';
 // components
 import CommentBox from '@main/molecules/CommentBox';
 import FeedBackModal from '@main/organisms/FeedBackModal';
@@ -244,7 +244,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
               </div>
               <div className="flex-row space-x-2 self-center flex items-center">
                 <h2 id={`question-title-${curFeed?.id}`} className="text-xs text-Gray-6">
-                  {curFeed?.month && dayjs().format('MMMM YYYY')}
+                  {`${getMultiMonthRange(curFeed.target.periods)} ${dayjs().format('YYYY')}`}
                 </h2>
                 <button
                   type="button"
