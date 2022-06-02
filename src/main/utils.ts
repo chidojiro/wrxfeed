@@ -23,7 +23,6 @@ import {
   FeedItem,
   Transaction,
   TargetByTeam,
-  TargetDic,
 } from '@main/entity';
 import { TargetPeriod, TargetProp, TargetPropType } from '@api/types';
 
@@ -647,8 +646,8 @@ export const decimalLogic = (
   }
 
   if (type === DecimalType.SummedNumbers) {
-    format = '0,00.0';
-    defaultValue = '0.0';
+    format = '0,0';
+    defaultValue = '0';
     result = n ? numeral(n).format(format) : defaultValue;
     if (parseFloat(`${n}`) >= 1000000) {
       result = nFormatter(parseFloat(`${n}`), '', '0,0.00');
@@ -664,28 +663,22 @@ export const decimalLogic = (
 };
 
 export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
-  const targetByTeam: TargetDic = {};
+  const targetByTeam: TargetByTeam[] = [];
   data.forEach((item: Target) => {
     const deptId = item.department?.id;
-    // eslint-disable-next-line no-prototype-builtins
-    if (deptId && targetByTeam.hasOwnProperty(deptId)) {
-      targetByTeam[deptId].push(item);
-    } else if (deptId) {
-      targetByTeam[deptId] = [item];
+    const indexOfTeam = targetByTeam.findIndex(
+      (team: TargetByTeam) => team.department.id === deptId,
+    );
+    if (item.department && indexOfTeam === -1) {
+      targetByTeam.push({
+        department: item.department,
+        targets: [item],
+      });
+    } else if (indexOfTeam !== -1) {
+      targetByTeam[indexOfTeam].targets.push(item);
     }
   });
-  const results: TargetByTeam[] = Object.keys(targetByTeam).map((key: string) => {
-    const depId = parseInt(key, 10);
-    const targets = targetByTeam[depId];
-    return {
-      department: {
-        id: depId,
-        name: targets.length > 0 ? targets[0].department?.name ?? '...' : '...',
-      },
-      targets,
-    };
-  });
-  return results;
+  return targetByTeam;
 };
 
 export const getMultiMonthRange = (periods: TargetPeriod[]): string => {
