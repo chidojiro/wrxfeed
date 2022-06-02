@@ -12,6 +12,7 @@ import {
   Subscription,
   FeedItem,
   TransLineItem,
+  VendorDescription,
 } from '@main/entity';
 import {
   AuthProfile,
@@ -53,6 +54,7 @@ export interface ApiClient {
   getFeedItemById: (feedId: number) => Promise<FeedItem>;
   getCategoryById: (catId: number) => Promise<Category>;
   getVendorById: (venId: number) => Promise<Vendor>;
+  updateVendorById: (id: number, data: VendorDescription) => Promise<void>;
   getDepartmentById: (depId: number) => Promise<Department>;
   maskLineItemAsRead: (id: number) => Promise<void>;
   getLineItemById: (id: number) => Promise<TransLineItem>;

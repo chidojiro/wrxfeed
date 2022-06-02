@@ -2,7 +2,6 @@
 import React, { useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 
-import { FeedBackType } from '@main/types';
 import {
   decimalLogic,
   DecimalType,
@@ -11,11 +10,15 @@ import {
   getVendorNameFromLineItem,
   isEmptyOrSpaces,
 } from '@main/utils';
-import { TransLineItem, TranStatusType } from '@main/entity';
+import {
+  EMPTY_VENDOR_DESCRIPTION,
+  TransLineItem,
+  TranStatusType,
+  VendorDescription,
+} from '@main/entity';
 import { classNames } from '@common/utils';
 
 import Loading from '@common/atoms/Loading';
-import FeedBackModal from '@main/organisms/FeedBackModal';
 
 import {
   BasicsXRegular,
@@ -28,6 +31,8 @@ import {
   StackItemsIcon,
 } from '@assets';
 import Tooltip from '@common/atoms/Tooltip';
+import UpdateVendorInfoModal from '@main/organisms/UpdateVendorInfoModal';
+import { useVendor } from '@main/hooks/vendor.hook';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -53,7 +58,19 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   loading,
   item,
 }) => {
-  const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
+  const [vendorDescriptionEditing, setVendorDescriptionEditing] =
+    useState<VendorDescription>(EMPTY_VENDOR_DESCRIPTION);
+  const [showEditVendorDescription, setShowEditVendorDescription] = useState<boolean>(false);
+
+  const { isLoading, updateVendorById } = useVendor({
+    offset: 0,
+    limit: 10,
+  });
+
+  const hideEditVendorDescription = () => {
+    setVendorDescriptionEditing(EMPTY_VENDOR_DESCRIPTION);
+    setShowEditVendorDescription(false);
+  };
 
   const getOriginalAmountWithSign = (): string => {
     if (!item?.transaction?.currency || !item?.amountFx) return '...';
@@ -110,6 +127,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       <button
         type="button"
         className="flex flex-none ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
+        onClick={() => setShowEditVendorDescription(true)}
       >
         <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
         <p className="text-xs text-Gray-3 font-normal">Edit</p>
@@ -315,14 +333,14 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
           </div>
         </div>
       </div>
-      {item && (
-        <FeedBackModal
-          open={isOpenFeedbackModal}
-          onClose={() => openFeedbackModal(false)}
-          itemId={item?.id}
-          type={FeedBackType.LineItem}
-        />
-      )}
+      <UpdateVendorInfoModal
+        open={showEditVendorDescription}
+        onClose={() => hideEditVendorDescription()}
+        onCancel={() => hideEditVendorDescription()}
+        itemEditing={vendorDescriptionEditing}
+        loading={isLoading}
+        onSave={updateVendorById}
+      />
     </div>
   );
 };

@@ -13,6 +13,7 @@ import {
   Subscription,
   FeedItem,
   TransLineItem,
+  VendorDescription,
 } from '@main/entity';
 import { ApiError } from '@error';
 import {
@@ -544,6 +545,15 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<Vendor>({
       url: `/feed/vendors/${venId}`,
       method: 'GET',
+    });
+    return res.data;
+  };
+
+  updateVendorById = async (id: number, data: VendorDescription): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feed/vendors/${id}`,
+      method: 'POST',
+      data,
     });
     return res.data;
   };
