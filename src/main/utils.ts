@@ -646,8 +646,8 @@ export const decimalLogic = (
   }
 
   if (type === DecimalType.SummedNumbers) {
-    format = '0,00.0';
-    defaultValue = '0.0';
+    format = '0,0';
+    defaultValue = '0';
     result = n ? numeral(n).format(format) : defaultValue;
     if (parseFloat(`${n}`) >= 1000000) {
       result = nFormatter(parseFloat(`${n}`), '', '0,0.00');
