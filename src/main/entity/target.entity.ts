@@ -24,6 +24,3 @@ export interface TargetByTeam {
   department: Department;
   targets: Target[];
 }
-export interface TargetDic {
-  [key: string]: Target[];
-}

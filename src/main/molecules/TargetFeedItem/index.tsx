@@ -115,7 +115,6 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
       { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
       { onSuccess: (target) => onSuccessPutTarget(target), onError: () => undefined },
       { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
-      false,
     );
 
   const handlePutTarget = (id: number, data: PutTargetParams) => {

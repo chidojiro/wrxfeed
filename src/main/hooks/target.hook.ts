@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
 
 import { isApiError } from '@error/utils';
@@ -9,9 +8,6 @@ import { Target } from '@main/entity';
 
 import { useApi } from '@api';
 import { useErrorHandler } from '@error/hooks';
-import { targetState } from '@main/states/target.state';
-import { stackTargetsBySpend } from '@main/utils';
-import cloneDeep from 'lodash.clonedeep';
 
 interface TargetCallback {
   onSuccess: (target?: Target) => void;
@@ -33,18 +29,13 @@ export function useTarget(
   cbPost?: TargetCallback,
   cbPut?: TargetCallback,
   cbDelete?: TargetCallback,
-  isSaveGlobal?: boolean,
 ): TargetHookValues {
-  const [targetsGlobal, setTargetsGlobal] = useRecoilState<Target[]>(targetState);
-  const [targetsLocal, setTargetsLocal] = useState<Target[]>([]);
+  const [targets, setTargets] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isGetTargets, setGetTargets] = useState<boolean>(false);
   const [isPostTarget, setPostTarget] = useState<boolean>(false);
   const [isPutTarget, setPutTarget] = useState<boolean>(false);
   const [isDeleteTarget, setDeleteTarget] = useState<boolean>(false);
-
-  const targets = isSaveGlobal ? targetsGlobal : targetsLocal;
-  const setTargets = isSaveGlobal ? setTargetsGlobal : setTargetsLocal;
 
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
@@ -53,16 +44,7 @@ export function useTarget(
     try {
       setGetTargets(true);
       const res = await ApiClient.getTargets(filter);
-      const newTargets: Target[] = cloneDeep(targets);
-      res.forEach((tar: Target) => {
-        const isHaveIndex = newTargets.findIndex((item) => item?.id === tar.id);
-        if (isHaveIndex !== -1) {
-          newTargets[isHaveIndex] = tar;
-        } else {
-          newTargets.unshift(tar);
-        }
-      });
-      setTargets(stackTargetsBySpend(newTargets));
+      setTargets((pre) => [...pre, ...res]);
       setHasMore(res.length >= filter.limit);
       setGetTargets(false);
     } catch (error) {
