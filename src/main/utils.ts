@@ -498,7 +498,7 @@ export const getTargetName = (target?: Target): string => {
   return targetName;
 };
 
-export const getTransactionColor = (status: string): TranStatusType => {
+export const getTransactionStatus = (status: string): TranStatusType => {
   return TranStatusNameColor[status];
 };
 

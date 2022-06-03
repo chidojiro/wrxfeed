@@ -6,7 +6,7 @@ import {
   decimalLogic,
   DecimalType,
   getNameAbbreviation,
-  getTransactionColor,
+  getTransactionStatus,
   getVendorNameFromLineItem,
   isEmptyOrSpaces,
 } from '@main/utils';
@@ -116,9 +116,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   const renderVendorName = () => {
     const vendorName = getVendorNameFromLineItem(item);
     return (
-      <div className="flex-auto text-lg font-bold text-Gray-3 truncate text-ellipsis mr-2">
-        {vendorName}
-      </div>
+      <div className="flex-auto text-lg font-bold text-Gray-3 truncate mr-2">{vendorName}</div>
     );
   };
 
@@ -136,7 +134,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   };
 
   const tranType: TranStatusType | null = useMemo(
-    () => getTransactionColor(item?.transaction?.status ?? ''),
+    () => getTransactionStatus(item?.transaction?.status ?? ''),
     [item?.transaction?.status],
   );
 
@@ -175,7 +173,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
 
   return (
     <div className={classNames('flex flex-1 flex-row', className)}>
-      <div className="h-full flex flex-1 flex-col bg-white shadow-xl overflow-y-scroll">
+      <div className="h-full flex flex-1 flex-col bg-white shadow-xl">
         <div
           className="w-full h-28 flex p-8"
           style={{
@@ -183,10 +181,10 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               'linear-gradient(124.66deg, #E081E2 7.8%, #A26ECC 27.02%, #835EBF 83.43%, #8945AF 95.9%)',
           }}
         >
-          <div className="flex-1 w-24 h-24">
+          <div className="w-24 h-24 mr-4">
             <DetailLogoDefault className="w-24 h-24" />
           </div>
-          <div className="flex rounded-full border border-white py-3 px-6 text-white text-sm">
+          <div className="flex rounded-full border border-white text-white text-sm h-9 p-2">
             <BasicTickSmall
               className="mr-2.5 w-4 h-4 stroke-current text-white"
               width={20}
@@ -204,11 +202,11 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
         </div>
 
         <div className="flex flex-col px-8 pt-8 pb-5">
-          <div className="flex flex-row w-full group">
+          <div className="flex flex-row group">
             {renderVendorName()}
             <div className="block hidden group-hover:block">{renderEditVendorInfoButton()}</div>
           </div>
-          <div className="flex flex-row w-full mt-2 mb-2">
+          <div className="flex flex-row w-[524px] mt-2 mb-2">
             <div className="flex mr-4 text-xs">
               <ChainLinkIcon
                 className="mr-1 stroke-current text-gray-500 align-middle"
@@ -226,13 +224,13 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               <span>{item?.vendor?.contactNumber}</span>
             </div>
           </div>
-          <div className="flex-row w-full text-sm text-gray-500 rounded-lg border border-gray-200 p-3">
+          <div className="flex-row w-[524px] text-sm text-gray-500 rounded-lg border border-gray-200 p-3">
             {item?.vendor?.description ?? 'Add a vendor description'}
           </div>
 
-          <div className="flex flex-col mt-6 rounded-lg border border-gray-200 p-3 bg-gray-50">
+          <div className="flex flex-col mt-6 rounded-lg border border-gray-200 p-3 bg-gray-50 w-[524px]">
             <div className="flex flex-row w-full text-sm text-gray-500 group mb-2 h-7">
-              <p className="flex-auto text-base font-bold text-Gray-3 truncate text-ellipsis mr-2">
+              <p className="flex-auto text-base font-bold text-Gray-3 truncate mr-2">
                 {item?.description}
               </p>
               {!!loading && <Loading className="ml-4" width={12} height={12} />}
@@ -247,18 +245,18 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
 
             <div className="flex flex-row w-full mt-2 mb-2">
               <div className="flex flex-row flex-initial text-xs text-Gray-6 mr-1">
-                <p>Created by:</p>
+                <div className="flex items-center mr-0.5">Created by:</div>
                 {renderAvatarIcon(item?.transaction?.createdByName ?? '')}
               </div>
               <div className="flex flex-row flex-0 text-xs text-Gray-6 mr-1">
-                <p>Approver:</p>
+                <div className="flex items-center mr-0.5">Approver:</div>
                 {renderAvatarIcon(item?.transaction?.billApproverName ?? '')}
               </div>
-              <div className="flex flex-row flex-0 text-xs text-Gray-6">
-                <p>
+              <div className="flex flex-row flex-1 text-xs text-Gray-6 justify-end">
+                <div className="flex items-center">
                   Transaction Date:&nbsp;
                   {dayjs(item?.transDate).format('MMM D, YYYY')}
-                </p>
+                </div>
               </div>
             </div>
 
@@ -281,7 +279,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
             </ul>
           </div>
 
-          <div className="flex flex-col p-3">
+          <div className="flex flex-col p-3 w-[524px]">
             <p className="text-sm font-bold text-Gray-3">Line Items from this transaction</p>
             {!!loading && <Loading className="ml-4" width={12} height={12} />}
             <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
@@ -299,11 +297,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                       />
                       <p className="text-Gray-6 text-xs min-w-max">{row?.category?.name}</p>
                     </div>
-                    <div className="flex w-full">
-                      <p className="flex-initial text-Gray-6 text-sm min-w-max">
-                        {row?.description}
-                      </p>
-                      <p className="flex-1 float-right text-Gray-3 line-clamp-5 text-ellipsis overflow-hidden text-sm text-right ml-6">
+                    <div className="flex w-[524px] px-3">
+                      <p className="flex-auto text-Gray-6 text-sm truncate">{row?.description}</p>
+                      <p className="float-right text-Gray-3 text-sm">
                         {`${decimalLogic(row?.amountUsd, DecimalType.DetailView, '$')}`}
                       </p>
                     </div>
@@ -313,7 +309,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
             </ul>
           </div>
 
-          <div className="flex flex-col px-3">
+          <div className="flex flex-col px-3 w-[524px]">
             <p className="text-sm font-bold text-Gray-3">
               {`${getVendorNameFromLineItem(item)} also appears in these categories`}
             </p>

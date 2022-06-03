@@ -11,7 +11,7 @@ import { classNames, DATE_FORMAT } from '@common/utils';
 import TranLineItemsList from '@main/molecules/TranLineItemsList';
 import { ReactComponent as DownSmall } from '@assets/icons/outline/down-small.svg';
 import { lineItemSelectState } from '@main/states/lineItems.state';
-import { decimalLogic, DecimalType, getTransactionColor } from '@main/utils';
+import { decimalLogic, DecimalType, getTransactionStatus } from '@main/utils';
 
 export interface RollupTranRowProps {
   tran: Transaction;
@@ -46,7 +46,7 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, feedId })
   };
 
   const tranType: TranStatusType | null = useMemo(
-    () => getTransactionColor(tran?.status ?? ''),
+    () => getTransactionStatus(tran?.status ?? ''),
     [tran?.status],
   );
   const totalAmount: number = tran?.amountUsd;
