@@ -92,7 +92,6 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
     { onSuccess: onPostTargetSuccess, onError: onPostTargetError },
     { onSuccess: onPutTargetSuccess, onError: onPutError },
     { onSuccess: onDeleteTargetSuccess, onError: onDeleteError },
-    false,
   );
 
   useEffect(() => {
