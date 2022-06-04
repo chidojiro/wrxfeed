@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
 
 import { isApiError } from '@error/utils';
@@ -9,12 +8,9 @@ import { Target } from '@main/entity';
 
 import { useApi } from '@api';
 import { useErrorHandler } from '@error/hooks';
-import { targetState } from '@main/states/target.state';
-import { stackTargetsBySpend } from '@main/utils';
-import cloneDeep from 'lodash.clonedeep';
 
 interface TargetCallback {
-  onSuccess: () => void;
+  onSuccess: (target?: Target) => void;
   onError?: (error: unknown) => void;
 }
 interface TargetHookValues {
@@ -30,21 +26,16 @@ interface TargetHookValues {
 }
 export function useTarget(
   filter: TargetFilter,
-  cbPost: TargetCallback,
-  cbPut: TargetCallback,
-  cbDelete: TargetCallback,
-  isSaveGlobal?: boolean,
+  cbPost?: TargetCallback,
+  cbPut?: TargetCallback,
+  cbDelete?: TargetCallback,
 ): TargetHookValues {
-  const [targetsGlobal, setTargetsGlobal] = useRecoilState<Target[]>(targetState);
-  const [targetsLocal, setTargetsLocal] = useState<Target[]>([]);
+  const [targets, setTargets] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isGetTargets, setGetTargets] = useState<boolean>(false);
   const [isPostTarget, setPostTarget] = useState<boolean>(false);
   const [isPutTarget, setPutTarget] = useState<boolean>(false);
   const [isDeleteTarget, setDeleteTarget] = useState<boolean>(false);
-
-  const targets = isSaveGlobal ? targetsGlobal : targetsLocal;
-  const setTargets = isSaveGlobal ? setTargetsGlobal : setTargetsLocal;
 
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
@@ -53,17 +44,8 @@ export function useTarget(
     try {
       setGetTargets(true);
       const res = await ApiClient.getTargets(filter);
-      const newTargets: Target[] = cloneDeep(targets);
-      res.forEach((tar: Target) => {
-        const isHaveIndex = newTargets.findIndex((item) => item?.id === tar.id);
-        if (isHaveIndex !== -1) {
-          newTargets[isHaveIndex] = tar;
-        } else {
-          newTargets.unshift(tar);
-        }
-      });
-      setTargets(stackTargetsBySpend(newTargets));
-      setHasMore(!!res.length);
+      setTargets((pre) => [...pre, ...res]);
+      setHasMore(res.length >= filter.limit);
       setGetTargets(false);
     } catch (error) {
       if (isApiError(error)) {
@@ -81,9 +63,9 @@ export function useTarget(
     try {
       setPostTarget(true);
       await ApiClient.postTarget(data);
-      cbPost.onSuccess();
+      cbPost?.onSuccess();
     } catch (error) {
-      if (cbPost.onError) {
+      if (cbPost && cbPost.onError) {
         cbPost.onError(error);
       }
       if (isApiError(error)) {
@@ -100,11 +82,11 @@ export function useTarget(
     if (isPutTarget) return;
     try {
       setPutTarget(true);
-      await ApiClient.putTarget(id, data);
-      cbPut.onSuccess();
+      const newTarget = await ApiClient.putTarget(id, data);
+      cbPut?.onSuccess(newTarget);
     } catch (error) {
-      if (cbPut.onError) {
-        cbPut.onError(error);
+      if (cbPut?.onError) {
+        cbPut?.onError(error);
       }
       if (isApiError(error)) {
         toast.error(error.details?.message);
@@ -123,10 +105,10 @@ export function useTarget(
       await ApiClient.deleteTarget(id);
       const newTargets = targets.filter((item: Target) => item?.id !== id);
       setTargets(newTargets);
-      cbDelete.onSuccess();
+      cbDelete?.onSuccess();
     } catch (error) {
-      if (cbDelete.onError) {
-        cbDelete.onError(error);
+      if (cbDelete?.onError) {
+        cbDelete?.onError(error);
       }
       if (isApiError(error)) {
         toast.error(error.details?.message);

@@ -9,10 +9,15 @@ import { defaultTargetMonths } from '@common/constants';
 import { PatchCalcSpendingFilters, TargetPeriod, TransactionBody } from '@api/types';
 import { classNames } from '@common/utils';
 import { BasicsEditCircle } from '@assets';
-import { FeedItem, TargetMonth } from '@main/entity';
+import { Target, TargetMonth } from '@main/entity';
 import { LineChartData } from '@main/types';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@main/chart.utils';
-import { decimalLogic, DecimalType, getPeriodsByYear } from '@main/utils';
+import {
+  decimalLogic,
+  DecimalType,
+  getPeriodsByYear,
+  getTargetPeriodsAmountTotal,
+} from '@main/utils';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
 import { useTransaction } from '@main/hooks/transaction.hook';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
@@ -30,25 +35,14 @@ const LAST_YEAR_INIT_FILTER = Object.freeze({
 
 interface TargetChartViewProps {
   className?: string;
-  feedItem: FeedItem;
+  target: Target;
   onEdit: () => void;
 }
 
-const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem, onEdit }) => {
-  // const [chartData, setChartData] = useState<LineChartData<Transaction[]>>();
+const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, onEdit }) => {
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
-  const { amount, total } = feedItem?.target.periods.reduce(
-    (sum, targetPeriod) => ({
-      amount: sum.amount + (targetPeriod.amount ?? 0),
-      total: sum.total + (targetPeriod.total ?? 0),
-    }),
-    {
-      amount: 0,
-      total: 0,
-    },
-  );
-  const targetAmount = Math.round(amount ?? 0);
-  const updatedTargetMonths = targetMonths.filter((target) => target?.amount > 0); // TODO: if you want to accept zero target, let define an empty value like null, undefined, '', -1... then you can use >= here
+  const { amount, total } = getTargetPeriodsAmountTotal(target);
+  const updatedTargetMonths = targetMonths.filter((item) => item?.amount !== undefined);
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
@@ -73,9 +67,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
   }, [thisYearSpendData, lastYearSpendData, targetMonths, thisYearTrans, lastYearTrans]);
 
   useEffect(() => {
-    const {
-      target: { periods, props },
-    } = feedItem;
+    const { periods, props } = target;
     if (periods?.length > 0 && props?.length > 0) {
       setThisYearFilter({
         props,
@@ -87,18 +79,20 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
       });
       const dataMonth = cloneDeep(defaultTargetMonths);
       periods.forEach((period: TargetPeriod) => {
-        if (period?.amount && dataMonth[period?.month - 1] && dataMonth[period?.month - 1]) {
+        if (
+          period?.amount !== undefined &&
+          dataMonth[period?.month - 1] &&
+          dataMonth[period?.month - 1]
+        ) {
           dataMonth[period?.month - 1].amount = period?.amount;
         }
       });
       setTargetMonths(dataMonth);
     }
-  }, [feedItem]);
+  }, [target]);
 
   useEffect(() => {
-    const {
-      target: { periods, props },
-    } = feedItem;
+    const { periods, props } = target;
     if (periods.length && startMonth === endMonth) {
       setLastYearTransPayload({
         periods: [{ month: periods[0].month, year: periods[0].year - 1 }],
@@ -257,7 +251,6 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, feedItem,
               <TargetChart
                 containerClass="mt-8 mb-2"
                 chartData={chartData}
-                maxYValue={targetAmount}
                 renderXAxis={renderXAxis}
                 renderTooltip={renderTooltipContent}
                 loading={lastYearDataLoading || thisYearDataLoading}

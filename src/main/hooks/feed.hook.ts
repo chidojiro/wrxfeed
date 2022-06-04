@@ -1,9 +1,11 @@
 import { SetterOrUpdater, useRecoilState } from 'recoil';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import mixpanel from 'mixpanel-browser';
 
 import { useApi } from '@api';
 import { useErrorHandler } from '@error/hooks';
+import { useIdentity } from '@identity/hooks';
 
 import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
 
@@ -11,9 +13,6 @@ import { FeedFilters } from '@api/types';
 import { isBadRequest } from '@error/utils';
 import { Category, FeedItem } from '@main/entity';
 import { USE_CONTACT_BUTTON_MESSAGE } from '@error/errorMessages';
-
-import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@identity/hooks';
 
 interface FeedHookValues {
   feeds: FeedItem[];

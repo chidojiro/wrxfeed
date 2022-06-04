@@ -35,6 +35,7 @@ import {
   genReviewSentenceFromProperties,
   getPeriodsByYear,
   getPropsAndPeriodsFromItemSelected,
+  getTargetName,
 } from '@main/utils';
 import TargetChart from '@main/molecules/TargetChart';
 import { useMultiMonth } from '@main/hooks/multiMonth.hook';
@@ -122,7 +123,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [thisYearTransPayload, setThisYearTransPayload] = useState<TransactionBody>();
   const { transactions: thisYearTrans } = useTransaction(thisYearTransPayload);
 
-  const updatedTargetMonths = targetMonths.filter((target) => target?.amount > 0); // TODO: if you want to accept zero target, let define an empty value like null, undefined, '', -1... then you can use >= here
+  const updatedTargetMonths = targetMonths.filter((target) => target?.amount !== undefined);
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
@@ -135,7 +136,9 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   }, [thisYearSpendData, lastYearSpendData, targetMonths, lastYearTrans, thisYearTrans]);
 
   // Variables
-  const totalTarget = round(targetMonths.reduce((total, target) => total + target.amount, 0));
+  const totalTarget = round(
+    targetMonths.reduce((total, target) => total + (target.amount ?? 0), 0),
+  );
   const totalCurrentSpend = round(chartData.metadata?.currentSpend ?? 0);
 
   useEffect(() => {
@@ -276,7 +279,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       });
       setDefaultTags(defaultTagsTemp);
     }
-    setTargetName(itemEditing?.name ?? '');
+    setTargetName(itemEditing ? getTargetName(itemEditing) : '');
   }, [itemEditing]);
 
   useEffect(() => {
@@ -291,7 +294,11 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       });
       const dataMonth = cloneDeep(defaultTargetMonths);
       itemEditing?.periods.forEach((period: TargetPeriod) => {
-        if (period?.amount && dataMonth[period?.month - 1] && dataMonth[period?.month - 1]) {
+        if (
+          period?.amount !== undefined &&
+          dataMonth[period?.month - 1] &&
+          dataMonth[period?.month - 1]
+        ) {
           dataMonth[period?.month - 1].amount = period?.amount;
         }
       });

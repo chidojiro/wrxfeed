@@ -31,7 +31,7 @@ interface MultiMonthDropdownProps {
   periods?: TargetPeriod[];
   onApply?: (data: TargetMonth[], year: number) => void;
   targetMonths: TargetMonth[];
-  year: number;
+  year?: number;
   lastYearData: TargetPeriod[];
   isLoadingData: boolean;
 }
@@ -72,65 +72,49 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
     open,
     setOpen,
     targetMonths,
-    year,
     lastYearData,
     isLoadingData,
   },
   ref,
 ) => {
   const useableViewRef = useRef(null);
-  const [curYear, setCurYear] = useState(year);
   const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
-  const [minMonth, setMinMonth] = useState<number>(0);
-  const [maxMonth, setMaxMonth] = useState<number>(0);
   const [targetMonthValues, setTargetMonthValues] = useState<TargetMonth[]>(
     targetMonths.length ? targetMonths : defaultTargetMonths,
   );
   // Variables
-  const totalAmount = round(targetMonthValues.reduce((total, target) => total + target?.amount, 0));
+  const curYear = new Date().getFullYear();
+  const minMonth = selectedMonths.length ? Math.min(...selectedMonths) : 0;
+  const maxMonth = selectedMonths.length ? Math.max(...selectedMonths) : 0;
+  const totalAmount = round(
+    targetMonthValues.reduce((total, target) => total + (target?.amount ?? 0), 0),
+  );
   const applyEnableState = selectedMonths.length > 0 && !isLoadingData ? 'bg-primary' : 'bg-Gray-6';
 
   useImperativeHandle(ref, () => ({}));
   useOnClickOutside(useableViewRef, () => setOpen(false));
 
   useEffect(() => {
-    const today = new Date();
-    setCurYear(today.getFullYear());
-  }, []);
-
-  useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    if (periods) {
-      timeout = setTimeout(() => {
-        let min = 12;
-        let max = 0;
-        for (let i = 0; i < periods.length; i += 1) {
-          const { amount, month } = periods[i];
-          if (amount && amount > 0 && month < min) {
-            min = month;
-          }
-          if (amount && amount > 0 && month > max) {
-            max = month;
-          }
-        }
-        setMinMonth(min);
-        setMaxMonth(max);
-      }, 500);
-    }
-    return () => {
-      clearTimeout(timeout);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     if (periods && periods.length > 0) {
+      // Find min / max months
+      let availableMonths = periods.map((period) => period.month);
+      const min = Math.min(...availableMonths);
+      const max = Math.max(...availableMonths);
       const clonePreState = cloneDeep(targetMonthValues);
       periods.forEach((period: TargetPeriod) => {
-        if (period?.amount && clonePreState[period?.month - 1] && clonePreState[period.month - 1]) {
+        // set amount when period amount was set (!== 0) or period amount === 0 and period month is first or last month
+        // => this is to prevent zero from showing multiple times between time ranges (ex: 0, 0, 1, 0, 0, 2, 0, 0 -> 0, , 1, , , 2, , 0)
+        if (
+          (period?.amount && clonePreState[period.month - 1]) ||
+          (period?.amount === 0 && (period?.month === min || period?.month === max))
+        ) {
           clonePreState[period?.month - 1].amount = period?.amount;
+        } else {
+          clonePreState[period?.month - 1].amount = undefined;
+          availableMonths = availableMonths.filter((month) => month !== period?.month);
         }
       });
+      setSelectedMonths(availableMonths);
       setTargetMonthValues(clonePreState);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -141,7 +125,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
     onApply(targetMonthValues, curYear);
   };
 
-  const onChangeMonthInput = (month: number, amount: number) => {
+  const onChangeMonthInput = (month: number, amount?: number) => {
     const clonePreState = cloneDeep(targetMonthValues);
     const curAmount = clonePreState[month - 1]?.amount;
     if (amount !== curAmount && clonePreState[month - 1]) {
@@ -149,21 +133,6 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
       setTargetMonthValues(clonePreState);
     }
   };
-
-  useEffect(() => {
-    let min = 12;
-    let max = 0;
-    for (let i = 0; i < selectedMonths.length; i += 1) {
-      if (selectedMonths[i] < min) {
-        min = selectedMonths[i];
-      }
-      if (selectedMonths[i] > max) {
-        max = selectedMonths[i];
-      }
-    }
-    setMinMonth(min);
-    setMaxMonth(max);
-  }, [selectedMonths]);
 
   const renderMonthName = () => {
     return (

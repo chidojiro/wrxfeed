@@ -23,6 +23,7 @@ export type GroupTab = {
   icon: FunctionComponent<SVGAttributes<SVGElement>> | null;
   tabs?: LeftTab[];
   addItemRoute?: string;
+  isOpened?: boolean;
 };
 
 export type SectionTab = {

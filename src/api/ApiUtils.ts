@@ -13,6 +13,7 @@ import {
   Subscription,
   FeedItem,
   TransLineItem,
+  VendorDescription,
 } from '@main/entity';
 import { ApiError } from '@error';
 import {
@@ -385,6 +386,9 @@ export default class ApiUtils implements ApiClient {
         year: filters?.year,
         month: filters?.month,
         dep: filters?.dep,
+        forYou: filters?.forYou,
+        offset: filters?.offset,
+        limit: filters?.limit,
       },
     });
     return res.data;
@@ -398,12 +402,13 @@ export default class ApiUtils implements ApiClient {
     });
   };
 
-  putTarget = async (id: number, data: PutTargetParams): Promise<void> => {
-    await this.request<void>({
+  putTarget = async (id: number, data: PutTargetParams): Promise<Target> => {
+    const res = await this.request<Target>({
       url: `/target/targets/${id}`,
       method: 'PUT',
       data,
     });
+    return res.data;
   };
 
   deleteTarget = async (id: number): Promise<void> => {
@@ -543,6 +548,15 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<Vendor>({
       url: `/feed/vendors/${venId}`,
       method: 'GET',
+    });
+    return res.data;
+  };
+
+  updateVendorById = async (id: number, data: VendorDescription): Promise<void> => {
+    const res = await this.request<void>({
+      url: `/feed/vendors/${id}`,
+      method: 'POST',
+      data,
     });
     return res.data;
   };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { LeftTab } from '@common/types';
@@ -54,6 +54,10 @@ const TabListSideBar: React.VFC<TabListSideBarProps> = ({
     );
   };
 
+  const onClickLeftTab = (newLocation: string) => {
+    history.push(newLocation);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -62,20 +66,22 @@ const TabListSideBar: React.VFC<TabListSideBarProps> = ({
         const { icon: TabIcon } = leftTab;
         const isCurrentTab = location.pathname.includes(leftTab.location.pathname);
         return (
-          <RouterLink
+          <button
+            type="button"
+            onClick={() => onClickLeftTab(leftTab.location.pathname)}
             key={`tabs-${leftTab?.name}-${leftTab.location.pathname}`}
-            to={leftTab.location}
             className={classNames(
               isCurrentTab ? 'text-Accent-2 font-semibold' : 'text-Gray-3 font-regular',
               'flex flex-row items-center w-full',
             )}
           >
-            <div className="group-scope ml-1 flex flex-1 w-full flex-row hover:bg-Gray-7 justify-between py-3 items-center pl-10 pr-3 text-sm rounded-sm">
+            <div className="group-scope ml-1 flex flex-1 w-full flex-row hover:bg-Gray-7 justify-between py-2 items-center pl-10 pr-3 text-sm rounded-sm">
               {TabIcon && showTabIcon ? (
                 <div className="flex w-5 h-5 justify-center items-center">
                   <TabIcon
                     className={classNames(
-                      'flex-shrink-0 h-4 w-4 fill-current path-no-filled text-Gray-3 opacity-100',
+                      'flex-shrink-0 h-4 w-4 fill-current path-no-filled opacity-100',
+                      isCurrentTab ? 'text-Accent-2' : 'text-Gray-3',
                     )}
                     aria-hidden="true"
                     width={16}
@@ -94,10 +100,9 @@ const TabListSideBar: React.VFC<TabListSideBarProps> = ({
                   className="relative"
                   onClick={(event) => {
                     event.stopPropagation();
-                    // event.preventDefault();
                     if (leftTab.subscription) {
                       unsubscribe(leftTab.subscription.type, leftTab.subscription.item);
-                      history.replace(leftTab.location.pathname); // Remove Feeds from search query
+                      // history.replace(leftTab.location.pathname); // Remove Feeds from search query
                     }
                   }}
                 >
@@ -130,7 +135,7 @@ const TabListSideBar: React.VFC<TabListSideBarProps> = ({
             <div
               className={classNames('h-6 w-1 rounded-full', isCurrentTab ? 'bg-Accent-2' : '')}
             />
-          </RouterLink>
+          </button>
         );
       })}
     </div>

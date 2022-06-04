@@ -12,6 +12,7 @@ import {
   Subscription,
   FeedItem,
   TransLineItem,
+  VendorDescription,
 } from '@main/entity';
 import {
   AuthProfile,
@@ -53,6 +54,7 @@ export interface ApiClient {
   getFeedItemById: (feedId: number) => Promise<FeedItem>;
   getCategoryById: (catId: number) => Promise<Category>;
   getVendorById: (venId: number) => Promise<Vendor>;
+  updateVendorById: (id: number, data: VendorDescription) => Promise<void>;
   getDepartmentById: (depId: number) => Promise<Department>;
   maskLineItemAsRead: (id: number) => Promise<void>;
   getLineItemById: (id: number) => Promise<TransLineItem>;
@@ -80,7 +82,7 @@ export interface ApiClient {
   // targets
   getTargets: (filters?: TargetFilter) => Promise<Target[]>;
   postTarget: (data: PostTargetParams) => Promise<void>;
-  putTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  putTarget: (id: number, data: PutTargetParams) => Promise<Target>;
   deleteTarget: (id: number) => Promise<void>;
   patchCalcSpending: (data: PatchCalcSpendingFilters) => Promise<TargetPeriod[]>;
   // Subscription
@@ -166,6 +168,7 @@ export interface TargetFilter extends Pagination {
   month?: number;
   timestamp?: number;
   dep?: number;
+  forYou?: number;
 }
 
 export interface PostTargetParams {

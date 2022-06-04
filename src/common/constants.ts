@@ -1,9 +1,11 @@
 import { SectionTab } from '@common/types';
-import { FeedIcon, Bank, CategoryIcon, TeamIcon } from '@assets/index';
+import { FeedIcon, Bank, CategoryIcon, TeamIcon, TargetIcon } from '@assets/index';
 import { LineChartData } from '@main/types';
+import { TargetMonth } from '@main/entity';
 
 export enum MainGroups {
   Feeds = 'Feeds',
+  Boards = 'Boards',
   Following = 'Following',
 }
 
@@ -27,6 +29,18 @@ export const MainMenu: SectionTab[] = [
     groups: [],
   },
   {
+    name: MainGroups.Boards,
+    tabs: [
+      {
+        name: 'Targets',
+        location: { pathname: '/dashboard' },
+        icon: TargetIcon,
+        isShowCounter: true,
+      },
+    ],
+    groups: [],
+  },
+  {
     name: MainGroups.Following,
     tabs: [],
     groups: [
@@ -35,75 +49,29 @@ export const MainMenu: SectionTab[] = [
         icon: TeamIcon,
         tabs: [],
         addItemRoute: '/departments',
+        isOpened: true,
       },
       {
         name: 'Categories',
         icon: CategoryIcon,
         tabs: [],
         addItemRoute: '/categories',
+        isOpened: true,
       },
       {
         name: 'Vendors',
         icon: Bank,
         tabs: [],
         addItemRoute: '/vendors',
+        isOpened: true,
       },
     ],
   },
 ];
 
-export const defaultTargetMonths = [
-  {
-    month: 1,
-    amount: 0,
-  },
-  {
-    month: 2,
-    amount: 0,
-  },
-  {
-    month: 3,
-    amount: 0,
-  },
-  {
-    month: 4,
-    amount: 0,
-  },
-  {
-    month: 5,
-    amount: 0,
-  },
-  {
-    month: 6,
-    amount: 0,
-  },
-  {
-    month: 7,
-    amount: 0,
-  },
-  {
-    month: 8,
-    amount: 0,
-  },
-  {
-    month: 9,
-    amount: 0,
-  },
-  {
-    month: 10,
-    amount: 0,
-  },
-  {
-    month: 11,
-    amount: 0,
-  },
-  {
-    month: 12,
-    amount: 0,
-  },
-];
-
 export const monthsInYear = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+export const defaultTargetMonths: TargetMonth[] = monthsInYear.map((month) => ({ month }));
 
 export const INITIAL_CHART_DATA: LineChartData = {
   data: [],
