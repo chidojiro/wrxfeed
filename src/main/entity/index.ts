@@ -10,3 +10,4 @@ export * from './subscription.entity';
 export * from './notification.entity';
 export * from './feedItem.entity';
 export * from './lineItem.entity';
+export * from './vendor.description.entity';
