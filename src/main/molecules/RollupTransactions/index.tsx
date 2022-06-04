@@ -19,7 +19,7 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
 }) => {
   const [position, setPosition] = useState(autoShowTrans ? 10 : 0);
   const [transactions, setTransactions] = useState(trans.slice(0, position));
-  const [hasMore, setHasMore] = useState(trans?.length > 10);
+  const [hasMore, setHasMore] = useState(trans?.length > 0);
 
   const onClickLoadMore = () => {
     if (!hasMore) {
