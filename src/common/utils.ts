@@ -141,9 +141,9 @@ export function formatCurrency(
   defaultValue = '0.00',
   supportNegative = true,
 ): string {
-  let amountNumber = n;
-  if (!supportNegative) {
-    amountNumber = Math.abs(parseInt(`${amountNumber}`, 10));
+  if (!n) {
+    return defaultValue;
   }
-  return amountNumber ? numeral(amountNumber).format(format) : defaultValue;
+  const number = supportNegative ? n : Math.abs(parseFloat(`${n}`));
+  return numeral(number).format(format);
 }
