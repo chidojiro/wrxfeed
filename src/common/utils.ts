@@ -143,7 +143,7 @@ export function formatCurrency(
 ): string {
   let amountNumber = n;
   if (!supportNegative) {
-    amountNumber = replaceAll(`${amountNumber}`, '-', '');
+    amountNumber = Math.abs(parseInt(`${amountNumber}`, 10));
   }
   return amountNumber ? numeral(amountNumber).format(format) : defaultValue;
 }
