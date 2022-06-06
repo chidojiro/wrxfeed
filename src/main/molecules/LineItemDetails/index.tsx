@@ -32,7 +32,8 @@ import {
 } from '@assets';
 import Tooltip from '@common/atoms/Tooltip';
 import UpdateVendorInfoModal from '@main/organisms/UpdateVendorInfoModal';
-import { useVendor } from '@main/hooks/vendor.hook';
+import { useRecoilValue } from 'recoil';
+import { vendorUpdateState } from '@main/states/vendorUpdate.state';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -61,15 +62,23 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   const [vendorDescriptionEditing, setVendorDescriptionEditing] =
     useState<VendorDescription>(EMPTY_VENDOR_DESCRIPTION);
   const [showEditVendorDescription, setShowEditVendorDescription] = useState<boolean>(false);
+  const vendorUpdate = useRecoilValue(vendorUpdateState);
 
-  const { isLoading, updateVendorById } = useVendor({
-    offset: 0,
-    limit: 10,
-  });
-
-  const hideEditVendorDescription = () => {
+  const hideEditVendorDescriptionModal = () => {
     setVendorDescriptionEditing(EMPTY_VENDOR_DESCRIPTION);
     setShowEditVendorDescription(false);
+  };
+
+  const showEditVendorDescriptionModal = () => {
+    setVendorDescriptionEditing({
+      vendorId: item.vendor?.id,
+      vendorName: item.vendor?.name,
+      website: item.vendor?.website,
+      contactEmail: item.vendor?.contactEmail,
+      contactNumber: item.vendor?.contactNumber,
+      description: item.vendor?.description,
+    });
+    setShowEditVendorDescription(true);
   };
 
   const getOriginalAmountWithSign = (): string => {
@@ -125,7 +134,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       <button
         type="button"
         className="flex flex-none ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
-        onClick={() => setShowEditVendorDescription(true)}
+        onClick={showEditVendorDescriptionModal}
       >
         <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
         <p className="text-xs text-Gray-3 font-normal">Edit</p>
@@ -213,19 +222,19 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                 width={20}
                 height={20}
               />
-              <span>{item?.vendor?.website}</span>
+              <span>{vendorUpdate.website}</span>
             </div>
             <div className="flex mr-4 text-xs">
               <EmailIcon className="mr-1 stroke-current text-gray-500" width={20} height={20} />
-              <span>{item?.vendor?.contactEmail}</span>
+              <span>{vendorUpdate.contactEmail}</span>
             </div>
             <div className="flex text-xs">
               <PhoneIcon className="stroke-current text-gray-500" width={20} height={20} />
-              <span>{item?.vendor?.contactNumber}</span>
+              <span>{vendorUpdate.contactNumber}</span>
             </div>
           </div>
           <div className="flex-row w-[524px] text-sm text-gray-500 rounded-lg border border-gray-200 p-3">
-            {item?.vendor?.description ?? 'Add a vendor description'}
+            {vendorUpdate.description ?? 'Add a vendor description'}
           </div>
 
           <div className="flex flex-col mt-6 rounded-lg border border-gray-200 p-3 bg-gray-50 w-[524px]">
@@ -331,11 +340,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       </div>
       <UpdateVendorInfoModal
         open={showEditVendorDescription}
-        onClose={() => hideEditVendorDescription()}
-        onCancel={() => hideEditVendorDescription()}
+        onClose={() => hideEditVendorDescriptionModal()}
+        onCancel={() => hideEditVendorDescriptionModal()}
         itemEditing={vendorDescriptionEditing}
-        loading={isLoading}
-        onSave={updateVendorById}
       />
     </div>
   );

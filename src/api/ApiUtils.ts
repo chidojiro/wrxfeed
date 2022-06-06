@@ -552,7 +552,7 @@ export default class ApiUtils implements ApiClient {
   updateVendorById = async (id: number, data: VendorDescription): Promise<void> => {
     const res = await this.request<void>({
       url: `/feed/vendors/${id}`,
-      method: 'POST',
+      method: 'PATCH',
       data,
     });
     return res.data;
