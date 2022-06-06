@@ -6,7 +6,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useErrorHandler } from 'react-error-boundary';
 import { toast } from 'react-toastify';
 
-import { useQuery } from '@common/hooks';
+import { useNavUtils, useQuery } from '@common/hooks';
 import { useApi } from '@api';
 import { ApiErrorCode } from '@error/types';
 import { MainGroups } from '@common/constants';
@@ -17,9 +17,11 @@ import MainLayout from '@common/templates/MainLayout';
 import RollupCard from '@main/molecules/RollupCard';
 import Loading from '@common/atoms/Loading';
 import TargetFeedItem from '@main/molecules/TargetFeedItem';
+import routes from '@src/routes';
 
 const FeedPage: React.VFC = () => {
   const history = useHistory();
+  const { redirect } = useNavUtils();
   const ApiClient = useApi();
   const query = useQuery();
   const { id: feedId } = useParams<{ id: string }>();
@@ -112,7 +114,7 @@ const FeedPage: React.VFC = () => {
   };
 
   const onBackToDashboard = () => {
-    history.goBack();
+    redirect(routes.Dashboard.path as string);
   };
 
   const renderFeed = () => {
