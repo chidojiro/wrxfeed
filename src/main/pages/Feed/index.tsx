@@ -106,6 +106,14 @@ const FeedPage: React.VFC = () => {
       search: `?route=${MainGroups.Following}`,
     });
   };
+  const onRefreshTargetFeedItem = () => {
+    setFeedItem(undefined);
+    getTargetFeedItem(parseInt(feedId, 10));
+  };
+
+  const onBackToDashboard = () => {
+    history.goBack();
+  };
 
   const renderFeed = () => {
     if (isLoading) {
@@ -139,7 +147,11 @@ const FeedPage: React.VFC = () => {
             feedItem={feedItem}
           />
         ) : (
-          <TargetFeedItem feedItem={feedItem} />
+          <TargetFeedItem
+            feedItem={feedItem}
+            onRefresh={onRefreshTargetFeedItem}
+            onBack={onBackToDashboard}
+          />
         )}
       </div>
     );
