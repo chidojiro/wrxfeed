@@ -135,15 +135,22 @@ export const round = (number: number | string, decimals = 0): number => {
   return Math.round((num + Number.EPSILON) * decimalPow) / decimalPow;
 };
 
-export function formatCurrency(
-  n?: string | number,
+export interface FormatCurrencyOptions {
+  value?: string | number;
+  format?: string;
+  defaultValue?: string;
+  supportNegative?: boolean;
+}
+
+export function formatCurrency({
+  value,
   format = '0,0.00',
   defaultValue = '0.00',
   supportNegative = true,
-): string {
-  if (!n) {
+}: FormatCurrencyOptions): string {
+  if (!value) {
     return defaultValue;
   }
-  const number = supportNegative ? n : Math.abs(parseFloat(`${n}`));
+  const number = supportNegative ? value : Math.abs(parseFloat(`${value}`));
   return numeral(number).format(format);
 }
