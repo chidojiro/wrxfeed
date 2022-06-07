@@ -38,6 +38,10 @@ import { ReactComponent as PhoneIcon } from '@assets/icons/outline/phone.svg';
 import { ReactComponent as EmailIcon } from '@assets/icons/outline/email.svg';
 import { ReactComponent as BasicTickSmall } from '@assets/icons/solid/basics-tick-small.svg';
 import { ReactComponent as StackItemsIcon } from '@assets/icons/solid/stack-items-icon.svg';
+import { ReactComponent as TargetArrowFilled } from '@assets/icons/solid/target-arrow-filled.svg';
+import { ReactComponent as TrendDown } from '@assets/icons/solid/trend-down.svg';
+import { ReactComponent as TrendUp } from '@assets/icons/solid/trend-up.svg';
+import { ReactComponent as WarningFilled } from '@assets/icons/solid/warning-filled.svg';
 
 export {
   InviteIcon,
@@ -80,4 +84,8 @@ export {
   EmailIcon,
   BasicTickSmall,
   StackItemsIcon,
+  TargetArrowFilled,
+  TrendDown,
+  TrendUp,
+  WarningFilled,
 };

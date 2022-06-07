@@ -117,7 +117,10 @@ export function useSearch({
       const apiClient = await getApiClient();
       // eslint-disable-next-line prefer-const
       let [departments, categories, vendors] = await Promise.all([
-        apiClient.getDepartments(INIT_PAGINATION),
+        apiClient.getDepartments({
+          ...INIT_PAGINATION,
+          includeSub: 1,
+        }),
         apiClient.getCategories(INIT_PAGINATION),
         apiClient.getVendors(INIT_PAGINATION),
       ]);
