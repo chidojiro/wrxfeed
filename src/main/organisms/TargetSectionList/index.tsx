@@ -8,19 +8,31 @@ import ListLoading from '@main/atoms/ListLoading';
 import ListEndComponent from '@main/atoms/ListEndComponent';
 import MiniChartView from '@main/molecules/MiniChartView';
 import EditorAvatar from '@main/atoms/EditorAvatar';
-import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@main/utils';
+import {
+  decimalLogic,
+  DecimalType,
+  getTargetPeriodsAmountTotal,
+  filterTargetsToTargetByTeam,
+} from '@main/utils';
 import TargetFeedName from '@main/atoms/TargetFeedName';
 import { TeamIcon } from '@assets';
 import routes from '@src/routes';
+import { useTarget } from '@main/hooks';
+import { TargetFilter } from '@api/types';
+import { GET_TARGETS_DASHBOARD_LIMIT } from '@src/config';
+
+const initFilter: TargetFilter = {
+  offset: 0,
+  limit: GET_TARGETS_DASHBOARD_LIMIT,
+  forYou: 1,
+  year: new Date().getFullYear(),
+  timestamp: Date.now(),
+};
 
 interface TargetSectionListProps {
   style?: CSSProperties;
-  data: TargetByTeam[];
-  isLoading?: boolean;
   enableLoadMore?: boolean;
-  hasMore?: boolean;
   endMessage?: string;
-  onLoadMore?: () => void;
   EndComponent?: React.FunctionComponent | undefined;
   EmptyStateComponent?: React.FunctionComponent | undefined;
 }
@@ -32,16 +44,29 @@ export enum FeedItemType {
 
 const TargetSectionList: React.VFC<TargetSectionListProps> = ({
   style,
-  data,
-  isLoading,
   enableLoadMore,
-  hasMore,
   endMessage,
-  onLoadMore,
   EndComponent,
   EmptyStateComponent,
 }) => {
   const history = useHistory();
+
+  const [filter, setFilter] = React.useState<TargetFilter>(initFilter);
+  const { targets, hasMore, isGetTargets } = useTarget(filter);
+
+  const targetByTeam = React.useMemo(() => {
+    return filterTargetsToTargetByTeam(targets);
+  }, [targets]);
+
+  const handleLoadMore = React.useCallback(() => {
+    if (!hasMore || isGetTargets) return;
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      limit: prevFilter?.limit ?? GET_TARGETS_DASHBOARD_LIMIT,
+      offset: (prevFilter?.offset ?? 0) + (prevFilter?.limit ?? GET_TARGETS_DASHBOARD_LIMIT),
+    }));
+  }, [hasMore, isGetTargets]);
+
   const renderEmptyList = EmptyStateComponent ? (
     <EmptyStateComponent />
   ) : (
@@ -146,15 +171,15 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
       style={style}
       threshold={500}
       onLoadMore={() => {
-        if (enableLoadMore && onLoadMore) {
-          onLoadMore();
+        if (enableLoadMore && handleLoadMore) {
+          handleLoadMore();
         }
       }}
-      isLoading={isLoading}
+      isLoading={isGetTargets}
       LoadingComponent={<ListLoading />}
     >
       <ul className="flex flex-1 flex-col">
-        {data.map((item: TargetByTeam) => {
+        {targetByTeam.map((item: TargetByTeam) => {
           return (
             <div
               className="flex flex-col space-y-2"
@@ -176,8 +201,8 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
           );
         })}
       </ul>
-      {!isLoading && !data.length && renderEmptyList}
-      {!isLoading && data.length > 0 && !hasMore && renderEndComponent}
+      {!isGetTargets && !targetByTeam.length && renderEmptyList}
+      {!isGetTargets && targetByTeam.length > 0 && !hasMore && renderEndComponent}
     </InfiniteScroller>
   );
 };

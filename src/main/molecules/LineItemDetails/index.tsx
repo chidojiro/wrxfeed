@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 
 import {
@@ -10,12 +10,7 @@ import {
   getVendorNameFromLineItem,
   isEmptyOrSpaces,
 } from '@main/utils';
-import {
-  EMPTY_VENDOR_DESCRIPTION,
-  TransLineItem,
-  TranStatusType,
-  VendorDescription,
-} from '@main/entity';
+import { TransLineItem, TranStatusType } from '@main/entity';
 import { classNames } from '@common/utils';
 
 import Loading from '@common/atoms/Loading';
@@ -32,7 +27,8 @@ import {
 } from '@assets';
 import Tooltip from '@common/atoms/Tooltip';
 import UpdateVendorInfoModal from '@main/organisms/UpdateVendorInfoModal';
-import { useVendor } from '@main/hooks/vendor.hook';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { vendorUpdateState } from '@main/states/vendorUpdate.state';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -58,18 +54,27 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   loading,
   item,
 }) => {
-  const [vendorDescriptionEditing, setVendorDescriptionEditing] =
-    useState<VendorDescription>(EMPTY_VENDOR_DESCRIPTION);
   const [showEditVendorDescription, setShowEditVendorDescription] = useState<boolean>(false);
+  const vendorUpdate = useRecoilValue(vendorUpdateState);
+  const setVendorUpdate = useSetRecoilState(vendorUpdateState);
 
-  const { isLoading, updateVendorById } = useVendor({
-    offset: 0,
-    limit: 10,
-  });
+  useEffect(() => {
+    setVendorUpdate({
+      vendorId: item?.vendor?.id,
+      vendorName: item?.vendor?.name,
+      description: item?.vendor?.description,
+      website: item?.vendor?.website,
+      contactEmail: item?.vendor?.contactEmail,
+      contactNumber: item?.vendor?.contactNumber,
+    });
+  }, [item]);
 
-  const hideEditVendorDescription = () => {
-    setVendorDescriptionEditing(EMPTY_VENDOR_DESCRIPTION);
+  const hideEditVendorDescriptionModal = () => {
     setShowEditVendorDescription(false);
+  };
+
+  const showEditVendorDescriptionModal = () => {
+    setShowEditVendorDescription(true);
   };
 
   const getOriginalAmountWithSign = (): string => {
@@ -125,7 +130,19 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       <button
         type="button"
         className="flex flex-none ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
-        onClick={() => setShowEditVendorDescription(true)}
+        onClick={showEditVendorDescriptionModal}
+      >
+        <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
+        <p className="text-xs text-Gray-3 font-normal">Edit</p>
+      </button>
+    );
+  };
+
+  const renderEditLineItemDescriptionButton = () => {
+    return (
+      <button
+        type="button"
+        className="flex flex-none ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
       >
         <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
         <p className="text-xs text-Gray-3 font-normal">Edit</p>
@@ -213,19 +230,19 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                 width={20}
                 height={20}
               />
-              <span>{item?.vendor?.website}</span>
+              <span>{vendorUpdate.website}</span>
             </div>
             <div className="flex mr-4 text-xs">
               <EmailIcon className="mr-1 stroke-current text-gray-500" width={20} height={20} />
-              <span>{item?.vendor?.contactEmail}</span>
+              <span>{vendorUpdate.contactEmail}</span>
             </div>
             <div className="flex text-xs">
               <PhoneIcon className="stroke-current text-gray-500" width={20} height={20} />
-              <span>{item?.vendor?.contactNumber}</span>
+              <span>{vendorUpdate.contactNumber}</span>
             </div>
           </div>
           <div className="flex-row w-[524px] text-sm text-gray-500 rounded-lg border border-gray-200 p-3">
-            {item?.vendor?.description ?? 'Add a vendor description'}
+            {vendorUpdate.description ?? 'Add a vendor description'}
           </div>
 
           <div className="flex flex-col mt-6 rounded-lg border border-gray-200 p-3 bg-gray-50 w-[524px]">
@@ -234,7 +251,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                 {item?.description}
               </p>
               {!!loading && <Loading className="ml-4" width={12} height={12} />}
-              <div className="block hidden group-hover:block">{renderEditVendorInfoButton()}</div>
+              <div className="block hidden group-hover:block">
+                {renderEditLineItemDescriptionButton()}
+              </div>
               <div className="flex group-hover:hidden">
                 {renderTransactionType()}
                 <p className="text-base text-Gray-3 font-bold text-right">
@@ -331,11 +350,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       </div>
       <UpdateVendorInfoModal
         open={showEditVendorDescription}
-        onClose={() => hideEditVendorDescription()}
-        onCancel={() => hideEditVendorDescription()}
-        itemEditing={vendorDescriptionEditing}
-        loading={isLoading}
-        onSave={updateVendorById}
+        onClose={() => hideEditVendorDescriptionModal()}
+        onCancel={() => hideEditVendorDescriptionModal()}
+        itemEditing={vendorUpdate}
       />
     </div>
   );
