@@ -26,11 +26,12 @@ export function useUpdateVendor(callback?: VendorDescriptionModalCallback): Upda
         setLoading(true);
         await ApiClient.updateVendorById(id, data);
         callback?.onSuccess(data);
-      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
         if (callback?.onError) {
           callback?.onError(error);
         } else if (isBadRequest(error)) {
-          toast.error('Could not save Vendor description!');
+          toast.error(error?.details?.message);
         } else {
           await errorHandler(error);
         }
