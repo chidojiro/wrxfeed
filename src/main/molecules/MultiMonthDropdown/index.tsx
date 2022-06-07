@@ -185,7 +185,11 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
               key={`renderLastYearSpend-${month}`}
               className="w-24 h-7 px-2 py-1 text-right flex flex-col justify-center items-end"
             >
-              <p className="text-sm text-Gray-6">{`$${formatCurrency(lastYearSpend)}`}</p>
+              <p className="text-sm text-Gray-6">
+                {`$${formatCurrency({
+                  value: lastYearSpend,
+                })}`}
+              </p>
             </div>
           );
         })}
@@ -294,7 +298,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
               <p className="text-primary font-semibold">
                 Total Target Amount:
                 <span className="font-normal text-Gray-3 ml-1">
-                  {`$${formatCurrency(totalAmount, '0,0')}`}
+                  {`$${formatCurrency({ value: totalAmount, format: '0,0' })}`}
                 </span>
               </p>
             </div>

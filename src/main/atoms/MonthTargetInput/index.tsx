@@ -22,7 +22,14 @@ const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
 }) => {
   const amountInputRef = useRef<HTMLInputElement>(null);
   const [amount, setAmount] = useState<string>(
-    defaultAmount !== undefined ? formatCurrency(defaultAmount, '0,0', '0') : '',
+    defaultAmount !== undefined
+      ? formatCurrency({
+          value: defaultAmount,
+          format: '0,0',
+          defaultValue: '0',
+          supportNegative: false,
+        })
+      : '',
   );
   const [isFocus, setIsFocus] = useState<boolean>(false);
 
@@ -34,7 +41,14 @@ const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    setAmount(`${formatCurrency(newValue, '0,0', '')}`);
+    setAmount(
+      `${formatCurrency({
+        value: newValue,
+        format: '0,0',
+        defaultValue: '',
+        supportNegative: false,
+      })}`,
+    );
   };
   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (['Enter'].includes(event.key)) {
