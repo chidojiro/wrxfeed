@@ -29,7 +29,10 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
 
   const setVendorUpdate = useSetRecoilState(vendorUpdateState);
   const { isLoading, updateVendorById } = useUpdateVendor({
-    onSuccess: (data) => setVendorUpdate(data),
+    onSuccess: (data) => {
+      setVendorUpdate(data);
+      onClose();
+    },
     onError: () => undefined,
   });
 

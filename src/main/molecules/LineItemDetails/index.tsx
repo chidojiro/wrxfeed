@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 
 import {
@@ -10,12 +10,7 @@ import {
   getVendorNameFromLineItem,
   isEmptyOrSpaces,
 } from '@main/utils';
-import {
-  EMPTY_VENDOR_DESCRIPTION,
-  TransLineItem,
-  TranStatusType,
-  VendorDescription,
-} from '@main/entity';
+import { TransLineItem, TranStatusType } from '@main/entity';
 import { classNames } from '@common/utils';
 
 import Loading from '@common/atoms/Loading';
@@ -32,7 +27,7 @@ import {
 } from '@assets';
 import Tooltip from '@common/atoms/Tooltip';
 import UpdateVendorInfoModal from '@main/organisms/UpdateVendorInfoModal';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { vendorUpdateState } from '@main/states/vendorUpdate.state';
 
 export interface LineItemDetailsProps {
@@ -59,25 +54,26 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   loading,
   item,
 }) => {
-  const [vendorDescriptionEditing, setVendorDescriptionEditing] =
-    useState<VendorDescription>(EMPTY_VENDOR_DESCRIPTION);
   const [showEditVendorDescription, setShowEditVendorDescription] = useState<boolean>(false);
   const vendorUpdate = useRecoilValue(vendorUpdateState);
+  const setVendorUpdate = useSetRecoilState(vendorUpdateState);
+
+  useEffect(() => {
+    setVendorUpdate({
+      vendorId: item?.vendor?.id,
+      vendorName: item?.vendor?.name,
+      description: item?.vendor?.description,
+      website: item?.vendor?.website,
+      contactEmail: item?.vendor?.contactEmail,
+      contactNumber: item?.vendor?.contactNumber,
+    });
+  }, [item]);
 
   const hideEditVendorDescriptionModal = () => {
-    setVendorDescriptionEditing(EMPTY_VENDOR_DESCRIPTION);
     setShowEditVendorDescription(false);
   };
 
   const showEditVendorDescriptionModal = () => {
-    setVendorDescriptionEditing({
-      vendorId: item.vendor?.id,
-      vendorName: item.vendor?.name,
-      website: item.vendor?.website,
-      contactEmail: item.vendor?.contactEmail,
-      contactNumber: item.vendor?.contactNumber,
-      description: item.vendor?.description,
-    });
     setShowEditVendorDescription(true);
   };
 
@@ -135,6 +131,18 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
         type="button"
         className="flex flex-none ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
         onClick={showEditVendorDescriptionModal}
+      >
+        <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
+        <p className="text-xs text-Gray-3 font-normal">Edit</p>
+      </button>
+    );
+  };
+
+  const renderEditLineItemDescriptionButton = () => {
+    return (
+      <button
+        type="button"
+        className="flex flex-none ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
       >
         <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
         <p className="text-xs text-Gray-3 font-normal">Edit</p>
@@ -243,7 +251,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
                 {item?.description}
               </p>
               {!!loading && <Loading className="ml-4" width={12} height={12} />}
-              <div className="block hidden group-hover:block">{renderEditVendorInfoButton()}</div>
+              <div className="block hidden group-hover:block">
+                {renderEditLineItemDescriptionButton()}
+              </div>
               <div className="flex group-hover:hidden">
                 {renderTransactionType()}
                 <p className="text-base text-Gray-3 font-bold text-right">
@@ -342,7 +352,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
         open={showEditVendorDescription}
         onClose={() => hideEditVendorDescriptionModal()}
         onCancel={() => hideEditVendorDescriptionModal()}
-        itemEditing={vendorDescriptionEditing}
+        itemEditing={vendorUpdate}
       />
     </div>
   );
