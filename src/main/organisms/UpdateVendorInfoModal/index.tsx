@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
-import React, { useRef, useState, KeyboardEventHandler } from 'react';
+import React, { useRef, useState, KeyboardEventHandler, useEffect } from 'react';
 
 import { classNames } from '@common/utils';
 import { EMPTY_VENDOR_DESCRIPTION, VendorDescription } from '@main/entity';
@@ -8,27 +8,40 @@ import { EMPTY_VENDOR_DESCRIPTION, VendorDescription } from '@main/entity';
 import Modal from '@common/atoms/Modal';
 import Loading from '@common/atoms/Loading';
 
+import { useSetRecoilState } from 'recoil';
+import { vendorUpdateState } from '@main/states/vendorUpdate.state';
+import { useUpdateVendor } from '@main/hooks/updateVendor.hook';
+
 export type UpdateVendorInfoModalProps = {
   open: boolean;
-  loading: boolean;
   onClose: () => void;
   onCancel: () => void;
-  onSave: (id: number, data: VendorDescription) => void;
   itemEditing: VendorDescription;
 };
 
 const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
   open = false,
-  loading = false,
   onClose,
   onCancel,
-  onSave,
   itemEditing,
 }) => {
   const descriptionInputRef = useRef<HTMLInputElement>(null);
 
+  const setVendorUpdate = useSetRecoilState(vendorUpdateState);
+  const { isLoading, updateVendorById } = useUpdateVendor({
+    onSuccess: (data) => {
+      setVendorUpdate(data);
+      onClose();
+    },
+    onError: () => undefined,
+  });
+
   const [vendorDescription, setVendorDescription] =
     useState<VendorDescription>(EMPTY_VENDOR_DESCRIPTION);
+
+  useEffect(() => {
+    setVendorDescription(itemEditing);
+  }, [itemEditing]);
 
   const onCloseModal = () => {
     if (typeof onClose === 'function') onClose();
@@ -58,7 +71,20 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
       return false;
     }
 
+    if (
+      (value?.contactEmail && value?.contactEmail?.trim().length > 0) ||
+      (value?.contactNumber && value?.contactNumber?.trim().length > 0) ||
+      (value?.description && value?.description?.trim().length > 0) ||
+      (value?.website && value?.website?.trim().length > 0)
+    ) {
+      return true;
+    }
+
     return false;
+  };
+
+  const onSaveHandler = (id: number, data: VendorDescription) => {
+    updateVendorById(id, data);
   };
 
   const createReadyState = isReadyToSave(vendorDescription) ? 'bg-primary' : 'bg-Gray-6';
@@ -140,8 +166,8 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
           <button
             type="button"
             onClick={() => {
-              if (itemEditing.vendorId) {
-                onSave(itemEditing.vendorId, itemEditing);
+              if (vendorDescription.vendorId) {
+                onSaveHandler(vendorDescription.vendorId, vendorDescription);
               }
             }}
             className={classNames(
@@ -150,7 +176,7 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
             )}
           >
             <p className="text-white text-xs font-semibold">Save</p>
-            {loading && <Loading width={12} height={12} color="white" className="w-4 h-4 ml-2" />}
+            {isLoading && <Loading width={12} height={12} color="white" className="w-4 h-4 ml-2" />}
           </button>
         </div>
       </div>
