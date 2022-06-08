@@ -29,6 +29,8 @@ import Tooltip from '@common/atoms/Tooltip';
 import UpdateVendorInfoModal from '@main/organisms/UpdateVendorInfoModal';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { vendorUpdateState } from '@main/states/vendorUpdate.state';
+import { lineItemUpdateState } from '@main/states/lineItemUpdate.state';
+import UpdateDetailsLineItemInfoModal from '@main/organisms/UpdateDetailsLineItemInfoModal';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -42,7 +44,7 @@ export interface SelectItemProps {
   item: TransLineItem;
 }
 
-export type LineInfo = {
+type LineInfo = {
   id: string;
   key: string;
   value: string;
@@ -58,6 +60,10 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   const vendorUpdate = useRecoilValue(vendorUpdateState);
   const setVendorUpdate = useSetRecoilState(vendorUpdateState);
 
+  const [showEditLineItem, setShowEditLineItem] = useState<boolean>(false);
+  const lineItemUpdate = useRecoilValue(lineItemUpdateState);
+  const setLineItemUpdate = useSetRecoilState(lineItemUpdateState);
+
   useEffect(() => {
     setVendorUpdate({
       vendorId: item?.vendor?.id,
@@ -67,6 +73,11 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       contactEmail: item?.vendor?.contactEmail,
       contactNumber: item?.vendor?.contactNumber,
     });
+
+    setLineItemUpdate({
+      id: item?.id,
+      description: item?.description,
+    });
   }, [item]);
 
   const hideEditVendorDescriptionModal = () => {
@@ -75,6 +86,14 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
 
   const showEditVendorDescriptionModal = () => {
     setShowEditVendorDescription(true);
+  };
+
+  const hideEditLineItemModal = () => {
+    setShowEditLineItem(false);
+  };
+
+  const showEditLineItemModal = () => {
+    setShowEditLineItem(true);
   };
 
   const getOriginalAmountWithSign = (): string => {
@@ -143,6 +162,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
       <button
         type="button"
         className="flex flex-none ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
+        onClick={showEditLineItemModal}
       >
         <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
         <p className="text-xs text-Gray-3 font-normal">Edit</p>
@@ -248,7 +268,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
           <div className="flex flex-col mt-6 rounded-lg border border-gray-200 p-3 bg-gray-50 w-[524px]">
             <div className="flex flex-row w-full text-sm text-gray-500 group mb-2 h-7">
               <p className="flex-auto text-base font-bold text-Gray-3 truncate mr-2">
-                {item?.description}
+                {lineItemUpdate.description}
               </p>
               {!!loading && <Loading className="ml-4" width={12} height={12} />}
               <div className="block hidden group-hover:block">
@@ -353,6 +373,13 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
         onClose={() => hideEditVendorDescriptionModal()}
         onCancel={() => hideEditVendorDescriptionModal()}
         itemEditing={vendorUpdate}
+      />
+      <UpdateDetailsLineItemInfoModal
+        open={showEditLineItem}
+        onClose={() => hideEditLineItemModal()}
+        onCancel={() => hideEditLineItemModal()}
+        itemEditing={lineItemUpdate}
+        transLineItem={item}
       />
     </div>
   );
