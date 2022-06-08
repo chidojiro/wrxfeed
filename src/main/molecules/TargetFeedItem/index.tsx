@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import dayjs from 'dayjs';
+import cloneDeep from 'lodash.clonedeep';
 // hooks
 import { useIdentity } from '@identity/hooks';
 import { useFeedComment } from '@main/hooks/feedComment.hook';
@@ -25,9 +26,8 @@ import RollupTransactions from '@main/molecules/RollupTransactions';
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
 import { CalendarMinus } from '@assets';
-import AddTargetModal from '@main/organisms/AddTargetModal';
+import AddTargetModal from '@main/molecules/AddTargetModal';
 import UserAvatar from '@main/atoms/UserAvatar';
-import cloneDeep from 'lodash.clonedeep';
 
 export interface TargetFeedItemProps {
   feedItem: FeedItem;
@@ -117,15 +117,15 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, o
   };
 
   const { postTarget, putTarget, deleteTarget, isPostTarget, isPutTarget, isDeleteTarget } =
-    useTarget(
-      initFilter,
-      { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
-      {
+    useTarget({
+      filter: initFilter,
+      cbPost: { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
+      cbPut: {
         onSuccess: (target) => onSuccessPutTarget(target),
         onError: () => onRefresh && onRefresh(),
       },
-      { onSuccess: onSuccessDeleteTarget, onError: () => onRefresh && onRefresh() },
-    );
+      cbDelete: { onSuccess: onSuccessDeleteTarget, onError: () => onRefresh && onRefresh() },
+    });
 
   const handlePutTarget = (id: number, data: PutTargetParams) => {
     putTarget(id, data);

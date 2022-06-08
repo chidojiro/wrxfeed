@@ -43,7 +43,7 @@ const TargetBoardSummaries: React.VFC<TargetBoardSummariesProps> = ({ className 
   return (
     <div
       className={classNames(
-        'flex flex-row justify-between space-x-6 max-w-[500px] xl:max-w-[1016px] mr-8',
+        'flex flex-row flex-grow flex-wrap justify-between w-full max-w-[500px] dashboard:max-w-[1016px] mr-4 dashboard:mr-8',
         className,
       )}
     >
@@ -52,13 +52,13 @@ const TargetBoardSummaries: React.VFC<TargetBoardSummariesProps> = ({ className 
         return (
           <div
             key={`summaries-${item.id}`}
-            className="h-24 w-[236px] flex flex-row items-center px-4 space-x-4.5 rounded-card bg-white shadow-shadowCard"
+            className="h-24 w-[236px] flex flex-row my-3 dashboard:my-0 items-center px-4 space-x-4.5 rounded-card bg-white shadow-shadowCard"
           >
             <div className="w-14 h-14 rounded-full bg-Gray-12 flex justify-center items-center">
               {IconInfo && (
                 <IconInfo
-                  className="w-7 h-7 fill-current path-no-filled text-Gray-3 opacity-100"
-                  aria-hidden="true"
+                  className="w-7 h-7 fill-current path-no-filled text-Gray-3 opacity-100 overflow-visible"
+                  aria-hidden="false"
                   width={28}
                   height={28}
                 />

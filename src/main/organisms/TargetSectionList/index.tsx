@@ -39,13 +39,11 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
   EmptyStateComponent,
 }) => {
   const [filter, setFilter] = React.useState<TargetFilter>(initFilter);
-  const { targets, hasMore, isGetTargets } = useTarget(filter);
+  const { targets, hasMore, isGetTargets } = useTarget({ filter });
 
   const targetByTeam = React.useMemo(() => {
     return filterTargetsToTargetByTeam(targets);
   }, [targets]);
-
-  const onClickCreateTarget = () => undefined;
 
   const handleLoadMore = React.useCallback(() => {
     if (!hasMore || isGetTargets) return;
@@ -96,15 +94,11 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
         }
       }}
       isLoading={isGetTargets}
-      LoadingComponent={<ListLoading />}
+      LoadingComponent={<ListLoading className="mt-4" />}
     >
       <ul className="flex flex-1 flex-col mb-2">
         {targetByTeam.map((item: TargetByTeam) => (
-          <TeamTargetSection
-            targetByTeam={item}
-            key={`targets-by-team-${item?.department?.id}`}
-            onClickCreate={onClickCreateTarget}
-          />
+          <TeamTargetSection targetByTeam={item} key={`targets-by-team-${item?.department?.id}`} />
         ))}
       </ul>
       {!isGetTargets && !targetByTeam.length && renderEmptyList}

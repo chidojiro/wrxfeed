@@ -24,12 +24,22 @@ interface TargetHookValues {
   isPutTarget: boolean;
   isDeleteTarget: boolean;
 }
-export function useTarget(
-  filter: TargetFilter,
-  cbPost?: TargetCallback,
-  cbPut?: TargetCallback,
-  cbDelete?: TargetCallback,
-): TargetHookValues {
+
+export interface UseTargetParams {
+  filter?: TargetFilter;
+  cbPost?: TargetCallback;
+  cbPut?: TargetCallback;
+  cbDelete?: TargetCallback;
+  autoLoad?: boolean;
+}
+
+export function useTarget({
+  filter,
+  cbPost,
+  cbPut,
+  cbDelete,
+  autoLoad = true,
+}: UseTargetParams): TargetHookValues {
   const [targets, setTargets] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isGetTargets, setGetTargets] = useState<boolean>(false);
@@ -45,7 +55,7 @@ export function useTarget(
       setGetTargets(true);
       const res = await ApiClient.getTargets(filter);
       setTargets((pre) => [...pre, ...res]);
-      setHasMore(res.length >= filter.limit);
+      setHasMore(res.length >= (filter?.limit || 0));
       setGetTargets(false);
     } catch (error) {
       if (isApiError(error)) {
@@ -122,7 +132,9 @@ export function useTarget(
 
   // auto call in the first time with no default filter
   useEffect(() => {
-    getTargets().then();
+    if (autoLoad) {
+      getTargets().then();
+    }
   }, [getTargets]);
 
   return {
