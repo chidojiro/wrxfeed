@@ -239,7 +239,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
         </div>
 
         <div className="flex flex-col px-8 pt-8 pb-5">
-          <div className="flex flex-row group">
+          <div className="flex flex-row group w-[524px]">
             {renderVendorName()}
             <div className="block hidden group-hover:block">{renderEditVendorInfoButton()}</div>
           </div>
