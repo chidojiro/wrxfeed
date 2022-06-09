@@ -44,3 +44,14 @@ export type TransLineItem = {
   vendorName?: string;
   transDate?: string;
 };
+
+export type LineItem = {
+  id?: number;
+  description?: string;
+  category?: Category;
+};
+
+export const EMPTY_LINE_ITEM = Object.freeze({
+  id: undefined,
+  description: undefined,
+});
