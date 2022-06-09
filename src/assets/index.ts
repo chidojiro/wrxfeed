@@ -42,6 +42,11 @@ import { ReactComponent as TargetArrowFilled } from '@assets/icons/solid/target-
 import { ReactComponent as TrendDown } from '@assets/icons/solid/trend-down.svg';
 import { ReactComponent as TrendUp } from '@assets/icons/solid/trend-up.svg';
 import { ReactComponent as WarningFilled } from '@assets/icons/solid/warning-filled.svg';
+import { ReactComponent as BinIcon } from '@assets/icons/solid/bin.svg';
+import { ReactComponent as EditIcon } from '@assets/icons/solid/edit.svg';
+import { ReactComponent as EyeIcon } from '@assets/icons/solid/eye.svg';
+import { ReactComponent as AddSmallSolid } from '@assets/icons/solid/add-small.svg';
+import { ReactComponent as InfoCircleIcon } from '@assets/icons/solid/info-circle.svg';
 
 export {
   InviteIcon,
@@ -88,4 +93,9 @@ export {
   TrendDown,
   TrendUp,
   WarningFilled,
+  BinIcon,
+  EditIcon,
+  EyeIcon,
+  AddSmallSolid,
+  InfoCircleIcon,
 };

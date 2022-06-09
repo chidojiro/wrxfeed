@@ -26,11 +26,6 @@ interface TargetSectionListProps {
   EmptyStateComponent?: React.FunctionComponent | undefined;
 }
 
-export enum FeedItemType {
-  target = 'target',
-  transaction = 'transaction',
-}
-
 const TargetSectionList: React.VFC<TargetSectionListProps> = ({
   style,
   enableLoadMore,

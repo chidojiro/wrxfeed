@@ -1,13 +1,12 @@
 import React from 'react';
 
+import { useTarget } from '@main/hooks';
 import { TargetByTeam } from '@main/entity';
 import { getColorByText } from '@main/utils';
-import { TeamIcon } from '@assets';
-import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { classNames } from '@common/utils';
+import { TeamIcon, AddSmallSolid } from '@assets';
 import AddTargetModal from '@main/molecules/AddTargetModal';
-import { useTarget } from '@main/hooks';
-import TargetWrapList from '../TargetWrapList';
+import TargetWrapList from '@main/molecules/TargetWrapList';
 
 export interface TeamTargetSectionProps {
   className?: string;
@@ -48,11 +47,11 @@ const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({ className = '', 
           onClick={onClickCreate}
           className="flex flex-row items-center space-x-2 pr-3"
         >
-          <AddIcon
+          <AddSmallSolid
             width={16}
             height={16}
-            className="stroke-current stroke-1 path-no-stroke text-white"
-            viewBox="0 0 15 15"
+            className="stroke-current path-no-stroke text-white"
+            viewBox="0 0 16 16"
           />
           <p className="text-white text-sm">Create Target</p>
         </button>

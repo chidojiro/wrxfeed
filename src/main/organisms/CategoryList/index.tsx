@@ -3,7 +3,6 @@ import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Category } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
 import DirectoryItem from '@main/molecules/DirectoryItem';
-import { useSubscription } from '@main/hooks/subscription.hook';
 
 import mixpanel from 'mixpanel-browser';
 import { useIdentity } from '@identity/hooks';
@@ -22,8 +21,6 @@ const CategoryList: React.VFC<CategoryListProps> = ({
   onLoadMore,
   onSelect,
 }) => {
-  const { subscribe, unsubscribe, isFollowing } = useSubscription();
-
   const identity = useIdentity();
 
   useEffect(() => {
@@ -48,9 +45,7 @@ const CategoryList: React.VFC<CategoryListProps> = ({
             <DirectoryItem
               item={category}
               onClick={() => onSelect && onSelect(category)}
-              isFollowing={isFollowing('categories', category)}
-              onFollow={() => subscribe('categories', category)}
-              onUnfollow={() => unsubscribe('categories', category)}
+              itemType="categories"
             />
           </li>
         ))}

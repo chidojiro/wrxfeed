@@ -3,7 +3,6 @@ import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Vendor } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
 import DirectoryItem from '@main/molecules/DirectoryItem';
-import { useSubscription } from '@main/hooks/subscription.hook';
 
 import mixpanel from 'mixpanel-browser';
 import { useIdentity } from '@identity/hooks';
@@ -17,8 +16,6 @@ interface VendorListProps {
 }
 
 const VendorList: React.VFC<VendorListProps> = ({ vendors, isLoading, onLoadMore, onSelect }) => {
-  const { subscribe, unsubscribe, isFollowing } = useSubscription();
-
   const identity = useIdentity();
 
   useEffect(() => {
@@ -43,9 +40,7 @@ const VendorList: React.VFC<VendorListProps> = ({ vendors, isLoading, onLoadMore
             <DirectoryItem
               item={vendor}
               onClick={() => onSelect && onSelect(vendor)}
-              isFollowing={isFollowing('vendors', vendor)}
-              onFollow={() => subscribe('vendors', vendor)}
-              onUnfollow={() => unsubscribe('vendors', vendor)}
+              itemType="vendors"
             />
           </li>
         ))}
