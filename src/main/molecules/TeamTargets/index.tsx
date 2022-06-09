@@ -7,7 +7,7 @@ import { useTarget } from '@main/hooks';
 import { Department, Target } from '@main/entity';
 import { TargetFilter, TargetPropType } from '@api/types';
 
-import AddTargetModal from '@main/organisms/AddTargetModal';
+import AddTargetModal from '@main/molecules/AddTargetModal';
 import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
 import { classNames } from '@common/utils';
 import { SearchResult } from '@main/types';
@@ -87,12 +87,12 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
     isPostTarget,
     isPutTarget,
     isDeleteTarget,
-  } = useTarget(
+  } = useTarget({
     filter,
-    { onSuccess: onPostTargetSuccess, onError: onPostTargetError },
-    { onSuccess: onPutTargetSuccess, onError: onPutError },
-    { onSuccess: onDeleteTargetSuccess, onError: onDeleteError },
-  );
+    cbPost: { onSuccess: onPostTargetSuccess, onError: onPostTargetError },
+    cbPut: { onSuccess: onPutTargetSuccess, onError: onPutError },
+    cbDelete: { onSuccess: onDeleteTargetSuccess, onError: onDeleteError },
+  });
 
   useEffect(() => {
     const targetViewTemp: ReactNode[] = [];

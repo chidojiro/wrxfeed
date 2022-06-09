@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 
 import { isApiError } from '@error/utils';
@@ -10,7 +10,7 @@ import { useApi } from '@api';
 import { useErrorHandler } from '@error/hooks';
 
 interface TargetCallback {
-  onSuccess: (target?: Target) => void;
+  onSuccess: (id?: number, target?: Target) => void;
   onError?: (error: unknown) => void;
 }
 interface TargetHookValues {
@@ -23,13 +23,25 @@ interface TargetHookValues {
   isPostTarget: boolean;
   isPutTarget: boolean;
   isDeleteTarget: boolean;
+  removeItem: (id: number) => void;
 }
-export function useTarget(
-  filter: TargetFilter,
-  cbPost?: TargetCallback,
-  cbPut?: TargetCallback,
-  cbDelete?: TargetCallback,
-): TargetHookValues {
+
+export interface UseTargetParams {
+  filter?: TargetFilter;
+  cbPost?: TargetCallback;
+  cbPut?: TargetCallback;
+  cbDelete?: TargetCallback;
+  autoLoad?: boolean;
+}
+
+export function useTarget({
+  filter,
+  cbPost,
+  cbPut,
+  cbDelete,
+  autoLoad = true,
+}: UseTargetParams): TargetHookValues {
+  const targetsRef = useRef<Target[]>();
   const [targets, setTargets] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isGetTargets, setGetTargets] = useState<boolean>(false);
@@ -45,7 +57,7 @@ export function useTarget(
       setGetTargets(true);
       const res = await ApiClient.getTargets(filter);
       setTargets((pre) => [...pre, ...res]);
-      setHasMore(res.length >= filter.limit);
+      setHasMore(res.length >= (filter?.limit || 0));
       setGetTargets(false);
     } catch (error) {
       if (isApiError(error)) {
@@ -83,7 +95,7 @@ export function useTarget(
     try {
       setPutTarget(true);
       const newTarget = await ApiClient.putTarget(id, data);
-      cbPut?.onSuccess(newTarget);
+      cbPut?.onSuccess(id, newTarget);
     } catch (error) {
       if (cbPut?.onError) {
         cbPut?.onError(error);
@@ -103,9 +115,11 @@ export function useTarget(
     try {
       setDeleteTarget(true);
       await ApiClient.deleteTarget(id);
-      const newTargets = targets.filter((item: Target) => item?.id !== id);
-      setTargets(newTargets);
-      cbDelete?.onSuccess();
+      if (targetsRef.current) {
+        const newTargets = targetsRef.current.filter((item: Target) => item?.id !== id);
+        setTargets(newTargets);
+      }
+      cbDelete?.onSuccess(id);
     } catch (error) {
       if (cbDelete?.onError) {
         cbDelete?.onError(error);
@@ -120,9 +134,22 @@ export function useTarget(
     }
   };
 
+  const removeItem = (id: number) => {
+    if (targetsRef.current) {
+      const newTargets = targetsRef.current.filter((item: Target) => item?.id !== id);
+      setTargets(newTargets);
+    }
+  };
+
+  useEffect(() => {
+    targetsRef.current = targets;
+  }, [targets]);
+
   // auto call in the first time with no default filter
   useEffect(() => {
-    getTargets().then();
+    if (autoLoad) {
+      getTargets().then();
+    }
   }, [getTargets]);
 
   return {
@@ -135,5 +162,6 @@ export function useTarget(
     isPostTarget,
     isPutTarget,
     isDeleteTarget,
+    removeItem,
   };
 }

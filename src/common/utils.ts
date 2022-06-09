@@ -151,6 +151,6 @@ export function formatCurrency({
   if (!value) {
     return defaultValue;
   }
-  const number = supportNegative ? value : Math.abs(parseFloat(`${value}`));
+  const number = supportNegative ? value : Math.abs(parseFloat(replaceAll(`${value}`, ',', '')));
   return numeral(number).format(format);
 }

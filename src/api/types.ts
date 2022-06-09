@@ -159,6 +159,7 @@ export interface AddCommentParams {
 export interface DepartmentFilter extends Pagination {
   parent?: number;
   term?: string;
+  includeSub?: 1 | 0;
 }
 export interface CategoryFilter extends Pagination {
   term?: string;
