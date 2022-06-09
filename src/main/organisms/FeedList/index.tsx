@@ -78,17 +78,7 @@ const FeedList: React.VFC<FeedListProps> = ({
       <ul className="pb-2 sm:pb-5 space-y-4">
         {feeds.map((feed) => {
           if (feed.type === FeedItemType.target) {
-            return (
-              <TargetFeedItem
-                key={`TargetFeedItem-${feed.id}`}
-                feedItem={feed}
-                updateCategory={updateCategory}
-                onClickVendor={(value) => onFilter && onFilter('vendor', value)}
-                onClickDepartment={(value) => onFilter && onFilter('department', value)}
-                onClickCategory={(value) => onFilter && onFilter('category', value)}
-                onClickRootDept={(value) => onFilter && onFilter('rootDepartment', value)}
-              />
-            );
+            return <TargetFeedItem key={`TargetFeedItem-${feed.id}`} feedItem={feed} />;
           }
           if (feed.type === FeedItemType.transaction) {
             return (

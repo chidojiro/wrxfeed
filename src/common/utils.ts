@@ -32,14 +32,6 @@ dayjs.updateLocale('en', {
   },
 });
 
-export function formatCurrency(
-  n?: string | number,
-  format = '0,0.00',
-  defaultValue = '0.00',
-): string {
-  return n ? numeral(n).format(format) : defaultValue;
-}
-
 export function hasSubArray(master: string[], sub: string[]): boolean {
   return master && sub && sub.every((value, index) => master.indexOf(value, index) + 1 > 0);
 }
@@ -142,3 +134,23 @@ export const round = (number: number | string, decimals = 0): number => {
   }
   return Math.round((num + Number.EPSILON) * decimalPow) / decimalPow;
 };
+
+export interface FormatCurrencyOptions {
+  value?: string | number;
+  format?: string;
+  defaultValue?: string;
+  supportNegative?: boolean;
+}
+
+export function formatCurrency({
+  value,
+  format = '0,0.00',
+  defaultValue = '0.00',
+  supportNegative = true,
+}: FormatCurrencyOptions): string {
+  if (!value) {
+    return defaultValue;
+  }
+  const number = supportNegative ? value : Math.abs(parseFloat(replaceAll(`${value}`, ',', '')));
+  return numeral(number).format(format);
+}

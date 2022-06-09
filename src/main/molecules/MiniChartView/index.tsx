@@ -33,6 +33,7 @@ interface MiniChartViewProps {
   onEdit: () => void;
   legendLabelClass?: string;
   xAxisClass?: string;
+  showLegends?: boolean;
 }
 
 const MiniChartView: React.VFC<MiniChartViewProps> = ({
@@ -40,6 +41,7 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
   target,
   legendLabelClass = '',
   xAxisClass = '',
+  showLegends = false,
 }) => {
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
   const updatedTargetMonths = targetMonths.filter((item) => item?.amount !== undefined);
@@ -236,7 +238,7 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
               levelLabelClass="text-Gray-6 text-2xs font-normal"
             />
           </div>
-          {renderChartLegends()}
+          {showLegends && renderChartLegends()}
         </>
       )}
     </div>

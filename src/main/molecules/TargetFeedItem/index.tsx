@@ -2,11 +2,12 @@ import React, { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { EditorState } from 'draft-js';
 import dayjs from 'dayjs';
+import cloneDeep from 'lodash.clonedeep';
 // hooks
 import { useIdentity } from '@identity/hooks';
 import { useFeedComment } from '@main/hooks/feedComment.hook';
 // constants
-import { Category, Department, FeedItem, Vendor, Visibility, Target, User } from '@main/entity';
+import { FeedItem, Visibility, Target, User } from '@main/entity';
 import { CommentFormModel } from '@main/types';
 import { useMention, useTarget } from '@main/hooks';
 import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@api/types';
@@ -25,17 +26,13 @@ import RollupTransactions from '@main/molecules/RollupTransactions';
 import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
 import { CalendarMinus } from '@assets';
-import AddTargetModal from '@main/organisms/AddTargetModal';
+import AddTargetModal from '@main/molecules/AddTargetModal';
 import UserAvatar from '@main/atoms/UserAvatar';
-import cloneDeep from 'lodash.clonedeep';
 
 export interface TargetFeedItemProps {
   feedItem: FeedItem;
-  onClickDepartment?: (department?: Department) => void;
-  onClickVendor?: (vendor?: Vendor) => void;
-  onClickCategory?: (category?: Category) => void;
-  onClickRootDept?: (rootDept?: Department) => void;
-  updateCategory?: (category: Partial<Category>) => Promise<void>;
+  onRefresh?: () => void;
+  onBack?: () => void;
 }
 
 interface ConfirmModalProps {
@@ -56,7 +53,7 @@ const initFilter = {
   timestamp: Date.now(),
 };
 
-const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
+const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, onBack }) => {
   const identity = useIdentity();
   const [filterComment, setFilterComment] = useState<Pagination>({
     offset: 0,
@@ -107,15 +104,28 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem }) => {
       updater,
     };
     setCurFeed(curFeedClone);
+    if (typeof onRefresh === 'function') {
+      onRefresh();
+    }
+  };
+
+  const onSuccessDeleteTarget = () => {
+    setShowAddTarget(false);
+    if (typeof onBack === 'function') {
+      onBack();
+    }
   };
 
   const { postTarget, putTarget, deleteTarget, isPostTarget, isPutTarget, isDeleteTarget } =
-    useTarget(
-      initFilter,
-      { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
-      { onSuccess: (target) => onSuccessPutTarget(target), onError: () => undefined },
-      { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
-    );
+    useTarget({
+      filter: initFilter,
+      cbPost: { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
+      cbPut: {
+        onSuccess: (id, target) => onSuccessPutTarget(target),
+        onError: () => onRefresh && onRefresh(),
+      },
+      cbDelete: { onSuccess: onSuccessDeleteTarget, onError: () => onRefresh && onRefresh() },
+    });
 
   const handlePutTarget = (id: number, data: PutTargetParams) => {
     putTarget(id, data);

@@ -9,7 +9,7 @@ import { classNames } from '@common/utils';
 
 import Loading from '@common/atoms/Loading';
 import { TargetRow } from '@main/molecules';
-import AddTargetModal from '@main/organisms/AddTargetModal';
+import AddTargetModal from '@main/molecules/AddTargetModal';
 import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
 import { BasicsDownSmall } from '@assets';
 
@@ -74,12 +74,12 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
     isPostTarget,
     isPutTarget,
     isDeleteTarget,
-  } = useTarget(
+  } = useTarget({
     filter,
-    { onSuccess: onPostTargetSuccess, onError: onPostTargetError },
-    { onSuccess: onPutTargetSuccess, onError: onPutError },
-    { onSuccess: onDeleteTargetSuccess, onError: onDeleteError },
-  );
+    cbPost: { onSuccess: onPostTargetSuccess, onError: onPostTargetError },
+    cbPut: { onSuccess: onPutTargetSuccess, onError: onPutError },
+    cbDelete: { onSuccess: onDeleteTargetSuccess, onError: onDeleteError },
+  });
 
   const handleClickExpand = () => {
     if (isGetTargets) return;

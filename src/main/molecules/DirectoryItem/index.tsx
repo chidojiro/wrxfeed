@@ -5,41 +5,41 @@ import { Category, Department, Vendor } from '@main/entity';
 import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
 import { getColorByText, getNameAbbreviation } from '@main/utils';
+import Loading from '@common/atoms/Loading';
+import { useSubscription } from '@main/hooks/subscription.hook';
 
 interface DirectoryItem {
   item: Department | Category | Vendor;
   disableFollow?: boolean;
-  isFollowing?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
-  onFollow?: MouseEventHandler<HTMLButtonElement>;
-  onUnfollow?: MouseEventHandler<HTMLButtonElement>;
+  itemType: 'categories' | 'vendors' | 'departments';
 }
 
 const DirectoryItem: VFC<DirectoryItem> = ({
   item,
-  isFollowing,
   disableFollow = false,
   onClick,
-  onFollow,
-  onUnfollow,
+  itemType = 'categories',
 }) => {
+  const { subscribe, unsubscribe, isFollowing, isFollowLoading, isUnfollowLoading } =
+    useSubscription();
+
   const avatarBgColor = React.useMemo(
     () => getColorByText(item?.name ?? '', item.id, true),
     [item],
   );
 
+  const isFollow = isFollowing(itemType, item);
+  const isLoading = isFollowLoading || isUnfollowLoading;
+
   const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
-    if (onFollow) {
-      onFollow(event);
-    }
+    subscribe(itemType, item);
   };
 
   const handleUnfollow: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
-    if (onUnfollow) {
-      onUnfollow(event);
-    }
+    unsubscribe(itemType, item);
   };
 
   const renderAvatarOrShortName = () => {
@@ -62,6 +62,46 @@ const DirectoryItem: VFC<DirectoryItem> = ({
     );
   };
 
+  const renderIcon = () => {
+    if (disableFollow) return null;
+    if (isFollow) {
+      return (
+        <Button onClick={handleUnfollow} className="rounded-full border-Gray-3">
+          {isLoading ? (
+            <div className="flex w-4 h-4 justify-center items-center">
+              <Loading width={12} height={12} color="Gray-3" />
+            </div>
+          ) : (
+            <TickIcon
+              width={16}
+              height={16}
+              className="stroke-current path-no-stroke text-Gray-3"
+              viewBox="0 0 15 15"
+            />
+          )}
+          <span>Following</span>
+        </Button>
+      );
+    }
+    return (
+      <Button onClick={handleFollow} className="rounded-full border-Gray-3">
+        {isLoading ? (
+          <div className="flex w-4 h-4 justify-center items-center">
+            <Loading width={12} height={12} color="Gray-3" />
+          </div>
+        ) : (
+          <AddIcon
+            width={16}
+            height={16}
+            className="stroke-current stroke-1 path-no-stroke text-Gray-3"
+            viewBox="0 0 15 15"
+          />
+        )}
+        <span className="text-Gray-3">Follow</span>
+      </Button>
+    );
+  };
+
   return (
     <div
       aria-hidden="true"
@@ -72,28 +112,7 @@ const DirectoryItem: VFC<DirectoryItem> = ({
       <div className="flex flex-1">
         <p className="text-sm font-medium text-Gray-1">{item?.name}</p>
       </div>
-      {!disableFollow &&
-        (isFollowing ? (
-          <Button onClick={handleUnfollow} className="rounded-full border-Gray-3">
-            <TickIcon
-              width={16}
-              height={16}
-              className="stroke-current path-no-stroke text-Gray-3"
-              viewBox="0 0 15 15"
-            />
-            <span>Following</span>
-          </Button>
-        ) : (
-          <Button onClick={handleFollow} className="rounded-full border-Gray-3">
-            <AddIcon
-              width={16}
-              height={16}
-              className="stroke-current stroke-1 path-no-stroke text-Gray-3"
-              viewBox="0 0 15 15"
-            />
-            <span className="text-Gray-3">Follow</span>
-          </Button>
-        ))}
+      {renderIcon()}
     </div>
   );
 };

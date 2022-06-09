@@ -642,13 +642,13 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
           <p className="">
             Current Spend:
             <span className="text-Gray-3 font-normal ml-1">
-              {`$${formatCurrency(totalCurrentSpend, '0,0', '0')}`}
+              {`$${formatCurrency({ value: totalCurrentSpend, format: '0,0', defaultValue: '0' })}`}
             </span>
           </p>
           <p className="">
             Total Target Amount:
             <span className="text-Gray-3 font-normal ml-1">
-              {`$${formatCurrency(totalTarget, '0,0', '0')}`}
+              {`$${formatCurrency({ value: totalTarget, format: '0,0', defaultValue: '0' })}`}
             </span>
           </p>
         </div>

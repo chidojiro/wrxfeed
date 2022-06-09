@@ -14,6 +14,11 @@ module.exports = {
     groupScope: "scope",
     groupVariants: ["hover", "focus"],
 
+    screens: {
+      'dashboard': '1410px',
+      ...defaultTheme.screens,
+    },
+
     extend: {
       borderRadius: {
         'card': '10px',
