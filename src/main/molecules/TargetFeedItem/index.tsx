@@ -121,7 +121,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, o
       filter: initFilter,
       cbPost: { onSuccess: () => setShowAddTarget(false), onError: () => undefined },
       cbPut: {
-        onSuccess: (target) => onSuccessPutTarget(target),
+        onSuccess: (id, target) => onSuccessPutTarget(target),
         onError: () => onRefresh && onRefresh(),
       },
       cbDelete: { onSuccess: onSuccessDeleteTarget, onError: () => onRefresh && onRefresh() },

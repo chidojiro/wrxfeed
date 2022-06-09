@@ -3,22 +3,31 @@ import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Menu } from '@headlessui/react';
 
-import { Target, FeedType } from '@main/entity';
-import MiniChartView from '@main/molecules/MiniChartView';
-import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@main/utils';
 import routes from '@src/routes';
+import { Target, FeedType } from '@main/entity';
+import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@main/utils';
+import { MoreVerticalIcon, BinIcon, EditIcon, EyeIcon } from '@assets';
+import TargetStatus, { TargetStatusType } from '@main/atoms/TargetStatus';
+import MiniChartView from '@main/molecules/MiniChartView';
 import TargetFeedName from '@main/atoms/TargetFeedName';
 import EditorAvatar from '@main/atoms/EditorAvatar';
 import PopoverMenu from '@main/atoms/PopoverMenu';
 import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
-import { MoreVerticalIcon, BinIcon, EditIcon, EyeIcon } from '@assets';
-import TargetStatus, { TargetStatusType } from '@main/atoms/TargetStatus';
+import Loading from '@common/atoms/Loading';
 
 export interface TargetWrapListProps {
   targets: Target[];
+  onEdit?: (target: Target) => void;
+  onDelete?: (target: Target) => void;
+  deletingItemId?: number;
 }
 
-const TargetWrapList: React.VFC<TargetWrapListProps> = ({ targets = [] }) => {
+const TargetWrapList: React.VFC<TargetWrapListProps> = ({
+  targets = [],
+  onEdit,
+  onDelete,
+  deletingItemId,
+}) => {
   const history = useHistory();
   const onClickTarget = (target: Target) => {
     history.push(
@@ -26,8 +35,16 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({ targets = [] }) => {
     );
   };
 
-  const onClickEditTarget = () => {};
-  const onClickDeleteTarget = () => {};
+  const onClickEditTarget = (item: Target) => {
+    if (onEdit) {
+      onEdit(item);
+    }
+  };
+  const onClickDeleteTarget = (item: Target) => {
+    if (onDelete) {
+      onDelete(item);
+    }
+  };
 
   const renderMenuItems = (target: Target) => {
     const items = [];
@@ -45,7 +62,7 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({ targets = [] }) => {
         key="Edit-Target"
         value="edit-target"
         label="Edit Target"
-        onClick={onClickEditTarget}
+        onClick={() => onClickEditTarget(target)}
         stopPropagation
         Icon={EditIcon}
         className="text-Gray-3"
@@ -54,7 +71,7 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({ targets = [] }) => {
         key="Delete-Target"
         value="delete-target"
         label="Delete Target"
-        onClick={onClickDeleteTarget}
+        onClick={() => onClickDeleteTarget(target)}
         stopPropagation
         Icon={BinIcon}
         className="text-system-alert"
@@ -67,10 +84,11 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({ targets = [] }) => {
     <>
       {targets.map((item: Target) => {
         const { amount, total } = getTargetPeriodsAmountTotal(item);
+        const isDeleting = deletingItemId === item.id;
         return (
           <div
             key={`Dashboard-TargetChartView-${item.id}`}
-            className="bg-white w-[500px] h-[330px] rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col mr-4 mt-4 border border-transparent hover:border-Accent-4"
+            className="bg-white relative w-[500px] h-[330px] rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col mr-4 mt-4 border border-transparent hover:border-Accent-4"
           >
             <div className="flex flex-1 flex-col py-4 space-y-2 w-full">
               <div className="flex flex-col px-6 space-y-4">
@@ -147,6 +165,11 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({ targets = [] }) => {
                 />
               </div>
             </div>
+            {isDeleting && (
+              <div className="absolute flex justify-center items-center inset-0 rounded-card bg-black/10">
+                <Loading color="Gray-3" />
+              </div>
+            )}
           </div>
         );
       })}

@@ -34,7 +34,7 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
   EmptyStateComponent,
 }) => {
   const [filter, setFilter] = React.useState<TargetFilter>(initFilter);
-  const { targets, hasMore, isGetTargets } = useTarget({ filter });
+  const { targets, hasMore, isGetTargets, removeItem } = useTarget({ filter });
 
   const targetByTeam = React.useMemo(() => {
     return filterTargetsToTargetByTeam(targets);
@@ -93,7 +93,11 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
     >
       <ul className="flex flex-1 flex-col mb-2">
         {targetByTeam.map((item: TargetByTeam) => (
-          <TeamTargetSection targetByTeam={item} key={`targets-by-team-${item?.department?.id}`} />
+          <TeamTargetSection
+            targetByTeam={item}
+            key={`targets-by-team-${item?.department?.id}`}
+            onRemoveItem={(id) => removeItem(id)}
+          />
         ))}
       </ul>
       {!isGetTargets && !targetByTeam.length && renderEmptyList}

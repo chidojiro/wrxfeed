@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useTarget } from '@main/hooks';
-import { TargetByTeam } from '@main/entity';
+import { Target, TargetByTeam } from '@main/entity';
 import { getColorByText } from '@main/utils';
 import { classNames } from '@common/utils';
 import { TeamIcon, AddSmallSolid } from '@assets';
@@ -10,20 +10,41 @@ import TargetWrapList from '@main/molecules/TargetWrapList';
 
 export interface TeamTargetSectionProps {
   className?: string;
+  onRemoveItem?: (id: number) => void;
   targetByTeam: TargetByTeam;
 }
 
-const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({ className = '', targetByTeam }) => {
+const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
+  className = '',
+  targetByTeam,
+  onRemoveItem,
+}) => {
   const [showAddTarget, setShowAddTarget] = React.useState<boolean>(false);
+  const [itemEditing, setItemEditing] = React.useState<Target | null>(null);
+  const [itemDeleting, setItemDeleting] = React.useState<Target | null>(null);
   const { deleteTarget, postTarget, putTarget, isPostTarget, isPutTarget, isDeleteTarget } =
     useTarget({
       autoLoad: false,
+      cbDelete: {
+        onSuccess: (id) => {
+          if (id && onRemoveItem) onRemoveItem(id);
+        },
+        onError: () => {},
+      },
     });
   const teamHeaderColor = React.useMemo(
     () => getColorByText(targetByTeam.department.name ?? '', targetByTeam?.department?.id, true),
     [targetByTeam?.department?.id, targetByTeam?.department?.name],
   );
   const onClickCreate = () => setShowAddTarget(true);
+  const handleEditTarget = (item: Target) => {
+    setItemEditing(item);
+    setShowAddTarget(true);
+  };
+  const handleDeleteTarget = (item: Target) => {
+    setItemDeleting(item);
+    deleteTarget(item.id);
+  };
   return (
     <div
       className={classNames('flex flex-col space-y-2', className)}
@@ -57,7 +78,12 @@ const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({ className = '', 
         </button>
       </div>
       <div className="flex flex-1 flex-row flex-wrap">
-        <TargetWrapList targets={targetByTeam?.targets} />
+        <TargetWrapList
+          targets={targetByTeam?.targets}
+          onEdit={handleEditTarget}
+          onDelete={handleDeleteTarget}
+          deletingItemId={itemDeleting?.id}
+        />
       </div>
       <AddTargetModal
         open={showAddTarget}
@@ -66,7 +92,7 @@ const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({ className = '', 
         deleteTarget={deleteTarget}
         postTarget={postTarget}
         putTarget={putTarget}
-        itemEditing={null}
+        itemEditing={itemEditing}
         isCreatingOrSaving={isPostTarget || isPutTarget}
         isDeleting={isDeleteTarget}
         department={targetByTeam.department}
