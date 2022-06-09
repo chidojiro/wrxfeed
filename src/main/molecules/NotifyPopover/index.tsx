@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
+import { useHistory } from 'react-router-dom';
+
 import { NotifyIcon } from '@assets';
 import {
   NotifyChannelEvents,
@@ -10,10 +12,9 @@ import {
 import { Pagination } from '@api/types';
 import { Notification } from '@main/entity';
 import { NotifyRow } from '@main/atoms';
+import { classNames } from '@common/utils';
 import Loading from '@common/atoms/Loading';
 import Routes from '@src/routes';
-import { useHistory } from 'react-router-dom';
-import { classNames } from '@common/utils';
 
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;

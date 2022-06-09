@@ -20,7 +20,7 @@ export const getTabFromSub = (
     return {
       name: channel.name,
       location: {
-        pathname: `/departments/${channel.id}`,
+        pathname: `/${key}/${channel.id}`,
         search: `?route=${MainGroups.Feeds}`,
       },
       icon: TeamIcon,

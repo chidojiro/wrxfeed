@@ -166,7 +166,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
                 />
                 <PopoverMenuItem
                   key="delete-comment"
-                  labelClassName="text-system-alert"
+                  className="text-system-alert"
                   value="delete-comment"
                   label="Delete"
                   onClick={onDeleteComment}

@@ -13,6 +13,7 @@ import {
   FeedItem,
   TransLineItem,
   VendorDescription,
+  LineItem,
 } from '@main/entity';
 import {
   AuthProfile,
@@ -58,6 +59,7 @@ export interface ApiClient {
   getDepartmentById: (depId: number) => Promise<Department>;
   maskLineItemAsRead: (id: number) => Promise<void>;
   getLineItemById: (id: number) => Promise<TransLineItem>;
+  updateLineItemById: (id: number, data: LineItem) => Promise<void>;
   // feedback
   postFeedBackFeed: (feedId: number, data: FeedBackFormModel) => Promise<void>;
   postFeedBackLineItem: (id: number, data: FeedBackFormModel) => Promise<void>;
@@ -157,6 +159,7 @@ export interface AddCommentParams {
 export interface DepartmentFilter extends Pagination {
   parent?: number;
   term?: string;
+  includeSub?: 1 | 0;
 }
 export interface CategoryFilter extends Pagination {
   term?: string;

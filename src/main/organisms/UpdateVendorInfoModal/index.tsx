@@ -175,7 +175,7 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
               createReadyState,
             )}
           >
-            <p className="text-white text-xs font-semibold">Save</p>
+            <p className="text-white text-xs font-semibold">Save Changes</p>
             {isLoading && <Loading width={12} height={12} color="white" className="w-4 h-4 ml-2" />}
           </button>
         </div>
