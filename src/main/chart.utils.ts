@@ -159,11 +159,9 @@ export const getTargetMonthsLineChartData = (
 ): LineChartData => {
   const monthFormat = 'MMM';
   const thisMonth = dayjs().month();
-  const targetMonthsSize = targetMonths.length;
-  let startMonth = -1;
-  let endMonth = -1;
-  let maxValue = 0;
-  let totalThisYearSpend = 0;
+  let cumulativeThisYear = 0;
+  let cumulativeLastYear = 0;
+  let cumulativeTarget = 0;
 
   const thisYearSorted = thisYearSpend?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
   const lastYearSorted = range(0, 12).map((monthIdx) => {
@@ -177,67 +175,37 @@ export const getTargetMonthsLineChartData = (
     );
   });
 
-  let data: ChartDataPoint[] = targetMonths.reduce<ChartDataPoint[]>((preVal, _, index) => {
-    // start month has been set => reverse array to find end month index
-    const indexFlag: number = startMonth !== -1 ? targetMonthsSize - index + startMonth : index;
-    const targetMonth: TargetMonth = targetMonths[indexFlag];
-    const month = dayjs().month(indexFlag).format(monthFormat);
+  // Find start / end month
+  const availableTargets = targetMonths.filter((item) => item?.amount !== undefined);
+  const startMonth = availableTargets[0]?.month ?? 1;
+  const endMonth = availableTargets[availableTargets.length - 1]?.month ?? 12;
+
+  let data: ChartDataPoint[] = targetMonths.reduce<ChartDataPoint[]>((preVal, target, index) => {
+    // Out of month range
+    if (target.month < startMonth || target.month > endMonth) {
+      return preVal;
+    }
+    const month = dayjs().month(index).format(monthFormat);
+    // Calculate cumulative values
+    cumulativeThisYear += round(thisYearSorted[index]?.total ?? 0, 2);
+    cumulativeLastYear += round(lastYearSorted[index]?.total ?? 0, 2);
+    cumulativeTarget += round(target?.amount ?? 0, 2);
+
     // Generate data point
     const dataPoint =
-      indexFlag > thisMonth
+      index > thisMonth
         ? {
             name: month,
-            lastYear: round(lastYearSorted[indexFlag]?.total ?? 0, 2),
-            target: round(targetMonth?.amount ?? 0, 2),
+            lastYear: cumulativeLastYear,
+            target: cumulativeTarget,
           }
         : {
             name: month,
-            thisYear: round(thisYearSorted[indexFlag]?.total ?? 0, 2),
-            lastYear: round(lastYearSorted[indexFlag]?.total ?? 0, 2),
-            target: round(targetMonth?.amount ?? 0, 2),
+            thisYear: cumulativeThisYear,
+            lastYear: cumulativeLastYear,
+            target: cumulativeTarget,
           };
-    // Find max value
-    if (targetMonth?.amount !== undefined) {
-      maxValue = Math.max(
-        maxValue,
-        round(thisYearSorted[indexFlag]?.total ?? 0),
-        round(lastYearSpend[indexFlag]?.total ?? 0),
-        round(targetMonth?.amount ?? 0),
-      );
-    }
-    // Only add months in selected range (start and end with non-zero amount)
-    // Criteria 1: Start month didn't set and the month doesn't have a target amount (undefined) => ignore
-    if (startMonth === -1 && targetMonth?.amount === undefined) {
-      return preVal;
-    }
-    // Criteria 2: Start month didn't set and the month has a target amount
-    if (startMonth === -1 && targetMonth?.amount !== undefined) {
-      // Set start month
-      startMonth = indexFlag;
-      // Sum total this year spend
-      totalThisYearSpend += dataPoint.thisYear ?? 0;
-      // Add data point
-      return [dataPoint];
-    }
-    /** *** Start month has been set => reverse array until reach start month **** */
-    // Criteria 3: End month didn't set and the month doesn't have a target amount (undefined) => ignore
-    if (endMonth === -1 && targetMonth?.amount === undefined) {
-      return preVal;
-    }
-    // Criteria 4: End month didn't set and the month has a target amount
-    if (endMonth === -1 && targetMonth?.amount !== undefined) {
-      // Set end month
-      endMonth = indexFlag;
-      // Sum total this year spend
-      totalThisYearSpend += dataPoint.thisYear ?? 0;
-      // Add data point
-      return [...preVal, dataPoint];
-    }
-    // Criteria 4: Start month and end month have been set => just add data point at second position
-    preVal.splice(1, 0, dataPoint);
-    // Sum total this year spend
-    totalThisYearSpend += dataPoint.thisYear ?? 0;
-    return preVal;
+    return [...preVal, dataPoint];
   }, []);
 
   // Duplicate data point to draw a line if there is one data point
@@ -249,26 +217,26 @@ export const getTargetMonthsLineChartData = (
   if (data.length === 0) {
     data = lastYearSorted.map((lastYearData, index) => {
       const month = dayjs().month(index).format(monthFormat);
-      // Find max value
-      maxValue = Math.max(
-        maxValue,
-        round(thisYearSorted[index]?.total ?? 0),
-        round(lastYearData?.total ?? 0),
-      );
+      // Calculate cumulative values
+      cumulativeThisYear += round(thisYearSorted[index]?.total ?? 0, 2);
+      cumulativeLastYear += round(lastYearData?.total ?? 0, 2);
+
       return index > thisMonth
         ? {
             name: month,
-            lastYear: round(lastYearData?.total ?? 0, 2),
+            lastYear: cumulativeLastYear,
             target: 0,
           }
         : {
             name: month,
-            thisYear: round(thisYearSorted[index]?.total ?? 0, 2),
-            lastYear: round(lastYearData?.total ?? 0, 2),
+            thisYear: cumulativeThisYear,
+            lastYear: cumulativeLastYear,
             target: 0,
           };
     });
   }
+
+  const maxValue = Math.max(cumulativeThisYear, cumulativeLastYear, cumulativeTarget);
 
   const lines: ChartLineProps[] = [
     {
@@ -298,5 +266,5 @@ export const getTargetMonthsLineChartData = (
     },
   ];
 
-  return { data, legends: [], lines, maxValue, metadata: { currentSpend: totalThisYearSpend } };
+  return { data, legends: [], lines, maxValue, metadata: { currentSpend: cumulativeThisYear } };
 };
