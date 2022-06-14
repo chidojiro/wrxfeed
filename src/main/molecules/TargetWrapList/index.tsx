@@ -98,12 +98,12 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
                       <TargetFeedName target={item} />
                     </div>
                     <div className="flex flex-row space-x-2 items-center h-6 max-h-6">
-                      <EditorAvatar updater={item?.updater} />
+                      <EditorAvatar updater={item?.updatedBy} />
                       <h2
                         id={`question-title-${item?.id}`}
                         className="mt-1 text-xs font-normal text-Gray-6"
                       >
-                        {`${item.updater?.fullName ?? 'Unknown'} edited at ${dayjs(
+                        {`${item?.updatedBy?.fullName ?? 'Unknown'} edited at ${dayjs(
                           item?.updatedAt ?? item?.lastInteraction,
                         ).format('MM/DD/YYYY')}`}
                       </h2>

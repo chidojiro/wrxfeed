@@ -43,6 +43,7 @@ import {
   FeedFilters,
   CategoryFilter,
   TargetPeriod,
+  TargetSummaries,
 } from '@api/types';
 import {
   AuthProfile,
@@ -424,6 +425,14 @@ export default class ApiUtils implements ApiClient {
       url: '/target/spending',
       method: 'PATCH',
       data,
+    });
+    return res.data;
+  };
+
+  getTargetSummaries = async (): Promise<TargetSummaries> => {
+    const res = await this.request<TargetSummaries>({
+      url: '/target/summaries',
+      method: 'GET',
     });
     return res.data;
   };

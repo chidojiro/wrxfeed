@@ -87,6 +87,7 @@ export interface ApiClient {
   putTarget: (id: number, data: PutTargetParams) => Promise<Target>;
   deleteTarget: (id: number) => Promise<void>;
   patchCalcSpending: (data: PatchCalcSpendingFilters) => Promise<TargetPeriod[]>;
+  getTargetSummaries: () => Promise<TargetSummaries>;
   // Subscription
   getSubscriptions: () => Promise<Subscription>;
   updateSubscriptions: (data: SubscriptionParams) => Promise<Subscription>;
@@ -202,6 +203,14 @@ export type TargetPeriod = {
   amount?: number;
   total?: number; // TODO: require backend return number type
 };
+
+export type TargetSummaries = {
+  total: number;
+  onTrack: number;
+  atRisk: number;
+  exceeded: number;
+};
+
 export interface PatchCalcSpendingFilters {
   props: TargetProp[];
   periods: TargetPeriod[];

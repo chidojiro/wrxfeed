@@ -137,6 +137,10 @@ const DepartmentsPage: React.VFC = () => {
     scrollToTop();
   };
 
+  React.useEffect(() => {
+    console.log(`deptSelect: ${JSON.stringify(deptSelect)}`);
+  }, [deptSelect]);
+
   return (
     <MainLayout>
       <h1 className="sr-only">Department list</h1>

@@ -9,7 +9,7 @@ export type Target = {
   periods: TargetPeriod[];
   props: TargetProp[];
   creator: User;
-  updater: User;
+  updatedBy: User;
   updatedAt?: string;
   lastInteraction?: string;
   department?: Department;

@@ -1,6 +1,7 @@
 import React, { FunctionComponent, SVGAttributes } from 'react';
 import { classNames } from '@common/utils';
 import { TargetArrowFilled, TrendDown, TrendUp, WarningFilled } from '@assets';
+import { useDashboard } from '@main/hooks/dashboard.hook';
 
 export interface TargetBoardSummariesProps {
   className?: string;
@@ -14,30 +15,32 @@ export type SummaryInfoType = {
 };
 
 const TargetBoardSummaries: React.VFC<TargetBoardSummariesProps> = ({ className = '' }) => {
-  const summaries = [
+  const { summaries } = useDashboard();
+
+  const summariesList: SummaryInfoType[] = [
     {
       id: 'number-Targets',
       title: 'Targets',
       icon: TargetArrowFilled,
-      value: '12',
+      value: summaries.total.toFixed(0),
     },
     {
       id: 'number-On-Track',
       title: 'On Track',
       icon: TrendUp,
-      value: '75%',
+      value: `${summaries.onTrack}%`,
     },
     {
       id: 'number-At-Risk',
       title: 'At Risk',
       icon: TrendDown,
-      value: '13%',
+      value: `${summaries.atRisk}%`,
     },
     {
       id: 'number-Exceeded',
       title: 'Exceeded',
       icon: WarningFilled,
-      value: '7%',
+      value: `${summaries.exceeded}%`,
     },
   ];
   return (
@@ -47,7 +50,7 @@ const TargetBoardSummaries: React.VFC<TargetBoardSummariesProps> = ({ className 
         className,
       )}
     >
-      {summaries.map((item: SummaryInfoType) => {
+      {summariesList.map((item: SummaryInfoType) => {
         const { icon: IconInfo } = item;
         return (
           <div
