@@ -31,7 +31,7 @@ import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.
 import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
 import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
 import { TeamIcon, CategoryIcon, Bank } from '@assets';
-import { TargetMonth } from './entity/target.entity';
+import { TargetMonth, TargetStatusConfig, TargetStatusType } from './entity/target.entity';
 import { SearchResult } from './types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
@@ -582,30 +582,28 @@ export const getPropsAndPeriodsFromItemSelected = (
   };
 };
 
-export const getTargetPeriodsAmountTotal = (target: Target): { amount: number; total: number } => {
-  const { amount, total } = target.periods.reduce(
+export const getTargetPeriodsAmountTotal = (
+  target: Target,
+): { overallTarget: number; threshold: number; targetToDate: number; exceeding: number } => {
+  const curMonth = new Date().getMonth() + 1;
+  const { overallTarget, threshold, targetToDate } = target.periods.reduce(
     (sum, targetPeriod) => ({
-      amount: sum.amount + (targetPeriod.amount ?? 0),
-      total: sum.total + (targetPeriod.total ?? 0),
+      overallTarget: sum.overallTarget + (targetPeriod.amount ?? 0),
+      threshold: sum.threshold + (targetPeriod.threshold ?? 0),
+      targetToDate:
+        targetPeriod.month <= curMonth
+          ? sum.targetToDate + (targetPeriod.amount ?? 0)
+          : sum.targetToDate,
     }),
     {
-      amount: 0,
-      total: 0,
+      overallTarget: 0,
+      threshold: 0,
+      targetToDate: 0,
     },
   );
-  return { amount, total };
-};
-
-export const stackTargetsBySpend = (data: Target[]): Target[] => {
-  let targetStacked = data.sort((a: Target, b: Target) => {
-    const { total: totalA } = getTargetPeriodsAmountTotal(a);
-    const { total: totalB } = getTargetPeriodsAmountTotal(b);
-    return (totalB ?? 0) - (totalA ?? 0);
-  });
-  targetStacked = data.sort(
-    (a: Target, b: Target) => (b?.id !== null ? 1 : 0) - (a?.id !== null ? 1 : 0),
-  );
-  return targetStacked;
+  const exceeding: number =
+    threshold > overallTarget ? ((threshold - overallTarget) / overallTarget) * 100 : 0;
+  return { overallTarget, threshold, targetToDate, exceeding };
 };
 
 export const getTotalFeedItem = (feed: FeedItem): { total: number } => {
@@ -706,4 +704,8 @@ export const getMultiMonthRange = (periods: TargetPeriod[]): string => {
       .format('MMM')}`;
   }
   return name;
+};
+
+export const getTrackingStatusName = (type: TargetStatusType): string => {
+  return TargetStatusConfig[type].name;
 };

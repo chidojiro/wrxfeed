@@ -1,36 +1,8 @@
 import React from 'react';
 import { InfoCircleIcon } from '@assets';
 import { classNames } from '@common/utils';
-
-export enum TargetStatusType {
-  OnTrack = 'On Track',
-  AtRisk = 'At Risk',
-  Exceeded = 'Exceeded',
-}
-
-export type TargetStatusColor = {
-  label: string;
-  background: string;
-  dot: string;
-};
-
-export const TargetStatusColors = {
-  [TargetStatusType.OnTrack]: {
-    label: '#065F46',
-    background: '#A3F5CB',
-    dot: '#34D399',
-  },
-  [TargetStatusType.AtRisk]: {
-    label: '#92400E',
-    background: '#FDE896',
-    dot: '#FBBF24',
-  },
-  [TargetStatusType.Exceeded]: {
-    label: '#991B1B',
-    background: '#FCB0B0',
-    dot: '#F87171',
-  },
-};
+import { TargetStatusConfig, TargetStatusType } from '@main/entity';
+import { getTrackingStatusName } from '@main/utils';
 
 interface TargetStatusMessageProps {
   type: TargetStatusType;
@@ -50,7 +22,7 @@ export const TargetStatusMessage: React.VFC<TargetStatusMessageProps> = ({
       return (
         <p>
           Spend is within
-          <span style={{ color: TargetStatusColors[TargetStatusType.AtRisk].dot }}>
+          <span style={{ color: TargetStatusConfig[TargetStatusType.AtRisk].dot }}>
             {` ${riskRange}% `}
           </span>
           of the target
@@ -62,7 +34,7 @@ export const TargetStatusMessage: React.VFC<TargetStatusMessageProps> = ({
           Spend is exceeding the target by
           <span
             className="mx-2"
-            style={{ color: TargetStatusColors[TargetStatusType.Exceeded].dot }}
+            style={{ color: TargetStatusConfig[TargetStatusType.Exceeded].dot }}
           >
             {` ${exceeding}% `}
           </span>
@@ -76,10 +48,11 @@ export const TargetStatusMessage: React.VFC<TargetStatusMessageProps> = ({
 interface TargetStatusProps {
   className?: string;
   type: TargetStatusType;
+  exceeding: number;
 }
 
-const TargetStatus: React.VFC<TargetStatusProps> = ({ className = '', type }) => {
-  const { label, background, dot } = TargetStatusColors[type];
+const TargetStatus: React.VFC<TargetStatusProps> = ({ className = '', type, exceeding }) => {
+  const { label, background, dot } = TargetStatusConfig[type];
   return (
     <div
       className={classNames(
@@ -94,7 +67,7 @@ const TargetStatus: React.VFC<TargetStatusProps> = ({ className = '', type }) =>
         <div className="w-1.5 h-1.5 rounded-full bg-Green-400" style={{ backgroundColor: dot }} />
       </div>
       <p className="text-Green-800 text-xs font-medium" style={{ color: label }}>
-        On Track
+        {getTrackingStatusName(type)}
       </p>
       <div className="invisible group-hover:visible absolute -top-10 right-0">
         <div className="bg-primary p-2 rounded-sm h-8 px-4 py-2 flex flex-row items-center space-x-2">
@@ -106,7 +79,7 @@ const TargetStatus: React.VFC<TargetStatusProps> = ({ className = '', type }) =>
             />
           </div>
           <div className="text text-Gray-12 text-xs truncate font-semibold">
-            <TargetStatusMessage type={TargetStatusType.AtRisk} riskRange={5} exceeding={24} />
+            <TargetStatusMessage type={type} riskRange={5} exceeding={exceeding} />
           </div>
         </div>
       </div>

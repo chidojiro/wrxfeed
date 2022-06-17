@@ -201,7 +201,7 @@ export type TargetPeriod = {
   month: number;
   year: number;
   amount?: number;
-  total?: number; // TODO: require backend return number type
+  threshold?: number;
 };
 
 export type TargetSummaries = {

@@ -43,7 +43,7 @@ export function useDashboard(): DashboardHookValues {
 
   useEffect(() => {
     getTargetSummaries().then();
-  }, [getTargetSummaries]);
+  }, []);
 
   return {
     isLoading,

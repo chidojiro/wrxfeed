@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import dayjs from 'dayjs';
-import { Transaction, TargetMonth } from '@main/entity';
+import { Transaction, TargetMonth, TargetSpending } from '@main/entity';
 import { ChartDataPoint, ChartLineProps, ChartLevel, LineChartData } from '@main/types';
 import { TargetPeriod } from '@api/types';
 import { round } from '@common/utils';
@@ -187,8 +187,8 @@ export const getTargetMonthsLineChartData = (
     }
     const month = dayjs().month(index).format(monthFormat);
     // Calculate cumulative values
-    cumulativeThisYear += round(thisYearSorted[index]?.total ?? 0, 2);
-    cumulativeLastYear += round(lastYearSorted[index]?.total ?? 0, 2);
+    cumulativeThisYear += round(thisYearSorted[index]?.threshold ?? 0, 2);
+    cumulativeLastYear += round(lastYearSorted[index]?.threshold ?? 0, 2);
     cumulativeTarget += round(target?.amount ?? 0, 2);
 
     // Generate data point
@@ -218,8 +218,8 @@ export const getTargetMonthsLineChartData = (
     data = lastYearSorted.map((lastYearData, index) => {
       const month = dayjs().month(index).format(monthFormat);
       // Calculate cumulative values
-      cumulativeThisYear += round(thisYearSorted[index]?.total ?? 0, 2);
-      cumulativeLastYear += round(lastYearData?.total ?? 0, 2);
+      cumulativeThisYear += round(thisYearSorted[index]?.threshold ?? 0, 2);
+      cumulativeLastYear += round(lastYearData?.threshold ?? 0, 2);
 
       return index > thisMonth
         ? {
@@ -267,4 +267,40 @@ export const getTargetMonthsLineChartData = (
   ];
 
   return { data, legends: [], lines, maxValue, metadata: { currentSpend: cumulativeThisYear } };
+};
+
+export const getSpendingByYear = (
+  spendings: TargetSpending[] | undefined,
+): { thisYear: TargetPeriod[]; lastYear: TargetPeriod[] } => {
+  if (!spendings) {
+    return {
+      thisYear: [],
+      lastYear: [],
+    };
+  }
+  const THIS_YEAR = new Date().getFullYear();
+  const thisYear = spendings?.filter((item: TargetSpending) => {
+    if (item.year === THIS_YEAR) {
+      return {
+        month: item.month,
+        year: item.year,
+        threshold: item.total,
+      };
+    }
+    return false;
+  });
+  const lastYear = spendings?.filter((item: TargetSpending) => {
+    if (item.year === THIS_YEAR - 1) {
+      return {
+        month: item.month,
+        year: item.year,
+        threshold: item.total,
+      };
+    }
+    return false;
+  });
+  return {
+    thisYear: thisYear ?? [],
+    lastYear: lastYear ?? [],
+  };
 };

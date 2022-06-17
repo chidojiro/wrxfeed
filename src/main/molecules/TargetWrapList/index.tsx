@@ -7,7 +7,7 @@ import routes from '@src/routes';
 import { Target, FeedType } from '@main/entity';
 import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@main/utils';
 import { MoreVerticalIcon, BinIcon, EditIcon, EyeIcon } from '@assets';
-import TargetStatus, { TargetStatusType } from '@main/atoms/TargetStatus';
+import TargetStatus from '@main/atoms/TargetStatus';
 import MiniChartView from '@main/molecules/MiniChartView';
 import TargetFeedName from '@main/atoms/TargetFeedName';
 import EditorAvatar from '@main/atoms/EditorAvatar';
@@ -21,6 +21,10 @@ export interface TargetWrapListProps {
   onDelete?: (target: Target) => void;
   deletingItemId?: number;
 }
+
+export const getTargetToDate = (): number => {
+  return 0;
+};
 
 const TargetWrapList: React.VFC<TargetWrapListProps> = ({
   targets = [],
@@ -83,7 +87,8 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
   return (
     <>
       {targets.map((item: Target) => {
-        const { amount, total } = getTargetPeriodsAmountTotal(item);
+        const { overallTarget, threshold, targetToDate, exceeding } =
+          getTargetPeriodsAmountTotal(item);
         const isDeleting = deletingItemId === item.id;
         return (
           <div
@@ -131,7 +136,7 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
                         <p className="text-2xs">Spend</p>
                       </div>
                       <p className="text-sm text-primary font-semibold mt-1">
-                        {decimalLogic(total ?? '0', DecimalType.SummedNumbers)}
+                        {decimalLogic(threshold ?? '0', DecimalType.SummedNumbers)}
                       </p>
                     </div>
                     <div className="flex flex-col items-start min-w-[70px] h-9 pr-1.5">
@@ -140,7 +145,7 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
                         <p className="text-2xs">Target To Date</p>
                       </div>
                       <p className="text-sm text-primary font-semibold mt-1">
-                        {decimalLogic(amount ?? '0', DecimalType.SummedNumbers)}
+                        {decimalLogic(targetToDate ?? '0', DecimalType.SummedNumbers)}
                       </p>
                     </div>
                     <div className="flex flex-col items-start min-w-[70px] h-9 pr-1.5">
@@ -149,11 +154,13 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
                         <p className="text-2xs">Overall Target</p>
                       </div>
                       <p className="text-sm text-primary font-semibold mt-1">
-                        {decimalLogic(amount ?? '0', DecimalType.SummedNumbers)}
+                        {decimalLogic(overallTarget ?? '0', DecimalType.SummedNumbers)}
                       </p>
                     </div>
                   </div>
-                  <TargetStatus type={TargetStatusType.OnTrack} />
+                  {item?.trackingStatus && (
+                    <TargetStatus type={item?.trackingStatus} exceeding={exceeding} />
+                  )}
                 </div>
               </div>
               <div className="flex flex-1 flex-col px-4">
