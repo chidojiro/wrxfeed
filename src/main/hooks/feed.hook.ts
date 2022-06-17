@@ -1,4 +1,3 @@
-import { SetterOrUpdater, useRecoilState } from 'recoil';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import mixpanel from 'mixpanel-browser';
@@ -6,8 +5,6 @@ import mixpanel from 'mixpanel-browser';
 import { useApi } from '@api';
 import { useErrorHandler } from '@error/hooks';
 import { useIdentity } from '@identity/hooks';
-
-import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
 
 import { FeedFilters } from '@api/types';
 import { isBadRequest } from '@error/utils';
@@ -18,9 +15,6 @@ interface FeedHookValues {
   feeds: FeedItem[];
   hasMore: boolean;
   isLoading: boolean;
-  upsertNewFeedCount: (key: string, count: number) => void;
-  setNewFeedCount: SetterOrUpdater<FeedCount>;
-  newFeedCount: FeedCount | null;
   updateCategory: (category: Partial<Category>) => Promise<void>;
   cleanData: () => void;
 }
@@ -28,7 +22,6 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [newFeedCount, setNewFeedCount] = useRecoilState<FeedCount>(newFeedCountState);
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const cleanData = () => setFeeds([]);
@@ -67,13 +60,6 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ApiClient, errorHandler, filters]);
 
-  const upsertNewFeedCount = (key: string, value: number) => {
-    setNewFeedCount({
-      ...newFeedCount,
-      [key]: value,
-    });
-  };
-
   const updateCategory = useCallback(
     async (category: Partial<Category>) => {
       try {
@@ -110,9 +96,6 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
     feeds,
     hasMore,
     isLoading,
-    upsertNewFeedCount,
-    setNewFeedCount,
-    newFeedCount,
     updateCategory,
     cleanData,
   };

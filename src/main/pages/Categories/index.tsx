@@ -44,13 +44,7 @@ const CategoriesPage: React.VFC = () => {
         },
   );
 
-  const {
-    feeds,
-    hasMore: hasMoreFeeds,
-    isLoading: feedsLoading,
-    updateCategory,
-    cleanData,
-  } = useFeed(feedsFilter);
+  const { feeds, cleanData } = useFeed(feedsFilter);
   // Variables
   const isFiltering = !!feedsFilter.category;
   const [category, setCategory] = useState<Category | null>();
@@ -98,17 +92,6 @@ const CategoriesPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  const handleFeedsLoadMore = useCallback(() => {
-    if (!hasMoreFeeds || feedsLoading) return;
-    setFeedsFilter((prevFilter) => ({
-      ...prevFilter,
-      page: {
-        limit: prevFilter?.page?.limit ?? 0,
-        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
-      },
-    }));
-  }, [hasMoreFeeds, feedsLoading]);
-
   const handleCategorySelect = (value?: Category): void => {
     cleanData();
     setCategory(value);
@@ -150,14 +133,7 @@ const CategoriesPage: React.VFC = () => {
           onSelect={handleCategorySelect}
         />
       ) : (
-        <FeedList
-          feeds={feeds}
-          isLoading={feedsLoading || isLoading}
-          hasMore={hasMoreFeeds}
-          onLoadMore={handleFeedsLoadMore}
-          onFilter={handleFeedsFilter}
-          updateCategory={updateCategory}
-        />
+        <FeedList onFilter={handleFeedsFilter} />
       )}
     </MainLayout>
   );
