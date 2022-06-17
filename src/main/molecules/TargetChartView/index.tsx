@@ -29,7 +29,7 @@ interface TargetChartViewProps {
 
 const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, onEdit }) => {
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
-  const { overallTarget, threshold } = getTargetPeriodsAmountTotal(target);
+  const { overallTarget, currentSpend } = getTargetPeriodsAmountTotal(target);
   const updatedTargetMonths = targetMonths.filter((item) => item?.amount !== undefined);
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
@@ -208,7 +208,7 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, o
           <div className="flex flex-col min-w-[128px]">
             <p className="text-xs text-Gray-3">Current Spend</p>
             <p className="text-xl text-primary font-bold mt-1">
-              {decimalLogic(threshold ?? '0', DecimalType.SummedNumbers)}
+              {decimalLogic(currentSpend ?? '0', DecimalType.SummedNumbers)}
             </p>
           </div>
           <div className="flex flex-col min-w-[128px]">

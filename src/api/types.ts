@@ -202,6 +202,7 @@ export type TargetPeriod = {
   year: number;
   amount?: number;
   threshold?: number;
+  total?: number;
 };
 
 export type TargetSummaries = {

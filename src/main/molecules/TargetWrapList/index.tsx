@@ -87,7 +87,7 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
   return (
     <>
       {targets.map((item: Target) => {
-        const { overallTarget, threshold, targetToDate, exceeding } =
+        const { overallTarget, currentSpend, targetToDate, exceeding } =
           getTargetPeriodsAmountTotal(item);
         const isDeleting = deletingItemId === item.id;
         return (
@@ -136,7 +136,7 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
                         <p className="text-2xs">Spend</p>
                       </div>
                       <p className="text-sm text-primary font-semibold mt-1">
-                        {decimalLogic(threshold ?? '0', DecimalType.SummedNumbers)}
+                        {decimalLogic(currentSpend ?? '0', DecimalType.SummedNumbers)}
                       </p>
                     </div>
                     <div className="flex flex-col items-start min-w-[70px] h-9 pr-1.5">

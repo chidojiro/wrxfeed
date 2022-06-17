@@ -179,7 +179,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
         {monthsInYear.map((month: number) => {
           const monthMatched = lastYearData.filter((item: TargetPeriod) => item.month === month);
           const lastYearSpend =
-            monthMatched.length > 0 ? parseFloat(monthMatched[0].threshold?.toString() ?? '0') : 0;
+            monthMatched.length > 0 ? parseFloat(monthMatched[0].total?.toString() ?? '0') : 0;
           return (
             <div
               key={`renderLastYearSpend-${month}`}

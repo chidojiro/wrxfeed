@@ -187,8 +187,8 @@ export const getTargetMonthsLineChartData = (
     }
     const month = dayjs().month(index).format(monthFormat);
     // Calculate cumulative values
-    cumulativeThisYear += round(thisYearSorted[index]?.threshold ?? 0, 2);
-    cumulativeLastYear += round(lastYearSorted[index]?.threshold ?? 0, 2);
+    cumulativeThisYear += round(thisYearSorted[index]?.total ?? 0, 2);
+    cumulativeLastYear += round(lastYearSorted[index]?.total ?? 0, 2);
     cumulativeTarget += round(target?.amount ?? 0, 2);
 
     // Generate data point
@@ -218,8 +218,8 @@ export const getTargetMonthsLineChartData = (
     data = lastYearSorted.map((lastYearData, index) => {
       const month = dayjs().month(index).format(monthFormat);
       // Calculate cumulative values
-      cumulativeThisYear += round(thisYearSorted[index]?.threshold ?? 0, 2);
-      cumulativeLastYear += round(lastYearData?.threshold ?? 0, 2);
+      cumulativeThisYear += round(thisYearSorted[index]?.total ?? 0, 2);
+      cumulativeLastYear += round(lastYearData?.total ?? 0, 2);
 
       return index > thisMonth
         ? {

@@ -21,7 +21,7 @@ export interface TargetRowProps {
 const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
   const targetName = getTargetName(target);
   const deptBgClass = useMemo(() => getColorByText(targetName ?? ''), [targetName]);
-  const { overallTarget, threshold } = getTargetPeriodsAmountTotal(target);
+  const { overallTarget, currentSpend } = getTargetPeriodsAmountTotal(target);
   const isActive = (overallTarget ?? 0) > 0 && target?.id !== null;
 
   const renderEditButton = () => {
@@ -41,7 +41,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
   const inactiveTarget = 'rgba(209,213,219,0.3)';
 
   if (!isActive) {
-    const totalSpent = threshold ?? 0;
+    const totalSpent = currentSpend ?? 0;
     let targetAmount = TARGET_PLACEHOLDER;
     const percent = (totalSpent / targetAmount) * 100;
     const percentLength = percent < 75 ? `${percent}%` : '75%';
@@ -70,7 +70,7 @@ const TargetRow: React.VFC<TargetRowProps> = ({ target, onClickEdit }) => {
     );
   }
 
-  const totalSpent = threshold ?? 0;
+  const totalSpent = currentSpend ?? 0;
   const targetAmount = overallTarget ?? 0;
 
   let percent = (totalSpent / targetAmount) * 100;

@@ -584,12 +584,16 @@ export const getPropsAndPeriodsFromItemSelected = (
 
 export const getTargetPeriodsAmountTotal = (
   target: Target,
-): { overallTarget: number; threshold: number; targetToDate: number; exceeding: number } => {
+): {
+  overallTarget: number;
+  targetToDate: number;
+  exceeding: number;
+  currentSpend: number;
+} => {
   const curMonth = new Date().getMonth() + 1;
-  const { overallTarget, threshold, targetToDate } = target.periods.reduce(
+  const { overallTarget, targetToDate } = target.periods.reduce(
     (sum, targetPeriod) => ({
       overallTarget: sum.overallTarget + (targetPeriod.amount ?? 0),
-      threshold: sum.threshold + (targetPeriod.threshold ?? 0),
       targetToDate:
         targetPeriod.month <= curMonth
           ? sum.targetToDate + (targetPeriod.amount ?? 0)
@@ -597,13 +601,14 @@ export const getTargetPeriodsAmountTotal = (
     }),
     {
       overallTarget: 0,
-      threshold: 0,
       targetToDate: 0,
     },
   );
+  const currentSpend =
+    target?.spendings?.reduce((sum, spending) => sum + (spending.total ?? 0), 0) ?? 0;
   const exceeding: number =
-    threshold > overallTarget ? ((threshold - overallTarget) / overallTarget) * 100 : 0;
-  return { overallTarget, threshold, targetToDate, exceeding };
+    currentSpend > overallTarget ? ((currentSpend - overallTarget) / overallTarget) * 100 : 0;
+  return { overallTarget, targetToDate, exceeding, currentSpend };
 };
 
 export const getTotalFeedItem = (feed: FeedItem): { total: number } => {
