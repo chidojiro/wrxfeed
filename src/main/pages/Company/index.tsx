@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import mixpanel from 'mixpanel-browser';
 
-import { useFeed } from '@main/hooks/feed.hook';
 import { useIdentity } from '@identity/hooks';
 import { FeedFilters } from '@api/types';
 import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@main/hooks';
@@ -19,6 +18,8 @@ import FeedList from '@main/organisms/FeedList';
 import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@common/constants';
+import { useNewFeedCount } from '@main/hooks/newFeedCount.hook';
+import { useFeed } from '@main/hooks/feed.hook';
 
 const LIMIT = 5;
 const INIT_PAGINATION = {
@@ -39,30 +40,12 @@ const CompanyPage: React.VFC = () => {
   const [filterTitle, setFilterTitle] = useState('');
   const filterKey = FilterKeys.find((key) => query.get(key));
 
-  const {
-    feeds,
-    hasMore,
-    isLoading,
-    updateCategory,
-    newFeedCount,
-    upsertNewFeedCount,
-    setNewFeedCount,
-  } = useFeed(feedFilters);
+  const { newFeedCount, upsertNewFeedCount, setNewFeedCount } = useNewFeedCount();
+  const { feeds } = useFeed(feedFilters);
 
   const identity = useIdentity();
 
   const newFeedNumber = newFeedCount ? newFeedCount[location.pathname] : 0;
-  const handleLoadMore = useCallback(() => {
-    if (!hasMore || isLoading) return;
-    setFeedFilters((prevFilters) => ({
-      page: {
-        limit: prevFilters?.page?.limit ?? LIMIT,
-        offset: (prevFilters?.page?.offset ?? 0) + (prevFilters?.page?.limit ?? LIMIT),
-      },
-      forYou: 0,
-      ...(filterKey ? { [filterKey]: query.get(filterKey) } : {}),
-    }));
-  }, [hasMore, isLoading]);
 
   const getFilterVendorById = async (key: string) => {
     if (key === FilterKeys[2] && filterKey && query.get(filterKey)) {
@@ -181,14 +164,7 @@ const CompanyPage: React.VFC = () => {
           <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
         </div>
       )}
-      <FeedList
-        feeds={feeds}
-        onLoadMore={handleLoadMore}
-        isLoading={isLoading}
-        hasMore={hasMore}
-        onFilter={handleFilter}
-        updateCategory={updateCategory}
-      />
+      <FeedList onFilter={handleFilter} />
       <NewFeedIndicator
         isVisible={newFeedNumber > 0}
         counter={newFeedNumber}
