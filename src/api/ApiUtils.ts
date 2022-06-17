@@ -43,6 +43,7 @@ import {
   FeedFilters,
   CategoryFilter,
   TargetPeriod,
+  TargetSummaries,
 } from '@api/types';
 import {
   AuthProfile,
@@ -428,6 +429,14 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
+  getTargetSummaries = async (): Promise<TargetSummaries> => {
+    const res = await this.request<TargetSummaries>({
+      url: '/target/summaries',
+      method: 'GET',
+    });
+    return res.data;
+  };
+
   getTransactionById = async (id: number): Promise<Transaction> => {
     const res = await this.request<Transaction>({
       url: `/feed/transactions/${id}`,
@@ -562,9 +571,9 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getDepartmentById = async (dep: number): Promise<Department> => {
+  getDepartmentById = async (depId: number): Promise<Department> => {
     const res = await this.request<Department>({
-      url: `/feed/departments/${dep}`,
+      url: `/feed/departments/${depId}`,
       method: 'GET',
     });
     return res.data;

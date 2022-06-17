@@ -5,27 +5,21 @@ import dayjs from 'dayjs';
 import cloneDeep from 'lodash.clonedeep';
 import range from 'lodash.range';
 
-import { defaultTargetMonths } from '@common/constants';
-import { PatchCalcSpendingFilters, TargetPeriod, TransactionBody } from '@api/types';
-import { classNames } from '@common/utils';
-import { Target, TargetMonth } from '@main/entity';
-import { LineChartData } from '@main/types';
-import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@main/chart.utils';
-import { decimalLogic, DecimalType, getPeriodsByYear } from '@main/utils';
-import { useMultiMonth } from '@main/hooks/multiMonth.hook';
 import { useTransaction } from '@main/hooks/transaction.hook';
+import { defaultTargetMonths } from '@common/constants';
+import { LineChartData } from '@main/types';
+import { Target, TargetMonth } from '@main/entity';
 import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
-import TargetChart from '../TargetChart';
+import { TargetPeriod, TransactionBody } from '@api/types';
+import { classNames } from '@common/utils';
+import {
+  getLineChartDataInMonth,
+  getTargetMonthsLineChartData,
+  getSpendingByYear,
+} from '@main/chart.utils';
+import { decimalLogic, DecimalType } from '@main/utils';
 
-const THIS_YEAR = new Date().getFullYear();
-const THIS_YEAR_INIT_FILTER = Object.freeze({
-  props: [],
-  periods: getPeriodsByYear(THIS_YEAR),
-});
-const LAST_YEAR_INIT_FILTER = Object.freeze({
-  props: [],
-  periods: getPeriodsByYear(THIS_YEAR - 1),
-});
+import TargetChart from '../TargetChart';
 
 interface MiniChartViewProps {
   className?: string;
@@ -48,18 +42,16 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
-  const [thisYearSpendFilter, setThisYearFilter] =
-    useState<PatchCalcSpendingFilters>(THIS_YEAR_INIT_FILTER);
-  const [lastYearSpendFilter, setLastYearFilter] =
-    useState<PatchCalcSpendingFilters>(LAST_YEAR_INIT_FILTER);
-  const { months: thisYearSpendData = [], isLoading: thisYearDataLoading } =
-    useMultiMonth(thisYearSpendFilter);
-  const { months: lastYearSpendData = [], isLoading: lastYearDataLoading } =
-    useMultiMonth(lastYearSpendFilter);
+  const { thisYear: thisYearSpendData, lastYear: lastYearSpendData } = useMemo(() => {
+    return getSpendingByYear(target?.spendings);
+  }, [target?.spendings]);
+
   const [lastYearTransPayload, setLastYearTransPayload] = useState<TransactionBody>();
-  const { transactions: lastYearTrans } = useTransaction(lastYearTransPayload);
+  const { transactions: lastYearTrans, isLoading: isLoadingTranLastYear } =
+    useTransaction(lastYearTransPayload);
   const [thisYearTransPayload, setThisYearTransPayload] = useState<TransactionBody>();
-  const { transactions: thisYearTrans } = useTransaction(thisYearTransPayload);
+  const { transactions: thisYearTrans, isLoading: isLoadingTranThisYear } =
+    useTransaction(thisYearTransPayload);
 
   const chartData: LineChartData = useMemo(() => {
     if (startMonth === endMonth) {
@@ -71,14 +63,6 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
   useEffect(() => {
     const { periods, props } = target;
     if (periods?.length > 0 && props?.length > 0) {
-      setThisYearFilter({
-        props,
-        periods: getPeriodsByYear(THIS_YEAR),
-      });
-      setLastYearFilter({
-        props,
-        periods: getPeriodsByYear(THIS_YEAR - 1),
-      });
       const dataMonth = cloneDeep(defaultTargetMonths);
       periods.forEach((period: TargetPeriod) => {
         if (
@@ -234,7 +218,7 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
               chartData={chartData}
               renderXAxis={renderXAxis}
               renderTooltip={renderTooltipContent}
-              loading={lastYearDataLoading || thisYearDataLoading}
+              loading={isLoadingTranLastYear || isLoadingTranThisYear}
               levelLabelClass="text-Gray-6 text-2xs font-normal"
             />
           </div>

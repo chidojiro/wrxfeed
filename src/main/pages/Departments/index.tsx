@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 
 import { useQuery } from '@common/hooks';
 import { useFeed } from '@main/hooks/feed.hook';
 import { useDepartment } from '@main/hooks/department.hook';
+import { useApi } from '@api';
 
 import { Category, Department, Vendor } from '@main/entity';
 import { FeedFilters, Pagination } from '@api/types';
@@ -27,6 +28,7 @@ const INIT_PAGINATION = Object.freeze({
 const DepartmentsPage: React.VFC = () => {
   const history = useHistory();
   const { id: deptId } = useParams<{ id?: string }>();
+  const [deptSelect, setDeptSelect] = useState<Department>();
   const query = useQuery();
   const location = useLocation();
   // Department states
@@ -52,22 +54,23 @@ const DepartmentsPage: React.VFC = () => {
     cleanData,
   } = useFeed(feedsFilter);
 
+  const { getDepartmentById } = useApi();
+
   const inDirectoryList = query.get('route') !== MainGroups.Feeds;
   const isFiltering = inDirectoryList
     ? !!feedsFilter.page?.offset || !!feedsFilter.page?.limit
     : FilterKeys.some((key) => query.has(key));
 
-  const deptSelect = useMemo(() => {
-    if (!feeds.length) return null;
-    if (feeds[0].department.id === feedsFilter?.rootDepartment) {
-      return feeds[0].department;
-    }
+  const getDepById = async (id: string) => {
+    const department = await getDepartmentById(parseInt(id, 10));
+    setDeptSelect(department);
+  };
 
-    if (feeds[0].department.parent?.id === feedsFilter.rootDepartment) {
-      return feeds[0].department.parent;
+  useEffect(() => {
+    if (deptId) {
+      getDepById(deptId);
     }
-    return null;
-  }, [isFiltering, feeds]);
+  }, [deptId]);
 
   const filterByRoute = useCallback(() => {
     if (deptId) {

@@ -61,9 +61,9 @@ const TargetFeedTitle: React.VFC<TargetFeedTitleProps> = ({
           </div> */}
         </div>
         <div className="flex flex-row space-x-2 items-center h-6">
-          <EditorAvatar updater={target.updater} />
+          <EditorAvatar updater={target?.updatedBy} />
           <h2 id={`question-title-${target?.id}`} className="mt-1 text-xs font-normal text-Gray-6">
-            {`${target.updater?.fullName ?? 'Unknown'} edited at ${dayjs(lastInteraction).format(
+            {`${target?.updatedBy?.fullName ?? 'Unknown'} edited at ${dayjs(lastInteraction).format(
               'MM/DD/YYYY',
             )}`}
           </h2>
