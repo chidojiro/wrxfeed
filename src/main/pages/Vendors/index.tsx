@@ -49,13 +49,7 @@ const VendorsPage: React.VFC = () => {
         },
   );
 
-  const {
-    feeds,
-    hasMore: hasMoreFeeds,
-    isLoading: feedsLoading,
-    updateCategory,
-    cleanData,
-  } = useFeed(feedsFilter);
+  const { cleanData } = useFeed(feedsFilter);
   // Variables
   const isFiltering = !!feedsFilter.vendor;
 
@@ -93,17 +87,6 @@ const VendorsPage: React.VFC = () => {
       offset: (prevFilter?.offset ?? 0) + (prevFilter?.limit ?? 0),
     }));
   }, [hasMore, isLoading]);
-
-  const handleFeedsLoadMore = useCallback(() => {
-    if (!hasMoreFeeds || feedsLoading) return;
-    setFeedsFilter((prevFilter) => ({
-      ...prevFilter,
-      page: {
-        limit: prevFilter?.page?.limit ?? LIMIT,
-        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? LIMIT),
-      },
-    }));
-  }, [hasMoreFeeds, feedsLoading]);
 
   const handleVendorSelect = (value?: Vendor): void => {
     cleanData();
@@ -150,14 +133,7 @@ const VendorsPage: React.VFC = () => {
           onSelect={handleVendorSelect}
         />
       ) : (
-        <FeedList
-          feeds={feeds}
-          isLoading={feedsLoading || isLoading}
-          hasMore={hasMoreFeeds}
-          onLoadMore={handleFeedsLoadMore}
-          onFilter={handleFeedsFilter}
-          updateCategory={updateCategory}
-        />
+        <FeedList onFilter={handleFeedsFilter} />
       )}
     </MainLayout>
   );

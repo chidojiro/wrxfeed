@@ -44,13 +44,7 @@ const DepartmentsPage: React.VFC = () => {
           page: { offset: 0, limit: 0 }, // Don't load feed items at the first launch
         },
   );
-  const {
-    feeds,
-    hasMore: hasMoreFeeds,
-    isLoading: feedsLoading,
-    updateCategory,
-    cleanData,
-  } = useFeed(feedsFilter);
+  const { feeds, cleanData } = useFeed(feedsFilter);
 
   const inDirectoryList = query.get('route') !== MainGroups.Feeds;
   const isFiltering = inDirectoryList
@@ -106,17 +100,6 @@ const DepartmentsPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  const handleFeedsLoadMore = useCallback(() => {
-    if (!hasMoreFeeds || feedsLoading) return;
-    setFeedsFilter((prevFilter) => ({
-      ...prevFilter,
-      page: {
-        limit: prevFilter?.page?.limit ?? 0,
-        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
-      },
-    }));
-  }, [hasMoreFeeds, feedsLoading]);
-
   const handleDepartmentSelect = (value?: Department): void => {
     history.push({
       pathname: `/departments/${value?.id.toString()}`,
@@ -152,14 +135,7 @@ const DepartmentsPage: React.VFC = () => {
       ) : (
         <>
           {deptId && <TeamHome deptSelect={deptSelect} depId={parseInt(deptId, 10)} />}
-          <FeedList
-            feeds={feeds}
-            isLoading={feedsLoading || isLoading}
-            hasMore={hasMoreFeeds}
-            onLoadMore={handleFeedsLoadMore}
-            onFilter={handleFeedsFilter}
-            updateCategory={updateCategory}
-          />
+          <FeedList onFilter={handleFeedsFilter} />
         </>
       )}
     </MainLayout>

@@ -1,23 +1,33 @@
-import React, { CSSProperties } from 'react';
+import React, {
+  CSSProperties,
+  forwardRef,
+  ForwardRefRenderFunction,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+} from 'react';
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
-import { Category, Department, FeedItem, Vendor } from '@main/entity';
+import { Category, Department, Vendor } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
 import ListEndComponent from '@main/atoms/ListEndComponent';
 import RollupCard from '@main/molecules/RollupCard';
 import { FeedFilters } from '@api/types';
 import TargetFeedItem from '@main/molecules/TargetFeedItem';
+import { useFeed } from '@main/hooks/feed.hook';
+import { FilterKeys } from '@main/hooks';
+import { useQuery } from '@common/hooks';
+import { useHistory } from 'react-router-dom';
+import { classNames } from '@common/utils';
 
 interface FeedListProps {
   style?: CSSProperties;
-  feeds: FeedItem[];
-  isLoading?: boolean;
-  hasMore?: boolean;
-  endMessage?: string;
-  onLoadMore?: () => void;
+  hasEmptyStateComponent?: boolean;
+  hasEndComponent?: boolean;
   onFilter?: (key: keyof FeedFilters, value?: Department | Category | Vendor) => void;
-  updateCategory?: (category: Partial<Category>) => Promise<void>;
-  EndComponent?: React.FunctionComponent | undefined;
-  EmptyStateComponent?: React.FunctionComponent | undefined;
+}
+
+export interface FeedListHandler {
+  resetFeedFilters: () => void;
 }
 
 export enum FeedItemType {
@@ -25,20 +35,85 @@ export enum FeedItemType {
   transaction = 'transaction',
 }
 
-const FeedList: React.VFC<FeedListProps> = ({
-  style,
-  feeds,
-  isLoading,
-  hasMore,
-  endMessage,
-  onLoadMore,
-  onFilter,
-  updateCategory,
-  EndComponent,
-  EmptyStateComponent,
-}) => {
-  const renderEmptyList = EmptyStateComponent ? (
-    <EmptyStateComponent />
+const LIMIT = 5;
+const INIT_PAGINATION = Object.freeze({
+  offset: 0,
+  limit: LIMIT,
+});
+
+const INIT_FEED_FILTER = Object.freeze({
+  page: INIT_PAGINATION,
+  forYou: 1,
+});
+
+const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
+  { style, hasEmptyStateComponent, hasEndComponent, onFilter },
+  ref,
+) => {
+  const [feedFilters, setFeedFilters] = React.useState<FeedFilters>(INIT_FEED_FILTER);
+  const { feeds, hasMore, isLoading, updateCategory } = useFeed(feedFilters);
+  const query = useQuery();
+  const history = useHistory();
+  const filterKey = FilterKeys.find((key) => query.get(key));
+
+  useImperativeHandle(ref, () => ({
+    resetFeedFilters: (): void => {
+      setFeedFilters({ ...feedFilters, page: INIT_PAGINATION });
+    },
+  }));
+
+  useEffect(() => {
+    if (filterKey) {
+      setFeedFilters({
+        ...INIT_FEED_FILTER,
+        [filterKey]: query.get(filterKey),
+      });
+    } else {
+      setFeedFilters(INIT_FEED_FILTER);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setFeedFilters, filterKey]);
+
+  const handleLoadMore = useCallback(() => {
+    if (!hasMore || isLoading) return;
+    setFeedFilters((prevFilter) => {
+      return {
+        ...prevFilter,
+        page: {
+          limit: prevFilter?.page?.limit ?? LIMIT,
+          offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? LIMIT),
+        },
+      };
+    });
+  }, [hasMore, isLoading]);
+
+  const onClickFollowingMoreTeams = () => {
+    history.push({
+      pathname: '/departments',
+    });
+  };
+
+  const renderForYouEndList = (className = 'mt-3 sm:mt-8') => {
+    return (
+      <p className={classNames('text-base text-center text-Neutral-4', className)}>
+        Add to your feed by
+        <button
+          type="button"
+          onClick={onClickFollowingMoreTeams}
+          className="ml-1 text-Gray-3 underline"
+        >
+          <u>following more teams</u>
+        </button>
+        <span role="img" aria-label="rocket">
+          {' '}
+          🚀
+        </span>
+      </p>
+    );
+  };
+
+  const renderEmptyList = hasEmptyStateComponent ? (
+    renderForYouEndList()
   ) : (
     <div className="pb-2 sm:pb-5 text-center">
       <svg
@@ -60,10 +135,10 @@ const FeedList: React.VFC<FeedListProps> = ({
     </div>
   );
 
-  const renderEndComponent = EndComponent ? (
-    <EndComponent />
+  const renderEndComponent = hasEndComponent ? (
+    renderForYouEndList()
   ) : (
-    <ListEndComponent message={endMessage} />
+    <ListEndComponent message="Add to your feed by following more teams." />
   );
 
   return (
@@ -71,7 +146,7 @@ const FeedList: React.VFC<FeedListProps> = ({
       className="pb-4 sm:pb-12 mr-0.5"
       style={style}
       threshold={500}
-      onLoadMore={onLoadMore}
+      onLoadMore={handleLoadMore}
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}
     >
@@ -102,4 +177,4 @@ const FeedList: React.VFC<FeedListProps> = ({
   );
 };
 
-export default FeedList;
+export default forwardRef(FeedList);
