@@ -27,11 +27,11 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ className = '', target, 
   const targetName = getTargetName(target);
   const history = useHistory();
   const deptBgClass = useMemo(() => getColorByText(targetName ?? ''), [targetName]);
-  const { amount, total } = getTargetPeriodsAmountTotal(target);
-  const isActive = (amount ?? 0) > 0 && target?.id !== null;
+  const { overallTarget, currentSpend } = getTargetPeriodsAmountTotal(target);
+  const isActive = (overallTarget ?? 0) > 0 && target?.id !== null;
 
-  const totalSpent = total ?? 0;
-  const targetAmount = amount ?? 0;
+  const totalSpent = currentSpend ?? 0;
+  const targetAmount = overallTarget ?? 0;
   const isExceeds = totalSpent > targetAmount;
 
   const onClickTarget = () => {
