@@ -9,28 +9,36 @@ import { getApiClient } from '@api/utils';
 import { GroupTab, SectionTab } from '@common/types';
 import GroupTabSideBar from '@common/molecules/GroupTabSideBar';
 import TabListSideBar from '@common/molecules/TabListSideBar';
+import { ENABLE_GET_FEED_COUNT } from '@common/constants';
 
 const SideBar: React.VFC = () => {
   const [menuItems, setMenuItems] = useRecoilState(menuItemsValue);
   const setFeedCount = useSetRecoilState(newFeedCountState);
   async function getFeedCount() {
-    try {
-      const apiClient = await getApiClient();
-      const companyRequest = apiClient.getUnreadLineItemsCount({
-        page: { offset: 0, limit: 1 },
-      });
-      const forYouRequest = apiClient.getUnreadLineItemsCount({
-        forYou: 1,
-        page: { offset: 0, limit: 1 },
-      });
-      const [companyCount, forYouCount] = await Promise.all([companyRequest, forYouRequest]);
+    if (ENABLE_GET_FEED_COUNT) {
+      try {
+        const apiClient = await getApiClient();
+        const companyRequest = apiClient.getUnreadLineItemsCount({
+          page: { offset: 0, limit: 1 },
+        });
+        const forYouRequest = apiClient.getUnreadLineItemsCount({
+          forYou: 1,
+          page: { offset: 0, limit: 1 },
+        });
+        const [companyCount, forYouCount] = await Promise.all([companyRequest, forYouRequest]);
 
+        setFeedCount({
+          '/company': companyCount ?? 0,
+          '/for-you': forYouCount ?? 0,
+        });
+      } catch {
+        toast.error('Fail to load feed count!');
+      }
+    } else {
       setFeedCount({
-        '/company': companyCount ?? 0,
-        '/for-you': forYouCount ?? 0,
+        '/company': 0,
+        '/for-you': 0,
       });
-    } catch {
-      toast.error('Fail to load feed count');
     }
   }
 

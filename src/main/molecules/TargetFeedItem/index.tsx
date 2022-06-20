@@ -89,7 +89,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, o
 
   const onSuccessPutTarget = (target?: Target) => {
     setShowAddTarget(false);
-    const updater: User = {
+    const updatedBy: User = {
       id: identity?.id,
       avatar: identity?.avatar,
       fullName: identity?.fullName,
@@ -101,7 +101,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, o
       ...(target?.name ? { name: target?.name } : {}),
       ...(target?.props ? { props: target?.props } : {}),
       ...(target?.periods ? { periods: target?.periods } : {}),
-      updater,
+      updatedBy,
     };
     setCurFeed(curFeedClone);
     if (typeof onRefresh === 'function') {
@@ -169,10 +169,10 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, o
   };
 
   const renderEditorAvatar = (target: Target) => {
-    const updaterName = target?.updater?.fullName ?? '';
+    const updaterName = target?.updatedBy?.fullName ?? '';
     return (
       <div className="flex w-6 h-6 group relative">
-        <UserAvatar user={target?.updater} />
+        <UserAvatar user={target?.updatedBy} />
         {typeof updaterName === 'string' && updaterName?.length > 0 && (
           <div className="invisible group-hover:visible absolute -top-10 left-0">
             <div className="bg-primary p-2 rounded-sm">
@@ -269,7 +269,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, o
                 id={`question-title-${curFeed?.id}`}
                 className="mt-1 text-xs font-normal text-Gray-6"
               >
-                {`${curFeed?.target.updater?.fullName ?? 'Unknown'} edited at ${dayjs(
+                {`${curFeed?.target?.updatedBy?.fullName ?? 'Unknown'} edited at ${dayjs(
                   curFeed.lastInteraction,
                 ).format('MM/DD/YYYY')}`}
               </h2>
