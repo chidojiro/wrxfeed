@@ -237,8 +237,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
         </div>
 
         <div
-          className="flex flex-col my-5 px-8 overflow-y-auto"
-          style={{ maxHeight: 'calc(100% - 280px)' }}
+          className={classNames(
+            'flex flex-col my-5 px-8 overflow-y-auto max-h-[calc(100vh-168px)]',
+          )}
         >
           <div className="flex flex-row group w-[524px]">
             {renderVendorName()}
