@@ -46,7 +46,7 @@ const DepartmentsPage: React.VFC = () => {
           page: { offset: 0, limit: 0 }, // Don't load feed items at the first launch
         },
   );
-  const { feeds, cleanData } = useFeed(feedsFilter);
+  const { cleanData } = useFeed(feedsFilter);
 
   const { getDepartmentById } = useApi();
 

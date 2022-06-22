@@ -139,9 +139,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
 
   const renderVendorName = () => {
     const vendorName = getVendorNameFromLineItem(item);
-    return (
-      <div className="flex-auto text-lg font-bold text-Gray-3 truncate mr-2">{vendorName}</div>
-    );
+    return <div className="flex-auto text-lg font-bold text-Gray-3 mr-2">{vendorName}</div>;
   };
 
   const renderEditVendorInfoButton = () => {
@@ -238,7 +236,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
           </button>
         </div>
 
-        <div className="flex flex-col px-8 pt-8 pb-5">
+        <div className="flex flex-col my-5 px-8 overflow-y-auto max-h-[calc(100vh-168px)]">
           <div className="flex flex-row group w-[524px]">
             {renderVendorName()}
             <div className="block hidden group-hover:block">{renderEditVendorInfoButton()}</div>
@@ -266,8 +264,8 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
           </div>
 
           <div className="flex flex-col mt-6 rounded-lg border border-gray-200 p-3 bg-gray-50 w-[524px]">
-            <div className="flex flex-row w-full text-sm text-gray-500 group mb-2 h-7">
-              <p className="flex-auto text-base font-bold text-Gray-3 truncate mr-2">
+            <div className="flex flex-row w-full text-sm text-gray-500 group mb-2">
+              <p className="flex-auto text-base font-bold text-Gray-3 mr-2">
                 {lineItemUpdate.description}
               </p>
               {!!loading && <Loading className="ml-4" width={12} height={12} />}
