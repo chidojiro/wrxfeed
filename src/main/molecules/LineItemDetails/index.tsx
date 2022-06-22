@@ -31,7 +31,6 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { vendorUpdateState } from '@main/states/vendorUpdate.state';
 import { lineItemUpdateState } from '@main/states/lineItemUpdate.state';
 import UpdateDetailsLineItemInfoModal from '@main/organisms/UpdateDetailsLineItemInfoModal';
-import useWindowDimensions from '@main/hooks/windowDimensions.hook';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -64,8 +63,6 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   const [showEditLineItem, setShowEditLineItem] = useState<boolean>(false);
   const lineItemUpdate = useRecoilValue(lineItemUpdateState);
   const setLineItemUpdate = useSetRecoilState(lineItemUpdateState);
-
-  const { height } = useWindowDimensions();
 
   useEffect(() => {
     setVendorUpdate({
@@ -241,7 +238,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
 
         <div
           className="flex flex-col my-5 px-8 overflow-y-auto"
-          style={{ maxHeight: `${height - 200}px` }}
+          style={{ maxHeight: 'calc(100% - 280px)' }}
         >
           <div className="flex flex-row group w-[524px]">
             {renderVendorName()}
