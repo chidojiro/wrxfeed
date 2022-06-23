@@ -1,10 +1,10 @@
 import React, { MouseEventHandler, VFC } from 'react';
-import Button from '@common/atoms/Button';
-import { Department } from '@main/entity';
+import Button from '@/common/atoms/Button';
+import { Department } from '@/main/entity';
 // Icons
-import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
-import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
-import { getColorByText } from '@main/utils';
+import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
+import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
+import { getColorByText } from '@/main/utils';
 
 interface DirectoryItem {
   item: Department;

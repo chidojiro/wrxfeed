@@ -1,6 +1,6 @@
-import NoPermission from '@common/pages/NoPermission';
-import { useIdentity, usePermission } from '@identity/hooks';
-import routes from '@src/routes';
+import NoPermission from '@/common/pages/NoPermission';
+import { useIdentity, usePermission } from '@/identity/hooks';
+import routes from '@/routes';
 import React from 'react';
 import { Route, RouteProps, Redirect, useLocation } from 'react-router-dom';
 

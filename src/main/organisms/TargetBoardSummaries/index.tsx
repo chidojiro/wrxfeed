@@ -1,7 +1,7 @@
 import React, { FunctionComponent, SVGAttributes } from 'react';
-import { classNames } from '@common/utils';
-import { TargetArrowFilled, TrendDown, TrendUp, WarningFilled } from '@assets';
-import { useDashboard } from '@main/hooks/dashboard.hook';
+import { TargetArrowFilled, TrendDown, TrendUp, WarningFilled } from '@/assets';
+import { useDashboard } from '@/main/hooks/dashboard.hook';
+import { classNames } from '@/common/utils';
 
 export interface TargetBoardSummariesProps {
   className?: string;

@@ -1,7 +1,7 @@
 import { MentionData, MentionPluginTheme } from '@draft-js-plugins/mention';
 import React, { MouseEventHandler } from 'react';
-import { ReactComponent as AvatarIcon } from '@assets/icons/outline/avatar.svg';
-import { classNames } from '@common/utils';
+import { ReactComponent as AvatarIcon } from '@/assets/icons/outline/avatar.svg';
+import { classNames } from '@/common/utils';
 
 export interface EntryComponentProps {
   className?: string;
@@ -18,7 +18,7 @@ export interface EntryComponentProps {
 }
 
 const MentionEntry: React.VFC<EntryComponentProps> = (props) => {
-  const { mention, theme, searchValue, isFocused, ...parentProps } = props;
+  const { mention, theme, isFocused, ...parentProps } = props;
 
   return (
     <div {...parentProps}>

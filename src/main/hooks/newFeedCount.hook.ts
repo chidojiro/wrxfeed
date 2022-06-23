@@ -1,6 +1,6 @@
 import { SetterOrUpdater, useRecoilState } from 'recoil';
 
-import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
+import { FeedCount, newFeedCountState } from '@/main/states/sidemenu.state';
 
 interface NewFeedCountHookValues {
   upsertNewFeedCount: (key: string, count: number) => void;

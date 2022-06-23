@@ -3,7 +3,7 @@ import { useCallback, useState, useEffect, Dispatch, SetStateAction } from 'reac
 function useRoveFocus(size: number): [number, Dispatch<SetStateAction<number>>] {
   const [currentFocus, setCurrentFocus] = useState(0);
   const handleKeyDown = useCallback(
-    (e) => {
+    (e: KeyboardEvent) => {
       if (e.keyCode === 40) {
         // Down arrow
         e.preventDefault();

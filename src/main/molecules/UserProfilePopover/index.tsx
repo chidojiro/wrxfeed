@@ -3,19 +3,19 @@ import { Popover, Transition } from '@headlessui/react';
 import { useRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
 
-import { Profile } from '@auth/types';
-import { profileState } from '@auth/containers/ProfileEditForm/states';
-import { UPLOAD_FILE_ACCEPT } from '@src/config';
-import { getNameAbbreviation } from '@main/utils';
-import { classNames } from '@common/utils';
-import { GetUploadTokenBody, UploadTypes } from '@api/types';
+import { Profile } from '@/auth/types';
+import { profileState } from '@/auth/containers/ProfileEditForm/states';
+import { getNameAbbreviation } from '@/main/utils';
+import { classNames } from '@/common/utils';
+import { GetUploadTokenBody, UploadTypes } from '@/api/types';
 
-import { useApi } from '@api';
-import { useSetIdentity } from '@identity/hooks';
-import { useFileUploader } from '@common/hooks/useFileUploader';
+import { useApi } from '@/api';
+import { useSetIdentity } from '@/identity/hooks';
+import { useFileUploader } from '@/common/hooks/useFileUploader';
 
-import Loading from '@common/atoms/Loading';
-import UploadButton from '@common/atoms/UploadButton';
+import Loading from '@/common/atoms/Loading';
+import UploadButton from '@/common/atoms/UploadButton';
+import { UPLOAD_FILE_ACCEPT } from '@/config';
 
 export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
@@ -48,7 +48,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     {
       title: 'Name',
       content: profileUser?.fullName || 'Unknown',
-      onChange: () => {},
+      onChange: () => null,
       editable: false,
     },
     {
@@ -70,7 +70,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
     {
       title: 'Email',
       content: profileUser?.email || 'Unknown',
-      onChange: () => {},
+      onChange: () => null,
       editable: false,
     },
   ];

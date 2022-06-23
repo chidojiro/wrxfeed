@@ -2,15 +2,14 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useRef, useState, KeyboardEventHandler, useEffect } from 'react';
 
-import { classNames } from '@common/utils';
-import { EMPTY_VENDOR_DESCRIPTION, VendorDescription } from '@main/entity';
-
-import Modal from '@common/atoms/Modal';
-import Loading from '@common/atoms/Loading';
+import { EMPTY_VENDOR_DESCRIPTION, VendorDescription } from '@/main/entity';
 
 import { useSetRecoilState } from 'recoil';
-import { vendorUpdateState } from '@main/states/vendorUpdate.state';
-import { useUpdateVendor } from '@main/hooks/updateVendor.hook';
+import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
+import { useUpdateVendor } from '@/main/hooks/updateVendor.hook';
+import Loading from '@/common/atoms/Loading';
+import Modal from '@/common/atoms/Modal';
+import { classNames } from '@/common/utils';
 
 export type UpdateVendorInfoModalProps = {
   open: boolean;

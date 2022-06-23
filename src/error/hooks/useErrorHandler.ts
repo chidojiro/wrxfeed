@@ -1,4 +1,4 @@
-import { useSetIdentity } from '@identity/hooks';
+import { useSetIdentity } from '@/identity/hooks';
 import React from 'react';
 import { toast } from 'react-toastify';
 import { useNavUtils } from '../../common/hooks';

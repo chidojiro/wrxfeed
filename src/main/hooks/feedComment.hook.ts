@@ -1,9 +1,9 @@
-import { useApi } from '@api';
-import { AddCommentParams, OrderDirection, Pagination } from '@api/types';
-import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
-import { useIdentity } from '@identity/hooks';
-import { Comment, FeedItem } from '@main/entity';
+import { useApi } from '@/api';
+import { AddCommentParams, OrderDirection, Pagination } from '@/api/types';
+import { useErrorHandler } from '@/error/hooks';
+import { isBadRequest } from '@/error/utils';
+import { useIdentity } from '@/identity/hooks';
+import { Comment, FeedItem } from '@/main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import mixpanel from 'mixpanel-browser';

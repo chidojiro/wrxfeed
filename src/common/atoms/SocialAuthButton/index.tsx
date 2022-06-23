@@ -1,6 +1,6 @@
 import React, { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
-import { ReactComponent as GoogleLogo } from '@assets/icons/google-logo.svg';
-import { classNames } from '@common/utils';
+import { ReactComponent as GoogleLogo } from '@/assets/icons/google-logo.svg';
+import { classNames } from '@/common/utils';
 
 export enum AuthProvider {
   GOOGLE = 'GOOGLE',

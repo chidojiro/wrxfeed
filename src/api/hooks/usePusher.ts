@@ -1,6 +1,6 @@
 import React from 'react';
 import Pusher from 'pusher-js';
-import PusherContext from '@api/contexts/PusherContext';
+import PusherContext from '@/api/contexts/PusherContext';
 
 export default function usePusher(): Pusher {
   const contextVal = React.useContext(PusherContext);

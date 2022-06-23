@@ -4,23 +4,23 @@ import React, { useEffect, useRef } from 'react';
 import * as Sentry from '@sentry/react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { FeedFilters } from '@api/types';
-import { Category, Department, Vendor } from '@main/entity';
+import { FeedFilters } from '@/api/types';
+import { Category, Department, Vendor } from '@/main/entity';
 
-import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@main/hooks';
-import { useQuery } from '@common/hooks';
-import { useApi } from '@api';
+import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@/main/hooks';
+import { useQuery } from '@/common/hooks';
+import { useApi } from '@/api';
 
-import MainLayout from '@common/templates/MainLayout';
-import FeedList, { FeedListHandler } from '@main/organisms/FeedList';
-import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import { MainGroups } from '@common/constants';
+import MainLayout from '@/common/templates/MainLayout';
+import FeedList, { FeedListHandler } from '@/main/organisms/FeedList';
+import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
+import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
+import { MainGroups } from '@/common/constants';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@identity/hooks';
-import { useNewFeedCount } from '@main/hooks/newFeedCount.hook';
-import { scrollToTop } from '@main/utils';
+import { useIdentity } from '@/identity/hooks';
+import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
+import { scrollToTop } from '@/main/utils';
 
 const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 

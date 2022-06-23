@@ -1,4 +1,4 @@
-import { EMPTY_LINE_ITEM, LineItem } from '@main/entity';
+import { EMPTY_LINE_ITEM, LineItem } from '@/main/entity';
 import { atom } from 'recoil';
 
 export const lineItemUpdateState = atom<LineItem>({

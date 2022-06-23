@@ -1,5 +1,5 @@
 import React from 'react';
-import { classNames } from '@common/utils';
+import { classNames } from '@/common/utils';
 
 interface ExceedBarProps {
   className?: string;

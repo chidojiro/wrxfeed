@@ -1,7 +1,4 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
   "files.trimTrailingWhitespace": true,
   "yaml.customTags": [
     "!And scalar",
@@ -76,4 +73,5 @@
     "userid",
     "Wrxfeed"
   ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

@@ -3,7 +3,7 @@ import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link as RouterLink } from 'react-router-dom';
-import FormInput from '@auth/atoms/FormInput';
+import FormInput from '@/auth/atoms/FormInput';
 import { ProfileFormModel } from '../../types';
 import { useFormErrorHandler } from '../../../error';
 

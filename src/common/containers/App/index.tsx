@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
+import { RecoilRoot as _RecoilRoot, RecoilRootProps } from 'recoil';
 import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,20 +8,23 @@ import 'emoji-mart/css/emoji-mart.css';
 import 'draft-js/dist/Draft.css';
 import '@draft-js-plugins/mention/lib/plugin.css';
 import '@draft-js-plugins/linkify/lib/plugin.css';
-import '@src/styles.css';
+import '@/styles.css';
 
-import LoadingFallback from '@common/atoms/LoadingFallback';
-import NotFoundPage from '@common/pages/NotFoundPage';
-import { ApiProvider } from '@api';
-import routes from '@src/routes';
-import { ProtectedRoute } from '@identity';
-import { API_BASE_URL } from '@src/config';
-import { CookieProvider } from '@common/hooks/useCookie';
-import { UploadCSVModal } from '@main/organisms';
-import { EmojiPickerContainer } from '@common/molecules/EmojiPicker';
-import { NotifyBannerContainer } from '@common/molecules/NotifyBanner';
-import ContactSupportButton from '@main/organisms/ContactSupportButton';
-import { PusherProvider } from '@api/containers/PusherProvider';
+import LoadingFallback from '@/common/atoms/LoadingFallback';
+import NotFoundPage from '@/common/pages/NotFoundPage';
+import { ApiProvider } from '@/api';
+import routes from '@/routes';
+import { ProtectedRoute } from '@/identity';
+import { CookieProvider } from '@/common/hooks/useCookie';
+import { UploadCSVModal } from '@/main/organisms';
+import { EmojiPickerContainer } from '@/common/molecules/EmojiPicker';
+import { NotifyBannerContainer } from '@/common/molecules/NotifyBanner';
+import ContactSupportButton from '@/main/organisms/ContactSupportButton';
+import { PusherProvider } from '@/api/containers/PusherProvider';
+import { API_BASE_URL } from '@/config';
+import { Children } from '@/common/types';
+
+const RecoilRoot = _RecoilRoot as React.FC<RecoilRootProps & Children>;
 
 const StyledToastContainer = () => (
   <ToastContainer

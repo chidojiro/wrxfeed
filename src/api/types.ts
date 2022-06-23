@@ -1,4 +1,4 @@
-import { UserToken, Identity } from '@identity/types';
+import { UserToken, Identity } from '@/identity/types';
 import {
   Comment,
   Transaction,
@@ -14,7 +14,7 @@ import {
   TransLineItem,
   VendorDescription,
   LineItem,
-} from '@main/entity';
+} from '@/main/entity';
 import {
   AuthProfile,
   ChangePwdFormModel,
@@ -23,8 +23,8 @@ import {
   Profile,
   ProfileFormModel,
   SearchTypes,
-} from '@auth/types';
-import { InviteFormModel, FeedBackFormModel, SearchResult } from '@main/types';
+} from '@/auth/types';
+import { InviteFormModel, FeedBackFormModel, SearchResult } from '@/main/types';
 
 export interface ApiClient {
   // Authentication API

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { classNames } from '@common/utils';
+import { classNames } from '@/common/utils';
 
 export type ImageFilePreviewProps = {
   className?: string;

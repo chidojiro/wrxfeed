@@ -5,20 +5,20 @@ import dayjs from 'dayjs';
 import cloneDeep from 'lodash.clonedeep';
 import range from 'lodash.range';
 
-import { defaultTargetMonths } from '@common/constants';
-import { TargetPeriod, TransactionBody } from '@api/types';
-import { classNames } from '@common/utils';
-import { BasicsEditCircle } from '@assets';
-import { Target, TargetMonth } from '@main/entity';
-import { LineChartData } from '@main/types';
+import { defaultTargetMonths } from '@/common/constants';
+import { TargetPeriod, TransactionBody } from '@/api/types';
+import { classNames } from '@/common/utils';
+import { BasicsEditCircle } from '@/assets';
+import { Target, TargetMonth } from '@/main/entity';
+import { LineChartData } from '@/main/types';
 import {
   getLineChartDataInMonth,
   getSpendingByYear,
   getTargetMonthsLineChartData,
-} from '@main/chart.utils';
-import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@main/utils';
-import { useTransaction } from '@main/hooks/transaction.hook';
-import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
+} from '@/main/chart.utils';
+import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
+import { useTransaction } from '@/main/hooks/transaction.hook';
+import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import TargetChart from '../TargetChart';
 
 interface TargetChartViewProps {

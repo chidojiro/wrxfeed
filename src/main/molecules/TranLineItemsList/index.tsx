@@ -1,9 +1,9 @@
 import React from 'react';
-import { classNames } from '@common/utils';
+import { classNames } from '@/common/utils';
 
-import { TransLineItem, Vendor } from '@main/entity';
-import Loading from '@common/atoms/Loading';
-import RollupLineItem from '@main/molecules/RollupLineItem';
+import { TransLineItem, Vendor } from '@/main/entity';
+import Loading from '@/common/atoms/Loading';
+import RollupLineItem from '@/main/molecules/RollupLineItem';
 
 export interface TranLineItemsListProps {
   className?: string;

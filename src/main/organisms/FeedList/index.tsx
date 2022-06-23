@@ -6,18 +6,18 @@ import React, {
   useEffect,
   useImperativeHandle,
 } from 'react';
-import InfiniteScroller from '@common/atoms/InfiniteScroller';
-import { Category, Department, Vendor } from '@main/entity';
-import ListLoading from '@main/atoms/ListLoading';
-import ListEndComponent from '@main/atoms/ListEndComponent';
-import RollupCard from '@main/molecules/RollupCard';
-import { FeedFilters } from '@api/types';
-import TargetFeedItem from '@main/molecules/TargetFeedItem';
-import { useFeed } from '@main/hooks/feed.hook';
-import { FilterKeys } from '@main/hooks';
-import { useQuery } from '@common/hooks';
+import { Category, Department, Vendor } from '@/main/entity';
+import ListLoading from '@/main/atoms/ListLoading';
+import ListEndComponent from '@/main/atoms/ListEndComponent';
+import RollupCard from '@/main/molecules/RollupCard';
+import { FeedFilters } from '@/api/types';
+import TargetFeedItem from '@/main/molecules/TargetFeedItem';
+import { useFeed } from '@/main/hooks/feed.hook';
+import { FilterKeys } from '@/main/hooks';
 import { useHistory } from 'react-router-dom';
-import { classNames } from '@common/utils';
+import { useQuery } from '@/common/hooks';
+import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import { classNames } from '@/common/utils';
 
 interface FeedListProps {
   style?: CSSProperties;

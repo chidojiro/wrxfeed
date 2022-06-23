@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react/types-6-0';
 
-import { Transaction, Visibility } from '@main/entity';
+import { Transaction, Visibility } from '@/main/entity';
 import TransactionCard, { TransactionCardProps } from '.';
 
 export default {

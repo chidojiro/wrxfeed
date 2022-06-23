@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { MentionData } from '@draft-js-plugins/mention';
-import { useErrorHandler } from '@error/hooks';
-import { User } from '@main/entity';
+import { useErrorHandler } from '@/error/hooks';
+import { User } from '@/main/entity';
 import { useEffect, useState } from 'react';
-import { isBadRequest } from '@src/error';
+import { isBadRequest } from '@/error';
 import { toast } from 'react-toastify';
 import { useRecoilValueLoadable } from 'recoil';
-import { membersState } from '@main/states/member.state';
+import { membersState } from '@/main/states/member.state';
 
 interface MentionHookValues {
   mentions: MentionData[];
