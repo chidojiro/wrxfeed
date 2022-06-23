@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   CSSProperties,
   forwardRef,
@@ -6,6 +7,8 @@ import React, {
   useEffect,
   useImperativeHandle,
 } from 'react';
+import { useHistory } from 'react-router-dom';
+
 import InfiniteScroller from '@common/atoms/InfiniteScroller';
 import { Category, Department, Vendor } from '@main/entity';
 import ListLoading from '@main/atoms/ListLoading';
@@ -16,7 +19,6 @@ import TargetFeedItem from '@main/molecules/TargetFeedItem';
 import { useFeed } from '@main/hooks/feed.hook';
 import { FilterKeys } from '@main/hooks';
 import { useQuery } from '@common/hooks';
-import { useHistory } from 'react-router-dom';
 import { classNames } from '@common/utils';
 
 interface FeedListProps {
@@ -24,6 +26,10 @@ interface FeedListProps {
   hasEmptyStateComponent?: boolean;
   hasEndComponent?: boolean;
   onFilter?: (key: keyof FeedFilters, value?: Department | Category | Vendor) => void;
+  depId?: number;
+  forYou?: 1 | 0;
+  categoryId?: number;
+  vendorId?: number;
 }
 
 export interface FeedListHandler {
@@ -43,15 +49,27 @@ const INIT_PAGINATION = Object.freeze({
 
 const INIT_FEED_FILTER = Object.freeze({
   page: INIT_PAGINATION,
-  forYou: 1,
 });
 
 const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
-  { style, hasEmptyStateComponent, hasEndComponent, onFilter },
+  {
+    style,
+    hasEmptyStateComponent,
+    hasEndComponent,
+    onFilter,
+    depId,
+    forYou = 0,
+    categoryId,
+    vendorId,
+  },
   ref,
 ) => {
-  const [feedFilters, setFeedFilters] = React.useState<FeedFilters>(INIT_FEED_FILTER);
-  const { feeds, hasMore, isLoading, updateCategory } = useFeed(feedFilters);
+  const [feedFilters, setFeedFilters] = React.useState<FeedFilters>({
+    ...INIT_FEED_FILTER,
+    forYou,
+    department: depId,
+  });
+  const { feeds, hasMore, isLoading, updateCategory, cleanData } = useFeed(feedFilters);
   const query = useQuery();
   const history = useHistory();
   const filterKey = FilterKeys.find((key) => query.get(key));
@@ -63,16 +81,24 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
   }));
 
   useEffect(() => {
+    cleanData();
+    setFeedFilters({
+      ...INIT_FEED_FILTER,
+      ...(depId !== undefined ? { department: depId } : {}),
+      ...(categoryId !== undefined ? { category: categoryId } : {}),
+      ...(vendorId !== undefined ? { vendor: vendorId } : {}),
+    });
+  }, [depId, categoryId, vendorId]);
+
+  useEffect(() => {
     if (filterKey) {
       setFeedFilters({
         ...INIT_FEED_FILTER,
+        forYou,
         [filterKey]: query.get(filterKey),
       });
-    } else {
-      setFeedFilters(INIT_FEED_FILTER);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setFeedFilters, filterKey]);
+  }, [filterKey]);
 
   const handleLoadMore = useCallback(() => {
     if (!hasMore || isLoading) return;
@@ -83,6 +109,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
           limit: prevFilter?.page?.limit ?? LIMIT,
           offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? LIMIT),
         },
+        forYou,
       };
     });
   }, [hasMore, isLoading]);

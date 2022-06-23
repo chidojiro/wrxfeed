@@ -3,47 +3,7 @@ import { InfoCircleIcon } from '@assets';
 import { classNames } from '@common/utils';
 import { TargetStatusConfig, TargetStatusType } from '@main/entity';
 import { getTrackingStatusName } from '@main/utils';
-
-interface TargetStatusMessageProps {
-  type: TargetStatusType;
-  riskRange: number;
-  exceeding: number;
-}
-
-export const TargetStatusMessage: React.VFC<TargetStatusMessageProps> = ({
-  type,
-  riskRange,
-  exceeding,
-}) => {
-  switch (type) {
-    case TargetStatusType.OnTrack:
-      return <p>Spend is below the target</p>;
-    case TargetStatusType.AtRisk:
-      return (
-        <p>
-          Spend is within
-          <span style={{ color: TargetStatusConfig[TargetStatusType.AtRisk].dot }}>
-            {` ${riskRange}% `}
-          </span>
-          of the target
-        </p>
-      );
-    case TargetStatusType.Exceeded:
-      return (
-        <p>
-          Spend is exceeding the target by
-          <span
-            className="mx-2"
-            style={{ color: TargetStatusConfig[TargetStatusType.Exceeded].dot }}
-          >
-            {` ${exceeding}% `}
-          </span>
-        </p>
-      );
-    default:
-      return <p>Spend is below the target</p>;
-  }
-};
+import TargetStatusMessage from '../TargetStatusMessage';
 
 interface TargetStatusProps {
   className?: string;

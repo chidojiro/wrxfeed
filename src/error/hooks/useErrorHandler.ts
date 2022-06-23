@@ -53,7 +53,7 @@ export default function useErrorHandler(): ErrorHandler {
           break;
 
         default:
-          toast.error('An unknown error occurred.');
+          toast.error(error.details?.message);
           break;
       }
     },

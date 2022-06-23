@@ -2,6 +2,7 @@ import React, { FunctionComponent, SVGAttributes } from 'react';
 import { classNames } from '@common/utils';
 import { TargetArrowFilled, TrendDown, TrendUp, WarningFilled } from '@assets';
 import { useDashboard } from '@main/hooks/dashboard.hook';
+import { getSummaryNumber } from '@main/utils';
 
 export interface TargetBoardSummariesProps {
   className?: string;
@@ -28,21 +29,22 @@ const TargetBoardSummaries: React.VFC<TargetBoardSummariesProps> = ({ className 
       id: 'number-On-Track',
       title: 'On Track',
       icon: TrendUp,
-      value: `${summaries.onTrack}%`,
+      value: getSummaryNumber(summaries?.onTrack, summaries?.total),
     },
     {
       id: 'number-At-Risk',
       title: 'At Risk',
       icon: TrendDown,
-      value: `${summaries.atRisk}%`,
+      value: getSummaryNumber(summaries?.atRisk, summaries?.total),
     },
     {
       id: 'number-Exceeded',
       title: 'Exceeded',
       icon: WarningFilled,
-      value: `${summaries.exceeded}%`,
+      value: getSummaryNumber(summaries?.exceeded, summaries?.total),
     },
   ];
+
   return (
     <div
       className={classNames(

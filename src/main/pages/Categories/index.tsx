@@ -31,7 +31,7 @@ const CategoriesPage: React.VFC = () => {
   const location = useLocation();
   // Category states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
-  const { categories, hasMore, isLoading } = useCategory(filter);
+  const { categories, hasMore, isLoading } = useCategory({ filter });
   // Feeds states
   const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
     catId
@@ -74,13 +74,7 @@ const CategoriesPage: React.VFC = () => {
   }, [catId, query.toString(), feedsFilter.category]);
 
   useEffect(() => {
-    // Scroll to top
-    if (window.scrollY > 0) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'auto',
-      });
-    }
+    scrollToTop();
     filterByRoute();
   }, [filterByRoute]);
 
@@ -133,7 +127,10 @@ const CategoriesPage: React.VFC = () => {
           onSelect={handleCategorySelect}
         />
       ) : (
-        <FeedList onFilter={handleFeedsFilter} />
+        <FeedList
+          onFilter={handleFeedsFilter}
+          categoryId={catId ? parseInt(catId, 10) : undefined}
+        />
       )}
     </MainLayout>
   );
