@@ -13,14 +13,14 @@ import cloneDeep from 'lodash.clonedeep';
 import dayjs from 'dayjs';
 import { useOnClickOutside } from '@dwarvesf/react-hooks';
 
-import { classNames, formatCurrency, round } from '@common/utils';
-import { TargetMonth } from '@main/entity';
-import { TargetPeriod, TargetProp } from '@api/types';
-import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-2.svg';
-import { BasicsDownSmall, LeftSmallIcon } from '@assets';
-import Loading from '@common/atoms/Loading';
-import MonthTargetInput from '@main/atoms/MonthTargetInput';
-import { defaultTargetMonths, monthsInYear } from '@common/constants';
+import { classNames, formatCurrency, round } from '@/common/utils';
+import { TargetMonth } from '@/main/entity';
+import { TargetPeriod, TargetProp } from '@/api/types';
+import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
+import { BasicsDownSmall, LeftSmallIcon } from '@/assets';
+import Loading from '@/common/atoms/Loading';
+import MonthTargetInput from '@/main/atoms/MonthTargetInput';
+import { defaultTargetMonths, monthsInYear } from '@/common/constants';
 
 interface MultiMonthDropdownProps {
   className?: string;

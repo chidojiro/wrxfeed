@@ -9,11 +9,11 @@ import {
   getTransactionStatus,
   getVendorNameFromLineItem,
   isEmptyOrSpaces,
-} from '@main/utils';
-import { TransLineItem, TranStatusType } from '@main/entity';
-import { classNames } from '@common/utils';
+} from '@/main/utils';
+import { TransLineItem, TranStatusType } from '@/main/entity';
+import { classNames } from '@/common/utils';
 
-import Loading from '@common/atoms/Loading';
+import Loading from '@/common/atoms/Loading';
 
 import {
   BasicsXRegular,
@@ -24,13 +24,13 @@ import {
   PhoneIcon,
   BasicsEditCircle,
   StackItemsIcon,
-} from '@assets';
-import Tooltip from '@common/atoms/Tooltip';
-import UpdateVendorInfoModal from '@main/organisms/UpdateVendorInfoModal';
+} from '@/assets';
+import Tooltip from '@/common/atoms/Tooltip';
+import UpdateVendorInfoModal from '@/main/organisms/UpdateVendorInfoModal';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { vendorUpdateState } from '@main/states/vendorUpdate.state';
-import { lineItemUpdateState } from '@main/states/lineItemUpdate.state';
-import UpdateDetailsLineItemInfoModal from '@main/organisms/UpdateDetailsLineItemInfoModal';
+import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
+import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
+import UpdateDetailsLineItemInfoModal from '@/main/organisms/UpdateDetailsLineItemInfoModal';
 
 export interface LineItemDetailsProps {
   className?: string;

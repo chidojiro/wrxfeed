@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useCallback, useEffect, useRef } from 'react';
 import { Popover, Transition } from '@headlessui/react';
-import { TargetPropType } from '@api/types';
-import { classNames } from '@common/utils';
-import { getColorByPropertyType } from '@main/utils';
-import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
-import { SearchResult } from '@main/types';
-import { useSearch } from '@main/hooks/search.hook';
-import { AlertRed } from '@assets';
-import useRoveFocus from '@main/hooks/focus.hook';
-import PropertyDropdownItem from '@main/atoms/PropertyDropdownItem';
-import { useDebounce } from '@common/hooks';
+import { TargetPropType } from '@/api/types';
+import { classNames } from '@/common/utils';
+import { getColorByPropertyType } from '@/main/utils';
+import AddTargetTagInput from '@/main/atoms/AddTargetTagInput';
+import { SearchResult } from '@/main/types';
+import { useSearch } from '@/main/hooks/search.hook';
+import { AlertRed } from '@/assets';
+import useRoveFocus from '@/main/hooks/focus.hook';
+import PropertyDropdownItem from '@/main/atoms/PropertyDropdownItem';
+import { useDebounce } from '@/common/hooks';
 
 export enum DropdownEdge {
   LEFT = 'left-0',

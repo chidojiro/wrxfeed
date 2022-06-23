@@ -4,22 +4,22 @@ import { useHistory, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import mixpanel from 'mixpanel-browser';
 
-import { useIdentity } from '@identity/hooks';
-import { FeedFilters } from '@api/types';
-import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@main/hooks';
-import { useQuery } from '@common/hooks';
-import { useApi } from '@api';
+import { useIdentity } from '@/identity/hooks';
+import { FeedFilters } from '@/api/types';
+import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@/main/hooks';
+import { useApi } from '@/api';
 
-import { scrollToTop } from '@main/utils';
-import { Category, Department, Vendor } from '@main/entity';
+import { scrollToTop } from '@/main/utils';
+import { Category, Department, Vendor } from '@/main/entity';
 
-import MainLayout from '@common/templates/MainLayout';
-import FeedList from '@main/organisms/FeedList';
-import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import { MainGroups } from '@common/constants';
-import { useNewFeedCount } from '@main/hooks/newFeedCount.hook';
-import { useFeed } from '@main/hooks/feed.hook';
+import FeedList from '@/main/organisms/FeedList';
+import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
+import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
+import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
+import { useFeed } from '@/main/hooks/feed.hook';
+import { MainGroups } from '@/common/constants';
+import MainLayout from '@/common/templates/MainLayout';
+import { useQuery } from '@/common/hooks';
 
 const LIMIT = 5;
 const INIT_PAGINATION = {

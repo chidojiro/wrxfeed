@@ -1,12 +1,12 @@
 import React, { CSSProperties, useEffect } from 'react';
-import NotificationItem from '@main/molecules/NotificationItem';
-import InfiniteScroller from '@common/atoms/InfiniteScroller';
-import { Notification } from '@main/entity';
-import ListLoading from '@main/atoms/ListLoading';
-import ListEndComponent from '@main/atoms/ListEndComponent';
+import NotificationItem from '@/main/molecules/NotificationItem';
+import { Notification } from '@/main/entity';
+import ListLoading from '@/main/atoms/ListLoading';
+import ListEndComponent from '@/main/atoms/ListEndComponent';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@identity/hooks';
+import { useIdentity } from '@/identity/hooks';
+import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 
 interface NotificationListProps {
   style?: CSSProperties;

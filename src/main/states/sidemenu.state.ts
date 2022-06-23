@@ -1,11 +1,11 @@
 import cloneDeep from 'lodash.clonedeep';
 import { atom, selector } from 'recoil';
 
-import { Category, Department, Subscription, Vendor } from '@main/entity';
-import { MainGroups, MainMenu } from '@common/constants';
-import { LeftTab, SectionTab } from '@common/types';
+import { Category, Department, Subscription, Vendor } from '@/main/entity';
+import { MainGroups, MainMenu } from '@/common/constants';
+import { LeftTab, SectionTab } from '@/common/types';
 
-import { TeamIcon } from '@assets/index';
+import { TeamIcon } from '@/assets';
 import { subscriptionState } from './subscription.state';
 
 export interface FeedCount {

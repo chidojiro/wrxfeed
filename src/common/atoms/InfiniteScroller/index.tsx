@@ -1,11 +1,12 @@
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { useDebounce, useEventListener, useIntersection } from '@common/hooks';
-import { ScrollToTopButton } from '@main/molecules';
+import { useDebounce, useEventListener, useIntersection } from '@/common/hooks';
+import { ScrollToTopButton } from '@/main/molecules';
+import { Children } from '@/common/types';
 
 const DEFAULT_THRESHOLD = 150;
 const DEBOUNCE_WAIT = 300; // 0.3s
 
-interface InfiniteScrollerProps {
+interface InfiniteScrollerProps extends Children {
   style?: React.CSSProperties;
   className?: string;
   threshold?: number;

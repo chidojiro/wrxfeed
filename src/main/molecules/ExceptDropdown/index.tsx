@@ -1,12 +1,12 @@
-import { classNames } from '@common/utils';
+import { classNames } from '@/common/utils';
 import React, { Fragment, useState, useCallback } from 'react';
 import { Popover, Transition } from '@headlessui/react';
-import AddTargetTagInput from '@main/atoms/AddTargetTagInput';
-import { IntersectIcon } from '@assets';
-import { SearchResult } from '@main/types';
-import { useSearch } from '@main/hooks/search.hook';
-import useRoveFocus from '@main/hooks/focus.hook';
-import PropertyDropdownItem from '@main/atoms/PropertyDropdownItem';
+import AddTargetTagInput from '@/main/atoms/AddTargetTagInput';
+import { IntersectIcon } from '@/assets';
+import { SearchResult } from '@/main/types';
+import { useSearch } from '@/main/hooks/search.hook';
+import useRoveFocus from '@/main/hooks/focus.hook';
+import PropertyDropdownItem from '@/main/atoms/PropertyDropdownItem';
 
 interface ExceptDropdownProps {
   className?: string;

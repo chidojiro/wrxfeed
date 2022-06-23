@@ -1,5 +1,5 @@
-import { User } from '@main/entity/user.entity';
-import { Transaction } from '@main/entity/transaction.entity';
+import { User } from '@/main/entity/user.entity';
+import { Transaction } from '@/main/entity/transaction.entity';
 
 export type Mention = {
   content: string;

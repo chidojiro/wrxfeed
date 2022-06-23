@@ -1,6 +1,6 @@
 import { selector, atom } from 'recoil';
-import { getApiClient } from '@api/utils';
-import { Subscription } from '@main/entity';
+import { getApiClient } from '@/api/utils';
+import { Subscription } from '@/main/entity';
 
 export const subscriptionState = atom<Subscription>({
   key: 'main/subscription',

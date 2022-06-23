@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 
-import { GroupTab } from '@common/types';
-import { classNames } from '@common/utils';
-import { ReactComponent as DownSmall } from '@assets/icons/outline/down-small.svg';
-import { AddSmallIcon } from '@assets';
+import { GroupTab } from '@/common/types';
+import { classNames } from '@/common/utils';
+import { ReactComponent as DownSmall } from '@/assets/icons/outline/down-small.svg';
+import { AddSmallIcon } from '@/assets';
 import TabListSideBar from '../TabListSideBar';
 
 interface GroupTabSideBarProps {

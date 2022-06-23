@@ -1,11 +1,11 @@
-import { Notification, NotifyStatus } from '@main/entity';
+import { Notification, NotifyStatus } from '@/main/entity';
 import React from 'react';
-import { classNames, distanceToNow } from '@common/utils';
-import CommentText from '@main/atoms/CommentText';
-import { getColorByText, getNameAbbreviation } from '@main/utils';
+import { classNames, distanceToNow } from '@/common/utils';
+import CommentText from '@/main/atoms/CommentText';
+import { getColorByText, getNameAbbreviation } from '@/main/utils';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@identity/hooks';
+import { useIdentity } from '@/identity/hooks';
 
 export interface NotificationItemProps {
   item: Notification;

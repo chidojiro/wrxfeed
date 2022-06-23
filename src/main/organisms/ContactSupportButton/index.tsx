@@ -1,7 +1,7 @@
 import React from 'react';
-import { classNames } from '@common/utils';
-import { ReactComponent as EnvelopeIcon } from '@assets/icons/outline/envelope.svg';
-import { EMAIL_SUPPORT_ADDRESS } from '@src/config';
+import { ReactComponent as EnvelopeIcon } from '@/assets/icons/outline/envelope.svg';
+import { classNames } from '@/common/utils';
+import { EMAIL_SUPPORT_ADDRESS } from '@/config';
 
 export interface ContactSupportButtonProps {
   className?: string;

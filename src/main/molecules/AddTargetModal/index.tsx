@@ -2,13 +2,13 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useRef, useState, KeyboardEventHandler, useMemo } from 'react';
 import { TooltipProps } from 'recharts';
-import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
+import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import dayjs from 'dayjs';
 import range from 'lodash.range';
 import cloneDeep from 'lodash.clonedeep';
 
-import { classNames, formatCurrency, round } from '@common/utils';
-import { LineChartData, SearchResult } from '@main/types';
+import { classNames, formatCurrency, round } from '@/common/utils';
+import { LineChartData, SearchResult } from '@/main/types';
 import {
   TargetProp,
   PatchCalcSpendingFilters,
@@ -17,18 +17,18 @@ import {
   TargetPeriod,
   TargetPropType,
   TransactionBody,
-} from '@api/types';
-import { Department, Target, TargetMonth } from '@main/entity';
+} from '@/api/types';
+import { Department, Target, TargetMonth } from '@/main/entity';
 
-import Modal from '@common/atoms/Modal';
-import Loading from '@common/atoms/Loading';
-import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-2.svg';
-import { ReactComponent as CarbonTrashCan } from '@assets/icons/outline/carbon-trash-can.svg';
-import { AlertRed, TeamIcon, CategoryIcon, Bank } from '@assets';
-import PropertiesDropdown, { DropdownEdge } from '@main/molecules/PropertiesDropdown';
-import ExceptDropdown from '@main/molecules/ExceptDropdown';
-import MultiMonthDropdown from '@main/molecules/MultiMonthDropdown';
-import ExceptList from '@main/molecules/ExceptList';
+import Modal from '@/common/atoms/Modal';
+import Loading from '@/common/atoms/Loading';
+import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
+import { ReactComponent as CarbonTrashCan } from '@/assets/icons/outline/carbon-trash-can.svg';
+import { AlertRed, TeamIcon, CategoryIcon, Bank } from '@/assets';
+import PropertiesDropdown, { DropdownEdge } from '@/main/molecules/PropertiesDropdown';
+import ExceptDropdown from '@/main/molecules/ExceptDropdown';
+import MultiMonthDropdown from '@/main/molecules/MultiMonthDropdown';
+import ExceptList from '@/main/molecules/ExceptList';
 import {
   decimalLogic,
   DecimalType,
@@ -36,12 +36,12 @@ import {
   getPeriodsByYear,
   getPropsAndPeriodsFromItemSelected,
   getTargetName,
-} from '@main/utils';
-import TargetChart from '@main/molecules/TargetChart';
-import { useMultiMonth } from '@main/hooks/multiMonth.hook';
-import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@main/chart.utils';
-import { defaultTargetMonths, INITIAL_CHART_DATA } from '@common/constants';
-import { useTransaction } from '@main/hooks';
+} from '@/main/utils';
+import TargetChart from '@/main/molecules/TargetChart';
+import { useMultiMonth } from '@/main/hooks/multiMonth.hook';
+import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
+import { defaultTargetMonths, INITIAL_CHART_DATA } from '@/common/constants';
+import { useTransaction } from '@/main/hooks';
 
 export type AddTargetModalProps = {
   open: boolean;
@@ -350,7 +350,9 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
       return;
     }
     if (isEdit) {
-      onSaveTarget(itemEditing?.id, targetName, propSelected, exceptItems);
+      if (itemEditing) {
+        onSaveTarget(itemEditing.id, targetName, propSelected, exceptItems);
+      }
       return;
     }
     onCreateTarget(targetName, propSelected, exceptItems);

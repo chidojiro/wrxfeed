@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 
-import { classNames } from '@common/utils';
-import { scrollToTop } from '@main/utils';
+import { classNames } from '@/common/utils';
+import { scrollToTop } from '@/main/utils';
 
-import SideBar from '@common/organisms/SideBar';
-import NavBar from '@common/organisms/NavBar';
-import SlideOver from '@common/organisms/SlideOver';
+import SideBar from '@/common/organisms/SideBar';
+import NavBar from '@/common/organisms/NavBar';
+import SlideOver from '@/common/organisms/SlideOver';
+import { Children } from '@/common/types';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -58,7 +59,7 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
   );
 };
 
-export const MainRightSide: React.FC = ({ children }) => {
+export const MainRightSide: React.FC<Children> = ({ children }) => {
   const [isDOMReady, setDOMReady] = useState(false);
 
   useEffect(() => {

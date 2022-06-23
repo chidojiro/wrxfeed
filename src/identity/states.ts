@@ -1,5 +1,5 @@
-import { getApiClient } from '@api/utils';
-import { AuthProfile } from '@auth/types';
+import { getApiClient } from '@/api/utils';
+import { AuthProfile } from '@/auth/types';
 import { atom, AtomEffect, selector } from 'recoil';
 import { Identity } from './types';
 

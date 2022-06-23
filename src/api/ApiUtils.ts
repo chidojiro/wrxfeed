@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { UserToken, Identity } from '@identity/types';
+import { UserToken, Identity } from '@/identity/types';
 import {
   Comment,
   Transaction,
@@ -15,8 +15,8 @@ import {
   TransLineItem,
   VendorDescription,
   LineItem,
-} from '@main/entity';
-import { ApiError } from '@error';
+} from '@/main/entity';
+import { ApiError } from '@/error';
 import {
   ApiClient,
   ChangePasswordDto,
@@ -44,16 +44,16 @@ import {
   CategoryFilter,
   TargetPeriod,
   TargetSummaries,
-} from '@api/types';
+} from '@/api/types';
 import {
   AuthProfile,
   ForgotPwdFormModel,
   LoginFormModel,
   Profile,
   ProfileFormModel,
-} from '@auth/types';
-import { handleResponseFail } from '@api/utils';
-import { InviteFormModel, FeedBackFormModel } from '@main/types';
+} from '@/auth/types';
+import { handleResponseFail } from '@/api/utils';
+import { InviteFormModel, FeedBackFormModel } from '@/main/types';
 
 export default class ApiUtils implements ApiClient {
   private client: AxiosInstance;

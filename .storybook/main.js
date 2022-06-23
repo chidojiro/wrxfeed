@@ -6,14 +6,7 @@ module.exports = {
   webpackFinal: async (config, { configType }) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@src': path.resolve(__dirname, 'src'),
-      '@assets': path.resolve(__dirname, 'src/assets'),
-      '@api': path.resolve(__dirname, 'src/api'),
-      '@common': path.resolve(__dirname, 'src/common'),
-      '@error': path.resolve(__dirname, 'src/error'),
-      '@identity': path.resolve(__dirname, 'src/identity'),
-      '@auth': path.resolve(__dirname, 'src/auth'),
-      '@main': path.resolve(__dirname, 'src/main'),
+      '@': path.resolve(__dirname, 'src'),
     };
     return config;
   },

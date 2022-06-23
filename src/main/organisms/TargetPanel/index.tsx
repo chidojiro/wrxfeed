@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { useTarget } from '@main/hooks';
+import { useTarget } from '@/main/hooks';
 
-import { TargetFilter } from '@api/types';
-import { Target } from '@main/entity';
-import { classNames } from '@common/utils';
+import { TargetFilter } from '@/api/types';
+import { Target } from '@/main/entity';
 
-import Loading from '@common/atoms/Loading';
-import { TargetRow } from '@main/molecules';
-import AddTargetModal from '@main/molecules/AddTargetModal';
-import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
-import { BasicsDownSmall } from '@assets';
+import { TargetRow } from '@/main/molecules';
+import AddTargetModal from '@/main/molecules/AddTargetModal';
+import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
+import { BasicsDownSmall } from '@/assets';
+import Loading from '@/common/atoms/Loading';
+import { classNames } from '@/common/utils';
 
 export interface TargetPanelProps {
   title?: string;
@@ -54,7 +54,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
       timestamp: Date.now(),
     });
   };
-  const onPutError = () => {};
+  const onPutError = () => null;
   const onDeleteTargetSuccess = () => {
     toast.success('Successfully deleted target!');
     hideAddTargetModal();
@@ -63,7 +63,7 @@ const TargetPanel: React.VFC<TargetPanelProps> = () => {
       timestamp: Date.now(),
     });
   };
-  const onDeleteError = () => {};
+  const onDeleteError = () => null;
 
   const {
     targets,

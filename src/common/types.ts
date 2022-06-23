@@ -1,4 +1,4 @@
-import { Category, Department, Subscription, Vendor } from '@main/entity';
+import { Category, Department, Subscription, Vendor } from '@/main/entity';
 import React, { FunctionComponent, SVGAttributes } from 'react';
 
 export interface HOC<T> {
@@ -30,4 +30,8 @@ export type SectionTab = {
   name: string;
   groups: GroupTab[];
   tabs: LeftTab[];
+};
+
+export type Children = {
+  children: React.ReactNode;
 };

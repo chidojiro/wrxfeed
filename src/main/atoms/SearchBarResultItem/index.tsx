@@ -1,8 +1,8 @@
-import { SearchResult } from '@main/types';
-import { getIconByResultType, getPropTypeDisplayName } from '@main/utils';
+import { SearchResult } from '@/main/types';
+import { getIconByResultType, getPropTypeDisplayName } from '@/main/utils';
 import React, { useEffect, useRef, VFC } from 'react';
-import { classNames } from '@common/utils';
-import { ReactComponent as ArrowRight2 } from '@assets/icons/outline/arrow-right-2.svg';
+import { ReactComponent as ArrowRight2 } from '@/assets/icons/outline/arrow-right-2.svg';
+import { classNames } from '@/common/utils';
 
 interface SearchBarResultItemProps {
   result: SearchResult;

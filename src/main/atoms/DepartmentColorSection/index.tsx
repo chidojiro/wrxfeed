@@ -1,5 +1,5 @@
-import { Department } from '@main/entity';
-import { getColorByText } from '@main/utils';
+import { Department } from '@/main/entity';
+import { getColorByText } from '@/main/utils';
 import React, { useMemo } from 'react';
 
 interface DepartmentColorSectionProps {

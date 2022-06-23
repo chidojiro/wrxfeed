@@ -1,8 +1,8 @@
 import React from 'react';
-import { InfoCircleIcon } from '@assets';
-import { classNames } from '@common/utils';
-import { TargetStatusConfig, TargetStatusType } from '@main/entity';
-import { getTrackingStatusName } from '@main/utils';
+import { InfoCircleIcon } from '@/assets';
+import { TargetStatusConfig, TargetStatusType } from '@/main/entity';
+import { getTrackingStatusName } from '@/main/utils';
+import { classNames } from '@/common/utils';
 
 interface TargetStatusMessageProps {
   type: TargetStatusType;

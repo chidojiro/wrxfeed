@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useApi } from '@api';
-import { useErrorHandler } from '@error/hooks';
-import { TargetProp, PatchCalcSpendingFilters, TargetPeriod } from '@api/types';
+import { useApi } from '@/api';
+import { useErrorHandler } from '@/error/hooks';
+import { TargetProp, PatchCalcSpendingFilters, TargetPeriod } from '@/api/types';
 
 interface MultiMonthHookValues {
   months: TargetPeriod[];

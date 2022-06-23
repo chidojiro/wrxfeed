@@ -1,13 +1,13 @@
-import Modal from '@common/atoms/Modal';
 import React from 'react';
-import CommentBox from '@main/molecules/CommentBox';
-import { useFeedBack } from '@main/hooks';
+import CommentBox from '@/main/molecules/CommentBox';
+import { useFeedBack } from '@/main/hooks';
 import { toast } from 'react-toastify';
 import { EditorState } from 'draft-js';
-import { commentEditorRawParser } from '@main/utils';
-import { classNames } from '@common/utils';
-import LinearProgress from '@common/atoms/LinearProgress';
-import { FeedBackType } from '@main/types';
+import { commentEditorRawParser } from '@/main/utils';
+import { FeedBackType } from '@/main/types';
+import { classNames } from '@/common/utils';
+import LinearProgress from '@/common/atoms/LinearProgress';
+import Modal from '@/common/atoms/Modal';
 
 interface FeedBackModalProps {
   open: boolean;

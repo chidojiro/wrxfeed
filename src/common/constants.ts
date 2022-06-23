@@ -1,7 +1,7 @@
-import { SectionTab } from '@common/types';
-import { FeedIcon, Bank, CategoryIcon, TeamIcon, TargetIcon } from '@assets/index';
-import { LineChartData } from '@main/types';
-import { TargetMonth } from '@main/entity';
+import { SectionTab } from '@/common/types';
+import { FeedIcon, Bank, CategoryIcon, TeamIcon, TargetIcon } from '@/assets';
+import { LineChartData } from '@/main/types';
+import { TargetMonth } from '@/main/entity';
 
 export enum MainGroups {
   Feeds = 'Feeds',

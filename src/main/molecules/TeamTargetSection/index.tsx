@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { useTarget } from '@main/hooks';
-import { Target, TargetByTeam } from '@main/entity';
-import { getColorByText } from '@main/utils';
-import { classNames } from '@common/utils';
-import { TeamIcon, AddSmallSolid } from '@assets';
-import AddTargetModal from '@main/molecules/AddTargetModal';
-import TargetWrapList from '@main/molecules/TargetWrapList';
+import { useTarget } from '@/main/hooks';
+import { Target, TargetByTeam } from '@/main/entity';
+import { getColorByText } from '@/main/utils';
+import { classNames } from '@/common/utils';
+import { TeamIcon, AddSmallSolid } from '@/assets';
+import AddTargetModal from '@/main/molecules/AddTargetModal';
+import TargetWrapList from '@/main/molecules/TargetWrapList';
 
 export interface TeamTargetSectionProps {
   className?: string;
@@ -29,7 +29,7 @@ const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
         onSuccess: (id) => {
           if (id && onRemoveItem) onRemoveItem(id);
         },
-        onError: () => {},
+        onError: () => null,
       },
     });
   const teamHeaderColor = React.useMemo(

@@ -1,5 +1,5 @@
 import React, { DetailedHTMLProps, InputHTMLAttributes } from 'react';
-import { classNames } from '@common/utils';
+import { classNames } from '@/common/utils';
 
 interface FormInputProps
   extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {

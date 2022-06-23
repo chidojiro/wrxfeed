@@ -3,17 +3,17 @@ import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Menu } from '@headlessui/react';
 
-import routes from '@src/routes';
-import { Target, FeedType } from '@main/entity';
-import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@main/utils';
-import { MoreVerticalIcon, BinIcon, EditIcon, EyeIcon } from '@assets';
-import TargetStatus from '@main/atoms/TargetStatus';
-import MiniChartView from '@main/molecules/MiniChartView';
-import TargetFeedName from '@main/atoms/TargetFeedName';
-import EditorAvatar from '@main/atoms/EditorAvatar';
-import PopoverMenu from '@main/atoms/PopoverMenu';
-import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
-import Loading from '@common/atoms/Loading';
+import routes from '@/routes';
+import { Target, FeedType } from '@/main/entity';
+import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
+import { MoreVerticalIcon, BinIcon, EditIcon, EyeIcon } from '@/assets';
+import TargetStatus from '@/main/atoms/TargetStatus';
+import MiniChartView from '@/main/molecules/MiniChartView';
+import TargetFeedName from '@/main/atoms/TargetFeedName';
+import EditorAvatar from '@/main/atoms/EditorAvatar';
+import PopoverMenu from '@/main/atoms/PopoverMenu';
+import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
+import Loading from '@/common/atoms/Loading';
 
 export interface TargetWrapListProps {
   targets: Target[];

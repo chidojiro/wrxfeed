@@ -1,12 +1,12 @@
 import React, { MouseEventHandler, VFC } from 'react';
-import Button from '@common/atoms/Button';
-import { Category, Department, Vendor } from '@main/entity';
+import Button from '@/common/atoms/Button';
+import { Category, Department, Vendor } from '@/main/entity';
 // Icons
-import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
-import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
-import { getColorByText, getNameAbbreviation } from '@main/utils';
-import Loading from '@common/atoms/Loading';
-import { useSubscription } from '@main/hooks/subscription.hook';
+import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
+import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
+import { getColorByText, getNameAbbreviation } from '@/main/utils';
+import Loading from '@/common/atoms/Loading';
+import { useSubscription } from '@/main/hooks/subscription.hook';
 
 interface DirectoryItem {
   item: Department | Category | Vendor;
