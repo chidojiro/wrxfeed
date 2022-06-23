@@ -1,7 +1,7 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState, VFC } from 'react';
-import { ReactComponent as TickCircle } from '@assets/icons/solid/tick-circle.svg';
+import { ReactComponent as TickCircle } from '@/assets/icons/solid/tick-circle.svg';
 import { Transition } from '@headlessui/react';
-import EventEmitter, { EventName } from '@main/EventEmitter';
+import EventEmitter, { EventName } from '@/main/EventEmitter';
 
 const DEFAULT_TIMEOUT = 2000;
 const DEFAULT_BACKGROUND = '#7A3FEB';

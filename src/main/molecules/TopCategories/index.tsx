@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import { useHistory } from 'react-router-dom';
 
-import { useCategory } from '@main/hooks/category.hook';
-import { classNames } from '@common/utils';
-import { Category } from '@main/entity';
-import { CategoryIcon } from '@assets/index';
-import { CategoryFilter } from '@api/types';
-import Loading from '@common/atoms/Loading';
-import { MainGroups } from '@common/constants';
-import { decimalLogic, DecimalType } from '@main/utils';
+import { useCategory } from '@/main/hooks/category.hook';
+import { classNames } from '@/common/utils';
+import { Category } from '@/main/entity';
+import { CategoryIcon } from '@/assets';
+import { CategoryFilter } from '@/api/types';
+import Loading from '@/common/atoms/Loading';
+import { MainGroups } from '@/common/constants';
+import { decimalLogic, DecimalType } from '@/main/utils';
 
 const LIMIT = 6;
 const INIT_PAGINATION = Object.freeze({

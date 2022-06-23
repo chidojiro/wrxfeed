@@ -4,30 +4,30 @@ import { EditorState } from 'draft-js';
 import dayjs from 'dayjs';
 import cloneDeep from 'lodash.clonedeep';
 // hooks
-import { useIdentity } from '@identity/hooks';
-import { useFeedComment } from '@main/hooks/feedComment.hook';
+import { useIdentity } from '@/identity/hooks';
+import { useFeedComment } from '@/main/hooks/feedComment.hook';
 // constants
-import { FeedItem, Visibility, Target, User } from '@main/entity';
-import { CommentFormModel } from '@main/types';
-import { useMention, useTarget } from '@main/hooks';
-import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@api/types';
-import { classNames } from '@common/utils';
-import { commentEditorRawParser, getMultiMonthRange, getTargetName } from '@main/utils';
+import { FeedItem, Visibility, Target, User } from '@/main/entity';
+import { CommentFormModel } from '@/main/types';
+import { useMention, useTarget } from '@/main/hooks';
+import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@/api/types';
+import { classNames } from '@/common/utils';
+import { commentEditorRawParser, getMultiMonthRange, getTargetName } from '@/main/utils';
 // components
-import CommentBox from '@main/molecules/CommentBox';
-import FeedBackModal from '@main/organisms/FeedBackModal';
-import AttachmentModal from '@main/organisms/CommentAttachmentModal';
-import ConfirmModal from '@main/atoms/ConfirmModal';
-import CommentItem from '@main/molecules/CommentItem';
-import CommentViewAll from '@main/atoms/CommentViewAll';
-import TargetChartView from '@main/molecules/TargetChartView';
-import RollupTransactions from '@main/molecules/RollupTransactions';
+import CommentBox from '@/main/molecules/CommentBox';
+import FeedBackModal from '@/main/organisms/FeedBackModal';
+import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
+import ConfirmModal from '@/main/atoms/ConfirmModal';
+import CommentItem from '@/main/molecules/CommentItem';
+import CommentViewAll from '@/main/atoms/CommentViewAll';
+import TargetChartView from '@/main/molecules/TargetChartView';
+import RollupTransactions from '@/main/molecules/RollupTransactions';
 // assets
-import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
-import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
-import { CalendarMinus } from '@assets';
-import AddTargetModal from '@main/molecules/AddTargetModal';
-import UserAvatar from '@main/atoms/UserAvatar';
+import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
+import { ReactComponent as EyeHideIcon } from '@/assets/icons/outline/eye-hide.svg';
+import { CalendarMinus } from '@/assets';
+import AddTargetModal from '@/main/molecules/AddTargetModal';
+import UserAvatar from '@/main/atoms/UserAvatar';
 
 export interface TargetFeedItemProps {
   feedItem: FeedItem;

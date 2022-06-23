@@ -4,12 +4,12 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
 import cloneDeep from 'lodash.clonedeep';
 
-import { menuItemsValue, newFeedCountState } from '@main/states/sidemenu.state';
-import { getApiClient } from '@api/utils';
-import { GroupTab, SectionTab } from '@common/types';
-import GroupTabSideBar from '@common/molecules/GroupTabSideBar';
-import TabListSideBar from '@common/molecules/TabListSideBar';
-import { ENABLE_GET_FEED_COUNT } from '@common/constants';
+import { menuItemsValue, newFeedCountState } from '@/main/states/sidemenu.state';
+import { getApiClient } from '@/api/utils';
+import { GroupTab, SectionTab } from '@/common/types';
+import GroupTabSideBar from '@/common/molecules/GroupTabSideBar';
+import TabListSideBar from '@/common/molecules/TabListSideBar';
+import { ENABLE_GET_FEED_COUNT } from '@/common/constants';
 
 const SideBar: React.VFC = () => {
   const [menuItems, setMenuItems] = useRecoilState(menuItemsValue);

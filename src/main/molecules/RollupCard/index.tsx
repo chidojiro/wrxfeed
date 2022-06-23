@@ -5,37 +5,37 @@ import { Menu } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
 // hooks
-import { useIdentity, usePermission } from '@identity/hooks';
-import { useFeedComment } from '@main/hooks/feedComment.hook';
+import { useIdentity, usePermission } from '@/identity/hooks';
+import { useFeedComment } from '@/main/hooks/feedComment.hook';
 // constants
-import { Category, Department, FeedItem, Vendor, Visibility } from '@main/entity';
-import { CommentFormModel } from '@main/types';
-import { useMention } from '@main/hooks';
-import { GetUploadTokenBody, Pagination, UploadTypes } from '@api/types';
-import { classNames } from '@common/utils';
+import { Category, Department, FeedItem, Vendor, Visibility } from '@/main/entity';
+import { CommentFormModel } from '@/main/types';
+import { useMention } from '@/main/hooks';
+import { GetUploadTokenBody, Pagination, UploadTypes } from '@/api/types';
+import { classNames } from '@/common/utils';
 import {
   commentEditorHtmlParser,
   decimalLogic,
   DecimalType,
   getColorByText,
   getTotalFeedItem,
-} from '@main/utils';
-import { ProtectedFeatures } from '@identity/constants';
+} from '@/main/utils';
+import { ProtectedFeatures } from '@/identity/constants';
 // components
-import NotifyBanner from '@common/molecules/NotifyBanner';
-import CommentBox from '@main/molecules/CommentBox';
-import PopoverMenu from '@main/atoms/PopoverMenu';
-import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
-import FeedBackModal from '@main/organisms/FeedBackModal';
-import AttachmentModal from '@main/organisms/CommentAttachmentModal';
-import ConfirmModal from '@main/atoms/ConfirmModal';
-import CommentItem from '@main/molecules/CommentItem';
-import CommentViewAll from '@main/atoms/CommentViewAll';
-import RollupTransactions from '@main/molecules/RollupTransactions';
+import NotifyBanner from '@/common/molecules/NotifyBanner';
+import CommentBox from '@/main/molecules/CommentBox';
+import PopoverMenu from '@/main/atoms/PopoverMenu';
+import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
+import FeedBackModal from '@/main/organisms/FeedBackModal';
+import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
+import ConfirmModal from '@/main/atoms/ConfirmModal';
+import CommentItem from '@/main/molecules/CommentItem';
+import CommentViewAll from '@/main/atoms/CommentViewAll';
+import RollupTransactions from '@/main/molecules/RollupTransactions';
 // assets
-import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
-import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
-import { ReactComponent as EyeHideIcon } from '@assets/icons/outline/eye-hide.svg';
+import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
+import { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';
+import { ReactComponent as EyeHideIcon } from '@/assets/icons/outline/eye-hide.svg';
 
 export interface RollupCardProps {
   feedItem: FeedItem;

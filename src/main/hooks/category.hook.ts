@@ -1,8 +1,8 @@
-import { useApi } from '@api';
-import { CategoryFilter } from '@api/types';
-import { useErrorHandler } from '@error/hooks';
-import { Category } from '@main/entity';
 import { useCallback, useEffect, useState } from 'react';
+import { useApi } from '@/api';
+import { CategoryFilter } from '@/api/types';
+import { useErrorHandler } from '@/error/hooks';
+import { Category } from '@/main/entity';
 
 export interface UseCategoryParams {
   filter?: CategoryFilter;

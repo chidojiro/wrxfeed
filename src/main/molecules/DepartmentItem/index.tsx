@@ -1,9 +1,9 @@
 import React, { MouseEventHandler } from 'react';
-import Button from '@common/atoms/Button';
-import { Category, Department, Vendor } from '@main/entity';
+import Button from '@/common/atoms/Button';
+import { Category, Department, Vendor } from '@/main/entity';
 // Icons
-import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
-import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
+import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
+import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
 
 interface DepartmentItemProps {
   item: Department | Category | Vendor;

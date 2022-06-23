@@ -1,12 +1,12 @@
 import React, { CSSProperties } from 'react';
 import { LineChart, Line, ResponsiveContainer, Tooltip, YAxis, TooltipProps } from 'recharts';
 
-import { ChartLineProps, LineChartData } from '@main/types';
-import { getChartLevels } from '@main/chart.utils';
-import { classNames } from '@common/utils';
-import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
-import Loading from '@common/atoms/Loading';
-import { INITIAL_CHART_DATA } from '@common/constants';
+import { ChartLineProps, LineChartData } from '@/main/types';
+import { getChartLevels } from '@/main/chart.utils';
+import { classNames } from '@/common/utils';
+import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import Loading from '@/common/atoms/Loading';
+import { INITIAL_CHART_DATA } from '@/common/constants';
 
 const MIN_Y_VALUE = 100;
 
@@ -23,9 +23,7 @@ interface TargetChartProps<T> {
   levelLabelClass?: string;
 }
 
-const TargetChart: <T extends unknown>(
-  p: TargetChartProps<T>,
-) => React.ReactElement<TargetChartProps<T>> = ({
+const TargetChart: <T>(p: TargetChartProps<T>) => React.ReactElement<TargetChartProps<T>> = ({
   className,
   containerStyle,
   containerClass,

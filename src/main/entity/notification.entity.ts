@@ -1,4 +1,4 @@
-import { Profile } from '@auth/types';
+import { Profile } from '@/auth/types';
 
 export type NotificationData = {
   commentId: number;

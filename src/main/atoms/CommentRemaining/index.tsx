@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
-import { ReactComponent as MessageTextAltIcon } from '@assets/icons/solid/message-text-alt.svg';
-import Loading from '@common/atoms/Loading';
-import { classNames } from '@common/utils';
+import { ReactComponent as MessageTextAltIcon } from '@/assets/icons/solid/message-text-alt.svg';
+import Loading from '@/common/atoms/Loading';
+import { classNames } from '@/common/utils';
 
 export interface CommentRemainingProps {
   hiddenCount: number;

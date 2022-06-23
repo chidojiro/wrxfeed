@@ -3,14 +3,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { SetterOrUpdater, useRecoilState } from 'recoil';
 import { toast } from 'react-toastify';
 
-import { useApi } from '@api';
-import usePusher from '@api/hooks/usePusher';
-import { Pagination } from '@api/types';
-import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
-import { useIdentity } from '@identity/hooks';
-import { Notification } from '@main/entity';
-import { newNotifyCountState } from '@main/states/notify.state';
+import { useApi } from '@/api';
+import usePusher from '@/api/hooks/usePusher';
+import { Pagination } from '@/api/types';
+import { useErrorHandler } from '@/error/hooks';
+import { isBadRequest } from '@/error/utils';
+import { useIdentity } from '@/identity/hooks';
+import { Notification } from '@/main/entity';
+import { newNotifyCountState } from '@/main/states/notify.state';
 
 interface NotificationHookValues {
   notifications: Notification[];

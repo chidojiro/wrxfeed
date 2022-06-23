@@ -1,10 +1,10 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { User } from '@main/entity';
-import { classNames, formatDate } from '@common/utils';
-import { getColorByText, getNameAbbreviation } from '@main/utils';
-import { profileState } from '@auth/containers/ProfileEditForm/states';
+import { User } from '@/main/entity';
+import { classNames, formatDate } from '@/common/utils';
+import { getColorByText, getNameAbbreviation } from '@/main/utils';
+import { profileState } from '@/auth/containers/ProfileEditForm/states';
 
 export interface CommentOwnerProps {
   owner: User;

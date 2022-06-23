@@ -7,18 +7,18 @@ import { toast } from 'react-toastify';
 import { useErrorHandler } from 'react-error-boundary';
 import { useRecoilState } from 'recoil';
 // types
-import { TransLineItem } from '@main/entity';
-import { isApiError } from '@error/utils';
-import { classNames } from '@common/utils';
+import { TransLineItem } from '@/main/entity';
+import { isApiError } from '@/error/utils';
+import { classNames } from '@/common/utils';
 // hooks and states
-import { useApi } from '@api';
-import { slideOverOpenState } from '@main/states/slideOver.state';
+import { useApi } from '@/api';
+import { slideOverOpenState } from '@/main/states/slideOver.state';
 // components
-import LineItemDetails from '@main/molecules/LineItemDetails';
-import EventEmitter, { EventName } from '@main/EventEmitter';
+import LineItemDetails from '@/main/molecules/LineItemDetails';
+import EventEmitter, { EventName } from '@/main/EventEmitter';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@identity/hooks';
+import { useIdentity } from '@/identity/hooks';
 
 export interface SelectItemProps {
   item: TransLineItem;

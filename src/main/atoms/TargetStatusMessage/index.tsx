@@ -1,5 +1,5 @@
 import React from 'react';
-import { TargetStatusConfig, TargetStatusType } from '@main/entity';
+import { TargetStatusConfig, TargetStatusType } from '@/main/entity';
 
 interface TargetStatusMessageProps {
   type: TargetStatusType;

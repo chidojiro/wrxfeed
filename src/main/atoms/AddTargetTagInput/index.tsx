@@ -10,9 +10,9 @@ import React, {
   SetStateAction,
 } from 'react';
 
-import { getColorByPropertyType } from '@main/utils';
-import Loading from '@common/atoms/Loading';
-import { SearchResult } from '@main/types';
+import { getColorByPropertyType } from '@/main/utils';
+import { SearchResult } from '@/main/types';
+import Loading from '@/common/atoms/Loading';
 import InputTag from '../InputTag';
 
 interface AddTargetTagInputProps {

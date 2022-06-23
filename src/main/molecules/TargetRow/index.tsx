@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
 
-import { Target } from '@main/entity';
+import { Target } from '@/main/entity';
 import {
   getColorByText,
   getTargetPeriodsAmountTotal,
   getTargetName,
   nFormatter,
-} from '@main/utils';
-import { classNames } from '@common/utils';
-import { BasicsEditCircle } from '@assets';
+} from '@/main/utils';
+import { classNames } from '@/common/utils';
+import { BasicsEditCircle } from '@/assets';
 
 const SYSTEM_ALERT_COLOR = '#ff5f68';
 const TARGET_PLACEHOLDER = 10000;

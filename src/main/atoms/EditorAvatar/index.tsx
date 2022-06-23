@@ -1,7 +1,7 @@
 import React from 'react';
-import { classNames } from '@common/utils';
-import UserAvatar from '@main/atoms/UserAvatar';
-import { User } from '@main/entity';
+import UserAvatar from '@/main/atoms/UserAvatar';
+import { User } from '@/main/entity';
+import { classNames } from '@/common/utils';
 
 export interface EditorAvatarProps {
   className?: string;

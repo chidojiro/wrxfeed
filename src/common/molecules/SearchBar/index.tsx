@@ -4,20 +4,20 @@ import { Transition } from '@headlessui/react';
 import { useHistory } from 'react-router-dom';
 import { useOnClickOutside } from '@dwarvesf/react-hooks';
 
-import { useDebounce } from '@common/hooks';
-import { useSearch } from '@main/hooks/search.hook';
-import useRoveFocus from '@main/hooks/focus.hook';
+import { useDebounce } from '@/common/hooks';
+import { useSearch } from '@/main/hooks/search.hook';
+import useRoveFocus from '@/main/hooks/focus.hook';
 
-import { SearchResult } from '@main/types';
-import { TargetPropType } from '@api/types';
-import { MainGroups } from '@common/constants';
+import { SearchResult } from '@/main/types';
+import { TargetPropType } from '@/api/types';
+import { MainGroups } from '@/common/constants';
 
-import Loading from '@common/atoms/Loading';
+import Loading from '@/common/atoms/Loading';
 
-import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
-import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
-import { ReactComponent as QuestionCircle } from '@assets/icons/solid/question-circle.svg';
-import SearchBarResultItem from '@main/atoms/SearchBarResultItem';
+import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basics-search-small.svg';
+import { ReactComponent as BasicsXSmall } from '@/assets/icons/outline/basics-x-small.svg';
+import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
+import SearchBarResultItem from '@/main/atoms/SearchBarResultItem';
 
 const DEBOUNCE_WAIT = 0;
 

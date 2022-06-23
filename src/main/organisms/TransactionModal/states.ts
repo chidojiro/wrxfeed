@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { Transaction } from '@main/entity';
+import { Transaction } from '@/main/entity';
 
 const prefix = 'main/TransactionModal/';
 

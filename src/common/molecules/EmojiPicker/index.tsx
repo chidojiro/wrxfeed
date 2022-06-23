@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { EmojiData, Picker } from 'emoji-mart';
 import { Transition } from '@headlessui/react';
 import { usePopper } from 'react-popper';
-import EventEmitter, { EventName } from '@main/EventEmitter';
+import EventEmitter, { EventName } from '@/main/EventEmitter';
 
 const PortalRoot = document.querySelector('#portal-root');
 

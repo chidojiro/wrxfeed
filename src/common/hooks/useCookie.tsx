@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import Cookies, { CookieChangeOptions } from 'universal-cookie';
+import { Children } from '../types';
 
 const cookies = new Cookies();
 
@@ -13,7 +14,7 @@ const CookieContext = createContext<ICookieContext>({
   cookies: new Cookies(),
 });
 
-export const CookieProvider: React.FC = ({ children }) => {
+export const CookieProvider: React.FC<Children> = ({ children }) => {
   const context = useContext(CookieContext);
   const [changes, setChanges] = useState<CookieChangeOptions>();
 

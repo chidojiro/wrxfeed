@@ -2,12 +2,12 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 
-import { isApiError } from '@error/utils';
-import { TargetFilter, PostTargetParams, PutTargetParams } from '@api/types';
-import { Target } from '@main/entity';
+import { isApiError } from '@/error/utils';
+import { TargetFilter, PostTargetParams, PutTargetParams } from '@/api/types';
+import { Target } from '@/main/entity';
 
-import { useApi } from '@api';
-import { useErrorHandler } from '@error/hooks';
+import { useApi } from '@/api';
+import { useErrorHandler } from '@/error/hooks';
 
 interface TargetCallback {
   onSuccess: (id?: number, target?: Target) => void;

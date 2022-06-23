@@ -4,18 +4,18 @@ import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 
-import { useNavUtils } from '@common/hooks';
-import { useIdentity, useSetIdentity } from '@identity/hooks';
-import { useApi } from '@api';
-import { useErrorHandler, isApiError, ApiErrorCode } from '@src/error';
+import { useNavUtils } from '@/common/hooks';
+import { useIdentity, useSetIdentity } from '@/identity/hooks';
+import { useApi } from '@/api';
+import { useErrorHandler, isApiError, ApiErrorCode } from '@/error';
 
-import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@src/config';
-import Routes from '@src/routes';
-import { ProviderName } from '@main/entity';
+import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@/config';
+import Routes from '@/routes';
+import { ProviderName } from '@/main/entity';
 
-import SocialAuthButton, { AuthProvider } from '@common/atoms/SocialAuthButton';
-import NotInvited from '@auth/molecules/NotInvited';
-import NotifyBanner from '@common/molecules/NotifyBanner';
+import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
+import NotInvited from '@/auth/molecules/NotInvited';
+import NotifyBanner from '@/common/molecules/NotifyBanner';
 
 import mixpanel from 'mixpanel-browser';
 

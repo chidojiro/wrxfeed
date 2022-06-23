@@ -3,16 +3,16 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { useTarget } from '@main/hooks';
+import { useTarget } from '@/main/hooks';
 
-import { Department, Target } from '@main/entity';
-import { TargetFilter, TargetPropType } from '@api/types';
+import { Department, Target } from '@/main/entity';
+import { TargetFilter, TargetPropType } from '@/api/types';
 
-import AddTargetModal from '@main/molecules/AddTargetModal';
-import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
-import { classNames } from '@common/utils';
-import { SearchResult } from '@main/types';
-import Loading from '@common/atoms/Loading';
+import AddTargetModal from '@/main/molecules/AddTargetModal';
+import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
+import { classNames } from '@/common/utils';
+import { SearchResult } from '@/main/types';
+import Loading from '@/common/atoms/Loading';
 import TeamTargetRow from '../TeamTargetRow';
 import EmptyTarget from '../EmptyTarget';
 
@@ -79,7 +79,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
       timestamp: Date.now(),
     });
   };
-  const onPutError = () => {};
+  const onPutError = () => null;
   const onDeleteTargetSuccess = () => {
     toast.success('Successfully deleted target!');
     hideAddTargetModal();
@@ -88,7 +88,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
       timestamp: Date.now(),
     });
   };
-  const onDeleteError = () => {};
+  const onDeleteError = () => null;
 
   const {
     targets,

@@ -1,7 +1,7 @@
 import React from 'react';
-import { classNames } from '@common/utils';
-import { SearchResult } from '@main/types';
-import { getColorByPropertyType, getPropIconByType } from '@main/utils';
+import { classNames } from '@/common/utils';
+import { SearchResult } from '@/main/types';
+import { getColorByPropertyType, getPropIconByType } from '@/main/utils';
 
 interface ExceptListProps {
   className?: string;

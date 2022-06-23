@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { UserRole } from '@identity/constants';
-import { Profile } from '@auth/types';
+import { UserRole } from '@/identity/constants';
+import { Profile } from '@/auth/types';
 
-import { useIdentity, usePermission } from '@identity/hooks';
-import { profileState } from '@auth/containers/ProfileEditForm/states';
+import { useIdentity, usePermission } from '@/identity/hooks';
+import { profileState } from '@/auth/containers/ProfileEditForm/states';
 
 import NavBarStatic from '../NavBarStatic';
 

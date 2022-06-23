@@ -1,13 +1,13 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Contact } from '@main/entity/contact.entity';
-import { GetContactsFilter } from '@api/types';
-import { useGetContacts } from '@main/hooks/contact.hook';
-import Modal from '@common/atoms/Modal';
-import ContactItem from '@main/molecules/ContactItem';
-import InviteTagInput from '@main/atoms/InviteTagInput';
-import { useDebounce } from '@common/hooks';
-import { useInvite } from '@main/hooks';
-import Banner from '@common/atoms/Banner';
+import { Contact } from '@/main/entity/contact.entity';
+import { GetContactsFilter } from '@/api/types';
+import { useGetContacts } from '@/main/hooks/contact.hook';
+import ContactItem from '@/main/molecules/ContactItem';
+import InviteTagInput from '@/main/atoms/InviteTagInput';
+import { useInvite } from '@/main/hooks';
+import { useDebounce } from '@/common/hooks';
+import Modal from '@/common/atoms/Modal';
+import Banner from '@/common/atoms/Banner';
 
 const DEBOUNCE_WAIT = 300;
 

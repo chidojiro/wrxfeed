@@ -1,4 +1,4 @@
-import { ArrowUpIcon } from '@assets';
+import { ArrowUpIcon } from '@/assets';
 import { Transition } from '@headlessui/react';
 import React, { Fragment, MouseEventHandler, VFC } from 'react';
 

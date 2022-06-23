@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ReactComponent as StarSvg } from '@assets/images/star.svg';
+import { ReactComponent as StarSvg } from '@/assets/images/star.svg';
 
 const WrxfeedStar: React.VFC = () => {
   return (

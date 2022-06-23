@@ -1,5 +1,5 @@
 import React from 'react';
-import Loading from '@common/atoms/Loading';
+import Loading from '@/common/atoms/Loading';
 
 const LoadingFallback: React.FC = () => {
   return (

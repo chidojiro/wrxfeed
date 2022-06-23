@@ -4,7 +4,7 @@ import { useRef, useEffect, Ref, MutableRefObject } from 'react';
 /**
  * Combine many refs in one
  */
-export const useCombinedRefs = <T extends any>(
+export const useCombinedRefs = <T,>(
   ...refs: Array<Ref<T> | MutableRefObject<T>>
 ): MutableRefObject<T | null> => {
   const targetRef = useRef<T | null>(null);

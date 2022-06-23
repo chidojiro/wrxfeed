@@ -1,4 +1,4 @@
-import { Company } from '@main/entity';
+import { Company } from '@/main/entity';
 
 export interface Profile {
   company?: Company;
