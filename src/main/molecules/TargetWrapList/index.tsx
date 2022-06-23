@@ -91,7 +91,9 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
           getTargetPeriodsAmountTotal(item);
         const isDeleting = deletingItemId === item.id;
         return (
-          <div
+          <button
+            type="button"
+            onClick={() => onClickTarget(item)}
             key={`Dashboard-TargetChartView-${item.id}`}
             className="bg-white relative w-[500px] h-[330px] rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col mr-4 mt-4 border border-transparent hover:border-Accent-4"
           >
@@ -177,7 +179,7 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
                 <Loading color="Gray-3" />
               </div>
             )}
-          </div>
+          </button>
         );
       })}
     </>
