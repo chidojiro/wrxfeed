@@ -1,0 +1,38 @@
+{
+  "icons": [
+    {
+      "src": "/icon_512x512.aee9672e4977816935a84f691e640789.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon_512x512.aee9672e4977816935a84f691e640789.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon_256x256.aee9672e4977816935a84f691e640789.svg",
+      "sizes": "256x256",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon_128x128.aee9672e4977816935a84f691e640789.svg",
+      "sizes": "128x128",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon_96x96.aee9672e4977816935a84f691e640789.svg",
+      "sizes": "96x96",
+      "type": "image/svg+xml"
+    }
+  ],
+  "name": "Gravity",
+  "short_name": "Gravity",
+  "orientation": "portrait",
+  "display": "standalone",
+  "start_url": ".",
+  "description": "Gravity",
+  "background_color": "#0F0D15",
+  "theme_color": "#ffffff"
+}

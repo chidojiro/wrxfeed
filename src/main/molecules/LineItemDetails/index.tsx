@@ -129,7 +129,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     {
       id: 'due-date',
       key: 'Due Date',
-      value: dayjs(item?.transaction?.dueDate).format('MMM D, YYYY'),
+      value: item?.transaction?.dueDate
+        ? dayjs(item?.transaction?.dueDate).format('MMM D, YYYY')
+        : '',
     },
   ];
 
