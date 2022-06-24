@@ -31,6 +31,8 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
 import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
 import UpdateDetailsLineItemInfoModal from '@/main/organisms/UpdateDetailsLineItemInfoModal';
+import { useHistory } from 'react-router-dom';
+import { MainGroups } from '@/common/constants';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -64,6 +66,8 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   const lineItemUpdate = useRecoilValue(lineItemUpdateState);
   const setLineItemUpdate = useSetRecoilState(lineItemUpdateState);
 
+  const history = useHistory();
+
   useEffect(() => {
     setVendorUpdate({
       vendorId: item?.vendor?.id,
@@ -94,6 +98,13 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
 
   const showEditLineItemModal = () => {
     setShowEditLineItem(true);
+  };
+
+  const goToCategoryPage = (categoryId?: number) => {
+    history.push({
+      pathname: `/categories/${categoryId}`,
+      search: `?route=${MainGroups.Following}`,
+    });
   };
 
   const getOriginalAmountWithSign = (): string => {
@@ -355,8 +366,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               {item?.vendor?.categories?.map((category) => {
                 return (
                   <span
-                    className="text-xs bg-purple-600 rounded px-2 mx-2 my-1 text-white"
+                    className="text-xs bg-purple-600 rounded px-2 mx-2 my-1 text-white hover:cursor-pointer"
                     key={category.id}
+                    onClick={() => goToCategoryPage(category?.id)}
                   >
                     {category.name}
                   </span>
