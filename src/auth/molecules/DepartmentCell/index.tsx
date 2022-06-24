@@ -64,6 +64,7 @@ const DepartmentCell: React.VFC<DepartmentCellProps> = ({
     });
 
   const getChilds = useCallback(async () => {
+    console.log('getChilds: ', getChilds);
     const deptChild: Department[] = await ApiClient.getDepartments({
       parent: dept.id,
       ...INIT_PAGINATION,

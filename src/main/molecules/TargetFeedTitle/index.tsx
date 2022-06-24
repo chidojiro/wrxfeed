@@ -1,6 +1,5 @@
 import React from 'react';
-import dayjs from 'dayjs';
-import { classNames } from '@/common/utils';
+import { classNames, distanceToNow } from '@/common/utils';
 import { ReactComponent as EyeHideIcon } from '@/assets/icons/outline/eye-hide.svg';
 import { Target } from '@/main/entity';
 import EditorAvatar from '@/main/atoms/EditorAvatar';
@@ -63,9 +62,7 @@ const TargetFeedTitle: React.VFC<TargetFeedTitleProps> = ({
         <div className="flex flex-row space-x-2 items-center h-6">
           <EditorAvatar updater={target?.updatedBy} />
           <h2 id={`question-title-${target?.id}`} className="mt-1 text-xs font-normal text-Gray-6">
-            {`${target?.updatedBy?.fullName ?? 'Unknown'} edited at ${dayjs(lastInteraction).format(
-              'MM/DD/YYYY',
-            )}`}
+            {`edited ${distanceToNow(lastInteraction)}`}
           </h2>
         </div>
       </div>

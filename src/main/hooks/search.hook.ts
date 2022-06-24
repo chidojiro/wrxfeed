@@ -115,6 +115,7 @@ export function useSearch({
     try {
       setLoading(true);
       const apiClient = await getApiClient();
+      console.log('hook search');
       // eslint-disable-next-line prefer-const
       let [departments, categories, vendors] = await Promise.all([
         apiClient.getDepartments({
@@ -124,16 +125,6 @@ export function useSearch({
         apiClient.getCategories(INIT_PAGINATION),
         apiClient.getVendors(INIT_PAGINATION),
       ]);
-
-      // if (departments.length > 0) {
-      //   const childrenData = await Promise.all(
-      //     departments.map((dept) =>
-      //       apiClient.getDepartments({ parent: dept.id, ...INIT_PAGINATION }),
-      //     ),
-      //   );
-      //   const children: Department[] = childrenData.reduce((pre, cur) => [...pre, ...cur]);
-      //   departments = [...departments, ...children];
-      // }
 
       setGlobalSearch({
         departments,

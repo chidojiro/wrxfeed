@@ -38,8 +38,8 @@ export function useDepartment(filters: DepartmentFilter): DepartmentHookValues {
   const getDepartments = useCallback(async () => {
     try {
       setLoading(true);
+      console.log('hook getDepartments');
       const res = await ApiClient.getDepartments(filters);
-      // Get children of department
       if (res.length) {
         const childrenData = await Promise.all(
           res.map((dept) => ApiClient.getDepartments({ parent: dept.id, ...DEPT_PAGINATION })),
