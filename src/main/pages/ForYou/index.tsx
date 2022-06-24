@@ -102,7 +102,13 @@ const ForYouPage: React.VFC = () => {
           <h1 className="text-Gray-1 text-xl font-bold">{filterTitle}</h1>
         </div>
       )}
-      <FeedList ref={feedListRef} onFilter={handleFilter} hasEmptyStateComponent hasEndComponent />
+      <FeedList
+        ref={feedListRef}
+        onFilter={handleFilter}
+        hasEmptyStateComponent
+        hasEndComponent
+        forYou={1}
+      />
     </MainLayout>
   );
 };

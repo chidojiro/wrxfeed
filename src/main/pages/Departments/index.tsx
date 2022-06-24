@@ -138,7 +138,7 @@ const DepartmentsPage: React.VFC = () => {
       ) : (
         <>
           {deptId && <TeamHome deptSelect={deptSelect} depId={parseInt(deptId, 10)} />}
-          <FeedList onFilter={handleFeedsFilter} />
+          {deptId && <FeedList onFilter={handleFeedsFilter} depId={parseInt(deptId, 10)} />}
         </>
       )}
     </MainLayout>
