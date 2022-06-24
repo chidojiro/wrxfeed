@@ -273,7 +273,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
             </div>
           </div>
           <div
-            className="flex-row w-[524px] text-sm text-gray-500 rounded-lg border border-gray-200 p-3"
+            className="flex-row w-[524px] text-sm text-gray-500 rounded-lg border border-gray-200 p-3 hover:cursor-pointer"
             onClick={showEditVendorDescriptionModal}
           >
             {vendorUpdate.description ?? 'Add a vendor description'}
