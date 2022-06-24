@@ -38,7 +38,6 @@ export function useDepartment(filters: DepartmentFilter): DepartmentHookValues {
   const getDepartments = useCallback(async () => {
     try {
       setLoading(true);
-      console.log('hook getDepartments');
       const res = await ApiClient.getDepartments(filters);
       if (res.length) {
         const childrenData = await Promise.all(

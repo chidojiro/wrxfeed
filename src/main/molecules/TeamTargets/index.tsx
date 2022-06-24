@@ -107,14 +107,6 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
   });
 
   useEffect(() => {
-    console.log('filter: ', filter);
-  }, [filter]);
-
-  useEffect(() => {
-    console.log('targets: ', targets);
-  }, [targets]);
-
-  useEffect(() => {
     const targetViewTemp: ReactNode[] = [];
     const startCount = havePrimary ? 1 : 0;
     for (let i = startCount; i < targets.length; i += 1) {
