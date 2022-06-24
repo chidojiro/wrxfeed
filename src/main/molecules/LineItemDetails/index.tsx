@@ -129,7 +129,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     {
       id: 'due-date',
       key: 'Due Date',
-      value: dayjs(item?.transaction?.dueDate).format('MMM D, YYYY'),
+      value: item?.transaction?.dueDate
+        ? dayjs(item?.transaction?.dueDate).format('MMM D, YYYY')
+        : '',
     },
   ];
 
@@ -259,7 +261,10 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               <span>{vendorUpdate.contactNumber}</span>
             </div>
           </div>
-          <div className="flex-row w-[524px] text-sm text-gray-500 rounded-lg border border-gray-200 p-3">
+          <div
+            className="flex-row w-[524px] text-sm text-gray-500 rounded-lg border border-gray-200 p-3"
+            onClick={showEditVendorDescriptionModal}
+          >
             {vendorUpdate.description ?? 'Add a vendor description'}
           </div>
 
