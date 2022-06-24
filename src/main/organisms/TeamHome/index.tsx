@@ -120,7 +120,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect, depId 
         {renderTeamHeader()}
         {deptSelect && depId && <TeamTargets dept={deptSelect} depId={depId} />}
       </div>
-      {deptSelect && <TopCategories departmentId={deptSelect?.id} />}
+      {depId && <TopCategories departmentId={depId} />}
       {renderRecentTransactions()}
     </div>
   );

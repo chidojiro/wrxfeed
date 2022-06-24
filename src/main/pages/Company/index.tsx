@@ -28,7 +28,6 @@ const INIT_PAGINATION = {
 };
 const INIT_FEED_FILTER = Object.freeze({
   page: INIT_PAGINATION,
-  forYou: 0,
 });
 
 const CompanyPage: React.VFC = () => {
