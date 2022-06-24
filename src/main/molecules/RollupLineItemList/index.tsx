@@ -1,8 +1,8 @@
-// import { MessageTextAlt } from '@assets/index';
-import { classNames } from '@common/utils';
+// import { MessageTextAlt } from '@/assets';
+import { classNames } from '@/common/utils';
 import React from 'react';
-import { TransLineItem, Vendor } from '@main/entity';
-import Loading from '@common/atoms/Loading';
+import { TransLineItem, Vendor } from '@/main/entity';
+import Loading from '@/common/atoms/Loading';
 import RollupLineItem from '../RollupLineItem';
 
 export interface RollupLineItemListProps {

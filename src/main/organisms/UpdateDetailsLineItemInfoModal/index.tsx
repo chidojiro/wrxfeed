@@ -2,17 +2,16 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useRef, useState, KeyboardEventHandler, useEffect } from 'react';
 
-import { classNames } from '@common/utils';
-import { EMPTY_LINE_ITEM, LineItem, TransLineItem } from '@main/entity';
-
-import Modal from '@common/atoms/Modal';
-import Loading from '@common/atoms/Loading';
+import { EMPTY_LINE_ITEM, LineItem, TransLineItem } from '@/main/entity';
 
 import { useSetRecoilState } from 'recoil';
-import { useUpdateLineItem } from '@main/hooks/updateLineItem.hook';
-import { lineItemUpdateState } from '@main/states/lineItemUpdate.state';
+import { useUpdateLineItem } from '@/main/hooks/updateLineItem.hook';
+import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
 import dayjs from 'dayjs';
-import { getNameAbbreviation } from '@main/utils';
+import { getNameAbbreviation } from '@/main/utils';
+import Loading from '@/common/atoms/Loading';
+import Modal from '@/common/atoms/Modal';
+import { classNames } from '@/common/utils';
 
 export type UpdateDetailsLineItemInfoModalProps = {
   open: boolean;

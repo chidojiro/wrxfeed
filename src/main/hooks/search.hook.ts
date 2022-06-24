@@ -2,12 +2,12 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { GlobalSearchType, searchState } from '@main/states/search.state';
-import { SearchResult } from '@main/types';
-import { Category, Department, Vendor } from '@main/entity';
-import { SearchFilters, TargetPropType } from '@api/types';
-import { getApiClient } from '@api/utils';
-import { SearchTypes } from '@auth/types';
+import { GlobalSearchType, searchState } from '@/main/states/search.state';
+import { SearchResult } from '@/main/types';
+import { Category, Department, Vendor } from '@/main/entity';
+import { SearchFilters, TargetPropType } from '@/api/types';
+import { getApiClient } from '@/api/utils';
+import { SearchTypes } from '@/auth/types';
 import { toast } from 'react-toastify';
 
 const LIMIT = 2999;

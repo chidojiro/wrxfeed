@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useApi } from '@api';
-import usePusher from '@api/hooks/usePusher';
-import { TransactionBody } from '@api/types';
-import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
-import { useIdentity } from '@identity/hooks';
-import { Category, Transaction } from '@main/entity';
-import { FeedCount, newFeedCountState } from '@main/states/sidemenu.state';
+import { useApi } from '@/api';
+import usePusher from '@/api/hooks/usePusher';
+import { TransactionBody } from '@/api/types';
+import { useErrorHandler } from '@/error/hooks';
+import { isBadRequest } from '@/error/utils';
+import { useIdentity } from '@/identity/hooks';
+import { Category, Transaction } from '@/main/entity';
+import { FeedCount, newFeedCountState } from '@/main/states/sidemenu.state';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { SetterOrUpdater, useRecoilState } from 'recoil';

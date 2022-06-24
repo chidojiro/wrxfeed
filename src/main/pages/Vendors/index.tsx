@@ -3,21 +3,20 @@ import React, { useCallback, useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
-import { useApi } from '@api';
-import { useFeed } from '@main/hooks/feed.hook';
-import { useQuery } from '@common/hooks';
-import { useVendor } from '@main/hooks/vendor.hook';
-import { FilterKeys } from '@main/hooks';
+import { useApi } from '@/api';
+import { useQuery } from '@/common/hooks';
+import { useVendor } from '@/main/hooks/vendor.hook';
+import { FilterKeys } from '@/main/hooks';
 
-import { FeedFilters, Pagination } from '@api/types';
-import { Category, Department, Vendor } from '@main/entity';
-import { MainGroups } from '@common/constants';
-import { scrollToTop } from '@main/utils';
+import { FeedFilters, Pagination } from '@/api/types';
+import { Category, Department, Vendor } from '@/main/entity';
+import { scrollToTop } from '@/main/utils';
 
-import FeedList from '@main/organisms/FeedList';
-import MainLayout from '@common/templates/MainLayout';
-import VendorList from '@main/organisms/VendorList';
-import { ChevronLeftIcon } from '@assets';
+import FeedList from '@/main/organisms/FeedList';
+import VendorList from '@/main/organisms/VendorList';
+import { ChevronLeftIcon } from '@/assets';
+import MainLayout from '@/common/templates/MainLayout';
+import { MainGroups } from '@/common/constants';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -48,8 +47,6 @@ const VendorsPage: React.VFC = () => {
           forYou: 0,
         },
   );
-
-  const { cleanData } = useFeed(feedsFilter);
   // Variables
   const isFiltering = !!feedsFilter.vendor;
 
@@ -89,7 +86,6 @@ const VendorsPage: React.VFC = () => {
   }, [hasMore, isLoading]);
 
   const handleVendorSelect = (value?: Vendor): void => {
-    cleanData();
     setVendor(value);
     history.push({
       pathname: `/vendors/${value?.id.toString()}`,
@@ -133,7 +129,10 @@ const VendorsPage: React.VFC = () => {
           onSelect={handleVendorSelect}
         />
       ) : (
-        <FeedList onFilter={handleFeedsFilter} />
+        <FeedList
+          onFilter={handleFeedsFilter}
+          vendorId={vendorId ? parseInt(vendorId, 10) : undefined}
+        />
       )}
     </MainLayout>
   );

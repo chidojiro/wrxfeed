@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
-import { classNames } from '@common/utils';
+import { classNames } from '@/common/utils';
 
 interface EmptyTargetProps {
   className?: string;

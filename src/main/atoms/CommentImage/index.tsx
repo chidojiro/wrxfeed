@@ -1,5 +1,5 @@
 import React, { ReactEventHandler, useState } from 'react';
-import Loading from '@common/atoms/Loading';
+import Loading from '@/common/atoms/Loading';
 
 const PORTION_HEIGHT = 140;
 

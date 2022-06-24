@@ -1,6 +1,6 @@
-import TokenizedText from '@common/atoms/TokenizedText';
-import { classNames } from '@common/utils';
-import { tokenizeComment } from '@main/utils';
+import TokenizedText from '@/common/atoms/TokenizedText';
+import { classNames } from '@/common/utils';
+import { tokenizeComment } from '@/main/utils';
 import React from 'react';
 
 export interface CommentTextProps {

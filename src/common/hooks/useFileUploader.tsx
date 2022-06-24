@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useApi } from '@src/api';
-import { GetUploadTokenBody, UploadTypes } from '@api/types';
-import { isBadRequest, useErrorHandler } from '@src/error';
+import { useApi } from '@/api';
+import { GetUploadTokenBody, UploadTypes } from '@/api/types';
+import { isBadRequest, useErrorHandler } from '@/error';
 import { toast } from 'react-toastify';
 
 interface FileUploaderCallback {

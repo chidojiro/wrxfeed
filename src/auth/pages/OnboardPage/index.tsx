@@ -4,27 +4,27 @@ import React, { useCallback, useEffect, useState } from 'react';
 import cloneDeep from 'lodash.clonedeep';
 import { toast } from 'react-toastify';
 
-import { useApi } from '@api';
-import { useIdentity } from '@identity/hooks';
-import { useDebounce, useNavUtils, useQuery } from '@common/hooks';
-import { useSubscription } from '@main/hooks/subscription.hook';
-import { useErrorHandler } from '@error/hooks';
-import { isApiError } from '@error/utils';
-import { useSearch } from '@main/hooks/search.hook';
+import { useApi } from '@/api';
+import { useIdentity } from '@/identity/hooks';
+import { useDebounce, useNavUtils, useQuery } from '@/common/hooks';
+import { useSubscription } from '@/main/hooks/subscription.hook';
+import { useErrorHandler } from '@/error/hooks';
+import { isApiError } from '@/error/utils';
+import { useSearch } from '@/main/hooks/search.hook';
 
-import routes from '@src/routes';
-import { getMultiRandomInt, getUniqueListBy } from '@main/utils';
-import { TEAM_SUGGEST_RANDOM_NUMBER } from '@src/config';
-import { Department } from '@main/entity';
-import { SearchResult } from '@main/types';
+import routes from '@/routes';
+import { getMultiRandomInt, getUniqueListBy } from '@/main/utils';
+import { TEAM_SUGGEST_RANDOM_NUMBER } from '@/config';
+import { Department } from '@/main/entity';
+import { SearchResult } from '@/main/types';
 
-import BlankLayout from '@common/templates/BlankLayout';
-import NavBarStatic from '@common/organisms/NavBarStatic';
-import Loading from '@common/atoms/Loading';
-import DepartmentCell from '@auth/molecules/DepartmentCell';
+import BlankLayout from '@/common/templates/BlankLayout';
+import NavBarStatic from '@/common/organisms/NavBarStatic';
+import Loading from '@/common/atoms/Loading';
+import DepartmentCell from '@/auth/molecules/DepartmentCell';
 
-import { ReactComponent as SharpSpaceDashboard } from '@assets/icons/solid/sharp-space-dashboard.svg';
-import { ReactComponent as QuestionCircle } from '@assets/icons/solid/question-circle.svg';
+import { ReactComponent as SharpSpaceDashboard } from '@/assets/icons/solid/sharp-space-dashboard.svg';
+import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
 
 const DEBOUNCE_WAIT = 500;
 

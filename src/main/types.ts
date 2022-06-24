@@ -1,4 +1,4 @@
-import { TargetPropType } from '@api/types';
+import { TargetPropType } from '@/api/types';
 import { EditorState } from 'draft-js';
 
 export type CommentFormModel = {

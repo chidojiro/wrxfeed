@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState, useCallback, FocusEventHandler } from 'react';
-import { ReactComponent as AttachIcon } from '@assets/icons/outline/attach.svg';
-import { ReactComponent as SmileIcon } from '@assets/icons/outline/mood-smile.svg';
-import UploadButton from '@common/atoms/UploadButton';
+import { ReactComponent as AttachIcon } from '@/assets/icons/outline/attach.svg';
+import { ReactComponent as SmileIcon } from '@/assets/icons/outline/mood-smile.svg';
+import UploadButton from '@/common/atoms/UploadButton';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { CommentFormModel } from '@main/types';
-import EmojiPicker from '@common/molecules/EmojiPicker';
-import CommentInput from '@main/atoms/CommentInput';
-import SendButton from '@main/atoms/SendButton';
+import { CommentFormModel } from '@/main/types';
+import EmojiPicker from '@/common/molecules/EmojiPicker';
+import CommentInput from '@/main/atoms/CommentInput';
+import SendButton from '@/main/atoms/SendButton';
 import { EmojiData } from 'emoji-mart';
 import { EditorState, Modifier } from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
-import { UPLOAD_FILE_ACCEPT } from '@src/config';
-import { classNames } from '@common/utils';
+import { classNames } from '@/common/utils';
+import { UPLOAD_FILE_ACCEPT } from '@/config';
 
 export interface CommentFormProps {
   id?: string;

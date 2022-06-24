@@ -1,6 +1,6 @@
 import React from 'react';
-import Loading from '@common/atoms/Loading';
-import { classNames } from '@common/utils';
+import Loading from '@/common/atoms/Loading';
+import { classNames } from '@/common/utils';
 
 export interface ListLoadingProps {
   className?: string;

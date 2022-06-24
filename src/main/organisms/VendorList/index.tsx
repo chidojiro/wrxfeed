@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import InfiniteScroller from '@common/atoms/InfiniteScroller';
-import { Vendor } from '@main/entity';
-import ListLoading from '@main/atoms/ListLoading';
-import DirectoryItem from '@main/molecules/DirectoryItem';
+import { Vendor } from '@/main/entity';
+import ListLoading from '@/main/atoms/ListLoading';
+import DirectoryItem from '@/main/molecules/DirectoryItem';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@identity/hooks';
+import { useIdentity } from '@/identity/hooks';
+import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 
 interface VendorListProps {
   vendors: Vendor[];

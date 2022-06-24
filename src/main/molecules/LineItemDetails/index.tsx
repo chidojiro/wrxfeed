@@ -9,11 +9,11 @@ import {
   getTransactionStatus,
   getVendorNameFromLineItem,
   isEmptyOrSpaces,
-} from '@main/utils';
-import { TransLineItem, TranStatusType } from '@main/entity';
-import { classNames } from '@common/utils';
+} from '@/main/utils';
+import { TransLineItem, TranStatusType } from '@/main/entity';
+import { classNames } from '@/common/utils';
 
-import Loading from '@common/atoms/Loading';
+import Loading from '@/common/atoms/Loading';
 
 import {
   BasicsXRegular,
@@ -24,13 +24,13 @@ import {
   PhoneIcon,
   BasicsEditCircle,
   StackItemsIcon,
-} from '@assets';
-import Tooltip from '@common/atoms/Tooltip';
-import UpdateVendorInfoModal from '@main/organisms/UpdateVendorInfoModal';
+} from '@/assets';
+import Tooltip from '@/common/atoms/Tooltip';
+import UpdateVendorInfoModal from '@/main/organisms/UpdateVendorInfoModal';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { vendorUpdateState } from '@main/states/vendorUpdate.state';
-import { lineItemUpdateState } from '@main/states/lineItemUpdate.state';
-import UpdateDetailsLineItemInfoModal from '@main/organisms/UpdateDetailsLineItemInfoModal';
+import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
+import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
+import UpdateDetailsLineItemInfoModal from '@/main/organisms/UpdateDetailsLineItemInfoModal';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -129,7 +129,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
     {
       id: 'due-date',
       key: 'Due Date',
-      value: dayjs(item?.transaction?.dueDate).format('MMM D, YYYY'),
+      value: item?.transaction?.dueDate
+        ? dayjs(item?.transaction?.dueDate).format('MMM D, YYYY')
+        : '',
     },
   ];
 
@@ -139,9 +141,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
 
   const renderVendorName = () => {
     const vendorName = getVendorNameFromLineItem(item);
-    return (
-      <div className="flex-auto text-lg font-bold text-Gray-3 truncate mr-2">{vendorName}</div>
-    );
+    return <div className="flex-auto text-lg font-bold text-Gray-3 mr-2">{vendorName}</div>;
   };
 
   const renderEditVendorInfoButton = () => {
@@ -238,7 +238,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
           </button>
         </div>
 
-        <div className="flex flex-col px-8 pt-8 pb-5">
+        <div className="flex flex-col my-5 px-8 overflow-y-auto max-h-[calc(100vh-168px)]">
           <div className="flex flex-row group w-[524px]">
             {renderVendorName()}
             <div className="block hidden group-hover:block">{renderEditVendorInfoButton()}</div>
@@ -261,13 +261,16 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               <span>{vendorUpdate.contactNumber}</span>
             </div>
           </div>
-          <div className="flex-row w-[524px] text-sm text-gray-500 rounded-lg border border-gray-200 p-3">
+          <div
+            className="flex-row w-[524px] text-sm text-gray-500 rounded-lg border border-gray-200 p-3"
+            onClick={showEditVendorDescriptionModal}
+          >
             {vendorUpdate.description ?? 'Add a vendor description'}
           </div>
 
           <div className="flex flex-col mt-6 rounded-lg border border-gray-200 p-3 bg-gray-50 w-[524px]">
-            <div className="flex flex-row w-full text-sm text-gray-500 group mb-2 h-7">
-              <p className="flex-auto text-base font-bold text-Gray-3 truncate mr-2">
+            <div className="flex flex-row w-full text-sm text-gray-500 group mb-2">
+              <p className="flex-auto text-base font-bold text-Gray-3 mr-2">
                 {lineItemUpdate.description}
               </p>
               {!!loading && <Loading className="ml-4" width={12} height={12} />}

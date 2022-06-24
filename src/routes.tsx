@@ -1,21 +1,20 @@
-/* eslint-disable import/no-cycle */
-import { UserRole } from '@identity/constants';
+import { UserRole } from '@/identity/constants';
 import { ComponentType } from 'react';
 // Pages
-import Login from '@auth/pages/LoginPage';
-import AcceptInvitation from '@auth/pages/AcceptInvitation';
+import Login from '@/auth/pages/LoginPage';
+import AcceptInvitation from '@/auth/pages/AcceptInvitation';
 
-import Onboard from '@auth/pages/OnboardPage';
-import NotFoundPage from '@common/pages/NotFoundPage';
+import Onboard from '@/auth/pages/OnboardPage';
+import NotFoundPage from '@/common/pages/NotFoundPage';
 
-import ForYou from '@main/pages/ForYou';
-import Departments from '@main/pages/Departments';
-import Categories from '@main/pages/Categories';
-import Vendors from '@main/pages/Vendors';
-import Feed from '@main/pages/Feed';
-import Notifications from '@main/pages/Notifications';
-import Company from '@main/pages/Company';
-import Dashboard from '@main/pages/Dashboard';
+import ForYou from '@/main/pages/ForYou';
+import Departments from '@/main/pages/Departments';
+import Categories from '@/main/pages/Categories';
+import Vendors from '@/main/pages/Vendors';
+import Feed from '@/main/pages/Feed';
+import Notifications from '@/main/pages/Notifications';
+import Company from '@/main/pages/Company';
+import Dashboard from '@/main/pages/Dashboard';
 
 export interface RouteItem<T> {
   path: string | readonly string[];
@@ -24,7 +23,8 @@ export interface RouteItem<T> {
 }
 
 export interface Route {
-  [index: string]: RouteItem<ComponentType>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [index: string]: RouteItem<ComponentType<any>>;
 }
 
 const routes: Route = {

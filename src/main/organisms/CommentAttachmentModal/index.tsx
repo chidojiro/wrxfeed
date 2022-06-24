@@ -2,14 +2,14 @@ import React, { useRef } from 'react';
 import { EditorState } from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
 
-import LinearProgress from '@common/atoms/LinearProgress';
-import CommentBox from '@main/molecules/CommentBox';
-import { useFileUploader } from '@common/hooks/useFileUploader';
-import { GetUploadTokenBody } from '@api/types';
-import CircleAvatar from '@main/atoms/CircleAvatar';
-import ImageFilePreview from '@main/atoms/ImageFilePreview';
-import { CommentFormModel } from '@main/types';
-import Modal, { ModalProps } from '@common/atoms/Modal';
+import CommentBox from '@/main/molecules/CommentBox';
+import { GetUploadTokenBody } from '@/api/types';
+import CircleAvatar from '@/main/atoms/CircleAvatar';
+import ImageFilePreview from '@/main/atoms/ImageFilePreview';
+import { CommentFormModel } from '@/main/types';
+import { useFileUploader } from '@/common/hooks/useFileUploader';
+import LinearProgress from '@/common/atoms/LinearProgress';
+import Modal, { ModalProps } from '@/common/atoms/Modal';
 
 export type AttachmentModalProps = ModalProps & {
   style?: React.CSSProperties;

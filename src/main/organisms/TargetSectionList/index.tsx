@@ -1,14 +1,14 @@
 import React, { CSSProperties } from 'react';
 
-import { useTarget } from '@main/hooks';
-import { TargetByTeam } from '@main/entity';
-import { filterTargetsToTargetByTeam } from '@main/utils';
-import { TargetFilter } from '@api/types';
-import { GET_TARGETS_DASHBOARD_LIMIT } from '@src/config';
-import InfiniteScroller from '@common/atoms/InfiniteScroller';
-import TeamTargetSection from '@main/molecules/TeamTargetSection';
-import ListLoading from '@main/atoms/ListLoading';
-import ListEndComponent from '@main/atoms/ListEndComponent';
+import { useTarget } from '@/main/hooks';
+import { TargetByTeam } from '@/main/entity';
+import { filterTargetsToTargetByTeam } from '@/main/utils';
+import { TargetFilter } from '@/api/types';
+import TeamTargetSection from '@/main/molecules/TeamTargetSection';
+import ListLoading from '@/main/atoms/ListLoading';
+import ListEndComponent from '@/main/atoms/ListEndComponent';
+import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import { GET_TARGETS_DASHBOARD_LIMIT } from '@/config';
 
 const initFilter: TargetFilter = {
   offset: 0,

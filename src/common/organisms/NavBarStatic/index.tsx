@@ -3,16 +3,16 @@ import { Popover } from '@headlessui/react';
 import { useHistory } from 'react-router-dom';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 
-import { classNames } from '@common/utils';
-import routes from '@src/routes';
+import { classNames } from '@/common/utils';
+import routes from '@/routes';
 
-import SearchBar from '@common/molecules/SearchBar';
-import { NotifyPopover, UserProfilePopover } from '@main/molecules';
-import { InviteModal } from '@main/organisms';
-import { UserPlusIcon } from '@assets/index';
+import SearchBar from '@/common/molecules/SearchBar';
+import { NotifyPopover, UserProfilePopover } from '@/main/molecules';
+import { InviteModal } from '@/main/organisms';
+import { UserPlusIcon } from '@/assets';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@identity/hooks';
+import { useIdentity } from '@/identity/hooks';
 
 interface NavBarStaticProps {
   className?: string;

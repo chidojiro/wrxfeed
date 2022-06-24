@@ -1,15 +1,15 @@
-import { isApiError } from '@error/utils';
+import { isApiError } from '@/error/utils';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import cloneDeep from 'lodash.clonedeep';
 import { toast } from 'react-toastify';
-import { useApi } from '@api';
-import { subscriptionState } from '@main/states/subscription.state';
-import { Category, Department, Subscription, Vendor } from '@main/entity';
-import { SubscriptionParams } from '@api/types';
+import { useApi } from '@/api';
+import { subscriptionState } from '@/main/states/subscription.state';
+import { Category, Department, Subscription, Vendor } from '@/main/entity';
+import { SubscriptionParams } from '@/api/types';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@identity/hooks';
+import { useIdentity } from '@/identity/hooks';
 
 interface SubscribeCallback {
   onFollowSuccess?: () => void;

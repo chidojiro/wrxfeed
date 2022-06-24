@@ -1,4 +1,4 @@
-import { Target, Category, Department, Transaction } from '@main/entity';
+import { Target, Category, Department, Transaction } from '@/main/entity';
 
 export type FeedItem = {
   id: number;

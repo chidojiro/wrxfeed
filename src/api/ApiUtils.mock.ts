@@ -1,7 +1,7 @@
-import { UserToken, Identity } from '@identity/types';
-import { Comment, Transaction } from '@main/entity';
-import { sleep } from '@common/utils';
-import { Profile } from '@auth/types';
+import { UserToken, Identity } from '@/identity/types';
+import { Comment, Transaction } from '@/main/entity';
+import { Profile } from '@/auth/types';
+import { sleep } from '@/common/utils';
 
 export const fakeApiUtils = {
   login: async (): Promise<Identity> => {

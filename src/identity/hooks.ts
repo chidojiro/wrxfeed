@@ -1,4 +1,4 @@
-import { AuthProfile } from '@auth/types';
+import { AuthProfile } from '@/auth/types';
 import { useCallback } from 'react';
 import { SetterOrUpdater, useRecoilValue, useSetRecoilState } from 'recoil';
 import { ProtectedFeatures, UserPermissions } from './constants';

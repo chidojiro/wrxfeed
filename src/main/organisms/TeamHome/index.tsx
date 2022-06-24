@@ -1,21 +1,20 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import { classNames } from '@common/utils';
-import React, { useMemo } from 'react';
-import { MouseEventHandler } from 'react-router/node_modules/@types/react';
+import React, { MouseEventHandler, useMemo } from 'react';
 
-import { useSubscription } from '@main/hooks/subscription.hook';
+import { useSubscription } from '@/main/hooks/subscription.hook';
 
-import { getColorByText } from '@main/utils';
-import { Department } from '@main/entity';
+import { getColorByText } from '@/main/utils';
+import { Department } from '@/main/entity';
 
-import Button from '@common/atoms/Button';
-import Loading from '@common/atoms/Loading';
-import TopCategories from '@main/molecules/TopCategories';
-import { TeamIcon, LoopIcon } from '@assets/index';
+import TopCategories from '@/main/molecules/TopCategories';
+import { TeamIcon, LoopIcon } from '@/assets';
 
-import { ReactComponent as AddIcon } from '@assets/icons/solid/add-small.svg';
-import { ReactComponent as TickIcon } from '@assets/icons/solid/tick-small.svg';
-import TeamTargets from '@main/molecules/TeamTargets';
+import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
+import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
+import TeamTargets from '@/main/molecules/TeamTargets';
+import Loading from '@/common/atoms/Loading';
+import Button from '@/common/atoms/Button';
+import { classNames } from '@/common/utils';
 
 interface TeamHomeProps {
   className?: string;
@@ -121,7 +120,7 @@ const TeamHome: React.VFC<TeamHomeProps> = ({ className = '', deptSelect, depId 
         {renderTeamHeader()}
         {deptSelect && depId && <TeamTargets dept={deptSelect} depId={depId} />}
       </div>
-      {deptSelect && <TopCategories departmentId={deptSelect?.id} />}
+      {depId && <TopCategories departmentId={depId} />}
       {renderRecentTransactions()}
     </div>
   );

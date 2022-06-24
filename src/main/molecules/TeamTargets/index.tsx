@@ -1,16 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React, { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { useTarget } from '@main/hooks';
+import { useTarget } from '@/main/hooks';
 
-import { Department, Target } from '@main/entity';
-import { TargetFilter, TargetPropType } from '@api/types';
+import { Department, Target } from '@/main/entity';
+import { TargetFilter, TargetPropType } from '@/api/types';
 
-import AddTargetModal from '@main/molecules/AddTargetModal';
-import { ReactComponent as BasicsAddSmall } from '@assets/icons/outline/basics-add-small.svg';
-import { classNames } from '@common/utils';
-import { SearchResult } from '@main/types';
+import AddTargetModal from '@/main/molecules/AddTargetModal';
+import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
+import { classNames } from '@/common/utils';
+import { SearchResult } from '@/main/types';
+import Loading from '@/common/atoms/Loading';
 import TeamTargetRow from '../TeamTargetRow';
 import EmptyTarget from '../EmptyTarget';
 
@@ -41,6 +43,15 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
     dep: depId,
   });
 
+  useEffect(() => {
+    // clear old target first
+    setTargetView([]);
+    setFilter({
+      ...filter,
+      dep: depId,
+    });
+  }, [depId]);
+
   const onClickNewTarget = () => setShowAddTarget(true);
   const onClickEdit = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, target: Target) => {
     event.stopPropagation();
@@ -68,7 +79,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
       timestamp: Date.now(),
     });
   };
-  const onPutError = () => {};
+  const onPutError = () => null;
   const onDeleteTargetSuccess = () => {
     toast.success('Successfully deleted target!');
     hideAddTargetModal();
@@ -77,7 +88,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
       timestamp: Date.now(),
     });
   };
-  const onDeleteError = () => {};
+  const onDeleteError = () => null;
 
   const {
     targets,
@@ -87,6 +98,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
     isPostTarget,
     isPutTarget,
     isDeleteTarget,
+    isGetTargets,
   } = useTarget({
     filter,
     cbPost: { onSuccess: onPostTargetSuccess, onError: onPostTargetError },
@@ -154,7 +166,7 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
     return (
       <button
         type="button"
-        className="flex flex-row items-center px-2 py-1.5 rounded-sm hover:bg-Gray-12"
+        className="flex flex-row items-center px-2 py-1.5 rounded-sm hover:bg-Gray-12 ml-auto"
         onClick={onClickNewTarget}
       >
         <BasicsAddSmall className="w-4 h-4 mr-0.5" />
@@ -172,11 +184,12 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
 
   return (
     <div className={classNames('flex flex-col mt-px w-full', className)}>
-      <div className="flex w-full flex-row px-6 py-3 items-center justify-between">
+      <div className="flex w-full flex-row px-6 py-3 items-center">
         <p className="text-Gray-3 font-semibold">Team Targets</p>
+        {isGetTargets && <Loading width={12} height={12} color="Gray-3 ml-3" />}
         {renderAddNewTargetButton()}
       </div>
-      {targets.length > 0 && havePrimary && (
+      {targets.length > 0 && havePrimary && !isGetTargets && (
         <TeamTargetRow target={targets[0]} onClickEdit={onClickEdit} />
       )}
       {targetView}

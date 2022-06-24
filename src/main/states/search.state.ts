@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { Category, Department, Vendor } from '@main/entity';
+import { Category, Department, Vendor } from '@/main/entity';
 
 export type GlobalSearchType = {
   departments: Department[];

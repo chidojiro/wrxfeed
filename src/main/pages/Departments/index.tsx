@@ -3,21 +3,21 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 
-import { useQuery } from '@common/hooks';
-import { useFeed } from '@main/hooks/feed.hook';
-import { useDepartment } from '@main/hooks/department.hook';
-import { useApi } from '@api';
+import { useFeed } from '@/main/hooks/feed.hook';
+import { useDepartment } from '@/main/hooks/department.hook';
+import { useApi } from '@/api';
 
-import { Category, Department, Vendor } from '@main/entity';
-import { FeedFilters, Pagination } from '@api/types';
-import { FilterKeys } from '@main/hooks';
-import { scrollToTop } from '@main/utils';
-import { MainGroups } from '@common/constants';
+import { Category, Department, Vendor } from '@/main/entity';
+import { FeedFilters, Pagination } from '@/api/types';
+import { FilterKeys } from '@/main/hooks';
+import { scrollToTop } from '@/main/utils';
 
-import FeedList from '@main/organisms/FeedList';
-import MainLayout from '@common/templates/MainLayout';
-import DepartmentList from '@main/organisms/DepartmentList';
-import TeamHome from '@main/organisms/TeamHome';
+import FeedList from '@/main/organisms/FeedList';
+import DepartmentList from '@/main/organisms/DepartmentList';
+import TeamHome from '@/main/organisms/TeamHome';
+import MainLayout from '@/common/templates/MainLayout';
+import { MainGroups } from '@/common/constants';
+import { useQuery } from '@/common/hooks';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -46,7 +46,7 @@ const DepartmentsPage: React.VFC = () => {
           page: { offset: 0, limit: 0 }, // Don't load feed items at the first launch
         },
   );
-  const { feeds, cleanData } = useFeed(feedsFilter);
+  const { cleanData } = useFeed(feedsFilter);
 
   const { getDepartmentById } = useApi();
 
@@ -138,7 +138,7 @@ const DepartmentsPage: React.VFC = () => {
       ) : (
         <>
           {deptId && <TeamHome deptSelect={deptSelect} depId={parseInt(deptId, 10)} />}
-          <FeedList onFilter={handleFeedsFilter} />
+          {deptId && <FeedList onFilter={handleFeedsFilter} depId={parseInt(deptId, 10)} />}
         </>
       )}
     </MainLayout>

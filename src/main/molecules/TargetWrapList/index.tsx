@@ -3,17 +3,17 @@ import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { Menu } from '@headlessui/react';
 
-import routes from '@src/routes';
-import { Target, FeedType } from '@main/entity';
-import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@main/utils';
-import { MoreVerticalIcon, BinIcon, EditIcon, EyeIcon } from '@assets';
-import TargetStatus from '@main/atoms/TargetStatus';
-import MiniChartView from '@main/molecules/MiniChartView';
-import TargetFeedName from '@main/atoms/TargetFeedName';
-import EditorAvatar from '@main/atoms/EditorAvatar';
-import PopoverMenu from '@main/atoms/PopoverMenu';
-import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
-import Loading from '@common/atoms/Loading';
+import routes from '@/routes';
+import { Target, FeedType } from '@/main/entity';
+import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
+import { MoreVerticalIcon, BinIcon, EditIcon, EyeIcon } from '@/assets';
+import TargetStatus from '@/main/atoms/TargetStatus';
+import MiniChartView from '@/main/molecules/MiniChartView';
+import TargetFeedName from '@/main/atoms/TargetFeedName';
+import EditorAvatar from '@/main/atoms/EditorAvatar';
+import PopoverMenu from '@/main/atoms/PopoverMenu';
+import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
+import Loading from '@/common/atoms/Loading';
 
 export interface TargetWrapListProps {
   targets: Target[];
@@ -91,7 +91,9 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
           getTargetPeriodsAmountTotal(item);
         const isDeleting = deletingItemId === item.id;
         return (
-          <div
+          <button
+            type="button"
+            onClick={() => onClickTarget(item)}
             key={`Dashboard-TargetChartView-${item.id}`}
             className="bg-white relative w-[500px] h-[330px] rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col mr-4 mt-4 border border-transparent hover:border-Accent-4"
           >
@@ -177,7 +179,7 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
                 <Loading color="Gray-3" />
               </div>
             )}
-          </div>
+          </button>
         );
       })}
     </>

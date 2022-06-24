@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import { useHistory } from 'react-router-dom';
 
-import { useCategory } from '@main/hooks/category.hook';
-import { classNames } from '@common/utils';
-import { Category } from '@main/entity';
-import { CategoryIcon } from '@assets/index';
-import { CategoryFilter } from '@api/types';
-import Loading from '@common/atoms/Loading';
-import { MainGroups } from '@common/constants';
-import { decimalLogic, DecimalType } from '@main/utils';
+import { useCategory } from '@/main/hooks/category.hook';
+import { classNames } from '@/common/utils';
+import { Category } from '@/main/entity';
+import { CategoryIcon } from '@/assets';
+import { CategoryFilter } from '@/api/types';
+import Loading from '@/common/atoms/Loading';
+import { MainGroups } from '@/common/constants';
+import { decimalLogic, DecimalType } from '@/main/utils';
 
 const LIMIT = 6;
 const INIT_PAGINATION = Object.freeze({
@@ -24,11 +24,23 @@ interface TopCategoriesProps {
 
 const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departmentId }) => {
   const history = useHistory();
-  const [filter] = useState<CategoryFilter>({
+
+  const [filter, setFilter] = useState<CategoryFilter>({
     ...INIT_PAGINATION,
     dep: departmentId,
   });
-  const { categories = [], isLoading } = useCategory(filter);
+
+  const { categories = [], isLoading, cleanData } = useCategory({ filter, concatNewData: false });
+
+  useEffect(() => {
+    cleanData();
+    setFilter({
+      ...INIT_PAGINATION,
+      dep: departmentId,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [departmentId]);
+
   const onSelect = (category: Category) => {
     history.push({
       pathname: `/categories/${category?.id}`,
@@ -60,6 +72,9 @@ const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departme
       </div>
     );
   };
+
+  if (!isLoading && categories.length === 0) return null;
+
   return (
     <div
       className={classNames(

@@ -1,6 +1,6 @@
 import React, { VFC } from 'react';
-import { ReactComponent as TickCircle } from '@assets/icons/solid/tick-circle.svg';
-import { ReactComponent as CloseIcon } from '@assets/icons/outline/close.svg';
+import { ReactComponent as TickCircle } from '@/assets/icons/solid/tick-circle.svg';
+import { ReactComponent as CloseIcon } from '@/assets/icons/outline/close.svg';
 
 interface BannerProps {
   message: string;

@@ -1,8 +1,8 @@
-import { useApi } from '@api';
-import { Pagination } from '@api/types';
-import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
-import { Vendor } from '@main/entity';
+import { useApi } from '@/api';
+import { Pagination } from '@/api/types';
+import { useErrorHandler } from '@/error/hooks';
+import { isBadRequest } from '@/error/utils';
+import { Vendor } from '@/main/entity';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import { classNames } from '@common/utils';
-import NavBarStatic from '@common/organisms/NavBarStatic';
-// import NavBar from '@common/organisms/NavBar';
+import { classNames } from '@/common/utils';
+import NavBarStatic from '@/common/organisms/NavBarStatic';
+// import NavBar from '@/common/organisms/NavBar';
 
 interface BlankLayoutProps {
   children: React.ReactNode;

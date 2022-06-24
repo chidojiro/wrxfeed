@@ -1,5 +1,5 @@
-import { TargetProp, TargetPeriod } from '@api/types';
-import { User } from '@main/entity/user.entity';
+import { TargetProp, TargetPeriod } from '@/api/types';
+import { User } from '@/main/entity/user.entity';
 import { Department } from './transaction.entity';
 
 export enum TargetStatusType {

@@ -2,11 +2,11 @@ import React from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { ProfileFormModel } from '@auth/types';
-import LoadingButton from '@common/atoms/LoadingButton';
-import FormInput from '@auth/atoms/FormInput';
-import { ReactComponent as ArrowRightIcon } from '@assets/icons/outline/arrow-right.svg';
-import { classNames } from '@common/utils';
+import { ProfileFormModel } from '@/auth/types';
+import LoadingButton from '@/common/atoms/LoadingButton';
+import FormInput from '@/auth/atoms/FormInput';
+import { ReactComponent as ArrowRightIcon } from '@/assets/icons/outline/arrow-right.svg';
+import { classNames } from '@/common/utils';
 
 const schema = yup.object({
   title: yup.string().required('This field is required'),

@@ -9,7 +9,7 @@
 /coverage
 
 # react production build
-/dist
+build
 
 # dotenv environment variables file
 .env

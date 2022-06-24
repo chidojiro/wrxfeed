@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 import Pusher from 'pusher-js';
-import PusherContext from '@api/contexts/PusherContext';
-import { PUSHER_APP_KEY, PUSHER_APP_CLUSTER } from '@src/config';
+import PusherContext from '@/api/contexts/PusherContext';
+import { PUSHER_APP_KEY, PUSHER_APP_CLUSTER } from '@/config';
+import { Children } from '@/common/types';
 
-export const PusherProvider: React.FC = ({ children }) => {
+export const PusherProvider: React.FC<Children> = ({ children }) => {
   const pusherRef = useRef<Pusher>(
     new Pusher(PUSHER_APP_KEY, {
       cluster: PUSHER_APP_CLUSTER,

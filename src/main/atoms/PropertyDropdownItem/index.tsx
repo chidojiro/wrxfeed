@@ -1,5 +1,5 @@
-import { SearchResult } from '@main/types';
-import { getIconByResultType, getPropTypeDisplayName } from '@main/utils';
+import { SearchResult } from '@/main/types';
+import { getIconByResultType, getPropTypeDisplayName } from '@/main/utils';
 import React, { useEffect, useRef, VFC } from 'react';
 
 interface PropertyDropdownItemProps {

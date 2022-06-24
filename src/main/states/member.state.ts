@@ -1,7 +1,7 @@
 import { atom, selector } from 'recoil';
-import { getApiClient } from '@api/utils';
-import { User } from '@main/entity';
-import { identityState } from '@identity/states';
+import { getApiClient } from '@/api/utils';
+import { User } from '@/main/entity';
+import { identityState } from '@/identity/states';
 
 export const membersState = atom<User[]>({
   key: 'main/members', // unique ID (with respect to other atoms/selectors)

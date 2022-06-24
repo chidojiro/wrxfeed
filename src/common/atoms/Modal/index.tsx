@@ -1,9 +1,9 @@
-import React, { Fragment, MutableRefObject, ReactElement } from 'react';
+import { classNames } from '@/common/utils';
 import { Dialog, Transition } from '@headlessui/react';
-import { classNames } from '@common/utils';
+import React, { Fragment, MutableRefObject } from 'react';
 
 export interface ModalProps {
-  children?: Element | ReactElement | null;
+  children?: React.ReactNode;
   initialFocus?: MutableRefObject<HTMLElement | null>;
   open: boolean;
   onClose: () => void;

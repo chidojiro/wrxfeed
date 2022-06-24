@@ -1,8 +1,8 @@
 import React from 'react';
 import * as Sentry from '@sentry/react';
-import MainLayout from '@common/templates/MainLayout';
-import TargetSectionList from '@main/organisms/TargetSectionList';
-import TargetBoardSummaries from '@main/organisms/TargetBoardSummaries';
+import TargetSectionList from '@/main/organisms/TargetSectionList';
+import TargetBoardSummaries from '@/main/organisms/TargetBoardSummaries';
+import MainLayout from '@/common/templates/MainLayout';
 
 const DashboardPage: React.VFC = () => {
   return (

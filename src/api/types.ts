@@ -1,4 +1,4 @@
-import { UserToken, Identity } from '@identity/types';
+import { UserToken, Identity } from '@/identity/types';
 import {
   Comment,
   Transaction,
@@ -14,7 +14,7 @@ import {
   TransLineItem,
   VendorDescription,
   LineItem,
-} from '@main/entity';
+} from '@/main/entity';
 import {
   AuthProfile,
   ChangePwdFormModel,
@@ -23,8 +23,8 @@ import {
   Profile,
   ProfileFormModel,
   SearchTypes,
-} from '@auth/types';
-import { InviteFormModel, FeedBackFormModel, SearchResult } from '@main/types';
+} from '@/auth/types';
+import { InviteFormModel, FeedBackFormModel, SearchResult } from '@/main/types';
 
 export interface ApiClient {
   // Authentication API
@@ -74,7 +74,7 @@ export interface ApiClient {
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
   // Directory
   getDepartments: (filters?: DepartmentFilter) => Promise<Department[]>;
-  getCategories: (pagination?: CategoryFilter) => Promise<Category[]>;
+  getCategories: (filter?: CategoryFilter) => Promise<Category[]>;
   getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
   updateCategory: (data?: Partial<Category>) => Promise<void>;
   // Notification
@@ -252,7 +252,7 @@ export interface AddFeedCommentParams {
 
 export interface FeedFilters {
   page?: Pagination;
-  forYou?: number;
+  forYou?: 1 | 0;
   department?: number;
   targetId?: number;
   vendor?: number;

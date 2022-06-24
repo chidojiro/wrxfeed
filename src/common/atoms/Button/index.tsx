@@ -1,4 +1,4 @@
-import { classNames } from '@common/utils';
+import { classNames } from '@/common/utils';
 import React, { ButtonHTMLAttributes, CSSProperties, DetailedHTMLProps } from 'react';
 
 interface ButtonProps

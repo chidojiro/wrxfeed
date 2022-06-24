@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Transaction } from '@main/entity';
-import { classNames } from '@common/utils';
+import { Transaction } from '@/main/entity';
+import { classNames } from '@/common/utils';
 import RollupTranRow from '../RollupTranRow';
 
 interface RollupTransactionsProps {

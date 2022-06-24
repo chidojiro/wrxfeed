@@ -5,19 +5,19 @@ import dayjs from 'dayjs';
 import cloneDeep from 'lodash.clonedeep';
 import range from 'lodash.range';
 
-import { useTransaction } from '@main/hooks/transaction.hook';
-import { defaultTargetMonths } from '@common/constants';
-import { LineChartData } from '@main/types';
-import { Target, TargetMonth } from '@main/entity';
-import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
-import { TargetPeriod, TransactionBody } from '@api/types';
-import { classNames } from '@common/utils';
+import { useTransaction } from '@/main/hooks/transaction.hook';
+import { defaultTargetMonths } from '@/common/constants';
+import { LineChartData } from '@/main/types';
+import { Target, TargetMonth } from '@/main/entity';
+import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import { TargetPeriod, TransactionBody } from '@/api/types';
+import { classNames } from '@/common/utils';
 import {
   getLineChartDataInMonth,
   getTargetMonthsLineChartData,
   getSpendingByYear,
-} from '@main/chart.utils';
-import { decimalLogic, DecimalType } from '@main/utils';
+} from '@/main/chart.utils';
+import { decimalLogic, DecimalType } from '@/main/utils';
 
 import TargetChart from '../TargetChart';
 

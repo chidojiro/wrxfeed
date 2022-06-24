@@ -3,20 +3,20 @@ import React, { useCallback, useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
-import { useFeed } from '@main/hooks/feed.hook';
-import { useQuery } from '@common/hooks';
-import { useCategory } from '@main/hooks/category.hook';
-import { FilterKeys } from '@main/hooks';
+import { useFeed } from '@/main/hooks/feed.hook';
+import { useCategory } from '@/main/hooks/category.hook';
+import { FilterKeys } from '@/main/hooks';
 
-import { FeedFilters, Pagination } from '@api/types';
-import { Category, Department, Vendor } from '@main/entity';
-import { MainGroups } from '@common/constants';
-import { scrollToTop } from '@main/utils';
+import { FeedFilters, Pagination } from '@/api/types';
+import { Category, Department, Vendor } from '@/main/entity';
+import { scrollToTop } from '@/main/utils';
 
-import FeedList from '@main/organisms/FeedList';
-import MainLayout from '@common/templates/MainLayout';
-import CategoryList from '@main/organisms/CategoryList';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
+import FeedList from '@/main/organisms/FeedList';
+import CategoryList from '@/main/organisms/CategoryList';
+import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
+import MainLayout from '@/common/templates/MainLayout';
+import { MainGroups } from '@/common/constants';
+import { useQuery } from '@/common/hooks';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -31,7 +31,7 @@ const CategoriesPage: React.VFC = () => {
   const location = useLocation();
   // Category states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
-  const { categories, hasMore, isLoading } = useCategory(filter);
+  const { categories, hasMore, isLoading } = useCategory({ filter });
   // Feeds states
   const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
     catId
@@ -74,13 +74,7 @@ const CategoriesPage: React.VFC = () => {
   }, [catId, query.toString(), feedsFilter.category]);
 
   useEffect(() => {
-    // Scroll to top
-    if (window.scrollY > 0) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'auto',
-      });
-    }
+    scrollToTop();
     filterByRoute();
   }, [filterByRoute]);
 
@@ -133,7 +127,10 @@ const CategoriesPage: React.VFC = () => {
           onSelect={handleCategorySelect}
         />
       ) : (
-        <FeedList onFilter={handleFeedsFilter} />
+        <FeedList
+          onFilter={handleFeedsFilter}
+          categoryId={catId ? parseInt(catId, 10) : undefined}
+        />
       )}
     </MainLayout>
   );

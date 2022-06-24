@@ -1,12 +1,12 @@
 import React, { CSSProperties } from 'react';
 import { LineChart, Line, ResponsiveContainer, Tooltip, YAxis, TooltipProps } from 'recharts';
 
-import { ChartLineProps, LineChartData } from '@main/types';
-import { getChartLevels } from '@main/chart.utils';
-import { classNames } from '@common/utils';
-import { ValueType, NameType } from 'recharts/src/component/DefaultTooltipContent';
-import Loading from '@common/atoms/Loading';
-import { INITIAL_CHART_DATA } from '@common/constants';
+import { ChartLineProps, LineChartData } from '@/main/types';
+import { getChartLevels } from '@/main/chart.utils';
+import { classNames } from '@/common/utils';
+import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import Loading from '@/common/atoms/Loading';
+import { INITIAL_CHART_DATA } from '@/common/constants';
 
 const MIN_Y_VALUE = 100;
 
@@ -15,7 +15,6 @@ interface TargetChartProps<T> {
   containerStyle?: CSSProperties;
   containerClass?: string;
   chartData?: LineChartData<T>;
-  maxYValue?: number;
   renderXAxis?: () => JSX.Element;
   renderReferenceLines?: () => JSX.Element | null;
   renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element | null;
@@ -23,14 +22,11 @@ interface TargetChartProps<T> {
   levelLabelClass?: string;
 }
 
-const TargetChart: <T extends unknown>(
-  p: TargetChartProps<T>,
-) => React.ReactElement<TargetChartProps<T>> = ({
+const TargetChart: <T>(p: TargetChartProps<T>) => React.ReactElement<TargetChartProps<T>> = ({
   className,
   containerStyle,
   containerClass,
   chartData,
-  maxYValue,
   renderXAxis,
   renderReferenceLines,
   renderTooltip,
@@ -38,10 +34,8 @@ const TargetChart: <T extends unknown>(
   levelLabelClass = '',
 }) => {
   const { data, lines, maxValue } = chartData || INITIAL_CHART_DATA;
-  const maxValueForChart = Math.max(
-    (maxYValue ?? 0) > maxValue ? (maxYValue ?? 0) * 1.2 : maxValue,
-    MIN_Y_VALUE,
-  );
+  const maxValueWithSurplus = Math.ceil(maxValue * 1.1);
+  const maxValueForChart = Math.max(maxValueWithSurplus, MIN_Y_VALUE);
   const chartLevels = getChartLevels(maxValueForChart);
 
   return (
@@ -50,7 +44,7 @@ const TargetChart: <T extends unknown>(
       className={classNames('flex flex-col w-full h-full', containerClass || '')}
     >
       <div className="flex relative flex-col flex-1">
-        <div className="absolute flex w-full h-full justify-between flex-col-reverse">
+        <div className="absolute top-[-3px] flex w-full h-full justify-between flex-col-reverse">
           {chartLevels.map((level) => {
             const textColor = level?.isTarget ? 'text-Accent-2' : 'text-Gray-6';
             return (
