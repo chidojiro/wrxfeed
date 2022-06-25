@@ -125,16 +125,6 @@ export function useSearch({
         apiClient.getVendors(INIT_PAGINATION),
       ]);
 
-      // if (departments.length > 0) {
-      //   const childrenData = await Promise.all(
-      //     departments.map((dept) =>
-      //       apiClient.getDepartments({ parent: dept.id, ...INIT_PAGINATION }),
-      //     ),
-      //   );
-      //   const children: Department[] = childrenData.reduce((pre, cur) => [...pre, ...cur]);
-      //   departments = [...departments, ...children];
-      // }
-
       setGlobalSearch({
         departments,
         categories,

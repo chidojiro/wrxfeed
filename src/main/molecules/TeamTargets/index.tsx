@@ -22,7 +22,6 @@ const initFilter = {
   offset: 0,
   limit: GET_TARGETS_LIMIT,
   year: new Date().getFullYear(),
-  month: new Date().getMonth() + 1,
   timestamp: Date.now(),
 };
 
@@ -44,12 +43,13 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
   });
 
   useEffect(() => {
-    // clear old target first
-    setTargetView([]);
-    setFilter({
-      ...filter,
-      dep: depId,
-    });
+    if (filter.dep !== depId) {
+      setTargetView([]);
+      setFilter({
+        ...filter,
+        dep: depId,
+      });
+    }
   }, [depId]);
 
   const onClickNewTarget = () => setShowAddTarget(true);
@@ -124,7 +124,6 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
               target={item}
               onClickEdit={(event) => onClickEdit(event, item)}
             />
-            {/* <div className="hidden sm:flex w-px h-auto bg-Gray-11" /> */}
             <TeamTargetRow
               className="w-1/2"
               target={nextItem}

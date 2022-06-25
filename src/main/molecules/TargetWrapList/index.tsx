@@ -1,6 +1,5 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import dayjs from 'dayjs';
 import { Menu } from '@headlessui/react';
 
 import routes from '@/routes';
@@ -14,6 +13,7 @@ import EditorAvatar from '@/main/atoms/EditorAvatar';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import Loading from '@/common/atoms/Loading';
+import { distanceToNow } from '@/common/utils';
 
 export interface TargetWrapListProps {
   targets: Target[];
@@ -89,7 +89,7 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
       {targets.map((item: Target) => {
         const { overallTarget, currentSpend, targetToDate, exceeding } =
           getTargetPeriodsAmountTotal(item);
-        const isDeleting = deletingItemId === item.id;
+        const isDeleting = deletingItemId === item?.id;
         return (
           <button
             type="button"
@@ -110,9 +110,7 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
                         id={`question-title-${item?.id}`}
                         className="mt-1 text-xs font-normal text-Gray-6"
                       >
-                        {`${item?.updatedBy?.fullName ?? 'Unknown'} edited at ${dayjs(
-                          item?.updatedAt ?? item?.lastInteraction,
-                        ).format('MM/DD/YYYY')}`}
+                        {`edited ${distanceToNow(item?.updatedAt ?? item?.lastInteraction)}`}
                       </h2>
                     </div>
                   </div>
