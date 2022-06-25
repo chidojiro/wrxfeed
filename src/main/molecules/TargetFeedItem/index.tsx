@@ -11,7 +11,7 @@ import { FeedItem, Visibility, Target, User } from '@/main/entity';
 import { CommentFormModel } from '@/main/types';
 import { useMention, useTarget } from '@/main/hooks';
 import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@/api/types';
-import { classNames } from '@/common/utils';
+import { classNames, distanceToNow } from '@/common/utils';
 import { commentEditorRawParser, getMultiMonthRange, getTargetName } from '@/main/utils';
 // components
 import CommentBox from '@/main/molecules/CommentBox';
@@ -125,6 +125,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, o
         onError: () => onRefresh && onRefresh(),
       },
       cbDelete: { onSuccess: onSuccessDeleteTarget, onError: () => onRefresh && onRefresh() },
+      autoLoad: false,
     });
 
   const handlePutTarget = (id: number, data: PutTargetParams) => {
@@ -269,9 +270,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, o
                 id={`question-title-${curFeed?.id}`}
                 className="mt-1 text-xs font-normal text-Gray-6"
               >
-                {`${curFeed?.target?.updatedBy?.fullName ?? 'Unknown'} edited at ${dayjs(
-                  curFeed.lastInteraction,
-                ).format('MM/DD/YYYY')}`}
+                {`edited ${distanceToNow(curFeed.lastInteraction)}`}
               </h2>
             </div>
           </div>

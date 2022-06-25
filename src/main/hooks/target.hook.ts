@@ -56,9 +56,12 @@ export function useTarget({
     try {
       setGetTargets(true);
       const res = await ApiClient.getTargets(filter);
-      setTargets((pre) => [...pre, ...res]);
+      if (filter?.offset !== 0) {
+        setTargets((pre) => [...pre, ...res]);
+      } else {
+        setTargets(res);
+      }
       setHasMore(res.length >= (filter?.limit || 0));
-      setGetTargets(false);
     } catch (error) {
       if (isApiError(error)) {
         toast.error(error.details?.message);

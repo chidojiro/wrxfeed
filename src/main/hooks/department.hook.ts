@@ -39,7 +39,6 @@ export function useDepartment(filters: DepartmentFilter): DepartmentHookValues {
     try {
       setLoading(true);
       const res = await ApiClient.getDepartments(filters);
-      // Get children of department
       if (res.length) {
         const childrenData = await Promise.all(
           res.map((dept) => ApiClient.getDepartments({ parent: dept.id, ...DEPT_PAGINATION })),
