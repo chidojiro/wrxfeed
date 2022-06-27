@@ -1,6 +1,13 @@
 /* eslint-disable no-param-reassign */
 import dayjs from 'dayjs';
-import { Transaction, TargetMonth, TargetSpending } from '@/main/entity';
+import {
+  Transaction,
+  TargetMonth,
+  TargetSpending,
+  Target,
+  TargetStatusConfig,
+  TargetStatusType,
+} from '@/main/entity';
 import { ChartDataPoint, ChartLineProps, ChartLevel, LineChartData } from '@/main/types';
 import { TargetPeriod } from '@/api/types';
 import { round } from '@/common/utils';
@@ -38,6 +45,7 @@ export const getLineChartDataInMonth = (
   thisYearTrans: Transaction[],
   lastYearTrans: Transaction[],
   target: TargetMonth,
+  trackingStatus?: TargetStatusType,
 ): LineChartData => {
   const monthFormat = 'MMM';
   const targetDate = dayjs().set('month', target.month - 1);
@@ -84,6 +92,14 @@ export const getLineChartDataInMonth = (
         target: target.amount ?? 0,
       };
     });
+
+  let dotStatusColor = '#34D399';
+  let backgroundStatusColor = '#D1FAE5';
+  if (trackingStatus) {
+    const { dot, background } = TargetStatusConfig[trackingStatus];
+    dotStatusColor = dot;
+    backgroundStatusColor = background;
+  }
   const lines: ChartLineProps[] = [
     {
       name: 'target',
@@ -110,9 +126,9 @@ export const getLineChartDataInMonth = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: '#34D399',
+      stroke: dotStatusColor,
       dot: false,
-      fill: '#D1FAE5',
+      fill: backgroundStatusColor,
     },
   ];
 
@@ -160,6 +176,7 @@ export const getTargetMonthsLineChartData = (
   thisYearSpend: TargetPeriod[],
   lastYearSpend: TargetPeriod[],
   targetMonths: TargetMonth[],
+  trackingStatus?: TargetStatusType,
 ): LineChartData => {
   const monthFormat = 'MMM';
   const thisMonth = dayjs().month();
@@ -242,6 +259,13 @@ export const getTargetMonthsLineChartData = (
 
   const maxValue = Math.max(cumulativeThisYear, cumulativeLastYear, cumulativeTarget);
 
+  let dotStatusColor = '#34D399';
+  let backgroundStatusColor = '#D1FAE5';
+  if (trackingStatus) {
+    const { dot, background } = TargetStatusConfig[trackingStatus];
+    dotStatusColor = dot;
+    backgroundStatusColor = background;
+  }
   const lines: ChartLineProps[] = [
     {
       name: 'target',
@@ -268,9 +292,9 @@ export const getTargetMonthsLineChartData = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: '#34D399',
+      stroke: dotStatusColor,
       dot: false,
-      fill: '#D1FAE5',
+      fill: backgroundStatusColor,
     },
   ];
 
