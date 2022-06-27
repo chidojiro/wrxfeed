@@ -3,6 +3,7 @@ import { PutTargetParams } from '@/api/types';
 import { BinIcon, EditIcon, EyeIcon, MoreVerticalIcon } from '@/assets';
 import Loading from '@/common/atoms/Loading';
 import { useHandler } from '@/common/hooks';
+import { ClassName } from '@/common/types';
 import EditorAvatar from '@/main/atoms/EditorAvatar';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
@@ -15,17 +16,22 @@ import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/u
 import routes from '@/routes';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
+import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { noop } from 'lodash-es';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-export type TeamPrimaryTargetProps = {
+export type TeamPrimaryTargetProps = ClassName & {
   data: Target;
   onDeleteSuccess: () => void;
 };
 
-const TeamPrimaryTarget: React.FC<TeamPrimaryTargetProps> = ({ data, onDeleteSuccess }) => {
+const TeamPrimaryTarget: React.FC<TeamPrimaryTargetProps> = ({
+  data,
+  onDeleteSuccess,
+  className,
+}) => {
   const history = useHistory();
 
   const api = useApi();
@@ -57,7 +63,10 @@ const TeamPrimaryTarget: React.FC<TeamPrimaryTargetProps> = ({ data, onDeleteSuc
   return (
     <div
       key={`Dashboard-TargetChartView-${data.id}`}
-      className="bg-white relative w-full h-[500px] rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col mr-4 mt-4 border border-transparent hover:border-Accent-4"
+      className={clsx(
+        'bg-white relative w-full h-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
+        className,
+      )}
     >
       {addTargetModalDisclosure.isOpen && (
         <AddTargetModal

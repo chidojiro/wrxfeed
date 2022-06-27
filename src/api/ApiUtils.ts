@@ -15,6 +15,7 @@ import {
   TransLineItem,
   VendorDescription,
   LineItem,
+  TopCategories,
 } from '@/main/entity';
 import { ApiError } from '@/error';
 import {
@@ -542,6 +543,14 @@ export default class ApiUtils implements ApiClient {
   getCategoryById = async (catId: number): Promise<Category> => {
     const res = await this.request<Category>({
       url: `/feed/categories/${catId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  getTopCategories = async (departmentId: number): Promise<TopCategories[]> => {
+    const res = await this.request<TopCategories[]>({
+      url: `/feed/departments/${departmentId}/categories`,
       method: 'GET',
     });
     return res.data;

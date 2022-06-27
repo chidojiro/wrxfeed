@@ -14,6 +14,7 @@ import {
   TransLineItem,
   VendorDescription,
   LineItem,
+  TopCategories,
 } from '@/main/entity';
 import {
   AuthProfile,
@@ -58,6 +59,7 @@ export interface ApiClient {
   getVendorById: (venId: number) => Promise<Vendor>;
   updateVendorById: (id: number, data: VendorDescription) => Promise<void>;
   getDepartmentById: (depId: number) => Promise<Department>;
+  getTopCategories: (depId: number) => Promise<TopCategories[]>;
   maskLineItemAsRead: (id: number) => Promise<void>;
   getLineItemById: (id: number) => Promise<TransLineItem>;
   updateLineItemById: (id: number, data: LineItem) => Promise<void>;
