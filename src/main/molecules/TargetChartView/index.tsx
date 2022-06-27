@@ -8,8 +8,7 @@ import range from 'lodash.range';
 import { defaultTargetMonths } from '@/common/constants';
 import { TargetPeriod, TransactionBody } from '@/api/types';
 import { classNames } from '@/common/utils';
-import { BasicsEditCircle } from '@/assets';
-import { Target, TargetMonth } from '@/main/entity';
+import { Target, TargetMonth, TargetStatusConfig, TargetStatusType } from '@/main/entity';
 import { LineChartData } from '@/main/types';
 import {
   getLineChartDataInMonth,
@@ -20,6 +19,7 @@ import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/u
 import { useTransaction } from '@/main/hooks/transaction.hook';
 import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import TargetChart from '../TargetChart';
+import TargetStatus from '@/main/atoms/TargetStatus';
 
 interface TargetChartViewProps {
   className?: string;
@@ -27,9 +27,10 @@ interface TargetChartViewProps {
   onEdit: () => void;
 }
 
-const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, onEdit }) => {
+const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target }) => {
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
-  const { overallTarget, currentSpend } = getTargetPeriodsAmountTotal(target);
+  const { overallTarget, currentSpend, targetToDate, exceeding } =
+    getTargetPeriodsAmountTotal(target);
   const updatedTargetMonths = targetMonths.filter((item) => item?.amount !== undefined);
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
@@ -81,36 +82,8 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, o
     }
   }, [startMonth, endMonth]);
 
-  const renderEditTargetButton = () => {
-    return (
-      <button
-        type="button"
-        className="flex ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
-        onClick={onEdit}
-      >
-        <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
-        <p className="text-xs text-Gray-3 font-normal">Edit</p>
-      </button>
-    );
-  };
-
-  const renderChartLegends = () => {
-    return (
-      <div className="flex flex-row justify-center mt-2 py-2 px-[50px] space-x-8">
-        <div className="flex flex-row items-center space-x-2">
-          <div className="w-4 h-1 dashed-line-target" />
-          <p className="text-xs text-Gray-6">Target</p>
-        </div>
-        <div className="flex flex-row items-center space-x-2">
-          <div className="w-4 h-1 bg-Accent-2" />
-          <p className="text-xs text-Gray-6">Current</p>
-        </div>
-        <div className="flex flex-row items-center space-x-2">
-          <div className="w-4 h-1 bg-Gray-11" />
-          <p className="text-xs text-Gray-6">Last Year</p>
-        </div>
-      </div>
-    );
+  const renderTrackingStatus = (trackingStatus: TargetStatusType, exceeding: number) => {
+    return <TargetStatus type={trackingStatus} exceeding={exceeding} />;
   };
 
   const renderXAxis = () => {
@@ -159,27 +132,31 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, o
               <p className="text-white text-3xs font-semibold">{dataPoints?.name ?? 'unknown'}</p>
             </div>
             <div
-              key="target"
-              className="flex flex-row flex-grow justify-between items-center space-x-10"
-            >
-              <div className="flex flex-row items-center space-x-1">
-                <div className="w-1 h-1 rounded bg-system-alert" />
-                <p className="text-white text-2xs">Target</p>
-              </div>
-              <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers, '$')}
-              </p>
-            </div>
-            <div
               key="this-year"
               className="flex flex-row flex-grow justify-between items-center space-x-10"
             >
               <div className="flex flex-row items-center space-x-1">
-                <div className="w-1 h-1 rounded bg-Accent-2" />
-                <p className="text-white text-2xs">Current</p>
+                <div className="flex items-center">
+                  {renderTrackingStatusIndicator(target.trackingStatus)}
+                  <p className="text-white text-2xs ml-1">Spend</p>
+                </div>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
                 {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers, '$')}
+              </p>
+            </div>
+            <div
+              key="target"
+              className="flex flex-row flex-grow justify-between items-center space-x-10"
+            >
+              <div className="flex flex-row items-center space-x-1">
+                <div className="flex items-center">
+                  {renderTrackingStatusIndicator()}
+                  <p className="text-white text-2xs ml-1">Target To Date</p>
+                </div>
+              </div>
+              <p className="text-white text-2xs text-right font-semibold">
+                {decimalLogic(targetToDate ?? 0, DecimalType.SummedNumbers, '$')}
               </p>
             </div>
             <div
@@ -187,8 +164,10 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, o
               className="flex flex-row flex-grow justify-between items-center space-x-10"
             >
               <div className="flex flex-row items-center space-x-1">
-                <div className="w-1 h-1 rounded bg-Gray-11" />
-                <p className="text-white text-2xs">Last Year</p>
+                <div className="flex items-center">
+                  {renderTrackingStatusIndicator()}
+                  <p className="text-white text-2xs ml-1">Last Year</p>
+                </div>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
                 {decimalLogic(dataPoints?.lastYear ?? 0, DecimalType.SummedNumbers, '$')}
@@ -201,24 +180,59 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, o
     return null;
   };
 
+  const renderTrackingStatusIndicator = (trackingStatus?: TargetStatusType) => {
+    if (!trackingStatus) {
+      return (
+        <div className="flex w-2 h-2 justify-center items-center">
+          <div
+            className="w-1.5 h-1.5 rounded-full bg-Green-400"
+            style={{ backgroundColor: '#7D8490' }}
+          />
+        </div>
+      );
+    }
+
+    const { dot } = TargetStatusConfig[trackingStatus];
+    return (
+      <div className="flex w-2 h-2 justify-center items-center">
+        <div className="w-1.5 h-1.5 rounded-full bg-Green-400" style={{ backgroundColor: dot }} />
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col space-y-4">
       <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
-        <div className="flex flex-row space-x-4 w-auto">
-          <div className="flex flex-col min-w-[128px]">
-            <p className="text-xs text-Gray-3">Current Spend</p>
+        <div className="flex flex-row space-x-4 w-auto items-center">
+          <div className="flex flex-col">
+            <div className="flex items-center">
+              {renderTrackingStatusIndicator(target.trackingStatus)}
+              <p className="text-xs text-Gray-2 ml-1">Current Spend</p>
+            </div>
             <p className="text-xl text-primary font-bold mt-1">
               {decimalLogic(currentSpend ?? '0', DecimalType.SummedNumbers)}
             </p>
           </div>
-          <div className="flex flex-col min-w-[128px]">
-            <p className="text-xs text-Gray-3">Target</p>
+          <div className="flex flex-col">
+            <div className="flex items-center">
+              {renderTrackingStatusIndicator()}
+              <p className="text-xs text-Gray-2 ml-1">Target To Date</p>
+            </div>
+            <p className="text-xl text-primary font-bold mt-1">
+              {decimalLogic(targetToDate ?? '0', DecimalType.SummedNumbers)}
+            </p>
+          </div>
+          <div className="flex flex-col">
+            <div className="flex items-center">
+              {renderTrackingStatusIndicator()}
+              <p className="text-xs text-Gray-2 ml-1">Overall Target</p>
+            </div>
             <p className="text-xl text-primary font-bold mt-1">
               {decimalLogic(overallTarget ?? '0', DecimalType.SummedNumbers)}
             </p>
           </div>
           <div className="flex flex-1 justify-end flex-col items-end">
-            {renderEditTargetButton()}
+            {target.trackingStatus && renderTrackingStatus(target.trackingStatus, exceeding)}
           </div>
         </div>
         {chartData && (
@@ -232,7 +246,6 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target, o
                 // loading={lastYearDataLoading || thisYearDataLoading}
               />
             </div>
-            {renderChartLegends()}
           </>
         )}
       </div>

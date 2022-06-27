@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { LineChart, Line, ResponsiveContainer, Tooltip, YAxis, TooltipProps } from 'recharts';
+import { AreaChart, ResponsiveContainer, Tooltip, YAxis, TooltipProps, Area } from 'recharts';
 
 import { ChartLineProps, LineChartData } from '@/main/types';
 import { getChartLevels } from '@/main/chart.utils';
@@ -72,7 +72,7 @@ const TargetChart: <T>(p: TargetChartProps<T>) => React.ReactElement<TargetChart
           })}
         </div>
         <ResponsiveContainer width="100%" height="100%" className={className}>
-          <LineChart
+          <AreaChart
             width={500}
             height={300}
             data={data}
@@ -88,19 +88,21 @@ const TargetChart: <T>(p: TargetChartProps<T>) => React.ReactElement<TargetChart
             {renderReferenceLines && renderReferenceLines()}
             {lines.map((line: ChartLineProps) => {
               return (
-                <Line
+                <Area
                   key={`ChartLine-${line.name}`}
                   name={line.name}
-                  type="linear"
+                  type={line.type}
                   dataKey={line.dataKey}
                   strokeWidth={line.strokeWidth}
                   stroke={line.stroke}
                   strokeDasharray={line.strokeDasharray}
                   dot={line.dot}
+                  fill={line.fill}
+                  opacity={line.opacity}
                 />
               );
             })}
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
         <div className="absolute z-10 w-full h-full flex justify-center items-center pointer-events-none">
           {loading && <Loading width={36} height={36} />}
