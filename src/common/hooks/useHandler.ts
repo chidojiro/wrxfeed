@@ -12,6 +12,7 @@ type HandlerOptionsKeys = keyof HandlerOptions;
 const HandlerOptionsKeys: HandlerOptionsKeys[] = ['onSuccess', 'onError'];
 
 export const useHandler = <T = void>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callback: (...args: any[]) => Promise<T>,
   options?: HandlerOptions<T>,
 ) => {
@@ -26,7 +27,7 @@ export const useHandler = <T = void>(
     setRefreshToken(Math.random());
     setArgs(params);
 
-    dataPromiseRef.current = new Promise((res, rej) => {
+    dataPromiseRef.current = new Promise((res) => {
       dataResolveRef.current = res;
     });
 

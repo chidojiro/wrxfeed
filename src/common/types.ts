@@ -37,3 +37,7 @@ export type Children = {
 };
 
 export type BitBoolean = 1 | 0;
+
+export type ClassName = {
+  className?: string;
+};

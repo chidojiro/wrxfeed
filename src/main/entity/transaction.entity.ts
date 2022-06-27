@@ -156,6 +156,12 @@ export type Category = {
   avatar?: string;
 };
 
+export type TopCategories = {
+  id: number;
+  name: string;
+  spend: number;
+};
+
 export type Vendor = {
   id: number;
   name: string;
