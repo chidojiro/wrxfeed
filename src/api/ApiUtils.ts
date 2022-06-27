@@ -380,18 +380,11 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getTargets = async (filters?: TargetFilter): Promise<Target[]> => {
+  getTargets = async (params?: TargetFilter): Promise<Target[]> => {
     const res = await this.request<Target[]>({
       url: '/target/targets',
       method: 'GET',
-      params: {
-        year: filters?.year,
-        month: filters?.month,
-        dep: filters?.dep,
-        forYou: filters?.forYou,
-        offset: filters?.offset,
-        limit: filters?.limit,
-      },
+      params,
     });
     return res.data;
   };

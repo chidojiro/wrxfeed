@@ -35,3 +35,5 @@ export type SectionTab = {
 export type Children = {
   children: React.ReactNode;
 };
+
+export type BitBoolean = 1 | 0;

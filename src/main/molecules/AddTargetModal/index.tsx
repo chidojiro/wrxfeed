@@ -268,6 +268,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   };
 
   useEffect(() => {
+    console.log('itemEditing', itemEditing);
     if (itemEditing && itemEditing?.props?.length > 0) {
       const defaultTagsTemp = itemEditing?.props.map((prop: TargetProp) => {
         return {

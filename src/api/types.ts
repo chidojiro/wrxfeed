@@ -25,6 +25,7 @@ import {
   SearchTypes,
 } from '@/auth/types';
 import { InviteFormModel, FeedBackFormModel, SearchResult } from '@/main/types';
+import { BitBoolean } from '@/common/types';
 
 export interface ApiClient {
   // Authentication API
@@ -173,6 +174,7 @@ export interface TargetFilter extends Pagination {
   timestamp?: number;
   dep?: number;
   forYou?: number;
+  isPrimary?: BitBoolean;
 }
 
 export interface PostTargetParams {
