@@ -4,7 +4,6 @@ import {
   Transaction,
   TargetMonth,
   TargetSpending,
-  Target,
   TargetStatusConfig,
   TargetStatusType,
 } from '@/main/entity';
