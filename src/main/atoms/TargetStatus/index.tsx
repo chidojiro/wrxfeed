@@ -26,7 +26,7 @@ const TargetStatus: React.VFC<TargetStatusProps> = ({ className = '', type, exce
       <div className="flex w-2 h-2 justify-center items-center">
         <div className="w-1.5 h-1.5 rounded-full bg-Green-400" style={{ backgroundColor: dot }} />
       </div>
-      <p className="text-Green-800 text-xs font-medium" style={{ color: label }}>
+      <p className="text-Green-800 text-xs font-medium whitespace-nowrap" style={{ color: label }}>
         {getTrackingStatusName(type)}
       </p>
       <div className="invisible group-hover:visible absolute -top-10 right-0">

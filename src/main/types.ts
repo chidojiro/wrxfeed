@@ -60,6 +60,8 @@ export type ChartLineProps = {
   stroke: string;
   strokeDasharray?: string;
   dot: boolean;
+  fill?: string;
+  opacity?: number;
 };
 
 export type ChartLevel = {
