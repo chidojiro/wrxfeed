@@ -65,7 +65,11 @@ export function useTarget(params?: UseTargetParams): TargetHookValues {
   );
 
   React.useEffect(() => {
-    setTargets((pre) => [...pre, ...data]);
+    if (filter?.offset !== 0) {
+      setTargets((pre) => [...pre, ...data]);
+    } else {
+      setTargets(data);
+    }
     setHasMore(data.length >= (filter?.limit || 0));
   }, [data]);
 

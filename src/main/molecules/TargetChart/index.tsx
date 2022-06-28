@@ -15,7 +15,6 @@ interface TargetChartProps<T> {
   containerStyle?: CSSProperties;
   containerClass?: string;
   chartData?: LineChartData<T>;
-  maxYValue?: number;
   renderXAxis?: () => JSX.Element;
   renderReferenceLines?: () => JSX.Element | null;
   renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element | null;
@@ -28,7 +27,6 @@ const TargetChart: <T>(p: TargetChartProps<T>) => React.ReactElement<TargetChart
   containerStyle,
   containerClass,
   chartData,
-  maxYValue,
   renderXAxis,
   renderReferenceLines,
   renderTooltip,
@@ -36,10 +34,8 @@ const TargetChart: <T>(p: TargetChartProps<T>) => React.ReactElement<TargetChart
   levelLabelClass = '',
 }) => {
   const { data, lines, maxValue } = chartData || INITIAL_CHART_DATA;
-  const maxValueForChart = Math.max(
-    (maxYValue ?? 0) > maxValue ? (maxYValue ?? 0) * 1.2 : maxValue,
-    MIN_Y_VALUE,
-  );
+  const maxValueWithSurplus = Math.ceil(maxValue * 1.1);
+  const maxValueForChart = Math.max(maxValueWithSurplus, MIN_Y_VALUE);
   const chartLevels = getChartLevels(maxValueForChart);
 
   return (
@@ -48,7 +44,7 @@ const TargetChart: <T>(p: TargetChartProps<T>) => React.ReactElement<TargetChart
       className={classNames('flex flex-col w-full h-full', containerClass || '')}
     >
       <div className="flex relative flex-col flex-1">
-        <div className="absolute flex w-full h-full justify-between flex-col-reverse">
+        <div className="absolute top-[-3px] flex w-full h-full justify-between flex-col-reverse">
           {chartLevels.map((level) => {
             const textColor = level?.isTarget ? 'text-Accent-2' : 'text-Gray-6';
             return (

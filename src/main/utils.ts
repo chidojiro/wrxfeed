@@ -714,3 +714,10 @@ export const getMultiMonthRange = (periods: TargetPeriod[]): string => {
 export const getTrackingStatusName = (type: TargetStatusType): string => {
   return TargetStatusConfig[type].name;
 };
+
+export const getSummaryNumber = (value: number, total: number): string => {
+  if (total === 0) {
+    return '0%';
+  }
+  return `${((value / total ?? 1) * 100 ?? 0).toFixed(0)}%`;
+};

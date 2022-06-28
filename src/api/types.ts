@@ -77,7 +77,7 @@ export interface ApiClient {
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
   // Directory
   getDepartments: (filters?: DepartmentFilter) => Promise<Department[]>;
-  getCategories: (pagination?: CategoryFilter) => Promise<Category[]>;
+  getCategories: (filter?: CategoryFilter) => Promise<Category[]>;
   getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
   updateCategory: (data?: Partial<Category>) => Promise<void>;
   // Notification
@@ -256,7 +256,7 @@ export interface AddFeedCommentParams {
 
 export interface FeedFilters {
   page?: Pagination;
-  forYou?: number;
+  forYou?: 1 | 0;
   department?: number;
   targetId?: number;
   vendor?: number;

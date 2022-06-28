@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import { useHistory } from 'react-router-dom';
 
@@ -24,11 +24,23 @@ interface TopCategoriesProps {
 
 const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departmentId }) => {
   const history = useHistory();
-  const [filter] = useState<CategoryFilter>({
+
+  const [filter, setFilter] = useState<CategoryFilter>({
     ...INIT_PAGINATION,
     dep: departmentId,
   });
-  const { categories = [], isLoading } = useCategory(filter);
+
+  const { categories = [], isLoading, cleanData } = useCategory({ filter, concatNewData: false });
+
+  useEffect(() => {
+    cleanData();
+    setFilter({
+      ...INIT_PAGINATION,
+      dep: departmentId,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [departmentId]);
+
   const onSelect = (category: Category) => {
     history.push({
       pathname: `/categories/${category?.id}`,
@@ -60,6 +72,9 @@ const TopCategories: React.VFC<TopCategoriesProps> = ({ className = '', departme
       </div>
     );
   };
+
+  if (!isLoading && categories.length === 0) return null;
+
   return (
     <div
       className={classNames(
