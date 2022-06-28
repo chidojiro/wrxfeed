@@ -92,10 +92,6 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target })
     }
   }, [startMonth, endMonth]);
 
-  const renderTrackingStatus = (trackingStatus: TargetStatusType, exceeding: number) => {
-    return <TargetStatus type={trackingStatus} exceeding={exceeding} />;
-  };
-
   const renderXAxis = () => {
     const targetDate = dayjs().set('month', startMonth - 1);
     return startMonth === endMonth ? (
@@ -191,21 +187,13 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target })
   };
 
   const renderTrackingStatusIndicator = (trackingStatus?: TargetStatusType) => {
-    if (!trackingStatus) {
-      return (
-        <div className="flex w-2 h-2 justify-center items-center">
-          <div
-            className="w-1.5 h-1.5 rounded-full bg-Green-400"
-            style={{ backgroundColor: '#7D8490' }}
-          />
-        </div>
-      );
-    }
-
-    const { dot } = TargetStatusConfig[trackingStatus];
+    const statusColor = trackingStatus ? TargetStatusConfig[trackingStatus]['dot'] : '#7D8490';
     return (
       <div className="flex w-2 h-2 justify-center items-center">
-        <div className="w-1.5 h-1.5 rounded-full bg-Green-400" style={{ backgroundColor: dot }} />
+        <div
+          className="w-1.5 h-1.5 rounded-full bg-Green-400"
+          style={{ backgroundColor: statusColor }}
+        />
       </div>
     );
   };
@@ -242,7 +230,9 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target })
             </p>
           </div>
           <div className="flex flex-1 justify-end flex-col items-end">
-            {target.trackingStatus && renderTrackingStatus(target.trackingStatus, exceeding)}
+            {target.trackingStatus && (
+              <TargetStatus type={target.trackingStatus} exceeding={exceeding} />
+            )}
           </div>
         </div>
         {chartData && (
