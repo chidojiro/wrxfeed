@@ -170,8 +170,8 @@ export interface CategoryFilter extends Pagination {
   dep?: number;
 }
 
-export interface TargetFilter extends Pagination {
-  year: number;
+export interface TargetFilter extends Partial<Pagination> {
+  year?: number;
   month?: number;
   timestamp?: number;
   dep?: number;

@@ -35,13 +35,17 @@ export interface UseTargetParams {
   autoLoad?: boolean;
 }
 
-export function useTarget({
-  filter,
-  cbPost,
-  cbPut,
-  cbDelete,
-  autoLoad = true,
-}: UseTargetParams): TargetHookValues {
+const defaultFilter: TargetFilter = {
+  offset: 0,
+  limit: 0,
+  year: new Date().getFullYear(),
+  month: new Date().getMonth() + 1,
+  timestamp: Date.now(),
+};
+
+export function useTarget(params?: UseTargetParams): TargetHookValues {
+  const { filter, cbPost, cbPut, cbDelete, autoLoad = true } = params ?? {};
+
   const targetsRef = useRef<Target[]>();
   const [targets, setTargets] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
@@ -57,7 +61,7 @@ export function useTarget({
     isLoading,
     mutate,
   } = useFetcher(autoLoad && ['/targets', JSON.stringify(filter)], () =>
-    ApiClient.getTargets(filter),
+    ApiClient.getTargets({ ...defaultFilter, ...filter }),
   );
 
   React.useEffect(() => {

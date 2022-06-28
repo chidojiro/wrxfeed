@@ -67,9 +67,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
   }, [showError]);
 
   useEffect(() => {
-    if (typeof onChangeItems === 'function') {
-      onChangeItems(items);
-    }
+    onChangeItems?.(items);
   }, [items, onChangeItems]);
 
   const onSearchKeyword = useCallback(

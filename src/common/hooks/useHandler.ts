@@ -16,16 +16,16 @@ export const useHandler = <T = void>(
   callback: (...args: any[]) => Promise<T>,
   options?: HandlerOptions<T>,
 ) => {
-  const [args, setArgs] = React.useState<unknown[] | null>(null);
   const [refreshToken, setRefreshToken] = React.useState<number>();
   const dataPromiseRef = React.useRef<Promise<T>>();
   const dataResolveRef = React.useRef<(data: T) => void>();
+  const argsRef = React.useRef<unknown[]>();
 
   const errorHandler = useErrorHandler();
 
   const handle = React.useCallback((...params: unknown[]) => {
     setRefreshToken(Math.random());
-    setArgs(params);
+    argsRef.current = params;
 
     dataPromiseRef.current = new Promise((res) => {
       dataResolveRef.current = res;
@@ -47,6 +47,8 @@ export const useHandler = <T = void>(
       }
     },
   };
+
+  const args = argsRef.current;
 
   const { data, error, isValidating } = useSwr(
     args && [args, refreshToken],

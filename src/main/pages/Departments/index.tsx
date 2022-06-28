@@ -21,7 +21,7 @@ const DepartmentsPage: React.FC = () => {
       <div className="grid grid-cols-9 gap-6">
         <TeamPrimaryTarget className="col-span-5" data={target} onDeleteSuccess={mutate} />
         <div className="col-span-4 flex flex-col gap-6">
-          <TargetSummary />
+          {!!target.department && <TargetSummary department={target.department} />}
           <TopCategories departmentId={+departmentId} />
         </div>
       </div>
