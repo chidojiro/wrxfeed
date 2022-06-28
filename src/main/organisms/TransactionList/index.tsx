@@ -49,7 +49,7 @@ const TransactionList = ({ className, departmentId }: Props) => {
   };
 
   return (
-    <Table.OverflowContainer className={clsx(className)}>
+    <Table.OverflowContainer className={className}>
       <Table className="rounded-card">
         <Table.Body>
           <Table.Row>
@@ -60,7 +60,7 @@ const TransactionList = ({ className, departmentId }: Props) => {
                   'flex items-center justify-between',
                 )}
               >
-                <div className={clsx('flex items-center gap-2 font-semibold text-Gray-3')}>
+                <div className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3')}>
                   <LoopIcon />
                   <span>Transactions</span>
                 </div>
@@ -77,7 +77,6 @@ const TransactionList = ({ className, departmentId }: Props) => {
             ({ amountUsd, category, description, transDate, transaction, vendor, id }) => (
               <Table.Row
                 key={id}
-                style={{ outlineColor: 'red' }}
                 className="relative hover:ring-1 ring-Accent-4 cursor-pointer"
                 onClick={() => goToLineItemPage(id)}
               >
