@@ -47,6 +47,7 @@ import { ReactComponent as EditIcon } from '@/assets/icons/solid/edit.svg';
 import { ReactComponent as EyeIcon } from '@/assets/icons/solid/eye.svg';
 import { ReactComponent as AddSmallSolid } from '@/assets/icons/solid/add-small.svg';
 import { ReactComponent as InfoCircleIcon } from '@/assets/icons/solid/info-circle.svg';
+export { ReactComponent as ChatIcon } from '@/assets/icons/solid/chat.svg';
 
 export {
   InviteIcon,

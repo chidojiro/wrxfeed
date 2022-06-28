@@ -7,6 +7,8 @@ import numeral from 'numeral';
 import { FieldValues } from 'react-hook-form';
 import * as yup from 'yup';
 import { LazyBuilder } from 'yup/lib/Lazy';
+import { ProjectClassNamePrefix } from '../constants';
+import DateUtils from './date';
 
 // Dayjs plugins
 dayjs.extend(isToday);
@@ -154,3 +156,12 @@ export function formatCurrency({
   const number = supportNegative ? value : Math.abs(parseFloat(replaceAll(`${value}`, ',', '')));
   return numeral(number).format(format);
 }
+
+export const withProjectClassNamePrefix = (...classNames: string[]) => {
+  return [classNames]
+    .flat()
+    .map((className) => ProjectClassNamePrefix + className)
+    .join(' ');
+};
+
+export { DateUtils };

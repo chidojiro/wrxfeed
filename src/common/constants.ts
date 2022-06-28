@@ -3,6 +3,8 @@ import { FeedIcon, Bank, CategoryIcon, TeamIcon, TargetIcon } from '@/assets';
 import { LineChartData } from '@/main/types';
 import { TargetMonth } from '@/main/entity';
 
+export const ProjectClassNamePrefix = 'gvt-';
+
 export enum MainGroups {
   Feeds = 'Feeds',
   Boards = 'Boards',
