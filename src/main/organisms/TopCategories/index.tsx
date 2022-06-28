@@ -87,17 +87,20 @@ const TopCategories: React.FC<TopCategoriesProps> = ({ departmentId }) => {
           </Pie>
         </PieChart>
         <ul className="flex flex-col gap-4 flex-1">
-          {chartData.map(({ name, color }) => {
-            return (
-              <li
-                key={color}
-                className="text-2xs text-gray-3 flex items-baseline leading-4 gap-1 w-full"
-              >
-                <div className="rounded-full w-1.5 h-1.5" style={{ background: color }}></div>
-                {name}
-              </li>
-            );
-          })}
+          {chartData
+            .slice()
+            .reverse()
+            .map(({ name, color }) => {
+              return (
+                <li
+                  key={color}
+                  className="text-2xs text-gray-3 flex items-baseline leading-4 gap-1 w-full"
+                >
+                  <div className="rounded-full w-1.5 h-1.5" style={{ background: color }}></div>
+                  {name}
+                </li>
+              );
+            })}
         </ul>
       </div>
     </div>

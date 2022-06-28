@@ -64,7 +64,7 @@ const TeamPrimaryTarget: React.FC<TeamPrimaryTargetProps> = ({
     <div
       key={`Dashboard-TargetChartView-${data.id}`}
       className={clsx(
-        'bg-white relative w-full h-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
+        'bg-white relative w-full h-[500px] lg:h-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
         className,
       )}
     >

@@ -62,6 +62,7 @@ export interface ApiClient {
   getTopCategories: (depId: number) => Promise<TopCategories[]>;
   maskLineItemAsRead: (id: number) => Promise<void>;
   getLineItemById: (id: number) => Promise<TransLineItem>;
+  getLineItems: (departmentId: number) => Promise<TransLineItem[]>;
   updateLineItemById: (id: number, data: LineItem) => Promise<void>;
   // feedback
   postFeedBackFeed: (feedId: number, data: FeedBackFormModel) => Promise<void>;

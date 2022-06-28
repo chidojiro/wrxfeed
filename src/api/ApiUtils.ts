@@ -614,4 +614,12 @@ export default class ApiUtils implements ApiClient {
     });
     return res.data;
   };
+
+  getLineItems = async (departmentId: number): Promise<TransLineItem[]> => {
+    const res = await this.request<TransLineItem[]>({
+      url: `/feed/line-items?depId=${departmentId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
 }
