@@ -15,6 +15,7 @@ import {
   TransLineItem,
   VendorDescription,
   LineItem,
+  TopCategories,
 } from '@/main/entity';
 import { ApiError } from '@/error';
 import {
@@ -380,18 +381,11 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getTargets = async (filters?: TargetFilter): Promise<Target[]> => {
+  getTargets = async (params?: TargetFilter): Promise<Target[]> => {
     const res = await this.request<Target[]>({
       url: '/target/targets',
       method: 'GET',
-      params: {
-        year: filters?.year,
-        month: filters?.month,
-        dep: filters?.dep,
-        forYou: filters?.forYou,
-        offset: filters?.offset,
-        limit: filters?.limit,
-      },
+      params,
     });
     return res.data;
   };
@@ -549,6 +543,14 @@ export default class ApiUtils implements ApiClient {
   getCategoryById = async (catId: number): Promise<Category> => {
     const res = await this.request<Category>({
       url: `/feed/categories/${catId}`,
+      method: 'GET',
+    });
+    return res.data;
+  };
+
+  getTopCategories = async (departmentId: number): Promise<TopCategories[]> => {
+    const res = await this.request<TopCategories[]>({
+      url: `/feed/departments/${departmentId}/categories`,
       method: 'GET',
     });
     return res.data;
