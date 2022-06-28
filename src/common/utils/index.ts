@@ -8,7 +8,8 @@ import { FieldValues } from 'react-hook-form';
 import * as yup from 'yup';
 import { LazyBuilder } from 'yup/lib/Lazy';
 import { ProjectClassNamePrefix } from '../constants';
-import DateUtils from './date';
+export { DateUtils } from './date';
+export { AssertUtils } from './assert';
 
 // Dayjs plugins
 dayjs.extend(isToday);
@@ -163,5 +164,3 @@ export const withProjectClassNamePrefix = (...classNames: string[]) => {
     .map((className) => ProjectClassNamePrefix + className)
     .join(' ');
 };
-
-export { DateUtils };

@@ -5,3 +5,4 @@ export * from './useEventListener';
 export * from './useIntersection';
 export * from './useFetcher';
 export * from './useHandler';
+export * from './useOnClickOutside';

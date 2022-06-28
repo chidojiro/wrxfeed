@@ -54,6 +54,7 @@
     "bgcolor",
     "builtins",
     "childs",
+    "clsx",
     "commitlint",
     "craco",
     "depts",

@@ -8,8 +8,6 @@ const format = (date: Date | string, formatPattern = 'MM/DD/YY') => {
   }
 };
 
-const DateUtils = {
+export const DateUtils = {
   format,
 };
-
-export default DateUtils;
