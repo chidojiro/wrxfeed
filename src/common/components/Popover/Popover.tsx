@@ -61,8 +61,6 @@ export const Popover = ({
 
   useOnClickOutside(closeOnClickOutside && [popoverRef, triggerElement], onClose);
 
-  console.log(open);
-
   return (
     <>
       {clonedTrigger}

@@ -13,6 +13,7 @@ export type FeedItem = {
   transactions: Transaction[];
   lastInteraction: string;
   target: Target;
+  hidden?: boolean;
 };
 
 export enum FeedType {
