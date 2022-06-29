@@ -1,26 +1,17 @@
-import { useApi } from '@/api';
 import { CategoryIcon } from '@/assets';
-import { useFetcher } from '@/common/hooks';
 import { TopCategories as TTopCategories } from '@/main/entity';
 import TopCategoriesChartTooltip from '@/main/molecules/TopCategoriesChartTooltip';
 import React, { useCallback, useState } from 'react';
 import { Cell, Pie, PieChart, Tooltip } from 'recharts';
+import { useTopCategories } from '../useTopCategories';
 import PieActiveShape from './PieActiveShape';
 
 const COLORS = ['#165DFF', '#0FC6C2', '#F7BA1E', '#7A3FEB', '#3491FA', '#DFE1E6'];
 
-export type TopCategoriesProps = {
-  departmentId: number;
-};
-
-export const TopCategories = ({ departmentId }: TopCategoriesProps) => {
+export const TopCategories = () => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
-  const api = useApi();
-
-  const { data = [] } = useFetcher(['topCategories', departmentId], () =>
-    api.getTopCategories(departmentId),
-  );
+  const { data = [] } = useTopCategories();
 
   const handlePieEnter = useCallback(
     (_: unknown, index: number) => {
