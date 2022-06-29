@@ -42,9 +42,9 @@ export const menuItemsValue = atom<SectionTab[]>({
     get: ({ get }) => {
       const menu = cloneDeep(MainMenu);
       const subscription: Subscription = get(subscriptionState);
-      menu[2].groups[0].tabs?.push(...getTabFromSub(subscription.departments ?? [], 'departments'));
-      menu[2].groups[1].tabs?.push(...getTabFromSub(subscription.categories ?? [], 'categories'));
-      menu[2].groups[2].tabs?.push(...getTabFromSub(subscription.vendors ?? [], 'vendors'));
+      menu[1].groups[0].tabs?.push(...getTabFromSub(subscription.departments ?? [], 'departments'));
+      menu[1].groups[1].tabs?.push(...getTabFromSub(subscription.categories ?? [], 'categories'));
+      menu[1].groups[2].tabs?.push(...getTabFromSub(subscription.vendors ?? [], 'vendors'));
       return menu;
     },
   }),
