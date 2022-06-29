@@ -51,3 +51,4 @@ export { ReactComponent as ChatIcon } from '@/assets/icons/solid/chat.svg';
 export { ReactComponent as UserIcon } from '@/assets/icons/solid/user.svg';
 export { ReactComponent as LoopBoldIcon } from '@/assets/icons/outline/loop-bold.svg';
 export { ReactComponent as TableSortIcon } from '@/assets/icons/outline/table-sort.svg';
+export { ReactComponent as EyeHideIcon } from '@/assets/icons/outline/eye-hide.svg';

@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { Department } from '@/main/entity';
-import ListLoading from '@/main/atoms/ListLoading';
-import { DepartmentSection } from '@/main/hooks/department.hook';
-import RootDepartmentHeader from '@/main/molecules/RootDepartmentHeader';
-import { useSubscription } from '@/main/hooks/subscription.hook';
-import DepartmentItem from '@/main/molecules/DepartmentItem';
-
 import mixpanel from 'mixpanel-browser';
+
+import { useSubscription } from '@/main/hooks/subscription.hook';
 import { useIdentity } from '@/identity/hooks';
+import { Department } from '@/main/entity';
+import { DepartmentSection } from '@/main/hooks/department.hook';
+import ListLoading from '@/main/atoms/ListLoading';
+import RootDepartmentHeader from '@/main/molecules/RootDepartmentHeader';
+import DepartmentItem from '@/main/molecules/DepartmentItem';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 
 interface DepartmentListProps {
