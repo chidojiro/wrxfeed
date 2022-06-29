@@ -103,7 +103,7 @@ export function formatDate(value?: string | number | Date | dayjs.Dayjs): string
  * Return the distance between the given date and now in words.
  */
 export function distanceToNow(value?: string | number | Date | dayjs.Dayjs): string {
-  if (!dayjs(value).isValid()) return 'Invalid Date';
+  if (!dayjs(value).isValid()) return '';
   return dayjs(value).fromNow();
 }
 
