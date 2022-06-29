@@ -109,7 +109,12 @@ export const TransactionList = ({ className, departmentId }: TransactionListProp
                 <Table.Cell>{transDate && DateUtils.format(transDate)}</Table.Cell>
                 <Table.Cell>
                   <div className="flex items-center gap-2">
-                    <Avatar src={vendor?.avatar} className="w-6 h-6 flex-shrink-0" />
+                    <Avatar
+                      size="sm"
+                      src={vendor?.avatar}
+                      fullName={vendor?.name ?? ''}
+                      className="w-6 h-6 flex-shrink-0"
+                    />
                     <span>{vendor?.name}</span>
                   </div>
                 </Table.Cell>

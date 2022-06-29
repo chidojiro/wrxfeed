@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableSortIcon } from '@/assets';
+import { TableSortAscIcon, TableSortDescIcon, TableSortIcon } from '@/assets';
 import { TableContext } from './Table';
 
 type SortButtonProps = { sortKey: string; sortValue?: string };
@@ -18,9 +18,9 @@ export const SortButton = ({ sortKey, sortValue }: SortButtonProps) => {
   })();
 
   const renderIcon = () => {
-    if (order === 'asc') return <TableSortIcon />;
+    if (order === 'asc') return <TableSortAscIcon />;
 
-    if (order === 'desc') return <TableSortIcon />;
+    if (order === 'desc') return <TableSortDescIcon />;
 
     return <TableSortIcon />;
   };

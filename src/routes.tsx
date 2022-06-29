@@ -1,20 +1,19 @@
-import { UserRole } from '@/identity/constants';
-import { ComponentType } from 'react';
+import AcceptInvitation from '@/auth/pages/AcceptInvitation';
 // Pages
 import Login from '@/auth/pages/LoginPage';
-import AcceptInvitation from '@/auth/pages/AcceptInvitation';
-
 import Onboard from '@/auth/pages/OnboardPage';
 import NotFoundPage from '@/common/pages/NotFoundPage';
-
-import ForYou from '@/main/pages/ForYou';
-import { TeamPage } from '@/team/TeamPage';
+import { UserRole } from '@/identity/constants';
 import Categories from '@/main/pages/Categories';
-import Vendors from '@/main/pages/Vendors';
-import Feed from '@/main/pages/Feed';
-import Notifications from '@/main/pages/Notifications';
 import Company from '@/main/pages/Company';
 import Dashboard from '@/main/pages/Dashboard';
+import Feed from '@/main/pages/Feed';
+import ForYou from '@/main/pages/ForYou';
+import Notifications from '@/main/pages/Notifications';
+import Vendors from '@/main/pages/Vendors';
+import { TeamPage } from '@/team/TeamPage';
+import { TeamsPage } from '@/team/TeamsPage';
+import { ComponentType } from 'react';
 
 export interface RouteItem<T> {
   path: string | readonly string[];
@@ -62,9 +61,14 @@ const routes: Route = {
     component: Notifications,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  Departments: {
-    path: ['/departments', '/departments/:id'],
+  Department: {
+    path: ['/departments/:id'],
     component: TeamPage,
+    permissions: [UserRole.ADMIN, UserRole.USER],
+  },
+  Departments: {
+    path: ['/departments'],
+    component: TeamsPage,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Categories: {
