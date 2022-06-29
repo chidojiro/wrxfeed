@@ -1,14 +1,14 @@
-import { useApi } from '@/api';
 import { ChatIcon, LoopBoldIcon } from '@/assets';
 import { Avatar, StatusTag, StatusTagColorScheme, Table, Tooltip } from '@/common/components';
-import { useFetcher, useQuery, useUrlState } from '@/common/hooks';
+import { useUrlState } from '@/common/hooks';
 import { ClassName } from '@/common/types';
-import { DateUtils, StringUtils } from '@/common/utils';
+import { DateUtils } from '@/common/utils';
 import { TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
 import clsx from 'clsx';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { useTransactions } from '../useTransactions';
 
 const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
@@ -32,21 +32,13 @@ const getTransactionLabel = (status: TranStatus) => {
   }
 };
 
-type TransactionListProps = ClassName & { departmentId: number };
+type TransactionListProps = ClassName;
 
-export const TransactionList = ({ className, departmentId }: TransactionListProps) => {
+export const TransactionList = ({ className }: TransactionListProps) => {
   const history = useHistory();
-  const api = useApi();
   const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
 
-  const { data: transactions = [] } = useFetcher(
-    ['transactions', departmentId, sortTransactionsBy],
-    () => {
-      const sort = sortTransactionsBy ? StringUtils.toApiSortQuery(sortTransactionsBy) : {};
-
-      return api.getLineItems(departmentId, sort);
-    },
-  );
+  const { data: transactions = [] } = useTransactions();
 
   const headers: { label: string; sortKey?: string }[] = [
     { label: '' },
