@@ -24,6 +24,7 @@ export type GroupTab = {
   tabs?: LeftTab[];
   addItemRoute?: string;
   isOpened?: boolean;
+  enable: boolean;
 };
 
 export type SectionTab = {

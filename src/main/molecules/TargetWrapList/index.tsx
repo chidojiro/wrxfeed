@@ -50,40 +50,6 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
     }
   };
 
-  const renderMenuItems = (target: Target) => {
-    const items = [];
-    items.push(
-      <PopoverMenuItem
-        key="View-Details"
-        value="view-details"
-        label="View Details"
-        onClick={() => onClickTarget(target)}
-        stopPropagation
-        Icon={EyeIcon}
-        className="text-Gray-3"
-      />,
-      <PopoverMenuItem
-        key="Edit-Target"
-        value="edit-target"
-        label="Edit Target"
-        onClick={() => onClickEditTarget(target)}
-        stopPropagation
-        Icon={EditIcon}
-        className="text-Gray-3"
-      />,
-      <PopoverMenuItem
-        key="Delete-Target"
-        value="delete-target"
-        label="Delete Target"
-        onClick={() => onClickDeleteTarget(target)}
-        stopPropagation
-        Icon={BinIcon}
-        className="text-system-alert"
-      />,
-    );
-    return items;
-  };
-
   return (
     <>
       {targets.map((item: Target) => {
@@ -116,7 +82,12 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
                   </div>
                   <Menu as="div" className="relative inline-block z-20 text-left">
                     <div>
-                      <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
+                      <Menu.Button
+                        onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+                          event.stopPropagation()
+                        }
+                        className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600"
+                      >
                         <span className="sr-only">Open options</span>
                         <MoreVerticalIcon
                           className="fill-current text-Gray-3 path-no-filled"
@@ -125,7 +96,35 @@ const TargetWrapList: React.VFC<TargetWrapListProps> = ({
                         />
                       </Menu.Button>
                     </div>
-                    <PopoverMenu>{renderMenuItems(item)}</PopoverMenu>
+                    <PopoverMenu>
+                      <PopoverMenuItem
+                        key="View-Details"
+                        value="view-details"
+                        label="View Details"
+                        onClick={() => onClickTarget(item)}
+                        stopPropagation
+                        Icon={EyeIcon}
+                        className="text-Gray-3"
+                      />
+                      <PopoverMenuItem
+                        key="Edit-Target"
+                        value="edit-target"
+                        label="Edit Target"
+                        onClick={() => onClickEditTarget(item)}
+                        stopPropagation
+                        Icon={EditIcon}
+                        className="text-Gray-3"
+                      />
+                      <PopoverMenuItem
+                        key="Delete-Target"
+                        value="delete-target"
+                        label="Delete Target"
+                        onClick={() => onClickDeleteTarget(item)}
+                        stopPropagation
+                        Icon={BinIcon}
+                        className="text-system-alert"
+                      />
+                    </PopoverMenu>
                   </Menu>
                 </div>
                 <div className="flex flex-row justify-between">

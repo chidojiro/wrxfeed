@@ -65,7 +65,7 @@ const OnboardPage: React.VFC = () => {
 
   useEffect(() => {
     if (identity?.token && identity?.lastLoginAt && authDirect) {
-      redirect(routes.ForYou.path as string);
+      redirect(routes.Dashboard.path as string);
     }
   }, [redirect, identity]);
 
@@ -109,7 +109,7 @@ const OnboardPage: React.VFC = () => {
         lastLoginAt: currentTime.toISOString(),
       };
       await updateProfile(updates);
-      redirect(routes.ForYou.path as string);
+      redirect(routes.Dashboard.path as string);
     } catch (error: unknown) {
       if (isApiError(error)) {
         toast.error(error?.details?.message);
