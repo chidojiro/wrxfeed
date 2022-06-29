@@ -150,7 +150,6 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
         type: TargetPropType.DEPARTMENT,
         directoryId: department.id,
       };
-      console.log(addDept);
       if (defaultTags.filter((item) => item.id === addDept.id).length === 0) {
         setDefaultTags((pre) => [...pre, addDept]);
       }
