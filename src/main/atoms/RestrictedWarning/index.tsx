@@ -1,17 +1,14 @@
 import React from 'react';
 import clsx from 'clsx';
 import { EyeHideIcon } from '@/assets';
+import { ClassName } from '@/common/types';
 
-export interface RestrictedWarningProps {
-  className?: string;
-  isShow?: boolean;
+export interface RestrictedWarningProps extends ClassName {
+  show?: boolean;
 }
 
-const RestrictedWarning: React.FC<RestrictedWarningProps> = ({
-  className = '',
-  isShow = false,
-}) => {
-  if (!isShow) {
+const RestrictedWarning: React.FC<RestrictedWarningProps> = ({ className = '', show = false }) => {
+  if (!show) {
     return null;
   }
   return (

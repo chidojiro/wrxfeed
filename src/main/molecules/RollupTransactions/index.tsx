@@ -85,10 +85,7 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
           );
         })}
       </ul>
-      <RestrictedWarning
-        className="mb-1"
-        isShow={tranHidden && (autoShowTrans || showTranClicked)}
-      />
+      <RestrictedWarning className="mb-1" show={tranHidden && (autoShowTrans || showTranClicked)} />
       {renderLoadMore()}
     </div>
   );
