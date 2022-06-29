@@ -5,6 +5,7 @@ import mixpanel from 'mixpanel-browser';
 import App from '@/common/containers/App';
 import { BUILD_ENV, MIX_PANEL_PROJECT_TOKEN } from '@/config';
 import { createRoot } from 'react-dom/client';
+import { SWRConfig } from 'swr';
 
 Sentry.init({
   dsn: 'https://251baec1d78d4edca442c555ed6da304@o1090039.ingest.sentry.io/6105739',
@@ -25,6 +26,8 @@ mixpanel.init(MIX_PANEL_PROJECT_TOKEN, {
 const root = createRoot(document.getElementById('root')!);
 root.render(
   <React.StrictMode>
-    <App />
+    <SWRConfig value={{ revalidateOnFocus: false }}>
+      <App />
+    </SWRConfig>
   </React.StrictMode>,
 );

@@ -25,6 +25,7 @@ interface TargetHookValues {
   isDeleteTarget: boolean;
   removeItem: (id: number) => void;
   mutate: KeyedMutator<Target[]>;
+  isValidating: boolean;
 }
 
 export interface UseTargetParams {
@@ -60,6 +61,7 @@ export function useTarget(params?: UseTargetParams): TargetHookValues {
     data = [],
     isLoading,
     mutate,
+    isValidating,
   } = useFetcher(autoLoad && ['/targets', JSON.stringify(filter)], () =>
     ApiClient.getTargets({ ...defaultFilter, ...filter }),
   );
@@ -160,5 +162,6 @@ export function useTarget(params?: UseTargetParams): TargetHookValues {
     isDeleteTarget,
     removeItem,
     mutate,
+    isValidating,
   };
 }
