@@ -15,7 +15,7 @@ type TargetSummaryProps = {
   department: Department;
 };
 
-const TargetSummary: React.FC<TargetSummaryProps> = ({ department }) => {
+export const TargetSummary = ({ department }: TargetSummaryProps) => {
   const addTargetModalDisclosure = useDisclosure();
 
   const api = useApi();
@@ -78,5 +78,3 @@ const TargetSummary: React.FC<TargetSummaryProps> = ({ department }) => {
     </div>
   );
 };
-
-export default TargetSummary;

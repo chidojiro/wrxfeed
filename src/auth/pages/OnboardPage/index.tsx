@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 import { useApi } from '@/api';
 import { useIdentity } from '@/identity/hooks';
-import { useDebounce, useNavUtils, useQuery } from '@/common/hooks';
+import { useDebounce, useNavUtils, useLegacyQuery } from '@/common/hooks';
 import { useSubscription } from '@/main/hooks/subscription.hook';
 import { useErrorHandler } from '@/error/hooks';
 import { isApiError } from '@/error/utils';
@@ -33,7 +33,7 @@ const OnboardPage: React.VFC = () => {
   const { redirect } = useNavUtils();
   const { updateProfile } = useApi();
   const errorHandler = useErrorHandler();
-  const query = useQuery();
+  const query = useLegacyQuery();
 
   const autoDirectString: string = query.get('autoDirect') ?? '1';
   const authDirect: boolean = parseInt(autoDirectString, 10) === 1;

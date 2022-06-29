@@ -6,7 +6,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useErrorHandler } from 'react-error-boundary';
 import { toast } from 'react-toastify';
 
-import { useNavUtils, useQuery } from '@/common/hooks';
+import { useNavUtils, useLegacyQuery } from '@/common/hooks';
 import { useApi } from '@/api';
 import { ApiErrorCode } from '@/error/types';
 import { MainGroups } from '@/common/constants';
@@ -23,7 +23,7 @@ const FeedPage: React.VFC = () => {
   const history = useHistory();
   const { redirect } = useNavUtils();
   const ApiClient = useApi();
-  const query = useQuery();
+  const query = useLegacyQuery();
   const { id: feedId } = useParams<{ id: string }>();
   const [feedItem, setFeedItem] = useState<FeedItem | undefined>();
   const [isLoading, setLoading] = useState<boolean>(false);

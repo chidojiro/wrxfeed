@@ -12,15 +12,19 @@ import { Row } from './Row';
 export type TableProps = React.DetailedHTMLProps<
   React.TableHTMLAttributes<HTMLTableElement>,
   HTMLTableElement
->;
+> & {
+  sort?: string;
+  onSortChange?: (sort: string) => void;
+};
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-type TableProviderValue = {};
+type TableProviderValue = { tableProps: TableProps };
 
-export const TableContext = React.createContext<TableProviderValue>({});
+export const TableContext = React.createContext<TableProviderValue>({ tableProps: {} });
 
-export const Table = ({ className, ...restProps }: TableProps) => {
-  const providerValue = React.useMemo<TableProviderValue>(() => ({}), []);
+export const Table = (props: TableProps) => {
+  const { className, ...restProps } = props;
+  const providerValue = React.useMemo<TableProviderValue>(() => ({ tableProps: props }), [props]);
 
   return (
     <TableContext.Provider value={providerValue}>

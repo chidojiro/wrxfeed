@@ -1,4 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { FeedFilters } from '@/api/types';
+import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import { useLegacyQuery } from '@/common/hooks';
+import { classNames } from '@/common/utils';
+import ListEndComponent from '@/main/atoms/ListEndComponent';
+import ListLoading from '@/main/atoms/ListLoading';
+import { Category, Department, Vendor } from '@/main/entity';
+import { FilterKeys } from '@/main/hooks';
+import { useFeed } from '@/main/hooks/feed.hook';
+import RollupCard from '@/main/molecules/RollupCard';
+import TargetFeedItem from '@/main/molecules/TargetFeedItem';
 import React, {
   CSSProperties,
   forwardRef,
@@ -8,18 +19,6 @@ import React, {
   useImperativeHandle,
 } from 'react';
 import { useHistory } from 'react-router-dom';
-
-import { useFeed } from '@/main/hooks/feed.hook';
-import { useQuery } from '@/common/hooks';
-import { Category, Department, Vendor } from '@/main/entity';
-import { classNames } from '@/common/utils';
-import { FilterKeys } from '@/main/hooks';
-import { FeedFilters } from '@/api/types';
-import ListLoading from '@/main/atoms/ListLoading';
-import ListEndComponent from '@/main/atoms/ListEndComponent';
-import InfiniteScroller from '@/common/atoms/InfiniteScroller';
-import RollupCard from '@/main/molecules/RollupCard';
-import TargetFeedItem from '@/main/molecules/TargetFeedItem';
 
 interface FeedListProps {
   style?: CSSProperties;
@@ -70,7 +69,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     department: depId,
   });
   const { feeds, hasMore, isLoading, updateCategory, cleanData } = useFeed(feedFilters);
-  const query = useQuery();
+  const query = useLegacyQuery();
   const history = useHistory();
   const filterKey = FilterKeys.find((key) => query.get(key));
 

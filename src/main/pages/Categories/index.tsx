@@ -16,7 +16,7 @@ import CategoryList from '@/main/organisms/CategoryList';
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
 import MainLayout from '@/common/templates/MainLayout';
 import { MainGroups } from '@/common/constants';
-import { useQuery } from '@/common/hooks';
+import { useLegacyQuery } from '@/common/hooks';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -27,7 +27,7 @@ const INIT_PAGINATION = Object.freeze({
 const CategoriesPage: React.VFC = () => {
   const history = useHistory();
   const { id: catId } = useParams<{ id?: string }>();
-  const query = useQuery();
+  const query = useLegacyQuery();
   const location = useLocation();
   // Category states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);

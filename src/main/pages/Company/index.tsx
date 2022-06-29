@@ -19,7 +19,7 @@ import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
 import { useFeed } from '@/main/hooks/feed.hook';
 import { MainGroups } from '@/common/constants';
 import MainLayout from '@/common/templates/MainLayout';
-import { useQuery } from '@/common/hooks';
+import { useLegacyQuery } from '@/common/hooks';
 
 const LIMIT = 5;
 const INIT_PAGINATION = {
@@ -31,7 +31,7 @@ const INIT_FEED_FILTER = Object.freeze({
 });
 
 const CompanyPage: React.VFC = () => {
-  const query = useQuery();
+  const query = useLegacyQuery();
   const history = useHistory();
   const location = useLocation();
   const { readAllTransactions, getVendorById, getCategoryById, getDepartmentById } = useApi();

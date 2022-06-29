@@ -41,3 +41,6 @@ export type BitBoolean = 1 | 0;
 export type ClassName = {
   className?: string;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Fn = (...arg: any[]) => any;

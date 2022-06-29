@@ -8,9 +8,16 @@ export const useFetcher = <T = unknown>(
   callback: (...args: unknown[]) => Promise<T>,
   options?: SWRConfiguration<T>,
 ) => {
-  const { onError, ...restOptions } = options ?? {};
+  const [data, setData] = React.useState<T>();
+  const { onError, onSuccess, ...restOptions } = options ?? {};
 
   const errorHandler = useErrorHandler();
+
+  const handleSuccess: SWRConfiguration['onSuccess'] = async (data, key, config) => {
+    onSuccess?.(data, key, config);
+
+    setData(data);
+  };
 
   const handleError: SWRConfiguration['onError'] = async (error, key, config) => {
     onError?.(error, key, config);
@@ -22,13 +29,18 @@ export const useFetcher = <T = unknown>(
     }
   };
 
-  const swrReturn = useSwr<T>(key, callback, { onError: handleError, ...restOptions });
+  const swrReturn = useSwr<T>(key, callback, {
+    onError: handleError,
+    onSuccess: handleSuccess,
+    ...restOptions,
+  });
 
   return React.useMemo(
     () => ({
       ...swrReturn,
+      data,
       isLoading: !swrReturn.error && !swrReturn.data && swrReturn.isValidating,
     }),
-    [swrReturn],
+    [data, swrReturn],
   );
 };
