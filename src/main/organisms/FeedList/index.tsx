@@ -18,7 +18,7 @@ import { FeedFilters } from '@/api/types';
 import TargetFeedItem from '@/main/molecules/TargetFeedItem';
 import { useFeed } from '@/main/hooks/feed.hook';
 import { FilterKeys } from '@/main/hooks';
-import { useQuery } from '@/common/hooks';
+import { useLegacyQuery } from '@/common/hooks';
 import { classNames } from '@/common/utils';
 
 interface FeedListProps {
@@ -70,7 +70,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     department: depId,
   });
   const { feeds, hasMore, isLoading, updateCategory, cleanData } = useFeed(feedFilters);
-  const query = useQuery();
+  const query = useLegacyQuery();
   const history = useHistory();
   const filterKey = FilterKeys.find((key) => query.get(key));
 

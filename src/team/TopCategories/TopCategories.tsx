@@ -13,7 +13,7 @@ export type TopCategoriesProps = {
   departmentId: number;
 };
 
-const TopCategories: React.FC<TopCategoriesProps> = ({ departmentId }) => {
+export const TopCategories = ({ departmentId }: TopCategoriesProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const api = useApi();
@@ -62,7 +62,7 @@ const TopCategories: React.FC<TopCategoriesProps> = ({ departmentId }) => {
         </div>
         <p className="text-Gray-6 text-xs">Last 30 Days</p>
       </div>
-      <div className="flex items-center gap-6 py-6">
+      <div className="flex items-center gap-6 py-6 pr-6">
         <PieChart width={200} height={200}>
           <Tooltip content={(props) => <TopCategoriesChartTooltip {...props} />} />
           <Pie
@@ -106,5 +106,3 @@ const TopCategories: React.FC<TopCategoriesProps> = ({ departmentId }) => {
     </div>
   );
 };
-
-export default TopCategories;

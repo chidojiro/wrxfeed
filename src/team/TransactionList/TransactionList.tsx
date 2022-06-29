@@ -1,9 +1,9 @@
 import { useApi } from '@/api';
 import { ChatIcon, LoopBoldIcon } from '@/assets';
 import { Avatar, StatusTag, StatusTagColorScheme, Table, Tooltip } from '@/common/components';
-import { useFetcher } from '@/common/hooks';
+import { useFetcher, useQuery, useUrlState } from '@/common/hooks';
 import { ClassName } from '@/common/types';
-import { DateUtils } from '@/common/utils';
+import { DateUtils, StringUtils } from '@/common/utils';
 import { TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
 import clsx from 'clsx';
@@ -32,17 +32,31 @@ const getTransactionLabel = (status: TranStatus) => {
   }
 };
 
-type Props = ClassName & { departmentId: number };
+type TransactionListProps = ClassName & { departmentId: number };
 
-const TransactionList = ({ className, departmentId }: Props) => {
+export const TransactionList = ({ className, departmentId }: TransactionListProps) => {
   const history = useHistory();
   const api = useApi();
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
 
-  const { data: transactions = [] } = useFetcher(['transactions', departmentId], () =>
-    api.getLineItems(departmentId),
+  const { data: transactions = [] } = useFetcher(
+    ['transactions', departmentId, sortTransactionsBy],
+    () => {
+      const sort = sortTransactionsBy ? StringUtils.toApiSortQuery(sortTransactionsBy) : {};
+
+      return api.getLineItems(departmentId, sort);
+    },
   );
 
-  const headers = ['', 'Date', 'Vendor', 'Description', 'Category', 'Amount', 'Status'];
+  const headers: { label: string; sortKey?: string }[] = [
+    { label: '' },
+    { label: 'Date', sortKey: 'transDate' },
+    { label: 'Vendor', sortKey: 'vendorName' },
+    { label: 'Description' },
+    { label: 'Category', sortKey: 'categoryName' },
+    { label: 'Amount', sortKey: 'amountUsd' },
+    { label: 'Status', sortKey: 'transStatus' },
+  ];
 
   const goToLineItemPage = (id: number) => {
     history.push(`/feed/${id}`);
@@ -50,7 +64,11 @@ const TransactionList = ({ className, departmentId }: Props) => {
 
   return (
     <Table.OverflowContainer className={className}>
-      <Table className="rounded-card">
+      <Table
+        className="rounded-card"
+        sort={sortTransactionsBy}
+        onSortChange={setSortTransactionsBy}
+      >
         <Table.Body>
           <Table.Row>
             <Table.Cell colSpan={7}>
@@ -69,8 +87,10 @@ const TransactionList = ({ className, departmentId }: Props) => {
             </Table.Cell>
           </Table.Row>
           <Table.Row>
-            {headers.map((header) => (
-              <Table.Header key={header}>{header}</Table.Header>
+            {headers.map(({ label, sortKey }) => (
+              <Table.Header key={label} sortKey={sortKey}>
+                {label}
+              </Table.Header>
             ))}
           </Table.Row>
           {transactions.map(
@@ -124,5 +144,3 @@ const TransactionList = ({ className, departmentId }: Props) => {
     </Table.OverflowContainer>
   );
 };
-
-export default TransactionList;

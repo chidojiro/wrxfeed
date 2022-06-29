@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import MainLayout from '@/common/templates/MainLayout';
 import { usePrimaryTarget } from '@/main/hooks/primaryTarget.hook';
-import TopCategories from '@/main/organisms/TopCategories';
-import TeamPrimaryTarget from '@/main/organisms/TeamPrimaryTarget';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import TargetSummary from '@/main/organisms/TargetSummary';
-import TransactionList from '@/main/organisms/TransactionList';
+import { PrimaryTarget } from '../PrimaryTarget';
+import { TargetSummary } from '../TargetSummary';
+import { TopCategories } from '../TopCategories';
+import { TransactionList } from '../TransactionList';
 
-const DepartmentsPage: React.FC = () => {
+export const WrappedTeamPage: React.FC = () => {
   const { data: target, mutate } = usePrimaryTarget();
 
   const { id: departmentIdParam } = useParams() as Record<string, string>;
@@ -19,10 +19,13 @@ const DepartmentsPage: React.FC = () => {
   if (!target) return null;
 
   return (
-    <MainLayout mainClass="px-2 md:col-span-9 lg:col-span-9 xl:col-span-9 max-w-7xl">
+    <MainLayout
+      mainClass="px-2 col-span-12 md:!col-span-9 !g:!col-span-9 xl:!col-span-9 !max-w-full"
+      rightSide={false}
+    >
       <h1 className="sr-only">Department list</h1>
       <div className="grid grid-cols-9 gap-6">
-        <TeamPrimaryTarget
+        <PrimaryTarget
           className="col-span-9 lg:col-span-5"
           data={target}
           onDeleteSuccess={mutate}
@@ -37,4 +40,4 @@ const DepartmentsPage: React.FC = () => {
   );
 };
 
-export default Sentry.withProfiler(DepartmentsPage, { name: 'DepartmentsPage' });
+export const TeamPage = Sentry.withProfiler(WrappedTeamPage, { name: 'TeamPage' });

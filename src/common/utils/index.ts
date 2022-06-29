@@ -10,6 +10,7 @@ import { LazyBuilder } from 'yup/lib/Lazy';
 import { ProjectClassNamePrefix } from '../constants';
 export { DateUtils } from './date';
 export { AssertUtils } from './assert';
+export { StringUtils } from './string';
 
 // Dayjs plugins
 dayjs.extend(isToday);

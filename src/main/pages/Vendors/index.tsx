@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 import { useApi } from '@/api';
-import { useQuery } from '@/common/hooks';
+import { useLegacyQuery } from '@/common/hooks';
 import { useVendor } from '@/main/hooks/vendor.hook';
 import { FilterKeys } from '@/main/hooks';
 
@@ -28,7 +28,7 @@ const VendorsPage: React.VFC = () => {
   const history = useHistory();
   const { id: vendorId } = useParams<{ id?: string }>();
   const { getVendorById } = useApi();
-  const query = useQuery();
+  const query = useLegacyQuery();
   const location = useLocation();
   // Vendors states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);

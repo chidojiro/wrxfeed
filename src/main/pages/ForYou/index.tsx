@@ -8,7 +8,7 @@ import { FeedFilters } from '@/api/types';
 import { Category, Department, Vendor } from '@/main/entity';
 
 import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@/main/hooks';
-import { useQuery } from '@/common/hooks';
+import { useLegacyQuery } from '@/common/hooks';
 import { useApi } from '@/api';
 
 import MainLayout from '@/common/templates/MainLayout';
@@ -26,7 +26,7 @@ const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartmen
 
 const ForYouPage: React.VFC = () => {
   const history = useHistory();
-  const query = useQuery();
+  const query = useLegacyQuery();
   const location = useLocation();
   const { readAllTransactions } = useApi();
   const identity = useIdentity();

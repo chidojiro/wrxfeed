@@ -8,7 +8,7 @@ import Onboard from '@/auth/pages/OnboardPage';
 import NotFoundPage from '@/common/pages/NotFoundPage';
 
 import ForYou from '@/main/pages/ForYou';
-import Departments from '@/main/pages/Departments';
+import { TeamPage } from '@/team/TeamPage';
 import Categories from '@/main/pages/Categories';
 import Vendors from '@/main/pages/Vendors';
 import Feed from '@/main/pages/Feed';
@@ -64,7 +64,7 @@ const routes: Route = {
   },
   Departments: {
     path: ['/departments', '/departments/:id'],
-    component: Departments,
+    component: TeamPage,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Categories: {

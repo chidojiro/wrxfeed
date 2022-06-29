@@ -22,16 +22,12 @@ import { noop } from 'lodash-es';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-export type TeamPrimaryTargetProps = ClassName & {
+export type PrimaryTargetProps = ClassName & {
   data: Target;
   onDeleteSuccess: () => void;
 };
 
-const TeamPrimaryTarget: React.FC<TeamPrimaryTargetProps> = ({
-  data,
-  onDeleteSuccess,
-  className,
-}) => {
+export const PrimaryTarget = ({ data, onDeleteSuccess, className }: PrimaryTargetProps) => {
   const history = useHistory();
 
   const api = useApi();
@@ -195,5 +191,3 @@ const TeamPrimaryTarget: React.FC<TeamPrimaryTargetProps> = ({
     </div>
   );
 };
-
-export default TeamPrimaryTarget;
