@@ -1,6 +1,6 @@
 import React from 'react';
 import { classNames, distanceToNow } from '@/common/utils';
-import { ReactComponent as EyeHideIcon } from '@/assets/icons/outline/eye-hide.svg';
+import { EyeHideIcon } from '@/assets';
 import { Target } from '@/main/entity';
 import EditorAvatar from '@/main/atoms/EditorAvatar';
 import TargetFeedName from '@/main/atoms/TargetFeedName';

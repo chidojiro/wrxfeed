@@ -9,17 +9,17 @@ import React, {
 } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import { useFeed } from '@/main/hooks/feed.hook';
+import { useQuery } from '@/common/hooks';
 import { Category, Department, Vendor } from '@/main/entity';
+import { classNames } from '@/common/utils';
+import { FilterKeys } from '@/main/hooks';
+import { FeedFilters } from '@/api/types';
 import ListLoading from '@/main/atoms/ListLoading';
 import ListEndComponent from '@/main/atoms/ListEndComponent';
+import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import RollupCard from '@/main/molecules/RollupCard';
-import { FeedFilters } from '@/api/types';
 import TargetFeedItem from '@/main/molecules/TargetFeedItem';
-import { useFeed } from '@/main/hooks/feed.hook';
-import { FilterKeys } from '@/main/hooks';
-import { useQuery } from '@/common/hooks';
-import { classNames } from '@/common/utils';
 
 interface FeedListProps {
   style?: CSSProperties;

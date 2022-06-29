@@ -23,9 +23,7 @@ import CommentViewAll from '@/main/atoms/CommentViewAll';
 import TargetChartView from '@/main/molecules/TargetChartView';
 import RollupTransactions from '@/main/molecules/RollupTransactions';
 // assets
-import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
-import { ReactComponent as EyeHideIcon } from '@/assets/icons/outline/eye-hide.svg';
-import { CalendarMinus } from '@/assets';
+import { CalendarMinus, EyeHideIcon, ExclamationCircle } from '@/assets';
 import AddTargetModal from '@/main/molecules/AddTargetModal';
 import UserAvatar from '@/main/atoms/UserAvatar';
 
@@ -276,7 +274,12 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, o
           </div>
         </div>
         <TargetChartView target={curFeed.target} onEdit={onClickEditTarget} />
-        <RollupTransactions feedId={curFeed?.id} trans={curFeed?.transactions} showTopDivider />
+        <RollupTransactions
+          feedId={curFeed?.id}
+          trans={curFeed?.transactions}
+          tranHidden={curFeed?.hidden}
+          showTopDivider
+        />
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
             <CommentViewAll
