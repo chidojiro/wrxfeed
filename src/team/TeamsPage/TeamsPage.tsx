@@ -17,7 +17,7 @@ import DepartmentList from '@/main/organisms/DepartmentList';
 import TeamHome from '@/main/organisms/TeamHome';
 import MainLayout from '@/common/templates/MainLayout';
 import { MainGroups } from '@/common/constants';
-import { useQuery } from '@/common/hooks';
+import { useLegacyQuery } from '@/common/hooks';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -25,11 +25,11 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const DepartmentsPage: React.VFC = () => {
+const WrappedTeamsPage = () => {
   const history = useHistory();
   const { id: deptId } = useParams<{ id?: string }>();
   const [deptSelect, setDeptSelect] = useState<Department>();
-  const query = useQuery();
+  const query = useLegacyQuery();
   const location = useLocation();
   // Department states
   const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
@@ -126,23 +126,16 @@ const DepartmentsPage: React.VFC = () => {
   return (
     <MainLayout>
       <h1 className="sr-only">Department list</h1>
-      {!isFiltering && inDirectoryList ? (
-        <DepartmentList
-          departments={departments}
-          isLoading={isLoading}
-          hasMore={hasMore}
-          onLoadMore={handleLoadMore}
-          onSelect={handleDepartmentSelect}
-          onSelectRoot={handleDepartmentSelect}
-        />
-      ) : (
-        <>
-          {deptId && <TeamHome deptSelect={deptSelect} depId={parseInt(deptId, 10)} />}
-          {deptId && <FeedList onFilter={handleFeedsFilter} depId={parseInt(deptId, 10)} />}
-        </>
-      )}
+      <DepartmentList
+        departments={departments}
+        isLoading={isLoading}
+        hasMore={hasMore}
+        onLoadMore={handleLoadMore}
+        onSelect={handleDepartmentSelect}
+        onSelectRoot={handleDepartmentSelect}
+      />
     </MainLayout>
   );
 };
 
-export default Sentry.withProfiler(DepartmentsPage, { name: 'DepartmentsPage' });
+export const TeamsPage = Sentry.withProfiler(WrappedTeamsPage, { name: 'DepartmentsPage' });

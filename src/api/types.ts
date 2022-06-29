@@ -14,6 +14,7 @@ import {
   TransLineItem,
   VendorDescription,
   LineItem,
+  TopCategories,
 } from '@/main/entity';
 import {
   AuthProfile,
@@ -25,6 +26,7 @@ import {
   SearchTypes,
 } from '@/auth/types';
 import { InviteFormModel, FeedBackFormModel, SearchResult } from '@/main/types';
+import { BitBoolean } from '@/common/types';
 
 export interface ApiClient {
   // Authentication API
@@ -57,8 +59,10 @@ export interface ApiClient {
   getVendorById: (venId: number) => Promise<Vendor>;
   updateVendorById: (id: number, data: VendorDescription) => Promise<void>;
   getDepartmentById: (depId: number) => Promise<Department>;
+  getTopCategories: (depId: number) => Promise<TopCategories[]>;
   maskLineItemAsRead: (id: number) => Promise<void>;
   getLineItemById: (id: number) => Promise<TransLineItem>;
+  getLineItems: (departmentId: number, query: any) => Promise<TransLineItem[]>;
   updateLineItemById: (id: number, data: LineItem) => Promise<void>;
   // feedback
   postFeedBackFeed: (feedId: number, data: FeedBackFormModel) => Promise<void>;
@@ -167,12 +171,13 @@ export interface CategoryFilter extends Pagination {
   dep?: number;
 }
 
-export interface TargetFilter extends Pagination {
-  year: number;
+export interface TargetFilter extends Partial<Pagination> {
+  year?: number;
   month?: number;
   timestamp?: number;
   dep?: number;
   forYou?: number;
+  isPrimary?: BitBoolean;
 }
 
 export interface PostTargetParams {

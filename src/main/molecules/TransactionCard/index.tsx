@@ -22,7 +22,7 @@ import ConfirmModal from '@/main/atoms/ConfirmModal';
 // Icons
 import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
 import { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';
-import { ReactComponent as EyeHideIcon } from '@/assets/icons/outline/eye-hide.svg';
+import { EyeHideIcon } from '@/assets';
 import { useIdentity, usePermission } from '@/identity/hooks';
 import { ProtectedFeatures } from '@/identity/constants';
 

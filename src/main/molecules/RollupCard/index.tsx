@@ -33,9 +33,7 @@ import CommentItem from '@/main/molecules/CommentItem';
 import CommentViewAll from '@/main/atoms/CommentViewAll';
 import RollupTransactions from '@/main/molecules/RollupTransactions';
 // assets
-import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
-import { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';
-import { ReactComponent as EyeHideIcon } from '@/assets/icons/outline/eye-hide.svg';
+import { EyeHideIcon, MoreVerticalIcon, ExclamationCircle } from '@/assets';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -302,7 +300,12 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           </div>
         </div>
         {Array.isArray(feedItem?.transactions) && feedItem?.transactions?.length > 0 && (
-          <RollupTransactions feedId={feedItem?.id} trans={feedItem?.transactions} autoShowTrans />
+          <RollupTransactions
+            feedId={feedItem?.id}
+            trans={feedItem?.transactions}
+            tranHidden={feedItem?.hidden}
+            autoShowTrans
+          />
         )}
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (

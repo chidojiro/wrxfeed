@@ -23,19 +23,19 @@ export type TargetSpending = {
 export const TargetStatusConfig = {
   [TargetStatusType.OnTrack]: {
     label: '#065F46',
-    background: '#A3F5CB',
+    background: '#D1FAE5',
     dot: '#34D399',
     name: 'On Track',
   },
   [TargetStatusType.AtRisk]: {
     label: '#92400E',
-    background: '#FDE896',
+    background: '#FEF2C1',
     dot: '#FBBF24',
     name: 'At Risk',
   },
   [TargetStatusType.Exceeded]: {
     label: '#991B1B',
-    background: '#FCB0B0',
+    background: '#FFC6C6',
     dot: '#F87171',
     name: 'Exceeded',
   },

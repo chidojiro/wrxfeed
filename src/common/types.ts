@@ -24,6 +24,7 @@ export type GroupTab = {
   tabs?: LeftTab[];
   addItemRoute?: string;
   isOpened?: boolean;
+  enable: boolean;
 };
 
 export type SectionTab = {
@@ -35,3 +36,12 @@ export type SectionTab = {
 export type Children = {
   children: React.ReactNode;
 };
+
+export type BitBoolean = 1 | 0;
+
+export type ClassName = {
+  className?: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Fn = (...arg: any[]) => any;

@@ -52,10 +52,11 @@ export type AddTargetModalProps = {
   putTarget: (id: number, data: PutTargetParams) => void;
   itemEditing: Target | null;
   isCreatingOrSaving: boolean;
-  isDeleting: boolean;
+  isDeleting?: boolean;
   initTags?: SearchResult[];
   depId?: number | undefined;
   department?: Department;
+  defaultTeamItemIds?: number[];
 };
 
 const THIS_YEAR = new Date().getFullYear();

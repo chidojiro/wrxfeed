@@ -48,7 +48,7 @@ const SideBar: React.VFC = () => {
 
   const onClickExpandGroupTab = (groupIndex: number) => {
     const newMenuState = cloneDeep(menuItems);
-    newMenuState[2].groups[groupIndex].isOpened = !menuItems[2].groups[groupIndex].isOpened;
+    newMenuState[1].groups[groupIndex].isOpened = !menuItems[1].groups[groupIndex].isOpened;
     setMenuItems(newMenuState);
   };
 
@@ -59,22 +59,29 @@ const SideBar: React.VFC = () => {
           const { groups, tabs: tabsInSection } = menuItem;
           return (
             <div key={menuItem.name} className="flex flex-col w-full">
-              <div
-                key={`${menuItem.name}-headline`}
-                className="px-12 h-8 flex flex-row items-center w-full"
-              >
-                <h3 className="text-xs font-semibold text-Gray-6 tracking-wider">
-                  {menuItem.name}
-                </h3>
-              </div>
+              {menuItem?.name?.length > 0 && (
+                <div
+                  key={`${menuItem.name}-headline`}
+                  className="px-12 h-8 flex flex-row items-center w-full"
+                >
+                  <h3 className="text-xs font-semibold text-Gray-6 tracking-wider">
+                    {menuItem.name}
+                  </h3>
+                </div>
+              )}
               <TabListSideBar tabs={tabsInSection} showTabIcon />
-              {groups?.map((group: GroupTab, groupIndex: number) => (
-                <GroupTabSideBar
-                  key={`GroupTab-${group?.name}`}
-                  group={group}
-                  onClickExpand={() => onClickExpandGroupTab(groupIndex)}
-                />
-              ))}
+              {groups?.map((group: GroupTab, groupIndex: number) => {
+                if (!group.enable) {
+                  return null;
+                }
+                return (
+                  <GroupTabSideBar
+                    key={`GroupTab-${group?.name}`}
+                    group={group}
+                    onClickExpand={() => onClickExpandGroupTab(groupIndex)}
+                  />
+                );
+              })}
             </div>
           );
         })}

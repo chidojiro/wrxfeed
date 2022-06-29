@@ -3,31 +3,15 @@ import { FeedIcon, Bank, CategoryIcon, TeamIcon, TargetIcon } from '@/assets';
 import { LineChartData } from '@/main/types';
 import { TargetMonth } from '@/main/entity';
 
+export const ProjectClassNamePrefix = 'gvt-';
+
 export enum MainGroups {
   Feeds = 'Feeds',
-  Boards = 'Boards',
-  Following = 'Following',
+  Boards = '',
+  Following = '',
 }
 
 export const MainMenu: SectionTab[] = [
-  {
-    name: MainGroups.Feeds,
-    tabs: [
-      {
-        name: 'For you',
-        location: { pathname: '/for-you' },
-        icon: FeedIcon,
-        isShowCounter: true,
-      },
-      {
-        name: 'Company',
-        location: { pathname: '/company' },
-        icon: FeedIcon,
-        isShowCounter: true,
-      },
-    ],
-    groups: [],
-  },
   {
     name: MainGroups.Boards,
     tabs: [
@@ -50,6 +34,7 @@ export const MainMenu: SectionTab[] = [
         tabs: [],
         addItemRoute: '/departments',
         isOpened: true,
+        enable: true,
       },
       {
         name: 'Categories',
@@ -57,6 +42,7 @@ export const MainMenu: SectionTab[] = [
         tabs: [],
         addItemRoute: '/categories',
         isOpened: true,
+        enable: false,
       },
       {
         name: 'Vendors',
@@ -64,8 +50,27 @@ export const MainMenu: SectionTab[] = [
         tabs: [],
         addItemRoute: '/vendors',
         isOpened: true,
+        enable: false,
       },
     ],
+  },
+  {
+    name: MainGroups.Feeds,
+    tabs: [
+      {
+        name: 'For you',
+        location: { pathname: '/for-you' },
+        icon: FeedIcon,
+        isShowCounter: true,
+      },
+      {
+        name: 'Company',
+        location: { pathname: '/company' },
+        icon: FeedIcon,
+        isShowCounter: true,
+      },
+    ],
+    groups: [],
   },
 ];
 

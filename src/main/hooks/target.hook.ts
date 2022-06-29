@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useEffect, useState, useRef } from 'react';
-import { toast } from 'react-toastify';
-
-import { isApiError } from '@/error/utils';
-import { TargetFilter, PostTargetParams, PutTargetParams } from '@/api/types';
-import { Target } from '@/main/entity';
-
 import { useApi } from '@/api';
+import { PostTargetParams, PutTargetParams, TargetFilter } from '@/api/types';
+import { useFetcher } from '@/common/hooks';
 import { useErrorHandler } from '@/error/hooks';
+import { isApiError } from '@/error/utils';
+import { Target } from '@/main/entity';
+import React, { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import { KeyedMutator } from 'swr';
 
 interface TargetCallback {
   onSuccess: (id?: number, target?: Target) => void;
@@ -24,6 +24,7 @@ interface TargetHookValues {
   isPutTarget: boolean;
   isDeleteTarget: boolean;
   removeItem: (id: number) => void;
+  mutate: KeyedMutator<Target[]>;
 }
 
 export interface UseTargetParams {
@@ -34,17 +35,20 @@ export interface UseTargetParams {
   autoLoad?: boolean;
 }
 
-export function useTarget({
-  filter,
-  cbPost,
-  cbPut,
-  cbDelete,
-  autoLoad = true,
-}: UseTargetParams): TargetHookValues {
+const defaultFilter: TargetFilter = {
+  offset: 0,
+  limit: 0,
+  year: new Date().getFullYear(),
+  month: new Date().getMonth() + 1,
+  timestamp: Date.now(),
+};
+
+export function useTarget(params?: UseTargetParams): TargetHookValues {
+  const { filter, cbPost, cbPut, cbDelete, autoLoad = true } = params ?? {};
+
   const targetsRef = useRef<Target[]>();
   const [targets, setTargets] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
-  const [isGetTargets, setGetTargets] = useState<boolean>(false);
   const [isPostTarget, setPostTarget] = useState<boolean>(false);
   const [isPutTarget, setPutTarget] = useState<boolean>(false);
   const [isDeleteTarget, setDeleteTarget] = useState<boolean>(false);
@@ -52,26 +56,22 @@ export function useTarget({
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
-  const getTargets = useCallback(async () => {
-    try {
-      setGetTargets(true);
-      const res = await ApiClient.getTargets(filter);
-      if (filter?.offset !== 0) {
-        setTargets((pre) => [...pre, ...res]);
-      } else {
-        setTargets(res);
-      }
-      setHasMore(res.length >= (filter?.limit || 0));
-    } catch (error) {
-      if (isApiError(error)) {
-        toast.error(error.details?.message);
-      } else {
-        await errorHandler(error);
-      }
-    } finally {
-      setGetTargets(false);
+  const {
+    data = [],
+    isLoading,
+    mutate,
+  } = useFetcher(autoLoad && ['/targets', JSON.stringify(filter)], () =>
+    ApiClient.getTargets({ ...defaultFilter, ...filter }),
+  );
+
+  React.useEffect(() => {
+    if (filter?.offset !== 0) {
+      setTargets((pre) => [...pre, ...data]);
+    } else {
+      setTargets(data);
     }
-  }, [ApiClient, errorHandler, filter]);
+    setHasMore(data.length >= (filter?.limit || 0));
+  }, [data]);
 
   const postTarget = async (data: PostTargetParams) => {
     if (isPostTarget) return;
@@ -148,17 +148,10 @@ export function useTarget({
     targetsRef.current = targets;
   }, [targets]);
 
-  // auto call in the first time with no default filter
-  useEffect(() => {
-    if (autoLoad) {
-      getTargets().then();
-    }
-  }, [getTargets]);
-
   return {
     targets,
     hasMore,
-    isGetTargets,
+    isGetTargets: isLoading,
     postTarget,
     putTarget,
     deleteTarget,
@@ -166,5 +159,6 @@ export function useTarget({
     isPutTarget,
     isDeleteTarget,
     removeItem,
+    mutate,
   };
 }
