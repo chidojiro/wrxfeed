@@ -33,7 +33,7 @@ export const TopCategories = ({ departmentId }: TopCategoriesProps) => {
     setActiveIndex(-1);
   }, [setActiveIndex]);
 
-  const sortedData = data.sort((a, b) => a.spend - b.spend);
+  const sortedData = data.sort((a, b) => b.spend - a.spend);
 
   const spendSum = sortedData.reduce((acc, cur) => acc + cur.spend, 0);
 

@@ -2,8 +2,10 @@ import { useApi } from '@/api';
 import { PutTargetParams } from '@/api/types';
 import { BinIcon, EditIcon, EyeIcon, MoreVerticalIcon } from '@/assets';
 import Loading from '@/common/atoms/Loading';
+import { Avatar } from '@/common/components';
 import { useHandler } from '@/common/hooks';
 import { ClassName } from '@/common/types';
+import { distanceToNow } from '@/common/utils';
 import EditorAvatar from '@/main/atoms/EditorAvatar';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
@@ -85,16 +87,15 @@ export const PrimaryTarget = ({ data, onDeleteSuccess, className }: PrimaryTarge
               <div className="flex flex-row datas-center h-6">
                 <TargetFeedName target={data} />
               </div>
-              <div className="flex flex-row space-x-2 datas-center h-6 max-h-6">
-                <EditorAvatar updater={data?.updatedBy} />
-                <h2
-                  id={`question-title-${data?.id}`}
-                  className="mt-1 text-xs font-normal text-Gray-6"
-                >
-                  {`${data?.updatedBy?.fullName ?? 'Unknown'} edited at ${dayjs(
-                    data?.updatedAt ?? data?.lastInteraction,
-                  ).format('MM/DD/YYYY')}`}
-                </h2>
+              <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
+                <Avatar
+                  size="sm"
+                  fullName={data?.updatedBy?.fullName ?? ''}
+                  src={data?.updatedBy?.avatar}
+                />
+                <span className="text-Gray-6 text-xs">
+                  Last edited {distanceToNow(data?.updatedBy?.updatedAt)}
+                </span>
               </div>
             </div>
             <Menu as="div" className="relative inline-block z-20 text-left">

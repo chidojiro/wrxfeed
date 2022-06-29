@@ -11,7 +11,7 @@ export type AvatarProps = ClassName & {
   size?: AvatarSize;
 };
 
-export const Avatar = ({ src, className, fullName, size = 'md' }: AvatarProps) => {
+export const Avatar = ({ src, className, fullName, size = 'sm' }: AvatarProps) => {
   return (
     <div
       className={clsx(
