@@ -9,7 +9,7 @@ import Modal from '@/common/atoms/Modal';
 import { defaultTargetMonths, INITIAL_CHART_DATA } from '@/common/constants';
 import { classNames, formatCurrency, round } from '@/common/utils';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
-import { Department, Target, TargetMonth } from '@/main/entity';
+import { Department } from '@/main/entity';
 import { useTransaction } from '@/main/hooks';
 import { useMultiMonth } from '@/main/hooks/multiMonth.hook';
 import ExceptDropdown from '@/main/molecules/ExceptDropdown';
@@ -29,6 +29,8 @@ import {
 import { CreateTargetPayload, UpdateTargetPayload } from '@/target/apis';
 import {
   PatchCalcSpendingFilters,
+  Target,
+  TargetMonth,
   TargetPeriod,
   TargetProps,
   TargetTypeProp,

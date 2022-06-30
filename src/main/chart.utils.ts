@@ -1,16 +1,16 @@
 /* eslint-disable no-param-reassign */
 import { round } from '@/common/utils';
+import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/main/types';
 import {
   TargetMonth,
+  TargetPeriod,
   TargetSpending,
   TargetStatusConfig,
   TargetStatusType,
-  Transaction,
-} from '@/main/entity';
-import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/main/types';
-import { TargetPeriod } from '@/target/types';
+} from '@/target/types';
 import dayjs from 'dayjs';
 import range from 'lodash.range';
+import { Transaction } from './entity';
 import { decimalLogic, DecimalType } from './utils';
 
 const ITEM_DATE_FORMAT = 'YYYY-MM-DD';

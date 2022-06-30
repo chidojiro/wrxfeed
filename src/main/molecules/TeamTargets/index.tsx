@@ -3,11 +3,11 @@
 import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
 import Loading from '@/common/atoms/Loading';
 import { classNames } from '@/common/utils';
-import { Department, Target } from '@/main/entity';
+import { Department } from '@/main/entity';
 import { useTarget } from '@/main/hooks';
 import AddTargetModal from '@/main/molecules/AddTargetModal';
 import { SearchResult } from '@/main/types';
-import { TargetFilter, TargetTypeProp } from '@/target/types';
+import { Target, TargetFilter, TargetTypeProp } from '@/target/types';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import EmptyTarget from '../EmptyTarget';

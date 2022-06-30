@@ -2,11 +2,10 @@ import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import { GET_TARGETS_DASHBOARD_LIMIT } from '@/config';
 import ListEndComponent from '@/main/atoms/ListEndComponent';
 import ListLoading from '@/main/atoms/ListLoading';
-import { TargetByTeam } from '@/main/entity';
 import { useTarget } from '@/main/hooks';
 import TeamTargetSection from '@/main/molecules/TeamTargetSection';
 import { filterTargetsToTargetByTeam } from '@/main/utils';
-import { TargetFilter } from '@/target/types';
+import { TargetByTeam, TargetFilter } from '@/target/types';
 import React, { CSSProperties } from 'react';
 
 const initFilter: TargetFilter = {

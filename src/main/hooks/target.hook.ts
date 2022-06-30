@@ -2,9 +2,8 @@
 import { useFetcher } from '@/common/hooks';
 import { useErrorHandler } from '@/error/hooks';
 import { isApiError } from '@/error/utils';
-import { Target } from '@/main/entity';
 import { CreateTargetPayload, TargetApis, UpdateTargetPayload } from '@/target/apis';
-import { TargetFilter } from '@/target/types';
+import { Target, TargetFilter } from '@/target/types';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { KeyedMutator } from 'swr';

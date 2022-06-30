@@ -1,19 +1,19 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { Menu } from '@headlessui/react';
-
-import routes from '@/routes';
-import { Target, FeedType } from '@/main/entity';
-import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
-import { MoreVerticalIcon, BinIcon, EditIcon, EyeIcon } from '@/assets';
-import TargetStatus from '@/main/atoms/TargetStatus';
-import MiniChartView from '@/main/molecules/MiniChartView';
-import TargetFeedName from '@/main/atoms/TargetFeedName';
+import { BinIcon, EditIcon, EyeIcon, MoreVerticalIcon } from '@/assets';
+import Loading from '@/common/atoms/Loading';
+import { distanceToNow } from '@/common/utils';
 import EditorAvatar from '@/main/atoms/EditorAvatar';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
-import Loading from '@/common/atoms/Loading';
-import { distanceToNow } from '@/common/utils';
+import TargetFeedName from '@/main/atoms/TargetFeedName';
+import TargetStatus from '@/main/atoms/TargetStatus';
+import { FeedType } from '@/main/entity';
+import MiniChartView from '@/main/molecules/MiniChartView';
+import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
+import routes from '@/routes';
+import { Target } from '@/target/types';
+import { Menu } from '@headlessui/react';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 export interface TargetWrapListProps {
   targets: Target[];

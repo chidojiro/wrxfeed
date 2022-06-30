@@ -6,14 +6,21 @@ import { ReactComponent as GroupUsers } from '@/assets/icons/outline/group-users
 import { ReactComponent as VendorIcon } from '@/assets/icons/outline/vendor.svg';
 import {
   FeedItem,
-  Target,
-  TargetByTeam,
   Transaction,
   TransLineItem,
   TranStatusNameColor,
   TranStatusType,
 } from '@/main/entity';
-import { TargetPeriod, TargetProps, TargetTypeProp } from '@/target/types';
+import {
+  Target,
+  TargetByTeam,
+  TargetMonth,
+  TargetPeriod,
+  TargetProps,
+  TargetStatusConfig,
+  TargetStatusType,
+  TargetTypeProp,
+} from '@/target/types';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { MentionData } from '@draft-js-plugins/mention';
 import dayjs from 'dayjs';
@@ -29,7 +36,6 @@ import {
 import { Match } from 'linkify-it';
 import cloneDeep from 'lodash.clonedeep';
 import numeral from 'numeral';
-import { TargetMonth, TargetStatusConfig, TargetStatusType } from './entity/target.entity';
 import { SearchResult } from './types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;

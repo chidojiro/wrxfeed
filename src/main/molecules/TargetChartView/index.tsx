@@ -8,11 +8,16 @@ import {
   getSpendingByYear,
   getTargetMonthsLineChartData,
 } from '@/main/chart.utils';
-import { Target, TargetMonth, TargetStatusConfig, TargetStatusType } from '@/main/entity';
 import { useTransaction } from '@/main/hooks/transaction.hook';
 import { LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
-import { TargetPeriod } from '@/target/types';
+import {
+  Target,
+  TargetMonth,
+  TargetPeriod,
+  TargetStatusConfig,
+  TargetStatusType,
+} from '@/target/types';
 import dayjs from 'dayjs';
 import cloneDeep from 'lodash.clonedeep';
 import range from 'lodash.range';

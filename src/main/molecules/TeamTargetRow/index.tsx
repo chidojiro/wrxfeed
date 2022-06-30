@@ -1,18 +1,18 @@
-import React, { useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
-
-import { FeedType, Target } from '@/main/entity';
+import { BasicsEditCircle } from '@/assets';
+import { classNames } from '@/common/utils';
+import ExceedBar from '@/main/atoms/ExceedBar';
+import { FeedType } from '@/main/entity';
 import {
   getColorByText,
-  getTargetName,
-  nFormatter,
-  getTargetPeriodsAmountTotal,
   getMultiMonthRange,
+  getTargetName,
+  getTargetPeriodsAmountTotal,
+  nFormatter,
 } from '@/main/utils';
-import { classNames } from '@/common/utils';
 import Routes from '@/routes';
-import ExceedBar from '@/main/atoms/ExceedBar';
-import { BasicsEditCircle } from '@/assets';
+import { Target } from '@/target/types';
+import React, { useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const SYSTEM_ALERT_COLOR = '#ff5f68';
 const INACTIVE_TARGET_COLOR = '#d1d5db';

@@ -7,11 +7,10 @@ import {
   getSpendingByYear,
   getTargetMonthsLineChartData,
 } from '@/main/chart.utils';
-import { Target, TargetMonth } from '@/main/entity';
 import { useTransaction } from '@/main/hooks/transaction.hook';
 import { LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType } from '@/main/utils';
-import { TargetPeriod } from '@/target/types';
+import { Target, TargetMonth, TargetPeriod } from '@/target/types';
 import dayjs from 'dayjs';
 import cloneDeep from 'lodash.clonedeep';
 import range from 'lodash.range';

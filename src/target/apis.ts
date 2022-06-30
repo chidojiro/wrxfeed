@@ -1,8 +1,7 @@
 import { BitBoolean } from '@/common/types';
-import { Target } from '@/main/entity';
 import { RestApis } from '@/rest/apis';
 import { PaginationParams } from '@/rest/types';
-import { TargetPeriod, TargetProps } from './types';
+import { Target, TargetPeriod, TargetProps } from './types';
 
 // const get = () => {};
 

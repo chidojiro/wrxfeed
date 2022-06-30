@@ -1,12 +1,11 @@
-import React from 'react';
-
-import { useTarget } from '@/main/hooks';
-import { Target, TargetByTeam } from '@/main/entity';
-import { getColorByText } from '@/main/utils';
+import { AddSmallSolid, TeamIcon } from '@/assets';
 import { classNames } from '@/common/utils';
-import { TeamIcon, AddSmallSolid } from '@/assets';
+import { useTarget } from '@/main/hooks';
 import AddTargetModal from '@/main/molecules/AddTargetModal';
 import TargetWrapList from '@/main/molecules/TargetWrapList';
+import { getColorByText } from '@/main/utils';
+import { Target, TargetByTeam } from '@/target/types';
+import React from 'react';
 
 export interface TeamTargetSectionProps {
   className?: string;

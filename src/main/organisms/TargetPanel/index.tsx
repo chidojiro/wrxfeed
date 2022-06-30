@@ -2,11 +2,10 @@ import { BasicsDownSmall } from '@/assets';
 import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
 import Loading from '@/common/atoms/Loading';
 import { classNames } from '@/common/utils';
-import { Target } from '@/main/entity';
 import { useTarget } from '@/main/hooks';
 import { TargetRow } from '@/main/molecules';
 import AddTargetModal from '@/main/molecules/AddTargetModal';
-import { TargetFilter } from '@/target/types';
+import { Target, TargetFilter } from '@/target/types';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 

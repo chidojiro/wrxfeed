@@ -1,9 +1,9 @@
-import React from 'react';
-import { classNames, distanceToNow } from '@/common/utils';
 import { EyeHideIcon } from '@/assets';
-import { Target } from '@/main/entity';
+import { classNames, distanceToNow } from '@/common/utils';
 import EditorAvatar from '@/main/atoms/EditorAvatar';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
+import { Target } from '@/target/types';
+import React from 'react';
 
 export interface TargetFeedTitleProps {
   className?: string;
