@@ -1,12 +1,9 @@
-import { useApi } from '@/api';
-import { PutTargetParams } from '@/api/types';
 import { BinIcon, EditIcon, EyeIcon, MoreVerticalIcon } from '@/assets';
 import Loading from '@/common/atoms/Loading';
 import { Avatar } from '@/common/components';
 import { useHandler } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { distanceToNow } from '@/common/utils';
-import EditorAvatar from '@/main/atoms/EditorAvatar';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
@@ -16,10 +13,10 @@ import AddTargetModal from '@/main/molecules/AddTargetModal';
 import MiniChartView from '@/main/molecules/MiniChartView';
 import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
 import routes from '@/routes';
+import { TargetApis, UpdateTargetPayload } from '@/target/apis';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import clsx from 'clsx';
-import dayjs from 'dayjs';
 import { noop } from 'lodash-es';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
@@ -32,14 +29,12 @@ export type PrimaryTargetProps = ClassName & {
 export const PrimaryTarget = ({ data, onDeleteSuccess, className }: PrimaryTargetProps) => {
   const history = useHistory();
 
-  const api = useApi();
-
   const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
-    api.deleteTarget(targetId),
+    TargetApis.delete(targetId),
   );
 
   const { isLoading: isUpdatingTarget, handle: updateTarget } = useHandler(
-    (targetId: number, updatedTarget: PutTargetParams) => api.putTarget(targetId, updatedTarget),
+    (targetId: number, payload: UpdateTargetPayload) => TargetApis.update(targetId, payload),
   );
 
   const goToTargetDetails = () => {

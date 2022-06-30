@@ -1,22 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
-import * as Sentry from '@sentry/react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
-
-import { useFeed } from '@/main/hooks/feed.hook';
-import { useCategory } from '@/main/hooks/category.hook';
-import { FilterKeys } from '@/main/hooks';
-
-import { FeedFilters, Pagination } from '@/api/types';
-import { Category, Department, Vendor } from '@/main/entity';
-import { scrollToTop } from '@/main/utils';
-
-import FeedList from '@/main/organisms/FeedList';
-import CategoryList from '@/main/organisms/CategoryList';
+import { FeedFilters } from '@/api/types';
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
-import MainLayout from '@/common/templates/MainLayout';
 import { MainGroups } from '@/common/constants';
 import { useLegacyQuery } from '@/common/hooks';
+import MainLayout from '@/common/templates/MainLayout';
+import { Category, Department, Vendor } from '@/main/entity';
+import { FilterKeys } from '@/main/hooks';
+import { useCategory } from '@/main/hooks/category.hook';
+import { useFeed } from '@/main/hooks/feed.hook';
+import CategoryList from '@/main/organisms/CategoryList';
+import FeedList from '@/main/organisms/FeedList';
+import { scrollToTop } from '@/main/utils';
+import { PaginationParams } from '@/rest/types';
+import * as Sentry from '@sentry/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -30,7 +28,7 @@ const CategoriesPage: React.VFC = () => {
   const query = useLegacyQuery();
   const location = useLocation();
   // Category states
-  const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
+  const [filter, setFilter] = useState<PaginationParams>(INIT_PAGINATION);
   const { categories, hasMore, isLoading } = useCategory({ filter });
   // Feeds states
   const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
@@ -58,7 +56,7 @@ const CategoriesPage: React.VFC = () => {
 
   const filterByRoute = useCallback(() => {
     if (catId) {
-      const newFilter: { [key: string]: string | number | Pagination | null } = {
+      const newFilter: { [key: string]: string | number | PaginationParams | null } = {
         page: INIT_PAGINATION,
         category: parseInt(catId, 10),
       };

@@ -1,34 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useRef, useState, KeyboardEventHandler, useMemo } from 'react';
-import { TooltipProps } from 'recharts';
-import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
-import dayjs from 'dayjs';
-import range from 'lodash.range';
-import cloneDeep from 'lodash.clonedeep';
-
-import { classNames, formatCurrency, round } from '@/common/utils';
-import { LineChartData, SearchResult } from '@/main/types';
-import {
-  TargetProp,
-  PatchCalcSpendingFilters,
-  PostTargetParams,
-  PutTargetParams,
-  TargetPeriod,
-  TargetPropType,
-  TransactionBody,
-} from '@/api/types';
-import { Department, Target, TargetMonth } from '@/main/entity';
-
-import Modal from '@/common/atoms/Modal';
-import Loading from '@/common/atoms/Loading';
+import { TransactionBody } from '@/api/types';
+import { AlertRed, Bank, CategoryIcon, TeamIcon } from '@/assets';
 import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
 import { ReactComponent as CarbonTrashCan } from '@/assets/icons/outline/carbon-trash-can.svg';
-import { AlertRed, TeamIcon, CategoryIcon, Bank } from '@/assets';
-import PropertiesDropdown, { DropdownEdge } from '@/main/molecules/PropertiesDropdown';
+import Loading from '@/common/atoms/Loading';
+import Modal from '@/common/atoms/Modal';
+import { defaultTargetMonths, INITIAL_CHART_DATA } from '@/common/constants';
+import { classNames, formatCurrency, round } from '@/common/utils';
+import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
+import { Department, Target, TargetMonth } from '@/main/entity';
+import { useTransaction } from '@/main/hooks';
+import { useMultiMonth } from '@/main/hooks/multiMonth.hook';
 import ExceptDropdown from '@/main/molecules/ExceptDropdown';
-import MultiMonthDropdown from '@/main/molecules/MultiMonthDropdown';
 import ExceptList from '@/main/molecules/ExceptList';
+import MultiMonthDropdown from '@/main/molecules/MultiMonthDropdown';
+import PropertiesDropdown, { DropdownEdge } from '@/main/molecules/PropertiesDropdown';
+import TargetChart from '@/main/molecules/TargetChart';
+import { LineChartData, SearchResult } from '@/main/types';
 import {
   decimalLogic,
   DecimalType,
@@ -37,19 +26,27 @@ import {
   getPropsAndPeriodsFromItemSelected,
   getTargetName,
 } from '@/main/utils';
-import TargetChart from '@/main/molecules/TargetChart';
-import { useMultiMonth } from '@/main/hooks/multiMonth.hook';
-import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
-import { defaultTargetMonths, INITIAL_CHART_DATA } from '@/common/constants';
-import { useTransaction } from '@/main/hooks';
+import { CreateTargetPayload, UpdateTargetPayload } from '@/target/apis';
+import {
+  PatchCalcSpendingFilters,
+  TargetPeriod,
+  TargetProps,
+  TargetTypeProp,
+} from '@/target/types';
+import dayjs from 'dayjs';
+import cloneDeep from 'lodash.clonedeep';
+import range from 'lodash.range';
+import React, { KeyboardEventHandler, useEffect, useMemo, useRef, useState } from 'react';
+import { TooltipProps } from 'recharts';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 export type AddTargetModalProps = {
   open: boolean;
   onClose: () => void;
   onCancel: () => void;
   deleteTarget: (id: number) => void;
-  postTarget: (data: PostTargetParams) => void;
-  putTarget: (id: number, data: PutTargetParams) => void;
+  postTarget: (data: CreateTargetPayload) => void;
+  putTarget: (id: number, data: UpdateTargetPayload) => void;
   itemEditing: Target | null;
   isCreatingOrSaving: boolean;
   isDeleting?: boolean;
@@ -89,7 +86,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   const [vendItems, setVendItems] = useState<SearchResult[]>([]);
   const [catItems, setCatItems] = useState<SearchResult[]>([]);
   const [teamItems, setTeamItems] = useState<SearchResult[]>([]);
-  const [allProps, setAllProps] = useState<TargetProp[]>([]);
+  const [allProps, setAllProps] = useState<TargetProps[]>([]);
 
   const [openMultiMonth, setOpenMultiMonth] = useState<boolean>(false);
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
@@ -145,9 +142,9 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   useEffect(() => {
     if (department) {
       const addDept = {
-        id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${department.id}`,
+        id: `${TargetTypeProp.DEPARTMENT.toUpperCase()}-${department.id}`,
         title: department.name,
-        type: TargetPropType.DEPARTMENT,
+        type: TargetTypeProp.DEPARTMENT,
         directoryId: department.id,
       };
       if (defaultTags.filter((item) => item.id === addDept.id).length === 0) {
@@ -210,7 +207,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
   };
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: number;
     if (open) {
       // fetch data
       fetchThisYearSpendData();
@@ -232,16 +229,19 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
     const vendors = vendItems.length ? vendItems : [];
     const teams = teamItems.length ? teamItems : [];
     const categories = catItems.length ? catItems : [];
-    const propsCheck: TargetProp[] = [...vendors, ...teams, ...categories, ...(initTags ?? [])].map(
-      (item: SearchResult) => {
-        return {
-          id: item.directoryId,
-          exclude: false,
-          type: item.type,
-          name: item.title,
-        };
-      },
-    );
+    const propsCheck: TargetProps[] = [
+      ...vendors,
+      ...teams,
+      ...categories,
+      ...(initTags ?? []),
+    ].map((item: SearchResult) => {
+      return {
+        id: item.directoryId,
+        exclude: false,
+        type: item.type,
+        name: item.title,
+      };
+    });
     for (let index = 0; index < exceptItems.length; index += 1) {
       const item = exceptItems[index];
       propsCheck.push({
@@ -270,7 +270,7 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
 
   useEffect(() => {
     if (itemEditing && itemEditing?.props?.length > 0) {
-      const defaultTagsTemp = itemEditing?.props.map((prop: TargetProp) => {
+      const defaultTagsTemp = itemEditing?.props.map((prop: TargetProps) => {
         return {
           id: `${prop?.type.toUpperCase()}-${prop?.id}`,
           title: prop?.name,
@@ -558,8 +558,8 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               placeholder="Enter a vendor"
               IconComponent={Bank}
               title="All Vendors"
-              type={TargetPropType.VENDOR}
-              defaultItems={defaultTags.filter((item) => item.type === TargetPropType.VENDOR)}
+              type={TargetTypeProp.VENDOR}
+              defaultItems={defaultTags.filter((item) => item.type === TargetTypeProp.VENDOR)}
               onChangeItems={setVendItems}
             />
             <div className="flex items-center justify-center w-6 h-[30px]">
@@ -569,8 +569,8 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               placeholder="Enter a category"
               IconComponent={CategoryIcon}
               title="All Categories"
-              type={TargetPropType.CATEGORY}
-              defaultItems={defaultTags.filter((item) => item.type === TargetPropType.CATEGORY)}
+              type={TargetTypeProp.CATEGORY}
+              defaultItems={defaultTags.filter((item) => item.type === TargetTypeProp.CATEGORY)}
               onChangeItems={setCatItems}
             />
             <div className="flex items-center justify-center w-6 h-[30px]">
@@ -580,9 +580,9 @@ const AddTargetModal: React.FC<AddTargetModalProps> = ({
               placeholder="Enter a team"
               IconComponent={TeamIcon}
               title="All Teams"
-              type={TargetPropType.DEPARTMENT}
+              type={TargetTypeProp.DEPARTMENT}
               dropdownEdge={DropdownEdge.RIGHT}
-              defaultItems={defaultTags.filter((item) => item.type === TargetPropType.DEPARTMENT)}
+              defaultItems={defaultTags.filter((item) => item.type === TargetTypeProp.DEPARTMENT)}
               onChangeItems={setTeamItems}
             />
             <ExceptDropdown

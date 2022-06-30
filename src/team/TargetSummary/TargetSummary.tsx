@@ -7,9 +7,8 @@ import { useDisclosure } from '@dwarvesf/react-hooks';
 import { noop } from 'lodash-es';
 import { Department } from '@/main/entity';
 import { useHandler } from '@/common/hooks';
-import { useApi } from '@/api';
-import { PostTargetParams } from '@/api/types';
 import { useTarget } from '@/main/hooks';
+import { CreateTargetPayload, TargetApis } from '@/target/apis';
 
 type TargetSummaryProps = {
   department: Department;
@@ -18,17 +17,15 @@ type TargetSummaryProps = {
 export const TargetSummary = ({ department }: TargetSummaryProps) => {
   const addTargetModalDisclosure = useDisclosure();
 
-  const api = useApi();
-
   const { targets, mutate: mutateTargets } = useTarget({
     filter: { dep: department.id, limit: 9999 },
   });
 
   const { handle: createTarget, isLoading: isCreatingTarget } = useHandler(
-    (target: PostTargetParams) => api.postTarget(target),
+    (target: CreateTargetPayload) => TargetApis.create(target),
   );
 
-  const handleTargetCreateConfirm = async (data: PostTargetParams) => {
+  const handleTargetCreateConfirm = async (data: CreateTargetPayload) => {
     await createTarget(data);
     mutateTargets();
   };

@@ -1,20 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/accessible-emoji */
+import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
+import Loading from '@/common/atoms/Loading';
+import { classNames } from '@/common/utils';
+import { Department, Target } from '@/main/entity';
+import { useTarget } from '@/main/hooks';
+import AddTargetModal from '@/main/molecules/AddTargetModal';
+import { SearchResult } from '@/main/types';
+import { TargetFilter, TargetTypeProp } from '@/target/types';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-
-import { useTarget } from '@/main/hooks';
-
-import { Department, Target } from '@/main/entity';
-import { TargetFilter, TargetPropType } from '@/api/types';
-
-import AddTargetModal from '@/main/molecules/AddTargetModal';
-import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
-import { classNames } from '@/common/utils';
-import { SearchResult } from '@/main/types';
-import Loading from '@/common/atoms/Loading';
-import TeamTargetRow from '../TeamTargetRow';
 import EmptyTarget from '../EmptyTarget';
+import TeamTargetRow from '../TeamTargetRow';
 
 const GET_TARGETS_LIMIT = 6;
 
@@ -175,9 +172,9 @@ const TeamTargets: React.VFC<TeamTargetsProps> = ({ className = '', dept, depId 
   };
 
   const prePopulatedProps: SearchResult = {
-    id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${dept?.id}`,
+    id: `${TargetTypeProp.DEPARTMENT.toUpperCase()}-${dept?.id}`,
     title: dept?.name,
-    type: TargetPropType.DEPARTMENT,
+    type: TargetTypeProp.DEPARTMENT,
     directoryId: dept.id,
   };
 

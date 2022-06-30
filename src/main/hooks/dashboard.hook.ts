@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-
 import { useApi } from '@/api';
-import { TargetSummaries } from '@/api/types';
 import { useErrorHandler } from '@/error/hooks';
 import { isApiError } from '@/error/utils';
+import { TargetSummaries } from '@/target/types';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export const TargetSummariesDefault: TargetSummaries = {
   total: 0,

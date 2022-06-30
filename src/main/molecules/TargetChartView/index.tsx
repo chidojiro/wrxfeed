@@ -1,25 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useMemo } from 'react';
-import { TooltipProps } from 'recharts';
-import dayjs from 'dayjs';
-import cloneDeep from 'lodash.clonedeep';
-import range from 'lodash.range';
-
+import { TransactionBody } from '@/api/types';
 import { defaultTargetMonths } from '@/common/constants';
-import { TargetPeriod, TransactionBody } from '@/api/types';
 import { classNames } from '@/common/utils';
-import { Target, TargetMonth, TargetStatusConfig, TargetStatusType } from '@/main/entity';
-import { LineChartData } from '@/main/types';
+import TargetStatus from '@/main/atoms/TargetStatus';
 import {
   getLineChartDataInMonth,
   getSpendingByYear,
   getTargetMonthsLineChartData,
 } from '@/main/chart.utils';
-import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
+import { Target, TargetMonth, TargetStatusConfig, TargetStatusType } from '@/main/entity';
 import { useTransaction } from '@/main/hooks/transaction.hook';
-import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import { LineChartData } from '@/main/types';
+import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
+import { TargetPeriod } from '@/target/types';
+import dayjs from 'dayjs';
+import cloneDeep from 'lodash.clonedeep';
+import range from 'lodash.range';
+import React, { useEffect, useMemo, useState } from 'react';
+import { TooltipProps } from 'recharts';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import TargetChart from '../TargetChart';
-import TargetStatus from '@/main/atoms/TargetStatus';
 
 interface TargetChartViewProps {
   className?: string;

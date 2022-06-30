@@ -9,7 +9,7 @@ export const useDebounce = <T extends (...args: any[]) => any>(
   // Create a callback with deps.
   const callback = useCallback(effect, [...deps, effect]);
   // Create hook to hold timer and callback
-  const latestTimeout = useRef<NodeJS.Timeout>();
+  const latestTimeout = useRef<number>();
   const latestCallback = useRef<T>();
 
   // Reassign callback if it's changed.

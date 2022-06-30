@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import MainLayout from '@/common/templates/MainLayout';
 import ListLoading from '@/main/atoms/ListLoading';
-import { usePrimaryTarget } from '@/main/hooks/primaryTarget.hook';
+import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 import { PrimaryTarget } from '../PrimaryTarget';

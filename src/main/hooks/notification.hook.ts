@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useEffect, useState } from 'react';
-import { SetterOrUpdater, useRecoilState } from 'recoil';
-import { toast } from 'react-toastify';
-
 import { useApi } from '@/api';
 import usePusher from '@/api/hooks/usePusher';
-import { Pagination } from '@/api/types';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
 import { useIdentity } from '@/identity/hooks';
 import { Notification } from '@/main/entity';
 import { newNotifyCountState } from '@/main/states/notify.state';
+import { PaginationParams } from '@/rest/types';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { SetterOrUpdater, useRecoilState } from 'recoil';
 
 interface NotificationHookValues {
   notifications: Notification[];
@@ -24,7 +23,7 @@ interface NotificationHookValues {
   newNotifyCount: number;
 }
 
-export function useNotification(page: Pagination): NotificationHookValues {
+export function useNotification(page: PaginationParams): NotificationHookValues {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [newNotifyCount, setNewNotifyCount] = useRecoilState<number>(newNotifyCountState);
   const [hasMore, setHasMore] = useState<boolean>(false);

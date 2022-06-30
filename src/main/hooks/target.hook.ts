@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useApi } from '@/api';
-import { PostTargetParams, PutTargetParams, TargetFilter } from '@/api/types';
 import { useFetcher } from '@/common/hooks';
 import { useErrorHandler } from '@/error/hooks';
 import { isApiError } from '@/error/utils';
 import { Target } from '@/main/entity';
+import { CreateTargetPayload, TargetApis, UpdateTargetPayload } from '@/target/apis';
+import { TargetFilter } from '@/target/types';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { KeyedMutator } from 'swr';
@@ -17,8 +17,8 @@ interface TargetHookValues {
   targets: Target[];
   hasMore: boolean;
   isGetTargets: boolean;
-  postTarget: (data: PostTargetParams) => Promise<void>;
-  putTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  postTarget: (data: CreateTargetPayload) => Promise<void>;
+  putTarget: (id: number, data: UpdateTargetPayload) => Promise<void>;
   deleteTarget: (id: number) => Promise<void>;
   isPostTarget: boolean;
   isPutTarget: boolean;
@@ -36,14 +36,6 @@ export interface UseTargetParams {
   autoLoad?: boolean;
 }
 
-const defaultFilter: TargetFilter = {
-  offset: 0,
-  limit: 0,
-  year: new Date().getFullYear(),
-  month: new Date().getMonth() + 1,
-  timestamp: Date.now(),
-};
-
 export function useTarget(params?: UseTargetParams): TargetHookValues {
   const { filter, cbPost, cbPut, cbDelete, autoLoad = true } = params ?? {};
 
@@ -54,7 +46,6 @@ export function useTarget(params?: UseTargetParams): TargetHookValues {
   const [isPutTarget, setPutTarget] = useState<boolean>(false);
   const [isDeleteTarget, setDeleteTarget] = useState<boolean>(false);
 
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
   const {
@@ -62,9 +53,7 @@ export function useTarget(params?: UseTargetParams): TargetHookValues {
     isLoading,
     mutate,
     isValidating,
-  } = useFetcher(autoLoad && ['/targets', JSON.stringify(filter)], () =>
-    ApiClient.getTargets({ ...defaultFilter, ...filter }),
-  );
+  } = useFetcher(autoLoad && ['/targets', filter], () => TargetApis.getList({ ...filter }));
 
   React.useEffect(() => {
     if (filter?.offset !== 0) {
@@ -75,11 +64,11 @@ export function useTarget(params?: UseTargetParams): TargetHookValues {
     setHasMore(data.length >= (filter?.limit || 0));
   }, [data]);
 
-  const postTarget = async (data: PostTargetParams) => {
+  const postTarget = async (data: CreateTargetPayload) => {
     if (isPostTarget) return;
     try {
       setPostTarget(true);
-      await ApiClient.postTarget(data);
+      await TargetApis.create(data);
       cbPost?.onSuccess();
     } catch (error) {
       if (cbPost && cbPost.onError) {
@@ -95,11 +84,11 @@ export function useTarget(params?: UseTargetParams): TargetHookValues {
     }
   };
 
-  const putTarget = async (id: number, data: PutTargetParams) => {
+  const putTarget = async (id: number, data: UpdateTargetPayload) => {
     if (isPutTarget) return;
     try {
       setPutTarget(true);
-      const newTarget = await ApiClient.putTarget(id, data);
+      const newTarget = await TargetApis.update(id, data);
       cbPut?.onSuccess(id, newTarget);
     } catch (error) {
       if (cbPut?.onError) {
@@ -119,7 +108,7 @@ export function useTarget(params?: UseTargetParams): TargetHookValues {
     if (isPutTarget) return;
     try {
       setDeleteTarget(true);
-      await ApiClient.deleteTarget(id);
+      await TargetApis.delete(id);
       if (targetsRef.current) {
         const newTargets = targetsRef.current.filter((item: Target) => item?.id !== id);
         setTargets(newTargets);

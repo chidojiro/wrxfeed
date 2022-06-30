@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-
-import { useTarget } from '@/main/hooks';
-
-import { TargetFilter } from '@/api/types';
-import { Target } from '@/main/entity';
-
-import { TargetRow } from '@/main/molecules';
-import AddTargetModal from '@/main/molecules/AddTargetModal';
-import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
 import { BasicsDownSmall } from '@/assets';
+import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
 import Loading from '@/common/atoms/Loading';
 import { classNames } from '@/common/utils';
+import { Target } from '@/main/entity';
+import { useTarget } from '@/main/hooks';
+import { TargetRow } from '@/main/molecules';
+import AddTargetModal from '@/main/molecules/AddTargetModal';
+import { TargetFilter } from '@/target/types';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 export interface TargetPanelProps {
   title?: string;

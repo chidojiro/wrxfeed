@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
 import { useApi } from '@/api';
 import { useErrorHandler } from '@/error/hooks';
-import { TargetProp, PatchCalcSpendingFilters, TargetPeriod } from '@/api/types';
+import { PatchCalcSpendingFilters, TargetPeriod, TargetProps } from '@/target/types';
+import { useCallback, useEffect, useState } from 'react';
 
 interface MultiMonthHookValues {
   months: TargetPeriod[];
@@ -19,7 +19,7 @@ export function useMultiMonth(
   const errorHandler = useErrorHandler();
 
   const getCalcSpending = useCallback(
-    async (preProps?: TargetProp[]) => {
+    async (preProps?: TargetProps[]) => {
       if (preProps && preProps.length > 0) {
         // eslint-disable-next-line no-param-reassign
         filter.props = preProps;

@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useState, useCallback, useEffect, useRef } from 'react';
-import { Popover, Transition } from '@headlessui/react';
-import { TargetPropType } from '@/api/types';
-import { classNames } from '@/common/utils';
-import { getColorByPropertyType } from '@/main/utils';
-import AddTargetTagInput from '@/main/atoms/AddTargetTagInput';
-import { SearchResult } from '@/main/types';
-import { useSearch } from '@/main/hooks/search.hook';
 import { AlertRed } from '@/assets';
-import useRoveFocus from '@/main/hooks/focus.hook';
-import PropertyDropdownItem from '@/main/atoms/PropertyDropdownItem';
 import { useDebounce } from '@/common/hooks';
+import { classNames } from '@/common/utils';
+import AddTargetTagInput from '@/main/atoms/AddTargetTagInput';
+import PropertyDropdownItem from '@/main/atoms/PropertyDropdownItem';
+import useRoveFocus from '@/main/hooks/focus.hook';
+import { useSearch } from '@/main/hooks/search.hook';
+import { SearchResult } from '@/main/types';
+import { getColorByPropertyType } from '@/main/utils';
+import { TargetTypeProp } from '@/target/types';
+import { Popover, Transition } from '@headlessui/react';
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 
 export enum DropdownEdge {
   LEFT = 'left-0',
@@ -27,7 +27,7 @@ interface PropertiesDropdownProps {
   placeholder?: string;
   IconComponent: React.FC<React.SVGAttributes<SVGElement>>;
   title: string;
-  type: TargetPropType;
+  type: TargetTypeProp;
   dropdownEdge?: DropdownEdge;
   defaultItems?: SearchResult[];
   onChangeItems?: (items: SearchResult[]) => void;
@@ -52,9 +52,9 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
 
   const { results } = useSearch({
     keyword,
-    searchCate: type === TargetPropType.CATEGORY,
-    searchDept: type === TargetPropType.DEPARTMENT,
-    searchVend: type === TargetPropType.VENDOR,
+    searchCate: type === TargetTypeProp.CATEGORY,
+    searchDept: type === TargetTypeProp.DEPARTMENT,
+    searchVend: type === TargetTypeProp.VENDOR,
     ignoreEmptyKeyword: false,
   });
 

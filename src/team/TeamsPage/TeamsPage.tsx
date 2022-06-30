@@ -1,23 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
-import * as Sentry from '@sentry/react';
-
-import { useFeed } from '@/main/hooks/feed.hook';
-import { useDepartment } from '@/main/hooks/department.hook';
-import { useApi } from '@/api';
-
-import { Category, Department, Vendor } from '@/main/entity';
-import { FeedFilters, Pagination } from '@/api/types';
-import { FilterKeys } from '@/main/hooks';
-import { scrollToTop } from '@/main/utils';
-
-import FeedList from '@/main/organisms/FeedList';
-import DepartmentList from '@/main/organisms/DepartmentList';
-import TeamHome from '@/main/organisms/TeamHome';
-import MainLayout from '@/common/templates/MainLayout';
+import { FeedFilters } from '@/api/types';
 import { MainGroups } from '@/common/constants';
 import { useLegacyQuery } from '@/common/hooks';
+import MainLayout from '@/common/templates/MainLayout';
+import { Department } from '@/main/entity';
+import { FilterKeys } from '@/main/hooks';
+import { useDepartment } from '@/main/hooks/department.hook';
+import { useFeed } from '@/main/hooks/feed.hook';
+import DepartmentList from '@/main/organisms/DepartmentList';
+import { scrollToTop } from '@/main/utils';
+import { PaginationParams } from '@/rest/types';
+import * as Sentry from '@sentry/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -28,11 +23,9 @@ const INIT_PAGINATION = Object.freeze({
 const WrappedTeamsPage = () => {
   const history = useHistory();
   const { id: deptId } = useParams<{ id?: string }>();
-  const [deptSelect, setDeptSelect] = useState<Department>();
   const query = useLegacyQuery();
-  const location = useLocation();
   // Department states
-  const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
+  const [filter, setFilter] = useState<PaginationParams>(INIT_PAGINATION);
   const { departments, hasMore, isLoading } = useDepartment(filter);
 
   // Feeds states
@@ -48,28 +41,10 @@ const WrappedTeamsPage = () => {
   );
   const { cleanData } = useFeed(feedsFilter);
 
-  const { getDepartmentById } = useApi();
-
-  const inDirectoryList = query.get('route') !== MainGroups.Feeds;
-  const isFiltering = inDirectoryList
-    ? !!feedsFilter.page?.offset || !!feedsFilter.page?.limit
-    : FilterKeys.some((key) => query.has(key));
-
-  const getDepById = async (id: string) => {
-    const department = await getDepartmentById(parseInt(id, 10));
-    setDeptSelect(department);
-  };
-
-  useEffect(() => {
-    if (deptId) {
-      getDepById(deptId);
-    }
-  }, [deptId]);
-
   const filterByRoute = useCallback(() => {
     if (deptId) {
       const idNum = parseInt(deptId, 10);
-      const newFilter: { [key: string]: string | number | Pagination | null } = {
+      const newFilter: { [key: string]: string | number | PaginationParams | null } = {
         page: INIT_PAGINATION,
         rootDepartment: idNum,
       };
@@ -107,18 +82,6 @@ const WrappedTeamsPage = () => {
     history.push({
       pathname: `/departments/${value?.id.toString()}`,
       search: `?route=${MainGroups.Following}`,
-    });
-    scrollToTop();
-  };
-
-  const handleFeedsFilter = (
-    key: keyof FeedFilters,
-    value?: Department | Category | Vendor,
-  ): void => {
-    query.set(key, value?.id.toString() ?? '');
-    history.push({
-      pathname: location.pathname,
-      search: query.toString(),
     });
     scrollToTop();
   };

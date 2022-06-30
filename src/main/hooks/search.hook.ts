@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useState, useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-
-import { GlobalSearchType, searchState } from '@/main/states/search.state';
-import { SearchResult } from '@/main/types';
-import { Category, Department, Vendor } from '@/main/entity';
-import { SearchFilters, TargetPropType } from '@/api/types';
+import { SearchFilters } from '@/api/types';
 import { getApiClient } from '@/api/utils';
 import { SearchTypes } from '@/auth/types';
+import { Category, Department, Vendor } from '@/main/entity';
+import { GlobalSearchType, searchState } from '@/main/states/search.state';
+import { SearchResult } from '@/main/types';
+import { TargetTypeProp } from '@/target/types';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useRecoilState } from 'recoil';
 
 const LIMIT = 2999;
 const INIT_PAGINATION = Object.freeze({
@@ -54,9 +54,9 @@ export function useSearch({
             return arr;
           }
           const addItem: SearchResult = {
-            id: `${TargetPropType.DEPARTMENT.toUpperCase()}-${dept?.id}`,
+            id: `${TargetTypeProp.DEPARTMENT.toUpperCase()}-${dept?.id}`,
             title: dept?.name,
-            type: TargetPropType.DEPARTMENT,
+            type: TargetTypeProp.DEPARTMENT,
             directoryId: dept?.id,
           };
           if (except && except.filter((item) => item?.id === addItem?.id).length > 0) return arr;
@@ -70,9 +70,9 @@ export function useSearch({
             return arr;
           }
           const addItem: SearchResult = {
-            id: `${TargetPropType.CATEGORY.toUpperCase()}-${cat?.id}`,
+            id: `${TargetTypeProp.CATEGORY.toUpperCase()}-${cat?.id}`,
             title: cat?.name,
-            type: TargetPropType.CATEGORY,
+            type: TargetTypeProp.CATEGORY,
             directoryId: cat?.id,
           };
           if (except && except.filter((item) => item?.id === addItem?.id).length > 0) return arr;
@@ -86,9 +86,9 @@ export function useSearch({
             return arr;
           }
           const addItem: SearchResult = {
-            id: `${TargetPropType.VENDOR.toUpperCase()}-${vend?.id}`,
+            id: `${TargetTypeProp.VENDOR.toUpperCase()}-${vend?.id}`,
             title: vend?.name,
-            type: TargetPropType.VENDOR,
+            type: TargetTypeProp.VENDOR,
             directoryId: vend?.id,
           };
           if (except && except.filter((item) => item?.id === addItem?.id).length > 0) return arr;

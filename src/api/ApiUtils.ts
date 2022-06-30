@@ -9,7 +9,6 @@ import {
   Category,
   Vendor,
   Notification,
-  Target,
   Subscription,
   FeedItem,
   TransLineItem,
@@ -23,7 +22,6 @@ import {
   ChangePasswordDto,
   CommentFilters,
   GetUploadTokenBody,
-  Pagination,
   ResetPasswordDto,
   TransactionBody,
   UploadToken,
@@ -32,10 +30,6 @@ import {
   AddCommentParams,
   OrderDirection,
   DepartmentFilter,
-  TargetFilter,
-  PostTargetParams,
-  PutTargetParams,
-  PatchCalcSpendingFilters,
   SubscriptionParams,
   NotificationsResponse,
   FeedItemFilters,
@@ -43,8 +37,6 @@ import {
   AddFeedCommentParams,
   FeedFilters,
   CategoryFilter,
-  TargetPeriod,
-  TargetSummaries,
 } from '@/api/types';
 import {
   AuthProfile,
@@ -55,6 +47,8 @@ import {
 } from '@/auth/types';
 import { handleResponseFail } from '@/api/utils';
 import { InviteFormModel, FeedBackFormModel } from '@/main/types';
+import { PaginationParams } from '@/rest/types';
+import { PatchCalcSpendingFilters, TargetPeriod, TargetSummaries } from '@/target/types';
 
 export default class ApiUtils implements ApiClient {
   private client: AxiosInstance;
@@ -236,7 +230,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getMentions = async (pagination?: Pagination): Promise<User[]> => {
+  getMentions = async (pagination?: PaginationParams): Promise<User[]> => {
     const res = await this.request<User[]>({
       url: '/user/me/mentions',
       method: 'GET',
@@ -333,7 +327,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getVendors = async (pagination?: Pagination): Promise<Vendor[]> => {
+  getVendors = async (pagination?: PaginationParams): Promise<Vendor[]> => {
     const res = await this.request<Vendor[]>({
       url: '/feed/vendors',
       method: 'GET',
@@ -351,7 +345,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getNotifications = async (page?: Pagination): Promise<NotificationsResponse> => {
+  getNotifications = async (page?: PaginationParams): Promise<NotificationsResponse> => {
     const res = await this.request<Notification[]>({
       url: '/noti/notifications',
       method: 'GET',
@@ -379,39 +373,6 @@ export default class ApiUtils implements ApiClient {
       method: 'PATCH',
     });
     return res.data;
-  };
-
-  getTargets = async (params?: TargetFilter): Promise<Target[]> => {
-    const res = await this.request<Target[]>({
-      url: '/target/targets',
-      method: 'GET',
-      params,
-    });
-    return res.data;
-  };
-
-  postTarget = async (data: PostTargetParams): Promise<void> => {
-    await this.request<void>({
-      url: '/target/targets',
-      method: 'POST',
-      data,
-    });
-  };
-
-  putTarget = async (id: number, data: PutTargetParams): Promise<Target> => {
-    const res = await this.request<Target>({
-      url: `/target/targets/${id}`,
-      method: 'PUT',
-      data,
-    });
-    return res.data;
-  };
-
-  deleteTarget = async (id: number): Promise<void> => {
-    await this.request<void>({
-      url: `/target/targets/${id}`,
-      method: 'DELETE',
-    });
   };
 
   patchCalcSpending = async (data: PatchCalcSpendingFilters): Promise<TargetPeriod[]> => {

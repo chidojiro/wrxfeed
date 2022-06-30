@@ -1,6 +1,49 @@
-import { TargetProps, TargetPeriod } from '@/target/types';
 import { User } from '@/main/entity/user.entity';
-import { Department } from './transaction.entity';
+import { Department } from '@/main/entity/transaction.entity';
+import { BitBoolean } from '@/common/types';
+import { PaginationParams } from '@/rest/types';
+
+export type TargetFilter = Partial<PaginationParams> & {
+  year?: number;
+  month?: number;
+  timestamp?: number;
+  dep?: number;
+  forYou?: BitBoolean;
+  isPrimary?: BitBoolean;
+};
+
+export type TargetSummaries = {
+  total: number;
+  onTrack: number;
+  atRisk: number;
+  exceeded: number;
+};
+
+export type PatchCalcSpendingFilters = {
+  props: TargetProps[];
+  periods: TargetPeriod[];
+};
+
+export enum TargetTypeProp {
+  DEPARTMENT = 'DEPARTMENT',
+  CATEGORY = 'CATEGORY',
+  VENDOR = 'VENDOR',
+}
+
+export type TargetProps = {
+  id: number;
+  type: TargetTypeProp;
+  name: string;
+  exclude?: boolean;
+};
+
+export type TargetPeriod = {
+  month: number;
+  year: number;
+  amount?: number;
+  threshold?: number;
+  total?: number;
+};
 
 export enum TargetStatusType {
   OnTrack = 'ON_TRACK',

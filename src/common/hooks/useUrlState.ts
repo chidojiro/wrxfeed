@@ -14,7 +14,8 @@ export const useUrlState = <T>(paramKey: string, defaultValue?: T) => {
     if (paramKey?.length) {
       _setParam(paramValue);
     }
-  }, [paramKey, query, _setParam]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const setParam: typeof _setParam = React.useCallback(
     (valueOrCallback) => {

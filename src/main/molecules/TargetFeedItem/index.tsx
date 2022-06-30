@@ -10,7 +10,7 @@ import { useFeedComment } from '@/main/hooks/feedComment.hook';
 import { FeedItem, Visibility, Target, User } from '@/main/entity';
 import { CommentFormModel } from '@/main/types';
 import { useMention, useTarget } from '@/main/hooks';
-import { GetUploadTokenBody, Pagination, PutTargetParams, UploadTypes } from '@/api/types';
+import { GetUploadTokenBody, UploadTypes } from '@/api/types';
 import { classNames, distanceToNow } from '@/common/utils';
 import { commentEditorRawParser, getMultiMonthRange, getTargetName } from '@/main/utils';
 // components
@@ -26,6 +26,8 @@ import RollupTransactions from '@/main/molecules/RollupTransactions';
 import { CalendarMinus, EyeHideIcon, ExclamationCircle } from '@/assets';
 import AddTargetModal from '@/main/molecules/AddTargetModal';
 import UserAvatar from '@/main/atoms/UserAvatar';
+import { PaginationParams } from '@/rest/types';
+import { UpdateTargetPayload } from '@/target/apis';
 
 export interface TargetFeedItemProps {
   feedItem: FeedItem;
@@ -53,7 +55,7 @@ const initFilter = {
 
 const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, onBack }) => {
   const identity = useIdentity();
-  const [filterComment, setFilterComment] = useState<Pagination>({
+  const [filterComment, setFilterComment] = useState<PaginationParams>({
     offset: 0,
     limit: INITIAL_COMMENT_NUMBER,
   });
@@ -126,7 +128,7 @@ const TargetFeedItem: React.VFC<TargetFeedItemProps> = ({ feedItem, onRefresh, o
       autoLoad: false,
     });
 
-  const handlePutTarget = (id: number, data: PutTargetParams) => {
+  const handlePutTarget = (id: number, data: UpdateTargetPayload) => {
     putTarget(id, data);
   };
 

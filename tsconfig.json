@@ -18,7 +18,8 @@
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["./src/global", "./src/rest/global.ts"]
   },
   "include": ["src"]
 }
