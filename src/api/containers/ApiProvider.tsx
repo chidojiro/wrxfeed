@@ -17,11 +17,3 @@ const ApiProvider: React.FC<ApiProviderProps> = ({ baseUrl, children }) => {
 };
 
 export default ApiProvider;
-
-export const FakeApiProvider: React.FC<Children> = ({ children }) => {
-  // const apiClient = fakeApiUtils;
-  // React.useEffect(() => {
-  //   setApiClient(apiClient);
-  // });
-  return <ApiContext.Provider value={undefined}>{children}</ApiContext.Provider>;
-};
