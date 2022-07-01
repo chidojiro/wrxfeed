@@ -11,6 +11,7 @@ import { ProjectClassNamePrefix } from '../constants';
 export { DateUtils } from './date';
 export { AssertUtils } from './assert';
 export { StringUtils } from './string';
+export { ReactUtils } from './react';
 
 // Dayjs plugins
 dayjs.extend(isToday);

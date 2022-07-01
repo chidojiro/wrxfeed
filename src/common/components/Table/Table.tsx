@@ -23,7 +23,8 @@ type TableProviderValue = { tableProps: TableProps };
 export const TableContext = React.createContext<TableProviderValue>({ tableProps: {} });
 
 export const Table = (props: TableProps) => {
-  const { className, ...restProps } = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { className, onSortChange: _, ...restProps } = props;
   const providerValue = React.useMemo<TableProviderValue>(() => ({ tableProps: props }), [props]);
 
   return (

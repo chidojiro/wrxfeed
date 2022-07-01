@@ -1,7 +1,7 @@
+import { Bank, CategoryIcon, FeedIcon, TargetIcon, TeamIcon } from '@/assets';
 import { SectionTab } from '@/common/types';
-import { FeedIcon, Bank, CategoryIcon, TeamIcon, TargetIcon } from '@/assets';
 import { LineChartData } from '@/main/types';
-import { TargetMonth } from '@/main/entity';
+import { TargetMonth } from '@/target/types';
 
 export const ProjectClassNamePrefix = 'gvt-';
 

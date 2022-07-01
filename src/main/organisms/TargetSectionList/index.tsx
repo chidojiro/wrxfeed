@@ -1,14 +1,12 @@
-import React, { CSSProperties } from 'react';
-
-import { useTarget } from '@/main/hooks';
-import { TargetByTeam } from '@/main/entity';
-import { filterTargetsToTargetByTeam } from '@/main/utils';
-import { TargetFilter } from '@/api/types';
-import { GET_TARGETS_DASHBOARD_LIMIT } from '@/config';
-import TeamTargetSection from '@/main/molecules/TeamTargetSection';
-import ListLoading from '@/main/atoms/ListLoading';
-import ListEndComponent from '@/main/atoms/ListEndComponent';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import { GET_TARGETS_DASHBOARD_LIMIT } from '@/config';
+import ListEndComponent from '@/main/atoms/ListEndComponent';
+import ListLoading from '@/main/atoms/ListLoading';
+import { useTarget } from '@/main/hooks';
+import { filterTargetsToTargetByTeam } from '@/main/utils';
+import { TeamTargetSection } from '@/target/TeamTargetSection';
+import { TargetByTeam, TargetFilter } from '@/target/types';
+import React, { CSSProperties } from 'react';
 
 const initFilter: TargetFilter = {
   offset: 0,
@@ -34,7 +32,7 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
   EmptyStateComponent,
 }) => {
   const [filter, setFilter] = React.useState<TargetFilter>(initFilter);
-  const { targets, hasMore, isGetTargets, removeItem } = useTarget({ filter });
+  const { targets, hasMore, isGetTargets } = useTarget({ filter });
 
   const targetByTeam = React.useMemo(() => {
     return filterTargetsToTargetByTeam(targets);
@@ -94,9 +92,8 @@ const TargetSectionList: React.VFC<TargetSectionListProps> = ({
       <ul className="flex flex-1 flex-col mb-2">
         {targetByTeam.map((item: TargetByTeam) => (
           <TeamTargetSection
-            targetByTeam={item}
+            departmentId={item.department.id}
             key={`targets-by-team-${item?.department?.id}`}
-            onRemoveItem={(id) => removeItem(id)}
           />
         ))}
       </ul>

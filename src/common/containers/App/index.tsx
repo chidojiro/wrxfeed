@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { RecoilRoot as _RecoilRoot, RecoilRootProps } from 'recoil';
 import { ToastContainer } from 'react-toastify';
 

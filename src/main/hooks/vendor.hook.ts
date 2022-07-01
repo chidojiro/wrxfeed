@@ -1,8 +1,8 @@
 import { useApi } from '@/api';
-import { Pagination } from '@/api/types';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
 import { Vendor } from '@/main/entity';
+import { PaginationParams } from '@/rest/types';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -12,7 +12,7 @@ interface VendorHookValues {
   isLoading: boolean;
 }
 
-export function useVendor(pagination: Pagination): VendorHookValues {
+export function useVendor(pagination: PaginationParams): VendorHookValues {
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
