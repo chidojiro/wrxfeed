@@ -1,6 +1,5 @@
 import { TargetArrowFilled } from '@/assets';
 import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
-import { Department } from '@/main/entity';
 import { AddTargetModal } from '@/target/AddTargetModal';
 import { useTargets } from '@/target/useTargets';
 import { useDisclosure } from '@dwarvesf/react-hooks';
@@ -8,13 +7,13 @@ import clsx from 'clsx';
 import React from 'react';
 
 type TargetSummaryProps = {
-  department: Department;
+  departmentId: number;
 };
 
-export const TargetSummary = ({ department }: TargetSummaryProps) => {
+export const TargetSummary = ({ departmentId }: TargetSummaryProps) => {
   const addTargetModalDisclosure = useDisclosure();
 
-  const { data: targets = [] } = useTargets({ dep: department.id });
+  const { data: targets = [] } = useTargets({ dep: departmentId });
 
   return (
     <div className="shadow-shadowCard rounded-card bg-white flex p-6">
@@ -23,7 +22,7 @@ export const TargetSummary = ({ department }: TargetSummaryProps) => {
           open={addTargetModalDisclosure.isOpen}
           onClose={addTargetModalDisclosure.onClose}
           onCancel={addTargetModalDisclosure.onOpen}
-          departmentId={department.id}
+          departmentId={departmentId}
         />
       )}
       <div className="flex items-center">
@@ -43,9 +42,9 @@ export const TargetSummary = ({ department }: TargetSummaryProps) => {
             onClick={addTargetModalDisclosure.onOpen}
           >
             <p className="text-md font-semibold">Create a target</p>
-            <button className="rounded bg-Accent-2 !m-0 text-white">
+            <div className="rounded bg-Accent-2 !m-0 text-white">
               <BasicsAddSmall className="w-4 h-4" />
-            </button>
+            </div>
           </button>
           <p className="text-Gray-6 text-sm">
             Align your teams to common goals. Targets help you track spend with categories and

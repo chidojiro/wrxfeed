@@ -10,6 +10,7 @@ import { defaultTargetMonths, INITIAL_CHART_DATA } from '@/common/constants';
 import { useHandler } from '@/common/hooks';
 import { classNames, formatCurrency, round } from '@/common/utils';
 import { withLazyModal } from '@/hocs';
+import ListLoading from '@/main/atoms/ListLoading';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
 import { useTransaction } from '@/main/hooks';
 import ExceptDropdown from '@/main/molecules/ExceptDropdown';
@@ -190,7 +191,8 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withLazyModal(
     );
     const totalCurrentSpend = round(chartData.metadata?.currentSpend ?? 0);
 
-    const { data: department } = useDepartment(departmentId);
+    const { data: department, isInitializing: isInitializingDepartment } =
+      useDepartment(departmentId);
     const { isLoading: isCreating, handle: createTarget } = useHandler(
       (payload: CreateTargetPayload) => TargetApis.create(payload),
       { onSuccess: onCreateSuccess, onError: onCreateError },
@@ -262,35 +264,6 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withLazyModal(
         setNoMonthError(false);
       }
     };
-
-    const defaultTags = (() => {
-      if (target && target?.props?.length > 0) {
-        const defaultTagsTemp = target.props.map((prop: TargetProps) => {
-          return {
-            id: `${prop?.type.toUpperCase()}-${prop?.id}`,
-            title: prop?.name,
-            type: prop?.type,
-            directoryId: prop?.id,
-          };
-        });
-
-        if (department) {
-          const addDept = {
-            id: `${TargetTypeProp.DEPARTMENT.toUpperCase()}-${department.id}`,
-            title: department.name,
-            type: TargetTypeProp.DEPARTMENT,
-            directoryId: department.id,
-          };
-          if (defaultTagsTemp.filter((item) => item.id === addDept.id).length === 0) {
-            return [...defaultTagsTemp, addDept];
-          }
-        }
-
-        return defaultTagsTemp;
-      }
-
-      return [];
-    })();
 
     useEffect(() => {
       setTargetName(target ? getTargetName(target) : '');
@@ -508,180 +481,223 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withLazyModal(
       );
     };
 
+    const defaultTags = (() => {
+      const defaultTagsTemp: any[] = [];
+
+      if (target && target?.props?.length > 0) {
+        defaultTagsTemp.push(
+          ...target.props.map((prop: TargetProps) => {
+            return {
+              id: `${prop?.type.toUpperCase()}-${prop?.id}`,
+              title: prop?.name,
+              type: prop?.type,
+              directoryId: prop?.id,
+            };
+          }),
+        );
+      }
+
+      if (department) {
+        const addDept = {
+          id: `${TargetTypeProp.DEPARTMENT.toUpperCase()}-${department.id}`,
+          title: department.name,
+          type: TargetTypeProp.DEPARTMENT,
+          directoryId: department.id,
+        };
+        if (defaultTagsTemp.filter((item) => item.id === addDept.id).length === 0) {
+          defaultTagsTemp.push(addDept);
+        }
+      }
+
+      return defaultTagsTemp;
+    })();
+
     return (
       <Modal open={open} onClose={onClose} center={false} contentClass="sm:my-24 overflow-visible">
         <div className="flex flex-col w-[685px] outline-none pt-4">
-          <div className="flex flex-col space-y-2 px-10 py-4 w-full">
-            <p className="text-primary text-xs font-semibold">Target Name*</p>
-            <div
-              className={classNames(
-                'flex flex-col h-[38px] px-2.5 w-auto',
-                isEditName ? 'bg-Gray-12' : 'border-b border-Gray-11',
-              )}
-            >
-              <input
-                ref={nameInputRef}
-                className={classNames(
-                  'text-primary flex-1 bg-transparent placeholder-Gray-6 outline-none border-none text-sm w-auto',
+          {isInitializingDepartment ? (
+            <div className="pb-4">
+              <ListLoading />
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col space-y-2 px-10 py-4 w-full">
+                <p className="text-primary text-xs font-semibold">Target Name*</p>
+                <div
+                  className={classNames(
+                    'flex flex-col h-[38px] px-2.5 w-auto',
+                    isEditName ? 'bg-Gray-12' : 'border-b border-Gray-11',
+                  )}
+                >
+                  <input
+                    ref={nameInputRef}
+                    className={classNames(
+                      'text-primary flex-1 bg-transparent placeholder-Gray-6 outline-none border-none text-sm w-auto',
+                    )}
+                    onKeyDown={handleKeyDown}
+                    placeholder="e.g Direct marketing & online advertising"
+                    onChange={onChangeInputName}
+                    value={targetName}
+                    onFocus={() => setEditName(true)}
+                    onBlur={() => setEditName(false)}
+                  />
+                </div>
+                {renderErrorName()}
+              </div>
+              <div className="flex flex-col space-y-3 px-10 py-4 w-full">
+                {renderReviewSentence()}
+                <div className="flex flex-row py-1 space-x-2 px-2">
+                  <div className="flex items-center justify-center w-14 min-w-[50px] h-[30px]">
+                    <p className="text-Gray-6 text-xs">Target Is</p>
+                  </div>
+                  <PropertiesDropdown
+                    showError={showErrorProp}
+                    closeError={() => setShowErrorProp(false)}
+                    placeholder="Enter a vendor"
+                    IconComponent={Bank}
+                    title="All Vendors"
+                    type={TargetTypeProp.VENDOR}
+                    defaultItems={defaultTags.filter((item) => item.type === TargetTypeProp.VENDOR)}
+                    onChangeItems={setVendItems}
+                  />
+                  <div className="flex items-center justify-center w-6 h-[30px]">
+                    <p className="text-Gray-6 text-xs text-center">in</p>
+                  </div>
+                  <PropertiesDropdown
+                    placeholder="Enter a category"
+                    IconComponent={CategoryIcon}
+                    title="All Categories"
+                    type={TargetTypeProp.CATEGORY}
+                    defaultItems={defaultTags.filter(
+                      (item) => item.type === TargetTypeProp.CATEGORY,
+                    )}
+                    onChangeItems={setCatItems}
+                  />
+                  <div className="flex items-center justify-center w-6 h-[30px]">
+                    <p className="text-Gray-6 text-xs text-center">for</p>
+                  </div>
+                  <PropertiesDropdown
+                    placeholder="Enter a team"
+                    IconComponent={TeamIcon}
+                    title="All Teams"
+                    type={TargetTypeProp.DEPARTMENT}
+                    dropdownEdge={DropdownEdge.RIGHT}
+                    defaultItems={defaultTags.filter(
+                      (item) => item.type === TargetTypeProp.DEPARTMENT,
+                    )}
+                    onChangeItems={setTeamItems}
+                  />
+                  <ExceptDropdown
+                    title="Except"
+                    placeholder="Enter a team, category, or vendor"
+                    selected={[...vendItems, ...catItems, ...teamItems]}
+                    onItemAdd={(item: SearchResult) => setExceptItems((pre) => [...pre, item])}
+                  />
+                </div>
+                <ExceptList
+                  items={exceptItems}
+                  onRemoveItem={(itemRemove: SearchResult) => {
+                    setExceptItems((pre) =>
+                      pre.filter((item: SearchResult) => item.id !== itemRemove.id),
+                    );
+                  }}
+                />
+              </div>
+              <div className="flex flex-row pt-2 px-10 justify-between">
+                <div className="flex flex-row items-center space-x-2 py-3">
+                  <p className="text-primary text-xs font-semibold w-14">Months*</p>
+                  <MultiMonthDropdown
+                    open={openMultiMonth}
+                    setOpen={setOpenMultiMonth}
+                    props={allProps}
+                    periods={target?.periods}
+                    targetMonths={targetMonths}
+                    year={curYear}
+                    lastYearData={lastYearSpendData}
+                    isLoadingData={lastYearDataLoading || thisYearDataLoading}
+                    onApply={applyDataThenGenChart}
+                  />
+                </div>
+                <div className="flex flex-row items-center space-x-2">
+                  <div className="flex flex-row items-center space-x-2">
+                    <div className="w-4 h-1 bg-Accent-2" />
+                    <p className="text-xs text-Gray-6">Current Spend</p>
+                  </div>
+                  <div className="flex flex-row items-center space-x-2">
+                    <div className="w-4 h-1 dashed-line-target" />
+                    <p className="text-xs text-Gray-6">Target</p>
+                  </div>
+                  <div className="flex flex-row items-center space-x-2">
+                    <div className="w-4 h-1 bg-Gray-11" />
+                    <p className="text-xs text-Gray-6">Last Year's Spend</p>
+                  </div>
+                </div>
+              </div>
+              {renderNoMonthError()}
+              <div className="relative flex justify-center items-center w-auto mx-6 px-4 py-6 h-[271px] border border-Gray-12 rounded-2.5xl">
+                <TargetChart
+                  containerClass="mb-4 mt-6"
+                  chartData={thisYearSpendData.length > 0 ? chartData : INITIAL_CHART_DATA}
+                  renderTooltip={renderTooltipContent}
+                  renderXAxis={renderXAxis}
+                  loading={lastYearDataLoading || thisYearDataLoading}
+                />
+              </div>
+              <div className="flex flex-row pt-4 pb-6 px-10 space-x-4 items-center justify-end text-primary text-xs font-semibold">
+                <p className="">
+                  Current Spend:
+                  <span className="text-Gray-3 font-normal ml-1">
+                    {`$${formatCurrency({
+                      value: totalCurrentSpend,
+                      format: '0,0',
+                      defaultValue: '0',
+                    })}`}
+                  </span>
+                </p>
+                <p className="">
+                  Total Target Amount:
+                  <span className="text-Gray-3 font-normal ml-1">
+                    {`$${formatCurrency({
+                      value: totalTargetAmount,
+                      format: '0,0',
+                      defaultValue: '0',
+                    })}`}
+                  </span>
+                </p>
+              </div>
+              <hr className="divider divider-horizontal w-full" />
+              <div className="flex flex-row w-full px-12 py-4">
+                {isEdit && (
+                  <button
+                    type="button"
+                    onClick={onClickDelete}
+                    className="flex flex-row items-center px-4 py-2 rounded-sm hover:bg-Gray-12 space-x-2"
+                  >
+                    {renderIconDeleteOrLoading()}
+                    <p className="text-Gray-6 text-xs font-semibold">Delete</p>
+                  </button>
                 )}
-                onKeyDown={handleKeyDown}
-                placeholder="e.g Direct marketing & online advertising"
-                onChange={onChangeInputName}
-                value={targetName}
-                onFocus={() => setEditName(true)}
-                onBlur={() => setEditName(false)}
-              />
-            </div>
-            {renderErrorName()}
-          </div>
-          <div className="flex flex-col space-y-3 px-10 py-4 w-full">
-            {renderReviewSentence()}
-            <div className="flex flex-row py-1 space-x-2 px-2">
-              <div className="flex items-center justify-center w-14 min-w-[50px] h-[30px]">
-                <p className="text-Gray-6 text-xs">Target Is</p>
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="flex px-4 py-2 rounded-sm hover:bg-Gray-12 mr-3 ml-auto"
+                >
+                  <p className="text-Gray-6 text-xs font-semibold">Cancel</p>
+                </button>
+                <button
+                  type="button"
+                  onClick={onClickCreateOrSave}
+                  className={classNames(
+                    'flex flex-row items-center px-4 py-2 rounded-sm hover:bg-primary',
+                    createReadyState,
+                  )}
+                >
+                  <p className="text-white text-xs font-semibold">{buttonTitleCreateOrSave}</p>
+                  {renderIconNextOrLoading()}
+                </button>
               </div>
-              <PropertiesDropdown
-                showError={showErrorProp}
-                closeError={() => setShowErrorProp(false)}
-                placeholder="Enter a vendor"
-                IconComponent={Bank}
-                title="All Vendors"
-                type={TargetTypeProp.VENDOR}
-                defaultItems={defaultTags.filter((item) => item.type === TargetTypeProp.VENDOR)}
-                onChangeItems={setVendItems}
-              />
-              <div className="flex items-center justify-center w-6 h-[30px]">
-                <p className="text-Gray-6 text-xs text-center">in</p>
-              </div>
-              <PropertiesDropdown
-                placeholder="Enter a category"
-                IconComponent={CategoryIcon}
-                title="All Categories"
-                type={TargetTypeProp.CATEGORY}
-                defaultItems={defaultTags.filter((item) => item.type === TargetTypeProp.CATEGORY)}
-                onChangeItems={setCatItems}
-              />
-              <div className="flex items-center justify-center w-6 h-[30px]">
-                <p className="text-Gray-6 text-xs text-center">for</p>
-              </div>
-              <PropertiesDropdown
-                placeholder="Enter a team"
-                IconComponent={TeamIcon}
-                title="All Teams"
-                type={TargetTypeProp.DEPARTMENT}
-                dropdownEdge={DropdownEdge.RIGHT}
-                defaultItems={defaultTags.filter((item) => item.type === TargetTypeProp.DEPARTMENT)}
-                onChangeItems={setTeamItems}
-              />
-              <ExceptDropdown
-                title="Except"
-                placeholder="Enter a team, category, or vendor"
-                selected={[...vendItems, ...catItems, ...teamItems]}
-                onItemAdd={(item: SearchResult) => setExceptItems((pre) => [...pre, item])}
-              />
-            </div>
-            <ExceptList
-              items={exceptItems}
-              onRemoveItem={(itemRemove: SearchResult) => {
-                setExceptItems((pre) =>
-                  pre.filter((item: SearchResult) => item.id !== itemRemove.id),
-                );
-              }}
-            />
-          </div>
-          <div className="flex flex-row pt-2 px-10 justify-between">
-            <div className="flex flex-row items-center space-x-2 py-3">
-              <p className="text-primary text-xs font-semibold w-14">Months*</p>
-              <MultiMonthDropdown
-                open={openMultiMonth}
-                setOpen={setOpenMultiMonth}
-                props={allProps}
-                periods={target?.periods}
-                targetMonths={targetMonths}
-                year={curYear}
-                lastYearData={lastYearSpendData}
-                isLoadingData={lastYearDataLoading || thisYearDataLoading}
-                onApply={applyDataThenGenChart}
-              />
-            </div>
-            <div className="flex flex-row items-center space-x-2">
-              <div className="flex flex-row items-center space-x-2">
-                <div className="w-4 h-1 bg-Accent-2" />
-                <p className="text-xs text-Gray-6">Current Spend</p>
-              </div>
-              <div className="flex flex-row items-center space-x-2">
-                <div className="w-4 h-1 dashed-line-target" />
-                <p className="text-xs text-Gray-6">Target</p>
-              </div>
-              <div className="flex flex-row items-center space-x-2">
-                <div className="w-4 h-1 bg-Gray-11" />
-                <p className="text-xs text-Gray-6">Last Year's Spend</p>
-              </div>
-            </div>
-          </div>
-          {renderNoMonthError()}
-          <div className="relative flex justify-center items-center w-auto mx-6 px-4 py-6 h-[271px] border border-Gray-12 rounded-2.5xl">
-            <TargetChart
-              containerClass="mb-4 mt-6"
-              chartData={thisYearSpendData.length > 0 ? chartData : INITIAL_CHART_DATA}
-              renderTooltip={renderTooltipContent}
-              renderXAxis={renderXAxis}
-              loading={lastYearDataLoading || thisYearDataLoading}
-            />
-          </div>
-          <div className="flex flex-row pt-4 pb-6 px-10 space-x-4 items-center justify-end text-primary text-xs font-semibold">
-            <p className="">
-              Current Spend:
-              <span className="text-Gray-3 font-normal ml-1">
-                {`$${formatCurrency({
-                  value: totalCurrentSpend,
-                  format: '0,0',
-                  defaultValue: '0',
-                })}`}
-              </span>
-            </p>
-            <p className="">
-              Total Target Amount:
-              <span className="text-Gray-3 font-normal ml-1">
-                {`$${formatCurrency({
-                  value: totalTargetAmount,
-                  format: '0,0',
-                  defaultValue: '0',
-                })}`}
-              </span>
-            </p>
-          </div>
-          <hr className="divider divider-horizontal w-full" />
-          <div className="flex flex-row w-full px-12 py-4">
-            {isEdit && (
-              <button
-                type="button"
-                onClick={onClickDelete}
-                className="flex flex-row items-center px-4 py-2 rounded-sm hover:bg-Gray-12 space-x-2"
-              >
-                {renderIconDeleteOrLoading()}
-                <p className="text-Gray-6 text-xs font-semibold">Delete</p>
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={onCancel}
-              className="flex px-4 py-2 rounded-sm hover:bg-Gray-12 mr-3 ml-auto"
-            >
-              <p className="text-Gray-6 text-xs font-semibold">Cancel</p>
-            </button>
-            <button
-              type="button"
-              onClick={onClickCreateOrSave}
-              className={classNames(
-                'flex flex-row items-center px-4 py-2 rounded-sm hover:bg-primary',
-                createReadyState,
-              )}
-            >
-              <p className="text-white text-xs font-semibold">{buttonTitleCreateOrSave}</p>
-              {renderIconNextOrLoading()}
-            </button>
-          </div>
+            </>
+          )}
         </div>
       </Modal>
     );

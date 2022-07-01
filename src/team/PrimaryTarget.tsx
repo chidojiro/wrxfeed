@@ -67,7 +67,7 @@ export const PrimaryTarget = ({ data, className, departmentId }: PrimaryTargetPr
           onCancel={addTargetModalDisclosure.onOpen}
           target={data}
           departmentId={departmentId}
-          onUpdateSuccess={() => (console.log('update success') as any) || mutate()}
+          onUpdateSuccess={() => mutate()}
         />
       )}
       <div className="flex flex-1 flex-col py-4 space-y-2 w-full">

@@ -110,9 +110,8 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
         <p className="text-white text-left text-3xs font-semibold truncate max-w-[100px]">
           {itemSelected?.title}
         </p>
-        <button
+        <div
           key={`renderItemSelected-close-${itemSelected.id}`}
-          type="button"
           className="text-xs text-white font-bold ml-2"
           onClick={(event) => {
             event.stopPropagation();
@@ -120,7 +119,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
           }}
         >
           &times;
-        </button>
+        </div>
       </button>
     );
   };
@@ -141,13 +140,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
           <p className="text-white text-left text-3xs font-semibold truncate max-w-[86px]">
             {title}
           </p>
-          <button
-            type="button"
-            className="text-xs text-white font-bold ml-2"
-            onClick={() => undefined}
-          >
-            &times;
-          </button>
+          <div className="text-xs text-white font-bold ml-2">&times;</div>
         </button>
       );
     }

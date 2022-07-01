@@ -44,7 +44,7 @@ export const Header = ({ className, sortKey, children, ...restProps }: Props) =>
       )}
     >
       <ConditionalWrapper
-        if={{ condition: !!sortKey, component: 'button', props: { onClick: { handleClick } } }}
+        if={{ condition: !!sortKey, component: 'button', props: { onClick: handleClick } }}
       >
         <div className="flex items-center gap-2">
           {children}

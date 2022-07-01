@@ -33,7 +33,7 @@ export const WrappedTeamPage: React.FC = () => {
               departmentId={departmentId}
             />
             <div className="col-span-9 lg:col-span-4 flex flex-col gap-6">
-              {!!target.department && <TargetSummary department={target.department} />}
+              {!!target.department && <TargetSummary departmentId={departmentId} />}
               <TopCategories />
             </div>
           </div>

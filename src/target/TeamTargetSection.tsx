@@ -81,7 +81,6 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
         target={itemEditing}
         departmentId={department?.id}
         onDeleteSuccess={(id: number) =>
-          (console.log(targets.filter((target) => target.id !== id)) as any) ||
           mutateTargets(targets.filter((target) => target.id !== id))
         }
         onUpdateSuccess={() => mutateTargets()}
