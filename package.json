@@ -113,7 +113,8 @@
     "postcss": "^8.3.9",
     "prettier": "^2.0.5",
     "react-app-rewired": "^2.2.1",
-    "tailwindcss-nested-groups": "^1.2.4"
+    "tailwindcss-nested-groups": "^1.2.4",
+    "ts-prune": "^0.10.3"
   },
   "browserslist": {
     "production": [
