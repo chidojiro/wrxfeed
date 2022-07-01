@@ -34,7 +34,7 @@ import {
   RawDraftEntityRange,
 } from 'draft-js';
 import { Match } from 'linkify-it';
-import cloneDeep from 'lodash.clonedeep';
+import { cloneDeep } from 'lodash-es';
 import numeral from 'numeral';
 import { SearchResult } from './types';
 

@@ -9,7 +9,7 @@ import { TargetMonth, TargetPeriod, TargetProps } from '@/target/types';
 import { useOnClickOutside } from '@dwarvesf/react-hooks';
 import { Transition } from '@headlessui/react';
 import dayjs from 'dayjs';
-import cloneDeep from 'lodash.clonedeep';
+import { cloneDeep } from 'lodash-es';
 import React, {
   forwardRef,
   ForwardRefRenderFunction,

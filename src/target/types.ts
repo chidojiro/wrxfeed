@@ -3,6 +3,30 @@ import { Department } from '@/main/entity/transaction.entity';
 import { BitBoolean } from '@/common/types';
 import { PaginationParams } from '@/rest/types';
 
+export type GetTargetsParams = Partial<PaginationParams> & {
+  dep?: number;
+  forYou?: BitBoolean;
+  month?: number;
+  year?: number;
+  isPrimary?: BitBoolean;
+};
+
+export type CreateTargetPayload = {
+  name: string;
+  depId?: number;
+  isPrimary: boolean;
+  props: TargetProps[];
+  periods?: TargetPeriod[];
+};
+
+export type UpdateTargetPayload = {
+  name: string;
+  depId?: number;
+  isPrimary: boolean;
+  props: TargetProps[];
+  periods: TargetPeriod[];
+};
+
 export type TargetFilter = Partial<PaginationParams> & {
   year?: number;
   month?: number;
@@ -19,7 +43,7 @@ export type TargetSummaries = {
   exceeded: number;
 };
 
-export type PatchCalcSpendingFilters = {
+export type GetTargetSpendingParams = {
   props: TargetProps[];
   periods: TargetPeriod[];
 };

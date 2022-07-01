@@ -48,7 +48,6 @@ import {
 import { handleResponseFail } from '@/api/utils';
 import { InviteFormModel, FeedBackFormModel } from '@/main/types';
 import { PaginationParams } from '@/rest/types';
-import { PatchCalcSpendingFilters, TargetPeriod, TargetSummaries } from '@/target/types';
 
 export default class ApiUtils implements ApiClient {
   private client: AxiosInstance;
@@ -371,23 +370,6 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<void>({
       url: '/noti/notifications',
       method: 'PATCH',
-    });
-    return res.data;
-  };
-
-  patchCalcSpending = async (data: PatchCalcSpendingFilters): Promise<TargetPeriod[]> => {
-    const res = await this.request<TargetPeriod[]>({
-      url: '/target/spending',
-      method: 'PATCH',
-      data,
-    });
-    return res.data;
-  };
-
-  getTargetSummaries = async (): Promise<TargetSummaries> => {
-    const res = await this.request<TargetSummaries>({
-      url: '/target/summaries',
-      method: 'GET',
     });
     return res.data;
   };

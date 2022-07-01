@@ -6,8 +6,8 @@ import {
   getTargetPeriodsAmountTotal,
   nFormatter,
 } from '@/main/utils';
-import { Target } from '@/target/types';
 import React, { useMemo } from 'react';
+import { Target } from './types';
 
 const SYSTEM_ALERT_COLOR = '#ff5f68';
 const TARGET_PLACEHOLDER = 10000;

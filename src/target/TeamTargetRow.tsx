@@ -10,7 +10,7 @@ import {
   nFormatter,
 } from '@/main/utils';
 import Routes from '@/routes';
-import { Target } from '@/target/types';
+import { Target } from './types';
 import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -23,7 +23,11 @@ interface TeamTargetRowProps {
   onClickEdit: (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, target: Target) => void;
 }
 
-const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ className = '', target, onClickEdit }) => {
+export const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({
+  className = '',
+  target,
+  onClickEdit,
+}) => {
   const targetName = getTargetName(target);
   const history = useHistory();
   const deptBgClass = useMemo(() => getColorByText(targetName ?? ''), [targetName]);
@@ -156,5 +160,3 @@ const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({ className = '', target, 
     </button>
   );
 };
-
-export default TeamTargetRow;

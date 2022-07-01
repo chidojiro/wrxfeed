@@ -1,30 +1,26 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
-import cloneDeep from 'lodash.clonedeep';
-import { toast } from 'react-toastify';
-
 import { useApi } from '@/api';
-import { useIdentity } from '@/identity/hooks';
-import { useDebounce, useNavUtils, useLegacyQuery } from '@/common/hooks';
-import { useSubscription } from '@/main/hooks/subscription.hook';
+import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
+import { ReactComponent as SharpSpaceDashboard } from '@/assets/icons/solid/sharp-space-dashboard.svg';
+import DepartmentCell from '@/auth/molecules/DepartmentCell';
+import Loading from '@/common/atoms/Loading';
+import { useDebounce, useLegacyQuery, useNavUtils } from '@/common/hooks';
+import NavBarStatic from '@/common/organisms/NavBarStatic';
+import BlankLayout from '@/common/templates/BlankLayout';
+import { TEAM_SUGGEST_RANDOM_NUMBER } from '@/config';
 import { useErrorHandler } from '@/error/hooks';
 import { isApiError } from '@/error/utils';
-import { useSearch } from '@/main/hooks/search.hook';
-
-import routes from '@/routes';
-import { getMultiRandomInt, getUniqueListBy } from '@/main/utils';
-import { TEAM_SUGGEST_RANDOM_NUMBER } from '@/config';
+import { useIdentity } from '@/identity/hooks';
 import { Department } from '@/main/entity';
+import { useSearch } from '@/main/hooks/search.hook';
+import { useSubscription } from '@/main/hooks/subscription.hook';
 import { SearchResult } from '@/main/types';
-
-import BlankLayout from '@/common/templates/BlankLayout';
-import NavBarStatic from '@/common/organisms/NavBarStatic';
-import Loading from '@/common/atoms/Loading';
-import DepartmentCell from '@/auth/molecules/DepartmentCell';
-
-import { ReactComponent as SharpSpaceDashboard } from '@/assets/icons/solid/sharp-space-dashboard.svg';
-import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
+import { getMultiRandomInt, getUniqueListBy } from '@/main/utils';
+import routes from '@/routes';
+import { cloneDeep } from 'lodash-es';
+import React, { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const DEBOUNCE_WAIT = 500;
 

@@ -51,7 +51,7 @@ export function useTransaction(params?: TransactionBody): TransactionHookValues 
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, errorHandler, params]);
+  }, [ApiClient, errorHandler, JSON.stringify(params)]);
 
   const updateCategory = useCallback(
     async (category: Partial<Category>) => {

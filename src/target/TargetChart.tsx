@@ -22,7 +22,9 @@ interface TargetChartProps<T> {
   levelLabelClass?: string;
 }
 
-const TargetChart: <T>(p: TargetChartProps<T>) => React.ReactElement<TargetChartProps<T>> = ({
+export const TargetChart: <T>(
+  p: TargetChartProps<T>,
+) => React.ReactElement<TargetChartProps<T>> = ({
   className,
   containerStyle,
   containerClass,
@@ -112,5 +114,3 @@ const TargetChart: <T>(p: TargetChartProps<T>) => React.ReactElement<TargetChart
     </div>
   );
 };
-
-export default TargetChart;

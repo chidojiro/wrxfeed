@@ -2,8 +2,8 @@ import { EyeHideIcon } from '@/assets';
 import { classNames, distanceToNow } from '@/common/utils';
 import EditorAvatar from '@/main/atoms/EditorAvatar';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
-import { Target } from '@/target/types';
 import React from 'react';
+import { Target } from './types';
 
 export interface TargetFeedTitleProps {
   className?: string;

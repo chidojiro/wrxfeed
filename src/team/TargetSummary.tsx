@@ -1,14 +1,11 @@
 import { TargetArrowFilled } from '@/assets';
+import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
+import { Department } from '@/main/entity';
+import { AddTargetModal } from '@/target/AddTargetModal';
+import { useTargets } from '@/target/useTargets';
+import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';
-import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
-import AddTargetModal from '@/main/molecules/AddTargetModal';
-import { useDisclosure } from '@dwarvesf/react-hooks';
-import { noop } from 'lodash-es';
-import { Department } from '@/main/entity';
-import { useHandler } from '@/common/hooks';
-import { useTarget } from '@/main/hooks';
-import { CreateTargetPayload, TargetApis } from '@/target/apis';
 
 type TargetSummaryProps = {
   department: Department;
@@ -17,18 +14,7 @@ type TargetSummaryProps = {
 export const TargetSummary = ({ department }: TargetSummaryProps) => {
   const addTargetModalDisclosure = useDisclosure();
 
-  const { targets, mutate: mutateTargets } = useTarget({
-    filter: { dep: department.id, limit: 9999 },
-  });
-
-  const { handle: createTarget, isLoading: isCreatingTarget } = useHandler(
-    (target: CreateTargetPayload) => TargetApis.create(target),
-  );
-
-  const handleTargetCreateConfirm = async (data: CreateTargetPayload) => {
-    await createTarget(data);
-    mutateTargets();
-  };
+  const { data: targets = [] } = useTargets({ dep: department.id });
 
   return (
     <div className="shadow-shadowCard rounded-card bg-white flex p-6">
@@ -37,12 +23,7 @@ export const TargetSummary = ({ department }: TargetSummaryProps) => {
           open={addTargetModalDisclosure.isOpen}
           onClose={addTargetModalDisclosure.onClose}
           onCancel={addTargetModalDisclosure.onOpen}
-          deleteTarget={noop}
-          postTarget={handleTargetCreateConfirm}
-          putTarget={noop}
-          itemEditing={null}
-          isCreatingOrSaving={isCreatingTarget}
-          department={department}
+          departmentId={department.id}
         />
       )}
       <div className="flex items-center">

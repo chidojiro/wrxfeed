@@ -9,33 +9,31 @@ import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
-import AddTargetModal from '@/main/molecules/AddTargetModal';
 import MiniChartView from '@/main/molecules/MiniChartView';
 import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
 import routes from '@/routes';
-import { TargetApis, UpdateTargetPayload } from '@/target/apis';
+import { AddTargetModal } from '@/target/AddTargetModal';
+import { TargetApis } from '@/target/apis';
 import { Target } from '@/target/types';
+import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import clsx from 'clsx';
-import { noop } from 'lodash-es';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 export type PrimaryTargetProps = ClassName & {
   data: Target;
-  onDeleteSuccess: () => void;
+  departmentId: number;
 };
 
-export const PrimaryTarget = ({ data, onDeleteSuccess, className }: PrimaryTargetProps) => {
+export const PrimaryTarget = ({ data, className, departmentId }: PrimaryTargetProps) => {
   const history = useHistory();
+
+  const { mutate } = usePrimaryTarget(departmentId);
 
   const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
     TargetApis.delete(targetId),
-  );
-
-  const { isLoading: isUpdatingTarget, handle: updateTarget } = useHandler(
-    (targetId: number, payload: UpdateTargetPayload) => TargetApis.update(targetId, payload),
   );
 
   const goToTargetDetails = () => {
@@ -46,7 +44,7 @@ export const PrimaryTarget = ({ data, onDeleteSuccess, className }: PrimaryTarge
 
   const handleDeleteClick = async () => {
     await deleteTarget(data.id);
-    onDeleteSuccess();
+    mutate();
   };
 
   const { overallTarget, currentSpend, targetToDate, exceeding } =
@@ -67,13 +65,9 @@ export const PrimaryTarget = ({ data, onDeleteSuccess, className }: PrimaryTarge
           open={addTargetModalDisclosure.isOpen}
           onClose={addTargetModalDisclosure.onClose}
           onCancel={addTargetModalDisclosure.onOpen}
-          deleteTarget={handleDeleteClick}
-          postTarget={noop}
-          putTarget={updateTarget}
-          itemEditing={data}
-          isCreatingOrSaving={isUpdatingTarget}
-          isDeleting={isDeletingTarget}
-          department={data.department}
+          target={data}
+          departmentId={departmentId}
+          onUpdateSuccess={() => (console.log('update success') as any) || mutate()}
         />
       )}
       <div className="flex flex-1 flex-col py-4 space-y-2 w-full">

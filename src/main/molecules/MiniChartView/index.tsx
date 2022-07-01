@@ -10,14 +10,13 @@ import {
 import { useTransaction } from '@/main/hooks/transaction.hook';
 import { LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType } from '@/main/utils';
+import { TargetChart } from '@/target/TargetChart';
 import { Target, TargetMonth, TargetPeriod } from '@/target/types';
 import dayjs from 'dayjs';
-import cloneDeep from 'lodash.clonedeep';
-import range from 'lodash.range';
+import { cloneDeep, range } from 'lodash-es';
 import React, { useEffect, useMemo, useState } from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import TargetChart from '../TargetChart';
 
 interface MiniChartViewProps {
   className?: string;

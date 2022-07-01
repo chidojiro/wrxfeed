@@ -26,12 +26,7 @@ import {
 } from '@/main/entity';
 import { FeedBackFormModel, InviteFormModel, SearchResult } from '@/main/types';
 import { PaginationParams } from '@/rest/types';
-import {
-  PatchCalcSpendingFilters,
-  TargetPeriod,
-  TargetProps,
-  TargetSummaries,
-} from '@/target/types';
+import { TargetPeriod, TargetProps } from '@/target/types';
 
 export interface ApiClient {
   // Authentication API
@@ -90,8 +85,6 @@ export interface ApiClient {
   getNotifications: (page?: PaginationParams) => Promise<NotificationsResponse>;
   patchNotification: (id: number) => Promise<void>;
   patchAllNotification: () => Promise<void>;
-  patchCalcSpending: (data: PatchCalcSpendingFilters) => Promise<TargetPeriod[]>;
-  getTargetSummaries: () => Promise<TargetSummaries>;
   // Subscription
   getSubscriptions: () => Promise<Subscription>;
   updateSubscriptions: (data: SubscriptionParams) => Promise<Subscription>;

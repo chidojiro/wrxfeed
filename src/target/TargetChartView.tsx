@@ -19,12 +19,11 @@ import {
   TargetStatusType,
 } from '@/target/types';
 import dayjs from 'dayjs';
-import cloneDeep from 'lodash.clonedeep';
-import range from 'lodash.range';
+import { cloneDeep, range } from 'lodash-es';
 import React, { useEffect, useMemo, useState } from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import TargetChart from '../TargetChart';
+import { TargetChart } from './TargetChart';
 
 interface TargetChartViewProps {
   className?: string;
@@ -32,7 +31,7 @@ interface TargetChartViewProps {
   onEdit: () => void;
 }
 
-const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target }) => {
+export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target }) => {
   const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
   const { overallTarget, currentSpend, targetToDate, exceeding } =
     getTargetPeriodsAmountTotal(target);
@@ -257,5 +256,3 @@ const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, target })
     </div>
   );
 };
-
-export default TargetChartView;

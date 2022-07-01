@@ -39,7 +39,7 @@ export const useFetcher = <T = unknown>(
     () => ({
       ...swrReturn,
       data,
-      isLoading: !swrReturn.error && !swrReturn.data && swrReturn.isValidating,
+      isInitializing: !swrReturn.error && !swrReturn.data && swrReturn.isValidating,
     }),
     [data, swrReturn],
   );

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useApi } from '@/api';
 import { useErrorHandler } from '@/error/hooks';
 import { isApiError } from '@/error/utils';
+import { TargetApis } from '@/target/apis';
 import { TargetSummaries } from '@/target/types';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -21,13 +21,12 @@ interface DashboardHookValues {
 export function useDashboard(): DashboardHookValues {
   const [summaries, setSummaries] = useState<TargetSummaries>(TargetSummariesDefault);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
   const getTargetSummaries = async () => {
     try {
       setLoading(true);
-      const res = await ApiClient.getTargetSummaries();
+      const res = await TargetApis.getSummaries();
       setSummaries(res);
     } catch (error) {
       if (isApiError(error)) {

@@ -9,7 +9,7 @@ import {
   TargetStatusType,
 } from '@/target/types';
 import dayjs from 'dayjs';
-import range from 'lodash.range';
+import { range } from 'lodash-es';
 import { Transaction } from './entity';
 import { decimalLogic, DecimalType } from './utils';
 

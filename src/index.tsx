@@ -26,7 +26,7 @@ mixpanel.init(MIX_PANEL_PROJECT_TOKEN, {
 const root = createRoot(document.getElementById('root')!);
 root.render(
   <React.StrictMode>
-    <SWRConfig value={{ revalidateOnFocus: false }}>
+    <SWRConfig value={{ revalidateOnFocus: false, shouldRetryOnError: false }}>
       <App />
     </SWRConfig>
   </React.StrictMode>,

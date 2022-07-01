@@ -2,8 +2,8 @@
 import { useFetcher } from '@/common/hooks';
 import { useErrorHandler } from '@/error/hooks';
 import { isApiError } from '@/error/utils';
-import { CreateTargetPayload, TargetApis, UpdateTargetPayload } from '@/target/apis';
-import { Target, TargetFilter } from '@/target/types';
+import { TargetApis } from '@/target/apis';
+import { CreateTargetPayload, Target, TargetFilter, UpdateTargetPayload } from '@/target/types';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { KeyedMutator } from 'swr';
@@ -49,7 +49,7 @@ export function useTarget(params?: UseTargetParams): TargetHookValues {
 
   const {
     data = [],
-    isLoading,
+    isInitializing,
     mutate,
     isValidating,
   } = useFetcher(autoLoad && ['/targets', filter], () => TargetApis.getList({ ...filter }));
@@ -141,7 +141,7 @@ export function useTarget(params?: UseTargetParams): TargetHookValues {
   return {
     targets,
     hasMore,
-    isGetTargets: isLoading,
+    isGetTargets: isInitializing,
     postTarget,
     putTarget,
     deleteTarget,

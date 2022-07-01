@@ -1,23 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/accessible-emoji */
-import React, { useState, useEffect } from 'react';
-import * as Sentry from '@sentry/react';
-import { useHistory, useParams } from 'react-router-dom';
-import { useErrorHandler } from 'react-error-boundary';
-import { toast } from 'react-toastify';
-
-import { useNavUtils, useLegacyQuery } from '@/common/hooks';
 import { useApi } from '@/api';
-import { ApiErrorCode } from '@/error/types';
+import Loading from '@/common/atoms/Loading';
 import { MainGroups } from '@/common/constants';
+import { useLegacyQuery, useNavUtils } from '@/common/hooks';
+import MainLayout from '@/common/templates/MainLayout';
+import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
 import { Category, Department, FeedItem, FeedType, Vendor } from '@/main/entity';
-
-import MainLayout from '@/common/templates/MainLayout';
 import RollupCard from '@/main/molecules/RollupCard';
-import Loading from '@/common/atoms/Loading';
-import TargetFeedItem from '@/main/molecules/TargetFeedItem';
 import routes from '@/routes';
+import { TargetFeedItem } from '@/target/TargetFeedItem';
+import * as Sentry from '@sentry/react';
+import React, { useEffect, useState } from 'react';
+import { useErrorHandler } from 'react-error-boundary';
+import { useHistory, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const FeedPage: React.VFC = () => {
   const history = useHistory();

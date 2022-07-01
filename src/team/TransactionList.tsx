@@ -8,7 +8,7 @@ import { decimalLogic } from '@/main/utils';
 import clsx from 'clsx';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useTransactions } from '../useTransactions';
+import { useTransactions } from './useTransactions';
 
 const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
