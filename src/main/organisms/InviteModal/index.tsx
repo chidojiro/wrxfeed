@@ -9,8 +9,6 @@ import { useDebounce } from '@/common/hooks';
 import Modal from '@/common/atoms/Modal';
 import Banner from '@/common/atoms/Banner';
 
-const DEBOUNCE_WAIT = 300;
-
 export type InviteModalProps = {
   open: boolean;
   onClose: () => void;
@@ -57,7 +55,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
     };
   }, [isSent]);
 
-  const debounceSearchRequest = useDebounce(onSearchContact, DEBOUNCE_WAIT, [onSearchContact]);
+  const debounceSearchRequest = useDebounce(onSearchContact);
 
   const sendMultipleInvites = async (emails: string[]) => {
     setLoading(true);

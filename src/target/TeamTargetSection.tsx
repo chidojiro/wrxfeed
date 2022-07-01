@@ -22,6 +22,11 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
 
   const addTargetModalDisclosure = useDisclosure();
 
+  const handleModalClose = () => {
+    addTargetModalDisclosure.onClose();
+    setItemEditing(null);
+  };
+
   const { data: department } = useDepartment(departmentId);
   const { data: targets = [], mutate: mutateTargets } = useTargets({ dep: departmentId });
 
@@ -76,10 +81,10 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
       </div>
       <AddTargetModal
         open={addTargetModalDisclosure.isOpen}
-        onClose={addTargetModalDisclosure.onClose}
-        onCancel={addTargetModalDisclosure.onClose}
+        onClose={handleModalClose}
+        onCancel={handleModalClose}
         target={itemEditing}
-        departmentId={department?.id}
+        departmentId={departmentId}
         onDeleteSuccess={(id: number) =>
           mutateTargets(targets.filter((target) => target.id !== id))
         }

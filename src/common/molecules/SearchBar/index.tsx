@@ -51,7 +51,7 @@ const SearchBar: React.VFC = () => {
     },
     [setKeyword],
   );
-  const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT, [onSearchTeam]);
+  const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT);
 
   const onClickClearSearchInput = () => {
     if (!searchInputRef || !searchInputRef.current) return;

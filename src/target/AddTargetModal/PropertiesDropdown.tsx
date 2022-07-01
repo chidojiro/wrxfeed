@@ -17,8 +17,6 @@ export enum DropdownEdge {
   RIGHT = '-right-32',
 }
 
-const DEBOUNCE_WAIT = 500;
-
 interface PropertiesDropdownProps {
   className?: string;
   classPopover?: string;
@@ -80,7 +78,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
     [closeError, showError],
   );
 
-  const debounceSearchRequest = useDebounce(onSearchKeyword, DEBOUNCE_WAIT, [onSearchKeyword]);
+  const debounceSearchRequest = useDebounce(onSearchKeyword);
 
   const colorByType = getColorByPropertyType(type);
 

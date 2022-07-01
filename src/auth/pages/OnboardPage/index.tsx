@@ -125,7 +125,7 @@ const OnboardPage: React.VFC = () => {
     [setKeyword],
   );
 
-  const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT, [onSearchTeam]);
+  const debounceSearchRequest = useDebounce(onSearchTeam);
 
   const onFollowedTeam = (depts: Department[]) => {
     setHandlingAction(false);
