@@ -23,7 +23,7 @@ export const TargetPage = () => {
             href: '/dashboard/all-company',
           },
           {
-            content: null,
+            content: <ForYouDashboard />,
             label: 'For You',
             value: 'for-you',
             href: '/dashboard/for-you',
