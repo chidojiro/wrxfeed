@@ -5,9 +5,7 @@ import React from 'react';
 import { TargetCard } from './TargetCard';
 import { useTargets } from './useTargets';
 
-type AllCompanyTargetProps = ClassName & {
-  //
-};
+type AllCompanyTargetProps = ClassName;
 
 export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
   const { data: targets, isInitializing } = useTargets({ type: 'company' });
