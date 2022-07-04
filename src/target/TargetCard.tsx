@@ -12,25 +12,33 @@ import { FeedType } from '@/main/entity';
 import MiniChartView from '@/main/molecules/MiniChartView';
 import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
 import { routes } from '@/routing/routes';
-import { AddTargetModal } from '@/target/AddTargetModal';
-import { TargetApis } from '@/target/apis';
-import { Target } from '@/target/types';
-import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { AddTargetModal } from './AddTargetModal';
+import { AddTargetModalProps } from './AddTargetModal';
+import { TargetApis } from './apis';
+import { Target } from './types';
 
-export type PrimaryTargetProps = ClassName & {
-  data: Target;
-  departmentId: number;
-};
+export type TargetCardProps = ClassName &
+  Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'> & {
+    data: Target;
+    showMoreOptionsButton?: boolean;
+  };
 
-export const PrimaryTarget = ({ data, className, departmentId }: PrimaryTargetProps) => {
+export const TargetCard = ({
+  data,
+  className,
+  showMoreOptionsButton = true,
+  onUpdateSuccess,
+  onDeleteSuccess,
+}: TargetCardProps) => {
   const history = useHistory();
 
-  const { mutate } = usePrimaryTarget(departmentId);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const department = data.department!;
 
   const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
     TargetApis.delete(targetId),
@@ -42,11 +50,6 @@ export const PrimaryTarget = ({ data, className, departmentId }: PrimaryTargetPr
     );
   };
 
-  const handleDeleteClick = async () => {
-    await deleteTarget(data.id);
-    mutate();
-  };
-
   const { overallTarget, currentSpend, targetToDate, exceeding } =
     getTargetPeriodsAmountTotal(data);
 
@@ -56,7 +59,7 @@ export const PrimaryTarget = ({ data, className, departmentId }: PrimaryTargetPr
     <div
       key={`Dashboard-TargetChartView-${data.id}`}
       className={clsx(
-        'bg-white relative w-full h-[500px] lg:h-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
+        'bg-white relative w-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
         className,
       )}
     >
@@ -64,11 +67,11 @@ export const PrimaryTarget = ({ data, className, departmentId }: PrimaryTargetPr
         <AddTargetModal
           open={addTargetModalDisclosure.isOpen}
           onClose={addTargetModalDisclosure.onClose}
-          onCancel={addTargetModalDisclosure.onClose}
+          onCancel={addTargetModalDisclosure.onOpen}
           target={data}
-          departmentId={departmentId}
-          onUpdateSuccess={() => mutate()}
-          onDeleteSuccess={() => mutate()}
+          departmentId={department.id}
+          onUpdateSuccess={onUpdateSuccess}
+          onDeleteSuccess={onDeleteSuccess}
         />
       )}
       <div className="flex flex-1 flex-col py-4 space-y-2 w-full">
@@ -89,47 +92,49 @@ export const PrimaryTarget = ({ data, className, departmentId }: PrimaryTargetPr
                 </span>
               </div>
             </div>
-            <Menu as="div" className="relative inline-block z-20 text-left">
-              <div>
-                <Menu.Button className="-m-2 p-2 rounded-full flex datas-center text-gray-400 hover:text-gray-600">
-                  <span className="sr-only">Open options</span>
-                  <MoreVerticalIcon
-                    className="fill-current text-Gray-3 path-no-filled"
-                    aria-hidden="true"
-                    viewBox="0 0 15 15"
+            {!!showMoreOptionsButton && (
+              <Menu as="div" className="relative inline-block z-20 text-left">
+                <div>
+                  <Menu.Button className="-m-2 p-2 rounded-full flex datas-center text-gray-400 hover:text-gray-600">
+                    <span className="sr-only">Open options</span>
+                    <MoreVerticalIcon
+                      className="fill-current text-Gray-3 path-no-filled"
+                      aria-hidden="true"
+                      viewBox="0 0 15 15"
+                    />
+                  </Menu.Button>
+                </div>
+                <PopoverMenu>
+                  <PopoverMenuItem
+                    key="View-Details"
+                    value="view-details"
+                    label="View Details"
+                    onClick={goToTargetDetails}
+                    stopPropagation
+                    Icon={EyeIcon}
+                    className="text-Gray-3"
                   />
-                </Menu.Button>
-              </div>
-              <PopoverMenu>
-                <PopoverMenuItem
-                  key="View-Details"
-                  value="view-details"
-                  label="View Details"
-                  onClick={goToTargetDetails}
-                  stopPropagation
-                  Icon={EyeIcon}
-                  className="text-Gray-3"
-                />
-                <PopoverMenuItem
-                  key="Edit-Target"
-                  value="edit-target"
-                  label="Edit Target"
-                  onClick={addTargetModalDisclosure.onOpen}
-                  stopPropagation
-                  Icon={EditIcon}
-                  className="text-Gray-3"
-                />
-                <PopoverMenuItem
-                  key="Delete-Target"
-                  value="delete-target"
-                  label="Delete Target"
-                  onClick={handleDeleteClick}
-                  stopPropagation
-                  Icon={BinIcon}
-                  className="text-system-alert"
-                />
-              </PopoverMenu>
-            </Menu>
+                  <PopoverMenuItem
+                    key="Edit-Target"
+                    value="edit-target"
+                    label="Edit Target"
+                    onClick={addTargetModalDisclosure.onOpen}
+                    stopPropagation
+                    Icon={EditIcon}
+                    className="text-Gray-3"
+                  />
+                  <PopoverMenuItem
+                    key="Delete-Target"
+                    value="delete-target"
+                    label="Delete Target"
+                    onClick={() => deleteTarget(data.id)}
+                    stopPropagation
+                    Icon={BinIcon}
+                    className="text-system-alert"
+                  />
+                </PopoverMenu>
+              </Menu>
+            )}
           </div>
           <div className="flex flex-row justify-between">
             <div className="flex flex-row space-x-2.5 text-Gray-6">

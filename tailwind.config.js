@@ -98,6 +98,8 @@ module.exports = {
         'purple-11': '#F3F3F7',
         'purple-12': '#F9F9FC',
 
+        'red-1': '#F87171',
+
         'system-success': '#5DC258',
         'system-alert': '#FF5F68',
         'blue-upload': 'rgba(67, 36, 158, 0.44)',

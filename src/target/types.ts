@@ -9,6 +9,7 @@ export type GetTargetsParams = Partial<PaginationParams> & {
   month?: number;
   year?: number;
   isPrimary?: BitBoolean;
+  type?: 'normal' | 'company';
 };
 
 export type CreateTargetPayload = {
@@ -34,6 +35,20 @@ export type TargetFilter = Partial<PaginationParams> & {
   dep?: number;
   forYou?: BitBoolean;
   isPrimary?: BitBoolean;
+  type?: 'normal' | 'company';
+};
+
+// this one is kinda weird to be part of target but the api endpoint starts with /target
+export type DepartmentSummary = {
+  id: number;
+  name: string;
+  target?: {
+    id: number;
+    trackingStatus: TargetStatusType;
+    spends: number;
+  };
+  spends: number;
+  commentCount: number;
 };
 
 export type TargetSummaries = {
