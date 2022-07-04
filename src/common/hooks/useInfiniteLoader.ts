@@ -3,6 +3,8 @@ import { useDisclosure } from '@dwarvesf/react-hooks';
 import React from 'react';
 import { useFetcher } from './useFetcher';
 
+const WAIT_FOR_NEXT_LOAD_TIMEOUT = 500;
+
 export type UseInfiniteLoaderProps<T = unknown> = {
   onLoad: (page: number) => Promise<T>;
   until: (data: T) => boolean;
@@ -24,30 +26,51 @@ export const useInfiniteLoader = <T = unknown>({
   anchor,
 }: UseInfiniteLoaderProps<T>): UseInfiniteLoaderReturn => {
   const [page, setPage] = React.useState(1);
+  const readyForNextLoadTimeout = React.useRef<number>();
+  const [isIntersected, setIsIntersected] = React.useState(false);
 
-  const exhaustDisclosure = useDisclosure();
+  const exhaustedDisclosure = useDisclosure();
+  const readyForNextLoadDisclosure = useDisclosure({ defaultIsOpen: true });
 
-  const { isInitializing: isLoading } = useFetcher(['infiniteLoader', page], () => onLoad(page), {
-    onSuccess: (data) => {
-      onSuccess?.(data);
+  const handleLoad: typeof onLoad = (page) => {
+    readyForNextLoadDisclosure.onClose();
 
-      if (until(data)) {
-        exhaustDisclosure.onOpen();
-      } else {
-        exhaustDisclosure.onClose();
-      }
+    return onLoad(page);
+  };
+
+  const { isInitializing: isLoading } = useFetcher(
+    ['infiniteLoader', page],
+    () => handleLoad(page),
+    {
+      onSuccess: (data) => {
+        onSuccess?.(data);
+
+        if (until(data)) {
+          exhaustedDisclosure.onOpen();
+        } else {
+          exhaustedDisclosure.onClose();
+        }
+
+        readyForNextLoadTimeout.current = setTimeout(() => {
+          readyForNextLoadDisclosure.onOpen();
+        }, WAIT_FOR_NEXT_LOAD_TIMEOUT);
+      },
+      onError,
     },
-    onError,
-  });
+  );
 
-  React.useEffect(() => {
+  const setPageOnIntersection = React.useCallback(() => {
+    if (isIntersected && readyForNextLoadDisclosure.isOpen) {
+      setPage((prev) => prev + 1);
+    }
+  }, [isIntersected, readyForNextLoadDisclosure.isOpen]);
+
+  const observeIntersection = React.useCallback(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const isIntersecting = entries[0].isIntersecting;
 
-        if (isIntersecting) {
-          setPage((prev) => prev + 1);
-        }
+        setIsIntersected(isIntersecting);
       },
       {
         root: null,
@@ -63,8 +86,16 @@ export const useInfiniteLoader = <T = unknown>({
     }
   }, [anchor]);
 
+  React.useEffect(() => {
+    setPageOnIntersection();
+  }, [setPageOnIntersection]);
+
+  React.useEffect(() => {
+    observeIntersection();
+  }, [observeIntersection]);
+
   return React.useMemo(
-    () => ({ isLoading, isExhausted: exhaustDisclosure.isOpen }),
-    [exhaustDisclosure.isOpen, isLoading],
+    () => ({ isLoading, isExhausted: exhaustedDisclosure.isOpen }),
+    [exhaustedDisclosure.isOpen, isLoading],
   );
 };
