@@ -1,15 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
-import { TransactionBody } from '@/api/types';
 import { AlertRed, Bank, CategoryIcon, TeamIcon } from '@/assets';
 import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
 import { ReactComponent as CarbonTrashCan } from '@/assets/icons/outline/carbon-trash-can.svg';
 import Loading from '@/common/atoms/Loading';
 import Modal from '@/common/atoms/Modal';
 import { defaultTargetMonths, INITIAL_CHART_DATA } from '@/common/constants';
+import { withMountOnDemandModal } from '@/common/hocs/withMountOnDemandModal';
 import { useHandler } from '@/common/hooks';
 import { classNames, formatCurrency, round } from '@/common/utils';
-import { withLazyModal } from '@/hocs';
 import ListLoading from '@/main/atoms/ListLoading';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
 import { useTransaction } from '@/main/hooks';
@@ -71,7 +70,7 @@ const LAST_YEAR_INIT_FILTER = Object.freeze({
   periods: getPeriodsByYear(THIS_YEAR - 1),
 });
 
-export const AddTargetModal: React.FC<AddTargetModalProps> = withLazyModal(
+export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandModal(
   ({
     open = false,
     onClose,
