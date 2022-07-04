@@ -17,7 +17,7 @@ export const TargetPage = () => {
         value={slug}
         items={[
           {
-            content: null,
+            content: <AllCompany />,
             label: 'All Company',
             value: 'all-company',
             href: '/dashboard/all-company',

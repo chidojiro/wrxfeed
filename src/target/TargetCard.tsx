@@ -11,7 +11,7 @@ import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
 import MiniChartView from '@/main/molecules/MiniChartView';
 import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
-import { routes } from '@/routing/routes';
+import { Routes } from '@/routing/routes';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import clsx from 'clsx';
@@ -46,7 +46,7 @@ export const TargetCard = ({
 
   const goToTargetDetails = () => {
     history.push(
-      `${(routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
+      `${(Routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
     );
   };
 
