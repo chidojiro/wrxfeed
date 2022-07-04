@@ -11,7 +11,7 @@ type InfiniteLoaderProps<T = unknown> = ClassName &
 
 export const InfiniteLoader = <T,>({ className, ...restProps }: InfiniteLoaderProps<T>) => {
   const ref = React.useRef<HTMLDivElement>(null);
-  const { isExhausted } = useInfiniteLoader({ ...restProps, anchor: ref.current });
+  const { isExhausted } = useInfiniteLoader({ ...restProps, anchor: ref });
 
   const renderContent = () => {
     if (isExhausted)

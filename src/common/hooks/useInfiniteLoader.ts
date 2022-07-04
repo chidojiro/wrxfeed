@@ -26,7 +26,6 @@ export const useInfiniteLoader = <T = unknown>({
   const [page, setPage] = React.useState(1);
 
   const exhaustDisclosure = useDisclosure();
-  const readyForNextLoadDisclosure = useDisclosure();
 
   const { isInitializing: isLoading } = useFetcher(['infiniteLoader', page], () => onLoad(page), {
     onSuccess: (data) => {
@@ -44,9 +43,8 @@ export const useInfiniteLoader = <T = unknown>({
   React.useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        console.log('hellop');
         const isIntersecting = entries[0].isIntersecting;
-        console.log(isIntersecting);
+
         if (isIntersecting) {
           setPage((prev) => prev + 1);
         }
