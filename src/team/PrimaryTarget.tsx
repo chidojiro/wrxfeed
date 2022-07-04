@@ -11,7 +11,7 @@ import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
 import MiniChartView from '@/main/molecules/MiniChartView';
 import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
-import { routes } from '@/routing/routes';
+import { Routes } from '@/routing/routes';
 import { AddTargetModal } from '@/target/AddTargetModal';
 import { TargetApis } from '@/target/apis';
 import { Target } from '@/target/types';
@@ -38,7 +38,7 @@ export const PrimaryTarget = ({ data, className, departmentId }: PrimaryTargetPr
 
   const goToTargetDetails = () => {
     history.push(
-      `${(routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
+      `${(Routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
     );
   };
 

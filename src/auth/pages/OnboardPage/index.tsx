@@ -17,12 +17,10 @@ import { useSearch } from '@/main/hooks/search.hook';
 import { useSubscription } from '@/main/hooks/subscription.hook';
 import { SearchResult } from '@/main/types';
 import { getMultiRandomInt, getUniqueListBy } from '@/main/utils';
-import routes from '@/routes';
+import { Routes } from '@/routing/routes';
 import { cloneDeep } from 'lodash-es';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-
-const DEBOUNCE_WAIT = 500;
 
 const OnboardPage: React.VFC = () => {
   const identity = useIdentity();
@@ -61,7 +59,7 @@ const OnboardPage: React.VFC = () => {
 
   useEffect(() => {
     if (identity?.token && identity?.lastLoginAt && authDirect) {
-      redirect(routes.Dashboard.path as string);
+      redirect(Routes.Dashboard.path as string);
     }
   }, [redirect, identity]);
 
@@ -105,7 +103,7 @@ const OnboardPage: React.VFC = () => {
         lastLoginAt: currentTime.toISOString(),
       };
       await updateProfile(updates);
-      redirect(routes.Dashboard.path as string);
+      redirect(Routes.Dashboard.path as string);
     } catch (error: unknown) {
       if (isApiError(error)) {
         toast.error(error?.details?.message);

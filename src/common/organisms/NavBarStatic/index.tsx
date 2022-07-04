@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 
 import { classNames } from '@/common/utils';
-import routes from '@/routes';
+import { Routes } from '@/routing/routes';
 
 import SearchBar from '@/common/molecules/SearchBar';
 import { NotifyPopover, UserProfilePopover } from '@/main/molecules';
@@ -49,7 +49,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
   const identity = useIdentity();
 
   const onClickNotification = () => {
-    history.push(routes?.Notifications?.path as string);
+    history.push(Routes?.Notifications?.path as string);
   };
   const onClickInviteButton = () => {
     openInviteModal(true);

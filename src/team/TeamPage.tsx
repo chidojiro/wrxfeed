@@ -28,7 +28,7 @@ export const WrappedTeamPage: React.FC = () => {
           <h1 className="sr-only">Department list</h1>
           <div className="grid grid-cols-9 gap-6">
             <PrimaryTarget
-              className="col-span-9 lg:col-span-5"
+              className="col-span-9 lg:col-span-5 h-[500px]"
               data={target}
               departmentId={departmentId}
             />

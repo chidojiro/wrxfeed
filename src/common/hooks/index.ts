@@ -8,3 +8,5 @@ export * from './useHandler';
 export * from './useOnClickOutside';
 export * from './useLegacyQuery';
 export * from './useUrlState';
+export * from './useInfiniteLoader';
+export * from './useControllable';

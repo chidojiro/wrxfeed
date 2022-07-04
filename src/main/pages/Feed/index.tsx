@@ -9,7 +9,7 @@ import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
 import { Category, Department, FeedItem, FeedType, Vendor } from '@/main/entity';
 import RollupCard from '@/main/molecules/RollupCard';
-import routes from '@/routes';
+import { Routes } from '@/routing/routes';
 import { TargetFeedItem } from '@/target/TargetFeedItem';
 import * as Sentry from '@sentry/react';
 import React, { useEffect, useState } from 'react';
@@ -112,7 +112,7 @@ const FeedPage: React.VFC = () => {
   };
 
   const onBackToDashboard = () => {
-    redirect(routes.Dashboard.path as string);
+    redirect(Routes.Dashboard.path as string);
   };
 
   const renderFeed = () => {

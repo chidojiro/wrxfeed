@@ -6,27 +6,16 @@ import NotFoundPage from '@/common/pages/NotFoundPage';
 import { UserRole } from '@/identity/constants';
 import Categories from '@/main/pages/Categories';
 import Company from '@/main/pages/Company';
-import Dashboard from '@/main/pages/Dashboard';
 import Feed from '@/main/pages/Feed';
 import ForYou from '@/main/pages/ForYou';
 import Notifications from '@/main/pages/Notifications';
 import Vendors from '@/main/pages/Vendors';
+import { TargetRoutes } from '@/target/routes';
 import { TeamPage } from '@/team/TeamPage';
 import { TeamsPage } from '@/team/TeamsPage';
-import { ComponentType } from 'react';
+import { Route } from './types';
 
-export interface RouteItem<T> {
-  path: string | readonly string[];
-  component: T;
-  permissions?: string[];
-}
-
-export interface Route {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [index: string]: RouteItem<ComponentType<any>>;
-}
-
-const routes: Route = {
+export const Routes: Route = {
   // Public pages
   Login: {
     path: '/login',
@@ -86,11 +75,5 @@ const routes: Route = {
     component: Company,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  Dashboard: {
-    path: '/dashboard',
-    component: Dashboard,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
+  ...TargetRoutes,
 };
-
-export default routes;

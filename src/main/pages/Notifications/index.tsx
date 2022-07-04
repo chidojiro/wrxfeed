@@ -2,7 +2,7 @@ import MainLayout from '@/common/templates/MainLayout';
 import { Notification } from '@/main/entity';
 import { useNotification } from '@/main/hooks';
 import { PaginationParams } from '@/rest/types';
-import Routes from '@/routes';
+import { Routes } from '@/routing/routes';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
