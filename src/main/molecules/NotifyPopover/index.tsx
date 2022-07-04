@@ -10,7 +10,7 @@ import {
   useNotifyChannel,
 } from '@/main/hooks';
 import { PaginationParams } from '@/rest/types';
-import Routes from '@/routes';
+import { Routes } from '@/routing/routes';
 import { Popover, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { useHistory } from 'react-router-dom';

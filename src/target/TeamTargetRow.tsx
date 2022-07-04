@@ -9,7 +9,7 @@ import {
   getTargetPeriodsAmountTotal,
   nFormatter,
 } from '@/main/utils';
-import Routes from '@/routes';
+import { Routes } from '@/routing/routes';
 import { Target } from './types';
 import React, { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';

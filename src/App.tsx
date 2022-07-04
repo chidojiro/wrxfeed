@@ -13,7 +13,7 @@ import '@/styles.css';
 import LoadingFallback from '@/common/atoms/LoadingFallback';
 import NotFoundPage from '@/common/pages/NotFoundPage';
 import { ApiProvider } from '@/api';
-import routes from '@/routes';
+import { routes } from '@/routing/routes';
 import { ProtectedRoute } from '@/identity';
 import { UploadCSVModal } from '@/main/organisms';
 import { EmojiPickerContainer } from '@/common/molecules/EmojiPicker';

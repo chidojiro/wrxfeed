@@ -10,7 +10,7 @@ import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
 import MiniChartView from '@/main/molecules/MiniChartView';
 import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
-import routes from '@/routes';
+import { Routes } from '@/routing/routes';
 import { Menu } from '@headlessui/react';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
@@ -32,7 +32,7 @@ export const TargetWrapListItem = React.memo(
 
     const handleViewClick = () => {
       history.push(
-        `${(routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
+        `${(Routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
       );
     };
 
