@@ -1,5 +1,8 @@
+import { useHandler } from '@/common/hooks';
+import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { DepartmentSummary, TargetStatusType } from '../types';
 
 type SummaryRowProps = {
@@ -22,13 +25,26 @@ const getStatusColor = (status?: TargetStatusType) => {
 export const SummaryRow = ({
   data: { commentCount, id, name, spends, target },
 }: SummaryRowProps) => {
+  const history = useHistory();
+
+  const { handle: viewDepartmentSummary } = useHandler((departmentId: number) =>
+    DepartmentApis.viewSummary(departmentId),
+  );
+
+  const handleClick = async () => {
+    await viewDepartmentSummary(id);
+
+    history.push(`/feed/${id}`);
+  };
+
   return (
-    <div
+    <button
+      onClick={handleClick}
       className={clsx(
-        'grid grid-cols-10 py-0.5',
+        'grid grid-cols-10 items-center',
+        'w-full py-0.5',
         'border-b border-Gray-28',
         'py-0.5 px-1',
-        'flex items-center',
         'text-xs',
       )}
     >
@@ -39,6 +55,6 @@ export const SummaryRow = ({
       <div className="col-span-2 text-Gray-6 text-center">{spends}</div>
       <div className="col-span-2 text-Gray-6 text-center">{target?.spends}</div>
       <div className="col-span-1">{commentCount}</div>
-    </div>
+    </button>
   );
 };

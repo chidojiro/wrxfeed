@@ -332,15 +332,12 @@ const BG_SOLID_COLORS = [
   '#DF6622',
   '#F64C32',
 ];
-export const getColorByText = (
-  name: string,
-  id: number | undefined = undefined,
-  gradient = false,
-): string => {
+export const getColorByText = (name?: string | null, id?: number, gradient = false): string => {
+  const _name = name ?? '';
   let hash = 0;
 
-  for (let i = 0; i < name.length; i += 1) {
-    hash += name.charCodeAt(i);
+  for (let i = 0; i < _name.length; i += 1) {
+    hash += _name.charCodeAt(i);
   }
 
   const colorsData = gradient ? BG_GRADIENT_COLORS : BG_SOLID_COLORS;

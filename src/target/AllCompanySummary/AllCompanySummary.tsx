@@ -2,7 +2,6 @@ import { TargetArrowFilled } from '@/assets';
 import { ClassName } from '@/common/types';
 import clsx from 'clsx';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { DepartmentSummary, TargetStatusType } from '../types';
 import { SummaryRow } from './SummaryRow';
 
@@ -23,14 +22,6 @@ const summaries: DepartmentSummary[] = new Array(20).fill(null).map((_, idx) => 
 }));
 
 export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
-  const history = useHistory();
-
-  // const { data: summaries = [] } = useFetcher(['/target/summaries'], () => TargetApis.getSummaries());
-
-  const goToFeedPage = (id: number) => {
-    history.push(`/feed/${id}`);
-  };
-
   return (
     <div
       className={clsx('rounded-card shadow-shadowCard bg-white h-[450px] flex flex-col', className)}
