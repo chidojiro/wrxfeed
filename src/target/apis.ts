@@ -17,10 +17,11 @@ const getList = ({
   forYou = 0,
   year = new Date().getFullYear(),
   isPrimary = 0,
+  type = 'normal',
   ...restParams
 }: GetTargetsParams) =>
   RestApis.get<Target[]>('/target/targets', {
-    params: { offset, limit, forYou, year, isPrimary, ...restParams },
+    params: { offset, limit, forYou, year, isPrimary, type, ...restParams },
   }).then((res) => res.data);
 
 const create = (payload: CreateTargetPayload) =>

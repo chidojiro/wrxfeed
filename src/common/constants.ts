@@ -3,7 +3,9 @@ import { SectionTab } from '@/common/types';
 import { LineChartData } from '@/main/types';
 import { TargetMonth } from '@/target/types';
 
-export const ProjectClassNamePrefix = 'gvt-';
+export const PROJECT_CLASS_NAME_PREFIX = 'gvt-';
+
+export const DEFAULT_ITEMS_PER_INFINITE_LOAD = 10;
 
 export enum MainGroups {
   Feeds = 'Feeds',
