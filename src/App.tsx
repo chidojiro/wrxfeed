@@ -13,7 +13,7 @@ import '@/styles.css';
 import LoadingFallback from '@/common/atoms/LoadingFallback';
 import NotFoundPage from '@/common/pages/NotFoundPage';
 import { ApiProvider } from '@/api';
-import { routes } from '@/routing/routes';
+import { Routes } from '@/routing/routes';
 import { ProtectedRoute } from '@/identity';
 import { UploadCSVModal } from '@/main/organisms';
 import { EmojiPickerContainer } from '@/common/molecules/EmojiPicker';
@@ -48,7 +48,7 @@ const App: React.FC = () => {
           <Router key={Math.random()}>
             <Suspense fallback={<LoadingFallback />}>
               <Switch>
-                {Object.entries(routes).map(([key, route]) =>
+                {Object.entries(Routes).map(([key, route]) =>
                   route.permissions?.length ? (
                     // Added property`key` to Router to fix warning
                     // when hot reloading Route component

@@ -3,7 +3,7 @@ import React from 'react';
 
 type BaseModalProps = Pick<ModalProps, 'open'>;
 
-export const withLazyModal =
+export const withMountOnDemandModal =
   <T extends BaseModalProps>(Component: (props: T) => JSX.Element | null) =>
   // eslint-disable-next-line react/display-name
   (props: T) => {
