@@ -1,9 +1,11 @@
+import { Bank, CategoryIcon, FeedIcon, TargetIcon, TeamIcon } from '@/assets';
 import { SectionTab } from '@/common/types';
-import { FeedIcon, Bank, CategoryIcon, TeamIcon, TargetIcon } from '@/assets';
 import { LineChartData } from '@/main/types';
-import { TargetMonth } from '@/main/entity';
+import { TargetMonth } from '@/target/types';
 
-export const ProjectClassNamePrefix = 'gvt-';
+export const PROJECT_CLASS_NAME_PREFIX = 'gvt-';
+
+export const DEFAULT_ITEMS_PER_INFINITE_LOAD = 10;
 
 export enum MainGroups {
   Feeds = 'Feeds',
@@ -17,7 +19,7 @@ export const MainMenu: SectionTab[] = [
     tabs: [
       {
         name: 'Targets',
-        location: { pathname: '/dashboard' },
+        location: { pathname: '/dashboard/all-company' },
         icon: TargetIcon,
         isShowCounter: true,
       },

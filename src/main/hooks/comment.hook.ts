@@ -1,9 +1,10 @@
 import { useApi } from '@/api';
-import { AddCommentParams, OrderDirection, Pagination } from '@/api/types';
+import { AddCommentParams, OrderDirection } from '@/api/types';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
 import { useIdentity } from '@/identity/hooks';
 import { Comment, Transaction } from '@/main/entity';
+import { PaginationParams } from '@/rest/types';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -17,7 +18,10 @@ interface CommentHookValues {
   deleteComment: (comment: Comment) => Promise<void>;
 }
 
-export function useComment(transaction: Transaction, pagination?: Pagination): CommentHookValues {
+export function useComment(
+  transaction: Transaction,
+  pagination?: PaginationParams,
+): CommentHookValues {
   const identity = useIdentity();
   const ApiClient = useApi();
   const errorHandler = useErrorHandler();

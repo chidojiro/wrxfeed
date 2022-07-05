@@ -2,7 +2,7 @@ import React from 'react';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import mixpanel from 'mixpanel-browser';
-import App from '@/common/containers/App';
+import App from './App';
 import { BUILD_ENV, MIX_PANEL_PROJECT_TOKEN } from '@/config';
 import { createRoot } from 'react-dom/client';
 import { SWRConfig } from 'swr';
@@ -26,7 +26,7 @@ mixpanel.init(MIX_PANEL_PROJECT_TOKEN, {
 const root = createRoot(document.getElementById('root')!);
 root.render(
   <React.StrictMode>
-    <SWRConfig value={{ revalidateOnFocus: false }}>
+    <SWRConfig value={{ revalidateOnFocus: false, shouldRetryOnError: false }}>
       <App />
     </SWRConfig>
   </React.StrictMode>,

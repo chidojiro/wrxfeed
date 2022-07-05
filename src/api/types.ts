@@ -1,21 +1,3 @@
-import { UserToken, Identity } from '@/identity/types';
-import {
-  Comment,
-  Transaction,
-  User,
-  Contact,
-  Department,
-  Category,
-  Vendor,
-  Notification,
-  Target,
-  Subscription,
-  FeedItem,
-  TransLineItem,
-  VendorDescription,
-  LineItem,
-  TopCategories,
-} from '@/main/entity';
 import {
   AuthProfile,
   ChangePwdFormModel,
@@ -25,8 +7,26 @@ import {
   ProfileFormModel,
   SearchTypes,
 } from '@/auth/types';
-import { InviteFormModel, FeedBackFormModel, SearchResult } from '@/main/types';
-import { BitBoolean } from '@/common/types';
+import { Identity, UserToken } from '@/identity/types';
+import {
+  Category,
+  Comment,
+  Contact,
+  Department,
+  FeedItem,
+  LineItem,
+  Notification,
+  Subscription,
+  TopCategories,
+  Transaction,
+  TransLineItem,
+  User,
+  Vendor,
+  VendorDescription,
+} from '@/main/entity';
+import { FeedBackFormModel, InviteFormModel, SearchResult } from '@/main/types';
+import { PaginationParams } from '@/rest/types';
+import { TargetPeriod, TargetProps } from '@/target/types';
 
 export interface ApiClient {
   // Authentication API
@@ -71,7 +71,7 @@ export interface ApiClient {
   getUploadFileToken: (body: GetUploadTokenBody) => Promise<UploadToken>;
   uploadAttachment: (data: File, uploadToken: UploadToken) => Promise<string>;
   // For Inbox page
-  getMentions: (pagination?: Pagination) => Promise<User[]>;
+  getMentions: (pagination?: PaginationParams) => Promise<User[]>;
   sendInvitation: (data: InviteFormModel) => Promise<void>;
   getUsers: (filters: GetUsersFilter) => Promise<User[]>;
   getContacts: (filters: GetContactsFilter) => Promise<Contact[]>;
@@ -79,19 +79,12 @@ export interface ApiClient {
   // Directory
   getDepartments: (filters?: DepartmentFilter) => Promise<Department[]>;
   getCategories: (filter?: CategoryFilter) => Promise<Category[]>;
-  getVendors: (pagination?: Pagination) => Promise<Vendor[]>;
+  getVendors: (pagination?: PaginationParams) => Promise<Vendor[]>;
   updateCategory: (data?: Partial<Category>) => Promise<void>;
   // Notification
-  getNotifications: (page?: Pagination) => Promise<NotificationsResponse>;
+  getNotifications: (page?: PaginationParams) => Promise<NotificationsResponse>;
   patchNotification: (id: number) => Promise<void>;
   patchAllNotification: () => Promise<void>;
-  // targets
-  getTargets: (filters?: TargetFilter) => Promise<Target[]>;
-  postTarget: (data: PostTargetParams) => Promise<void>;
-  putTarget: (id: number, data: PutTargetParams) => Promise<Target>;
-  deleteTarget: (id: number) => Promise<void>;
-  patchCalcSpending: (data: PatchCalcSpendingFilters) => Promise<TargetPeriod[]>;
-  getTargetSummaries: () => Promise<TargetSummaries>;
   // Subscription
   getSubscriptions: () => Promise<Subscription>;
   updateSubscriptions: (data: SubscriptionParams) => Promise<Subscription>;
@@ -105,11 +98,6 @@ export interface ResetPasswordDto {
   token: string;
 }
 
-export interface Pagination {
-  offset: number;
-  limit: number;
-}
-
 export enum OrderDirection {
   ASC = 'ASC',
   DESC = 'DESC',
@@ -117,17 +105,17 @@ export enum OrderDirection {
 
 export interface MentionsFilters {
   order?: OrderDirection;
-  pagination?: Pagination;
+  pagination?: PaginationParams;
 }
 
 export interface CommentFilters {
   transactionId: number;
   order?: OrderDirection;
-  pagination?: Pagination;
+  pagination?: PaginationParams;
 }
 
 export interface TransactionBody {
-  props?: TargetProp[];
+  props?: TargetProps[];
   periods?: TargetPeriod[];
 }
 
@@ -148,12 +136,12 @@ export interface UploadToken {
 
 export interface GetUsersFilter {
   text?: string;
-  pagination?: Pagination;
+  pagination?: PaginationParams;
 }
 
 export interface GetContactsFilter {
   text?: string;
-  pagination?: Pagination;
+  pagination?: PaginationParams;
 }
 
 export interface AddCommentParams {
@@ -161,71 +149,14 @@ export interface AddCommentParams {
   attachment?: string;
 }
 
-export interface DepartmentFilter extends Pagination {
+export interface DepartmentFilter extends PaginationParams {
   parent?: number;
   term?: string;
   includeSub?: 1 | 0;
 }
-export interface CategoryFilter extends Pagination {
+export interface CategoryFilter extends PaginationParams {
   term?: string;
   dep?: number;
-}
-
-export interface TargetFilter extends Partial<Pagination> {
-  year?: number;
-  month?: number;
-  timestamp?: number;
-  dep?: number;
-  forYou?: number;
-  isPrimary?: BitBoolean;
-}
-
-export interface PostTargetParams {
-  name: string;
-  depId?: number;
-  isPrimary: boolean;
-  props: TargetProp[];
-  periods?: TargetPeriod[];
-}
-export interface PutTargetParams {
-  name: string;
-  depId?: number;
-  isPrimary: boolean;
-  props: TargetProp[];
-  periods: TargetPeriod[];
-}
-
-export interface TargetProp {
-  id: number;
-  type: TargetPropType;
-  name: string;
-  exclude?: boolean;
-}
-
-export type TargetPeriod = {
-  month: number;
-  year: number;
-  amount?: number;
-  threshold?: number;
-  total?: number;
-};
-
-export type TargetSummaries = {
-  total: number;
-  onTrack: number;
-  atRisk: number;
-  exceeded: number;
-};
-
-export interface PatchCalcSpendingFilters {
-  props: TargetProp[];
-  periods: TargetPeriod[];
-}
-
-export enum TargetPropType {
-  DEPARTMENT = 'DEPARTMENT',
-  CATEGORY = 'CATEGORY',
-  VENDOR = 'VENDOR',
 }
 
 export interface SubscriptionParams {
@@ -241,13 +172,13 @@ export interface NotificationsResponse {
 
 export interface FeedItemFilters {
   id: number;
-  page?: Pagination;
+  page?: PaginationParams;
 }
 
 export interface FeedCommentFilters {
   feedId: number;
   order?: OrderDirection;
-  page?: Pagination;
+  page?: PaginationParams;
 }
 
 export interface AddFeedCommentParams {
@@ -256,7 +187,7 @@ export interface AddFeedCommentParams {
 }
 
 export interface FeedFilters {
-  page?: Pagination;
+  page?: PaginationParams;
   forYou?: 1 | 0;
   department?: number;
   targetId?: number;

@@ -1,15 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { toast } from 'react-toastify';
-import cloneDeep from 'lodash.clonedeep';
-
-import { menuItemsValue, newFeedCountState } from '@/main/states/sidemenu.state';
 import { getApiClient } from '@/api/utils';
-import { GroupTab, SectionTab } from '@/common/types';
+import { ENABLE_GET_FEED_COUNT } from '@/common/constants';
 import GroupTabSideBar from '@/common/molecules/GroupTabSideBar';
 import TabListSideBar from '@/common/molecules/TabListSideBar';
-import { ENABLE_GET_FEED_COUNT } from '@/common/constants';
+import { GroupTab, SectionTab } from '@/common/types';
+import { menuItemsValue, newFeedCountState } from '@/main/states/sidemenu.state';
+import { cloneDeep } from 'lodash-es';
+import React, { useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 const SideBar: React.VFC = () => {
   const [menuItems, setMenuItems] = useRecoilState(menuItemsValue);
@@ -55,15 +54,12 @@ const SideBar: React.VFC = () => {
   return (
     <nav aria-label="Sidebar" className="divide-y divide-gray-300 flex flex-1 overflow-hidden">
       <div className="flex w-full flex-1 flex-col py-8 pb-40 space-y-6 h-auto overflow-scroll hide-scrollbar">
-        {menuItems.map((menuItem: SectionTab) => {
+        {menuItems.map((menuItem: SectionTab, idx) => {
           const { groups, tabs: tabsInSection } = menuItem;
           return (
-            <div key={menuItem.name} className="flex flex-col w-full">
+            <div key={idx} className="flex flex-col w-full">
               {menuItem?.name?.length > 0 && (
-                <div
-                  key={`${menuItem.name}-headline`}
-                  className="px-12 h-8 flex flex-row items-center w-full"
-                >
+                <div className="px-12 h-8 flex flex-row items-center w-full">
                   <h3 className="text-xs font-semibold text-Gray-6 tracking-wider">
                     {menuItem.name}
                   </h3>

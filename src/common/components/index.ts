@@ -5,3 +5,7 @@ export * from './ConditionalWrapper';
 export * from './Popover';
 export * from './Portal';
 export * from './Tooltip';
+export * from './Tabs';
+export * from './Divider';
+export * from './InfiniteLoader';
+export * from './Spinner';

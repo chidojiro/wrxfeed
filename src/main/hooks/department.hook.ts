@@ -1,14 +1,13 @@
+import { useApi } from '@/api';
+import { DepartmentFilter } from '@/api/types';
+import { useErrorHandler } from '@/error/hooks';
+import { isApiError, isBadRequest } from '@/error/utils';
+import { Department } from '@/main/entity';
+import { PaginationParams } from '@/rest/types';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { useApi } from '@/api';
-import { Pagination, DepartmentFilter } from '@/api/types';
-import { useErrorHandler } from '@/error/hooks';
-
-import { isBadRequest, isApiError } from '@/error/utils';
-import { Department } from '@/main/entity';
-
-const DEPT_PAGINATION: Pagination = {
+const DEPT_PAGINATION: PaginationParams = {
   limit: 100,
   offset: 0,
 };

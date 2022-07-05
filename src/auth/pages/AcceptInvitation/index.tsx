@@ -4,7 +4,7 @@ import { useApi } from '@/api';
 import Loading from '@/common/atoms/Loading';
 import { useLegacyQuery } from '@/common/hooks';
 import { isApiError } from '@/error/utils';
-import Routes from '@/routes';
+import { Routes } from '@/routing/routes';
 import React, { useCallback, useEffect, useState, VFC } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 

@@ -1,18 +1,26 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { SubmitHandler } from 'react-hook-form';
-import { EditorState } from 'draft-js';
-import { Menu } from '@headlessui/react';
-import { toast } from 'react-toastify';
-import dayjs from 'dayjs';
+import { GetUploadTokenBody, UploadTypes } from '@/api/types';
+// assets
+import { ExclamationCircle, EyeHideIcon, MoreVerticalIcon } from '@/assets';
+// components
+import NotifyBanner from '@/common/molecules/NotifyBanner';
+import { classNames } from '@/common/utils';
+import { ProtectedFeatures } from '@/identity/constants';
 // hooks
 import { useIdentity, usePermission } from '@/identity/hooks';
-import { useFeedComment } from '@/main/hooks/feedComment.hook';
+import CommentViewAll from '@/main/atoms/CommentViewAll';
+import ConfirmModal from '@/main/atoms/ConfirmModal';
+import PopoverMenu from '@/main/atoms/PopoverMenu';
+import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 // constants
 import { Category, Department, FeedItem, Vendor, Visibility } from '@/main/entity';
-import { CommentFormModel } from '@/main/types';
 import { useMention } from '@/main/hooks';
-import { GetUploadTokenBody, Pagination, UploadTypes } from '@/api/types';
-import { classNames } from '@/common/utils';
+import { useFeedComment } from '@/main/hooks/feedComment.hook';
+import CommentBox from '@/main/molecules/CommentBox';
+import CommentItem from '@/main/molecules/CommentItem';
+import RollupTransactions from '@/main/molecules/RollupTransactions';
+import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
+import FeedBackModal from '@/main/organisms/FeedBackModal';
+import { CommentFormModel } from '@/main/types';
 import {
   commentEditorHtmlParser,
   decimalLogic,
@@ -20,20 +28,13 @@ import {
   getColorByText,
   getTotalFeedItem,
 } from '@/main/utils';
-import { ProtectedFeatures } from '@/identity/constants';
-// components
-import NotifyBanner from '@/common/molecules/NotifyBanner';
-import CommentBox from '@/main/molecules/CommentBox';
-import PopoverMenu from '@/main/atoms/PopoverMenu';
-import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
-import FeedBackModal from '@/main/organisms/FeedBackModal';
-import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
-import ConfirmModal from '@/main/atoms/ConfirmModal';
-import CommentItem from '@/main/molecules/CommentItem';
-import CommentViewAll from '@/main/atoms/CommentViewAll';
-import RollupTransactions from '@/main/molecules/RollupTransactions';
-// assets
-import { EyeHideIcon, MoreVerticalIcon, ExclamationCircle } from '@/assets';
+import { PaginationParams } from '@/rest/types';
+import { Menu } from '@headlessui/react';
+import dayjs from 'dayjs';
+import { EditorState } from 'draft-js';
+import React, { useMemo, useRef, useState } from 'react';
+import { SubmitHandler } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -61,7 +62,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   updateCategory,
 }) => {
   const identity = useIdentity();
-  const [filterComment, setFilterComment] = useState<Pagination>({
+  const [filterComment, setFilterComment] = useState<PaginationParams>({
     offset: 0,
     limit: INITIAL_COMMENT_NUMBER,
   });

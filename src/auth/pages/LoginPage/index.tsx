@@ -10,7 +10,7 @@ import { useApi } from '@/api';
 import { useErrorHandler, isApiError, ApiErrorCode } from '@/error';
 
 import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@/config';
-import Routes from '@/routes';
+import { Routes } from '@/routing/routes';
 import { ProviderName } from '@/main/entity';
 
 import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';

@@ -1,30 +1,31 @@
-import React, { useRef, useState } from 'react';
-import { CommentFormModel } from '@/main/types';
-import { Category, Department, Transaction, Vendor, Visibility } from '@/main/entity';
-import { useComment, useMention } from '@/main/hooks';
-import { GetUploadTokenBody, Pagination, UploadTypes } from '@/api/types';
-import { SubmitHandler } from 'react-hook-form';
-import { EditorState } from 'draft-js';
-import { commentEditorHtmlParser, decimalLogic, DecimalType } from '@/main/utils';
-import { classNames, formatDate } from '@/common/utils';
-// Tailwind components
-import { Menu } from '@headlessui/react';
-import DepartmentColorSection from '@/main/atoms/DepartmentColorSection';
-import NotifyBanner from '@/common/molecules/NotifyBanner';
-import CommentBox from '@/main/molecules/CommentBox';
-import CommentItem from '@/main/molecules/CommentItem';
-import CommentRemaining from '@/main/atoms/CommentRemaining';
-import PopoverMenu from '@/main/atoms/PopoverMenu';
-import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
-import FeedBackModal from '@/main/organisms/FeedBackModal';
-import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
-import ConfirmModal from '@/main/atoms/ConfirmModal';
+import { GetUploadTokenBody, UploadTypes } from '@/api/types';
+import { EyeHideIcon } from '@/assets';
+import { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';
 // Icons
 import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
-import { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';
-import { EyeHideIcon } from '@/assets';
-import { useIdentity, usePermission } from '@/identity/hooks';
+import NotifyBanner from '@/common/molecules/NotifyBanner';
+import { classNames, formatDate } from '@/common/utils';
 import { ProtectedFeatures } from '@/identity/constants';
+import { useIdentity, usePermission } from '@/identity/hooks';
+import CommentRemaining from '@/main/atoms/CommentRemaining';
+import ConfirmModal from '@/main/atoms/ConfirmModal';
+import DepartmentColorSection from '@/main/atoms/DepartmentColorSection';
+import PopoverMenu from '@/main/atoms/PopoverMenu';
+import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
+import { Category, Department, Transaction, Vendor, Visibility } from '@/main/entity';
+import { useComment, useMention } from '@/main/hooks';
+import CommentBox from '@/main/molecules/CommentBox';
+import CommentItem from '@/main/molecules/CommentItem';
+import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
+import FeedBackModal from '@/main/organisms/FeedBackModal';
+import { CommentFormModel } from '@/main/types';
+import { commentEditorHtmlParser, decimalLogic, DecimalType } from '@/main/utils';
+import { PaginationParams } from '@/rest/types';
+// Tailwind components
+import { Menu } from '@headlessui/react';
+import { EditorState } from 'draft-js';
+import React, { useRef, useState } from 'react';
+import { SubmitHandler } from 'react-hook-form';
 
 const INITIAL_COMMENT_NUMBER = 2;
 const LOAD_MORE_LIMIT = 5;
@@ -57,7 +58,10 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
   // Refs
   const containerRef = useRef<HTMLLIElement>(null);
   // Local states
-  const [filter, setFilter] = useState<Pagination>({ offset: 0, limit: INITIAL_COMMENT_NUMBER });
+  const [filter, setFilter] = useState<PaginationParams>({
+    offset: 0,
+    limit: INITIAL_COMMENT_NUMBER,
+  });
   const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
   const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
   const [attachFileComment, setAttachFileComment] = useState<File | null>(null);

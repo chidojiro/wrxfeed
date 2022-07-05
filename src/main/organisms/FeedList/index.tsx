@@ -9,7 +9,7 @@ import { Category, Department, Vendor } from '@/main/entity';
 import { FilterKeys } from '@/main/hooks';
 import { useFeed } from '@/main/hooks/feed.hook';
 import RollupCard from '@/main/molecules/RollupCard';
-import TargetFeedItem from '@/main/molecules/TargetFeedItem';
+import { TargetFeedItem } from '@/target/TargetFeedItem';
 import React, {
   CSSProperties,
   forwardRef,

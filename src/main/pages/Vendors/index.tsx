@@ -1,22 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
-import * as Sentry from '@sentry/react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
-
 import { useApi } from '@/api';
+import { FeedFilters } from '@/api/types';
+import { ChevronLeftIcon } from '@/assets';
+import { MainGroups } from '@/common/constants';
 import { useLegacyQuery } from '@/common/hooks';
-import { useVendor } from '@/main/hooks/vendor.hook';
-import { FilterKeys } from '@/main/hooks';
-
-import { FeedFilters, Pagination } from '@/api/types';
+import MainLayout from '@/common/templates/MainLayout';
 import { Category, Department, Vendor } from '@/main/entity';
-import { scrollToTop } from '@/main/utils';
-
+import { FilterKeys } from '@/main/hooks';
+import { useVendor } from '@/main/hooks/vendor.hook';
 import FeedList from '@/main/organisms/FeedList';
 import VendorList from '@/main/organisms/VendorList';
-import { ChevronLeftIcon } from '@/assets';
-import MainLayout from '@/common/templates/MainLayout';
-import { MainGroups } from '@/common/constants';
+import { scrollToTop } from '@/main/utils';
+import { PaginationParams } from '@/rest/types';
+import * as Sentry from '@sentry/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -31,7 +29,7 @@ const VendorsPage: React.VFC = () => {
   const query = useLegacyQuery();
   const location = useLocation();
   // Vendors states
-  const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
+  const [filter, setFilter] = useState<PaginationParams>(INIT_PAGINATION);
   const { vendors, hasMore, isLoading } = useVendor(filter);
   const [vendor, setVendor] = useState<Vendor | null>();
   // Feeds states
@@ -57,7 +55,7 @@ const VendorsPage: React.VFC = () => {
 
   const filterByRoute = useCallback(() => {
     if (vendorId) {
-      const newFilter: { [key: string]: string | number | Pagination | null } = {
+      const newFilter: { [key: string]: string | number | PaginationParams | null } = {
         page: INIT_PAGINATION,
         vendor: parseInt(vendorId, 10),
       };
