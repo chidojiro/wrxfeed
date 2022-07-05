@@ -8,3 +8,4 @@ export * from './Tooltip';
 export * from './Tabs';
 export * from './Divider';
 export * from './InfiniteLoader';
+export * from './Spinner';

@@ -1,7 +1,7 @@
-import { AssertUtils } from './../utils/assert';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import React from 'react';
 import { useFetcher } from './useFetcher';
+import { useIntersection } from './useIntersection';
 
 const WAIT_FOR_NEXT_LOAD_TIMEOUT = 500;
 
@@ -27,7 +27,8 @@ export const useInfiniteLoader = <T = unknown>({
 }: UseInfiniteLoaderProps<T>): UseInfiniteLoaderReturn => {
   const [page, setPage] = React.useState(1);
   const readyForNextLoadTimeout = React.useRef<number>();
-  const [isIntersected, setIsIntersected] = React.useState(false);
+
+  const isIntersected = useIntersection(anchor);
 
   const exhaustedDisclosure = useDisclosure();
   const readyForNextLoadDisclosure = useDisclosure({ defaultIsOpen: true });
@@ -59,40 +60,15 @@ export const useInfiniteLoader = <T = unknown>({
     },
   );
 
-  const setPageOnIntersection = React.useCallback(() => {
+  const increasePageOnIntersection = React.useCallback(() => {
     if (isIntersected && readyForNextLoadDisclosure.isOpen) {
       setPage((prev) => prev + 1);
     }
   }, [isIntersected, readyForNextLoadDisclosure.isOpen]);
 
-  const observeIntersection = React.useCallback(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const isIntersecting = entries[0].isIntersecting;
-
-        setIsIntersected(isIntersecting);
-      },
-      {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.3,
-      },
-    );
-
-    const anchorNode = AssertUtils.isRef(anchor) ? anchor.current : anchor;
-
-    if (anchorNode) {
-      observer.observe(anchorNode);
-    }
-  }, [anchor]);
-
   React.useEffect(() => {
-    setPageOnIntersection();
-  }, [setPageOnIntersection]);
-
-  React.useEffect(() => {
-    observeIntersection();
-  }, [observeIntersection]);
+    increasePageOnIntersection();
+  }, [increasePageOnIntersection]);
 
   return React.useMemo(
     () => ({ isLoading, isExhausted: exhaustedDisclosure.isOpen }),

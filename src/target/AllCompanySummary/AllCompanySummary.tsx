@@ -1,59 +1,56 @@
 import { TargetArrowFilled } from '@/assets';
+import { useFetcher, useScrollbarDetector } from '@/common/hooks';
 import { ClassName } from '@/common/types';
+import { MainLayoutLoader } from '@/layout/MainLayoutLoader';
+import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { DepartmentSummary, TargetStatusType } from '../types';
 import { SummaryRow } from './SummaryRow';
 
 type AllCompanySummaryProps = ClassName;
 
-const summaries: DepartmentSummary[] = new Array(20).fill(null).map((_, idx) => ({
-  id: idx,
-  name: 'department name',
-  target: {
-    id: 2,
-    trackingStatus: [TargetStatusType.AtRisk, TargetStatusType.Exceeded, TargetStatusType.OnTrack][
-      idx % 3
-    ],
-    spends: 1234.56,
-  },
-  spends: 1234.56,
-  commentCount: 10,
-}));
-
 export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
-  const history = useHistory();
+  const summaryListRef = React.useRef<HTMLDivElement>(null);
 
-  // const { data: summaries = [] } = useFetcher(['/target/summaries'], () => TargetApis.getSummaries());
+  const { data: summaries = [], isValidating } = useFetcher(['allCompanySummaries'], () =>
+    DepartmentApis.getSummaries(),
+  );
 
-  const goToFeedPage = (id: number) => {
-    history.push(`/feed/${id}`);
-  };
+  const { scrollbarWidth: summaryListSCrollbarWidth } = useScrollbarDetector(summaryListRef, [
+    summaries,
+  ]);
 
   return (
-    <div
-      className={clsx('rounded-card shadow-shadowCard bg-white h-[450px] flex flex-col', className)}
-    >
-      <div className="p-5 flex items-center gap-2 font-semibold text-Gray-3">
-        <TargetArrowFilled width={16} height={16} />
-        <span>Summary</span>
-      </div>
+    <MainLayoutLoader active={isValidating}>
       <div
         className={clsx(
-          'grid grid-cols-10 p-2 font-semibold text-2xs',
-          'border-t border-b border-Gray-28',
+          'rounded-card shadow-shadowCard bg-white h-[450px] flex flex-col',
+          className,
         )}
       >
-        <div className="col-span-5">Team</div>
-        <div className="col-span-2 text-center">Spend</div>
-        <div className="col-span-2 text-center">Target</div>
+        <div className="p-5 flex items-center gap-2 font-semibold text-Gray-3">
+          <TargetArrowFilled width={16} height={16} />
+          <span>Summary</span>
+        </div>
+        <div
+          className={clsx(
+            'grid grid-cols-10',
+            'text-center font-semibold text-2xs',
+            'border-t border-b border-Gray-28',
+            'py-2.5 px-1',
+          )}
+          style={{ paddingRight: summaryListSCrollbarWidth }}
+        >
+          <div className="pl-2 col-span-5 text-left">Team</div>
+          <div className="col-span-2">Spend</div>
+          <div className="col-span-2">Target</div>
+        </div>
+        <div className="overflow-auto flex-1 pb-5" ref={summaryListRef}>
+          {summaries.map((summary) => (
+            <SummaryRow data={summary} key={summary.id} />
+          ))}
+        </div>
       </div>
-      <div className="overflow-auto flex-1 pb-5">
-        {summaries.map((summary) => (
-          <SummaryRow data={summary} key={summary.id} />
-        ))}
-      </div>
-    </div>
+    </MainLayoutLoader>
   );
 };

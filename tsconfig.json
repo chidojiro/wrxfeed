@@ -19,7 +19,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["./src/global", "./src/rest/global.ts"]
+    "types": ["./src/global"]
   },
   "include": ["src"]
 }
