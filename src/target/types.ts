@@ -42,11 +42,7 @@ export type TargetFilter = Partial<PaginationParams> & {
 export type DepartmentSummary = {
   id: number;
   name: string;
-  target?: {
-    id: number;
-    trackingStatus: TargetStatusType;
-    spends: number;
-  };
+  target?: Target;
   spends: number;
   commentCount: number;
 };

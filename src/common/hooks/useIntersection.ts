@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react';
+import { HTMLElementOrHTMLElementRef } from '../types';
+import { AssertUtils } from '../utils';
 
 /**
  * Hook to detect if element is visible on screen
  */
-export const useIntersection = (element?: Element, rootMargin?: string): boolean => {
+export const useIntersection = (
+  elementOrElementRef?: HTMLElementOrHTMLElementRef | null,
+  rootMargin?: string,
+): boolean => {
+  const element = AssertUtils.isRef<HTMLElement>(elementOrElementRef)
+    ? elementOrElementRef.current
+    : elementOrElementRef;
+
   const [isVisible, setState] = useState(false);
 
   useEffect(() => {
@@ -18,7 +27,11 @@ export const useIntersection = (element?: Element, rootMargin?: string): boolean
       observer.observe(element);
     }
 
-    return () => element && observer.unobserve(element);
+    return () => {
+      if (element) {
+        observer.unobserve(element);
+      }
+    };
   }, [element, rootMargin]);
 
   return isVisible;

@@ -10,7 +10,12 @@ import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
 import MiniChartView from '@/main/molecules/MiniChartView';
-import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
+import {
+  decimalLogic,
+  DecimalType,
+  getColorByText,
+  getTargetPeriodsAmountTotal,
+} from '@/main/utils';
 import { Routes } from '@/routing/routes';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
@@ -55,11 +60,13 @@ export const TargetCard = ({
 
   const addTargetModalDisclosure = useDisclosure();
 
+  const headingColor = getColorByText(data.name, undefined, true);
+
   return (
     <div
       key={`Dashboard-TargetChartView-${data.id}`}
       className={clsx(
-        'bg-white relative w-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
+        'bg-white relative w-full overflow-hidden rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
         className,
       )}
     >
@@ -74,7 +81,8 @@ export const TargetCard = ({
           onDeleteSuccess={onDeleteSuccess}
         />
       )}
-      <div className="flex flex-1 flex-col py-4 space-y-2 w-full">
+      <div className="flex flex-1 flex-col pb-4 space-y-2 w-full">
+        <div style={{ background: headingColor }} className="h-2 mb-4" />
         <div className="flex flex-col px-6 space-y-4">
           <div className="flex flex-row space-x-1">
             <div className="flex flex-col flex-1 h-12 max-h-12">
@@ -123,15 +131,17 @@ export const TargetCard = ({
                     Icon={EditIcon}
                     className="text-Gray-3"
                   />
-                  <PopoverMenuItem
-                    key="Delete-Target"
-                    value="delete-target"
-                    label="Delete Target"
-                    onClick={() => deleteTarget(data.id)}
-                    stopPropagation
-                    Icon={BinIcon}
-                    className="text-system-alert"
-                  />
+                  {!data.isPrimary && (
+                    <PopoverMenuItem
+                      key="Delete-Target"
+                      value="delete-target"
+                      label="Delete Target"
+                      onClick={() => deleteTarget(data.id)}
+                      stopPropagation
+                      Icon={BinIcon}
+                      className="text-system-alert"
+                    />
+                  )}
                 </PopoverMenu>
               </Menu>
             )}

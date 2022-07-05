@@ -32,10 +32,10 @@ const update = (id: number, payload: UpdateTargetPayload) =>
 
 const _delete = (id: number) => RestApis.delete(`/target/targets/${id}`).then(({ data }) => data);
 
-const getSpending = async (params: GetTargetSpendingParams): Promise<TargetPeriod[]> =>
+const getSpending = (params: GetTargetSpendingParams): Promise<TargetPeriod[]> =>
   RestApis.patch<TargetPeriod[]>('/target/spending', params).then(({ data }) => data);
 
-const getSummaries = async () =>
+const getSummaries = () =>
   RestApis.get<TargetSummaries>('/target/summaries').then(({ data }) => data);
 
 export const TargetApis = {
