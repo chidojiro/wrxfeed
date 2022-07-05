@@ -89,10 +89,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
             ({ amountUsd, category, description, transDate, transaction, vendor, id }) => (
               <Table.Row
                 key={id}
-                className={clsx(
-                  'relative cursor-pointer',
-                  'hover:ring-1 hover:ring-Accent-4 hover:shadow-targetHover',
-                )}
+                className={clsx('relative cursor-pointer', 'list-row-hover')}
                 onClick={() => goToLineItemPage(id)}
               >
                 <Table.Cell>

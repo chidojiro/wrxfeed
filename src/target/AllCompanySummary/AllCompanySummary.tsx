@@ -16,7 +16,7 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
     DepartmentApis.getSummaries(),
   );
 
-  const { scrollbarWidth: summaryListSCrollbarWidth } = useScrollbarDetector(summaryListRef, [
+  const { scrollbarWidth: summaryListScrollbarWidth } = useScrollbarDetector(summaryListRef, [
     summaries,
   ]);
 
@@ -39,13 +39,13 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
             'border-t border-b border-Gray-28',
             'py-2.5 px-1',
           )}
-          style={{ paddingRight: summaryListSCrollbarWidth }}
+          style={{ paddingRight: summaryListScrollbarWidth }}
         >
           <div className="pl-2 col-span-5 text-left">Team</div>
           <div className="col-span-2">Spend</div>
           <div className="col-span-2">Target</div>
         </div>
-        <div className="overflow-auto flex-1 pb-5" ref={summaryListRef}>
+        <div className="overflow-auto flex-1 pb-5 p-px" ref={summaryListRef}>
           {summaries.map((summary) => (
             <SummaryRow data={summary} key={summary.id} />
           ))}
