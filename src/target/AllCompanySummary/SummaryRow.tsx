@@ -1,6 +1,8 @@
 import { CommentIcon } from '@/assets';
 import { useHandler } from '@/common/hooks';
+import { FeedType } from '@/main/entity';
 import { decimalLogic, DecimalType } from '@/main/utils';
+import { Routes } from '@/routing/routes';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
@@ -38,7 +40,9 @@ export const SummaryRow = ({
   const handleClick = async () => {
     await viewDepartmentSummary(id);
 
-    history.push(`/feed/${id}`);
+    history.push(
+      `${(Routes.Feed.path as string).replace(':id', `${id}?route=${FeedType.TargetFeed}`)}`,
+    );
   };
 
   const targetSpends = target?.spendings?.reduce((acc, cur) => acc + cur.total, 0);

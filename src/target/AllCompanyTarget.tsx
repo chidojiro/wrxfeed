@@ -12,11 +12,7 @@ export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
 
   return (
     <MainLayoutLoader active={isInitializing}>
-      <TargetCard
-        className={clsx('h-[450px]', className)}
-        data={targets[0]}
-        showMoreOptionsButton={false}
-      />
+      <TargetCard className={clsx('h-[450px]', className)} data={targets[0]} />
     </MainLayoutLoader>
   );
 };
