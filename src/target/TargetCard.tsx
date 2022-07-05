@@ -42,8 +42,7 @@ export const TargetCard = ({
 }: TargetCardProps) => {
   const history = useHistory();
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const department = data.department!;
+  const department = data.department;
 
   const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
     TargetApis.delete(targetId),
@@ -76,7 +75,7 @@ export const TargetCard = ({
           onClose={addTargetModalDisclosure.onClose}
           onCancel={addTargetModalDisclosure.onOpen}
           target={data}
-          departmentId={department.id}
+          departmentId={department?.id}
           onUpdateSuccess={onUpdateSuccess}
           onDeleteSuccess={onDeleteSuccess}
         />
