@@ -3,7 +3,6 @@ import { TargetApis } from '@/target/apis';
 import React from 'react';
 
 export const usePrimaryTarget = (departmentId: number) => {
-  console.log('departmentId: ' + departmentId);
   const fetcherReturn = useFetcher(['primaryTarget', departmentId], () =>
     TargetApis.getList({
       year: new Date().getFullYear(),
