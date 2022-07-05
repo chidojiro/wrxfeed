@@ -1,18 +1,11 @@
-import { Children } from '@/common/types';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import React from 'react';
 import { Popover } from '../Popover';
 import { PopoverProps } from '../Popover/Popover';
 
-export type TooltipProps = Children &
-  Omit<PopoverProps, 'trigger' | 'open'> & { trigger: JSX.Element };
+export type TooltipProps = Omit<PopoverProps, 'trigger' | 'open'> & { trigger: JSX.Element };
 
-export const Tooltip: React.FC<TooltipProps> = ({
-  trigger,
-  children,
-  placement = 'top',
-  ...restProps
-}) => {
+export const Tooltip = ({ trigger, children, placement = 'top', ...restProps }: TooltipProps) => {
   const disclosure = useDisclosure();
 
   const clonedTrigger = React.useMemo(() => {

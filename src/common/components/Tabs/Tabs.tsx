@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 
 import { ClassName } from '../../types';
 import { Tabs as HeadlessTabs, TabsProps as HeadlessTabsProps } from '../../headless';
@@ -15,13 +14,11 @@ export type Tab = {
   content: React.ReactNode;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type TabsProps = HeadlessTabsProps &
   ClassName & {
     items: Tab[];
   };
 
-// eslint-disable-next-line no-empty-pattern
 export const Tabs = ({ value, onChange, items, className }: TabsProps) => {
   return (
     <HeadlessTabs value={value} onChange={onChange}>
@@ -34,7 +31,7 @@ export const Tabs = ({ value, onChange, items, className }: TabsProps) => {
                   if={{ condition: !!tab.href, component: Link as any, props: { to: tab.href } }}
                   else={{ component: 'button' }}
                   onClick={onClick}
-                  className={classNames(
+                  className={clsx(
                     isActive && 'font-semibold border-b border-Gray-3',
                     'transition-colors whitespace-nowrap',
                     'text-sm text-Gray-3',

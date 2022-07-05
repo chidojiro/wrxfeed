@@ -131,15 +131,17 @@ export const TargetCard = ({
                     Icon={EditIcon}
                     className="text-Gray-3"
                   />
-                  <PopoverMenuItem
-                    key="Delete-Target"
-                    value="delete-target"
-                    label="Delete Target"
-                    onClick={() => deleteTarget(data.id)}
-                    stopPropagation
-                    Icon={BinIcon}
-                    className="text-system-alert"
-                  />
+                  {!data.isPrimary && (
+                    <PopoverMenuItem
+                      key="Delete-Target"
+                      value="delete-target"
+                      label="Delete Target"
+                      onClick={() => deleteTarget(data.id)}
+                      stopPropagation
+                      Icon={BinIcon}
+                      className="text-system-alert"
+                    />
+                  )}
                 </PopoverMenu>
               </Menu>
             )}

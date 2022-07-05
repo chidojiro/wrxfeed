@@ -54,3 +54,4 @@ export { ReactComponent as TableSortIcon } from '@/assets/icons/outline/table-so
 export { ReactComponent as TableSortAscIcon } from '@/assets/icons/outline/table-sort-asc.svg';
 export { ReactComponent as TableSortDescIcon } from '@/assets/icons/outline/table-sort-desc.svg';
 export { ReactComponent as EyeHideIcon } from '@/assets/icons/outline/eye-hide.svg';
+export { ReactComponent as CommentIcon } from '@/assets/icons/solid/comment.svg';

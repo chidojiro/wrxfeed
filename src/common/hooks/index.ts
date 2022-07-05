@@ -10,3 +10,6 @@ export * from './useLegacyQuery';
 export * from './useUrlState';
 export * from './useInfiniteLoader';
 export * from './useControllable';
+export * from './useScrollbarDetector';
+export * from './useOverlay';
+export * from './useScrollDisable';
