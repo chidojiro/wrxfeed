@@ -166,11 +166,11 @@ export const PrimaryTarget = ({ data, className, departmentId }: PrimaryTargetPr
             )}
           </div>
         </div>
-        <div className="flex flex-1 flex-col px-4">
+        <div className="flex flex-1 flex-col px-4 pb-4">
           <MiniChartView
             target={data}
             onEdit={() => undefined}
-            className=""
+            className="overflow-hidden"
             xAxisClass="font-normal text-2xs"
           />
         </div>
