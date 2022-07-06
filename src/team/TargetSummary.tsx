@@ -18,7 +18,10 @@ export const TargetSummary = ({ departmentId }: TargetSummaryProps) => {
 
   return (
     <OverlayLoader loading={isValidating}>
-      <div className="shadow-shadowCard rounded-card bg-white flex p-6">
+      <button
+        className="shadow-shadowCard rounded-card bg-white flex p-6"
+        onClick={addTargetModalDisclosure.onOpen}
+      >
         {addTargetModalDisclosure.isOpen && (
           <AddTargetModal
             open={addTargetModalDisclosure.isOpen}
@@ -39,22 +42,19 @@ export const TargetSummary = ({ departmentId }: TargetSummaryProps) => {
           </div>
 
           <div className="pl-4 text-center">
-            <button
-              className="text-center justify-center flex items-center gap-2 mx-auto"
-              onClick={addTargetModalDisclosure.onOpen}
-            >
+            <div className="text-center justify-center flex items-center gap-2 mx-auto">
               <p className="text-md font-semibold">Create a target</p>
               <div className="rounded bg-Accent-2 !m-0 text-white">
                 <BasicsAddSmall className="w-4 h-4" />
               </div>
-            </button>
+            </div>
             <p className="text-Gray-6 text-sm">
               Align your teams to common goals. Targets help you track spend with categories and
               vendors.
             </p>
           </div>
         </div>
-      </div>
+      </button>
     </OverlayLoader>
   );
 };
