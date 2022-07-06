@@ -1,7 +1,7 @@
 import { TargetArrowFilled } from '@/assets';
+import { OverlayLoader } from '@/common/components';
 import { useFetcher, useScrollbarDetector } from '@/common/hooks';
 import { ClassName } from '@/common/types';
-import { MainLayoutLoader } from '@/layout/MainLayoutLoader';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
@@ -21,13 +21,8 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
   ]);
 
   return (
-    <MainLayoutLoader active={isValidating}>
-      <div
-        className={clsx(
-          'rounded-card shadow-shadowCard bg-white h-[450px] flex flex-col',
-          className,
-        )}
-      >
+    <OverlayLoader loading={isValidating} className={className}>
+      <div className={clsx('rounded-card shadow-shadowCard bg-white h-[450px] flex flex-col')}>
         <div className="p-5 flex items-center gap-2 font-semibold text-Gray-3">
           <TargetArrowFilled width={16} height={16} />
           <span>Summary</span>
@@ -51,6 +46,6 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
           ))}
         </div>
       </div>
-    </MainLayoutLoader>
+    </OverlayLoader>
   );
 };
