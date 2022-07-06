@@ -11,11 +11,12 @@ import { TargetSummary } from './TargetSummary';
 import { TopCategories } from './TopCategories';
 import { TransactionList } from './TransactionList';
 import { TeamHeader } from './TeamHeader';
+import { OverlayLoader } from '@/common/components';
 
 export const WrappedTeamPage: React.FC = () => {
   const { id: departmentIdParam } = useParams() as Record<string, string>;
   const departmentId = +departmentIdParam;
-  const { data: target } = usePrimaryTarget(departmentId);
+  const { data: target, isValidating: isValidatingTarget } = usePrimaryTarget(departmentId);
 
   return (
     <MainLayout
@@ -29,13 +30,11 @@ export const WrappedTeamPage: React.FC = () => {
           <h1 className="sr-only">Department list</h1>
           <TeamHeader departmentId={departmentId} teamName={target?.department?.name} />
           <div className="grid grid-cols-9 gap-6 mt-6">
-            <PrimaryTarget
-              className="col-span-9 lg:col-span-5 h-[500px]"
-              data={target}
-              departmentId={departmentId}
-            />
+            <OverlayLoader loading={isValidatingTarget} className="col-span-9 lg:col-span-5">
+              <PrimaryTarget className="h-[500px]" data={target} departmentId={departmentId} />
+            </OverlayLoader>
             <div className="col-span-9 lg:col-span-4 flex flex-col gap-6">
-              {!!target.department && <TargetSummary departmentId={departmentId} />}
+              <TargetSummary departmentId={departmentId} />
               <TopCategories />
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { Target, TargetStatusType, TargetPeriod, TargetProps } from './types';
 
-export const targetFallback: Target = {
+export const fallbackTarget: Target = {
   id: 0,
   name: '',
   creator: {},
