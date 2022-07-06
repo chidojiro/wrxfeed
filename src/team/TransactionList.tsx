@@ -62,8 +62,8 @@ export const TransactionList = ({ className }: TransactionListProps) => {
   };
 
   return (
-    <OverlayLoader loading={isValidating}>
-      <Table.OverflowContainer className={className}>
+    <Table.OverflowContainer className={className}>
+      <OverlayLoader loading={isValidating}>
         <Table
           className="rounded-card"
           sort={sortTransactionsBy}
@@ -141,7 +141,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
             )}
           </Table.Body>
         </Table>
-      </Table.OverflowContainer>
-    </OverlayLoader>
+      </OverlayLoader>
+    </Table.OverflowContainer>
   );
 };
