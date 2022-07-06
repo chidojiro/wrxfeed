@@ -86,7 +86,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
             ))}
           </Table.Row>
           {transactions.map(
-            ({ amountUsd, category, description, transDate, transaction, vendor, id }) => (
+            ({ amountUsd, category, description, transDate, vendor, id, transStatus }) => (
               <Table.Row
                 key={id}
                 className={clsx('relative cursor-pointer', 'list-row-hover')}
@@ -121,14 +121,12 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                 <Table.Cell>{category?.name}</Table.Cell>
                 <Table.Cell className="text-right">{decimalLogic(amountUsd, '$')}</Table.Cell>
                 <Table.Cell>
-                  {!!transaction.status && (
-                    <StatusTag
-                      colorScheme={getTransactionColorScheme(transaction.status)}
-                      className="font-semibold"
-                    >
-                      {getTransactionLabel(transaction.status)}
-                    </StatusTag>
-                  )}
+                  <StatusTag
+                    colorScheme={getTransactionColorScheme(transStatus)}
+                    className="font-semibold"
+                  >
+                    {getTransactionLabel(transStatus)}
+                  </StatusTag>
                 </Table.Cell>
               </Table.Row>
             ),

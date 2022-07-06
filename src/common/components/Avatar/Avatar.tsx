@@ -22,13 +22,14 @@ export const Avatar = ({ src, className, fullName, size = 'sm' }: AvatarProps) =
       )}
     >
       {src ? (
-        <img src={src} alt="" className="object-cover" />
+        <img src={src} alt="" className="object-cover" title={fullName} />
       ) : (
         <div
           className={clsx(
             'bg-purple-5 text-white font-semibold w-full h-full flex items-center justify-center',
             { 'text-3xs': size === 'sm' },
           )}
+          title={fullName}
         >
           {StringUtils.getNameInitials(fullName)}
         </div>

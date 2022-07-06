@@ -1,3 +1,4 @@
+import { TranStatus } from './transaction.entity';
 import { Department, Category, Vendor, Company, Transaction } from '.';
 
 export type UserLineItem = {
@@ -15,7 +16,7 @@ export type TransLineItem = {
   companyId?: number;
   company: Company;
   transId: number;
-  transaction: Transaction;
+  transaction?: Transaction;
   createdAt: Date;
   updatedAt: Date;
   externalId: string;
@@ -43,6 +44,7 @@ export type TransLineItem = {
   meta?: UserLineItem;
   vendorName?: string;
   transDate?: string;
+  transStatus: TranStatus;
 };
 
 export type LineItem = {
