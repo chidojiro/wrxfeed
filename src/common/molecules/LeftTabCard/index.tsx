@@ -54,7 +54,7 @@ const LeftTabCard: React.VFC<LeftTabCardProps> = ({ className = '', tab, showTab
         className,
       )}
     >
-      <div className="group-scope ml-1 flex flex-1 w-full flex-row hover:bg-Gray-7 justify-between py-2 items-center pl-10 pr-3 text-sm rounded-sm">
+      <div className="group-scope ml-1 flex flex-1 w-full flex-row hover:bg-Gray-7 justify-between py-1.5 items-center pl-10 pr-3 text-sm rounded-sm">
         {TabIcon && showTabIcon ? (
           <div className="flex w-5 h-5 justify-center items-center">
             <TabIcon
