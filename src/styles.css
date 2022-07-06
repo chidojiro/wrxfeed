@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .list-row-hover {
+    @apply hover:ring-1 hover:ring-Accent-4 hover:shadow-targetHover
+  }
+}
+
 body {
   background-color: #f3f4f6;
   margin: 0;
