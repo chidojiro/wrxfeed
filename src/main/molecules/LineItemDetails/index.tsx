@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useHistory } from 'react-router-dom';
 
 import {
   decimalLogic,
@@ -27,11 +29,9 @@ import {
 } from '@/assets';
 import Tooltip from '@/common/atoms/Tooltip';
 import UpdateVendorInfoModal from '@/main/organisms/UpdateVendorInfoModal';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
 import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
 import UpdateDetailsLineItemInfoModal from '@/main/organisms/UpdateDetailsLineItemInfoModal';
-import { useHistory } from 'react-router-dom';
 import { MainGroups } from '@/common/constants';
 
 export interface LineItemDetailsProps {
@@ -284,8 +284,8 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               <p className="flex-auto text-base font-bold text-Gray-3 mr-2">
                 {lineItemUpdate.description}
               </p>
-              {!!loading && <Loading className="ml-4" width={12} height={12} />}
-              <div className="block hidden group-hover:block">
+              {!!loading && <Loading className="mx-4" width={12} height={12} />}
+              <div className="hidden group-hover:block">
                 {renderEditLineItemDescriptionButton()}
               </div>
               <div className="flex group-hover:hidden">
@@ -361,7 +361,6 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               })}
             </ul>
           </div>
-
           <div className="flex flex-col px-3 w-[524px]">
             <p className="text-sm font-bold text-Gray-3">
               {`${getVendorNameFromLineItem(item)} also appears in these categories`}

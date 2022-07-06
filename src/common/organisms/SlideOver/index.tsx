@@ -6,19 +6,17 @@ import { Transition } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useErrorHandler } from 'react-error-boundary';
 import { useRecoilState } from 'recoil';
-// types
+import mixpanel from 'mixpanel-browser';
+
 import { TransLineItem } from '@/main/entity';
 import { isApiError } from '@/error/utils';
 import { classNames } from '@/common/utils';
-// hooks and states
+import { useIdentity } from '@/identity/hooks';
 import { useApi } from '@/api';
 import { slideOverOpenState } from '@/main/states/slideOver.state';
-// components
+
 import LineItemDetails from '@/main/molecules/LineItemDetails';
 import EventEmitter, { EventName } from '@/main/EventEmitter';
-
-import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@/identity/hooks';
 
 export interface SelectItemProps {
   item: TransLineItem;
@@ -33,7 +31,7 @@ export type LineInfo = {
   value: string;
 };
 
-const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
+const SlideOver: React.FC<SlideOverProps> = ({ className = '' }) => {
   const [open, setOpen] = useRecoilState(slideOverOpenState);
   const [loading, setLoading] = useState<boolean>(false);
   const [item, setItem] = useState<TransLineItem>();
@@ -42,31 +40,6 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
   const errorHandler = useErrorHandler();
 
   const identity = useIdentity();
-
-  const handleOpenSlide = (
-    props: SelectItemProps | unknown,
-    curItem: TransLineItem | undefined,
-    feedId?: number | undefined,
-  ) => {
-    if (props && typeof props === 'object') {
-      const lineItemProps = props as SelectItemProps;
-      setItem({
-        ...curItem,
-        ...lineItemProps.item,
-      });
-      if (!open) {
-        setOpen(true);
-      }
-
-      mixpanel.track('Feed Detail View', {
-        user_id: identity?.id,
-        email: identity?.email,
-        company: identity?.company?.id,
-        feed_id: feedId,
-        line_item_id: lineItemProps.item.id,
-      });
-    }
-  };
 
   const getLineItemDetails = async (id: number) => {
     try {
@@ -83,26 +56,41 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
     }
   };
 
+  const handleOpenSlide = (props: SelectItemProps | unknown, feedId?: number | undefined) => {
+    if (props && typeof props === 'object') {
+      const lineItemProps = props as SelectItemProps;
+      setItem({
+        ...lineItemProps.item,
+      });
+      getLineItemDetails(lineItemProps.item?.id);
+      if (!open) {
+        setOpen(true);
+      }
+
+      mixpanel.track('Feed Detail View', {
+        user_id: identity?.id,
+        email: identity?.email,
+        company: identity?.company?.id,
+        feed_id: feedId,
+        line_item_id: lineItemProps.item.id,
+      });
+    }
+  };
+
   const onClickOverlay = () => {
     setOpen(false);
   };
 
   useEffect(() => {
-    if (item?.id && !loading) {
-      getLineItemDetails(item?.id);
-    }
-  }, [item, open]);
-
-  useEffect(() => {
     EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop, feedId) =>
-      handleOpenSlide(prop, item, feedId as number),
+      handleOpenSlide(prop, feedId as number),
     );
     return () => {
       EventEmitter.unsubscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop, feedId) =>
-        handleOpenSlide(prop, item, feedId as number),
+        handleOpenSlide(prop, feedId as number),
       );
     };
-  }, [item]);
+  }, []);
 
   return (
     <Transition.Root show={open} as={Fragment}>
