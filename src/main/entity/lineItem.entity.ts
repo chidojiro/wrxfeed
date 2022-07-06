@@ -45,6 +45,7 @@ export type TransLineItem = {
   vendorName?: string;
   transDate?: string;
   transStatus: TranStatus;
+  feedItemId?: number;
 };
 
 export type LineItem = {
