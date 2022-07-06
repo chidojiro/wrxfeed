@@ -2,6 +2,7 @@ import { ClassName } from '@/common/types';
 import { StringUtils, withProjectClassNamePrefix } from '@/common/utils';
 import clsx from 'clsx';
 import React from 'react';
+import { Tooltip } from '../Tooltip';
 
 type AvatarSize = 'sm' | 'md' | 'lg';
 
@@ -21,19 +22,26 @@ export const Avatar = ({ src, className, fullName, size = 'sm' }: AvatarProps) =
         { 'w-6 h-6': size === 'sm' },
       )}
     >
-      {src ? (
-        <img src={src} alt="" className="object-cover" title={fullName} />
-      ) : (
-        <div
-          className={clsx(
-            'bg-purple-5 text-white font-semibold w-full h-full flex items-center justify-center',
-            { 'text-3xs': size === 'sm' },
-          )}
-          title={fullName}
-        >
-          {StringUtils.getNameInitials(fullName)}
-        </div>
-      )}
+      <Tooltip
+        arrowClassName="absolute left-1.5 -bottom-0.5"
+        placement="top-start"
+        trigger={
+          src ? (
+            <img src={src} alt="" className="object-cover" />
+          ) : (
+            <div
+              className={clsx(
+                'bg-purple-5 text-white font-semibold w-full h-full flex items-center justify-center',
+                { 'text-3xs': size === 'sm' },
+              )}
+            >
+              {StringUtils.getNameInitials(fullName)}
+            </div>
+          )
+        }
+      >
+        {fullName}
+      </Tooltip>
     </div>
   );
 };
