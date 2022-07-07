@@ -29,6 +29,7 @@ export type TargetCardProps = ClassName &
   Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'> & {
     data: Target;
     showColorfulHeading?: boolean;
+    clickable?: boolean;
   };
 
 export const TargetCard = ({
@@ -36,6 +37,7 @@ export const TargetCard = ({
   className,
   onUpdateSuccess,
   onDeleteSuccess,
+  clickable = true,
   showColorfulHeading = true,
 }: TargetCardProps) => {
   const history = useHistory();
@@ -47,6 +49,9 @@ export const TargetCard = ({
   );
 
   const goToTargetDetails = () => {
+    if (!clickable) {
+      return;
+    }
     history.push(
       `${(Routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
     );
@@ -60,7 +65,10 @@ export const TargetCard = ({
   const headingColor = getColorByText(data.name, undefined, true);
 
   return (
-    <div
+    <button
+      disabled={!clickable}
+      onClick={goToTargetDetails}
+      type="button"
       key={`Dashboard-TargetChartView-${data.id}`}
       className={clsx(
         'bg-white relative w-full overflow-hidden rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
@@ -155,6 +163,6 @@ export const TargetCard = ({
           <Loading color="Gray-3" />
         </div>
       )}
-    </div>
+    </button>
   );
 };

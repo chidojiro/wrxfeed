@@ -16,6 +16,10 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
     DepartmentApis.getSummaries(),
   );
 
+  React.useEffect(() => {
+    console.log('summaries: ' + JSON.stringify(summaries));
+  }, [summaries]);
+
   const { scrollbarWidth: summaryListScrollbarWidth } = useScrollbarDetector(summaryListRef, [
     summaries,
   ]);
