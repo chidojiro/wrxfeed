@@ -1,33 +1,39 @@
-import { GetUploadTokenBody, UploadTypes } from '@/api/types';
-// assets
-import { CalendarMinus, ExclamationCircle, EyeHideIcon } from '@/assets';
-import { classNames, distanceToNow } from '@/common/utils';
-// hooks
-import { useIdentity } from '@/identity/hooks';
-import CommentViewAll from '@/main/atoms/CommentViewAll';
-import ConfirmModal from '@/main/atoms/ConfirmModal';
-import UserAvatar from '@/main/atoms/UserAvatar';
-// constants
-import { FeedItem, User, Visibility } from '@/main/entity';
-import { useMention } from '@/main/hooks';
-import { useFeedComment } from '@/main/hooks/feedComment.hook';
-// components
-import CommentBox from '@/main/molecules/CommentBox';
-import CommentItem from '@/main/molecules/CommentItem';
-import RollupTransactions from '@/main/molecules/RollupTransactions';
-import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
-import FeedBackModal from '@/main/organisms/FeedBackModal';
-import { CommentFormModel } from '@/main/types';
-import { commentEditorRawParser, getMultiMonthRange, getTargetName } from '@/main/utils';
-import { PaginationParams } from '@/rest/types';
-import { AddTargetModal } from '@/target/AddTargetModal';
-import { Target } from '@/target/types';
-import dayjs from 'dayjs';
 import { EditorState } from 'draft-js';
 import { cloneDeep } from 'lodash-es';
 import React, { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { TargetChartView } from './TargetChartView';
+import { Menu } from '@headlessui/react';
+import { useDisclosure } from '@dwarvesf/react-hooks';
+
+import { GetUploadTokenBody, UploadTypes } from '@/api/types';
+import { Target } from '@/target/types';
+import { TargetApis } from './apis';
+import { PaginationParams } from '@/rest/types';
+import { CommentFormModel } from '@/main/types';
+import { commentEditorRawParser, getTargetName } from '@/main/utils';
+import { FeedItem, User, Visibility } from '@/main/entity';
+import { classNames, distanceToNow } from '@/common/utils';
+// assets
+import { MoreVerticalIcon, ExclamationCircle, EyeHideIcon, EditIcon, BinIcon } from '@/assets';
+// hooks
+import { useIdentity } from '@/identity/hooks';
+import { useHandler } from '@/common/hooks';
+import { useMention } from '@/main/hooks';
+import { useFeedComment } from '@/main/hooks/feedComment.hook';
+// components
+import CommentViewAll from '@/main/atoms/CommentViewAll';
+import ConfirmModal from '@/main/atoms/ConfirmModal';
+import UserAvatar from '@/main/atoms/UserAvatar';
+import CommentBox from '@/main/molecules/CommentBox';
+import CommentItem from '@/main/molecules/CommentItem';
+import RollupTransactions from '@/main/molecules/RollupTransactions';
+import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
+import FeedBackModal from '@/main/organisms/FeedBackModal';
+import { AddTargetModal } from '@/target/AddTargetModal';
+import PopoverMenu from '@/main/atoms/PopoverMenu';
+import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
+import Loading from '@/common/atoms/Loading';
 
 export interface TargetFeedItemProps {
   feedItem: FeedItem;
@@ -61,7 +67,6 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
     const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
     const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
     const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
-    const [showAddTarget, setShowAddTarget] = useState<boolean>(false);
     const [itemEditing, setItemEditing] = useState<Target | null>(null);
     // Data hooks
     const { mentions } = useMention();
@@ -81,7 +86,7 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
     const hasComment = comments?.length > 0;
 
     const onSuccessPutTarget = (target?: Target) => {
-      setShowAddTarget(false);
+      addTargetModalDisclosure.onClose();
       const updatedBy: User = {
         id: identity?.id,
         avatar: identity?.avatar,
@@ -103,7 +108,7 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
     };
 
     const onSuccessDeleteTarget = () => {
-      setShowAddTarget(false);
+      addTargetModalDisclosure.onClose();
       onBack?.();
     };
 
@@ -136,13 +141,19 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
 
     const hideAddTargetModal = () => {
       setItemEditing(null);
-      setShowAddTarget(false);
+      addTargetModalDisclosure.onClose();
     };
 
     const onClickEditTarget = () => {
       setItemEditing(curFeed.target);
-      setShowAddTarget(true);
+      addTargetModalDisclosure.onOpen();
     };
+
+    const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
+      TargetApis.delete(targetId),
+    );
+
+    const addTargetModalDisclosure = useDisclosure();
 
     const renderEditorAvatar = (target: Target) => {
       const updaterName = target?.updatedBy?.fullName ?? '';
@@ -198,7 +209,7 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
         <article
           ref={containerRef}
           key={curFeed.id}
-          className="bg-white flex flex-col filter shadow-md rounded-card"
+          className="bg-white flex flex-col filter shadow-md rounded-card relative"
           aria-labelledby={`rollup-title-${curFeed?.id}`}
         >
           <div className="flex flex-col">
@@ -227,17 +238,40 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
                     </div>
                   )}
                 </div>
-                <div className="flex-row space-x-2 self-center flex items-center">
-                  <h2 id={`question-title-${curFeed?.id}`} className="text-xs text-Gray-6">
-                    {`${getMultiMonthRange(curFeed.target.periods)} ${dayjs().format('YYYY')}`}
-                  </h2>
-                  <button
-                    type="button"
-                    className="w-6 h-6 rounded-full bg-Gray-12 flex justify-center items-center"
-                  >
-                    <CalendarMinus className="w-3 h-3" width={12} height={12} />
-                  </button>
-                </div>
+                <Menu as="div" className="relative inline-block z-20 text-left">
+                  <div>
+                    <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
+                      <span className="sr-only">Open options</span>
+                      <MoreVerticalIcon
+                        className="fill-current text-Gray-3 path-no-filled"
+                        aria-hidden="true"
+                        viewBox="0 0 15 15"
+                      />
+                    </Menu.Button>
+                  </div>
+                  <PopoverMenu>
+                    <PopoverMenuItem
+                      key="Edit-Target"
+                      value="edit-target"
+                      label="Edit Target"
+                      onClick={onClickEditTarget}
+                      stopPropagation
+                      Icon={EditIcon}
+                      className="text-Gray-3"
+                    />
+                    {!curFeed?.target?.isPrimary && (
+                      <PopoverMenuItem
+                        key="Delete-Target"
+                        value="delete-target"
+                        label="Delete Target"
+                        onClick={() => deleteTarget(curFeed?.target?.id)}
+                        stopPropagation
+                        Icon={BinIcon}
+                        className="text-system-alert"
+                      />
+                    )}
+                  </PopoverMenu>
+                </Menu>
               </div>
               <div className="flex flex-row space-x-2 items-center h-6">
                 {renderEditorAvatar(curFeed?.target)}
@@ -292,6 +326,11 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
               onSubmit={onSubmitComment}
             />
           </div>
+          {isDeletingTarget && (
+            <div className="absolute flex justify-center datas-center inset-0 rounded-card bg-black/10">
+              <Loading color="Gray-3" />
+            </div>
+          )}
         </article>
         <ConfirmModal
           open={!!confirmModal}
@@ -323,7 +362,7 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
           />
         )}
         <AddTargetModal
-          open={showAddTarget}
+          open={addTargetModalDisclosure.isOpen}
           onClose={hideAddTargetModal}
           onCancel={hideAddTargetModal}
           target={itemEditing}
