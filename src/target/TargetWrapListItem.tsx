@@ -1,17 +1,14 @@
-import { BinIcon, EditIcon, EyeIcon, MoreVerticalIcon } from '@/assets';
 import Loading from '@/common/atoms/Loading';
 import { useHandler } from '@/common/hooks';
 import { distanceToNow } from '@/common/utils';
 import EditorAvatar from '@/main/atoms/EditorAvatar';
-import PopoverMenu from '@/main/atoms/PopoverMenu';
-import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
+import { OptionsButton } from '@/main/molecules';
 import MiniChartView from '@/main/molecules/MiniChartView';
 import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
 import { Routes } from '@/routing/routes';
-import { Menu } from '@headlessui/react';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { TargetApis } from './apis';
@@ -65,52 +62,11 @@ export const TargetWrapListItem = React.memo(
                   </h2>
                 </div>
               </div>
-              <Menu as="div" className="relative inline-block z-20 text-left">
-                <div>
-                  <Menu.Button
-                    onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
-                      event.stopPropagation()
-                    }
-                    className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600"
-                  >
-                    <span className="sr-only">Open options</span>
-                    <MoreVerticalIcon
-                      className="fill-current text-Gray-3 path-no-filled"
-                      aria-hidden="true"
-                      viewBox="0 0 15 15"
-                    />
-                  </Menu.Button>
-                </div>
-                <PopoverMenu>
-                  <PopoverMenuItem
-                    key="View-Details"
-                    value="view-details"
-                    label="View Details"
-                    onClick={handleViewClick}
-                    stopPropagation
-                    Icon={EyeIcon}
-                    className="text-Gray-3"
-                  />
-                  <PopoverMenuItem
-                    key="Edit-Target"
-                    value="edit-target"
-                    label="Edit Target"
-                    onClick={() => onEditClick?.(data)}
-                    stopPropagation
-                    Icon={EditIcon}
-                    className="text-Gray-3"
-                  />
-                  <PopoverMenuItem
-                    key="Delete-Target"
-                    value="delete-target"
-                    label="Delete Target"
-                    onClick={() => deleteTarget(data.id)}
-                    stopPropagation
-                    Icon={BinIcon}
-                    className="text-system-alert"
-                  />
-                </PopoverMenu>
-              </Menu>
+              <OptionsButton
+                onViewClick={handleViewClick}
+                onEditClick={() => onEditClick?.(data)}
+                onDeleteClick={() => deleteTarget(data.id)}
+              />
             </div>
             <div className="flex flex-row justify-between">
               <div className="flex flex-row space-x-2.5 text-Gray-6">
