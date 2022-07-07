@@ -6,7 +6,7 @@ import { ReactComponent as CarbonTrashCan } from '@/assets/icons/outline/carbon-
 import Loading from '@/common/atoms/Loading';
 import Modal from '@/common/atoms/Modal';
 import { defaultTargetMonths, INITIAL_CHART_DATA } from '@/common/constants';
-import { withMountOnDemandModal } from '@/common/hocs/withMountOnDemandModal';
+import { withMountOnOpen } from '@/common/hocs/withMountOnOpen';
 import { useHandler } from '@/common/hooks';
 import { classNames, formatCurrency, round } from '@/common/utils';
 import ListLoading from '@/main/atoms/ListLoading';
@@ -70,7 +70,7 @@ const LAST_YEAR_INIT_FILTER = Object.freeze({
   periods: getPeriodsByYear(THIS_YEAR - 1),
 });
 
-export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandModal(
+export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
   ({
     open = false,
     onClose,
