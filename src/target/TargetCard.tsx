@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
-import { useHistory } from 'react-router-dom';
 
 import Loading from '@/common/atoms/Loading';
 import { Avatar } from '@/common/components';
@@ -10,7 +9,6 @@ import { ClassName } from '@/common/types';
 import { distanceToNow } from '@/common/utils';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
-import { FeedType } from '@/main/entity';
 import MiniChartView from '@/main/molecules/MiniChartView';
 import {
   decimalLogic,
@@ -18,12 +16,10 @@ import {
   getColorByText,
   getTargetPeriodsAmountTotal,
 } from '@/main/utils';
-import { Routes } from '@/routing/routes';
 import { AddTargetModal } from './AddTargetModal';
 import { AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
 import { Target } from './types';
-import { OptionsButton } from '@/main/molecules';
 
 export type TargetCardProps = ClassName &
   Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'> & {
@@ -38,19 +34,11 @@ export const TargetCard = ({
   onDeleteSuccess,
   showColorfulHeading = true,
 }: TargetCardProps) => {
-  const history = useHistory();
-
   const department = data.department;
 
-  const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
+  const { isLoading: isDeletingTarget } = useHandler((targetId: number) =>
     TargetApis.delete(targetId),
   );
-
-  const goToTargetDetails = () => {
-    history.push(
-      `${(Routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
-    );
-  };
 
   const { overallTarget, currentSpend, targetToDate, exceeding } =
     getTargetPeriodsAmountTotal(data);
@@ -88,11 +76,6 @@ export const TargetCard = ({
             <div className="flex flex-col flex-1 h-12 max-h-12">
               <div className="flex justify-between items-center h-6">
                 <TargetFeedName target={data} />
-                <OptionsButton
-                  onViewClick={goToTargetDetails}
-                  onEditClick={addTargetModalDisclosure.onOpen}
-                  onDeleteClick={() => deleteTarget(data.id)}
-                />
               </div>
               <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
                 <Avatar
