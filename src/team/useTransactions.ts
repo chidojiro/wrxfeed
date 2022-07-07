@@ -3,6 +3,12 @@ import { useFetcher, useQuery } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { useParams } from 'react-router-dom';
 
+const LIMIT = 9999;
+const INIT_PAGINATION = Object.freeze({
+  offset: 0,
+  limit: LIMIT,
+});
+
 export const useTransactions = (id?: number, sortBy?: string) => {
   const { id: departmentIdParam } = useParams() as Record<string, string>;
 
@@ -14,9 +20,10 @@ export const useTransactions = (id?: number, sortBy?: string) => {
   const departmentId = id ?? +departmentIdParam;
   const sortTransactionsBy = sortBy ?? sortTransactionsByQuery;
 
-  return useFetcher(['transactions', departmentId, sortTransactionsBy], () => {
+  return useFetcher(['transactions', departmentId, sortTransactionsBy, INIT_PAGINATION], () => {
     const sort = sortTransactionsBy ? StringUtils.toApiSortQuery(sortTransactionsBy) : {};
+    const filters = { ...sort, ...INIT_PAGINATION };
 
-    return api.getLineItems(departmentId, sort);
+    return api.getLineItems(departmentId, filters);
   });
 };
