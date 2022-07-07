@@ -1,15 +1,15 @@
+import { Drawer } from '@/common/components';
 import { withMountOnOpen } from '@/common/hocs';
 import { useFetcher } from '@/common/hooks';
 import { OpenClose } from '@/common/types';
-import { FeedApis } from '@/feed/apis';
-import LineItemDetails from '@/feed/LineItemDetails';
 import { useIdentity } from '@/identity/hooks';
-import { AppLayout } from '@/layout/AppLayout';
 import { TransLineItem } from '@/main/entity';
 import { Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import mixpanel from 'mixpanel-browser';
 import React, { Fragment } from 'react';
+import { FeedApis } from './apis';
+import LineItemDetails from './LineItemDetails';
 
 export interface SelectItemProps {
   item: TransLineItem;
@@ -40,7 +40,7 @@ export const LineItemDrawer = withMountOnOpen(
     }, [feedId, identity?.company?.id, identity?.email, identity?.id, lineItem.id]);
 
     return (
-      <AppLayout.Drawer open={open}>
+      <Drawer open={open}>
         <Transition.Root show={open} as={Fragment}>
           <div className={clsx('absolute inset-0 overflow-hidden', className)}>
             <div role="alertdialog" className="absolute inset-0 z-5" onClick={onClose} />
@@ -65,7 +65,7 @@ export const LineItemDrawer = withMountOnOpen(
             </div>
           </div>
         </Transition.Root>
-      </AppLayout.Drawer>
+      </Drawer>
     );
   },
 );
