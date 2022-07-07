@@ -3,7 +3,6 @@ import { cloneDeep } from 'lodash-es';
 import React, { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { TargetChartView } from './TargetChartView';
-import { Menu } from '@headlessui/react';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 
 import { GetUploadTokenBody, UploadTypes } from '@/api/types';
@@ -15,7 +14,7 @@ import { commentEditorRawParser, getTargetName } from '@/main/utils';
 import { FeedItem, User, Visibility } from '@/main/entity';
 import { classNames, distanceToNow } from '@/common/utils';
 // assets
-import { MoreVerticalIcon, ExclamationCircle, EyeHideIcon, EditIcon, BinIcon } from '@/assets';
+import { ExclamationCircle, EyeHideIcon } from '@/assets';
 // hooks
 import { useIdentity } from '@/identity/hooks';
 import { useHandler } from '@/common/hooks';
@@ -31,9 +30,8 @@ import RollupTransactions from '@/main/molecules/RollupTransactions';
 import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
 import FeedBackModal from '@/main/organisms/FeedBackModal';
 import { AddTargetModal } from '@/target/AddTargetModal';
-import PopoverMenu from '@/main/atoms/PopoverMenu';
-import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import Loading from '@/common/atoms/Loading';
+import { OptionsButton } from '@/main/molecules';
 
 export interface TargetFeedItemProps {
   feedItem: FeedItem;
@@ -203,6 +201,10 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
       );
     };
 
+    const onDeleteTarget = () => {
+      deleteTarget(curFeed?.target?.id);
+    };
+
     return (
       <>
         <article
@@ -237,40 +239,10 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
                     </div>
                   )}
                 </div>
-                <Menu as="div" className="relative inline-block z-20 text-left">
-                  <div>
-                    <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
-                      <span className="sr-only">Open options</span>
-                      <MoreVerticalIcon
-                        className="fill-current text-Gray-3 path-no-filled"
-                        aria-hidden="true"
-                        viewBox="0 0 15 15"
-                      />
-                    </Menu.Button>
-                  </div>
-                  <PopoverMenu>
-                    <PopoverMenuItem
-                      key="Edit-Target"
-                      value="edit-target"
-                      label="Edit Target"
-                      onClick={onClickEditTarget}
-                      stopPropagation
-                      Icon={EditIcon}
-                      className="text-Gray-3"
-                    />
-                    {!curFeed?.target?.isPrimary && (
-                      <PopoverMenuItem
-                        key="Delete-Target"
-                        value="delete-target"
-                        label="Delete Target"
-                        onClick={() => deleteTarget(curFeed?.target?.id)}
-                        stopPropagation
-                        Icon={BinIcon}
-                        className="text-system-alert"
-                      />
-                    )}
-                  </PopoverMenu>
-                </Menu>
+                <OptionsButton
+                  onEditClick={onClickEditTarget}
+                  onDeleteClick={!curFeed?.target?.isPrimary ? onDeleteTarget : undefined}
+                />
               </div>
               <div className="flex flex-row space-x-2 items-center h-6">
                 {renderEditorAvatar(curFeed?.target)}

@@ -1,11 +1,13 @@
-import { BinIcon, EditIcon, EyeIcon, MoreVerticalIcon } from '@/assets';
+import React from 'react';
+import { useDisclosure } from '@dwarvesf/react-hooks';
+import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
+
 import Loading from '@/common/atoms/Loading';
 import { Avatar } from '@/common/components';
 import { useHandler } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { distanceToNow } from '@/common/utils';
-import PopoverMenu from '@/main/atoms/PopoverMenu';
-import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
@@ -17,15 +19,11 @@ import {
   getTargetPeriodsAmountTotal,
 } from '@/main/utils';
 import { Routes } from '@/routing/routes';
-import { useDisclosure } from '@dwarvesf/react-hooks';
-import { Menu } from '@headlessui/react';
-import clsx from 'clsx';
-import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { AddTargetModal } from './AddTargetModal';
 import { AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
 import { Target } from './types';
+import { OptionsButton } from '@/main/molecules';
 
 export type TargetCardProps = ClassName &
   Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'> & {
@@ -90,49 +88,11 @@ export const TargetCard = ({
             <div className="flex flex-col flex-1 h-12 max-h-12">
               <div className="flex justify-between items-center h-6">
                 <TargetFeedName target={data} />
-                <Menu as="div" className="relative inline-block z-20 text-left">
-                  <div>
-                    <Menu.Button className="-m-2 p-2 rounded-full flex datas-center text-gray-400 hover:text-gray-600">
-                      <span className="sr-only">Open options</span>
-                      <MoreVerticalIcon
-                        className="fill-current text-Gray-3 path-no-filled"
-                        aria-hidden="true"
-                        viewBox="0 0 15 15"
-                      />
-                    </Menu.Button>
-                  </div>
-                  <PopoverMenu>
-                    <PopoverMenuItem
-                      key="View-Details"
-                      value="view-details"
-                      label="View Details"
-                      onClick={goToTargetDetails}
-                      stopPropagation
-                      Icon={EyeIcon}
-                      className="text-Gray-3"
-                    />
-                    <PopoverMenuItem
-                      key="Edit-Target"
-                      value="edit-target"
-                      label="Edit Target"
-                      onClick={addTargetModalDisclosure.onOpen}
-                      stopPropagation
-                      Icon={EditIcon}
-                      className="text-Gray-3"
-                    />
-                    {!data.isPrimary && (
-                      <PopoverMenuItem
-                        key="Delete-Target"
-                        value="delete-target"
-                        label="Delete Target"
-                        onClick={() => deleteTarget(data.id)}
-                        stopPropagation
-                        Icon={BinIcon}
-                        className="text-system-alert"
-                      />
-                    )}
-                  </PopoverMenu>
-                </Menu>
+                <OptionsButton
+                  onViewClick={goToTargetDetails}
+                  onEditClick={addTargetModalDisclosure.onOpen}
+                  onDeleteClick={() => deleteTarget(data.id)}
+                />
               </div>
               <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
                 <Avatar
