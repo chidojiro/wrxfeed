@@ -10,7 +10,7 @@ import {
 import { useUrlState } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { DateUtils } from '@/common/utils';
-import { TranStatus } from '@/main/entity';
+import { TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
 import clsx from 'clsx';
 import React from 'react';
@@ -57,8 +57,8 @@ export const TransactionList = ({ className }: TransactionListProps) => {
     { label: 'Status', sortKey: 'transStatus' },
   ];
 
-  const goToLineItemPage = (id: number) => {
-    history.push(`/feed/${id}`);
+  const goToLineItemPage = (feedItemId: number) => {
+    history.push(`/feed/${feedItemId}`);
   };
 
   return (
@@ -94,11 +94,20 @@ export const TransactionList = ({ className }: TransactionListProps) => {
               ))}
             </Table.Row>
             {transactions.map(
-              ({ amountUsd, category, description, transDate, vendor, id, transStatus }) => (
+              ({
+                amountUsd,
+                category,
+                description,
+                transDate,
+                vendor,
+                id,
+                transStatus,
+                feedItemId,
+              }: TransLineItem) => (
                 <Table.Row
                   key={id}
                   className={clsx('relative cursor-pointer', 'list-row-hover')}
-                  onClick={() => goToLineItemPage(id)}
+                  onClick={() => feedItemId && goToLineItemPage(feedItemId)}
                 >
                   <Table.Cell>
                     <ChatIcon />
