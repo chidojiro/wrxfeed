@@ -23,8 +23,8 @@ import createMentionPlugin, {
   defaultTheme,
 } from '@draft-js-plugins/mention';
 import createLinkifyPlugin from '@draft-js-plugins/linkify';
-import MentionEntry from '@main/atoms/MentionEntry';
-import { useCombinedRefs } from '@common/hooks/useCombinedRefs';
+import MentionEntry from '@/main/atoms/MentionEntry';
+import { useCombinedRefs } from '@/common/hooks/useCombinedRefs';
 
 const { isSoftNewlineEvent } = KeyBindingUtil;
 
@@ -147,7 +147,7 @@ const CommentInput: React.ForwardRefRenderFunction<Editor, CommentInputProps> = 
         plugins={plugins}
         onChange={handleEditorChange}
         {...rest}
-      />
+      ></Editor>
       <MentionSuggestions
         open={openMention}
         onOpenChange={onOpenChange}

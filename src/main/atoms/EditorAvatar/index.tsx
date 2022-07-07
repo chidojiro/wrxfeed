@@ -1,7 +1,7 @@
 import React from 'react';
-import { classNames } from '@common/utils';
-import UserAvatar from '@main/atoms/UserAvatar';
-import { User } from '@main/entity';
+import UserAvatar from '@/main/atoms/UserAvatar';
+import { User } from '@/main/entity';
+import { classNames } from '@/common/utils';
 
 export interface EditorAvatarProps {
   className?: string;
@@ -11,6 +11,7 @@ export interface EditorAvatarProps {
 
 const EditorAvatar: React.VFC<EditorAvatarProps> = ({ className = '', updater, size = 24 }) => {
   const updaterName = updater?.fullName ?? '';
+
   return (
     <div className={classNames('flex w-6 h-6 group relative', className)}>
       <UserAvatar user={updater} size={size} />

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { LeftTab } from '@common/types';
-import { classNames } from '@common/utils';
+import { LeftTab } from '@/common/types';
+import { classNames } from '@/common/utils';
 import LeftTabCard from '../LeftTabCard';
 
 interface TabListSideBarProps {

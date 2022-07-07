@@ -4,14 +4,14 @@ import React, { useMemo, useRef, useState } from 'react';
 import dayjs from 'dayjs';
 import { useSetRecoilState } from 'recoil';
 
-import EventEmitter, { EventName } from '@main/EventEmitter';
-import { Transaction, TranStatusType, Vendor } from '@main/entity';
-import { classNames, DATE_FORMAT } from '@common/utils';
+import EventEmitter, { EventName } from '@/main/EventEmitter';
+import { Transaction, TranStatusType, Vendor } from '@/main/entity';
+import { classNames, DATE_FORMAT } from '@/common/utils';
 
-import TranLineItemsList from '@main/molecules/TranLineItemsList';
-import { ReactComponent as DownSmall } from '@assets/icons/outline/down-small.svg';
-import { lineItemSelectState } from '@main/states/lineItems.state';
-import { decimalLogic, DecimalType, getTransactionStatus } from '@main/utils';
+import TranLineItemsList from '@/main/molecules/TranLineItemsList';
+import { ReactComponent as DownSmall } from '@/assets/icons/outline/down-small.svg';
+import { lineItemSelectState } from '@/main/states/lineItems.state';
+import { decimalLogic, DecimalType, getTransactionStatus } from '@/main/utils';
 
 export interface RollupTranRowProps {
   tran: Transaction;

@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { UserToken, Identity } from '@identity/types';
+import { UserToken, Identity } from '@/identity/types';
 import {
   Comment,
   Transaction,
@@ -9,20 +9,19 @@ import {
   Category,
   Vendor,
   Notification,
-  Target,
   Subscription,
   FeedItem,
   TransLineItem,
   VendorDescription,
   LineItem,
-} from '@main/entity';
-import { ApiError } from '@error';
+  TopCategories,
+} from '@/main/entity';
+import { ApiError } from '@/error';
 import {
   ApiClient,
   ChangePasswordDto,
   CommentFilters,
   GetUploadTokenBody,
-  Pagination,
   ResetPasswordDto,
   TransactionBody,
   UploadToken,
@@ -31,10 +30,6 @@ import {
   AddCommentParams,
   OrderDirection,
   DepartmentFilter,
-  TargetFilter,
-  PostTargetParams,
-  PutTargetParams,
-  PatchCalcSpendingFilters,
   SubscriptionParams,
   NotificationsResponse,
   FeedItemFilters,
@@ -42,18 +37,17 @@ import {
   AddFeedCommentParams,
   FeedFilters,
   CategoryFilter,
-  TargetPeriod,
-  TargetSummaries,
-} from '@api/types';
+} from '@/api/types';
 import {
   AuthProfile,
   ForgotPwdFormModel,
   LoginFormModel,
   Profile,
   ProfileFormModel,
-} from '@auth/types';
-import { handleResponseFail } from '@api/utils';
-import { InviteFormModel, FeedBackFormModel } from '@main/types';
+} from '@/auth/types';
+import { handleResponseFail } from '@/api/utils';
+import { InviteFormModel, FeedBackFormModel } from '@/main/types';
+import { PaginationParams } from '@/rest/types';
 
 export default class ApiUtils implements ApiClient {
   private client: AxiosInstance;
@@ -235,7 +229,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getMentions = async (pagination?: Pagination): Promise<User[]> => {
+  getMentions = async (pagination?: PaginationParams): Promise<User[]> => {
     const res = await this.request<User[]>({
       url: '/user/me/mentions',
       method: 'GET',
@@ -332,7 +326,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getVendors = async (pagination?: Pagination): Promise<Vendor[]> => {
+  getVendors = async (pagination?: PaginationParams): Promise<Vendor[]> => {
     const res = await this.request<Vendor[]>({
       url: '/feed/vendors',
       method: 'GET',
@@ -350,7 +344,7 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getNotifications = async (page?: Pagination): Promise<NotificationsResponse> => {
+  getNotifications = async (page?: PaginationParams): Promise<NotificationsResponse> => {
     const res = await this.request<Notification[]>({
       url: '/noti/notifications',
       method: 'GET',
@@ -376,63 +370,6 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<void>({
       url: '/noti/notifications',
       method: 'PATCH',
-    });
-    return res.data;
-  };
-
-  getTargets = async (filters?: TargetFilter): Promise<Target[]> => {
-    const res = await this.request<Target[]>({
-      url: '/target/targets',
-      method: 'GET',
-      params: {
-        year: filters?.year,
-        month: filters?.month,
-        dep: filters?.dep,
-        forYou: filters?.forYou,
-        offset: filters?.offset,
-        limit: filters?.limit,
-      },
-    });
-    return res.data;
-  };
-
-  postTarget = async (data: PostTargetParams): Promise<void> => {
-    await this.request<void>({
-      url: '/target/targets',
-      method: 'POST',
-      data,
-    });
-  };
-
-  putTarget = async (id: number, data: PutTargetParams): Promise<Target> => {
-    const res = await this.request<Target>({
-      url: `/target/targets/${id}`,
-      method: 'PUT',
-      data,
-    });
-    return res.data;
-  };
-
-  deleteTarget = async (id: number): Promise<void> => {
-    await this.request<void>({
-      url: `/target/targets/${id}`,
-      method: 'DELETE',
-    });
-  };
-
-  patchCalcSpending = async (data: PatchCalcSpendingFilters): Promise<TargetPeriod[]> => {
-    const res = await this.request<TargetPeriod[]>({
-      url: '/target/spending',
-      method: 'PATCH',
-      data,
-    });
-    return res.data;
-  };
-
-  getTargetSummaries = async (): Promise<TargetSummaries> => {
-    const res = await this.request<TargetSummaries>({
-      url: '/target/summaries',
-      method: 'GET',
     });
     return res.data;
   };
@@ -554,6 +491,14 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
+  getTopCategories = async (departmentId: number): Promise<TopCategories[]> => {
+    const res = await this.request<TopCategories[]>({
+      url: `/feed/departments/${departmentId}/categories`,
+      method: 'GET',
+    });
+    return res.data;
+  };
+
   getVendorById = async (venId: number): Promise<Vendor> => {
     const res = await this.request<Vendor>({
       url: `/feed/vendors/${venId}`,
@@ -609,6 +554,15 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<TransLineItem>({
       url: `/feed/line-items/${id}`,
       method: 'GET',
+    });
+    return res.data;
+  };
+
+  getLineItems = async (departmentId: number, params: any): Promise<TransLineItem[]> => {
+    const res = await this.request<TransLineItem[]>({
+      url: `/feed/line-items?depId=${departmentId}`,
+      method: 'GET',
+      params,
     });
     return res.data;
   };

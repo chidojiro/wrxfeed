@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react/types-6-0';
 
-import { Comment } from '@main/entity';
+import { Comment } from '@/main/entity';
 import CommentItem, { CommentItemProps } from '.';
 
 export default {

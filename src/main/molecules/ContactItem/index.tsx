@@ -1,6 +1,6 @@
 import React, { VFC } from 'react';
-import { Contact } from '@main/entity';
-import { classNames } from '@common/utils';
+import { Contact } from '@/main/entity';
+import { classNames } from '@/common/utils';
 
 interface ContactItemProps {
   className?: string;

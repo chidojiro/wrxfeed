@@ -1,49 +1,9 @@
+import { InfoCircleIcon } from '@/assets';
+import { classNames } from '@/common/utils';
+import { getTrackingStatusName } from '@/main/utils';
+import { TargetStatusConfig, TargetStatusType } from '@/target/types';
 import React from 'react';
-import { InfoCircleIcon } from '@assets';
-import { classNames } from '@common/utils';
-import { TargetStatusConfig, TargetStatusType } from '@main/entity';
-import { getTrackingStatusName } from '@main/utils';
-
-interface TargetStatusMessageProps {
-  type: TargetStatusType;
-  riskRange: number;
-  exceeding: number;
-}
-
-export const TargetStatusMessage: React.VFC<TargetStatusMessageProps> = ({
-  type,
-  riskRange,
-  exceeding,
-}) => {
-  switch (type) {
-    case TargetStatusType.OnTrack:
-      return <p>Spend is below the target</p>;
-    case TargetStatusType.AtRisk:
-      return (
-        <p>
-          Spend is within
-          <span style={{ color: TargetStatusConfig[TargetStatusType.AtRisk].dot }}>
-            {` ${riskRange}% `}
-          </span>
-          of the target
-        </p>
-      );
-    case TargetStatusType.Exceeded:
-      return (
-        <p>
-          Spend is exceeding the target by
-          <span
-            className="mx-2"
-            style={{ color: TargetStatusConfig[TargetStatusType.Exceeded].dot }}
-          >
-            {` ${exceeding}% `}
-          </span>
-        </p>
-      );
-    default:
-      return <p>Spend is below the target</p>;
-  }
-};
+import TargetStatusMessage from '../TargetStatusMessage';
 
 interface TargetStatusProps {
   className?: string;
@@ -66,7 +26,7 @@ const TargetStatus: React.VFC<TargetStatusProps> = ({ className = '', type, exce
       <div className="flex w-2 h-2 justify-center items-center">
         <div className="w-1.5 h-1.5 rounded-full bg-Green-400" style={{ backgroundColor: dot }} />
       </div>
-      <p className="text-Green-800 text-xs font-medium" style={{ color: label }}>
+      <p className="text-Green-800 text-xs font-medium whitespace-nowrap" style={{ color: label }}>
         {getTrackingStatusName(type)}
       </p>
       <div className="invisible group-hover:visible absolute -top-10 right-0">

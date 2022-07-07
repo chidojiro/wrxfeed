@@ -1,23 +1,19 @@
 /* eslint-disable react/jsx-curly-newline */
-import React, { Fragment, useState, useCallback, useRef, useEffect } from 'react';
-import { Transition } from '@headlessui/react';
-import { useHistory } from 'react-router-dom';
+import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basics-search-small.svg';
+import { ReactComponent as BasicsXSmall } from '@/assets/icons/outline/basics-x-small.svg';
+import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
+import Loading from '@/common/atoms/Loading';
+import { MainGroups } from '@/common/constants';
+import { useDebounce } from '@/common/hooks';
+import SearchBarResultItem from '@/main/atoms/SearchBarResultItem';
+import useRoveFocus from '@/main/hooks/focus.hook';
+import { useSearch } from '@/main/hooks/search.hook';
+import { SearchResult } from '@/main/types';
+import { TargetTypeProp } from '@/target/types';
 import { useOnClickOutside } from '@dwarvesf/react-hooks';
-
-import { useDebounce } from '@common/hooks';
-import { useSearch } from '@main/hooks/search.hook';
-import useRoveFocus from '@main/hooks/focus.hook';
-
-import { SearchResult } from '@main/types';
-import { TargetPropType } from '@api/types';
-import { MainGroups } from '@common/constants';
-
-import Loading from '@common/atoms/Loading';
-
-import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
-import { ReactComponent as BasicsXSmall } from '@assets/icons/outline/basics-x-small.svg';
-import { ReactComponent as QuestionCircle } from '@assets/icons/solid/question-circle.svg';
-import SearchBarResultItem from '@main/atoms/SearchBarResultItem';
+import { Transition } from '@headlessui/react';
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const DEBOUNCE_WAIT = 0;
 
@@ -55,7 +51,7 @@ const SearchBar: React.VFC = () => {
     },
     [setKeyword],
   );
-  const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT, [onSearchTeam]);
+  const debounceSearchRequest = useDebounce(onSearchTeam, DEBOUNCE_WAIT);
 
   const onClickClearSearchInput = () => {
     if (!searchInputRef || !searchInputRef.current) return;
@@ -68,19 +64,19 @@ const SearchBar: React.VFC = () => {
   const onPressResultRow = (result: SearchResult) => {
     onClear();
     switch (result.type) {
-      case TargetPropType.DEPARTMENT:
+      case TargetTypeProp.DEPARTMENT:
         history.push({
           pathname: `/departments/${result?.directoryId}`,
           search: `?route=${MainGroups.Following}`,
         });
         break;
-      case TargetPropType.CATEGORY:
+      case TargetTypeProp.CATEGORY:
         history.push({
           pathname: `/categories/${result?.directoryId}`,
           search: `?route=${MainGroups.Following}`,
         });
         break;
-      case TargetPropType.VENDOR:
+      case TargetTypeProp.VENDOR:
         history.push({
           pathname: `/vendors/${result?.directoryId}`,
           search: `?route=${MainGroups.Following}`,

@@ -1,15 +1,61 @@
-import { SectionTab } from '@common/types';
-import { FeedIcon, Bank, CategoryIcon, TeamIcon, TargetIcon } from '@assets/index';
-import { LineChartData } from '@main/types';
-import { TargetMonth } from '@main/entity';
+import { Bank, CategoryIcon, FeedIcon, TargetIcon, TeamIcon } from '@/assets';
+import { SectionTab } from '@/common/types';
+import { LineChartData } from '@/main/types';
+import { TargetMonth } from '@/target/types';
+
+export const PROJECT_CLASS_NAME_PREFIX = 'gvt-';
+
+export const DEFAULT_ITEMS_PER_INFINITE_LOAD = 10;
 
 export enum MainGroups {
   Feeds = 'Feeds',
-  Boards = 'Boards',
-  Following = 'Following',
+  Boards = '',
+  Following = '',
 }
 
 export const MainMenu: SectionTab[] = [
+  {
+    name: MainGroups.Boards,
+    tabs: [
+      {
+        name: 'Targets',
+        location: { pathname: '/dashboard/all-company' },
+        icon: TargetIcon,
+        isShowCounter: true,
+      },
+    ],
+    groups: [],
+  },
+  {
+    name: MainGroups.Following,
+    tabs: [],
+    groups: [
+      {
+        name: 'Teams',
+        icon: TeamIcon,
+        tabs: [],
+        addItemRoute: '/departments',
+        isOpened: true,
+        enable: true,
+      },
+      {
+        name: 'Categories',
+        icon: CategoryIcon,
+        tabs: [],
+        addItemRoute: '/categories',
+        isOpened: true,
+        enable: false,
+      },
+      {
+        name: 'Vendors',
+        icon: Bank,
+        tabs: [],
+        addItemRoute: '/vendors',
+        isOpened: true,
+        enable: false,
+      },
+    ],
+  },
   {
     name: MainGroups.Feeds,
     tabs: [
@@ -27,45 +73,6 @@ export const MainMenu: SectionTab[] = [
       },
     ],
     groups: [],
-  },
-  {
-    name: MainGroups.Boards,
-    tabs: [
-      {
-        name: 'Targets',
-        location: { pathname: '/dashboard' },
-        icon: TargetIcon,
-        isShowCounter: true,
-      },
-    ],
-    groups: [],
-  },
-  {
-    name: MainGroups.Following,
-    tabs: [],
-    groups: [
-      {
-        name: 'Teams',
-        icon: TeamIcon,
-        tabs: [],
-        addItemRoute: '/departments',
-        isOpened: true,
-      },
-      {
-        name: 'Categories',
-        icon: CategoryIcon,
-        tabs: [],
-        addItemRoute: '/categories',
-        isOpened: true,
-      },
-      {
-        name: 'Vendors',
-        icon: Bank,
-        tabs: [],
-        addItemRoute: '/vendors',
-        isOpened: true,
-      },
-    ],
   },
 ];
 

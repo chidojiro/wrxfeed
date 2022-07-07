@@ -3,17 +3,17 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { useApi } from '@api';
-import { useIntersection } from '@common/hooks';
+import { useApi } from '@/api';
+import { useIntersection } from '@/common/hooks';
 
-import EventEmitter, { EventName } from '@main/EventEmitter';
-import { TransLineItem, Vendor } from '@main/entity';
-import { classNames } from '@common/utils';
-import { decimalLogic, DecimalType, getVendorNameFromLineItem } from '@main/utils';
-import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@src/config';
+import EventEmitter, { EventName } from '@/main/EventEmitter';
+import { TransLineItem, Vendor } from '@/main/entity';
+import { classNames } from '@/common/utils';
+import { decimalLogic, DecimalType, getVendorNameFromLineItem } from '@/main/utils';
 
-import { lineItemSelectState } from '@main/states/lineItems.state';
-import { slideOverOpenState } from '@main/states/slideOver.state';
+import { lineItemSelectState } from '@/main/states/lineItems.state';
+import { slideOverOpenState } from '@/main/states/slideOver.state';
+import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@/config';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -32,7 +32,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick }) =
   const [isRead, setRead] = useState(false);
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: number;
     if (isVisible) {
       timeout = setTimeout(() => {
         setRead(true);

@@ -1,4 +1,4 @@
-import { useSetIdentity } from '@identity/hooks';
+import { useSetIdentity } from '@/identity/hooks';
 import React from 'react';
 import { toast } from 'react-toastify';
 import { useNavUtils } from '../../common/hooks';
@@ -53,7 +53,7 @@ export default function useErrorHandler(): ErrorHandler {
           break;
 
         default:
-          toast.error('An unknown error occurred.');
+          toast.error(error.details?.message);
           break;
       }
     },

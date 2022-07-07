@@ -1,5 +1,5 @@
-import { Profile } from '@auth/types';
-import { Provider } from '@main/entity';
+import { Profile } from '@/auth/types';
+import { Provider } from '@/main/entity';
 
 export interface UserToken {
   token: string;

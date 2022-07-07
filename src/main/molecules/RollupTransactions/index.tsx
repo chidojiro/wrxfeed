@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Transaction } from '@main/entity';
-import { classNames } from '@common/utils';
+import { Transaction } from '@/main/entity';
+import { classNames } from '@/common/utils';
 import RollupTranRow from '../RollupTranRow';
+import RestrictedWarning from '@/main/atoms/RestrictedWarning';
+
+export const TRANSACTION_SHOW_NUMBER = 10;
 
 interface RollupTransactionsProps {
   className?: string;
@@ -9,6 +12,7 @@ interface RollupTransactionsProps {
   autoShowTrans?: boolean;
   showTopDivider?: boolean;
   feedId: number;
+  tranHidden?: boolean;
 }
 
 const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
@@ -16,17 +20,20 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
   autoShowTrans = false,
   showTopDivider = false,
   feedId,
+  tranHidden = false,
 }) => {
-  const [position, setPosition] = useState(autoShowTrans ? 10 : 0);
-  const [transactions, setTransactions] = useState(trans.slice(0, position));
-  const [hasMore, setHasMore] = useState(trans?.length > 0);
+  const [position, setPosition] = useState(autoShowTrans ? TRANSACTION_SHOW_NUMBER : 0);
+  const [transactions, setTransactions] = useState(trans?.slice(0, position));
+  const [hasMore, setHasMore] = useState(
+    autoShowTrans ? trans?.length > TRANSACTION_SHOW_NUMBER : trans?.length > 0,
+  );
 
   const onClickLoadMore = () => {
     if (!hasMore) {
       return;
     }
-    const newPos = position + 10;
-    if (newPos > trans.length) {
+    const newPos = position + TRANSACTION_SHOW_NUMBER;
+    if (newPos > trans?.length) {
       setHasMore(false);
       setTransactions(trans);
     } else {
@@ -65,6 +72,7 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
     }
     return null;
   }
+  const showTranClicked = position > TRANSACTION_SHOW_NUMBER;
   return (
     <div className={classNames('flex flex-col', showTopDivider ? 'mt-3' : '')}>
       {transactions.length > 0 && showTopDivider && <div className="bg-Gray-11 h-px w-full" />}
@@ -77,6 +85,7 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
           );
         })}
       </ul>
+      <RestrictedWarning className="mb-1" show={tranHidden && (autoShowTrans || showTranClicked)} />
       {renderLoadMore()}
     </div>
   );

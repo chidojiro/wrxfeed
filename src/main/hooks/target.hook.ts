@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useEffect, useState, useRef } from 'react';
+import { useFetcher } from '@/common/hooks';
+import { useErrorHandler } from '@/error/hooks';
+import { isApiError } from '@/error/utils';
+import { TargetApis } from '@/target/apis';
+import { CreateTargetPayload, Target, TargetFilter, UpdateTargetPayload } from '@/target/types';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-
-import { isApiError } from '@error/utils';
-import { TargetFilter, PostTargetParams, PutTargetParams } from '@api/types';
-import { Target } from '@main/entity';
-
-import { useApi } from '@api';
-import { useErrorHandler } from '@error/hooks';
+import { KeyedMutator } from 'swr';
 
 interface TargetCallback {
   onSuccess: (id?: number, target?: Target) => void;
@@ -17,13 +16,15 @@ interface TargetHookValues {
   targets: Target[];
   hasMore: boolean;
   isGetTargets: boolean;
-  postTarget: (data: PostTargetParams) => Promise<void>;
-  putTarget: (id: number, data: PutTargetParams) => Promise<void>;
+  postTarget: (data: CreateTargetPayload) => Promise<void>;
+  putTarget: (id: number, data: UpdateTargetPayload) => Promise<void>;
   deleteTarget: (id: number) => Promise<void>;
   isPostTarget: boolean;
   isPutTarget: boolean;
   isDeleteTarget: boolean;
   removeItem: (id: number) => void;
+  mutate: KeyedMutator<Target[]>;
+  isValidating: boolean;
 }
 
 export interface UseTargetParams {
@@ -34,47 +35,39 @@ export interface UseTargetParams {
   autoLoad?: boolean;
 }
 
-export function useTarget({
-  filter,
-  cbPost,
-  cbPut,
-  cbDelete,
-  autoLoad = true,
-}: UseTargetParams): TargetHookValues {
+export function useTarget(params?: UseTargetParams): TargetHookValues {
+  const { filter, cbPost, cbPut, cbDelete, autoLoad = true } = params ?? {};
+
   const targetsRef = useRef<Target[]>();
   const [targets, setTargets] = useState<Target[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
-  const [isGetTargets, setGetTargets] = useState<boolean>(false);
   const [isPostTarget, setPostTarget] = useState<boolean>(false);
   const [isPutTarget, setPutTarget] = useState<boolean>(false);
   const [isDeleteTarget, setDeleteTarget] = useState<boolean>(false);
 
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
-  const getTargets = useCallback(async () => {
-    try {
-      setGetTargets(true);
-      const res = await ApiClient.getTargets(filter);
-      setTargets((pre) => [...pre, ...res]);
-      setHasMore(res.length >= (filter?.limit || 0));
-      setGetTargets(false);
-    } catch (error) {
-      if (isApiError(error)) {
-        toast.error(error.details?.message);
-      } else {
-        await errorHandler(error);
-      }
-    } finally {
-      setGetTargets(false);
-    }
-  }, [ApiClient, errorHandler, filter]);
+  const {
+    data = [],
+    isInitializing,
+    mutate,
+    isValidating,
+  } = useFetcher(autoLoad && ['/targets', filter], () => TargetApis.getList({ ...filter }));
 
-  const postTarget = async (data: PostTargetParams) => {
+  React.useEffect(() => {
+    if (filter?.offset !== 0) {
+      setTargets((pre) => [...pre, ...data]);
+    } else {
+      setTargets(data);
+    }
+    setHasMore(data.length >= (filter?.limit || 0));
+  }, [data]);
+
+  const postTarget = async (data: CreateTargetPayload) => {
     if (isPostTarget) return;
     try {
       setPostTarget(true);
-      await ApiClient.postTarget(data);
+      await TargetApis.create(data);
       cbPost?.onSuccess();
     } catch (error) {
       if (cbPost && cbPost.onError) {
@@ -90,11 +83,11 @@ export function useTarget({
     }
   };
 
-  const putTarget = async (id: number, data: PutTargetParams) => {
+  const putTarget = async (id: number, data: UpdateTargetPayload) => {
     if (isPutTarget) return;
     try {
       setPutTarget(true);
-      const newTarget = await ApiClient.putTarget(id, data);
+      const newTarget = await TargetApis.update(id, data);
       cbPut?.onSuccess(id, newTarget);
     } catch (error) {
       if (cbPut?.onError) {
@@ -114,7 +107,7 @@ export function useTarget({
     if (isPutTarget) return;
     try {
       setDeleteTarget(true);
-      await ApiClient.deleteTarget(id);
+      await TargetApis.delete(id);
       if (targetsRef.current) {
         const newTargets = targetsRef.current.filter((item: Target) => item?.id !== id);
         setTargets(newTargets);
@@ -145,17 +138,10 @@ export function useTarget({
     targetsRef.current = targets;
   }, [targets]);
 
-  // auto call in the first time with no default filter
-  useEffect(() => {
-    if (autoLoad) {
-      getTargets().then();
-    }
-  }, [getTargets]);
-
   return {
     targets,
     hasMore,
-    isGetTargets,
+    isGetTargets: isInitializing,
     postTarget,
     putTarget,
     deleteTarget,
@@ -163,5 +149,7 @@ export function useTarget({
     isPutTarget,
     isDeleteTarget,
     removeItem,
+    mutate,
+    isValidating,
   };
 }

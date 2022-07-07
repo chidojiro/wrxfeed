@@ -1,4 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Bank, CategoryIcon, TeamIcon } from '@/assets';
+import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basics-search-small.svg';
+import { ReactComponent as Files } from '@/assets/icons/outline/files.svg';
+import { ReactComponent as GroupUsers } from '@/assets/icons/outline/group-users.svg';
+import { ReactComponent as VendorIcon } from '@/assets/icons/outline/vendor.svg';
+import {
+  FeedItem,
+  Transaction,
+  TransLineItem,
+  TranStatusNameColor,
+  TranStatusType,
+} from '@/main/entity';
+import {
+  Target,
+  TargetByTeam,
+  TargetMonth,
+  TargetPeriod,
+  TargetProps,
+  TargetStatusConfig,
+  TargetStatusType,
+  TargetTypeProp,
+} from '@/target/types';
+import { extractLinks } from '@draft-js-plugins/linkify';
+import { MentionData } from '@draft-js-plugins/mention';
+import dayjs from 'dayjs';
+import { convertFromHTML, convertToHTML } from 'draft-convert';
 import {
   ContentState,
   convertFromRaw,
@@ -7,31 +33,9 @@ import {
   RawDraftEntity,
   RawDraftEntityRange,
 } from 'draft-js';
-import { MentionData } from '@draft-js-plugins/mention';
-import { extractLinks } from '@draft-js-plugins/linkify';
 import { Match } from 'linkify-it';
-import { convertFromHTML, convertToHTML } from 'draft-convert';
+import { cloneDeep } from 'lodash-es';
 import numeral from 'numeral';
-import cloneDeep from 'lodash.clonedeep';
-import dayjs from 'dayjs';
-
-import {
-  TransLineItem,
-  Target,
-  TranStatusNameColor,
-  TranStatusType,
-  FeedItem,
-  Transaction,
-  TargetByTeam,
-} from '@main/entity';
-import { TargetPeriod, TargetProp, TargetPropType } from '@api/types';
-
-import { ReactComponent as Files } from '@assets/icons/outline/files.svg';
-import { ReactComponent as GroupUsers } from '@assets/icons/outline/group-users.svg';
-import { ReactComponent as VendorIcon } from '@assets/icons/outline/vendor.svg';
-import { ReactComponent as BasicsSearchSmall } from '@assets/icons/outline/basics-search-small.svg';
-import { TeamIcon, CategoryIcon, Bank } from '@assets';
-import { TargetMonth, TargetStatusConfig, TargetStatusType } from './entity/target.entity';
 import { SearchResult } from './types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
@@ -328,15 +332,12 @@ const BG_SOLID_COLORS = [
   '#DF6622',
   '#F64C32',
 ];
-export const getColorByText = (
-  name: string,
-  id: number | undefined = undefined,
-  gradient = false,
-): string => {
+export const getColorByText = (name?: string | null, id?: number, gradient = false): string => {
+  const _name = name ?? '';
   let hash = 0;
 
-  for (let i = 0; i < name.length; i += 1) {
-    hash += name.charCodeAt(i);
+  for (let i = 0; i < _name.length; i += 1) {
+    hash += _name.charCodeAt(i);
   }
 
   const colorsData = gradient ? BG_GRADIENT_COLORS : BG_SOLID_COLORS;
@@ -438,20 +439,20 @@ export const getVendorNameFromLineItem = (item: TransLineItem): string => {
 };
 
 export const getIconByResultType = (
-  type: TargetPropType,
+  type: TargetTypeProp,
 ): React.FC<React.SVGAttributes<SVGElement>> => {
-  if (type === TargetPropType.VENDOR) return VendorIcon;
-  if (type === TargetPropType.DEPARTMENT) return GroupUsers;
-  if (type === TargetPropType.CATEGORY) return Files;
+  if (type === TargetTypeProp.VENDOR) return VendorIcon;
+  if (type === TargetTypeProp.DEPARTMENT) return GroupUsers;
+  if (type === TargetTypeProp.CATEGORY) return Files;
   return BasicsSearchSmall;
 };
 
 export const getPropIconByType = (
-  type: TargetPropType,
+  type: TargetTypeProp,
 ): React.FC<React.SVGAttributes<SVGElement>> => {
-  if (type === TargetPropType.VENDOR) return Bank;
-  if (type === TargetPropType.DEPARTMENT) return TeamIcon;
-  if (type === TargetPropType.CATEGORY) return CategoryIcon;
+  if (type === TargetTypeProp.VENDOR) return Bank;
+  if (type === TargetTypeProp.DEPARTMENT) return TeamIcon;
+  if (type === TargetTypeProp.CATEGORY) return CategoryIcon;
   return BasicsSearchSmall;
 };
 
@@ -462,17 +463,17 @@ export const getWidthInputByLength = (length: number): number => {
   return 20;
 };
 
-export const getColorByPropertyType = (type: TargetPropType): string => {
-  if (type === TargetPropType.VENDOR) return '#F3AA20';
-  if (type === TargetPropType.DEPARTMENT) return '#0891B2';
-  if (type === TargetPropType.CATEGORY) return '#6565FB';
+export const getColorByPropertyType = (type: TargetTypeProp): string => {
+  if (type === TargetTypeProp.VENDOR) return '#F3AA20';
+  if (type === TargetTypeProp.DEPARTMENT) return '#0891B2';
+  if (type === TargetTypeProp.CATEGORY) return '#6565FB';
   return '#6565FB';
 };
 
-export const getPropTypeDisplayName = (type: TargetPropType): string => {
-  if (type === TargetPropType.VENDOR) return 'Vendor';
-  if (type === TargetPropType.DEPARTMENT) return 'Team';
-  if (type === TargetPropType.CATEGORY) return 'Category';
+export const getPropTypeDisplayName = (type: TargetTypeProp): string => {
+  if (type === TargetTypeProp.VENDOR) return 'Vendor';
+  if (type === TargetTypeProp.DEPARTMENT) return 'Team';
+  if (type === TargetTypeProp.CATEGORY) return 'Category';
   return '#6565FB';
 };
 
@@ -544,8 +545,8 @@ export const getPropsAndPeriodsFromItemSelected = (
   excepts: SearchResult[],
   targetMonths: TargetMonth[],
   curYear: number,
-): { props: TargetProp[]; periods: TargetPeriod[] } => {
-  const props: TargetProp[] = propSelected.map((prop: SearchResult) => {
+): { props: TargetProps[]; periods: TargetPeriod[] } => {
+  const props: TargetProps[] = propSelected.map((prop: SearchResult) => {
     return {
       id: prop?.directoryId,
       type: prop?.type,
@@ -591,6 +592,7 @@ export const getTargetPeriodsAmountTotal = (
   currentSpend: number;
 } => {
   const curMonth = new Date().getMonth() + 1;
+  const curYear = new Date().getFullYear();
   const { overallTarget, targetToDate } = target.periods.reduce(
     (sum, targetPeriod) => ({
       overallTarget: sum.overallTarget + (targetPeriod.amount ?? 0),
@@ -605,7 +607,12 @@ export const getTargetPeriodsAmountTotal = (
     },
   );
   const currentSpend =
-    target?.spendings?.reduce((sum, spending) => sum + (spending.total ?? 0), 0) ?? 0;
+    target?.spendings?.reduce((sum, spending) => {
+      if (spending.year === curYear) {
+        return sum + (spending.total ?? 0);
+      }
+      return sum;
+    }, 0) ?? 0;
   const exceeding: number =
     currentSpend > overallTarget ? ((currentSpend - overallTarget) / overallTarget) * 100 : 0;
   return { overallTarget, targetToDate, exceeding, currentSpend };
@@ -713,4 +720,11 @@ export const getMultiMonthRange = (periods: TargetPeriod[]): string => {
 
 export const getTrackingStatusName = (type: TargetStatusType): string => {
   return TargetStatusConfig[type].name;
+};
+
+export const getSummaryNumber = (value: number, total: number): string => {
+  if (total === 0) {
+    return '0%';
+  }
+  return `${((value / total ?? 1) * 100 ?? 0).toFixed(0)}%`;
 };

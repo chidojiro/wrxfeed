@@ -1,7 +1,7 @@
+import { classNames } from '@/common/utils';
+import { getTargetName } from '@/main/utils';
+import { Target } from '@/target/types';
 import React from 'react';
-import { classNames } from '@common/utils';
-import { Target } from '@main/entity';
-import { getTargetName } from '@main/utils';
 
 export interface TargetFeedNameProps {
   className?: string;

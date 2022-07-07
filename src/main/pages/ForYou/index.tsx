@@ -1,72 +1,40 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as Sentry from '@sentry/react';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import { FeedFilters } from '@api/types';
-import { Category, Department, Vendor } from '@main/entity';
-import { classNames } from '@common/utils';
+import { FeedFilters } from '@/api/types';
+import { Category, Department, Vendor } from '@/main/entity';
 
-import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@main/hooks';
-import { useFeed } from '@main/hooks/feed.hook';
-import { useQuery } from '@common/hooks';
-import { useApi } from '@api';
+import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@/main/hooks';
+import { useLegacyQuery } from '@/common/hooks';
+import { useApi } from '@/api';
 
-import MainLayout from '@common/templates/MainLayout';
-import FeedList from '@main/organisms/FeedList';
-import NewFeedIndicator from '@main/atoms/NewFeedIndicator';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
-import { MainGroups } from '@common/constants';
+import MainLayout from '@/common/templates/MainLayout';
+import FeedList, { FeedListHandler } from '@/main/organisms/FeedList';
+import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
+import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
+import { MainGroups } from '@/common/constants';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@identity/hooks';
-
-const LIMIT = 5;
-const INIT_PAGINATION = Object.freeze({
-  offset: 0,
-  limit: LIMIT,
-});
-const INIT_FOR_YOU_FILTER = Object.freeze({
-  page: INIT_PAGINATION,
-  forYou: 1,
-});
+import { useIdentity } from '@/identity/hooks';
+import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
+import { scrollToTop } from '@/main/utils';
 
 const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
 const ForYouPage: React.VFC = () => {
   const history = useHistory();
-  const query = useQuery();
+  const query = useLegacyQuery();
   const location = useLocation();
   const { readAllTransactions } = useApi();
-
-  const [feedFilters, setFeedFilters] = React.useState<FeedFilters>(INIT_FOR_YOU_FILTER);
-  const {
-    feeds,
-    hasMore,
-    isLoading,
-    setNewFeedCount,
-    upsertNewFeedCount,
-    newFeedCount,
-    updateCategory,
-  } = useFeed(feedFilters);
-
   const identity = useIdentity();
-
   const filterKey = FilterKeys.find((key) => query.get(key));
   const [filterTitle, setFilterTitle] = React.useState('');
+  const { newFeedCount, setNewFeedCount, upsertNewFeedCount } = useNewFeedCount();
   const newFeedNumber = newFeedCount ? newFeedCount[location.pathname] : 0;
-
-  const handleLoadMore = useCallback(() => {
-    if (!hasMore || isLoading) return;
-    setFeedFilters((prevFilter) => ({
-      ...prevFilter,
-      page: {
-        limit: prevFilter?.page?.limit ?? LIMIT,
-        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? LIMIT),
-      },
-    }));
-  }, [hasMore, isLoading]);
+  const feedListRef = useRef<FeedListHandler>(null);
 
   useFeedChannel(FeedChannelEvents.NEW_ITEM, (data: FeedEventData) => {
     if (data.id) {
@@ -91,25 +59,9 @@ const ForYouPage: React.VFC = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (filterKey) {
-      setFeedFilters({
-        ...INIT_FOR_YOU_FILTER,
-        [filterKey]: query.get(filterKey),
-      });
-    } else {
-      setFeedFilters(INIT_FOR_YOU_FILTER);
-    }
-  }, [setFeedFilters, filterKey]);
-
   const refetchNewItems = () => {
-    setFeedFilters({ ...feedFilters, page: INIT_PAGINATION });
-    if (window.scrollY > 0) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'auto',
-      });
-    }
+    feedListRef.current?.resetFeedFilters();
+    scrollToTop();
     upsertNewFeedCount(location.pathname, 0);
     readAllTransactions();
   };
@@ -136,31 +88,6 @@ const ForYouPage: React.VFC = () => {
     history.goBack();
   };
 
-  const onClickFollowingMoreTeams = () => {
-    history.push({
-      pathname: '/departments',
-    });
-  };
-
-  const renderForYouEndList = (className = 'mt-3 sm:mt-8') => {
-    return (
-      <p className={classNames('text-base text-center text-Neutral-4', className)}>
-        Add to your feed by
-        <button
-          type="button"
-          onClick={onClickFollowingMoreTeams}
-          className="ml-1 text-Gray-3 underline"
-        >
-          <u>following more teams</u>
-        </button>
-        <span role="img" aria-label="rocket">
-          {' '}
-          🚀
-        </span>
-      </p>
-    );
-  };
-
   return (
     <MainLayout className="flex flex-col" rightSide={false}>
       <NewFeedIndicator
@@ -176,15 +103,11 @@ const ForYouPage: React.VFC = () => {
         </div>
       )}
       <FeedList
-        feeds={feeds}
-        onLoadMore={handleLoadMore}
-        isLoading={isLoading}
-        hasMore={hasMore}
+        ref={feedListRef}
         onFilter={handleFilter}
-        updateCategory={updateCategory}
-        endMessage="Add to your feed by following more teams."
-        EndComponent={() => renderForYouEndList()}
-        EmptyStateComponent={() => renderForYouEndList()}
+        hasEmptyStateComponent
+        hasEndComponent
+        forYou={1}
       />
     </MainLayout>
   );

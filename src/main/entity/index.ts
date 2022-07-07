@@ -5,7 +5,6 @@ export * from './transaction.entity';
 export * from './user.entity';
 export * from './mention.entity';
 export * from './contact.entity';
-export * from './target.entity';
 export * from './subscription.entity';
 export * from './notification.entity';
 export * from './feedItem.entity';

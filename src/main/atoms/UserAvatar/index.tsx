@@ -1,10 +1,10 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { profileState } from '@auth/containers/ProfileEditForm/states';
-import { getColorByText, getNameAbbreviation } from '@main/utils';
-import { User } from '@main/entity';
-import { classNames } from '@common/utils';
+import { profileState } from '@/auth/containers/ProfileEditForm/states';
+import { getColorByText, getNameAbbreviation } from '@/main/utils';
+import { User } from '@/main/entity';
+import { classNames } from '@/common/utils';
 
 export interface UserAvatarProps {
   size?: number;

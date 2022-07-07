@@ -1,23 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import { useApi } from '@/api';
+import { FeedFilters } from '@/api/types';
+import { ChevronLeftIcon } from '@/assets';
+import { MainGroups } from '@/common/constants';
+import { useLegacyQuery } from '@/common/hooks';
+import MainLayout from '@/common/templates/MainLayout';
+import { Category, Department, Vendor } from '@/main/entity';
+import { FilterKeys } from '@/main/hooks';
+import { useVendor } from '@/main/hooks/vendor.hook';
+import FeedList from '@/main/organisms/FeedList';
+import VendorList from '@/main/organisms/VendorList';
+import { scrollToTop } from '@/main/utils';
+import { PaginationParams } from '@/rest/types';
 import * as Sentry from '@sentry/react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-
-import { useApi } from '@api';
-import { useFeed } from '@main/hooks/feed.hook';
-import { useQuery } from '@common/hooks';
-import { useVendor } from '@main/hooks/vendor.hook';
-import { FilterKeys } from '@main/hooks';
-
-import { FeedFilters, Pagination } from '@api/types';
-import { Category, Department, Vendor } from '@main/entity';
-import { MainGroups } from '@common/constants';
-import { scrollToTop } from '@main/utils';
-
-import FeedList from '@main/organisms/FeedList';
-import MainLayout from '@common/templates/MainLayout';
-import VendorList from '@main/organisms/VendorList';
-import { ChevronLeftIcon } from '@assets';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -29,10 +26,10 @@ const VendorsPage: React.VFC = () => {
   const history = useHistory();
   const { id: vendorId } = useParams<{ id?: string }>();
   const { getVendorById } = useApi();
-  const query = useQuery();
+  const query = useLegacyQuery();
   const location = useLocation();
   // Vendors states
-  const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
+  const [filter, setFilter] = useState<PaginationParams>(INIT_PAGINATION);
   const { vendors, hasMore, isLoading } = useVendor(filter);
   const [vendor, setVendor] = useState<Vendor | null>();
   // Feeds states
@@ -48,14 +45,6 @@ const VendorsPage: React.VFC = () => {
           forYou: 0,
         },
   );
-
-  const {
-    feeds,
-    hasMore: hasMoreFeeds,
-    isLoading: feedsLoading,
-    updateCategory,
-    cleanData,
-  } = useFeed(feedsFilter);
   // Variables
   const isFiltering = !!feedsFilter.vendor;
 
@@ -66,7 +55,7 @@ const VendorsPage: React.VFC = () => {
 
   const filterByRoute = useCallback(() => {
     if (vendorId) {
-      const newFilter: { [key: string]: string | number | Pagination | null } = {
+      const newFilter: { [key: string]: string | number | PaginationParams | null } = {
         page: INIT_PAGINATION,
         vendor: parseInt(vendorId, 10),
       };
@@ -94,19 +83,7 @@ const VendorsPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  const handleFeedsLoadMore = useCallback(() => {
-    if (!hasMoreFeeds || feedsLoading) return;
-    setFeedsFilter((prevFilter) => ({
-      ...prevFilter,
-      page: {
-        limit: prevFilter?.page?.limit ?? LIMIT,
-        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? LIMIT),
-      },
-    }));
-  }, [hasMoreFeeds, feedsLoading]);
-
   const handleVendorSelect = (value?: Vendor): void => {
-    cleanData();
     setVendor(value);
     history.push({
       pathname: `/vendors/${value?.id.toString()}`,
@@ -151,12 +128,8 @@ const VendorsPage: React.VFC = () => {
         />
       ) : (
         <FeedList
-          feeds={feeds}
-          isLoading={feedsLoading || isLoading}
-          hasMore={hasMoreFeeds}
-          onLoadMore={handleFeedsLoadMore}
           onFilter={handleFeedsFilter}
-          updateCategory={updateCategory}
+          vendorId={vendorId ? parseInt(vendorId, 10) : undefined}
         />
       )}
     </MainLayout>

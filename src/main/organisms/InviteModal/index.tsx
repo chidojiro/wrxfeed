@@ -1,15 +1,13 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Contact } from '@main/entity/contact.entity';
-import { GetContactsFilter } from '@api/types';
-import { useGetContacts } from '@main/hooks/contact.hook';
-import Modal from '@common/atoms/Modal';
-import ContactItem from '@main/molecules/ContactItem';
-import InviteTagInput from '@main/atoms/InviteTagInput';
-import { useDebounce } from '@common/hooks';
-import { useInvite } from '@main/hooks';
-import Banner from '@common/atoms/Banner';
-
-const DEBOUNCE_WAIT = 300;
+import { Contact } from '@/main/entity/contact.entity';
+import { GetContactsFilter } from '@/api/types';
+import { useGetContacts } from '@/main/hooks/contact.hook';
+import ContactItem from '@/main/molecules/ContactItem';
+import InviteTagInput from '@/main/atoms/InviteTagInput';
+import { useInvite } from '@/main/hooks';
+import { useDebounce } from '@/common/hooks';
+import Modal from '@/common/atoms/Modal';
+import Banner from '@/common/atoms/Banner';
 
 export type InviteModalProps = {
   open: boolean;
@@ -46,7 +44,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
   );
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: number;
     if (isSent) {
       setShowSuccessBanner(true);
       // Close banner after 3s
@@ -57,7 +55,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
     };
   }, [isSent]);
 
-  const debounceSearchRequest = useDebounce(onSearchContact, DEBOUNCE_WAIT, [onSearchContact]);
+  const debounceSearchRequest = useDebounce(onSearchContact);
 
   const sendMultipleInvites = async (emails: string[]) => {
     setLoading(true);

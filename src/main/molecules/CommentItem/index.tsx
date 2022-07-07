@@ -2,25 +2,29 @@ import React, { CSSProperties, useCallback, useEffect, useMemo, useState } from 
 import { MentionData } from '@draft-js-plugins/mention';
 import { EditorState } from 'draft-js';
 import { SubmitHandler } from 'react-hook-form';
-import { Comment } from '@main/entity';
-import { classNames } from '@common/utils';
-import CommentOwner from '@main/atoms/CommentOwner';
-import CommentText from '@main/atoms/CommentText';
-import CommentImage from '@main/atoms/CommentImage';
+import { Comment } from '@/main/entity';
+import { classNames } from '@/common/utils';
+import CommentOwner from '@/main/atoms/CommentOwner';
+import CommentText from '@/main/atoms/CommentText';
+import CommentImage from '@/main/atoms/CommentImage';
 import { DocumentDownloadIcon } from '@heroicons/react/outline';
 import Microlink from '@microlink/react';
-import { extractHyperlinks, commentEditorHtmlParser, commentHtmlToContentState } from '@main/utils';
-import { MICRO_LINK_API_KEY } from '@src/config';
+import {
+  extractHyperlinks,
+  commentEditorHtmlParser,
+  commentHtmlToContentState,
+} from '@/main/utils';
 import { Menu } from '@headlessui/react';
-import PopoverMenu from '@main/atoms/PopoverMenu';
-import PopoverMenuItem from '@main/atoms/PopoverMenuItem';
-import CommentBox from '@main/molecules/CommentBox';
-import ConfirmModal from '@main/atoms/ConfirmModal';
+import PopoverMenu from '@/main/atoms/PopoverMenu';
+import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
+import CommentBox from '@/main/molecules/CommentBox';
+import ConfirmModal from '@/main/atoms/ConfirmModal';
 // Icons
-import { ReactComponent as MoreVerticalIcon } from '@assets/icons/outline/more-vertical.svg';
-import { ReactComponent as XCircleIcon } from '@assets/icons/outline/x-circle.svg';
-import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
-import { CommentFormModel } from '@main/types';
+import { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';
+import { ReactComponent as XCircleIcon } from '@/assets/icons/outline/x-circle.svg';
+import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
+import { CommentFormModel } from '@/main/types';
+import { MICRO_LINK_API_KEY } from '@/config';
 
 const IMAGE_EXT = 'jpg,png,jpeg,gif';
 
@@ -69,7 +73,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
     return commentHtmlToContentState(comment.content);
   }, [comment.content]);
 
-  const escFunction = useCallback((event) => {
+  const escFunction = useCallback((event: KeyboardEvent) => {
     if (event.keyCode === 27) {
       // Do whatever when esc is pressed
       setEditing(false);

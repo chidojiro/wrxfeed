@@ -1,33 +1,31 @@
 /* eslint-disable react/no-unescaped-entities */
+import { BasicsDownSmall, LeftSmallIcon } from '@/assets';
+import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
+import Loading from '@/common/atoms/Loading';
+import { defaultTargetMonths, monthsInYear } from '@/common/constants';
+import { classNames, formatCurrency, round } from '@/common/utils';
+import MonthTargetInput from '@/main/atoms/MonthTargetInput';
+import { TargetMonth, TargetPeriod, TargetProps } from '@/target/types';
+import { useOnClickOutside } from '@dwarvesf/react-hooks';
+import { Transition } from '@headlessui/react';
+import dayjs from 'dayjs';
+import { cloneDeep } from 'lodash-es';
 import React, {
+  forwardRef,
+  ForwardRefRenderFunction,
   Fragment,
   useEffect,
-  useState,
-  ForwardRefRenderFunction,
   useImperativeHandle,
-  forwardRef,
   useRef,
+  useState,
 } from 'react';
-import { Transition } from '@headlessui/react';
-import cloneDeep from 'lodash.clonedeep';
-import dayjs from 'dayjs';
-import { useOnClickOutside } from '@dwarvesf/react-hooks';
-
-import { classNames, formatCurrency, round } from '@common/utils';
-import { TargetMonth } from '@main/entity';
-import { TargetPeriod, TargetProp } from '@api/types';
-import { ReactComponent as ArrowRight } from '@assets/icons/outline/arrow-right-2.svg';
-import { BasicsDownSmall, LeftSmallIcon } from '@assets';
-import Loading from '@common/atoms/Loading';
-import MonthTargetInput from '@main/atoms/MonthTargetInput';
-import { defaultTargetMonths, monthsInYear } from '@common/constants';
 
 interface MultiMonthDropdownProps {
   className?: string;
   classPopover?: string;
   open: boolean;
   setOpen: (newState: boolean) => void;
-  props: TargetProp[];
+  props: TargetProps[];
   periods?: TargetPeriod[];
   onApply?: (data: TargetMonth[], year: number) => void;
   targetMonths: TargetMonth[];

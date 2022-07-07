@@ -1,4 +1,4 @@
-import { Category, Department, Subscription, Vendor } from '@main/entity';
+import { Category, Department, Subscription, Vendor } from '@/main/entity';
 import React, { FunctionComponent, SVGAttributes } from 'react';
 
 export interface HOC<T> {
@@ -24,6 +24,7 @@ export type GroupTab = {
   tabs?: LeftTab[];
   addItemRoute?: string;
   isOpened?: boolean;
+  enable: boolean;
 };
 
 export type SectionTab = {
@@ -31,3 +32,38 @@ export type SectionTab = {
   groups: GroupTab[];
   tabs: LeftTab[];
 };
+
+export type Children = {
+  children?: React.ReactNode;
+};
+
+export type BitBoolean = 1 | 0;
+
+export type ClassName = {
+  className?: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Fn = (...arg: any[]) => any;
+
+export type HTMLElementOrHTMLElementRef = HTMLElement | React.RefObject<HTMLElement>;
+
+export type HTMLDivProps = React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+
+export type HTMLInputProps = React.DetailedHTMLProps<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+>;
+
+export type HTMLTextAreaProps = React.DetailedHTMLProps<
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  HTMLTextAreaElement
+>;
+
+export type HTMLButtonProps = React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>;

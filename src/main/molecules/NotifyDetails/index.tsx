@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
-import { classNames } from '@common/utils';
+import { classNames } from '@/common/utils';
 import { Dialog, Transition } from '@headlessui/react';
-import { Notification, Transaction } from '@main/entity';
-import Loading from '@common/atoms/Loading';
+import { Notification, Transaction } from '@/main/entity';
+import Loading from '@/common/atoms/Loading';
 import TransactionCard from '../TransactionCard';
 
 export interface NotifyDetailsProps {

@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { ApiErrorCode } from '@src/error';
+import { ApiErrorCode } from '@/error';
 import DeferredObject from './DeferredObject';
 import { ApiClient } from './types';
 

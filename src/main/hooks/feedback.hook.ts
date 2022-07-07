@@ -1,10 +1,10 @@
-import { useApi } from '@api';
-import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
+import { useApi } from '@/api';
+import { useErrorHandler } from '@/error/hooks';
+import { isBadRequest } from '@/error/utils';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { FeedBackFormModel, FeedBackType } from '@main/types';
-import { SEND_EMAIL_MESSAGE } from '@error/errorMessages';
+import { FeedBackFormModel, FeedBackType } from '@/main/types';
+import { SEND_EMAIL_MESSAGE } from '@/error/errorMessages';
 
 interface FeedBackModalCallback {
   onSuccess: () => void;

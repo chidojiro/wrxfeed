@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ChangeEvent, useState, useRef, KeyboardEventHandler, useEffect } from 'react';
-import { classNames, formatCurrency, replaceAll } from '@common/utils';
+import { classNames, formatCurrency, replaceAll } from '@/common/utils';
 
 interface MonthTargetInputProps {
   month: number;

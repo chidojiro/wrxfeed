@@ -1,7 +1,7 @@
-import { Notification } from '@main/entity';
+import { Notification } from '@/main/entity';
 import React from 'react';
-import { formatDate } from '@common/utils';
-import CommentText from '@main/atoms/CommentText';
+import CommentText from '@/main/atoms/CommentText';
+import { formatDate } from '@/common/utils';
 
 export interface NotifyRowProps {
   item: Notification;

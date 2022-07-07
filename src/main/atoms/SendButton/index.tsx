@@ -1,5 +1,5 @@
 import React, { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
-import { EssentialsSendIcon, EssentialsSendEnableIcon } from '@assets/index';
+import { EssentialsSendIcon, EssentialsSendEnableIcon } from '@/assets';
 
 const SendButtonAirplane: React.VFC<
   DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>

@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { classNames } from '@common/utils';
-import { Department } from '@main/entity';
+import { classNames } from '@/common/utils';
+import { Department } from '@/main/entity';
 
-import { useSubscription } from '@main/hooks/subscription.hook';
-import { useIdentity } from '@identity/hooks';
+import { useSubscription } from '@/main/hooks/subscription.hook';
+import { useIdentity } from '@/identity/hooks';
 
-import Loading from '@common/atoms/Loading';
+import Loading from '@/common/atoms/Loading';
 
-import { ReactComponent as BasicsTickSmall } from '@assets/icons/solid/basics-tick-small.svg';
-import { ReactComponent as BasicsAddSmall } from '@assets/icons/solid/basics-add-small.svg';
-import { useApi } from '@api';
+import { ReactComponent as BasicsTickSmall } from '@/assets/icons/solid/basics-tick-small.svg';
+import { ReactComponent as BasicsAddSmall } from '@/assets/icons/solid/basics-add-small.svg';
+import { useApi } from '@/api';
 
 const LIMIT = 9999;
 const INIT_PAGINATION = Object.freeze({

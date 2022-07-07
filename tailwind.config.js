@@ -1,34 +1,31 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   mode: 'jit',
-  purge: [
-    './public/**/*.html',
-    './src/**/*.{js,jsx,ts,tsx,react}'
-  ],
+  purge: ['./public/**/*.html', './src/**/*.{js,jsx,ts,tsx,react}'],
   experimental: {
     applyComplexClasses: true,
   },
   theme: {
     groupLevel: 10,
-    groupScope: "scope",
-    groupVariants: ["hover", "focus"],
+    groupScope: 'scope',
+    groupVariants: ['hover', 'focus'],
 
     screens: {
-      'dashboard': '1410px',
+      dashboard: '1410px',
       ...defaultTheme.screens,
     },
 
     extend: {
       borderRadius: {
-        'card': '10px',
+        card: '10px',
         '2.5xl': '20px',
       },
       transitionProperty: {
-        height: 'height'
+        height: 'height',
       },
       rotate: {
-        '40': '40deg',
+        40: '40deg',
       },
       fontSize: {
         '2xs': '0.6875rem',
@@ -38,7 +35,7 @@ module.exports = {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        'primary': '#14142F',
+        primary: '#14142F',
 
         'Gray-1': '#0F0D15',
         'Gray-2': '#273240',
@@ -72,9 +69,12 @@ module.exports = {
         'Accent-2': '#6565FB',
         'Accent-3': '#DEE6FF',
         'Accent-4': '#9797FC',
+        'Accent-5': '#E0E7FF',
+        'Accent-6': '#818CF8',
+        'Accent-7': '#3730A3',
 
-        'LightBG': '#F9FAFB',
-        'Highlight': '#DDFF55',
+        LightBG: '#F9FAFB',
+        Highlight: '#DDFF55',
 
         'Neutral-Light': '#42526E',
         'Neutral-4': '#797D6F',
@@ -83,6 +83,10 @@ module.exports = {
 
         'team-color': '#0891B2',
         'vendor-color': '#F3AA20',
+
+        'yellow-1': '#FEF3C7',
+        'yellow-2': '#FBBF24',
+        'yellow-3': '#92400E',
 
         'purple-4': '#6D28D9',
         'purple-5': '#7A3FEB',
@@ -94,27 +98,28 @@ module.exports = {
         'purple-11': '#F3F3F7',
         'purple-12': '#F9F9FC',
 
+        'red-1': '#F87171',
+
         'system-success': '#5DC258',
         'system-alert': '#FF5F68',
         'blue-upload': 'rgba(67, 36, 158, 0.44)',
       },
       spacing: {
-        'navbar': '56px',
-        '4.5': '18px',
-        '18': '72px',
+        navbar: '56px',
+        4.5: '18px',
+        18: '72px',
       },
       boxShadow: {
         shadowCard: '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
         dropdown: '0 1px 1px 0 rgba(9, 30, 66, 0.31), 0 3px 5px 0 rgba(9, 30, 66, 0.2)',
-        topCategoryHover: '-4px 10px 8px 0 rgba(101, 101, 251, 0.03), 0 3px 10px 0 rgba(101, 101, 251, 0.1);',
+        topCategoryHover:
+          '-4px 10px 8px 0 rgba(101, 101, 251, 0.03), 0 3px 10px 0 rgba(101, 101, 251, 0.1);',
         propertyDropdown: '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
-        targetHover: '0px 3px 10px rgba(101, 101, 251, 0.1), -4px 10px 8px rgba(101, 101, 251, 0.03)',
-      }
+        targetHover:
+          '0px 3px 10px rgba(101, 101, 251, 0.1), -4px 10px 8px rgba(101, 101, 251, 0.03)',
+      },
     },
   },
   variants: {},
-  plugins: [
-    require('@tailwindcss/line-clamp'),
-    require("tailwindcss-nested-groups"),
-  ],
-}
+  plugins: [require('@tailwindcss/line-clamp'), require('tailwindcss-nested-groups')],
+};

@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { USE_CONTACT_BUTTON_MESSAGE } from '@error/errorMessages';
-import { Contact } from '@main/entity';
+import { USE_CONTACT_BUTTON_MESSAGE } from '@/error/errorMessages';
+import { Contact } from '@/main/entity';
 
-import { useApi } from '@api';
-import { useErrorHandler } from '@error/hooks';
-import { GetContactsFilter } from '@api/types';
-import { isBadRequest } from '@error/utils';
+import { useApi } from '@/api';
+import { useErrorHandler } from '@/error/hooks';
+import { GetContactsFilter } from '@/api/types';
+import { isBadRequest } from '@/error/utils';
 
 interface ContactsHookValues {
   contacts: Contact[];

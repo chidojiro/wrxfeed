@@ -2,12 +2,12 @@ import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { LeftTab } from '@common/types';
-import { useSubscription } from '@main/hooks/subscription.hook';
-import { newFeedCountState } from '@main/states/sidemenu.state';
-import { classNames } from '@common/utils';
-import { BasicsXSmall } from '@assets';
-import Loading from '@common/atoms/Loading';
+import { LeftTab } from '@/common/types';
+import { useSubscription } from '@/main/hooks/subscription.hook';
+import { newFeedCountState } from '@/main/states/sidemenu.state';
+import { classNames } from '@/common/utils';
+import { BasicsXSmall } from '@/assets';
+import Loading from '@/common/atoms/Loading';
 
 interface LeftTabCardProps {
   className?: string;

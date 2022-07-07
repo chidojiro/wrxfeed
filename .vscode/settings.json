@@ -1,7 +1,4 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
   "files.trimTrailingWhitespace": true,
   "yaml.customTags": [
     "!And scalar",
@@ -57,12 +54,16 @@
     "bgcolor",
     "builtins",
     "childs",
+    "clsx",
     "commitlint",
     "craco",
     "depts",
     "headlessui",
     "heroicons",
+    "hocs",
+    "hookform",
     "mixpanel",
+    "popperjs",
     "preversion",
     "Scroller",
     "sidemenu",
@@ -76,4 +77,5 @@
     "userid",
     "Wrxfeed"
   ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

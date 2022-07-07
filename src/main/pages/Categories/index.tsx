@@ -1,22 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import { FeedFilters } from '@/api/types';
+import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
+import { MainGroups } from '@/common/constants';
+import { useLegacyQuery } from '@/common/hooks';
+import MainLayout from '@/common/templates/MainLayout';
+import { Category, Department, Vendor } from '@/main/entity';
+import { FilterKeys } from '@/main/hooks';
+import { useCategory } from '@/main/hooks/category.hook';
+import { useFeed } from '@/main/hooks/feed.hook';
+import CategoryList from '@/main/organisms/CategoryList';
+import FeedList from '@/main/organisms/FeedList';
+import { scrollToTop } from '@/main/utils';
+import { PaginationParams } from '@/rest/types';
 import * as Sentry from '@sentry/react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-
-import { useFeed } from '@main/hooks/feed.hook';
-import { useQuery } from '@common/hooks';
-import { useCategory } from '@main/hooks/category.hook';
-import { FilterKeys } from '@main/hooks';
-
-import { FeedFilters, Pagination } from '@api/types';
-import { Category, Department, Vendor } from '@main/entity';
-import { MainGroups } from '@common/constants';
-import { scrollToTop } from '@main/utils';
-
-import FeedList from '@main/organisms/FeedList';
-import MainLayout from '@common/templates/MainLayout';
-import CategoryList from '@main/organisms/CategoryList';
-import { ReactComponent as ChevronLeftIcon } from '@assets/icons/outline/chevron-left.svg';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -27,11 +25,11 @@ const INIT_PAGINATION = Object.freeze({
 const CategoriesPage: React.VFC = () => {
   const history = useHistory();
   const { id: catId } = useParams<{ id?: string }>();
-  const query = useQuery();
+  const query = useLegacyQuery();
   const location = useLocation();
   // Category states
-  const [filter, setFilter] = useState<Pagination>(INIT_PAGINATION);
-  const { categories, hasMore, isLoading } = useCategory(filter);
+  const [filter, setFilter] = useState<PaginationParams>(INIT_PAGINATION);
+  const { categories, hasMore, isLoading } = useCategory({ filter });
   // Feeds states
   const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
     catId
@@ -44,13 +42,7 @@ const CategoriesPage: React.VFC = () => {
         },
   );
 
-  const {
-    feeds,
-    hasMore: hasMoreFeeds,
-    isLoading: feedsLoading,
-    updateCategory,
-    cleanData,
-  } = useFeed(feedsFilter);
+  const { feeds, cleanData } = useFeed(feedsFilter);
   // Variables
   const isFiltering = !!feedsFilter.category;
   const [category, setCategory] = useState<Category | null>();
@@ -64,7 +56,7 @@ const CategoriesPage: React.VFC = () => {
 
   const filterByRoute = useCallback(() => {
     if (catId) {
-      const newFilter: { [key: string]: string | number | Pagination | null } = {
+      const newFilter: { [key: string]: string | number | PaginationParams | null } = {
         page: INIT_PAGINATION,
         category: parseInt(catId, 10),
       };
@@ -80,13 +72,7 @@ const CategoriesPage: React.VFC = () => {
   }, [catId, query.toString(), feedsFilter.category]);
 
   useEffect(() => {
-    // Scroll to top
-    if (window.scrollY > 0) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'auto',
-      });
-    }
+    scrollToTop();
     filterByRoute();
   }, [filterByRoute]);
 
@@ -97,17 +83,6 @@ const CategoriesPage: React.VFC = () => {
       offset: (prevFilter?.offset ?? 0) + (prevFilter?.limit ?? 0),
     }));
   }, [hasMore, isLoading]);
-
-  const handleFeedsLoadMore = useCallback(() => {
-    if (!hasMoreFeeds || feedsLoading) return;
-    setFeedsFilter((prevFilter) => ({
-      ...prevFilter,
-      page: {
-        limit: prevFilter?.page?.limit ?? 0,
-        offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? 0),
-      },
-    }));
-  }, [hasMoreFeeds, feedsLoading]);
 
   const handleCategorySelect = (value?: Category): void => {
     cleanData();
@@ -151,12 +126,8 @@ const CategoriesPage: React.VFC = () => {
         />
       ) : (
         <FeedList
-          feeds={feeds}
-          isLoading={feedsLoading || isLoading}
-          hasMore={hasMoreFeeds}
-          onLoadMore={handleFeedsLoadMore}
           onFilter={handleFeedsFilter}
-          updateCategory={updateCategory}
+          categoryId={catId ? parseInt(catId, 10) : undefined}
         />
       )}
     </MainLayout>

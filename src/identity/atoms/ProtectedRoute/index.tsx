@@ -1,6 +1,6 @@
-import NoPermission from '@common/pages/NoPermission';
-import { useIdentity, usePermission } from '@identity/hooks';
-import routes from '@src/routes';
+import NoPermission from '@/common/pages/NoPermission';
+import { useIdentity, usePermission } from '@/identity/hooks';
+import { Routes } from '@/routing/routes';
 import React from 'react';
 import { Route, RouteProps, Redirect, useLocation } from 'react-router-dom';
 
@@ -12,7 +12,7 @@ export interface ProtectedRouteProps extends RouteProps {
 const ProtectedRoute: React.VFC<ProtectedRouteProps> = ({
   path,
   component,
-  loginUrl = routes.Login.path as string,
+  loginUrl = Routes.Login.path as string,
   permissions = [],
 }) => {
   const identity = useIdentity();

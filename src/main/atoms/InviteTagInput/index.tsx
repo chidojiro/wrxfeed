@@ -1,4 +1,4 @@
-import { emailMatches, isEmail } from '@common/utils';
+import { emailMatches, isEmail } from '@/common/utils';
 import React, {
   ChangeEvent,
   ClipboardEventHandler,

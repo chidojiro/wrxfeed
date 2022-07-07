@@ -1,20 +1,19 @@
-import React, { Fragment } from 'react';
-import { Popover, Transition } from '@headlessui/react';
-import { useHistory } from 'react-router-dom';
-
-import { NotifyIcon } from '@assets';
+import { NotifyIcon } from '@/assets';
+import Loading from '@/common/atoms/Loading';
+import { classNames } from '@/common/utils';
+import { NotifyRow } from '@/main/atoms';
+import { Notification } from '@/main/entity';
 import {
   NotifyChannelEvents,
   NotifyEventData,
   useNotification,
   useNotifyChannel,
-} from '@main/hooks';
-import { Pagination } from '@api/types';
-import { Notification } from '@main/entity';
-import { NotifyRow } from '@main/atoms';
-import { classNames } from '@common/utils';
-import Loading from '@common/atoms/Loading';
-import Routes from '@src/routes';
+} from '@/main/hooks';
+import { PaginationParams } from '@/rest/types';
+import { Routes } from '@/routing/routes';
+import { Popover, Transition } from '@headlessui/react';
+import React, { Fragment } from 'react';
+import { useHistory } from 'react-router-dom';
 
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;
@@ -29,7 +28,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
   showNumberNotify = false,
   useDropDown = true,
 }) => {
-  const [filter] = React.useState<Pagination>({ offset: 0, limit: useDropDown ? LIMIT : 1 }); // Reduce loading time if we don't need notification popup
+  const [filter] = React.useState<PaginationParams>({ offset: 0, limit: useDropDown ? LIMIT : 1 }); // Reduce loading time if we don't need notification popup
   const {
     notifications,
     isLoading,

@@ -1,12 +1,12 @@
-import { useApi } from '@api';
-import { useErrorHandler } from '@error/hooks';
-import { ApiErrorCode } from '@error/types';
-import { isApiError } from '@error/utils';
-import { Contact } from '@main/entity';
+import { useApi } from '@/api';
+import { useErrorHandler } from '@/error/hooks';
+import { ApiErrorCode } from '@/error/types';
+import { isApiError } from '@/error/utils';
+import { Contact } from '@/main/entity';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@identity/hooks';
+import { useIdentity } from '@/identity/hooks';
 
 interface InviteHookValues {
   isSent: boolean;

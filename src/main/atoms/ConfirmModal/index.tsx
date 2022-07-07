@@ -1,11 +1,11 @@
-import React, { ReactElement, useRef } from 'react';
-import { ReactComponent as CloseIcon } from '@assets/icons/outline/close.svg';
+import { ReactComponent as CloseIcon } from '@/assets/icons/outline/close.svg';
+import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
+import Modal, { ModalProps } from '@/common/atoms/Modal';
 import { Dialog } from '@headlessui/react';
-import { ReactComponent as ExclamationCircle } from '@assets/icons/solid/exclamation-circle.svg';
-import Modal, { ModalProps } from '@common/atoms/Modal';
+import React, { useRef } from 'react';
 
 interface ConfirmModalProps extends ModalProps {
-  icon?: ReactElement | Element;
+  icon?: React.ReactNode;
   title: string;
   cancelLabel?: string;
   okLabel?: string;

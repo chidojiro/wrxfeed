@@ -1,11 +1,11 @@
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
-import { useDebounce, useEventListener, useIntersection } from '@common/hooks';
-import { ScrollToTopButton } from '@main/molecules';
+import { useDebounce, useEventListener, useIntersection } from '@/common/hooks';
+import { ScrollToTopButton } from '@/main/molecules';
+import { Children } from '@/common/types';
 
 const DEFAULT_THRESHOLD = 150;
-const DEBOUNCE_WAIT = 300; // 0.3s
 
-interface InfiniteScrollerProps {
+interface InfiniteScrollerProps extends Children {
   style?: React.CSSProperties;
   className?: string;
   threshold?: number;
@@ -28,7 +28,7 @@ const InfiniteScroller: React.FC<InfiniteScrollerProps> = ({
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
   const isEndReached = useIntersection(endAnchorRef.current || undefined, `${threshold}px`); // Trigger if 200px is visible from the element
   const loadMoreFunc = onLoadMore || (() => undefined);
-  const handleLoadMoreTrigger = useDebounce(loadMoreFunc, DEBOUNCE_WAIT, []);
+  const handleLoadMoreTrigger = useDebounce(loadMoreFunc);
   const handleScroll = useCallback(() => {
     const winScroll = scrollerRef.current?.scrollTop ?? 0;
     const scrollDistance =

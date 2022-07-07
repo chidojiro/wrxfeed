@@ -1,4 +1,5 @@
-import { Target, Category, Department, Transaction } from '@main/entity';
+import { Category, Department, Transaction } from '@/main/entity';
+import { Target } from '@/target/types';
 
 export type FeedItem = {
   id: number;
@@ -13,6 +14,7 @@ export type FeedItem = {
   transactions: Transaction[];
   lastInteraction: string;
   target: Target;
+  hidden?: boolean;
 };
 
 export enum FeedType {

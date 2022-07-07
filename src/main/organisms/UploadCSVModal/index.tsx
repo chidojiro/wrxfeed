@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecoilState } from 'recoil';
-import { ReactComponent as CsvIcon } from '@assets/icons/outline/csvIcon.svg';
-import Modal from '@common/atoms/Modal';
+import { ReactComponent as CsvIcon } from '@/assets/icons/outline/csvIcon.svg';
+import Modal from '@/common/atoms/Modal';
 import { showUploadCSVModalState } from './states';
 
 export type UploadCSVModalProps = {

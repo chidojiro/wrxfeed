@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useApi } from '@api';
-import Loading from '@common/atoms/Loading';
-import { useQuery } from '@common/hooks';
-import { isApiError } from '@error/utils';
-import Routes from '@src/routes';
+import { useApi } from '@/api';
+import Loading from '@/common/atoms/Loading';
+import { useLegacyQuery } from '@/common/hooks';
+import { isApiError } from '@/error/utils';
+import { Routes } from '@/routing/routes';
 import React, { useCallback, useEffect, useState, VFC } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
@@ -24,7 +24,7 @@ interface Error {
 
 const AcceptInvitation: VFC = () => {
   const { acceptInvitation } = useApi();
-  const query = useQuery();
+  const query = useLegacyQuery();
   const router = useHistory();
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);

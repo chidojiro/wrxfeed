@@ -1,12 +1,11 @@
-import React from 'react';
+import MainLayout from '@/common/templates/MainLayout';
+import { Notification } from '@/main/entity';
+import { useNotification } from '@/main/hooks';
+import { PaginationParams } from '@/rest/types';
+import { Routes } from '@/routing/routes';
 import * as Sentry from '@sentry/react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
-
-import { useNotification } from '@main/hooks';
-import Routes from '@src/routes';
-import { Pagination } from '@api/types';
-import { Notification } from '@main/entity';
-import MainLayout from '@common/templates/MainLayout';
 import NotificationList from '../../organisms/NotificationList';
 
 const LIMIT_GET_NOTIFICATIONS = 30;
@@ -17,7 +16,7 @@ const INIT_PAGINATION = Object.freeze({
 });
 
 const Notifications: React.VFC = () => {
-  const [filter, setFilter] = React.useState<Pagination>(INIT_PAGINATION);
+  const [filter, setFilter] = React.useState<PaginationParams>(INIT_PAGINATION);
   const { notifications, isLoading, hasMore, patchNotification } = useNotification(filter);
   const history = useHistory();
 

@@ -1,7 +1,7 @@
-import { useApi } from '@api';
-import { useErrorHandler } from '@error/hooks';
-import { isBadRequest } from '@error/utils';
-import { VendorDescription } from '@main/entity';
+import { useApi } from '@/api';
+import { useErrorHandler } from '@/error/hooks';
+import { isBadRequest } from '@/error/utils';
+import { VendorDescription } from '@/main/entity';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 
