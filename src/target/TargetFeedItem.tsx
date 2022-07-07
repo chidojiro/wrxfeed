@@ -68,6 +68,7 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
     const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
     const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
     const [itemEditing, setItemEditing] = useState<Target | null>(null);
+    const addTargetModalDisclosure = useDisclosure();
     // Data hooks
     const { mentions } = useMention();
     // Variables
@@ -152,8 +153,6 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
     const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
       TargetApis.delete(targetId),
     );
-
-    const addTargetModalDisclosure = useDisclosure();
 
     const renderEditorAvatar = (target: Target) => {
       const updaterName = target?.updatedBy?.fullName ?? '';
