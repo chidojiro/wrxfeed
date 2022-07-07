@@ -1,7 +1,7 @@
 import { TargetArrowFilled } from '@/assets';
+import { OverlayLoader } from '@/common/components';
 import { useFetcher, useScrollbarDetector } from '@/common/hooks';
 import { ClassName } from '@/common/types';
-import { MainLayoutLoader } from '@/layout/MainLayoutLoader';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
@@ -16,18 +16,13 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
     DepartmentApis.getSummaries(),
   );
 
-  const { scrollbarWidth: summaryListSCrollbarWidth } = useScrollbarDetector(summaryListRef, [
+  const { scrollbarWidth: summaryListScrollbarWidth } = useScrollbarDetector(summaryListRef, [
     summaries,
   ]);
 
   return (
-    <MainLayoutLoader active={isValidating}>
-      <div
-        className={clsx(
-          'rounded-card shadow-shadowCard bg-white h-[450px] flex flex-col',
-          className,
-        )}
-      >
+    <OverlayLoader loading={isValidating} className={className}>
+      <div className={clsx('rounded-card shadow-shadowCard bg-white h-[450px] flex flex-col')}>
         <div className="p-5 flex items-center gap-2 font-semibold text-Gray-3">
           <TargetArrowFilled width={16} height={16} />
           <span>Summary</span>
@@ -39,18 +34,18 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
             'border-t border-b border-Gray-28',
             'py-2.5 px-1',
           )}
-          style={{ paddingRight: summaryListSCrollbarWidth }}
+          style={{ paddingRight: summaryListScrollbarWidth }}
         >
           <div className="pl-2 col-span-5 text-left">Team</div>
           <div className="col-span-2">Spend</div>
           <div className="col-span-2">Target</div>
         </div>
-        <div className="overflow-auto flex-1 pb-5" ref={summaryListRef}>
+        <div className="overflow-auto flex-1 pb-5 p-px" ref={summaryListRef}>
           {summaries.map((summary) => (
             <SummaryRow data={summary} key={summary.id} />
           ))}
         </div>
       </div>
-    </MainLayoutLoader>
+    </OverlayLoader>
   );
 };

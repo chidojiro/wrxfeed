@@ -1,6 +1,7 @@
 import { useFetcher } from '@/common/hooks';
 import { TargetApis } from '@/target/apis';
 import React from 'react';
+import { fallbackTarget } from './constants';
 
 export const usePrimaryTarget = (departmentId: number) => {
   const fetcherReturn = useFetcher(['primaryTarget', departmentId], () =>
@@ -16,7 +17,7 @@ export const usePrimaryTarget = (departmentId: number) => {
   return React.useMemo(
     () => ({
       ...fetcherReturn,
-      data: fetcherReturn.data?.[0],
+      data: fetcherReturn.data?.[0] ?? fallbackTarget,
     }),
     [fetcherReturn],
   );

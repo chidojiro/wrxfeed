@@ -96,7 +96,7 @@ const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({
         </span>
       </button>
       <TabListSideBar tabs={tabsInGroup} isOpen={group.isOpened} />
-      {addItemRoute && (
+      {addItemRoute && group.isOpened && (
         <RouterLink
           key={`add-button-${group?.name}`}
           to={addItemRoute}

@@ -1,4 +1,5 @@
 import { CommentIcon } from '@/assets';
+import { ConditionalWrapper } from '@/common/components';
 import { useHandler } from '@/common/hooks';
 import { FeedType } from '@/main/entity';
 import { decimalLogic, DecimalType } from '@/main/utils';
@@ -38,24 +39,35 @@ export const SummaryRow = ({
   );
 
   const handleClick = async () => {
+    if (!target) return;
+
     await viewDepartmentSummary(id);
 
     history.push(
-      `${(Routes.Feed.path as string).replace(':id', `${id}?route=${FeedType.TargetFeed}`)}`,
+      `${(Routes.Feed.path as string).replace(':id', `${target.id}?route=${FeedType.TargetFeed}`)}`,
     );
   };
 
   const targetSpends = target?.spendings?.reduce((acc, cur) => acc + cur.total, 0);
 
+  const baseWrapperClassName = clsx(
+    'grid grid-cols-10 items-center',
+    'w-full py-0.5 px-1',
+    'border-b border-Gray-28',
+    'text-xs text-center',
+  );
+
   return (
-    <button
-      onClick={handleClick}
-      className={clsx(
-        'grid grid-cols-10 items-center',
-        'w-full py-0.5 px-1',
-        'border-b border-Gray-28',
-        'text-xs',
-      )}
+    <ConditionalWrapper
+      if={{
+        condition: !!targetSpends,
+        component: 'button',
+        props: {
+          onClick: handleClick,
+          className: clsx(baseWrapperClassName, 'list-row-hover'),
+        },
+      }}
+      else={{ component: 'div', props: { className: baseWrapperClassName } }}
     >
       <div className="col-span-5 flex items-center gap-2 text-Gray-3 text-left">
         <div
@@ -82,6 +94,6 @@ export const SummaryRow = ({
           </>
         )}
       </div>
-    </button>
+    </ConditionalWrapper>
   );
 };
