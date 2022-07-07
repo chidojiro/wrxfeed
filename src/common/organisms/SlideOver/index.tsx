@@ -31,7 +31,7 @@ export type LineInfo = {
   value: string;
 };
 
-const SlideOver: React.FC<SlideOverProps> = ({ className = '' }) => {
+const SlideOver = ({ className = '' }: SlideOverProps) => {
   const [open, setOpen] = useRecoilState(slideOverOpenState);
   const [loading, setLoading] = useState<boolean>(false);
   const [item, setItem] = useState<TransLineItem>();
