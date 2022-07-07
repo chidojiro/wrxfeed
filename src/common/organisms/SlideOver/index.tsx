@@ -1,13 +1,13 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
 import { useRecoilState } from 'recoil';
 import mixpanel from 'mixpanel-browser';
+import clsx from 'clsx';
 
 import { slideOverOpenState } from '@/main/states/slideOver.state';
 import { FeedApis } from '@/feed/apis';
 import EventEmitter, { EventName } from '@/main/EventEmitter';
 import { TransLineItem } from '@/main/entity';
-import { classNames } from '@/common/utils';
 import { useHandler } from '@/common/hooks';
 import { useIdentity } from '@/identity/hooks';
 import LineItemDetails from '@/feed/LineItemDetails';
@@ -20,28 +20,24 @@ export interface SlideOverProps {
   className?: string;
 }
 
-const SlideOver = ({ className = '' }: SlideOverProps) => {
+const SlideOver = ({ className }: SlideOverProps) => {
   const [open, setOpen] = useRecoilState(slideOverOpenState);
-  const [item, setItem] = useState<TransLineItem>();
 
   const identity = useIdentity();
 
-  const { handle, isLoading, data } = useHandler((lineItemId: number) =>
-    FeedApis.getLineItemDetail({ lineItemId }),
-  );
+  const {
+    handle: getLineItemDetails,
+    isLoading,
+    data: lineItemDetails,
+  } = useHandler((lineItemId: number) => FeedApis.getLineItemDetails({ lineItemId }));
 
-  const combinedData = { ...item, ...(data ? data : {}) } as TransLineItem;
-
-  const handleOpenSlide = (props: SelectItemProps | unknown, feedId?: number | undefined) => {
+  const handleOpenSlide = async (props: SelectItemProps | unknown, feedId?: number | undefined) => {
     if (props && typeof props === 'object') {
       const lineItemProps = props as SelectItemProps;
-      setItem({
-        ...lineItemProps.item,
-      });
-      handle(lineItemProps?.item?.id);
       if (!open) {
         setOpen(true);
       }
+      await getLineItemDetails(lineItemProps?.item?.id);
 
       mixpanel.track('Feed Detail View', {
         user_id: identity?.id,
@@ -67,8 +63,7 @@ const SlideOver = ({ className = '' }: SlideOverProps) => {
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <div className={classNames('absolute inset-0 overflow-hidden', className)}>
-        {/* <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" /> */}
+      <div className={clsx('absolute inset-0 overflow-hidden', className)}>
         <div role="alertdialog" className="absolute inset-0 z-5" onClick={() => setOpen(false)} />
         <div className="fixed inset-y-0 z-20 right-0 w-[588px] flex">
           <Transition.Child
@@ -81,14 +76,12 @@ const SlideOver = ({ className = '' }: SlideOverProps) => {
             leaveTo="translate-x-full"
           >
             <div className="w-screen flex flex-1 flex-col pt-navbar relative">
-              {!!combinedData && (
-                <LineItemDetails
-                  open={open}
-                  setOpen={(isOpen: boolean) => setOpen(isOpen)}
-                  loading={isLoading}
-                  item={combinedData}
-                />
-              )}
+              <LineItemDetails
+                open={open}
+                setOpen={(isOpen: boolean) => setOpen(isOpen)}
+                loading={isLoading}
+                item={lineItemDetails}
+              />
             </div>
           </Transition.Child>
         </div>
