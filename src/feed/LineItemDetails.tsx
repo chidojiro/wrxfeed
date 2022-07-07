@@ -31,7 +31,7 @@ import Tooltip from '@/common/atoms/Tooltip';
 import UpdateVendorInfoModal from '@/main/organisms/UpdateVendorInfoModal';
 import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
 import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
-import UpdateDetailsLineItemInfoModal from '@/main/organisms/UpdateDetailsLineItemInfoModal';
+import UpdateDetailsLineItemInfoModal from '@/feed/UpdateDetailsLineItemInfoModal';
 import { MainGroups } from '@/common/constants';
 
 export interface LineItemDetailsProps {
@@ -46,7 +46,7 @@ export interface SelectItemProps {
   item: TransLineItem;
 }
 
-type LineInfo = {
+export type LineInfo = {
   id: string;
   key: string;
   value: string;

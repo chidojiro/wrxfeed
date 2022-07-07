@@ -1,22 +1,16 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Fragment, useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
-import { toast } from 'react-toastify';
-import { useErrorHandler } from 'react-error-boundary';
 import { useRecoilState } from 'recoil';
 import mixpanel from 'mixpanel-browser';
 
-import { TransLineItem } from '@/main/entity';
-import { isApiError } from '@/error/utils';
-import { classNames } from '@/common/utils';
-import { useIdentity } from '@/identity/hooks';
-import { useApi } from '@/api';
 import { slideOverOpenState } from '@/main/states/slideOver.state';
-
-import LineItemDetails from '@/main/molecules/LineItemDetails';
+import { FeedApis } from '@/feed/apis';
 import EventEmitter, { EventName } from '@/main/EventEmitter';
+import { TransLineItem } from '@/main/entity';
+import { classNames } from '@/common/utils';
+import { useHandler } from '@/common/hooks';
+import { useIdentity } from '@/identity/hooks';
+import LineItemDetails from '@/feed/LineItemDetails';
 
 export interface SelectItemProps {
   item: TransLineItem;
@@ -26,35 +20,17 @@ export interface SlideOverProps {
   className?: string;
 }
 
-export type LineInfo = {
-  key: string;
-  value: string;
-};
-
 const SlideOver = ({ className = '' }: SlideOverProps) => {
   const [open, setOpen] = useRecoilState(slideOverOpenState);
-  const [loading, setLoading] = useState<boolean>(false);
   const [item, setItem] = useState<TransLineItem>();
-
-  const ApiClient = useApi();
-  const errorHandler = useErrorHandler();
 
   const identity = useIdentity();
 
-  const getLineItemDetails = async (id: number) => {
-    try {
-      setLoading(true);
-      const res = await ApiClient.getLineItemById(id);
-      setItem(res);
-    } catch (error: unknown) {
-      toast.error(JSON.stringify(error));
-      if (isApiError(error)) {
-        errorHandler(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { handle, isLoading, data } = useHandler((lineItemId: number) =>
+    FeedApis.getLineItemDetail({ lineItemId }),
+  );
+
+  const combinedData = { ...item, ...(data ? data : {}) } as TransLineItem;
 
   const handleOpenSlide = (props: SelectItemProps | unknown, feedId?: number | undefined) => {
     if (props && typeof props === 'object') {
@@ -62,7 +38,7 @@ const SlideOver = ({ className = '' }: SlideOverProps) => {
       setItem({
         ...lineItemProps.item,
       });
-      getLineItemDetails(lineItemProps.item?.id);
+      handle(lineItemProps?.item?.id);
       if (!open) {
         setOpen(true);
       }
@@ -77,10 +53,6 @@ const SlideOver = ({ className = '' }: SlideOverProps) => {
     }
   };
 
-  const onClickOverlay = () => {
-    setOpen(false);
-  };
-
   useEffect(() => {
     EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop, feedId) =>
       handleOpenSlide(prop, feedId as number),
@@ -90,13 +62,14 @@ const SlideOver = ({ className = '' }: SlideOverProps) => {
         handleOpenSlide(prop, feedId as number),
       );
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <Transition.Root show={open} as={Fragment}>
       <div className={classNames('absolute inset-0 overflow-hidden', className)}>
         {/* <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" /> */}
-        <div role="alertdialog" className="absolute inset-0 z-5" onClick={onClickOverlay} />
+        <div role="alertdialog" className="absolute inset-0 z-5" onClick={() => setOpen(false)} />
         <div className="fixed inset-y-0 z-20 right-0 w-[588px] flex">
           <Transition.Child
             as={Fragment}
@@ -108,12 +81,12 @@ const SlideOver = ({ className = '' }: SlideOverProps) => {
             leaveTo="translate-x-full"
           >
             <div className="w-screen flex flex-1 flex-col pt-navbar relative">
-              {!!item && (
+              {!!combinedData && (
                 <LineItemDetails
                   open={open}
                   setOpen={(isOpen: boolean) => setOpen(isOpen)}
-                  loading={loading}
-                  item={item}
+                  loading={isLoading}
+                  item={combinedData}
                 />
               )}
             </div>
