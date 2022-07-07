@@ -38,7 +38,7 @@ export const TargetCard = ({
   className,
   onUpdateSuccess,
   onDeleteSuccess,
-  showColorfulHeading,
+  showColorfulHeading = true,
 }: TargetCardProps) => {
   const history = useHistory();
 
