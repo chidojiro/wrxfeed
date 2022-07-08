@@ -12,7 +12,7 @@ export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
 
   return (
     <OverlayLoader loading={isInitializing} className={className}>
-      <TargetCard className="h-[450px]" data={targets[0]} clickable={false} />
+      <TargetCard className="h-[450px]" data={targets[0]} />
     </OverlayLoader>
   );
 };
