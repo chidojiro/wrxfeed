@@ -67,7 +67,10 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     ...INIT_FEED_FILTER,
     forYou,
     department: depId,
+    category: categoryId,
+    vendor: vendorId,
   });
+
   const { feeds, hasMore, isLoading, updateCategory, cleanData } = useFeed(feedFilters);
   const query = useLegacyQuery();
   const history = useHistory();

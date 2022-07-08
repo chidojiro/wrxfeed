@@ -1,24 +1,16 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
-import { toast } from 'react-toastify';
-import { useErrorHandler } from 'react-error-boundary';
 import { useRecoilState } from 'recoil';
-// types
-import { TransLineItem } from '@/main/entity';
-import { isApiError } from '@/error/utils';
-import { classNames } from '@/common/utils';
-// hooks and states
-import { useApi } from '@/api';
-import { slideOverOpenState } from '@/main/states/slideOver.state';
-// components
-import LineItemDetails from '@/main/molecules/LineItemDetails';
-import EventEmitter, { EventName } from '@/main/EventEmitter';
-
 import mixpanel from 'mixpanel-browser';
+import clsx from 'clsx';
+
+import { slideOverOpenState } from '@/main/states/slideOver.state';
+import { FeedApis } from '@/feed/apis';
+import EventEmitter, { EventName } from '@/main/EventEmitter';
+import { TransLineItem } from '@/main/entity';
+import { useHandler } from '@/common/hooks';
 import { useIdentity } from '@/identity/hooks';
+import LineItemDetails from '@/feed/LineItemDetails';
 
 export interface SelectItemProps {
   item: TransLineItem;
@@ -28,35 +20,24 @@ export interface SlideOverProps {
   className?: string;
 }
 
-export type LineInfo = {
-  key: string;
-  value: string;
-};
-
-const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
+const SlideOver = ({ className }: SlideOverProps) => {
   const [open, setOpen] = useRecoilState(slideOverOpenState);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [item, setItem] = useState<TransLineItem>();
-
-  const ApiClient = useApi();
-  const errorHandler = useErrorHandler();
 
   const identity = useIdentity();
 
-  const handleOpenSlide = (
-    props: SelectItemProps | unknown,
-    curItem: TransLineItem | undefined,
-    feedId?: number | undefined,
-  ) => {
+  const {
+    handle: getLineItemDetails,
+    isLoading,
+    data: lineItemDetails,
+  } = useHandler((lineItemId: number) => FeedApis.getLineItemDetails({ lineItemId }));
+
+  const handleOpenSlide = async (props: SelectItemProps | unknown, feedId?: number | undefined) => {
     if (props && typeof props === 'object') {
       const lineItemProps = props as SelectItemProps;
-      setItem({
-        ...curItem,
-        ...lineItemProps.item,
-      });
       if (!open) {
         setOpen(true);
       }
+      await getLineItemDetails(lineItemProps?.item?.id);
 
       mixpanel.track('Feed Detail View', {
         user_id: identity?.id,
@@ -68,47 +49,22 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
     }
   };
 
-  const getLineItemDetails = async (id: number) => {
-    try {
-      setLoading(true);
-      const res = await ApiClient.getLineItemById(id);
-      setItem(res);
-    } catch (error: unknown) {
-      toast.error(JSON.stringify(error));
-      if (isApiError(error)) {
-        errorHandler(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onClickOverlay = () => {
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    if (item?.id && !loading) {
-      getLineItemDetails(item?.id);
-    }
-  }, [item, open]);
-
   useEffect(() => {
     EventEmitter.subscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop, feedId) =>
-      handleOpenSlide(prop, item, feedId as number),
+      handleOpenSlide(prop, feedId as number),
     );
     return () => {
       EventEmitter.unsubscribe(EventName.SHOW_LINE_ITEM_DETAILS, (prop, feedId) =>
-        handleOpenSlide(prop, item, feedId as number),
+        handleOpenSlide(prop, feedId as number),
       );
     };
-  }, [item]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <div className={classNames('absolute inset-0 overflow-hidden', className)}>
-        {/* <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" /> */}
-        <div role="alertdialog" className="absolute inset-0 z-5" onClick={onClickOverlay} />
+      <div className={clsx('absolute inset-0 overflow-hidden', className)}>
+        <div role="alertdialog" className="absolute inset-0 z-5" onClick={() => setOpen(false)} />
         <div className="fixed inset-y-0 z-20 right-0 w-[588px] flex">
           <Transition.Child
             as={Fragment}
@@ -120,14 +76,12 @@ const SlideOver: React.VFC<SlideOverProps> = ({ className = '' }) => {
             leaveTo="translate-x-full"
           >
             <div className="w-screen flex flex-1 flex-col pt-navbar relative">
-              {!!item && (
-                <LineItemDetails
-                  open={open}
-                  setOpen={(isOpen: boolean) => setOpen(isOpen)}
-                  loading={loading}
-                  item={item}
-                />
-              )}
+              <LineItemDetails
+                open={open}
+                setOpen={(isOpen: boolean) => setOpen(isOpen)}
+                loading={isLoading}
+                item={lineItemDetails}
+              />
             </div>
           </Transition.Child>
         </div>

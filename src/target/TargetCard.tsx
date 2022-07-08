@@ -10,7 +10,6 @@ import { ClassName } from '@/common/types';
 import { distanceToNow } from '@/common/utils';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
-import { FeedType } from '@/main/entity';
 import MiniChartView from '@/main/molecules/MiniChartView';
 import {
   decimalLogic,
@@ -18,12 +17,12 @@ import {
   getColorByText,
   getTargetPeriodsAmountTotal,
 } from '@/main/utils';
-import { Routes } from '@/routing/routes';
 import { AddTargetModal } from './AddTargetModal';
 import { AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
 import { Target } from './types';
-import { OptionsButton } from '@/main/molecules';
+import { Routes } from '@/routing/routes';
+import { FeedType } from '@/main/entity';
 
 export type TargetCardProps = ClassName &
   Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'> & {
@@ -40,11 +39,10 @@ export const TargetCard = ({
   clickable = true,
   showColorfulHeading = true,
 }: TargetCardProps) => {
+  const department = data.department;
   const history = useHistory();
 
-  const department = data.department;
-
-  const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
+  const { isLoading: isDeletingTarget } = useHandler((targetId: number) =>
     TargetApis.delete(targetId),
   );
 
@@ -96,11 +94,6 @@ export const TargetCard = ({
             <div className="flex flex-col flex-1 h-12 max-h-12">
               <div className="flex justify-between items-center h-6">
                 <TargetFeedName target={data} />
-                <OptionsButton
-                  onViewClick={goToTargetDetails}
-                  onEditClick={addTargetModalDisclosure.onOpen}
-                  onDeleteClick={() => deleteTarget(data.id)}
-                />
               </div>
               <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
                 <Avatar

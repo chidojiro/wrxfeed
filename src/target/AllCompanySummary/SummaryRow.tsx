@@ -39,10 +39,7 @@ export const SummaryRow = ({
 
   const handleClick = async () => {
     if (!target) return;
-
     await viewDepartmentSummary(id);
-
-    console.log('target: ' + JSON.stringify(target));
 
     history.push({
       pathname: `/departments/${id}`,

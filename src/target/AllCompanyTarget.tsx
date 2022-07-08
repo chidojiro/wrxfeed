@@ -1,6 +1,6 @@
+import React from 'react';
 import { OverlayLoader } from '@/common/components';
 import { ClassName } from '@/common/types';
-import React from 'react';
 import { fallbackTarget } from './constants';
 import { TargetCard } from './TargetCard';
 import { useTargets } from './useTargets';
