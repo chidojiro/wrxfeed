@@ -52,10 +52,7 @@ export const TargetSummary = ({ departmentId }: TargetSummaryProps) => {
       <AddTargetModal
         open={addTargetModalDisclosure.isOpen}
         onClose={addTargetModalDisclosure.onClose}
-        onCancel={() => {
-          console.log('onCancel');
-          addTargetModalDisclosure.onClose();
-        }}
+        onCancel={addTargetModalDisclosure.onClose}
         departmentId={departmentId}
       />
     </>
