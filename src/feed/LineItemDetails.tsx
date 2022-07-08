@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useHistory } from 'react-router-dom';
 
 import {
   decimalLogic,
@@ -27,11 +29,9 @@ import {
 } from '@/assets';
 import Tooltip from '@/common/atoms/Tooltip';
 import UpdateVendorInfoModal from '@/main/organisms/UpdateVendorInfoModal';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
 import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
-import UpdateDetailsLineItemInfoModal from '@/main/organisms/UpdateDetailsLineItemInfoModal';
-import { useHistory } from 'react-router-dom';
+import UpdateDetailsLineItemInfoModal from '@/feed/UpdateDetailsLineItemInfoModal';
 import { MainGroups } from '@/common/constants';
 
 export interface LineItemDetailsProps {
@@ -39,14 +39,14 @@ export interface LineItemDetailsProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   loading?: boolean;
-  item: TransLineItem;
+  item?: TransLineItem;
 }
 
 export interface SelectItemProps {
   item: TransLineItem;
 }
 
-type LineInfo = {
+export type LineInfo = {
   id: string;
   key: string;
   value: string;
@@ -151,7 +151,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   };
 
   const renderVendorName = () => {
-    const vendorName = getVendorNameFromLineItem(item);
+    const vendorName = item ? getVendorNameFromLineItem(item) : '';
     return <div className="flex-auto text-lg font-bold text-Gray-3 mr-2">{vendorName}</div>;
   };
 
@@ -251,7 +251,7 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
 
         <div className="flex flex-col my-5 px-8 overflow-y-auto max-h-[calc(100vh-168px)]">
           <div className="flex flex-row group w-[524px]">
-            {renderVendorName()}
+            {item && renderVendorName()}
             <div className="block hidden group-hover:block">{renderEditVendorInfoButton()}</div>
           </div>
           <div className="flex flex-row w-[524px] mt-2 mb-2">
@@ -284,8 +284,8 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               <p className="flex-auto text-base font-bold text-Gray-3 mr-2">
                 {lineItemUpdate.description}
               </p>
-              {!!loading && <Loading className="ml-4" width={12} height={12} />}
-              <div className="block hidden group-hover:block">
+              {!!loading && <Loading className="mx-4" width={12} height={12} />}
+              <div className="hidden group-hover:block">
                 {renderEditLineItemDescriptionButton()}
               </div>
               <div className="flex group-hover:hidden">
@@ -361,7 +361,6 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
               })}
             </ul>
           </div>
-
           <div className="flex flex-col px-3 w-[524px]">
             <p className="text-sm font-bold text-Gray-3">
               {`${getVendorNameFromLineItem(item)} also appears in these categories`}
@@ -389,13 +388,15 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
         onCancel={() => hideEditVendorDescriptionModal()}
         itemEditing={vendorUpdate}
       />
-      <UpdateDetailsLineItemInfoModal
-        open={showEditLineItem}
-        onClose={() => hideEditLineItemModal()}
-        onCancel={() => hideEditLineItemModal()}
-        itemEditing={lineItemUpdate}
-        transLineItem={item}
-      />
+      {item && (
+        <UpdateDetailsLineItemInfoModal
+          open={showEditLineItem}
+          onClose={() => hideEditLineItemModal()}
+          onCancel={() => hideEditLineItemModal()}
+          itemEditing={lineItemUpdate}
+          transLineItem={item}
+        />
+      )}
     </div>
   );
 };
