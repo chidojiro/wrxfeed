@@ -1,22 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  BasicsEditCircle,
-  BasicsXRegular,
-  BasicTickSmall,
-  ChainLinkIcon,
-  DetailLogoDefault,
-  EmailIcon,
-  PhoneIcon,
-  StackItemsIcon,
-} from '@/assets';
-import Loading from '@/common/atoms/Loading';
-import Tooltip from '@/common/atoms/Tooltip';
-import { MainGroups } from '@/common/constants';
-import UpdateDetailsLineItemInfoModal from '@/feed/UpdateDetailsLineItemInfoModal';
-import { TransLineItem, TranStatusType } from '@/main/entity';
-import UpdateVendorInfoModal from '@/main/organisms/UpdateVendorInfoModal';
-import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
-import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
+import React, { useEffect, useMemo, useState } from 'react';
+import dayjs from 'dayjs';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useHistory } from 'react-router-dom';
+
 import {
   decimalLogic,
   DecimalType,
@@ -25,18 +12,35 @@ import {
   getVendorNameFromLineItem,
   isEmptyOrSpaces,
 } from '@/main/utils';
-import clsx from 'clsx';
-import dayjs from 'dayjs';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { TransLineItem, TranStatusType } from '@/main/entity';
+import { classNames } from '@/common/utils';
 
-export type LineItemDetailsProps = {
+import Loading from '@/common/atoms/Loading';
+
+import {
+  BasicsXRegular,
+  DetailLogoDefault,
+  BasicTickSmall,
+  ChainLinkIcon,
+  EmailIcon,
+  PhoneIcon,
+  BasicsEditCircle,
+  StackItemsIcon,
+} from '@/assets';
+import Tooltip from '@/common/atoms/Tooltip';
+import UpdateVendorInfoModal from '@/main/organisms/UpdateVendorInfoModal';
+import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
+import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
+import UpdateDetailsLineItemInfoModal from '@/feed/UpdateDetailsLineItemInfoModal';
+import { MainGroups } from '@/common/constants';
+
+export interface LineItemDetailsProps {
   className?: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
   loading?: boolean;
   item?: TransLineItem;
-  onCloseClick?: () => void;
-};
+}
 
 export interface SelectItemProps {
   item: TransLineItem;
@@ -48,7 +52,12 @@ export type LineInfo = {
   value: string;
 };
 
-const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDetailsProps) => {
+const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
+  className = '',
+  setOpen,
+  loading,
+  item,
+}) => {
   const [showEditVendorDescription, setShowEditVendorDescription] = useState<boolean>(false);
   const vendorUpdate = useRecoilValue(vendorUpdateState);
   const setVendorUpdate = useSetRecoilState(vendorUpdateState);
@@ -137,6 +146,10 @@ const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDet
     },
   ];
 
+  const onClickCloseSlideOver = () => {
+    setOpen(false);
+  };
+
   const renderVendorName = () => {
     const vendorName = item ? getVendorNameFromLineItem(item) : '';
     return <div className="flex-auto text-lg font-bold text-Gray-3 mr-2">{vendorName}</div>;
@@ -207,7 +220,7 @@ const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDet
   const lineItems = item?.transaction?.lineItems || [];
 
   return (
-    <div className={clsx('flex flex-1 flex-row', className)}>
+    <div className={classNames('flex flex-1 flex-row', className)}>
       <div className="h-full flex flex-1 flex-col bg-white shadow-xl">
         <div
           className="w-full h-28 flex p-8"
@@ -227,7 +240,7 @@ const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDet
             />
             <span>Following</span>
           </div>
-          <button type="button" onClick={onCloseClick} className="flex-1 w-4 h-4">
+          <button type="button" onClick={onClickCloseSlideOver} className="flex-1 w-4 h-4">
             <BasicsXRegular
               className="w-4 h-4 float-right stroke-current text-white"
               width={20}
