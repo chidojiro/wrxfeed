@@ -77,7 +77,8 @@ const SlideOver = ({ className }: SlideOverProps) => {
           >
             <div className="w-screen flex flex-1 flex-col pt-navbar relative">
               <LineItemDetails
-                onCloseClick={() => setOpen(false)}
+                open={open}
+                setOpen={(isOpen: boolean) => setOpen(isOpen)}
                 loading={isLoading}
                 item={lineItemDetails}
               />
