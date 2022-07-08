@@ -418,7 +418,7 @@ export const getMultiRandomInt = (multi: number, min: number, max: number): numb
 };
 
 // Vendor information updates when created by "Concur Integrations"
-export const getVendorNameFromLineItem = (item: TransLineItem): string => {
+export const getVendorNameFromLineItem = (item?: TransLineItem): string => {
   // let vendorName = item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`;
   let vendorName = item?.vendor?.name || item?.description || '...';
 

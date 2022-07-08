@@ -9,8 +9,6 @@ import {
   UpdateTargetPayload,
 } from './types';
 
-// const get = () => {};
-
 const getList = ({
   offset = 0,
   limit = 0,
