@@ -1,16 +1,17 @@
 import { useOnClickOutside } from '@/common/hooks';
-import { Children } from '@/common/types';
+import { Children, OpenClose } from '@/common/types';
 import React, { useState } from 'react';
 import { PopperProps, usePopper } from 'react-popper';
 import { ConditionalWrapper } from '../ConditionalWrapper';
 import { Portal } from '../Portal';
 
-export type PopoverProps = Pick<PopperProps<any>, 'placement'> &
-  Children & {
+export type PopoverPlacement = PopperProps<any>['placement'];
+
+export type PopoverProps = Children &
+  OpenClose & {
+    placement?: PopoverPlacement;
     usePortal?: boolean;
     trigger: JSX.Element | HTMLElement;
-    open?: boolean;
-    onClose?: () => void;
     offset?: [number, number];
     closeOnClickOutside?: boolean;
   };
