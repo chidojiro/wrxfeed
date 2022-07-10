@@ -22,8 +22,6 @@ export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeade
   const department = {
     id: departmentId,
     name: '',
-    parent: undefined,
-    avatar: undefined,
   };
 
   return (
