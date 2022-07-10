@@ -1,13 +1,14 @@
 import React from 'react';
+import { ElementOrHTMLElementRef } from '../types';
 
 import { AssertUtils } from '../utils';
 
 export const useOnClickOutside = (
   refsOrElements?:
-    | Element
-    | React.RefObject<Element>
+    | ElementOrHTMLElementRef
+    | (ElementOrHTMLElementRef | null | undefined)[]
     | null
-    | (Element | React.RefObject<Element> | null)[]
+    | undefined
     | false,
   handler?: (event: MouseEvent) => void,
 ) => {

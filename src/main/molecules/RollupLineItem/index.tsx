@@ -6,7 +6,6 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { useApi } from '@/api';
 import { useIntersection } from '@/common/hooks';
 
-import EventEmitter, { EventName } from '@/main/EventEmitter';
 import { TransLineItem, Vendor } from '@/main/entity';
 import { classNames } from '@/common/utils';
 import { decimalLogic, DecimalType, getVendorNameFromLineItem } from '@/main/utils';
@@ -56,21 +55,14 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick }) =
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
   };
 
-  // const onClickLineItemVendor = (event: React.MouseEvent<HTMLElement>) => {
-  //   event.stopPropagation();
-  //   if (onClickVendor && lineItem.vendor) {
-  //     onClickVendor(lineItem.vendor);
-  //   }
-  // };
+  const onClickLineItem: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    // prevent close line item drawer
+    e.stopPropagation();
 
-  const onClickLineItem = () => {
     if (onClick) onClick(lineItem);
     setLineItemSelect(lineItem);
     setRead(true);
     maskLineItemAsRead(lineItem?.id);
-    EventEmitter.dispatch(EventName.SHOW_LINE_ITEM_DETAILS, {
-      item: lineItem,
-    });
   };
 
   const renderVendorName = () => {

@@ -43,10 +43,17 @@ export type ClassName = {
   className?: string;
 };
 
+export type OpenClose = {
+  open?: boolean;
+  onClose?: () => void;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Fn = (...arg: any[]) => any;
 
 export type HTMLElementOrHTMLElementRef = HTMLElement | React.RefObject<HTMLElement>;
+
+export type ElementOrHTMLElementRef = Element | React.RefObject<Element>;
 
 export type HTMLDivProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
