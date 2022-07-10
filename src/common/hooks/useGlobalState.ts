@@ -41,5 +41,5 @@ export const useGlobalState = <T = any>(
     [eventKey, key],
   );
 
-  return [state, setState];
+  return React.useMemo(() => [state, setState], [setState, state]);
 };

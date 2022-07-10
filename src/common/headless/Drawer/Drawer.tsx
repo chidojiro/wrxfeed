@@ -1,13 +1,12 @@
 import { Portal } from '@/common/components';
-import { Children, OpenClose } from '@/common/types';
+import { Children } from '@/common/types';
 import React from 'react';
 
 type DrawerPlacement = 'top' | 'bottom' | 'left' | 'right';
 
-export type DrawerProps = Children &
-  Pick<OpenClose, 'open'> & {
-    placement?: 'top' | 'bottom' | 'left' | 'right';
-  };
+export type DrawerProps = Children & {
+  placement?: 'top' | 'bottom' | 'left' | 'right';
+};
 
 const styleMap: Record<DrawerPlacement, React.CSSProperties> = {
   top: {

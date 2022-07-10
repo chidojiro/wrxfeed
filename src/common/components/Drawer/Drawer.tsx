@@ -1,24 +1,23 @@
-import React from 'react';
 import { Drawer as HeadlessDrawer, DrawerProps as HeadlessDrawerProps } from '@/common/headless';
 import { useDelayableState, useOnClickOutside } from '@/common/hooks';
+import { OpenClose } from '@/common/types';
 import clsx from 'clsx';
+import React from 'react';
 
 // Only support right placement to save effort
 // Please adjust the code if it's time to have more placements
-export type DrawerProps = Omit<HeadlessDrawerProps, 'placement'> & {
-  onClose?: () => void;
-};
+export type DrawerProps = Omit<HeadlessDrawerProps, 'placement'> & OpenClose;
 
 export const Drawer = React.forwardRef(
   (
     { children, open: openProp, onClose }: DrawerProps,
     ref: React.ForwardedRef<HTMLDivElement | null>,
   ) => {
-    const [open, setOpen] = useDelayableState(200, openProp);
+    const [delayableOpen, setDelayableOpen] = useDelayableState(200, openProp);
 
     React.useEffect(() => {
-      setOpen(!!openProp, !openProp);
-    }, [openProp, setOpen]);
+      setDelayableOpen(!!openProp, !openProp);
+    }, [openProp, setDelayableOpen]);
 
     const internalRef = React.useRef<HTMLDivElement>(null);
 
@@ -26,10 +25,10 @@ export const Drawer = React.forwardRef(
 
     useOnClickOutside(internalRef, onClose);
 
-    if (!open) return null;
+    if (!delayableOpen) return null;
 
     return (
-      <HeadlessDrawer open={open} placement="right" ref={internalRef}>
+      <HeadlessDrawer placement="right" ref={internalRef}>
         <div
           style={{ animationFillMode: 'forwards' }}
           className={clsx(

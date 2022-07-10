@@ -180,9 +180,19 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
 
     const chartData: LineChartData = useMemo(() => {
       if (startMonth === endMonth) {
-        return getLineChartDataInMonth(thisYearTrans, lastYearTrans, targetMonths[startMonth - 1]);
+        return getLineChartDataInMonth(
+          thisYearTrans,
+          lastYearTrans,
+          targetMonths[startMonth - 1],
+          target?.trackingStatus,
+        );
       }
-      return getTargetMonthsLineChartData(thisYearSpendData, lastYearSpendData, targetMonths);
+      return getTargetMonthsLineChartData(
+        thisYearSpendData,
+        lastYearSpendData,
+        targetMonths,
+        target?.trackingStatus,
+      );
     }, [thisYearSpendData, lastYearSpendData, targetMonths, lastYearTrans, thisYearTrans]);
 
     const totalTargetAmount = round(
