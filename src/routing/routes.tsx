@@ -7,7 +7,6 @@ import { UserRole } from '@/identity/constants';
 import Categories from '@/main/pages/Categories';
 import Company from '@/main/pages/Company';
 import Feed from '@/main/pages/Feed';
-import ForYou from '@/main/pages/ForYou';
 import Notifications from '@/main/pages/Notifications';
 import Vendors from '@/main/pages/Vendors';
 import { TargetRoutes } from '@/target/routes';
@@ -38,11 +37,6 @@ export const Routes: Route = {
   Onboard: {
     path: '/onboarding',
     component: Onboard,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  ForYou: {
-    path: '/for-you',
-    component: ForYou,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Notifications: {
