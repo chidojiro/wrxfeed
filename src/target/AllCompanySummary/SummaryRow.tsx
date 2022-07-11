@@ -1,13 +1,11 @@
-import React from 'react';
 import { CommentIcon } from '@/assets';
 import { ConditionalWrapper } from '@/common/components';
-import { EMPTY_AMOUNT } from '@/common/constants';
+import { MainGroups } from '@/common/constants';
 import { useHandler } from '@/common/hooks';
-import { FeedType } from '@/main/entity';
-import { decimalLogic, DecimalType, getDisplayCurrency } from '@/main/utils';
-import { Routes } from '@/routing/routes';
+import { getDisplayCurrency } from '@/main/utils';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { DepartmentSummary, TargetStatusType } from '../types';
 
@@ -39,12 +37,12 @@ export const SummaryRow = ({
 
   const handleClick = async () => {
     if (!target) return;
-
     await viewDepartmentSummary(id);
 
-    history.push(
-      `${(Routes.Feed.path as string).replace(':id', `${target.id}?route=${FeedType.TargetFeed}`)}`,
-    );
+    history.push({
+      pathname: `/departments/${id}`,
+      search: `?route=${MainGroups.Following}`,
+    });
   };
 
   const targetSpends = target?.spendings?.reduce((acc, cur) => acc + cur.total, 0);

@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import { v4 as UUID } from 'uuid';
 import { AssertUtils, withProjectClassNamePrefix } from '../utils';

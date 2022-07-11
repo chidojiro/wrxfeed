@@ -52,6 +52,7 @@ export type AddTargetModalProps = {
   target?: Target | null;
   initTags?: SearchResult[];
   departmentId?: number;
+  hidePropertyDropdowns?: boolean;
   onCreateSuccess?: (newTarget: Target) => void;
   onUpdateSuccess?: (updatedTarget: Target) => void;
   onDeleteSuccess?: (id: number) => void;
@@ -78,6 +79,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandMo
     departmentId,
     target,
     initTags,
+    hidePropertyDropdowns,
     onDeleteSuccess,
     onCreateSuccess,
     onUpdateSuccess,
@@ -543,65 +545,69 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandMo
                 </div>
                 {renderErrorName()}
               </div>
-              <div className="flex flex-col space-y-3 px-10 py-4 w-full">
-                {renderReviewSentence()}
-                <div className="flex flex-row py-1 space-x-2 px-2">
-                  <div className="flex items-center justify-center w-14 min-w-[50px] h-[30px]">
-                    <p className="text-Gray-6 text-xs">Target Is</p>
+              {!hidePropertyDropdowns && (
+                <div className="flex flex-col space-y-3 px-10 py-4 w-full">
+                  {renderReviewSentence()}
+                  <div className="flex flex-row py-1 space-x-2 px-2">
+                    <div className="flex items-center justify-center w-14 min-w-[50px] h-[30px]">
+                      <p className="text-Gray-6 text-xs">Target Is</p>
+                    </div>
+                    <PropertiesDropdown
+                      showError={showErrorProp}
+                      closeError={() => setShowErrorProp(false)}
+                      placeholder="Enter a vendor"
+                      IconComponent={Bank}
+                      title="All Vendors"
+                      type={TargetTypeProp.VENDOR}
+                      defaultItems={defaultTags.filter(
+                        (item) => item.type === TargetTypeProp.VENDOR,
+                      )}
+                      onChangeItems={setVendItems}
+                    />
+                    <div className="flex items-center justify-center w-6 h-[30px]">
+                      <p className="text-Gray-6 text-xs text-center">in</p>
+                    </div>
+                    <PropertiesDropdown
+                      placeholder="Enter a category"
+                      IconComponent={CategoryIcon}
+                      title="All Categories"
+                      type={TargetTypeProp.CATEGORY}
+                      defaultItems={defaultTags.filter(
+                        (item) => item.type === TargetTypeProp.CATEGORY,
+                      )}
+                      onChangeItems={setCatItems}
+                    />
+                    <div className="flex items-center justify-center w-6 h-[30px]">
+                      <p className="text-Gray-6 text-xs text-center">for</p>
+                    </div>
+                    <PropertiesDropdown
+                      placeholder="Enter a team"
+                      IconComponent={TeamIcon}
+                      title="All Teams"
+                      type={TargetTypeProp.DEPARTMENT}
+                      dropdownEdge={DropdownEdge.RIGHT}
+                      defaultItems={defaultTags.filter(
+                        (item) => item.type === TargetTypeProp.DEPARTMENT,
+                      )}
+                      onChangeItems={setTeamItems}
+                    />
+                    <ExceptDropdown
+                      title="Except"
+                      placeholder="Enter a team, category, or vendor"
+                      selected={[...vendItems, ...catItems, ...teamItems]}
+                      onItemAdd={(item: SearchResult) => setExceptItems((pre) => [...pre, item])}
+                    />
                   </div>
-                  <PropertiesDropdown
-                    showError={showErrorProp}
-                    closeError={() => setShowErrorProp(false)}
-                    placeholder="Enter a vendor"
-                    IconComponent={Bank}
-                    title="All Vendors"
-                    type={TargetTypeProp.VENDOR}
-                    defaultItems={defaultTags.filter((item) => item.type === TargetTypeProp.VENDOR)}
-                    onChangeItems={setVendItems}
-                  />
-                  <div className="flex items-center justify-center w-6 h-[30px]">
-                    <p className="text-Gray-6 text-xs text-center">in</p>
-                  </div>
-                  <PropertiesDropdown
-                    placeholder="Enter a category"
-                    IconComponent={CategoryIcon}
-                    title="All Categories"
-                    type={TargetTypeProp.CATEGORY}
-                    defaultItems={defaultTags.filter(
-                      (item) => item.type === TargetTypeProp.CATEGORY,
-                    )}
-                    onChangeItems={setCatItems}
-                  />
-                  <div className="flex items-center justify-center w-6 h-[30px]">
-                    <p className="text-Gray-6 text-xs text-center">for</p>
-                  </div>
-                  <PropertiesDropdown
-                    placeholder="Enter a team"
-                    IconComponent={TeamIcon}
-                    title="All Teams"
-                    type={TargetTypeProp.DEPARTMENT}
-                    dropdownEdge={DropdownEdge.RIGHT}
-                    defaultItems={defaultTags.filter(
-                      (item) => item.type === TargetTypeProp.DEPARTMENT,
-                    )}
-                    onChangeItems={setTeamItems}
-                  />
-                  <ExceptDropdown
-                    title="Except"
-                    placeholder="Enter a team, category, or vendor"
-                    selected={[...vendItems, ...catItems, ...teamItems]}
-                    onItemAdd={(item: SearchResult) => setExceptItems((pre) => [...pre, item])}
+                  <ExceptList
+                    items={exceptItems}
+                    onRemoveItem={(itemRemove: SearchResult) => {
+                      setExceptItems((pre) =>
+                        pre.filter((item: SearchResult) => item.id !== itemRemove.id),
+                      );
+                    }}
                   />
                 </div>
-                <ExceptList
-                  items={exceptItems}
-                  onRemoveItem={(itemRemove: SearchResult) => {
-                    setExceptItems((pre) =>
-                      pre.filter((item: SearchResult) => item.id !== itemRemove.id),
-                    );
-                  }}
-                />
-              </div>
+              )}
               <div className="flex flex-row pt-2 px-10 justify-between">
                 <div className="flex flex-row items-center space-x-2 py-3">
                   <p className="text-primary text-xs font-semibold w-14">Months*</p>

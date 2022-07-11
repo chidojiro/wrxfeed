@@ -9,8 +9,8 @@ export const DEFAULT_ITEMS_PER_INFINITE_LOAD = 10;
 
 export enum MainGroups {
   Feeds = 'Feeds',
-  Boards = '',
-  Following = '',
+  Boards = 'Boards',
+  Following = 'Following',
 }
 
 export const MainMenu: SectionTab[] = [
