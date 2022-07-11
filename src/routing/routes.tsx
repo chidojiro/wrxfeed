@@ -3,11 +3,11 @@ import AcceptInvitation from '@/auth/pages/AcceptInvitation';
 import Login from '@/auth/pages/LoginPage';
 import Onboard from '@/auth/pages/OnboardPage';
 import NotFoundPage from '@/common/pages/NotFoundPage';
+import { FeedRoutes } from '@/feed/routes';
 import { UserRole } from '@/identity/constants';
 import Categories from '@/main/pages/Categories';
 import Company from '@/main/pages/Company';
 import Feed from '@/main/pages/Feed';
-import ForYou from '@/main/pages/ForYou';
 import Notifications from '@/main/pages/Notifications';
 import Vendors from '@/main/pages/Vendors';
 import { TargetRoutes } from '@/target/routes';
@@ -38,11 +38,6 @@ export const Routes: Route = {
   Onboard: {
     path: '/onboarding',
     component: Onboard,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  ForYou: {
-    path: '/for-you',
-    component: ForYou,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Notifications: {
@@ -76,4 +71,5 @@ export const Routes: Route = {
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   ...TargetRoutes,
+  ...FeedRoutes,
 };

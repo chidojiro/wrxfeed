@@ -7,7 +7,7 @@ export interface HOC<T> {
 
 export type LeftTab = {
   name: string;
-  location: Partial<Omit<Location, 'pathname'>> & { pathname: string };
+  location: Partial<Omit<Location, 'pathname'>> & { pathname: string; pathMatch?: string };
   icon: FunctionComponent<SVGAttributes<SVGElement>> | null;
   subscription?: {
     type: keyof Subscription;

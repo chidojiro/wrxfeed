@@ -1,5 +1,5 @@
 import { Children, ClassName } from '@/common/types';
-import { withProjectClassNamePrefix } from '@/common/utils';
+import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -26,7 +26,7 @@ export const StatusTag: React.FC<StatusTagProps> = ({
   return (
     <div
       className={clsx(
-        withProjectClassNamePrefix('status-tag'),
+        StringUtils.withProjectClassNamePrefix('status-tag'),
         'rounded-full py-0.5 px-2 w-[fit-content]',
         'flex items-center gap-2',
         background,

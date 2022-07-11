@@ -1,5 +1,5 @@
 import { ClassName } from '@/common/types';
-import { withProjectClassNamePrefix } from '@/common/utils';
+import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import React from 'react';
 import { Spinner } from '..';
@@ -22,7 +22,7 @@ export const OverlayLoader = ({ loading, children, className }: OverlayLoaderPro
   return (
     <div
       className={clsx(
-        withProjectClassNamePrefix('overlay-loader-container'),
+        StringUtils.withProjectClassNamePrefix('overlay-loader-container'),
         'relative overflow-hidden',
         className,
       )}
@@ -32,7 +32,7 @@ export const OverlayLoader = ({ loading, children, className }: OverlayLoaderPro
       <div
         ref={ref}
         className={clsx(
-          withProjectClassNamePrefix('overlay-loader'),
+          StringUtils.withProjectClassNamePrefix('overlay-loader'),
           'absolute z-[999] flex justify-center inset-0 bg-black/10',
           { hidden: !loading },
         )}

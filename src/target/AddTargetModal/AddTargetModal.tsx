@@ -11,7 +11,6 @@ import { useHandler } from '@/common/hooks';
 import { classNames, formatCurrency, round } from '@/common/utils';
 import ListLoading from '@/main/atoms/ListLoading';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
-import { useTransaction } from '@/main/hooks';
 import ExceptDropdown from '@/main/molecules/ExceptDropdown';
 import ExceptList from '@/main/molecules/ExceptList';
 import MultiMonthDropdown from '@/main/molecules/MultiMonthDropdown';
@@ -20,14 +19,12 @@ import {
   decimalLogic,
   DecimalType,
   genReviewSentenceFromProperties,
-  getPeriodsByYear,
   getPropsAndPeriodsFromItemSelected,
   getTargetName,
 } from '@/main/utils';
 import { TargetChart } from '@/target/TargetChart';
 import {
   CreateTargetPayload,
-  GetTargetSpendingParams,
   Target,
   TargetMonth,
   TargetPeriod,
@@ -42,7 +39,6 @@ import React, { KeyboardEventHandler, useEffect, useMemo, useRef, useState } fro
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { TargetApis } from '../apis';
-import { useTargetSpending } from '../useTargetSpending';
 import PropertiesDropdown, { DropdownEdge } from './PropertiesDropdown';
 
 export type AddTargetModalProps = {
@@ -52,6 +48,7 @@ export type AddTargetModalProps = {
   target?: Target | null;
   initTags?: SearchResult[];
   departmentId?: number;
+  hidePropertyDropdowns?: boolean;
   onCreateSuccess?: (newTarget: Target) => void;
   onUpdateSuccess?: (updatedTarget: Target) => void;
   onDeleteSuccess?: (id: number) => void;
@@ -61,14 +58,6 @@ export type AddTargetModalProps = {
 };
 
 const THIS_YEAR = new Date().getFullYear();
-const THIS_YEAR_INIT_FILTER = Object.freeze({
-  props: [],
-  periods: getPeriodsByYear(THIS_YEAR),
-});
-const LAST_YEAR_INIT_FILTER = Object.freeze({
-  props: [],
-  periods: getPeriodsByYear(THIS_YEAR - 1),
-});
 
 export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
   ({
@@ -78,6 +67,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     departmentId,
     target,
     initTags,
+    hidePropertyDropdowns,
     onDeleteSuccess,
     onCreateSuccess,
     onUpdateSuccess,
@@ -104,22 +94,6 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     const [showErrorName, setShowErrorName] = useState<boolean>(false);
 
     const [showErrorProp, setShowErrorProp] = useState<boolean>(false);
-
-    const thisYearSpendFilter: GetTargetSpendingParams = {
-      props: target && target?.props?.length > 0 ? target.props : THIS_YEAR_INIT_FILTER.props,
-      periods:
-        target && target?.periods?.length > 0 ? target.periods : THIS_YEAR_INIT_FILTER.periods,
-    };
-    const { data: thisYearSpendData = [], isInitializing: thisYearDataLoading } =
-      useTargetSpending(thisYearSpendFilter);
-
-    const lastYearSpendFilter: GetTargetSpendingParams = {
-      props: target && target?.props?.length > 0 ? target.props : LAST_YEAR_INIT_FILTER.props,
-      periods:
-        target && target?.periods?.length > 0 ? target.periods : LAST_YEAR_INIT_FILTER.periods,
-    };
-    const { data: lastYearSpendData = [], isInitializing: lastYearDataLoading } =
-      useTargetSpending(lastYearSpendFilter);
 
     const allProps = (() => {
       const vendors = vendItems.length ? vendItems : [];
@@ -157,43 +131,18 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     const startMonth = updatedTargetMonths[0]?.month ?? 1;
     const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
-    const { lastYearTransPayload, thisYearTransPayload } =
-      (() => {
-        if (targetMonths?.length && startMonth === endMonth) {
-          const props = allProps.length ? allProps : target?.props;
-          const thisYear = dayjs().year();
-          const lastYearTransPayload = {
-            periods: [{ month: startMonth, year: thisYear - 1 }],
-            props,
-          };
-          const thisYearTransPayload = {
-            periods: [{ month: startMonth, year: thisYear }],
-            props,
-          };
-
-          return { lastYearTransPayload, thisYearTransPayload };
-        }
-      })() ?? {};
-
-    const { transactions: lastYearTrans } = useTransaction(lastYearTransPayload);
-    const { transactions: thisYearTrans } = useTransaction(thisYearTransPayload);
-
     const chartData: LineChartData = useMemo(() => {
+      if (!target) return INITIAL_CHART_DATA;
+
       if (startMonth === endMonth) {
         return getLineChartDataInMonth(
-          thisYearTrans,
-          lastYearTrans,
+          target,
           targetMonths[startMonth - 1],
           target?.trackingStatus,
         );
       }
-      return getTargetMonthsLineChartData(
-        thisYearSpendData,
-        lastYearSpendData,
-        targetMonths,
-        target?.trackingStatus,
-      );
-    }, [thisYearSpendData, lastYearSpendData, targetMonths, lastYearTrans, thisYearTrans]);
+      return getTargetMonthsLineChartData(target, targetMonths, target?.trackingStatus);
+    }, [targetMonths, target]);
 
     const totalTargetAmount = round(
       targetMonths.reduce((total, target) => total + (target.amount ?? 0), 0),
@@ -553,65 +502,69 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
                 </div>
                 {renderErrorName()}
               </div>
-              <div className="flex flex-col space-y-3 px-10 py-4 w-full">
-                {renderReviewSentence()}
-                <div className="flex flex-row py-1 space-x-2 px-2">
-                  <div className="flex items-center justify-center w-14 min-w-[50px] h-[30px]">
-                    <p className="text-Gray-6 text-xs">Target Is</p>
+              {!hidePropertyDropdowns && (
+                <div className="flex flex-col space-y-3 px-10 py-4 w-full">
+                  {renderReviewSentence()}
+                  <div className="flex flex-row py-1 space-x-2 px-2">
+                    <div className="flex items-center justify-center w-14 min-w-[50px] h-[30px]">
+                      <p className="text-Gray-6 text-xs">Target Is</p>
+                    </div>
+                    <PropertiesDropdown
+                      showError={showErrorProp}
+                      closeError={() => setShowErrorProp(false)}
+                      placeholder="Enter a vendor"
+                      IconComponent={Bank}
+                      title="All Vendors"
+                      type={TargetTypeProp.VENDOR}
+                      defaultItems={defaultTags.filter(
+                        (item) => item.type === TargetTypeProp.VENDOR,
+                      )}
+                      onChangeItems={setVendItems}
+                    />
+                    <div className="flex items-center justify-center w-6 h-[30px]">
+                      <p className="text-Gray-6 text-xs text-center">in</p>
+                    </div>
+                    <PropertiesDropdown
+                      placeholder="Enter a category"
+                      IconComponent={CategoryIcon}
+                      title="All Categories"
+                      type={TargetTypeProp.CATEGORY}
+                      defaultItems={defaultTags.filter(
+                        (item) => item.type === TargetTypeProp.CATEGORY,
+                      )}
+                      onChangeItems={setCatItems}
+                    />
+                    <div className="flex items-center justify-center w-6 h-[30px]">
+                      <p className="text-Gray-6 text-xs text-center">for</p>
+                    </div>
+                    <PropertiesDropdown
+                      placeholder="Enter a team"
+                      IconComponent={TeamIcon}
+                      title="All Teams"
+                      type={TargetTypeProp.DEPARTMENT}
+                      dropdownEdge={DropdownEdge.RIGHT}
+                      defaultItems={defaultTags.filter(
+                        (item) => item.type === TargetTypeProp.DEPARTMENT,
+                      )}
+                      onChangeItems={setTeamItems}
+                    />
+                    <ExceptDropdown
+                      title="Except"
+                      placeholder="Enter a team, category, or vendor"
+                      selected={[...vendItems, ...catItems, ...teamItems]}
+                      onItemAdd={(item: SearchResult) => setExceptItems((pre) => [...pre, item])}
+                    />
                   </div>
-                  <PropertiesDropdown
-                    showError={showErrorProp}
-                    closeError={() => setShowErrorProp(false)}
-                    placeholder="Enter a vendor"
-                    IconComponent={Bank}
-                    title="All Vendors"
-                    type={TargetTypeProp.VENDOR}
-                    defaultItems={defaultTags.filter((item) => item.type === TargetTypeProp.VENDOR)}
-                    onChangeItems={setVendItems}
-                  />
-                  <div className="flex items-center justify-center w-6 h-[30px]">
-                    <p className="text-Gray-6 text-xs text-center">in</p>
-                  </div>
-                  <PropertiesDropdown
-                    placeholder="Enter a category"
-                    IconComponent={CategoryIcon}
-                    title="All Categories"
-                    type={TargetTypeProp.CATEGORY}
-                    defaultItems={defaultTags.filter(
-                      (item) => item.type === TargetTypeProp.CATEGORY,
-                    )}
-                    onChangeItems={setCatItems}
-                  />
-                  <div className="flex items-center justify-center w-6 h-[30px]">
-                    <p className="text-Gray-6 text-xs text-center">for</p>
-                  </div>
-                  <PropertiesDropdown
-                    placeholder="Enter a team"
-                    IconComponent={TeamIcon}
-                    title="All Teams"
-                    type={TargetTypeProp.DEPARTMENT}
-                    dropdownEdge={DropdownEdge.RIGHT}
-                    defaultItems={defaultTags.filter(
-                      (item) => item.type === TargetTypeProp.DEPARTMENT,
-                    )}
-                    onChangeItems={setTeamItems}
-                  />
-                  <ExceptDropdown
-                    title="Except"
-                    placeholder="Enter a team, category, or vendor"
-                    selected={[...vendItems, ...catItems, ...teamItems]}
-                    onItemAdd={(item: SearchResult) => setExceptItems((pre) => [...pre, item])}
+                  <ExceptList
+                    items={exceptItems}
+                    onRemoveItem={(itemRemove: SearchResult) => {
+                      setExceptItems((pre) =>
+                        pre.filter((item: SearchResult) => item.id !== itemRemove.id),
+                      );
+                    }}
                   />
                 </div>
-                <ExceptList
-                  items={exceptItems}
-                  onRemoveItem={(itemRemove: SearchResult) => {
-                    setExceptItems((pre) =>
-                      pre.filter((item: SearchResult) => item.id !== itemRemove.id),
-                    );
-                  }}
-                />
-              </div>
+              )}
               <div className="flex flex-row pt-2 px-10 justify-between">
                 <div className="flex flex-row items-center space-x-2 py-3">
                   <p className="text-primary text-xs font-semibold w-14">Months*</p>
@@ -622,8 +575,11 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
                     periods={target?.periods}
                     targetMonths={targetMonths}
                     year={curYear}
-                    lastYearData={lastYearSpendData}
-                    isLoadingData={lastYearDataLoading || thisYearDataLoading}
+                    lastYearData={
+                      target?.periods.filter(
+                        (item) => item.year === new Date().getFullYear() - 1,
+                      ) ?? []
+                    }
                     onApply={applyDataThenGenChart}
                   />
                 </div>
@@ -646,10 +602,9 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
               <div className="relative flex justify-center items-center w-auto mx-6 px-4 py-6 h-[271px] border border-Gray-12 rounded-2.5xl">
                 <TargetChart
                   containerClass="mb-4 mt-6"
-                  chartData={thisYearSpendData.length > 0 ? chartData : INITIAL_CHART_DATA}
+                  chartData={chartData}
                   renderTooltip={renderTooltipContent}
                   renderXAxis={renderXAxis}
-                  loading={lastYearDataLoading || thisYearDataLoading}
                 />
               </div>
               <div className="flex flex-row pt-4 pb-6 px-10 space-x-4 items-center justify-end text-primary text-xs font-semibold">

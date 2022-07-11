@@ -1,3 +1,5 @@
+import { PROJECT_CLASS_NAME_PREFIX } from '../constants';
+
 const toApiSortQuery = (sort: string): { sortBy: string; order: 'ASC' | 'DESC' } => {
   if (sort.startsWith('-')) return { sortBy: sort.slice(1), order: 'DESC' };
 
@@ -16,7 +18,15 @@ const getNameInitials = (name: string): string => {
     .toUpperCase();
 };
 
+const withProjectClassNamePrefix = (...classNames: string[]) => {
+  return [classNames]
+    .flat()
+    .map((className) => PROJECT_CLASS_NAME_PREFIX + className)
+    .join(' ');
+};
+
 export const StringUtils = {
   toApiSortQuery,
   getNameInitials,
+  withProjectClassNamePrefix,
 };

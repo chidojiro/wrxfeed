@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { withProjectClassNamePrefix } from '../../utils';
+import { StringUtils } from '@/common/utils';
 
 export type Props = React.DetailedHTMLProps<
   React.TdHTMLAttributes<HTMLTableDataCellElement>,
@@ -11,7 +11,11 @@ export const Cell = ({ className, ...restProps }: Props) => {
   return (
     <td
       {...restProps}
-      className={classNames(withProjectClassNamePrefix('table-cell'), 'py-2 px-4', className)}
+      className={classNames(
+        StringUtils.withProjectClassNamePrefix('table-cell'),
+        'py-2 px-4',
+        className,
+      )}
     ></td>
   );
 };

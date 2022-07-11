@@ -11,7 +11,6 @@ import {
 } from '@/assets';
 import Loading from '@/common/atoms/Loading';
 import Tooltip from '@/common/atoms/Tooltip';
-import { MainGroups } from '@/common/constants';
 import { ClassName } from '@/common/types';
 import UpdateDetailsLineItemInfoModal from '@/feed/UpdateDetailsLineItemInfoModal';
 import { TransLineItem, TranStatusType } from '@/main/entity';
@@ -92,9 +91,9 @@ const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDet
   };
 
   const goToCategoryPage = (categoryId?: number) => {
+    onCloseClick?.();
     history.push({
       pathname: `/categories/${categoryId}`,
-      search: `?route=${MainGroups.Following}`,
     });
   };
 

@@ -10,7 +10,7 @@ import {
 } from '@/main/chart.utils';
 import { useTransaction } from '@/main/hooks/transaction.hook';
 import { LineChartData } from '@/main/types';
-import { decimalLogic, DecimalType, getTargetPeriodsAmountTotal } from '@/main/utils';
+import { getDisplayCurrency, getTargetPeriodsAmountTotal } from '@/main/utils';
 import {
   Target,
   TargetMonth,
@@ -50,19 +50,9 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
 
   const chartData: LineChartData = useMemo(() => {
     if (startMonth === endMonth) {
-      return getLineChartDataInMonth(
-        thisYearTrans,
-        lastYearTrans,
-        targetMonths[startMonth - 1],
-        target?.trackingStatus,
-      );
+      return getLineChartDataInMonth(target, targetMonths[startMonth - 1], target?.trackingStatus);
     }
-    return getTargetMonthsLineChartData(
-      thisYearSpendData,
-      lastYearSpendData,
-      targetMonths,
-      target?.trackingStatus,
-    );
+    return getTargetMonthsLineChartData(target, targetMonths, target?.trackingStatus);
   }, [thisYearSpendData, lastYearSpendData, targetMonths, thisYearTrans, lastYearTrans]);
 
   useEffect(() => {
@@ -152,7 +142,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
                 </div>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers, '$')}
+                {getDisplayCurrency(dataPoints?.thisYear)}
               </p>
             </div>
             <div
@@ -166,7 +156,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
                 </div>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(targetToDate ?? 0, DecimalType.SummedNumbers, '$')}
+                {getDisplayCurrency(targetToDate)}
               </p>
             </div>
             <div
@@ -180,7 +170,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
                 </div>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.lastYear ?? 0, DecimalType.SummedNumbers, '$')}
+                {getDisplayCurrency(dataPoints?.lastYear)}
               </p>
             </div>
           </div>
@@ -212,7 +202,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
               <p className="text-xs text-Gray-2 ml-1">Current Spend</p>
             </div>
             <p className="text-xl text-primary font-bold mt-1">
-              {decimalLogic(currentSpend ?? '0', DecimalType.SummedNumbers)}
+              {getDisplayCurrency(currentSpend)}
             </p>
           </div>
           <div className="flex flex-col">
@@ -221,7 +211,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
               <p className="text-xs text-Gray-2 ml-1">Target To Date</p>
             </div>
             <p className="text-xl text-primary font-bold mt-1">
-              {decimalLogic(targetToDate ?? '0', DecimalType.SummedNumbers)}
+              {getDisplayCurrency(targetToDate)}
             </p>
           </div>
           <div className="flex flex-col">
@@ -230,7 +220,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
               <p className="text-xs text-Gray-2 ml-1">Overall Target</p>
             </div>
             <p className="text-xl text-primary font-bold mt-1">
-              {decimalLogic(overallTarget ?? '0', DecimalType.SummedNumbers)}
+              {getDisplayCurrency(overallTarget)}
             </p>
           </div>
           <div className="flex flex-1 justify-end flex-col items-end">

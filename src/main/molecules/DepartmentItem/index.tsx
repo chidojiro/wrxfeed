@@ -4,6 +4,7 @@ import { Category, Department, Vendor } from '@/main/entity';
 // Icons
 import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
+import clsx from 'clsx';
 
 interface DepartmentItemProps {
   item: Department | Category | Vendor;
@@ -12,6 +13,8 @@ interface DepartmentItemProps {
   onClick?: MouseEventHandler<HTMLDivElement>;
   onFollow?: MouseEventHandler<HTMLButtonElement>;
   onUnfollow?: MouseEventHandler<HTMLButtonElement>;
+  btnClassName?: string;
+  textClassName?: string;
 }
 
 const DepartmentItem: React.VFC<DepartmentItemProps> = ({
@@ -21,6 +24,8 @@ const DepartmentItem: React.VFC<DepartmentItemProps> = ({
   onClick,
   onFollow,
   onUnfollow,
+  btnClassName = '',
+  textClassName = '',
 }) => {
   const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -47,24 +52,30 @@ const DepartmentItem: React.VFC<DepartmentItemProps> = ({
       </div>
       {!disableFollow &&
         (isFollowing ? (
-          <Button onClick={handleUnfollow} className="rounded-full border-Gray-3">
+          <Button
+            onClick={handleUnfollow}
+            className={clsx('rounded-full border-Gray-3', btnClassName)}
+          >
             <TickIcon
               width={16}
               height={16}
-              className="stroke-current path-no-stroke text-Gray-3"
+              className={clsx('stroke-current path-no-stroke text-Gray-3', textClassName)}
               viewBox="0 0 15 15"
             />
-            <span>Following</span>
+            <span className={textClassName}>Following</span>
           </Button>
         ) : (
-          <Button onClick={handleFollow} className="rounded-full border-Gray-3">
+          <Button
+            onClick={handleFollow}
+            className={clsx('rounded-full border-Gray-3', btnClassName)}
+          >
             <AddIcon
               width={16}
               height={16}
-              className="stroke-current stroke-1 path-no-stroke text-Gray-3"
+              className={clsx('stroke-current stroke-1 path-no-stroke text-Gray-3', textClassName)}
               viewBox="0 0 15 15"
             />
-            <span className="text-Gray-3">Follow</span>
+            <span className={clsx('text-Gray-3', textClassName)}>Follow</span>
           </Button>
         ))}
     </div>
