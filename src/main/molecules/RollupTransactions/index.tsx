@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Transaction } from '@/main/entity';
-import { classNames } from '@/common/utils';
+import { classNames, StringUtils } from '@/common/utils';
 import RollupTranRow from '../RollupTranRow';
 import RestrictedWarning from '@/main/atoms/RestrictedWarning';
+import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 
 export const TRANSACTION_SHOW_NUMBER = 10;
 
@@ -22,9 +23,10 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
   feedId,
   tranHidden = false,
 }) => {
-  const [position, setPosition] = useState(autoShowTrans ? TRANSACTION_SHOW_NUMBER : 0);
-  const [transactions, setTransactions] = useState(trans?.slice(0, position));
-  const [hasMore, setHasMore] = useState(
+  const { openLineItemDrawer } = useLineItemDrawer();
+  const [position, setPosition] = React.useState(autoShowTrans ? TRANSACTION_SHOW_NUMBER : 0);
+  const [transactions, setTransactions] = React.useState(trans?.slice(0, position));
+  const [hasMore, setHasMore] = React.useState(
     autoShowTrans ? trans?.length > TRANSACTION_SHOW_NUMBER : trans?.length > 0,
   );
 
@@ -76,11 +78,17 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
   return (
     <div className={classNames('flex flex-col', showTopDivider ? 'mt-3' : '')}>
       {transactions.length > 0 && showTopDivider && <div className="bg-Gray-11 h-px w-full" />}
-      <ul className={classNames('flex flex-col', transactions.length > 0 ? 'py-2' : '')}>
+      <ul
+        className={classNames(
+          StringUtils.withProjectClassNamePrefix('rollup-transactions'),
+          'flex flex-col',
+          transactions.length > 0 ? 'py-2' : '',
+        )}
+      >
         {transactions.map((item: Transaction) => {
           return (
             <li key={`RollupTransactions-item-${item?.id}`}>
-              <RollupTranRow feedId={feedId} tran={item} />
+              <RollupTranRow tran={item} onView={(item) => openLineItemDrawer(item, feedId)} />
             </li>
           );
         })}

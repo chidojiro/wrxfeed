@@ -1,1 +1,1 @@
-export * from './withMountOnDemandModal';
+export * from './withMountOnOpen';

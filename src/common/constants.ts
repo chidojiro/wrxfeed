@@ -9,8 +9,8 @@ export const DEFAULT_ITEMS_PER_INFINITE_LOAD = 10;
 
 export enum MainGroups {
   Feeds = 'Feeds',
-  Boards = '',
-  Following = '',
+  Boards = 'Boards',
+  Following = 'Following',
 }
 
 export const MainMenu: SectionTab[] = [
@@ -19,7 +19,10 @@ export const MainMenu: SectionTab[] = [
     tabs: [
       {
         name: 'Targets',
-        location: { pathname: '/dashboard/all-company' },
+        location: {
+          pathname: '/dashboard/all-company',
+          pathMatch: '/dashboard/:slug',
+        },
         icon: TargetIcon,
         isShowCounter: true,
       },
@@ -88,3 +91,5 @@ export const INITIAL_CHART_DATA: LineChartData = {
 };
 
 export const ENABLE_GET_FEED_COUNT = false;
+
+export const EMPTY_AMOUNT = '--';

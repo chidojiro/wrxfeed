@@ -1,35 +1,32 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useMemo, useRef, useState } from 'react';
-import dayjs from 'dayjs';
-import { useSetRecoilState } from 'recoil';
-
-import EventEmitter, { EventName } from '@/main/EventEmitter';
-import { Transaction, TranStatusType, Vendor } from '@/main/entity';
-import { classNames, DATE_FORMAT } from '@/common/utils';
-
-import TranLineItemsList from '@/main/molecules/TranLineItemsList';
 import { ReactComponent as DownSmall } from '@/assets/icons/outline/down-small.svg';
-import { lineItemSelectState } from '@/main/states/lineItems.state';
+import { classNames, DATE_FORMAT } from '@/common/utils';
+import { Transaction, TransLineItem, TranStatusType, Vendor } from '@/main/entity';
+import TranLineItemsList from '@/main/molecules/TranLineItemsList';
 import { decimalLogic, DecimalType, getTransactionStatus } from '@/main/utils';
+import dayjs from 'dayjs';
+import React from 'react';
 
 export interface RollupTranRowProps {
   tran: Transaction;
   onClick?: (tran: Transaction) => void;
   onClickMessage?: () => void;
   onClickVendor?: (vendor: Vendor) => void;
-  feedId: number;
+  onView: (item: TransLineItem) => void;
 }
 
 const A_WEEK_IN_MILLISECONDS = 1000 * 60 * 60 * 24 * 7;
 
-const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, feedId }) => {
-  const viewRef = useRef<HTMLButtonElement>(null);
-  const [isOpen, setOpen] = useState<boolean>(false);
-  const setLineItemSelect = useSetRecoilState(lineItemSelectState);
+const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, onView }) => {
+  const viewRef = React.useRef<HTMLButtonElement>(null);
+  const [isOpen, setOpen] = React.useState<boolean>(false);
   const { lineItems = [] } = tran;
 
-  const onClickLineItem = () => {
+  const onClickLineItem: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    // prevent close line item drawer
+    e.stopPropagation();
+
     if (onClick) onClick(tran);
     setOpen((pre) => !pre);
   };
@@ -37,15 +34,11 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, feedId })
   const onClickDetails = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     if (lineItems.length > 0) {
-      setLineItemSelect(lineItems[0]);
-      EventEmitter.dispatch(EventName.SHOW_LINE_ITEM_DETAILS, {
-        item: lineItems[0],
-        feedId,
-      });
+      onView(lineItems[0]);
     }
   };
 
-  const tranType: TranStatusType | null = useMemo(
+  const tranType: TranStatusType | null = React.useMemo(
     () => getTransactionStatus(tran?.status ?? ''),
     [tran?.status],
   );

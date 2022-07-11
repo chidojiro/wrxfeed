@@ -1,7 +1,3 @@
-import React from 'react';
-import { useDisclosure } from '@dwarvesf/react-hooks';
-import clsx from 'clsx';
-
 import Loading from '@/common/atoms/Loading';
 import { Avatar } from '@/common/components';
 import { useHandler } from '@/common/hooks';
@@ -9,20 +5,21 @@ import { ClassName } from '@/common/types';
 import { distanceToNow } from '@/common/utils';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
+import { FeedType } from '@/main/entity';
+import { OptionsButton } from '@/main/molecules';
 import MiniChartView from '@/main/molecules/MiniChartView';
-import {
-  decimalLogic,
-  DecimalType,
-  getColorByText,
-  getTargetPeriodsAmountTotal,
-} from '@/main/utils';
-import { AddTargetModal } from './AddTargetModal';
-import { AddTargetModalProps } from './AddTargetModal';
+import { getColorByText, getDisplayCurrency, getTargetPeriodsAmountTotal } from '@/main/utils';
+import { Routes } from '@/routing/routes';
+import { useDisclosure } from '@dwarvesf/react-hooks';
+import clsx from 'clsx';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { AddTargetModal, AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
 import { Target } from './types';
 
 export type TargetCardProps = ClassName &
-  Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'> & {
+  Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess' | 'hidePropertyDropdowns'> & {
     data: Target;
     showColorfulHeading?: boolean;
   };
@@ -33,12 +30,20 @@ export const TargetCard = ({
   onUpdateSuccess,
   onDeleteSuccess,
   showColorfulHeading = true,
+  hidePropertyDropdowns,
 }: TargetCardProps) => {
+  const history = useHistory();
   const department = data.department;
 
-  const { isLoading: isDeletingTarget } = useHandler((targetId: number) =>
+  const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
     TargetApis.delete(targetId),
   );
+
+  const goToTargetDetails = () => {
+    history.push(
+      `${(Routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
+    );
+  };
 
   const { overallTarget, currentSpend, targetToDate, exceeding } =
     getTargetPeriodsAmountTotal(data);
@@ -48,7 +53,9 @@ export const TargetCard = ({
   const headingColor = getColorByText(data.name, undefined, true);
 
   return (
-    <div
+    <button
+      onClick={goToTargetDetails}
+      type="button"
       key={`Dashboard-TargetChartView-${data.id}`}
       className={clsx(
         'bg-white relative w-full overflow-hidden rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
@@ -64,6 +71,7 @@ export const TargetCard = ({
           departmentId={department?.id}
           onUpdateSuccess={onUpdateSuccess}
           onDeleteSuccess={onDeleteSuccess}
+          hidePropertyDropdowns={hidePropertyDropdowns}
         />
       )}
       <div className="flex flex-1 flex-col pb-4 space-y-2 w-full">
@@ -76,6 +84,11 @@ export const TargetCard = ({
             <div className="flex flex-col flex-1 h-12 max-h-12">
               <div className="flex justify-between items-center h-6">
                 <TargetFeedName target={data} />
+                <OptionsButton
+                  onViewClick={goToTargetDetails}
+                  onEditClick={addTargetModalDisclosure.onOpen}
+                  onDeleteClick={() => deleteTarget(data.id)}
+                />
               </div>
               <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
                 <Avatar
@@ -97,7 +110,7 @@ export const TargetCard = ({
                   <p className="text-2xs">Spend</p>
                 </div>
                 <p className="text-sm text-primary font-semibold mt-1">
-                  {decimalLogic(currentSpend ?? '0', DecimalType.SummedNumbers)}
+                  {getDisplayCurrency(currentSpend)}
                 </p>
               </div>
               <div className="flex flex-col datas-start min-w-[70px] h-9 pr-1.5">
@@ -106,7 +119,7 @@ export const TargetCard = ({
                   <p className="text-2xs">Target To Date</p>
                 </div>
                 <p className="text-sm text-primary font-semibold mt-1">
-                  {decimalLogic(targetToDate ?? '0', DecimalType.SummedNumbers)}
+                  {getDisplayCurrency(targetToDate)}
                 </p>
               </div>
               <div className="flex flex-col datas-start min-w-[70px] h-9 pr-1.5">
@@ -115,7 +128,7 @@ export const TargetCard = ({
                   <p className="text-2xs">Overall Target</p>
                 </div>
                 <p className="text-sm text-primary font-semibold mt-1">
-                  {decimalLogic(overallTarget ?? '0', DecimalType.SummedNumbers)}
+                  {getDisplayCurrency(overallTarget)}
                 </p>
               </div>
             </div>
@@ -138,6 +151,6 @@ export const TargetCard = ({
           <Loading color="Gray-3" />
         </div>
       )}
-    </div>
+    </button>
   );
 };

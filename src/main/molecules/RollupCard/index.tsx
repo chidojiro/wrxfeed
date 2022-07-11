@@ -32,7 +32,7 @@ import { PaginationParams } from '@/rest/types';
 import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
 import { EditorState } from 'draft-js';
-import React, { useMemo, useRef, useState } from 'react';
+import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
@@ -62,19 +62,19 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   updateCategory,
 }) => {
   const identity = useIdentity();
-  const [filterComment, setFilterComment] = useState<PaginationParams>({
+  const [filterComment, setFilterComment] = React.useState<PaginationParams>({
     offset: 0,
     limit: INITIAL_COMMENT_NUMBER,
   });
 
   const { total } = getTotalFeedItem(feedItem);
   // Refs
-  const containerRef = useRef<HTMLLIElement>(null);
+  const containerRef = React.useRef<HTMLLIElement>(null);
   // Local states
-  const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
-  const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
-  const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
-  const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
+  const [confirmModal, setConfirmModal] = React.useState<ConfirmModalProps>();
+  const [isOpenFeedbackModal, openFeedbackModal] = React.useState(false);
+  const [attachFileComment, setAttachFileComment] = React.useState<File | null>(null);
+  const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
   // Data hooks
   const { mentions } = useMention();
   const { checkPermission } = usePermission();
@@ -205,7 +205,10 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   };
 
   const catName = feedItem?.category?.name ?? 'unknown';
-  const itemGradientBg = useMemo(() => getColorByText(catName ?? '', undefined, true), [catName]);
+  const itemGradientBg = React.useMemo(
+    () => getColorByText(catName ?? '', undefined, true),
+    [catName],
+  );
 
   return (
     <>

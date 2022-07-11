@@ -189,10 +189,10 @@ export interface AddFeedCommentParams {
 export interface FeedFilters {
   page?: PaginationParams;
   forYou?: 1 | 0;
-  department?: number;
+  departmentId?: number;
   targetId?: number;
-  vendor?: number;
-  category?: number;
+  vendorId?: number;
+  categoryId?: number;
   rootDepartment?: number;
   month?: number;
   year?: number;

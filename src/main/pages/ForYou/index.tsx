@@ -1,30 +1,35 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef } from 'react';
 import * as Sentry from '@sentry/react';
+import React, { useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { FeedFilters } from '@/api/types';
 import { Category, Department, Vendor } from '@/main/entity';
 
-import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@/main/hooks';
-import { useLegacyQuery } from '@/common/hooks';
 import { useApi } from '@/api';
+import { useLegacyQuery } from '@/common/hooks';
+import { FeedChannelEvents, FeedEventData, useFeedChannel } from '@/main/hooks';
 
-import MainLayout from '@/common/templates/MainLayout';
-import FeedList, { FeedListHandler } from '@/main/organisms/FeedList';
-import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@/common/constants';
+import MainLayout from '@/common/templates/MainLayout';
+import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
+import FeedList, { FeedListHandler } from '@/main/organisms/FeedList';
 
-import mixpanel from 'mixpanel-browser';
+import { LineItemDrawer } from '@/feed/LineItemDrawer';
+import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 import { useIdentity } from '@/identity/hooks';
 import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
 import { scrollToTop } from '@/main/utils';
+import mixpanel from 'mixpanel-browser';
 
 const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
 const ForYouPage: React.VFC = () => {
+  const { isLineItemDrawerOpen, selectedLineItem, closeLineItemDrawer, feedId } =
+    useLineItemDrawer();
+
   const history = useHistory();
   const query = useLegacyQuery();
   const location = useLocation();
@@ -68,7 +73,7 @@ const ForYouPage: React.VFC = () => {
 
   const handleFilter = (key: keyof FeedFilters, value?: Department | Category | Vendor): void => {
     // Update according to AP-889 https://heyarrow.atlassian.net/browse/AP-889
-    if (key === 'department') {
+    if (key === 'departmentId') {
       history.push({
         pathname: `/departments/${value?.id}`,
         search: `?route=${MainGroups.Following}`,
@@ -90,6 +95,12 @@ const ForYouPage: React.VFC = () => {
 
   return (
     <MainLayout className="flex flex-col" rightSide={false}>
+      <LineItemDrawer
+        open={isLineItemDrawerOpen}
+        onClose={closeLineItemDrawer}
+        lineItem={selectedLineItem!}
+        feedId={feedId}
+      />
       <NewFeedIndicator
         isVisible={!!newFeedNumber}
         counter={newFeedNumber}

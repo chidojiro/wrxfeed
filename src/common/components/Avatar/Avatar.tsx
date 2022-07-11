@@ -1,5 +1,5 @@
 import { ClassName } from '@/common/types';
-import { StringUtils, withProjectClassNamePrefix } from '@/common/utils';
+import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import React from 'react';
 import { Tooltip } from '../Tooltip';
@@ -16,7 +16,7 @@ export const Avatar = ({ src, className, fullName, size = 'sm' }: AvatarProps) =
   return (
     <div
       className={clsx(
-        withProjectClassNamePrefix('avatar'),
+        StringUtils.withProjectClassNamePrefix('avatar'),
         'rounded-full overflow-hidden',
         className,
         { 'w-6 h-6': size === 'sm' },

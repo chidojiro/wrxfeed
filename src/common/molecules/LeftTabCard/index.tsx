@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, matchPath } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { LeftTab } from '@/common/types';
@@ -26,7 +26,12 @@ const LeftTabCard: React.VFC<LeftTabCardProps> = ({ className = '', tab, showTab
   };
 
   const { icon: TabIcon } = tab;
-  const isCurrentTab = location.pathname.includes(tab.location.pathname);
+
+  const isCurrentTab = matchPath(location.pathname, {
+    path: tab.location.pathMatch ?? tab.location.pathname,
+    exact: true,
+    strict: false,
+  });
 
   const renderCounter = (item: LeftTab) => {
     const counter = newFeedCount[item.location.pathname];

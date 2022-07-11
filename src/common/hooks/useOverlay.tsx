@@ -1,8 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import { v4 as UUID } from 'uuid';
-import { AssertUtils, withProjectClassNamePrefix } from '../utils';
+import { AssertUtils, StringUtils } from '../utils';
 
 export type UseOverlayProps = {
   active: boolean;
@@ -10,7 +9,7 @@ export type UseOverlayProps = {
   component?: React.ReactNode;
 };
 
-const OVERLAYING_SPINNER_CLASS_NAME = withProjectClassNamePrefix('overlaying-spinner');
+const OVERLAYING_SPINNER_CLASS_NAME = StringUtils.withProjectClassNamePrefix('overlaying-spinner');
 const OVERLAYING_SPINNER_DATA_SPINNER_IDS = 'data-spinnerids';
 
 export const useOverlay = ({ active, asChildOf: asChildOfProp, component }: UseOverlayProps) => {
