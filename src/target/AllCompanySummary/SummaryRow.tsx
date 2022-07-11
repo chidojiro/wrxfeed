@@ -2,7 +2,7 @@ import { CommentIcon } from '@/assets';
 import { ConditionalWrapper } from '@/common/components';
 import { MainGroups } from '@/common/constants';
 import { useHandler } from '@/common/hooks';
-import { decimalLogic, DecimalType } from '@/main/utils';
+import { getDisplayCurrency } from '@/main/utils';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
@@ -25,8 +25,6 @@ const getStatusColor = (status?: TargetStatusType) => {
       return 'bg-transparent';
   }
 };
-
-const EMPTY_SPEND = '--';
 
 export const SummaryRow = ({
   data: { commentCount, id, name, spends, target },
@@ -77,12 +75,8 @@ export const SummaryRow = ({
         ></div>
         <p className="line-clamp-2">{name}</p>
       </div>
-      <div className="col-span-2 text-Gray-6">
-        {spends ? decimalLogic(spends, DecimalType.SummedNumbers, '$') : EMPTY_SPEND}
-      </div>
-      <div className="col-span-2 text-Gray-6">
-        {targetSpends ? decimalLogic(targetSpends, DecimalType.SummedNumbers, '$') : EMPTY_SPEND}
-      </div>
+      <div className="col-span-2 text-Gray-6">{getDisplayCurrency(spends)}</div>
+      <div className="col-span-2 text-Gray-6">{getDisplayCurrency(targetSpends)}</div>
       <div className="col-span-1 relative flex items-center justify-center">
         {!!commentCount && (
           <>

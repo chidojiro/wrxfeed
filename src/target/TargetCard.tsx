@@ -1,7 +1,3 @@
-import React from 'react';
-import { useDisclosure } from '@dwarvesf/react-hooks';
-import clsx from 'clsx';
-import { useHistory } from 'react-router-dom';
 import Loading from '@/common/atoms/Loading';
 import { Avatar } from '@/common/components';
 import { useHandler } from '@/common/hooks';
@@ -12,13 +8,12 @@ import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
 import MiniChartView from '@/main/molecules/MiniChartView';
-import {
-  decimalLogic,
-  DecimalType,
-  getColorByText,
-  getTargetPeriodsAmountTotal,
-} from '@/main/utils';
+import { getColorByText, getDisplayCurrency, getTargetPeriodsAmountTotal } from '@/main/utils';
 import { Routes } from '@/routing/routes';
+import { useDisclosure } from '@dwarvesf/react-hooks';
+import clsx from 'clsx';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { AddTargetModal, AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
 import { Target } from './types';
@@ -115,7 +110,7 @@ export const TargetCard = ({
                   <p className="text-2xs">Spend</p>
                 </div>
                 <p className="text-sm text-primary font-semibold mt-1">
-                  {decimalLogic(currentSpend ?? '0', DecimalType.SummedNumbers)}
+                  {getDisplayCurrency(currentSpend)}
                 </p>
               </div>
               <div className="flex flex-col datas-start min-w-[70px] h-9 pr-1.5">
@@ -124,7 +119,7 @@ export const TargetCard = ({
                   <p className="text-2xs">Target To Date</p>
                 </div>
                 <p className="text-sm text-primary font-semibold mt-1">
-                  {decimalLogic(targetToDate ?? '0', DecimalType.SummedNumbers)}
+                  {getDisplayCurrency(targetToDate)}
                 </p>
               </div>
               <div className="flex flex-col datas-start min-w-[70px] h-9 pr-1.5">
@@ -133,7 +128,7 @@ export const TargetCard = ({
                   <p className="text-2xs">Overall Target</p>
                 </div>
                 <p className="text-sm text-primary font-semibold mt-1">
-                  {decimalLogic(overallTarget ?? '0', DecimalType.SummedNumbers)}
+                  {getDisplayCurrency(overallTarget)}
                 </p>
               </div>
             </div>
