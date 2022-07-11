@@ -1,7 +1,5 @@
-import React from 'react';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
-
 import Loading from '@/common/atoms/Loading';
 import { Avatar } from '@/common/components';
 import { useHandler } from '@/common/hooks';
@@ -9,6 +7,8 @@ import { ClassName } from '@/common/types';
 import { distanceToNow } from '@/common/utils';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
+import { FeedType } from '@/main/entity';
+import { OptionsButton } from '@/main/molecules';
 import MiniChartView from '@/main/molecules/MiniChartView';
 import {
   decimalLogic,
@@ -16,13 +16,15 @@ import {
   getColorByText,
   getTargetPeriodsAmountTotal,
 } from '@/main/utils';
-import { AddTargetModal } from './AddTargetModal';
-import { AddTargetModalProps } from './AddTargetModal';
+import { Routes } from '@/routing/routes';
+import { useHistory } from 'react-router-dom';
+import { AddTargetModal, AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
 import { Target } from './types';
+import React from 'react';
 
 export type TargetCardProps = ClassName &
-  Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'> & {
+  Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess' | 'hidePropertyDropdowns'> & {
     data: Target;
     showColorfulHeading?: boolean;
   };
@@ -33,10 +35,12 @@ export const TargetCard = ({
   onUpdateSuccess,
   onDeleteSuccess,
   showColorfulHeading = true,
+  hidePropertyDropdowns,
 }: TargetCardProps) => {
+  const history = useHistory();
   const department = data.department;
 
-  const { isLoading: isDeletingTarget } = useHandler((targetId: number) =>
+  const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
     TargetApis.delete(targetId),
   );
 
@@ -46,6 +50,12 @@ export const TargetCard = ({
   const addTargetModalDisclosure = useDisclosure();
 
   const headingColor = getColorByText(data.name, undefined, true);
+
+  const goToTargetDetails = () => {
+    history.push(
+      `${(Routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
+    );
+  };
 
   return (
     <div
@@ -64,6 +74,7 @@ export const TargetCard = ({
           departmentId={department?.id}
           onUpdateSuccess={onUpdateSuccess}
           onDeleteSuccess={onDeleteSuccess}
+          hidePropertyDropdowns={hidePropertyDropdowns}
         />
       )}
       <div className="flex flex-1 flex-col pb-4 space-y-2 w-full">
@@ -76,6 +87,11 @@ export const TargetCard = ({
             <div className="flex flex-col flex-1 h-12 max-h-12">
               <div className="flex justify-between items-center h-6">
                 <TargetFeedName target={data} />
+                <OptionsButton
+                  onViewClick={goToTargetDetails}
+                  onEditClick={addTargetModalDisclosure.onOpen}
+                  onDeleteClick={() => deleteTarget(data.id)}
+                />
               </div>
               <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
                 <Avatar
