@@ -159,10 +159,3 @@ export function formatCurrency({
   const number = supportNegative ? value : Math.abs(parseFloat(replaceAll(`${value}`, ',', '')));
   return numeral(number).format(format);
 }
-
-export const withProjectClassNamePrefix = (...classNames: string[]) => {
-  return [classNames]
-    .flat()
-    .map((className) => PROJECT_CLASS_NAME_PREFIX + className)
-    .join(' ');
-};

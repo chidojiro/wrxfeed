@@ -19,7 +19,10 @@ export const MainMenu: SectionTab[] = [
     tabs: [
       {
         name: 'Targets',
-        location: { pathname: '/dashboard/all-company' },
+        location: {
+          pathname: '/dashboard/all-company',
+          pathMatch: '/dashboard/:slug',
+        },
         icon: TargetIcon,
         isShowCounter: true,
       },
