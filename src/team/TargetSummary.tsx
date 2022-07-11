@@ -42,7 +42,11 @@ export const TargetSummary = ({ departmentId }: TargetSummaryProps) => {
             </div>
           </Link>
 
-          <button className="pl-4 text-center" onClick={addTargetModalDisclosure.onOpen}>
+          <button
+            type="button"
+            className="pl-4 text-center"
+            onClick={addTargetModalDisclosure.onOpen}
+          >
             <div className="text-center justify-center flex items-center gap-2 mx-auto">
               <p className="text-md font-semibold">Create a target</p>
               <div className="rounded bg-Accent-2 !m-0 text-white">
