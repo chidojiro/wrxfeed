@@ -66,8 +66,11 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
   const [feedFilters, setFeedFilters] = React.useState<FeedFilters>({
     ...INIT_FEED_FILTER,
     forYou,
-    department: depId,
+    departmentId: depId,
+    categoryId,
+    vendorId,
   });
+
   const { feeds, hasMore, isLoading, updateCategory, cleanData } = useFeed(feedFilters);
   const query = useLegacyQuery();
   const history = useHistory();
@@ -187,9 +190,9 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
                 key={`RollupCard-${feed.id}`}
                 feedItem={feed}
                 updateCategory={updateCategory}
-                onClickVendor={(value) => onFilter && onFilter('vendor', value)}
-                onClickDepartment={(value) => onFilter && onFilter('department', value)}
-                onClickCategory={(value) => onFilter && onFilter('category', value)}
+                onClickVendor={(value) => onFilter && onFilter('vendorId', value)}
+                onClickDepartment={(value) => onFilter && onFilter('departmentId', value)}
+                onClickCategory={(value) => onFilter && onFilter('categoryId', value)}
                 onClickRootDept={(value) => onFilter && onFilter('rootDepartment', value)}
               />
             );

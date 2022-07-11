@@ -170,9 +170,9 @@ export default class ApiUtils implements ApiClient {
     const params = {
       ...filters?.page,
       forYou: filters?.forYou,
-      dep: filters?.department,
+      dep: filters?.departmentId,
       rootDep: filters?.rootDepartment,
-      cat: filters?.category,
+      cat: filters?.categoryId,
     };
     const res = await this.request<FeedItem[]>({
       url: '/feed/items',
@@ -415,10 +415,10 @@ export default class ApiUtils implements ApiClient {
       params: {
         ...filters?.page,
         forYou: filters?.forYou,
-        dep: filters?.department,
+        dep: filters?.departmentId,
         rootDep: filters?.rootDepartment,
-        cat: filters?.category,
-        vend: filters?.vendor,
+        cat: filters?.categoryId,
+        vend: filters?.vendorId,
         targetId: filters?.targetId,
         month: filters?.month,
         year: filters?.year,
