@@ -4,7 +4,7 @@ import { Category, Department, Vendor } from '@/main/entity';
 // Icons
 import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
-import cx from 'classnames';
+import clsx from 'clsx';
 
 interface DepartmentItemProps {
   item: Department | Category | Vendor;
@@ -54,25 +54,28 @@ const DepartmentItem: React.VFC<DepartmentItemProps> = ({
         (isFollowing ? (
           <Button
             onClick={handleUnfollow}
-            className={cx('rounded-full border-Gray-3', btnClassName)}
+            className={clsx('rounded-full border-Gray-3', btnClassName)}
           >
             <TickIcon
               width={16}
               height={16}
-              className={cx('stroke-current path-no-stroke text-Gray-3', textClassName)}
+              className={clsx('stroke-current path-no-stroke text-Gray-3', textClassName)}
               viewBox="0 0 15 15"
             />
             <span className={textClassName}>Following</span>
           </Button>
         ) : (
-          <Button onClick={handleFollow} className={cx('rounded-full border-Gray-3', btnClassName)}>
+          <Button
+            onClick={handleFollow}
+            className={clsx('rounded-full border-Gray-3', btnClassName)}
+          >
             <AddIcon
               width={16}
               height={16}
-              className={cx('stroke-current stroke-1 path-no-stroke text-Gray-3', textClassName)}
+              className={clsx('stroke-current stroke-1 path-no-stroke text-Gray-3', textClassName)}
               viewBox="0 0 15 15"
             />
-            <span className={cx('text-Gray-3', textClassName)}>Follow</span>
+            <span className={clsx('text-Gray-3', textClassName)}>Follow</span>
           </Button>
         ))}
     </div>
