@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
 
 import Loading from '@/common/atoms/Loading';
 import { Avatar } from '@/common/components';
@@ -20,6 +21,8 @@ import { AddTargetModal } from './AddTargetModal';
 import { AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
 import { Target } from './types';
+import { Routes } from '@/routing/routes';
+import { FeedType } from '@/main/entity';
 
 export type TargetCardProps = ClassName &
   Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'> & {
@@ -35,10 +38,17 @@ export const TargetCard = ({
   showColorfulHeading = true,
 }: TargetCardProps) => {
   const department = data.department;
+  const history = useHistory();
 
   const { isLoading: isDeletingTarget } = useHandler((targetId: number) =>
     TargetApis.delete(targetId),
   );
+
+  const goToTargetDetails = () => {
+    history.push(
+      `${(Routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
+    );
+  };
 
   const { overallTarget, currentSpend, targetToDate, exceeding } =
     getTargetPeriodsAmountTotal(data);
@@ -48,7 +58,9 @@ export const TargetCard = ({
   const headingColor = getColorByText(data.name, undefined, true);
 
   return (
-    <div
+    <button
+      onClick={goToTargetDetails}
+      type="button"
       key={`Dashboard-TargetChartView-${data.id}`}
       className={clsx(
         'bg-white relative w-full overflow-hidden rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
@@ -138,6 +150,6 @@ export const TargetCard = ({
           <Loading color="Gray-3" />
         </div>
       )}
-    </div>
+    </button>
   );
 };
