@@ -12,9 +12,9 @@ import FeedList from '@/main/organisms/FeedList';
 import { isNumeric, scrollToTop } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
 import * as Sentry from '@sentry/react';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { useAsyncEffect } from '@dwarvesf/react-hooks';
+import { useFetcher } from '@/common/hooks';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -27,11 +27,11 @@ const CategoriesPage: React.VFC = () => {
   const { id: catId } = useParams<{ id?: string }>();
   const query = useLegacyQuery();
   const location = useLocation();
-  const [filter, setFilter] = useState<PaginationParams>(INIT_PAGINATION);
+  const [filter, setFilter] = React.useState<PaginationParams>(INIT_PAGINATION);
   const { categories, hasMore, isLoading } = useCategory({ filter });
-  const [category, setCategory] = useState<Category | null>();
+  const [category, setCategory] = React.useState<Category | null>();
 
-  const handleLoadMoreCategories = useCallback(() => {
+  const handleLoadMoreCategories = React.useCallback(() => {
     if (!hasMore || isLoading) return;
     setFilter((prevFilter) => ({
       ...prevFilter,
@@ -39,12 +39,9 @@ const CategoriesPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  useAsyncEffect(async () => {
-    if (catId && isNumeric(catId)) {
-      const catById = await FeedApis.getCategoryById({ categoryId: parseInt(catId, 10) });
-      setCategory(catById);
-    }
-  }, [catId]);
+  const {} = useFetcher(catId && isNaN(+catId) && ['category', catId], () =>
+    FeedApis.getCategory(parseInt(catId ?? '0', 10)),
+  );
 
   const handleCategorySelect = (value?: Category): void => {
     setCategory(value);

@@ -28,7 +28,6 @@ export type TargetCardProps = ClassName &
   Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'> & {
     data: Target;
     showColorfulHeading?: boolean;
-    clickable?: boolean;
   };
 
 export const TargetCard = ({
@@ -36,7 +35,6 @@ export const TargetCard = ({
   className,
   onUpdateSuccess,
   onDeleteSuccess,
-  clickable = true,
   showColorfulHeading = true,
 }: TargetCardProps) => {
   const department = data.department;
@@ -47,9 +45,6 @@ export const TargetCard = ({
   );
 
   const goToTargetDetails = () => {
-    if (!clickable) {
-      return;
-    }
     history.push(
       `${(Routes.Feed.path as string).replace(':id', `${data.id}?route=${FeedType.TargetFeed}`)}`,
     );
@@ -64,7 +59,6 @@ export const TargetCard = ({
 
   return (
     <button
-      disabled={!clickable}
       onClick={goToTargetDetails}
       type="button"
       key={`Dashboard-TargetChartView-${data.id}`}
