@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Transaction } from '@/main/entity';
 import { classNames, withProjectClassNamePrefix } from '@/common/utils';
 import RollupTranRow from '../RollupTranRow';
@@ -24,9 +24,9 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
   tranHidden = false,
 }) => {
   const { openLineItemDrawer } = useLineItemDrawer();
-  const [position, setPosition] = useState(autoShowTrans ? TRANSACTION_SHOW_NUMBER : 0);
-  const [transactions, setTransactions] = useState(trans?.slice(0, position));
-  const [hasMore, setHasMore] = useState(
+  const [position, setPosition] = React.useState(autoShowTrans ? TRANSACTION_SHOW_NUMBER : 0);
+  const [transactions, setTransactions] = React.useState(trans?.slice(0, position));
+  const [hasMore, setHasMore] = React.useState(
     autoShowTrans ? trans?.length > TRANSACTION_SHOW_NUMBER : trans?.length > 0,
   );
 

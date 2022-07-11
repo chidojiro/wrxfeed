@@ -6,7 +6,7 @@ import { Transaction, TransLineItem, TranStatusType, Vendor } from '@/main/entit
 import TranLineItemsList from '@/main/molecules/TranLineItemsList';
 import { decimalLogic, DecimalType, getTransactionStatus } from '@/main/utils';
 import dayjs from 'dayjs';
-import React, { useMemo, useRef, useState } from 'react';
+import React from 'react';
 
 export interface RollupTranRowProps {
   tran: Transaction;
@@ -19,8 +19,8 @@ export interface RollupTranRowProps {
 const A_WEEK_IN_MILLISECONDS = 1000 * 60 * 60 * 24 * 7;
 
 const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, onView }) => {
-  const viewRef = useRef<HTMLButtonElement>(null);
-  const [isOpen, setOpen] = useState<boolean>(false);
+  const viewRef = React.useRef<HTMLButtonElement>(null);
+  const [isOpen, setOpen] = React.useState<boolean>(false);
   const { lineItems = [] } = tran;
 
   const onClickLineItem: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -38,7 +38,7 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, onView })
     }
   };
 
-  const tranType: TranStatusType | null = useMemo(
+  const tranType: TranStatusType | null = React.useMemo(
     () => getTransactionStatus(tran?.status ?? ''),
     [tran?.status],
   );

@@ -12,6 +12,7 @@ import {
 import Loading from '@/common/atoms/Loading';
 import Tooltip from '@/common/atoms/Tooltip';
 import { MainGroups } from '@/common/constants';
+import { ClassName } from '@/common/types';
 import UpdateDetailsLineItemInfoModal from '@/feed/UpdateDetailsLineItemInfoModal';
 import { TransLineItem, TranStatusType } from '@/main/entity';
 import UpdateVendorInfoModal from '@/main/organisms/UpdateVendorInfoModal';
@@ -31,8 +32,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-export type LineItemDetailsProps = {
-  className?: string;
+export type LineItemDetailsProps = ClassName & {
   loading?: boolean;
   item?: TransLineItem;
   onCloseClick?: () => void;
