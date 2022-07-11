@@ -4,6 +4,8 @@ import clsx from 'clsx';
 import { getColorByText } from '@/main/utils';
 import { TeamIcon } from '@/assets';
 import { ClassName } from '@/common/types';
+import DepartmentItem from '@/main/molecules/DepartmentItem';
+import { useSubscription } from '@/main/hooks/subscription.hook';
 
 export type TeamHeaderProps = ClassName & {
   departmentId: number;
@@ -15,6 +17,12 @@ export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeade
     () => getColorByText('', departmentId, true),
     [departmentId],
   );
+  const { subscribe, unsubscribe, isFollowing } = useSubscription();
+
+  const department = {
+    id: departmentId,
+    name: '',
+  };
 
   return (
     <div
@@ -35,6 +43,14 @@ export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeade
         </div>
         <p className="text-white font-semibold">{teamName}</p>
       </div>
+      <DepartmentItem
+        item={department}
+        isFollowing={isFollowing('departments', department)}
+        onFollow={() => subscribe('departments', department)}
+        onUnfollow={() => unsubscribe('departments', department)}
+        btnClassName="!border-white"
+        textClassName="!text-white"
+      />
     </div>
   );
 };
