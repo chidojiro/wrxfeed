@@ -37,7 +37,7 @@ const VendorsPage: React.VFC = () => {
     vendorId
       ? {
           page: INIT_PAGINATION,
-          vendor: parseInt(vendorId, 10),
+          vendorId: parseInt(vendorId, 10),
           forYou: 0,
         }
       : {
@@ -46,7 +46,7 @@ const VendorsPage: React.VFC = () => {
         },
   );
   // Variables
-  const isFiltering = !!feedsFilter.vendor;
+  const isFiltering = !!feedsFilter.vendorId;
 
   const getFilterVendorById = async (venId: string) => {
     const venById = await getVendorById(parseInt(venId, 10));
@@ -69,7 +69,7 @@ const VendorsPage: React.VFC = () => {
     } else {
       setFeedsFilter({ page: { offset: 0, limit: 0 } }); // Clean up transaction
     }
-  }, [vendorId, query.toString(), feedsFilter.vendor]);
+  }, [vendorId, query.toString(), feedsFilter.vendorId]);
 
   useEffect(() => {
     filterByRoute();

@@ -68,7 +68,7 @@ const ForYouPage: React.VFC = () => {
 
   const handleFilter = (key: keyof FeedFilters, value?: Department | Category | Vendor): void => {
     // Update according to AP-889 https://heyarrow.atlassian.net/browse/AP-889
-    if (key === 'department') {
+    if (key === 'departmentId') {
       history.push({
         pathname: `/departments/${value?.id}`,
         search: `?route=${MainGroups.Following}`,

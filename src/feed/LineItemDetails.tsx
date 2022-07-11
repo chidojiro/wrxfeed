@@ -32,7 +32,6 @@ import UpdateVendorInfoModal from '@/main/organisms/UpdateVendorInfoModal';
 import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
 import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
 import UpdateDetailsLineItemInfoModal from '@/feed/UpdateDetailsLineItemInfoModal';
-import { MainGroups } from '@/common/constants';
 
 export interface LineItemDetailsProps {
   className?: string;
@@ -101,9 +100,9 @@ const LineItemDetails: React.VFC<LineItemDetailsProps> = ({
   };
 
   const goToCategoryPage = (categoryId?: number) => {
+    setOpen(false);
     history.push({
       pathname: `/categories/${categoryId}`,
-      search: `?route=${MainGroups.Following}`,
     });
   };
 
