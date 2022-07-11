@@ -9,7 +9,7 @@ import { Category, Department, Vendor } from '@/main/entity';
 import { useCategory } from '@/main/hooks/category.hook';
 import CategoryList from '@/main/organisms/CategoryList';
 import FeedList from '@/main/organisms/FeedList';
-import { isNumeric, scrollToTop } from '@/main/utils';
+import { scrollToTop } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
 import * as Sentry from '@sentry/react';
 import React from 'react';
@@ -39,8 +39,12 @@ const CategoriesPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  const {} = useFetcher(catId && isNaN(+catId) && ['category', catId], () =>
-    FeedApis.getCategory(parseInt(catId ?? '0', 10)),
+  useFetcher(
+    catId && !isNaN(+catId) && ['category', catId],
+    () => FeedApis.getCategory(parseInt(catId ?? '0', 10)),
+    {
+      onSuccess: setCategory,
+    },
   );
 
   const handleCategorySelect = (value?: Category): void => {
@@ -83,7 +87,7 @@ const CategoriesPage: React.VFC = () => {
           onSelect={handleCategorySelect}
         />
       )}
-      {catId && isNumeric(catId) && (
+      {catId && !isNaN(+catId) && (
         <FeedList onFilter={handleFeedsFilter} categoryId={parseInt(catId, 10)} />
       )}
     </MainLayout>

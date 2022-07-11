@@ -728,7 +728,3 @@ export const getSummaryNumber = (value: number, total: number): string => {
   }
   return `${((value / total ?? 1) * 100 ?? 0).toFixed(0)}%`;
 };
-
-export const isNumeric = (value: string | undefined) => {
-  return /^-?\d+$/.test(`${value}`);
-};
