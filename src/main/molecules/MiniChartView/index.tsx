@@ -52,9 +52,9 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
 
   const chartData: LineChartData = useMemo(() => {
     if (startMonth === endMonth) {
-      return getLineChartDataInMonth(thisYearTrans, lastYearTrans, targetMonths[startMonth - 1]);
+      return getLineChartDataInMonth(target, targetMonths[startMonth - 1]);
     }
-    return getTargetMonthsLineChartData(thisYearSpendData, lastYearSpendData, targetMonths);
+    return getTargetMonthsLineChartData(target, targetMonths);
   }, [thisYearSpendData, lastYearSpendData, targetMonths, thisYearTrans, lastYearTrans]);
 
   useEffect(() => {

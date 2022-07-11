@@ -1,7 +1,7 @@
+import { StringUtils } from '@/common/utils';
 import classNames from 'classnames';
 import React from 'react';
 import { Children, ClassName } from '../../types';
-import { withProjectClassNamePrefix } from '../../utils';
 import { Body } from './Body';
 import { Cell } from './Cell';
 import { Footer } from './Footer';
@@ -32,7 +32,7 @@ export const Table = (props: TableProps) => {
       <table
         {...restProps}
         className={classNames(
-          withProjectClassNamePrefix('table'),
+          StringUtils.withProjectClassNamePrefix('table'),
           'w-full border-collapse table-auto bg-white',
           className,
         )}
@@ -44,7 +44,7 @@ export const Table = (props: TableProps) => {
 const OverflowContainer = ({ children, className }: Children & ClassName) => (
   <div
     className={classNames(
-      withProjectClassNamePrefix('table-overflow-container'),
+      StringUtils.withProjectClassNamePrefix('table-overflow-container'),
       'max-w-full overflow-auto',
       'text-xs text-Gray-6',
       // display horizontal ring

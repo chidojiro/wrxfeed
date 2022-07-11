@@ -1,7 +1,9 @@
 /* eslint-disable no-param-reassign */
+import { INITIAL_CHART_DATA } from '@/common/constants';
 import { round } from '@/common/utils';
 import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/main/types';
 import {
+  Target,
   TargetMonth,
   TargetPeriod,
   TargetSpending,
@@ -10,85 +12,55 @@ import {
 } from '@/target/types';
 import dayjs from 'dayjs';
 import { range } from 'lodash-es';
-import { Transaction } from './entity';
 import { decimalLogic, DecimalType } from './utils';
 
-const ITEM_DATE_FORMAT = 'YYYY-MM-DD';
 const DATA_DATE_FORMAT = 'MMM DD';
 
-/**
- * Group transactions by month
- * A group of month will contain full date of month [1,...,31]
- * Ex: {'Mar': [[], [<trans>, <trans>], ...], 'Apr': [[<trans>], [<trans>], ...]}
- */
-export const hashTransactionsByMonths = (
-  trans: Transaction[],
-  monthFormat = 'MMM',
-): { [key: string]: Transaction[][] } => {
-  return trans.reduce<{ [key: string]: Transaction[][] }>((preHash, currentTran) => {
-    const itemDate = dayjs(currentTran.transDate, ITEM_DATE_FORMAT);
-    if (!itemDate.isValid()) return preHash;
-    const month = itemDate.format(monthFormat);
-    const date = itemDate.date();
-    if (preHash[month]) {
-      preHash[month][date - 1] = [...preHash[month][date - 1], currentTran];
-    } else {
-      preHash[month] = Array(31).fill([]);
-      preHash[month][date - 1] = [...preHash[month][date - 1], currentTran];
-    }
-    return preHash;
-  }, {});
-};
+const getYearSpending = (target: Target, year: number) =>
+  target.spendings?.filter((cur) => cur.year === year).reduce((acc, { total }) => total + acc, 0) ??
+  0;
+
+export const getThisYearSpending = (target: Target) =>
+  getYearSpending(target, new Date().getFullYear());
+
+export const getLastYearSpending = (target: Target) =>
+  getYearSpending(target, new Date().getFullYear() - 1);
 
 export const getLineChartDataInMonth = (
-  thisYearTrans: Transaction[],
-  lastYearTrans: Transaction[],
-  target: TargetMonth,
+  target: Target,
+  targetMonth: TargetMonth,
   trackingStatus?: TargetStatusType,
 ): LineChartData => {
-  const monthFormat = 'MMM';
-  const targetDate = dayjs().set('month', target.month - 1);
-  const monthStr: string = targetDate.format(monthFormat);
-  const isThisMonth = dayjs().month() === target.month - 1;
+  const targetDate = dayjs().set('month', targetMonth.month - 1);
+  const isThisMonth = dayjs().month() === targetMonth.month - 1;
 
-  const thisYearTransMatrix = hashTransactionsByMonths(thisYearTrans, monthFormat)[monthStr];
-  const lastYearTransMatrix = hashTransactionsByMonths(lastYearTrans, monthFormat)[monthStr];
-  let totalThisYear = 0;
-  let totalLastYear = 0;
+  const totalThisYear = getThisYearSpending(target);
+  const totalLastYear = getLastYearSpending(target);
   const data: ChartDataPoint[] = Array(targetDate.daysInMonth())
     .fill({
       name: '',
       thisYear: 0,
       lastYear: 0,
-      target: target.amount ?? 0,
+      target: targetMonth.amount ?? 0,
     })
     .map((_, index) => {
       const dayName = dayjs(targetDate)
         .date(index + 1)
         .format(DATA_DATE_FORMAT);
 
-      // Total by month
-      totalThisYear += Math.round(
-        thisYearTransMatrix?.[index]?.reduce((total, item) => total + (item?.amountUsd ?? 0), 0) ??
-          0,
-      );
-      totalLastYear += Math.round(
-        lastYearTransMatrix?.[index]?.reduce((total, item) => total + (item?.amountUsd ?? 0), 0) ??
-          0,
-      );
       // Don't draw data line if date index greater than today
       if (isThisMonth && index > targetDate.date() - 1) {
         return {
           name: dayName,
           lastYear: totalLastYear,
-          target: target.amount ?? 0,
+          target: targetMonth.amount ?? 0,
         };
       }
       return {
         name: dayName,
         thisYear: totalThisYear,
         lastYear: totalLastYear,
-        target: target.amount ?? 0,
+        target: targetMonth.amount ?? 0,
       };
     });
 
@@ -131,7 +103,7 @@ export const getLineChartDataInMonth = (
     },
   ];
 
-  let maxValue = Math.max(totalThisYear, totalLastYear, target.amount ?? 0);
+  let maxValue = Math.max(totalThisYear, totalLastYear, targetMonth.amount ?? 0);
   const positiveMax = Math.abs(maxValue);
   if (positiveMax >= 1000000000) {
     maxValue = Math.ceil(positiveMax / 1000000000) * 1000000000; // Billion
@@ -172,23 +144,29 @@ export const getChartLevels = (maxValue: number): ChartLevel[] => {
 };
 
 export const getTargetMonthsLineChartData = (
-  thisYearSpend: TargetPeriod[],
-  lastYearSpend: TargetPeriod[],
+  target: Target,
   targetMonths: TargetMonth[],
   trackingStatus?: TargetStatusType,
 ): LineChartData => {
+  if (!target) return INITIAL_CHART_DATA;
+
   const monthFormat = 'MMM';
   const thisMonth = dayjs().month();
   let cumulativeThisYear = 0;
   let cumulativeLastYear = 0;
   let cumulativeTarget = 0;
 
-  const thisYearSorted = thisYearSpend?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
+  const thisYearPeriods = target.periods.filter((item) => item.year === new Date().getFullYear());
+  const lastYearPeriods = target.periods.filter(
+    (item) => item.year === new Date().getFullYear() - 1,
+  );
+
+  const thisYearSorted = thisYearPeriods?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
   const lastYearSorted = range(0, 12).map((monthIdx) => {
-    const lastYearData = lastYearSpend.find((e) => e?.month - 1 === monthIdx);
+    const lastYearData = lastYearPeriods.find((e) => e?.month - 1 === monthIdx);
     return (
       lastYearData || {
-        year: lastYearSpend[0]?.year || dayjs().year() - 1,
+        year: thisYearPeriods[0]?.year || dayjs().year() - 1,
         month: monthIdx + 1,
         amount: 0,
       }

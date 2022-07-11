@@ -1,6 +1,6 @@
+import { StringUtils } from '@/common/utils';
 import classNames from 'classnames';
 import React from 'react';
-import { withProjectClassNamePrefix } from '../../utils';
 import { ConditionalWrapper } from '../ConditionalWrapper';
 import { SortIcon } from './SortIcon';
 import { TableContext } from './Table';
@@ -37,7 +37,7 @@ export const Header = ({ className, sortKey, children, ...restProps }: Props) =>
     <th
       {...restProps}
       className={classNames(
-        withProjectClassNamePrefix('table-header'),
+        StringUtils.withProjectClassNamePrefix('table-header'),
         'py-3 px-4',
         'font-semibold text-xs text-Gray-3 text-left',
         className,

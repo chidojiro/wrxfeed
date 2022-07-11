@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { withProjectClassNamePrefix } from '../../utils';
+import { StringUtils } from '@/common/utils';
 
 export type Props = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLTableSectionElement>,
@@ -11,7 +11,7 @@ export const Body = ({ className, ...restProps }: Props) => {
   return (
     <tbody
       {...restProps}
-      className={classNames(withProjectClassNamePrefix('table-body'), className)}
+      className={classNames(StringUtils.withProjectClassNamePrefix('table-body'), className)}
     ></tbody>
   );
 };

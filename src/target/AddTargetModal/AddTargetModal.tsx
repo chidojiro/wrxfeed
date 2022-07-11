@@ -11,7 +11,6 @@ import { useHandler } from '@/common/hooks';
 import { classNames, formatCurrency, round } from '@/common/utils';
 import ListLoading from '@/main/atoms/ListLoading';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
-import { useTransaction } from '@/main/hooks';
 import ExceptDropdown from '@/main/molecules/ExceptDropdown';
 import ExceptList from '@/main/molecules/ExceptList';
 import MultiMonthDropdown from '@/main/molecules/MultiMonthDropdown';
@@ -27,7 +26,6 @@ import {
 import { TargetChart } from '@/target/TargetChart';
 import {
   CreateTargetPayload,
-  GetTargetSpendingParams,
   Target,
   TargetMonth,
   TargetPeriod,
@@ -42,7 +40,6 @@ import React, { KeyboardEventHandler, useEffect, useMemo, useRef, useState } fro
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { TargetApis } from '../apis';
-import { useTargetSpending } from '../useTargetSpending';
 import PropertiesDropdown, { DropdownEdge } from './PropertiesDropdown';
 
 export type AddTargetModalProps = {
@@ -62,14 +59,6 @@ export type AddTargetModalProps = {
 };
 
 const THIS_YEAR = new Date().getFullYear();
-const THIS_YEAR_INIT_FILTER = Object.freeze({
-  props: [],
-  periods: getPeriodsByYear(THIS_YEAR),
-});
-const LAST_YEAR_INIT_FILTER = Object.freeze({
-  props: [],
-  periods: getPeriodsByYear(THIS_YEAR - 1),
-});
 
 export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandModal(
   ({
@@ -107,22 +96,6 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandMo
 
     const [showErrorProp, setShowErrorProp] = useState<boolean>(false);
 
-    const thisYearSpendFilter: GetTargetSpendingParams = {
-      props: target && target?.props?.length > 0 ? target.props : THIS_YEAR_INIT_FILTER.props,
-      periods:
-        target && target?.periods?.length > 0 ? target.periods : THIS_YEAR_INIT_FILTER.periods,
-    };
-    const { data: thisYearSpendData = [], isInitializing: thisYearDataLoading } =
-      useTargetSpending(thisYearSpendFilter);
-
-    const lastYearSpendFilter: GetTargetSpendingParams = {
-      props: target && target?.props?.length > 0 ? target.props : LAST_YEAR_INIT_FILTER.props,
-      periods:
-        target && target?.periods?.length > 0 ? target.periods : LAST_YEAR_INIT_FILTER.periods,
-    };
-    const { data: lastYearSpendData = [], isInitializing: lastYearDataLoading } =
-      useTargetSpending(lastYearSpendFilter);
-
     const allProps = (() => {
       const vendors = vendItems.length ? vendItems : [];
       const teams = teamItems.length ? teamItems : [];
@@ -159,33 +132,14 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandMo
     const startMonth = updatedTargetMonths[0]?.month ?? 1;
     const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
-    const { lastYearTransPayload, thisYearTransPayload } =
-      (() => {
-        if (targetMonths?.length && startMonth === endMonth) {
-          const props = allProps.length ? allProps : target?.props;
-          const thisYear = dayjs().year();
-          const lastYearTransPayload = {
-            periods: [{ month: startMonth, year: thisYear - 1 }],
-            props,
-          };
-          const thisYearTransPayload = {
-            periods: [{ month: startMonth, year: thisYear }],
-            props,
-          };
-
-          return { lastYearTransPayload, thisYearTransPayload };
-        }
-      })() ?? {};
-
-    const { transactions: lastYearTrans } = useTransaction(lastYearTransPayload);
-    const { transactions: thisYearTrans } = useTransaction(thisYearTransPayload);
-
     const chartData: LineChartData = useMemo(() => {
+      if (!target) return INITIAL_CHART_DATA;
+
       if (startMonth === endMonth) {
-        return getLineChartDataInMonth(thisYearTrans, lastYearTrans, targetMonths[startMonth - 1]);
+        return getLineChartDataInMonth(target, targetMonths[startMonth - 1]);
       }
-      return getTargetMonthsLineChartData(thisYearSpendData, lastYearSpendData, targetMonths);
-    }, [thisYearSpendData, lastYearSpendData, targetMonths, lastYearTrans, thisYearTrans]);
+      return getTargetMonthsLineChartData(target, targetMonths);
+    }, [targetMonths, target]);
 
     const totalTargetAmount = round(
       targetMonths.reduce((total, target) => total + (target.amount ?? 0), 0),
@@ -618,8 +572,11 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandMo
                     periods={target?.periods}
                     targetMonths={targetMonths}
                     year={curYear}
-                    lastYearData={lastYearSpendData}
-                    isLoadingData={lastYearDataLoading || thisYearDataLoading}
+                    lastYearData={
+                      target?.periods.filter(
+                        (item) => item.year === new Date().getFullYear() - 1,
+                      ) ?? []
+                    }
                     onApply={applyDataThenGenChart}
                   />
                 </div>
@@ -642,10 +599,9 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandMo
               <div className="relative flex justify-center items-center w-auto mx-6 px-4 py-6 h-[271px] border border-Gray-12 rounded-2.5xl">
                 <TargetChart
                   containerClass="mb-4 mt-6"
-                  chartData={thisYearSpendData.length > 0 ? chartData : INITIAL_CHART_DATA}
+                  chartData={chartData}
                   renderTooltip={renderTooltipContent}
                   renderXAxis={renderXAxis}
-                  loading={lastYearDataLoading || thisYearDataLoading}
                 />
               </div>
               <div className="flex flex-row pt-4 pb-6 px-10 space-x-4 items-center justify-end text-primary text-xs font-semibold">

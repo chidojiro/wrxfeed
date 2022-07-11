@@ -1,4 +1,4 @@
-import { withProjectClassNamePrefix } from '../../utils';
+import { StringUtils } from '../../utils';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -10,7 +10,7 @@ export const Spinner = ({ className }: SpinnerProps) => {
   return (
     <div
       className={clsx(
-        withProjectClassNamePrefix('spinner'),
+        StringUtils.withProjectClassNamePrefix('spinner'),
         'flex justify-center items-center',
         className,
       )}
