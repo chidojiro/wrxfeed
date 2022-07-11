@@ -1,5 +1,5 @@
 import { AddSmallSolid, TeamIcon } from '@/assets';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { getColorByText } from '@/main/utils';
 import { useDepartment } from '@/team/useDepartment';
 import { useDisclosure } from '@dwarvesf/react-hooks';
@@ -42,7 +42,7 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
 
   return (
     <div
-      className={classNames('flex flex-col space-y-2', className)}
+      className={clsx('flex flex-col space-y-2', className)}
       key={`targets-by-team-${department?.id}`}
     >
       <div

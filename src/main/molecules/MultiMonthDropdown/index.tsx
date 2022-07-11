@@ -3,7 +3,8 @@ import { BasicsDownSmall, LeftSmallIcon } from '@/assets';
 import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
 import Loading from '@/common/atoms/Loading';
 import { defaultTargetMonths, monthsInYear } from '@/common/constants';
-import { classNames, formatCurrency, round } from '@/common/utils';
+import { formatCurrency, round } from '@/common/utils';
+import clsx from 'clsx';
 import MonthTargetInput from '@/main/atoms/MonthTargetInput';
 import { TargetMonth, TargetPeriod, TargetProps } from '@/target/types';
 import { useOnClickOutside } from '@dwarvesf/react-hooks';
@@ -142,9 +143,9 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
           if (month === maxMonth) borderStyle = `${borderStyle} border-b`;
 
           return (
-            <div key={`month-${month}`} className={classNames('flex flex-col ')}>
+            <div key={`month-${month}`} className={clsx('flex flex-col ')}>
               <div
-                className={classNames(
+                className={clsx(
                   'w-24 h-7 px-2 py-1 text-left flex flex-col justify-center items-start',
                   isInRange ? borderStyle : '',
                 )}
@@ -157,7 +158,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
               </div>
               {indexMonth !== 11 && (
                 <div
-                  className={classNames(
+                  className={clsx(
                     'h-1 w-full',
                     isInRange && indexMonth !== maxMonth - 1
                       ? 'border-l border-r border-Accent-2'
@@ -200,7 +201,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
   };
 
   return (
-    <div className={classNames('flex-shrink-0 relative', className)} ref={useableViewRef}>
+    <div className={clsx('flex-shrink-0 relative', className)} ref={useableViewRef}>
       <button
         onClick={onClickOpenModal}
         type="button"
@@ -221,7 +222,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
           leaveTo="transform opacity-0 scale-95"
         >
           <div
-            className={classNames(
+            className={clsx(
               'flex w-[348px] h-[528px] flex-col absolute z-50 mt-2 left-0 shadow-propertyDropdown border border-Gray-11 rounded-sm bg-white',
               classPopover,
             )}
@@ -247,7 +248,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
               <p>Target</p>
             </div>
             <div
-              className={classNames(
+              className={clsx(
                 'flex flex-row space-x-2 py-2 px-[22px] relative',
                 isLoadingData ? 'opacity-50' : '',
               )}
@@ -284,7 +285,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
                 })}
               </div>
               <div
-                className={classNames(
+                className={clsx(
                   'absolute z-10 flex w-full h-full justify-center items-center',
                   isLoadingData ? '' : 'pointer-events-none',
                 )}
@@ -313,10 +314,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
                 type="button"
                 disabled={isLoadingData}
                 onClick={onClickApply}
-                className={classNames(
-                  'flex flex-row items-center px-4 h-7 rounded-sm',
-                  applyEnableState,
-                )}
+                className={clsx('flex flex-row items-center px-4 h-7 rounded-sm', applyEnableState)}
               >
                 <p className="text-white text-xs font-semibold">Apply</p>
                 <ArrowRight className="w-4 h-4 ml-2 fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />

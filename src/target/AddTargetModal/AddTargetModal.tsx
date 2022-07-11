@@ -8,7 +8,8 @@ import Modal from '@/common/atoms/Modal';
 import { defaultTargetMonths, INITIAL_CHART_DATA } from '@/common/constants';
 import { withMountOnOpen } from '@/common/hocs/withMountOnOpen';
 import { useHandler } from '@/common/hooks';
-import { classNames, formatCurrency, round } from '@/common/utils';
+import { formatCurrency, round } from '@/common/utils';
+import clsx from 'clsx';
 import ListLoading from '@/main/atoms/ListLoading';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
 import ExceptDropdown from '@/main/molecules/ExceptDropdown';
@@ -482,14 +483,14 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
               <div className="flex flex-col space-y-2 px-10 py-4 w-full">
                 <p className="text-primary text-xs font-semibold">Target Name*</p>
                 <div
-                  className={classNames(
+                  className={clsx(
                     'flex flex-col h-[38px] px-2.5 w-auto',
                     isEditName ? 'bg-Gray-12' : 'border-b border-Gray-11',
                   )}
                 >
                   <input
                     ref={nameInputRef}
-                    className={classNames(
+                    className={clsx(
                       'text-primary flex-1 bg-transparent placeholder-Gray-6 outline-none border-none text-sm w-auto',
                     )}
                     onKeyDown={handleKeyDown}
@@ -651,7 +652,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
                 <button
                   type="button"
                   onClick={onClickCreateOrSave}
-                  className={classNames(
+                  className={clsx(
                     'flex flex-row items-center px-4 py-2 rounded-sm hover:bg-primary',
                     createReadyState,
                   )}

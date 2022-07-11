@@ -3,7 +3,7 @@ import { GetUploadTokenBody, UploadTypes } from '@/api/types';
 import { ExclamationCircle, EyeHideIcon, MoreVerticalIcon } from '@/assets';
 // components
 import NotifyBanner from '@/common/molecules/NotifyBanner';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { ProtectedFeatures } from '@/identity/constants';
 // hooks
 import { useIdentity, usePermission } from '@/identity/hooks';
@@ -220,7 +220,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
       >
         <div className="flex flex-row">
           <div
-            className={classNames(
+            className={clsx(
               isHidden ? 'bg-purple-8' : 'bg-white',
               'flex-grow w-4/5 px-6 py-5 border-b border-Gray-11',
             )}

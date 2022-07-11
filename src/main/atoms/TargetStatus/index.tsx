@@ -1,5 +1,5 @@
 import { InfoCircleIcon } from '@/assets';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { getTrackingStatusName } from '@/main/utils';
 import { TargetStatusConfig, TargetStatusType } from '@/target/types';
 import React from 'react';
@@ -15,7 +15,7 @@ const TargetStatus: React.VFC<TargetStatusProps> = ({ className = '', type, exce
   const { label, background, dot } = TargetStatusConfig[type];
   return (
     <div
-      className={classNames(
+      className={clsx(
         'flex flex-row items-center space-x-1.5 bg-Green-8 rounded-full pl-2 pr-2.5 h-5 max-h-5 group relative',
         className,
       )}

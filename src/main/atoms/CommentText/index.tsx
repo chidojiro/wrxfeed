@@ -1,5 +1,5 @@
 import TokenizedText from '@/common/atoms/TokenizedText';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { tokenizeComment } from '@/main/utils';
 import React from 'react';
 
@@ -13,10 +13,7 @@ export interface CommentTextProps {
 const CommentText: React.VFC<CommentTextProps> = ({ content, className = '', style }) => {
   const tokenizedContent = tokenizeComment(content);
   return (
-    <TokenizedText
-      className={classNames('whitespace-pre-wrap break-words', className)}
-      style={style}
-    >
+    <TokenizedText className={clsx('whitespace-pre-wrap break-words', className)} style={style}>
       {tokenizedContent}
     </TokenizedText>
   );

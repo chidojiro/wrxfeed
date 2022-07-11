@@ -10,7 +10,7 @@ import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
 import { getNameAbbreviation } from '@/main/utils';
 import Loading from '@/common/atoms/Loading';
 import Modal from '@/common/atoms/Modal';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { LineInfo } from '@/feed/LineItemDetails';
 
 export type UpdateDetailsLineItemInfoModalProps = {
@@ -157,11 +157,11 @@ const UpdateDetailsLineItemInfoModal: React.FC<UpdateDetailsLineItemInfoModalPro
       <div className="flex flex-col w-[685px] outline-none pt-4">
         <div className="flex flex-col space-y-2 px-10 py-4 w-full">
           <p className="text-primary text-xs font-semibold">Line Item Description</p>
-          <div className={classNames('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
+          <div className={clsx('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
             <input
               name="description"
               ref={descriptionInputRef}
-              className={classNames(
+              className={clsx(
                 'text-primary flex-1 bg-transparent placeholder-Gray-6 outline-none border-none text-sm w-auto',
               )}
               onKeyDown={handleKeyDown}
@@ -208,7 +208,7 @@ const UpdateDetailsLineItemInfoModal: React.FC<UpdateDetailsLineItemInfoModalPro
                 onSaveHandler(lineItem.id, lineItem);
               }
             }}
-            className={classNames(
+            className={clsx(
               'flex flex-row items-center px-4 py-2 rounded-sm hover:bg-primary',
               createReadyState,
             )}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactComponent as EnvelopeIcon } from '@/assets/icons/outline/envelope.svg';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { EMAIL_SUPPORT_ADDRESS } from '@/config';
 
 export interface ContactSupportButtonProps {
@@ -31,7 +31,7 @@ const ContactSupportButton: React.VFC<ContactSupportButtonProps> = ({ className 
       <button
         type="button"
         onClick={onClickContactSupport}
-        className={classNames(
+        className={clsx(
           'fixed group flex w-[50px] h-[50px] rounded-full justify-center items-center bg-primary hover:bg-Accent-2 z-10 bottom-12 right-12',
           className ?? '',
         )}

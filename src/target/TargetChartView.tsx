@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { TransactionBody } from '@/api/types';
 import { defaultTargetMonths } from '@/common/constants';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import {
   getLineChartDataInMonth,
@@ -194,7 +194,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className={classNames('flex flex-col mt-4 w-full px-8', className ?? '')}>
+      <div className={clsx('flex flex-col mt-4 w-full px-8', className ?? '')}>
         <div className="flex flex-row space-x-4 w-auto items-center">
           <div className="flex flex-col">
             <div className="flex items-center">

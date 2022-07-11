@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { StringUtils } from '@/common/utils';
 
 export type Props = React.DetailedHTMLProps<
@@ -11,7 +11,7 @@ export const Body = ({ className, ...restProps }: Props) => {
   return (
     <tbody
       {...restProps}
-      className={classNames(StringUtils.withProjectClassNamePrefix('table-body'), className)}
+      className={clsx(StringUtils.withProjectClassNamePrefix('table-body'), className)}
     ></tbody>
   );
 };

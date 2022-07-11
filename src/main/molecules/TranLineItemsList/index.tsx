@@ -1,5 +1,5 @@
 import React from 'react';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 import { TransLineItem, Vendor } from '@/main/entity';
 import Loading from '@/common/atoms/Loading';
@@ -66,8 +66,8 @@ const TranLineItemsList: React.VFC<TranLineItemsListProps> = ({
     return <div />;
   }
   return lineItems?.length ? (
-    <div className={classNames('relative flex flex-col pb-2 transition-[height]', className ?? '')}>
-      <ul className={classNames('w-full', rollupsClass ?? '')}>
+    <div className={clsx('relative flex flex-col pb-2 transition-[height]', className ?? '')}>
+      <ul className={clsx('w-full', rollupsClass ?? '')}>
         {lineItems.map((lineItem: TransLineItem) => (
           <li key={lineItem?.id}>
             <RollupLineItem

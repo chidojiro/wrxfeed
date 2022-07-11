@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { LeftTab } from '@/common/types';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import LeftTabCard from '../LeftTabCard';
 
 interface TabListSideBarProps {
@@ -19,7 +19,7 @@ const TabListSideBar: React.VFC<TabListSideBarProps> = ({
 }) => {
   if (!isOpen) return null;
   return (
-    <div className={classNames('flex flex-col items-start w-full flex-1', className)}>
+    <div className={clsx('flex flex-col items-start w-full flex-1', className)}>
       {tabs.map((leftTab: LeftTab) => (
         <LeftTabCard
           key={`tabs-${leftTab?.name}-${leftTab.location.pathname}`}

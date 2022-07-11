@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AlertRed } from '@/assets';
 import { useDebounce } from '@/common/hooks';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import AddTargetTagInput from '@/main/atoms/AddTargetTagInput';
 import PropertyDropdownItem from '@/main/atoms/PropertyDropdownItem';
 import useRoveFocus from '@/main/hooks/focus.hook';
@@ -150,11 +150,11 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
   };
 
   return (
-    <div className={classNames(className)}>
+    <div className={clsx(className)}>
       <Popover as="div" className="flex-shrink-0 relative">
         {({ open }) => (
           <>
-            <Popover.Button ref={buttonRef} className={classNames('', open ? '' : '')}>
+            <Popover.Button ref={buttonRef} className={clsx('', open ? '' : '')}>
               {renderButton()}
             </Popover.Button>
             <Popover.Panel className="absolute z-50">
@@ -168,7 +168,7 @@ const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
                 leaveTo="transform opacity-0 scale-95"
               >
                 <div
-                  className={classNames(
+                  className={clsx(
                     'flex w-[384px] h-[240px] flex-col py-4 px-6 absolute z-50 mt-2 shadow-propertyDropdown border border-Gray-11 rounded-sm bg-white',
                     dropdownEdge,
                     classPopover,

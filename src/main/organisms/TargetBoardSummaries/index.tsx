@@ -1,5 +1,5 @@
 import React, { FunctionComponent, SVGAttributes } from 'react';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { TargetArrowFilled, TrendDown, TrendUp, WarningFilled } from '@/assets';
 import { useDashboard } from '@/main/hooks/dashboard.hook';
 import { getSummaryNumber } from '@/main/utils';
@@ -47,7 +47,7 @@ const TargetBoardSummaries: React.VFC<TargetBoardSummariesProps> = ({ className 
 
   return (
     <div
-      className={classNames(
+      className={clsx(
         'flex flex-row flex-grow flex-wrap justify-between w-full max-w-[500px] dashboard:max-w-[1016px] mr-4 dashboard:mr-8',
         className,
       )}

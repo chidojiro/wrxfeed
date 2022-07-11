@@ -2,7 +2,7 @@ import React from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 
 import { GroupTab } from '@/common/types';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { ReactComponent as DownSmall } from '@/assets/icons/outline/down-small.svg';
 import { AddSmallIcon } from '@/assets';
 import TabListSideBar from '../TabListSideBar';
@@ -39,13 +39,13 @@ const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({
       >
         <div className="flex w-5 h-5 justify-center items-center mr-1.5">
           {tabsInGroup?.length > 0 && (
-            <DownSmall className={classNames(group.isOpened ? 'rotate-180' : '')} />
+            <DownSmall className={clsx(group.isOpened ? 'rotate-180' : '')} />
           )}
         </div>
         {GroupIcon ? (
           <div className="flex w-5 h-5 justify-center items-center">
             <GroupIcon
-              className={classNames(
+              className={clsx(
                 'flex-shrink-0 h-4 w-4 fill-current path-no-filled text-Gray-3 opacity-100',
               )}
               aria-hidden="true"
@@ -68,7 +68,7 @@ const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({
           }}
         >
           <AddSmallIcon
-            className={classNames(
+            className={clsx(
               'group-scope-hover:visible invisible h-4 w-4 fill-current path-no-filled stroke-current text-Gray-3 opacity-100 rounded-sm stroke-1',
             )}
             aria-hidden="true"
@@ -100,12 +100,12 @@ const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({
         <RouterLink
           key={`add-button-${group?.name}`}
           to={addItemRoute}
-          className={classNames('text-Gray-6 font-regular', 'flex flex-row items-center')}
+          className={clsx('text-Gray-6 font-regular', 'flex flex-row items-center')}
         >
           <div className="ml-1 group flex flex-1 w-full flex-row hover:bg-Gray-7 justify-between py-2 items-center pl-10 pr-3 text-sm rounded-sm">
             <div className="h-5 w-9" />
             <AddSmallIcon
-              className={classNames(
+              className={clsx(
                 'flex-shrink-0 h-4 w-4 fill-current path-no-filled stroke-current text-Gray-6 group-hover:text-Gray-9 opacity-100 rounded-sm stroke-1',
               )}
               aria-hidden="true"
