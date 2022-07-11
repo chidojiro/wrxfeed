@@ -1,6 +1,6 @@
 import React from 'react';
 import { Transaction } from '@/main/entity';
-import { classNames, withProjectClassNamePrefix } from '@/common/utils';
+import { classNames, StringUtils } from '@/common/utils';
 import RollupTranRow from '../RollupTranRow';
 import RestrictedWarning from '@/main/atoms/RestrictedWarning';
 import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
@@ -80,7 +80,7 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
       {transactions.length > 0 && showTopDivider && <div className="bg-Gray-11 h-px w-full" />}
       <ul
         className={classNames(
-          withProjectClassNamePrefix('rollup-transactions'),
+          StringUtils.withProjectClassNamePrefix('rollup-transactions'),
           'flex flex-col',
           transactions.length > 0 ? 'py-2' : '',
         )}
