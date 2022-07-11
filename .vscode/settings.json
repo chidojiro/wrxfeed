@@ -57,6 +57,8 @@
     "clsx",
     "commitlint",
     "craco",
+    "delayabe",
+    "Delayable",
     "depts",
     "headlessui",
     "heroicons",

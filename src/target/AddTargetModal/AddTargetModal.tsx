@@ -6,7 +6,7 @@ import { ReactComponent as CarbonTrashCan } from '@/assets/icons/outline/carbon-
 import Loading from '@/common/atoms/Loading';
 import Modal from '@/common/atoms/Modal';
 import { defaultTargetMonths, INITIAL_CHART_DATA } from '@/common/constants';
-import { withMountOnDemandModal } from '@/common/hocs/withMountOnDemandModal';
+import { withMountOnOpen } from '@/common/hocs/withMountOnOpen';
 import { useHandler } from '@/common/hooks';
 import { classNames, formatCurrency, round } from '@/common/utils';
 import ListLoading from '@/main/atoms/ListLoading';
@@ -19,7 +19,6 @@ import {
   decimalLogic,
   DecimalType,
   genReviewSentenceFromProperties,
-  getPeriodsByYear,
   getPropsAndPeriodsFromItemSelected,
   getTargetName,
 } from '@/main/utils';
@@ -60,7 +59,7 @@ export type AddTargetModalProps = {
 
 const THIS_YEAR = new Date().getFullYear();
 
-export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandModal(
+export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
   ({
     open = false,
     onClose,
@@ -136,9 +135,13 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandMo
       if (!target) return INITIAL_CHART_DATA;
 
       if (startMonth === endMonth) {
-        return getLineChartDataInMonth(target, targetMonths[startMonth - 1]);
+        return getLineChartDataInMonth(
+          target,
+          targetMonths[startMonth - 1],
+          target?.trackingStatus,
+        );
       }
-      return getTargetMonthsLineChartData(target, targetMonths);
+      return getTargetMonthsLineChartData(target, targetMonths, target?.trackingStatus);
     }, [targetMonths, target]);
 
     const totalTargetAmount = round(

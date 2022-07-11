@@ -1,25 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import mixpanel from 'mixpanel-browser';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
-import { useIdentity } from '@/identity/hooks';
-import { FeedFilters } from '@/api/types';
-import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@/main/hooks';
 import { useApi } from '@/api';
+import { FeedFilters } from '@/api/types';
+import { useIdentity } from '@/identity/hooks';
+import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@/main/hooks';
 
-import { scrollToTop } from '@/main/utils';
 import { Category, Department, Vendor } from '@/main/entity';
+import { scrollToTop } from '@/main/utils';
 
-import FeedList from '@/main/organisms/FeedList';
-import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
-import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
-import { useFeed } from '@/main/hooks/feed.hook';
 import { MainGroups } from '@/common/constants';
-import MainLayout from '@/common/templates/MainLayout';
 import { useLegacyQuery } from '@/common/hooks';
+import MainLayout from '@/common/templates/MainLayout';
+import { LineItemDrawer } from '@/feed/LineItemDrawer';
+import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
+import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
+import { useFeed } from '@/main/hooks/feed.hook';
+import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
+import FeedList from '@/main/organisms/FeedList';
 
 const LIMIT = 5;
 const INIT_PAGINATION = {
@@ -31,6 +33,9 @@ const INIT_FEED_FILTER = Object.freeze({
 });
 
 const CompanyPage: React.VFC = () => {
+  const { isLineItemDrawerOpen, selectedLineItem, closeLineItemDrawer, feedId } =
+    useLineItemDrawer();
+
   const query = useLegacyQuery();
   const history = useHistory();
   const location = useLocation();
@@ -156,6 +161,12 @@ const CompanyPage: React.VFC = () => {
 
   return (
     <MainLayout rightSide={false}>
+      <LineItemDrawer
+        open={isLineItemDrawerOpen}
+        onClose={closeLineItemDrawer}
+        lineItem={selectedLineItem!}
+        feedId={feedId}
+      />
       <h1 className="sr-only">Feed list</h1>
       {!!filterKey && (
         <div className="flex items-center space-x-4 pb-8">

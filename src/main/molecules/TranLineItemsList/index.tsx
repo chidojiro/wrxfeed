@@ -4,6 +4,7 @@ import { classNames } from '@/common/utils';
 import { TransLineItem, Vendor } from '@/main/entity';
 import Loading from '@/common/atoms/Loading';
 import RollupLineItem from '@/main/molecules/RollupLineItem';
+import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 
 export interface TranLineItemsListProps {
   className?: string;
@@ -28,6 +29,8 @@ const TranLineItemsList: React.VFC<TranLineItemsListProps> = ({
   onClickVendor,
   isOpen = false,
 }) => {
+  const { openLineItemDrawer } = useLineItemDrawer();
+
   const renderLoading = () => {
     if (!isLoadMore) return null;
     return (
@@ -67,7 +70,11 @@ const TranLineItemsList: React.VFC<TranLineItemsListProps> = ({
       <ul className={classNames('w-full', rollupsClass ?? '')}>
         {lineItems.map((lineItem: TransLineItem) => (
           <li key={lineItem?.id}>
-            <RollupLineItem lineItem={lineItem} onClickVendor={onClickVendor} />
+            <RollupLineItem
+              onClick={openLineItemDrawer}
+              lineItem={lineItem}
+              onClickVendor={onClickVendor}
+            />
           </li>
         ))}
       </ul>

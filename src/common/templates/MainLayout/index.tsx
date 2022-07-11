@@ -6,14 +6,12 @@ import { scrollToTop } from '@/main/utils';
 
 import SideBar from '@/common/organisms/SideBar';
 import NavBar from '@/common/organisms/NavBar';
-import SlideOver from '@/common/organisms/SlideOver';
 import { Children } from '@/common/types';
 
 interface MainLayoutProps {
   children: React.ReactNode;
   className?: string;
   showNavBar?: boolean;
-  showSlideOver?: boolean;
   rightSide?: boolean;
   mainClass?: string;
 }
@@ -22,7 +20,6 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
   children,
   className,
   showNavBar = true,
-  showSlideOver = true,
   rightSide = true,
   mainClass = '',
 }) => {
@@ -54,7 +51,6 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
             </aside>
           )}
         </div>
-        {showSlideOver && <SlideOver />}
       </div>
     </div>
   );

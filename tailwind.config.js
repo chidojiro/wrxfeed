@@ -118,6 +118,30 @@ module.exports = {
         targetHover:
           '0px 3px 10px rgba(101, 101, 251, 0.1), -4px 10px 8px rgba(101, 101, 251, 0.03)',
       },
+      keyframes: {
+        'drawer-enter': {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        'drawer-leave': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+        'modal-enter': {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
+        'modal-leave': {
+          '0%': { opacity: 1 },
+          '100%': { opacity: 0 },
+        },
+      },
+      animation: {
+        'drawer-enter': 'drawer-enter .2s ease-in-out',
+        'drawer-leave': 'drawer-leave .2s ease-in-out',
+        'modal-enter': 'modal-enter .2s ease-out',
+        'modal-leave': 'modal-leave .2s ease-in',
+      },
     },
   },
   variants: {},

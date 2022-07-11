@@ -1,16 +1,17 @@
 import { useOnClickOutside } from '@/common/hooks';
-import { Children } from '@/common/types';
+import { Children, OpenClose } from '@/common/types';
 import React, { useState } from 'react';
 import { PopperProps, usePopper } from 'react-popper';
 import { ConditionalWrapper } from '../ConditionalWrapper';
 import { Portal } from '../Portal';
 
-export type PopoverProps = Pick<PopperProps<any>, 'placement'> &
-  Children & {
+export type PopoverPlacement = PopperProps<any>['placement'];
+
+export type PopoverProps = Children &
+  OpenClose & {
+    placement?: PopoverPlacement;
     usePortal?: boolean;
     trigger: JSX.Element | HTMLElement;
-    open?: boolean;
-    onClose?: () => void;
     offset?: [number, number];
     closeOnClickOutside?: boolean;
   };
@@ -47,9 +48,11 @@ export const Popover = ({
   );
 
   React.useEffect(() => {
-    forceUpdate?.();
+    if (open) {
+      forceUpdate?.();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trigger, forceUpdate, (trigger as HTMLElement)?.innerHTML]);
+  }, [trigger, forceUpdate, (trigger as HTMLElement)?.innerHTML, open]);
 
   const clonedTrigger = React.useMemo(() => {
     if (isHTMLElementTrigger || !trigger) return null;
