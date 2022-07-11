@@ -31,7 +31,7 @@ interface MultiMonthDropdownProps {
   targetMonths: TargetMonth[];
   year?: number;
   lastYearData: TargetPeriod[];
-  isLoadingData: boolean;
+  isLoadingData?: boolean;
 }
 
 export type MultiMonthData = {

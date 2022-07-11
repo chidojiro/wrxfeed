@@ -50,19 +50,9 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
 
   const chartData: LineChartData = useMemo(() => {
     if (startMonth === endMonth) {
-      return getLineChartDataInMonth(
-        thisYearTrans,
-        lastYearTrans,
-        targetMonths[startMonth - 1],
-        target?.trackingStatus,
-      );
+      return getLineChartDataInMonth(target, targetMonths[startMonth - 1], target?.trackingStatus);
     }
-    return getTargetMonthsLineChartData(
-      thisYearSpendData,
-      lastYearSpendData,
-      targetMonths,
-      target?.trackingStatus,
-    );
+    return getTargetMonthsLineChartData(target, targetMonths, target?.trackingStatus);
   }, [thisYearSpendData, lastYearSpendData, targetMonths, thisYearTrans, lastYearTrans]);
 
   useEffect(() => {

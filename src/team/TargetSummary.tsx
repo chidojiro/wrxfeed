@@ -54,6 +54,7 @@ export const TargetSummary = ({ departmentId }: TargetSummaryProps) => {
         onClose={addTargetModalDisclosure.onClose}
         onCancel={addTargetModalDisclosure.onClose}
         departmentId={departmentId}
+        onCreateSuccess={(data) => history.push(`/feed/${data.id}`)}
       />
     </>
   );
