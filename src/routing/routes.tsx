@@ -3,6 +3,7 @@ import AcceptInvitation from '@/auth/pages/AcceptInvitation';
 import Login from '@/auth/pages/LoginPage';
 import Onboard from '@/auth/pages/OnboardPage';
 import NotFoundPage from '@/common/pages/NotFoundPage';
+import { FeedRoutes } from '@/feed/routes';
 import { UserRole } from '@/identity/constants';
 import Categories from '@/main/pages/Categories';
 import Company from '@/main/pages/Company';
@@ -70,4 +71,5 @@ export const Routes: Route = {
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   ...TargetRoutes,
+  ...FeedRoutes,
 };
