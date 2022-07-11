@@ -10,12 +10,7 @@ import { distanceToNow } from '@/common/utils';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import MiniChartView from '@/main/molecules/MiniChartView';
-import {
-  decimalLogic,
-  DecimalType,
-  getColorByText,
-  getTargetPeriodsAmountTotal,
-} from '@/main/utils';
+import { getColorByText, getDisplayCurrency, getTargetPeriodsAmountTotal } from '@/main/utils';
 import { AddTargetModal } from './AddTargetModal';
 import { AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
@@ -97,7 +92,7 @@ export const TargetCard = ({
                   <p className="text-2xs">Spend</p>
                 </div>
                 <p className="text-sm text-primary font-semibold mt-1">
-                  {decimalLogic(currentSpend ?? '0', DecimalType.SummedNumbers)}
+                  {getDisplayCurrency(currentSpend)}
                 </p>
               </div>
               <div className="flex flex-col datas-start min-w-[70px] h-9 pr-1.5">
@@ -106,7 +101,7 @@ export const TargetCard = ({
                   <p className="text-2xs">Target To Date</p>
                 </div>
                 <p className="text-sm text-primary font-semibold mt-1">
-                  {decimalLogic(targetToDate ?? '0', DecimalType.SummedNumbers)}
+                  {getDisplayCurrency(targetToDate)}
                 </p>
               </div>
               <div className="flex flex-col datas-start min-w-[70px] h-9 pr-1.5">
@@ -115,7 +110,7 @@ export const TargetCard = ({
                   <p className="text-2xs">Overall Target</p>
                 </div>
                 <p className="text-sm text-primary font-semibold mt-1">
-                  {decimalLogic(overallTarget ?? '0', DecimalType.SummedNumbers)}
+                  {getDisplayCurrency(overallTarget)}
                 </p>
               </div>
             </div>

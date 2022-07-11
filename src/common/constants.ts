@@ -88,3 +88,5 @@ export const INITIAL_CHART_DATA: LineChartData = {
 };
 
 export const ENABLE_GET_FEED_COUNT = false;
+
+export const EMPTY_AMOUNT = '--';

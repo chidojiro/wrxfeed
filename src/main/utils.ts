@@ -1,3 +1,4 @@
+import { EMPTY_AMOUNT } from '@/common/constants';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Bank, CategoryIcon, TeamIcon } from '@/assets';
 import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basics-search-small.svg';
@@ -671,6 +672,9 @@ export const decimalLogic = (
   }
   return withCurrency + result;
 };
+
+export const getDisplayCurrency = (num?: number) =>
+  num ? decimalLogic(num, DecimalType.SummedNumbers) : EMPTY_AMOUNT;
 
 export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
   const targetByTeam: TargetByTeam[] = [];
