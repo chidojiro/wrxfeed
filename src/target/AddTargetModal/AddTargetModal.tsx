@@ -363,11 +363,6 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandMo
       }
     };
 
-    const handleCancel = (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.stopPropagation();
-      onCancel();
-    };
-
     const reviewSentence = genReviewSentenceFromProperties(
       vendItems,
       teamItems,
@@ -683,7 +678,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnDemandMo
                 )}
                 <button
                   type="button"
-                  onClick={handleCancel}
+                  onClick={onCancel}
                   className="flex px-4 py-2 rounded-sm hover:bg-Gray-12 mr-3 ml-auto"
                 >
                   <p className="text-Gray-6 text-xs font-semibold">Cancel</p>
