@@ -26,7 +26,7 @@ export const ForYouDashboard = ({ departmentId }: ForYouDashboardProps) => {
           <TargetCard
             className="h-[330px] col-span-2 lg:col-span-1"
             key={target.id}
-            data={target}
+            target={target}
           />
         ))}
       </div>

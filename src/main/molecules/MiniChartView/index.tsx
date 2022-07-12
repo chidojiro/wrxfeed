@@ -21,7 +21,7 @@ import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipCont
 interface MiniChartViewProps {
   className?: string;
   target: Target;
-  onEdit: () => void;
+  onEdit?: () => void;
   legendLabelClass?: string;
   xAxisClass?: string;
   showLegends?: boolean;
@@ -34,30 +34,7 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
   xAxisClass = '',
   showLegends = false,
 }) => {
-  const [targetMonths, setTargetMonths] = useState<TargetMonth[]>(defaultTargetMonths);
-  const updatedTargetMonths = targetMonths.filter((item) => item?.amount !== undefined);
-  const startMonth = updatedTargetMonths[0]?.month ?? 1;
-  const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
-
-  const { thisYear: thisYearSpendData, lastYear: lastYearSpendData } = useMemo(() => {
-    return getSpendingByYear(target?.spendings);
-  }, [target?.spendings]);
-
-  const [lastYearTransPayload, setLastYearTransPayload] = useState<TransactionBody>();
-  const { transactions: lastYearTrans, isLoading: isLoadingTranLastYear } =
-    useTransaction(lastYearTransPayload);
-  const [thisYearTransPayload, setThisYearTransPayload] = useState<TransactionBody>();
-  const { transactions: thisYearTrans, isLoading: isLoadingTranThisYear } =
-    useTransaction(thisYearTransPayload);
-
-  const chartData: LineChartData = useMemo(() => {
-    if (startMonth === endMonth) {
-      return getLineChartDataInMonth(target, targetMonths[startMonth - 1], target?.trackingStatus);
-    }
-    return getTargetMonthsLineChartData(target, targetMonths, target?.trackingStatus);
-  }, [thisYearSpendData, lastYearSpendData, targetMonths, thisYearTrans, lastYearTrans]);
-
-  useEffect(() => {
+  const targetMonths = (() => {
     const { periods, props } = target;
     if (periods?.length > 0 && props?.length > 0) {
       const dataMonth = cloneDeep(defaultTargetMonths);
@@ -70,23 +47,26 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
           dataMonth[period?.month - 1].amount = period?.amount;
         }
       });
-      setTargetMonths(dataMonth);
+      return dataMonth;
     }
-  }, [target]);
 
-  useEffect(() => {
-    const { periods, props } = target;
-    if (periods.length && startMonth === endMonth) {
-      setLastYearTransPayload({
-        periods: [{ month: periods[0].month, year: periods[0].year - 1 }],
-        props,
-      });
-      setThisYearTransPayload({
-        periods,
-        props,
-      });
+    return defaultTargetMonths;
+  })();
+
+  const updatedTargetMonths = targetMonths.filter((item) => item?.amount !== undefined);
+  const startMonth = updatedTargetMonths[0]?.month ?? 1;
+  const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
+
+  const { thisYear: thisYearSpendData, lastYear: lastYearSpendData } = useMemo(() => {
+    return getSpendingByYear(target?.spendings);
+  }, [target?.spendings]);
+
+  const chartData: LineChartData = useMemo(() => {
+    if (startMonth === endMonth) {
+      return getLineChartDataInMonth(target, targetMonths[startMonth - 1], target?.trackingStatus);
     }
-  }, [startMonth, endMonth]);
+    return getTargetMonthsLineChartData(target, targetMonths, target?.trackingStatus);
+  }, [thisYearSpendData, lastYearSpendData, targetMonths]);
 
   const renderChartLegends = () => {
     return (
@@ -215,7 +195,6 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
               chartData={chartData}
               renderXAxis={renderXAxis}
               renderTooltip={renderTooltipContent}
-              loading={isLoadingTranLastYear || isLoadingTranThisYear}
               levelLabelClass="text-Gray-6 text-2xs font-normal"
             />
           </div>
