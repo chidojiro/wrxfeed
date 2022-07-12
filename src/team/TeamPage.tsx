@@ -17,8 +17,6 @@ export const WrappedTeamPage: React.FC = () => {
   const departmentId = +departmentIdParam;
   const { data: target, isValidating: isValidatingTarget, mutate } = usePrimaryTarget(departmentId);
 
-  console.log(target);
-
   return (
     <MainLayout
       mainClass="px-2 col-span-12 md:!col-span-9 !g:!col-span-9 xl:!col-span-9 !max-w-full"
