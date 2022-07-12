@@ -15,7 +15,7 @@ import { TransactionList } from './TransactionList';
 export const WrappedTeamPage: React.FC = () => {
   const { id: departmentIdParam } = useParams() as Record<string, string>;
   const departmentId = +departmentIdParam;
-  const { data: target, isValidating: isValidatingTarget } = usePrimaryTarget(departmentId);
+  const { data: target, isValidating: isValidatingTarget, mutate } = usePrimaryTarget(departmentId);
 
   return (
     <MainLayout
@@ -30,7 +30,13 @@ export const WrappedTeamPage: React.FC = () => {
           <TeamHeader departmentId={departmentId} teamName={target?.department?.name} />
           <div className="grid grid-cols-9 gap-6 mt-6">
             <OverlayLoader loading={isValidatingTarget} className="col-span-9 lg:col-span-5">
-              <TargetCard className="h-full" target={target} showColorfulHeading={false} />
+              <TargetCard
+                className="h-full"
+                target={target}
+                showColorfulHeading={false}
+                onUpdateSuccess={(target) => mutate([target])}
+                onDeleteSuccess={() => mutate()}
+              />
             </OverlayLoader>
             <div className="col-span-9 lg:col-span-4 flex flex-col gap-6">
               <TargetSummary departmentId={departmentId} />

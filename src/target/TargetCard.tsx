@@ -87,7 +87,7 @@ export const TargetCard = ({
                 <OptionsButton
                   onViewClick={goToTargetDetails}
                   onEditClick={addTargetModalDisclosure.onOpen}
-                  onDeleteClick={() => deleteTarget(target.id)}
+                  onDeleteClick={target.isPrimary ? undefined : () => deleteTarget(target.id)}
                 />
               </div>
               <div className="flex items-center gap-2 h-6 max-h-6 mt-2">

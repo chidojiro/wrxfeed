@@ -7,10 +7,11 @@ import { AllCompanyTarget } from './AllCompanyTarget';
 import { TargetCard } from './TargetCard';
 
 export const AllCompany = () => {
-  const { data: recentlyViewedTargets = [], isValidating } = useFetcher(
-    ['recentlyViewedTargets'],
-    () => DepartmentApis.getRecentlyViewedSummaries(),
-  );
+  const {
+    data: recentlyViewedTargets = [],
+    isValidating,
+    mutate,
+  } = useFetcher(['recentlyViewedTargets'], () => DepartmentApis.getRecentlyViewedSummaries());
 
   return (
     <div>
@@ -23,7 +24,13 @@ export const AllCompany = () => {
       <ListLoader loading={isValidating}>
         <div className="mt-5 gap-4 grid grid-cols-1 lg:grid-cols-2">
           {recentlyViewedTargets.map((target) => (
-            <TargetCard key={target.id} target={target as any} className="h-[330px]" />
+            <TargetCard
+              key={target.id}
+              target={target}
+              className="h-[330px]"
+              onUpdateSuccess={() => mutate()}
+              onDeleteSuccess={() => mutate()}
+            />
           ))}
         </div>
       </ListLoader>
