@@ -6,11 +6,11 @@ import { Target, TargetStatusConfig, TargetStatusType } from '@/target/types';
 import clsx from 'clsx';
 import React from 'react';
 
-type TargetFeedProps = ClassName & {
+type TargetFeedOverviewProps = ClassName & {
   target: Target;
 };
 
-export const TargetFeed: React.VFC<TargetFeedProps> = ({ className, target }) => {
+export const TargetFeedOverview: React.VFC<TargetFeedOverviewProps> = ({ className, target }) => {
   const { overallTarget, currentSpend, targetToDate, exceeding } =
     getTargetPeriodsAmountTotal(target);
 

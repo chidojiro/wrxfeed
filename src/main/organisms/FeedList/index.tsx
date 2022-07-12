@@ -9,7 +9,7 @@ import { Category, Department, Vendor } from '@/main/entity';
 import { FilterKeys } from '@/main/hooks';
 import { useFeed } from '@/main/hooks/feed.hook';
 import RollupCard from '@/main/molecules/RollupCard';
-import { TargetFeedItem } from '@/target/TargetFeedItem';
+import { TargetFeedCard } from '@/feed/TargetFeedCard';
 import React, {
   CSSProperties,
   forwardRef,
@@ -182,7 +182,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       <ul className="pb-2 sm:pb-5 space-y-4">
         {feeds.map((feed) => {
           if (feed.type === FeedItemType.target) {
-            return <TargetFeedItem key={`TargetFeedItem-${feed.id}`} feedItem={feed} />;
+            return <TargetFeedCard key={feed.id} feedItem={feed} />;
           }
           if (feed.type === FeedItemType.transaction) {
             return (

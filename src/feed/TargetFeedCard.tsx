@@ -1,10 +1,8 @@
 import { GetUploadTokenBody, UploadTypes } from '@/api/types';
-// assets
 import { ExclamationCircle, EyeHideIcon } from '@/assets';
 import Loading from '@/common/atoms/Loading';
 import { useHandler } from '@/common/hooks';
 import { distanceToNow } from '@/common/utils';
-import { TargetFeed } from '@/feed/TargetFeed';
 import { useIdentity } from '@/identity/hooks';
 import CommentViewAll from '@/main/atoms/CommentViewAll';
 import ConfirmModal from '@/main/atoms/ConfirmModal';
@@ -21,6 +19,8 @@ import FeedBackModal from '@/main/organisms/FeedBackModal';
 import { CommentFormModel } from '@/main/types';
 import { commentEditorRawParser, getTargetName } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
+import { AddTargetModal } from '@/target/AddTargetModal';
+import { TargetApis } from '@/target/apis';
 import { Target } from '@/target/types';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
@@ -28,10 +28,9 @@ import { EditorState } from 'draft-js';
 import { cloneDeep } from 'lodash-es';
 import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
-import { AddTargetModal } from './AddTargetModal';
-import { TargetApis } from './apis';
+import { TargetFeedOverview } from './TargetFeedOverview';
 
-export interface TargetFeedItemProps {
+export interface TargetFeedCardProps {
   feedItem: FeedItem;
   onRefresh?: () => void;
   onBack?: () => void;
@@ -47,7 +46,7 @@ interface ConfirmModalProps {
 const INITIAL_COMMENT_NUMBER = 2;
 const LIMIT_GET_COMMENT = 20;
 
-export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
+export const TargetFeedCard: React.VFC<TargetFeedCardProps> = React.memo(
   ({ feedItem, onRefresh, onBack }) => {
     const identity = useIdentity();
     const [filterComment, setFilterComment] = React.useState<PaginationParams>({
@@ -253,7 +252,7 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
               </div>
             </div>
           </div>
-          <TargetFeed target={feedItem.target} />
+          <TargetFeedOverview target={feedItem.target} />
           <RollupTransactions
             feedId={curFeed?.id}
             trans={curFeed?.transactions}
@@ -346,4 +345,4 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
   },
 );
 
-TargetFeedItem.displayName = 'TargetFeedItem';
+TargetFeedCard.displayName = 'TargetFeedCard';
