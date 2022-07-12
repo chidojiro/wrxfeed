@@ -237,7 +237,7 @@ const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDet
       <div className="flex flex-col my-5 px-8 overflow-y-auto flex-1">
         <div className="flex flex-row group w-[524px]">
           {item && renderVendorName()}
-          <div className="block hidden group-hover:block">{renderEditVendorInfoButton()}</div>
+          <div className="hidden group-hover:block">{renderEditVendorInfoButton()}</div>
         </div>
         <div className="flex flex-row w-[524px] mt-2 mb-2">
           <div className="flex mr-4 text-xs">
