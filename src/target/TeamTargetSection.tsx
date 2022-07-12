@@ -5,8 +5,7 @@ import { useDepartment } from '@/team/useDepartment';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import React from 'react';
 import { AddTargetModal } from './AddTargetModal';
-import { TargetWrapList } from './TargetWrapList';
-import { Target } from './types';
+import { TargetCards } from './TargetCards';
 import { useTargets } from './useTargets';
 
 export interface TeamTargetSectionProps {
@@ -18,14 +17,7 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
   className = '',
   departmentId,
 }) => {
-  const [itemEditing, setItemEditing] = React.useState<Target | null>(null);
-
   const addTargetModalDisclosure = useDisclosure();
-
-  const handleModalClose = () => {
-    addTargetModalDisclosure.onClose();
-    setItemEditing(null);
-  };
 
   const { data: department } = useDepartment(departmentId);
   const { data: targets = [], mutate: mutateTargets } = useTargets({ dep: departmentId });
@@ -34,11 +26,6 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
     () => getColorByText(department?.name ?? '', department?.id, true),
     [department?.id, department?.name],
   );
-
-  const handleEditTarget = (item: Target) => {
-    setItemEditing(item);
-    addTargetModalDisclosure.onOpen();
-  };
 
   return (
     <div
@@ -72,18 +59,15 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
           <p className="text-white text-sm">Create Target</p>
         </button>
       </div>
-      <div className="flex flex-1 flex-row flex-wrap">
-        <TargetWrapList
-          targets={targets}
-          onEditClick={handleEditTarget}
-          onDeleteSuccess={() => mutateTargets()}
-        />
-      </div>
+      <TargetCards
+        targets={targets}
+        onUpdateSuccess={() => mutateTargets()}
+        onDeleteSuccess={() => mutateTargets()}
+      />
       <AddTargetModal
         open={addTargetModalDisclosure.isOpen}
-        onClose={handleModalClose}
-        onCancel={handleModalClose}
-        target={itemEditing}
+        onClose={addTargetModalDisclosure.onClose}
+        onCancel={addTargetModalDisclosure.onClose}
         departmentId={departmentId}
         onDeleteSuccess={(id: number) =>
           mutateTargets(targets.filter((target) => target.id !== id))

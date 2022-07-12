@@ -56,16 +56,4 @@ const MainLayout: React.VFC<MainLayoutProps> = ({
   );
 };
 
-export const MainRightSide: React.FC<Children> = ({ children }) => {
-  const [isDOMReady, setDOMReady] = useState(false);
-
-  useEffect(() => {
-    setDOMReady(true);
-  }, []);
-
-  return isDOMReady
-    ? ReactDOM.createPortal(children, document.querySelector('#main-right-side') as Element)
-    : null;
-};
-
 export default MainLayout;
