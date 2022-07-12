@@ -252,7 +252,7 @@ export const TargetFeedCard: React.VFC<TargetFeedCardProps> = React.memo(
               </div>
             </div>
           </div>
-          <TargetFeedOverview target={feedItem.target} />
+          <TargetFeedOverview target={curFeed.target} />
           <RollupTransactions
             feedId={curFeed?.id}
             trans={curFeed?.transactions}
