@@ -1,6 +1,6 @@
 import { Department } from '@/main/entity';
 import { getColorByText } from '@/main/utils';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 interface DepartmentColorSectionProps {
   department?: Department;
@@ -12,7 +12,7 @@ const DepartmentColorSection: React.VFC<DepartmentColorSectionProps> = ({
   onClick,
 }) => {
   const departmentName = department?.parent?.name ?? department?.name ?? 'unknown';
-  const deptBgClass = useMemo(() => getColorByText(departmentName ?? ''), [departmentName]);
+  const deptBgClass = getColorByText(departmentName ?? '');
 
   const handleClick = () => {
     if (onClick && department) {

@@ -157,15 +157,6 @@ export default class ApiUtils implements ApiClient {
     return resp.data;
   };
 
-  getTransactions = async (body?: TransactionBody): Promise<Transaction[]> => {
-    const res = await this.request<Transaction[]>({
-      url: '/feed/transactions',
-      method: 'PATCH',
-      data: body,
-    });
-    return res.data;
-  };
-
   getUnreadLineItemsCount = async (filters?: FeedFilters): Promise<number> => {
     const params = {
       ...filters?.page,
@@ -370,14 +361,6 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<void>({
       url: '/noti/notifications',
       method: 'PATCH',
-    });
-    return res.data;
-  };
-
-  getTransactionById = async (id: number): Promise<Transaction> => {
-    const res = await this.request<Transaction>({
-      url: `/feed/transactions/${id}`,
-      method: 'GET',
     });
     return res.data;
   };

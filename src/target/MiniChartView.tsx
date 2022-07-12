@@ -1,22 +1,15 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { TransactionBody } from '@/api/types';
 import { defaultTargetMonths } from '@/common/constants';
-import clsx from 'clsx';
-import {
-  getLineChartDataInMonth,
-  getSpendingByYear,
-  getTargetMonthsLineChartData,
-} from '@/main/chart.utils';
-import { useTransaction } from '@/main/hooks/transaction.hook';
+import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
 import { LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType } from '@/main/utils';
-import { TargetChart } from '@/target/TargetChart';
-import { Target, TargetMonth, TargetPeriod } from '@/target/types';
+import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { cloneDeep, range } from 'lodash-es';
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import { TargetChart } from './TargetChart';
+import { Target, TargetPeriod } from './types';
 
 interface MiniChartViewProps {
   className?: string;
@@ -27,13 +20,13 @@ interface MiniChartViewProps {
   showLegends?: boolean;
 }
 
-const MiniChartView: React.VFC<MiniChartViewProps> = ({
+export const MiniChartView = ({
   className = '',
   target,
   legendLabelClass = '',
   xAxisClass = '',
   showLegends = false,
-}) => {
+}: MiniChartViewProps) => {
   const targetMonths = (() => {
     const { periods, props } = target;
     if (periods?.length > 0 && props?.length > 0) {
@@ -57,20 +50,16 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
   const startMonth = updatedTargetMonths[0]?.month ?? 1;
   const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
 
-  const { thisYear: thisYearSpendData, lastYear: lastYearSpendData } = useMemo(() => {
-    return getSpendingByYear(target?.spendings);
-  }, [target?.spendings]);
-
-  const chartData: LineChartData = useMemo(() => {
+  const chartData: LineChartData = (() => {
     if (startMonth === endMonth) {
       return getLineChartDataInMonth(target, targetMonths[startMonth - 1], target?.trackingStatus);
     }
     return getTargetMonthsLineChartData(target, targetMonths, target?.trackingStatus);
-  }, [thisYearSpendData, lastYearSpendData, targetMonths]);
+  })();
 
   const renderChartLegends = () => {
     return (
-      <div className="flex flex-row justify-center mt-2 py-2 px-[50px] space-x-8">
+      <div className="flex flex-row justify-center mt-2 py-2 px-[50px] h-full space-x-8">
         <div className="flex flex-row items-center space-x-2">
           <div className="w-4 h-1 dashed-line-target" />
           <p className={clsx('text-xs text-Gray-6', legendLabelClass)}>Target</p>
@@ -186,7 +175,7 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
   };
 
   return (
-    <div className={clsx('flex flex-1 flex-col w-full', className)}>
+    <div className={clsx('flex flex-1 flex-col w-full h-full', className)}>
       {chartData && (
         <>
           <div className="relative flex flex-1 flex-col justify-center items-center w-auto mx-[-8px] pr-4 pb-1 pl-2 pt-1 h-[184px] border border-Gray-12 rounded-2.5xl">
@@ -204,5 +193,3 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
     </div>
   );
 };
-
-export default MiniChartView;
