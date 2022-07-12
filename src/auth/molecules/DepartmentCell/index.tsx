@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { Department } from '@/main/entity';
 
 import { useSubscription } from '@/main/hooks/subscription.hook';
@@ -136,14 +136,14 @@ const DepartmentCell: React.VFC<DepartmentCellProps> = ({
       <button
         type="button"
         onClick={onClickFollowDepartment}
-        className={classNames(
+        className={clsx(
           'flex flex-row items-center px-3 py-2 space-x-1.5 rounded-full border border-transparent',
           bgColor,
           hoverStyle,
         )}
       >
         {renderIcon()}
-        <p className={classNames('text-sm', textColor)}>{isFollowed ? 'Following' : 'Follow'}</p>
+        <p className={clsx('text-sm', textColor)}>{isFollowed ? 'Following' : 'Follow'}</p>
       </button>
     );
   };
@@ -152,7 +152,7 @@ const DepartmentCell: React.VFC<DepartmentCellProps> = ({
   return (
     <div
       key={dept?.id}
-      className={classNames(
+      className={clsx(
         'flex flex-row items-center justify-between border-Gray-11 border-b',
         paddingVertical,
         className,

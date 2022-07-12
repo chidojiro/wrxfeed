@@ -1,6 +1,7 @@
 import React from 'react';
 import { Transaction } from '@/main/entity';
-import { classNames, StringUtils } from '@/common/utils';
+import { StringUtils } from '@/common/utils';
+import clsx from 'clsx';
 import RollupTranRow from '../RollupTranRow';
 import RestrictedWarning from '@/main/atoms/RestrictedWarning';
 import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
@@ -70,16 +71,16 @@ const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
   };
   if (trans.length === 0) {
     if (showTopDivider) {
-      return <div className={classNames('bg-Gray-11 h-px w-full', showTopDivider ? 'mt-3' : '')} />;
+      return <div className={clsx('bg-Gray-11 h-px w-full', showTopDivider ? 'mt-3' : '')} />;
     }
     return null;
   }
   const showTranClicked = position > TRANSACTION_SHOW_NUMBER;
   return (
-    <div className={classNames('flex flex-col', showTopDivider ? 'mt-3' : '')}>
+    <div className={clsx('flex flex-col', showTopDivider ? 'mt-3' : '')}>
       {transactions.length > 0 && showTopDivider && <div className="bg-Gray-11 h-px w-full" />}
       <ul
-        className={classNames(
+        className={clsx(
           StringUtils.withProjectClassNamePrefix('rollup-transactions'),
           'flex flex-col',
           transactions.length > 0 ? 'py-2' : '',

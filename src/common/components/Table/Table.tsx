@@ -1,5 +1,5 @@
 import { StringUtils } from '@/common/utils';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React from 'react';
 import { Children, ClassName } from '../../types';
 import { Body } from './Body';
@@ -31,7 +31,7 @@ export const Table = (props: TableProps) => {
     <TableContext.Provider value={providerValue}>
       <table
         {...restProps}
-        className={classNames(
+        className={clsx(
           StringUtils.withProjectClassNamePrefix('table'),
           'w-full border-collapse table-auto bg-white',
           className,
@@ -43,7 +43,7 @@ export const Table = (props: TableProps) => {
 
 const OverflowContainer = ({ children, className }: Children & ClassName) => (
   <div
-    className={classNames(
+    className={clsx(
       StringUtils.withProjectClassNamePrefix('table-overflow-container'),
       'max-w-full overflow-auto',
       'text-xs text-Gray-6',

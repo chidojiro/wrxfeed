@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { ReactComponent as DownSmall } from '@/assets/icons/outline/down-small.svg';
-import { classNames, DATE_FORMAT } from '@/common/utils';
+import { DATE_FORMAT } from '@/common/utils';
+import clsx from 'clsx';
 import { Transaction, TransLineItem, TranStatusType, Vendor } from '@/main/entity';
 import TranLineItemsList from '@/main/molecules/TranLineItemsList';
 import { decimalLogic, DecimalType, getTransactionStatus } from '@/main/utils';
@@ -81,13 +82,13 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, onView })
         ref={viewRef}
         type="button"
         aria-hidden="true"
-        className={classNames(
+        className={clsx(
           'flex flex-row w-full items-center px-2 sm:px-6 py-2 bg-white hover:shadow-topCategoryHover z-10 relative border border-white hover:border-Accent-4',
         )}
         onClick={onClickLineItem}
       >
         <div className="flex w-5 h-5 justify-center items-center">
-          <DownSmall className={classNames(isOpen ? 'rotate-180' : '')} />
+          <DownSmall className={clsx(isOpen ? 'rotate-180' : '')} />
         </div>
         {renderUnreadIndicator()}
         <div className="flex flex-1 h-5 overflow-hidden flex-row items-center mx-1.5 space-x-1">

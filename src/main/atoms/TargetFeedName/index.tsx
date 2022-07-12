@@ -1,4 +1,4 @@
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { getTargetName } from '@/main/utils';
 import { Target } from '@/target/types';
 import React from 'react';
@@ -10,7 +10,7 @@ export interface TargetFeedNameProps {
 
 const TargetFeedName: React.VFC<TargetFeedNameProps> = ({ className = '', target }) => {
   return (
-    <div className={classNames('group relative', className)}>
+    <div className={clsx('group relative', className)}>
       <p className="text-base text-primary text-left font-bold line-clamp-1 overflow-ellipsis">
         {getTargetName(target)}
       </p>

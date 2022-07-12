@@ -108,13 +108,6 @@ export function distanceToNow(value?: string | number | Date | dayjs.Dayjs): str
   return dayjs(value).fromNow();
 }
 
-/**
- * Join multiple classNames
- */
-export function classNames(...classes: string[]): string {
-  return classes.filter(Boolean).join(' ');
-}
-
 export const EmailRegex = /[\w\d\\.-]+@[\w\d\\.-]+\.[\w\d\\.-]+/;
 
 export const isEmail = (email: string): boolean => {

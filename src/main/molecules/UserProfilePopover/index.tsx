@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { Profile } from '@/auth/types';
 import { profileState } from '@/auth/containers/ProfileEditForm/states';
 import { getNameAbbreviation } from '@/main/utils';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { GetUploadTokenBody, UploadTypes } from '@/api/types';
 
 import { useApi } from '@/api';
@@ -227,7 +227,7 @@ const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
       {({ open }) => (
         <>
           <Popover.Button
-            className={classNames(
+            className={clsx(
               'bg-white rounded-full flex focus:outline-none',
               open ? 'ring-2 ring-offset-2 ring-rose-500' : '',
             )}

@@ -12,7 +12,8 @@ import { PaginationParams } from '@/rest/types';
 import { CommentFormModel } from '@/main/types';
 import { commentEditorRawParser, getTargetName } from '@/main/utils';
 import { FeedItem, User, Visibility } from '@/main/entity';
-import { classNames, distanceToNow } from '@/common/utils';
+import { distanceToNow } from '@/common/utils';
+import clsx from 'clsx';
 // assets
 import { ExclamationCircle, EyeHideIcon } from '@/assets';
 // hooks
@@ -221,7 +222,7 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
               }}
             />
             <div
-              className={classNames(
+              className={clsx(
                 isHidden ? 'bg-purple-8' : 'bg-white',
                 'flex-col space-y-2 px-8 py-6',
               )}

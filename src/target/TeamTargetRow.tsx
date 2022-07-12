@@ -1,5 +1,5 @@
 import { BasicsEditCircle } from '@/assets';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import ExceedBar from '@/main/atoms/ExceedBar';
 import { FeedType } from '@/main/entity';
 import {
@@ -121,7 +121,7 @@ export const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({
           </div>
         </div>
         <div className="flex flex-col flex-1">
-          <div className={classNames('flex mt-1 w-full h-2 rounded-full bg-Gray-11')} />
+          <div className={clsx('flex mt-1 w-full h-2 rounded-full bg-Gray-11')} />
           <div className="flex flex-row mt-1.5 ml-auto text-2xs space-x-1.5">
             <p className="text-Gray-6 font-normal">Target</p>
             <p className="text-Gray-3 font-bold">{totalAmountCurrency}</p>
@@ -144,7 +144,7 @@ export const TeamTargetRow: React.VFC<TeamTargetRowProps> = ({
     <button
       type="button"
       onClick={onClickTarget}
-      className={classNames(
+      className={clsx(
         'flex flex-1 flex-col justify-center pt-4 pb-4.5 px-6 group border-b border-Gray-11',
         className,
       )}

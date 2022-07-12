@@ -1,7 +1,7 @@
 import React from 'react';
 import UserAvatar from '@/main/atoms/UserAvatar';
 import { User } from '@/main/entity';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 export interface EditorAvatarProps {
   className?: string;
@@ -13,7 +13,7 @@ const EditorAvatar: React.VFC<EditorAvatarProps> = ({ className = '', updater, s
   const updaterName = updater?.fullName ?? '';
 
   return (
-    <div className={classNames('flex w-6 h-6 group relative', className)}>
+    <div className={clsx('flex w-6 h-6 group relative', className)}>
       <UserAvatar user={updater} size={size} />
       {typeof updaterName === 'string' && updaterName?.length > 0 && (
         <div className="invisible group-hover:visible absolute -top-10 left-0">

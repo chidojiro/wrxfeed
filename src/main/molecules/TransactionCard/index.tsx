@@ -4,7 +4,8 @@ import { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-
 // Icons
 import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
 import NotifyBanner from '@/common/molecules/NotifyBanner';
-import { classNames, formatDate } from '@/common/utils';
+import { formatDate } from '@/common/utils';
+import clsx from 'clsx';
 import { ProtectedFeatures } from '@/identity/constants';
 import { useIdentity, usePermission } from '@/identity/hooks';
 import CommentRemaining from '@/main/atoms/CommentRemaining';
@@ -193,7 +194,7 @@ const TransactionCard: React.VFC<TransactionCardProps> = ({
             department={transaction.department.parent}
             onClick={onClickRootDept}
           />
-          <div className={classNames(isHidden ? 'bg-purple-8' : 'bg-white', 'flex-grow w-4/5 p-5')}>
+          <div className={clsx(isHidden ? 'bg-purple-8' : 'bg-white', 'flex-grow w-4/5 p-5')}>
             <div className="flex items-center space-x-3">
               <div className="flex items-center min-w-0 flex-1">
                 <p className="text-xs text-Gray-6">

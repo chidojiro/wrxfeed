@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { TransactionBody } from '@/api/types';
 import { defaultTargetMonths } from '@/common/constants';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import {
   getLineChartDataInMonth,
   getSpendingByYear,
@@ -73,15 +73,15 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
       <div className="flex flex-row justify-center mt-2 py-2 px-[50px] space-x-8">
         <div className="flex flex-row items-center space-x-2">
           <div className="w-4 h-1 dashed-line-target" />
-          <p className={classNames('text-xs text-Gray-6', legendLabelClass)}>Target</p>
+          <p className={clsx('text-xs text-Gray-6', legendLabelClass)}>Target</p>
         </div>
         <div className="flex flex-row items-center space-x-2">
           <div className="w-4 h-1 bg-Accent-2" />
-          <p className={classNames('text-xs text-Gray-6', legendLabelClass)}>Current</p>
+          <p className={clsx('text-xs text-Gray-6', legendLabelClass)}>Current</p>
         </div>
         <div className="flex flex-row items-center space-x-2">
           <div className="w-4 h-1 bg-Gray-11" />
-          <p className={classNames('text-xs text-Gray-6', legendLabelClass)}>Last Year</p>
+          <p className={clsx('text-xs text-Gray-6', legendLabelClass)}>Last Year</p>
         </div>
       </div>
     );
@@ -91,7 +91,7 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
     const targetDate = dayjs().set('month', startMonth - 1);
     return startMonth === endMonth ? (
       <div
-        className={classNames(
+        className={clsx(
           'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[90px]',
           xAxisClass,
         )}
@@ -111,7 +111,7 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
       </div>
     ) : (
       <div
-        className={classNames(
+        className={clsx(
           'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]',
           xAxisClass,
         )}
@@ -186,7 +186,7 @@ const MiniChartView: React.VFC<MiniChartViewProps> = ({
   };
 
   return (
-    <div className={classNames('flex flex-1 flex-col w-full', className)}>
+    <div className={clsx('flex flex-1 flex-col w-full', className)}>
       {chartData && (
         <>
           <div className="relative flex flex-1 flex-col justify-center items-center w-auto mx-[-8px] pr-4 pb-1 pl-2 pt-1 h-[184px] border border-Gray-12 rounded-2.5xl">

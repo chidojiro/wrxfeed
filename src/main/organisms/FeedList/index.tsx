@@ -2,7 +2,7 @@
 import { FeedFilters } from '@/api/types';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import { useLegacyQuery } from '@/common/hooks';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import ListEndComponent from '@/main/atoms/ListEndComponent';
 import ListLoading from '@/main/atoms/ListLoading';
 import { Category, Department, Vendor } from '@/main/entity';
@@ -124,7 +124,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
 
   const renderForYouEndList = (className = 'mt-3 sm:mt-8') => {
     return (
-      <p className={classNames('text-base text-center text-Neutral-4', className)}>
+      <p className={clsx('text-base text-center text-Neutral-4', className)}>
         Add to your feed by
         <button
           type="button"

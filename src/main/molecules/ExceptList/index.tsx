@@ -1,5 +1,5 @@
 import React from 'react';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { SearchResult } from '@/main/types';
 import { getColorByPropertyType, getPropIconByType } from '@/main/utils';
 
@@ -16,7 +16,7 @@ const ExceptList: React.VFC<ExceptListProps> = ({
 }) => {
   if (items.length === 0) return null;
   return (
-    <div className={classNames('flex flex-row py-1 space-x-2 px-2', className)}>
+    <div className={clsx('flex flex-row py-1 space-x-2 px-2', className)}>
       <div className="flex items-center justify-center w-[50px] h-[30px]">
         <p className="text-Gray-6 text-xs">Except </p>
       </div>
