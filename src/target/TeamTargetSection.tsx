@@ -28,12 +28,9 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
   );
 
   return (
-    <div
-      className={clsx('flex flex-col space-y-2', className)}
-      key={`targets-by-team-${department?.id}`}
-    >
+    <div className={clsx('flex flex-col', className)} key={`targets-by-team-${department?.id}`}>
       <div
-        className="flex flex-row items-center px-6 mt-6 justify-between h-14 max-h-14 rounded-card max-w-[500px] dashboard:max-w-[1016px] mr-8"
+        className="flex flex-row items-center px-6 mt-6 justify-between h-14 max-h-14 rounded-card"
         style={{ background: teamHeaderColor }}
       >
         <div className="flex flex-row items-center space-x-2">
