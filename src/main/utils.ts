@@ -673,7 +673,7 @@ export const decimalLogic = (
   return withCurrency + result;
 };
 
-export const getDisplayCurrency = (num?: number) =>
+export const getDisplayUsdAmount = (num?: number) =>
   num ? decimalLogic(num, DecimalType.SummedNumbers) : EMPTY_AMOUNT;
 
 export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
