@@ -8,19 +8,8 @@ import { Footer } from './Footer';
 import { Head } from './Head';
 import { Header } from './Header';
 import { Row } from './Row';
-
-export type TableProps = React.DetailedHTMLProps<
-  React.TableHTMLAttributes<HTMLTableElement>,
-  HTMLTableElement
-> & {
-  sort?: string;
-  onSortChange?: (sort: string) => void;
-};
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-type TableProviderValue = { tableProps: TableProps };
-
-export const TableContext = React.createContext<TableProviderValue>({ tableProps: {} });
+import { TableContext, TableProviderValue } from './TableContext';
+import { TableProps } from './types';
 
 export const Table = (props: TableProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

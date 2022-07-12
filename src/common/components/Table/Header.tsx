@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { ConditionalWrapper } from '../ConditionalWrapper';
 import { SortIcon } from './SortIcon';
-import { TableContext } from './Table';
+import { TableContext } from './TableContext';
 
 export type Props = React.DetailedHTMLProps<
   React.ThHTMLAttributes<HTMLTableHeaderCellElement>,

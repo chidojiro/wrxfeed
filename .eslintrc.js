@@ -9,7 +9,7 @@ module.exports = {
     },
     project: './tsconfig.json',
   },
-  plugins: ['@typescript-eslint', 'jsx-a11y', 'react', 'jest', 'prettier', 'react-hooks'],
+  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'import', 'jsx-a11y', 'jest', 'prettier'],
   env: {
     browser: true,
     es2020: true,
@@ -63,6 +63,7 @@ module.exports = {
       files: ['*.ts', '*.tsx'],
       rules: {
         'react/prop-types': 'off',
+        'import/no-cycle': 'error',
 
         // Disable `no-undef` rule within TypeScript files because it incorrectly errors when exporting default interfaces
         // https://github.com/iamturns/eslint-config-airbnb-typescript/issues/50

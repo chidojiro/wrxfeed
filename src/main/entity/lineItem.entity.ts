@@ -1,5 +1,6 @@
-import { TranStatus } from './transaction.entity';
-import { Department, Category, Vendor, Company, Transaction } from '.';
+// eslint-disable-next-line import/no-cycle
+import { TranStatus, Department, Category, Vendor, Transaction } from './transaction.entity';
+import { Company } from './company.entity';
 
 export type UserLineItem = {
   isRead: boolean;

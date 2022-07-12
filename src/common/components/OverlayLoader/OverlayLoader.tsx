@@ -2,7 +2,7 @@ import { ClassName } from '@/common/types';
 import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import React from 'react';
-import { Spinner } from '..';
+import { Spinner } from '../Spinner';
 
 export type OverlayLoaderProps = ClassName & {
   loading?: boolean;

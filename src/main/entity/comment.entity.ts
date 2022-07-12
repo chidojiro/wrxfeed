@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import { Transaction } from './transaction.entity';
 import { User } from './user.entity';
 
