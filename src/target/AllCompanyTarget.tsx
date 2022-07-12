@@ -8,11 +8,21 @@ import { useTargets } from './useTargets';
 type AllCompanyTargetProps = ClassName;
 
 export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
-  const { data: targets = [fallbackTarget], isInitializing } = useTargets({ type: 'company' });
+  const {
+    data: targets = [fallbackTarget],
+    isInitializing,
+    mutate,
+  } = useTargets({ type: 'company' });
 
   return (
     <OverlayLoader loading={isInitializing} className={className}>
-      <TargetCard className="h-[450px]" target={targets[0]} hidePropertyDropdowns />
+      <TargetCard
+        className="h-[450px]"
+        target={targets[0]}
+        hidePropertyDropdowns
+        onUpdateSuccess={(target) => mutate([target])}
+        onDeleteSuccess={() => mutate()}
+      />
     </OverlayLoader>
   );
 };
