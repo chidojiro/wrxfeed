@@ -26,7 +26,7 @@ export const AllCompany = () => {
           {recentlyViewedTargets.map((target) => (
             <TargetCard
               key={target.id}
-              target={target as any}
+              target={target}
               className="h-[330px]"
               onUpdateSuccess={() => mutate()}
               onDeleteSuccess={() => mutate()}
