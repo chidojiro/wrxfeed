@@ -40,6 +40,8 @@ export const TargetChart: <T>(
   const maxValueForChart = Math.max(maxValueWithSurplus, MIN_Y_VALUE);
   const chartLevels = getChartLevels(maxValueForChart);
 
+  console.log(chartData);
+
   return (
     <div
       style={containerStyle}

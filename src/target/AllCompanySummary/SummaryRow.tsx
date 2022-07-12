@@ -2,7 +2,7 @@ import { CommentIcon } from '@/assets';
 import { ConditionalWrapper } from '@/common/components';
 import { MainGroups } from '@/common/constants';
 import { useHandler } from '@/common/hooks';
-import { getDisplayCurrency } from '@/main/utils';
+import { getDisplayUsdAmount } from '@/main/utils';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
@@ -75,8 +75,8 @@ export const SummaryRow = ({
         ></div>
         <p className="line-clamp-2">{name}</p>
       </div>
-      <div className="col-span-2 text-Gray-6">{getDisplayCurrency(spends)}</div>
-      <div className="col-span-2 text-Gray-6">{getDisplayCurrency(targetSpends)}</div>
+      <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(spends)}</div>
+      <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(targetSpends)}</div>
       <div className="col-span-1 relative flex items-center justify-center">
         {!!commentCount && (
           <>

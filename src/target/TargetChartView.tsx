@@ -10,7 +10,7 @@ import {
 } from '@/main/chart.utils';
 import { useTransaction } from '@/main/hooks/transaction.hook';
 import { LineChartData } from '@/main/types';
-import { getDisplayCurrency, getTargetPeriodsAmountTotal } from '@/main/utils';
+import { getDisplayUsdAmount, getTargetPeriodsAmountTotal } from '@/main/utils';
 import {
   Target,
   TargetMonth,
@@ -142,7 +142,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
                 </div>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {getDisplayCurrency(dataPoints?.thisYear)}
+                {getDisplayUsdAmount(dataPoints?.thisYear)}
               </p>
             </div>
             <div
@@ -156,7 +156,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
                 </div>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {getDisplayCurrency(targetToDate)}
+                {getDisplayUsdAmount(targetToDate)}
               </p>
             </div>
             <div
@@ -170,7 +170,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
                 </div>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {getDisplayCurrency(dataPoints?.lastYear)}
+                {getDisplayUsdAmount(dataPoints?.lastYear)}
               </p>
             </div>
           </div>
@@ -202,7 +202,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
               <p className="text-xs text-Gray-2 ml-1">Current Spend</p>
             </div>
             <p className="text-xl text-primary font-bold mt-1">
-              {getDisplayCurrency(currentSpend)}
+              {getDisplayUsdAmount(currentSpend)}
             </p>
           </div>
           <div className="flex flex-col">
@@ -211,7 +211,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
               <p className="text-xs text-Gray-2 ml-1">Target To Date</p>
             </div>
             <p className="text-xl text-primary font-bold mt-1">
-              {getDisplayCurrency(targetToDate)}
+              {getDisplayUsdAmount(targetToDate)}
             </p>
           </div>
           <div className="flex flex-col">
@@ -220,7 +220,7 @@ export const TargetChartView: React.VFC<TargetChartViewProps> = ({ className, ta
               <p className="text-xs text-Gray-2 ml-1">Overall Target</p>
             </div>
             <p className="text-xl text-primary font-bold mt-1">
-              {getDisplayCurrency(overallTarget)}
+              {getDisplayUsdAmount(overallTarget)}
             </p>
           </div>
           <div className="flex flex-1 justify-end flex-col items-end">

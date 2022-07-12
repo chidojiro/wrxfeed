@@ -156,19 +156,19 @@ export const getTargetMonthsLineChartData = (
   let cumulativeLastYear = 0;
   let cumulativeTarget = 0;
 
-  const thisYearPeriods = target.periods.filter((item) => item.year === new Date().getFullYear());
-  const lastYearPeriods = target.periods.filter(
-    (item) => item.year === new Date().getFullYear() - 1,
-  );
+  const thisYearSpendings =
+    target.spendings?.filter((item) => item.year === new Date().getFullYear()) ?? [];
+  const lastYearSpendings =
+    target.spendings?.filter((item) => item.year === new Date().getFullYear() - 1) ?? [];
 
-  const thisYearSorted = thisYearPeriods?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
+  const thisYearSorted = thisYearSpendings?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
   const lastYearSorted = range(0, 12).map((monthIdx) => {
-    const lastYearData = lastYearPeriods.find((e) => e?.month - 1 === monthIdx);
+    const lastYearData = lastYearSpendings.find((e) => e?.month - 1 === monthIdx);
     return (
       lastYearData || {
-        year: thisYearPeriods[0]?.year || dayjs().year() - 1,
+        year: thisYearSpendings[0]?.year || dayjs().year() - 1,
         month: monthIdx + 1,
-        amount: 0,
+        total: 0,
       }
     );
   });
