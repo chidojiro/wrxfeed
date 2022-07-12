@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import React from 'react';
 import { useDelayableState } from '../hooks';
 import { OpenClose } from '../types';
@@ -16,10 +17,16 @@ export const withMountOnOpen =
     }, [props.open, setDelayableOpen]);
 
     React.useEffect(() => {
-      if (delayabeOpen) {
-        setTempProps(props);
-      } else {
-        setTempProps({});
+      // Keep props on first open
+      if (!delayabeOpen && !props.open) {
+        setTempProps((prev) => (isEqual(prev, {}) ? prev : {}));
+        return;
+      }
+
+      // Clean up props after completely close
+      if (!delayabeOpen && props.open) {
+        setTempProps((prev) => (isEqual(prev, props) ? prev : props));
+        return;
       }
     }, [delayabeOpen, props]);
 
