@@ -24,7 +24,7 @@ export const withMountOnOpen =
       }
 
       // Clean up props after completely close
-      if (!delayabeOpen && props.open) {
+      if (!delayabeOpen) {
         setTempProps((prev) => (isEqual(prev, props) ? prev : props));
         return;
       }
