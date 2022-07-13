@@ -66,7 +66,7 @@ export const TargetCard = ({
         <AddTargetModal
           open={addTargetModalDisclosure.isOpen}
           onClose={addTargetModalDisclosure.onClose}
-          onCancel={addTargetModalDisclosure.onOpen}
+          onCancel={addTargetModalDisclosure.onClose}
           target={target}
           departmentId={department?.id}
           onUpdateSuccess={onUpdateSuccess}
