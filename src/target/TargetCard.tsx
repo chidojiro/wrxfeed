@@ -19,7 +19,8 @@ import { MiniChartView } from './MiniChartView';
 import { Target } from './types';
 
 export type TargetCardProps = ClassName &
-  Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess' | 'hidePropertyDropdowns'> & {
+  Required<Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'>> &
+  Pick<AddTargetModalProps, 'hidePropertyDropdowns'> & {
     target: Target;
     showColorfulHeading?: boolean;
   };
@@ -52,6 +53,11 @@ export const TargetCard = ({
 
   const headingColor = getColorByText(target.name, undefined, true);
 
+  const handleDeleteClick = async () => {
+    await deleteTarget(target.id);
+    onDeleteSuccess(target.id);
+  };
+
   return (
     <button
       onClick={goToTargetDetails}
@@ -62,18 +68,16 @@ export const TargetCard = ({
         className,
       )}
     >
-      {addTargetModalDisclosure.isOpen && (
-        <AddTargetModal
-          open={addTargetModalDisclosure.isOpen}
-          onClose={addTargetModalDisclosure.onClose}
-          onCancel={addTargetModalDisclosure.onClose}
-          target={target}
-          departmentId={department?.id}
-          onUpdateSuccess={onUpdateSuccess}
-          onDeleteSuccess={onDeleteSuccess}
-          hidePropertyDropdowns={hidePropertyDropdowns}
-        />
-      )}
+      <AddTargetModal
+        open={addTargetModalDisclosure.isOpen}
+        onClose={addTargetModalDisclosure.onClose}
+        onCancel={addTargetModalDisclosure.onClose}
+        target={target}
+        departmentId={department?.id}
+        onUpdateSuccess={onUpdateSuccess}
+        onDeleteSuccess={onDeleteSuccess}
+        hidePropertyDropdowns={hidePropertyDropdowns}
+      />
       <div className="flex flex-1 flex-col pb-4 space-y-2 w-full">
         <div
           style={{ background: showColorfulHeading ? headingColor : undefined }}
@@ -87,7 +91,7 @@ export const TargetCard = ({
                 <OptionsButton
                   onViewClick={goToTargetDetails}
                   onEditClick={addTargetModalDisclosure.onOpen}
-                  onDeleteClick={target.isPrimary ? undefined : () => deleteTarget(target.id)}
+                  onDeleteClick={target.isPrimary ? undefined : handleDeleteClick}
                 />
               </div>
               <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
