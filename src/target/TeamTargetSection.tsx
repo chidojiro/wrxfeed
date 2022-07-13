@@ -20,7 +20,10 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
   const addTargetModalDisclosure = useDisclosure();
 
   const { data: department } = useDepartment(departmentId);
-  const { data: targets = [], mutate: mutateTargets } = useTargets({ dep: departmentId });
+  const { data: targets = [], mutate: mutateTargets } = useTargets({
+    dep: departmentId,
+    forYou: 1,
+  });
 
   const teamHeaderColor = React.useMemo(
     () => getColorByText(department?.name ?? '', department?.id, true),
