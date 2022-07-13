@@ -174,7 +174,7 @@ const SearchBar: React.VFC = () => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="absolute mt-2 w-full px-4 max-h-[327px] bg-white shadow-lg rounded-sm border border-Gray-11 pt-6 pb-4 ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+              <div className="absolute mt-2 w-full px-4 max-h-[327px] bg-white shadow-lg rounded-sm border border-Gray-11 pt-6 pb-4 ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm z-[53]">
                 {renderResultsOrEmpty()}
               </div>
             </Transition>

@@ -89,7 +89,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
       className={({ open }) => {
         return clsx(
           open ? 'inset-0 overflow-y-auto' : '',
-          'bg-primary z-40 fixed w-full shadow-sm lg:overflow-y-visible',
+          'bg-primary z-[52] fixed w-full shadow-sm lg:overflow-y-visible',
           className,
         );
       }}
