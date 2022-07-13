@@ -263,7 +263,12 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
         return;
       }
 
-      if (targetMonths.length === 0) {
+      const sumTargetAmount = targetMonths.reduce(
+        (total, month) => total + (month?.amount ?? 0),
+        0,
+      );
+
+      if (sumTargetAmount <= 0) {
         setNoMonthError(true);
         return;
       }
@@ -441,7 +446,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     };
 
     const defaultTags = (() => {
-      const defaultTagsTemp: any[] = [];
+      const defaultTagsTemp = [];
 
       if (target && target?.props?.length > 0) {
         defaultTagsTemp.push(
