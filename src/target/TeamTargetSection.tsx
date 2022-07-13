@@ -34,7 +34,7 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
   );
 
   const onClickTeamName = () => {
-    if (typeof departmentId !== 'number') {
+    if (isNaN(departmentId)) {
       return;
     }
     history.push({
