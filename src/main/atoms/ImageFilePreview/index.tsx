@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 export type ImageFilePreviewProps = {
   className?: string;
@@ -21,7 +21,7 @@ const ImageFilePreview: React.FC<ImageFilePreviewProps> = ({ className, width, h
   }, [file]);
 
   return (
-    <div className={classNames('outline-none border-0', className ?? '')}>
+    <div className={clsx('outline-none border-0', className ?? '')}>
       <img
         id="image_preview_upload"
         alt="alt_image_upload"

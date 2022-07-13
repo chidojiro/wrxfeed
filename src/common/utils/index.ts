@@ -37,31 +37,6 @@ dayjs.updateLocale('en', {
   },
 });
 
-export function hasSubArray(master: string[], sub: string[]): boolean {
-  return master && sub && sub.every((value, index) => master.indexOf(value, index) + 1 > 0);
-}
-
-export async function sleep(millisecond: number): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, millisecond));
-}
-
-/**
- * Yup validation rule, allow value to be empty string or number.
- * @example
- * const schema = yup.object().shape({
- *  income: yup.lazy(emptyStringOrNumber),
- *  outcome: yup.lazy(emptyStringOrNumber),
- * });
- */
-export const emptyStringOrNumber: LazyBuilder = (value) =>
-  value === '' ? yup.string() : yup.number().positive().integer('This field must be integer');
-
-export function removeEmptyFields(data: FieldValues): FieldValues {
-  return Object.entries(data).reduce((current, [key, value]) => {
-    return value ? { ...current, [key]: value } : current;
-  }, {});
-}
-
 /**
  * Convert a string to color hex
  * @param string
@@ -106,13 +81,6 @@ export function formatDate(value?: string | number | Date | dayjs.Dayjs): string
 export function distanceToNow(value?: string | number | Date | dayjs.Dayjs): string {
   if (!dayjs(value).isValid()) return '';
   return dayjs(value).fromNow();
-}
-
-/**
- * Join multiple classNames
- */
-export function classNames(...classes: string[]): string {
-  return classes.filter(Boolean).join(' ');
 }
 
 export const EmailRegex = /[\w\d\\.-]+@[\w\d\\.-]+\.[\w\d\\.-]+/;

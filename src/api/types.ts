@@ -41,14 +41,12 @@ export interface ApiClient {
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   acceptInvitation: (id: string) => Promise<void>;
   // Feed
-  getTransactions: (body?: TransactionBody) => Promise<Transaction[]>;
   getUnreadLineItemsCount: (filters?: FeedFilters) => Promise<number>;
   readAllTransactions: () => Promise<void>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: AddCommentParams) => Promise<Comment>;
   deleteComment: (commentId: number) => Promise<void>;
   editComment: (commentId: number, data: AddCommentParams) => Promise<void>;
-  getTransactionById: (id: number) => Promise<Transaction>;
   getFeeds: (filters: FeedFilters) => Promise<FeedItem[]>;
   getFeedItemTransactions: (id: FeedItemFilters) => Promise<Transaction[]>;
   getFeedLineItems: (id: FeedItemFilters) => Promise<TransLineItem[]>;
@@ -101,11 +99,6 @@ export interface ResetPasswordDto {
 export enum OrderDirection {
   ASC = 'ASC',
   DESC = 'DESC',
-}
-
-export interface MentionsFilters {
-  order?: OrderDirection;
-  pagination?: PaginationParams;
 }
 
 export interface CommentFilters {

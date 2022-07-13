@@ -4,13 +4,14 @@ import { DepartmentApis } from '@/team/apis';
 import React from 'react';
 import { AllCompanySummary } from './AllCompanySummary';
 import { AllCompanyTarget } from './AllCompanyTarget';
-import { TargetCard } from './TargetCard';
+import { TargetCards } from './TargetCards';
 
 export const AllCompany = () => {
-  const { data: recentlyViewedTargets = [], isValidating } = useFetcher(
-    ['recentlyViewedTargets'],
-    () => DepartmentApis.getRecentlyViewedSummaries(),
-  );
+  const {
+    data: recentlyViewedTargets = [],
+    isValidating,
+    mutate,
+  } = useFetcher(['recentlyViewedTargets'], () => DepartmentApis.getRecentlyViewedSummaries());
 
   return (
     <div>
@@ -21,11 +22,11 @@ export const AllCompany = () => {
       <Divider className="mt-8 mb-4" />
       <p className="text-sm text-Gray-3 font-semibold">Recently Viewed</p>
       <ListLoader loading={isValidating}>
-        <div className="mt-5 gap-4 grid grid-cols-1 lg:grid-cols-2">
-          {recentlyViewedTargets.map((target) => (
-            <TargetCard key={target.id} target={target as any} className="h-[330px]" />
-          ))}
-        </div>
+        <TargetCards
+          targets={recentlyViewedTargets}
+          onUpdateSuccess={() => mutate()}
+          onDeleteSuccess={() => mutate()}
+        />
       </ListLoader>
     </div>
   );

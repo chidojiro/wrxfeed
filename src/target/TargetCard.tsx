@@ -7,7 +7,6 @@ import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
-import MiniChartView from '@/main/molecules/MiniChartView';
 import { getColorByText, getDisplayUsdAmount, getTargetPeriodsAmountTotal } from '@/main/utils';
 import { Routes } from '@/routing/routes';
 import { useDisclosure } from '@dwarvesf/react-hooks';
@@ -16,6 +15,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { AddTargetModal, AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
+import { MiniChartView } from './MiniChartView';
 import { Target } from './types';
 
 export type TargetCardProps = ClassName &
@@ -66,7 +66,7 @@ export const TargetCard = ({
         <AddTargetModal
           open={addTargetModalDisclosure.isOpen}
           onClose={addTargetModalDisclosure.onClose}
-          onCancel={addTargetModalDisclosure.onOpen}
+          onCancel={addTargetModalDisclosure.onClose}
           target={target}
           departmentId={department?.id}
           onUpdateSuccess={onUpdateSuccess}
@@ -87,7 +87,7 @@ export const TargetCard = ({
                 <OptionsButton
                   onViewClick={goToTargetDetails}
                   onEditClick={addTargetModalDisclosure.onOpen}
-                  onDeleteClick={() => deleteTarget(target.id)}
+                  onDeleteClick={target.isPrimary ? undefined : () => deleteTarget(target.id)}
                 />
               </div>
               <div className="flex items-center gap-2 h-6 max-h-6 mt-2">

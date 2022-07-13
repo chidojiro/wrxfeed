@@ -7,9 +7,9 @@ export const useDelayableState = <T = any>(delayBy: number, defaultState?: T) =>
 
   const delayedSetState = React.useCallback(
     (param: any, shouldDelay: boolean) => {
-      if (shouldDelay) {
-        clearTimeout(timeoutRef.current);
+      clearTimeout(timeoutRef.current);
 
+      if (shouldDelay) {
         timeoutRef.current = setTimeout(() => {
           setState(param);
         }, delayBy);

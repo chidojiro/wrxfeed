@@ -9,7 +9,7 @@ import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
 import { useUpdateVendor } from '@/main/hooks/updateVendor.hook';
 import Loading from '@/common/atoms/Loading';
 import Modal from '@/common/atoms/Modal';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 export type UpdateVendorInfoModalProps = {
   open: boolean;
@@ -99,11 +99,11 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
         <div className="flex flex-col space-y-2 px-10 py-4 w-full">
           <p className="text-primary text-lg font-bold">{itemEditing.vendorName ?? ''}</p>
           <p className="text-primary text-xs font-semibold">Vendor Description</p>
-          <div className={classNames('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
+          <div className={clsx('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
             <input
               name="description"
               ref={descriptionInputRef}
-              className={classNames(
+              className={clsx(
                 'text-primary flex-1 bg-transparent placeholder-Gray-6 outline-none border-none text-sm w-auto',
               )}
               onKeyDown={handleKeyDown}
@@ -113,10 +113,10 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
             />
           </div>
           <p className="text-primary text-xs font-semibold">Website</p>
-          <div className={classNames('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
+          <div className={clsx('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
             <input
               name="website"
-              className={classNames(
+              className={clsx(
                 'text-primary flex-1 bg-transparent placeholder-Gray-6 outline-none border-none text-sm w-auto',
               )}
               onKeyDown={handleKeyDown}
@@ -126,10 +126,10 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
             />
           </div>
           <p className="text-primary text-xs font-semibold">Email</p>
-          <div className={classNames('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
+          <div className={clsx('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
             <input
               name="contactEmail"
-              className={classNames(
+              className={clsx(
                 'text-primary flex-1 bg-transparent placeholder-Gray-6 outline-none border-none text-sm w-auto',
               )}
               onKeyDown={handleKeyDown}
@@ -139,10 +139,10 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
             />
           </div>
           <p className="text-primary text-xs font-semibold">Phone</p>
-          <div className={classNames('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
+          <div className={clsx('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
             <input
               name="contactNumber"
-              className={classNames(
+              className={clsx(
                 'text-primary flex-1 bg-transparent placeholder-Gray-6 outline-none border-none text-sm w-auto',
               )}
               onKeyDown={handleKeyDown}
@@ -169,7 +169,7 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
                 onSaveHandler(vendorDescription.vendorId, vendorDescription);
               }
             }}
-            className={classNames(
+            className={clsx(
               'flex flex-row items-center px-4 py-2 rounded-sm hover:bg-primary',
               createReadyState,
             )}

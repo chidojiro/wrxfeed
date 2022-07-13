@@ -1,8 +1,7 @@
 import { useDelayableState } from '@/common/hooks';
-import { classNames } from '@/common/utils';
-import { Dialog, Transition } from '@headlessui/react';
 import clsx from 'clsx';
-import React, { Fragment, MutableRefObject } from 'react';
+import { Dialog } from '@headlessui/react';
+import React, { MutableRefObject } from 'react';
 
 export interface ModalProps {
   children?: React.ReactNode;
@@ -50,7 +49,7 @@ const Modal: React.FC<ModalProps> = ({
         )}
         <div
           onClick={(event) => event.stopPropagation()}
-          className={classNames(
+          className={clsx(
             'inline-block bg-white rounded-sm text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle',
             contentClass,
           )}

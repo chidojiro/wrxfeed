@@ -2,14 +2,14 @@
 import { FeedFilters } from '@/api/types';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import { useLegacyQuery } from '@/common/hooks';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import ListEndComponent from '@/main/atoms/ListEndComponent';
 import ListLoading from '@/main/atoms/ListLoading';
 import { Category, Department, Vendor } from '@/main/entity';
 import { FilterKeys } from '@/main/hooks';
 import { useFeed } from '@/main/hooks/feed.hook';
 import RollupCard from '@/main/molecules/RollupCard';
-import { TargetFeedItem } from '@/target/TargetFeedItem';
+import { TargetFeedCard } from '@/feed/TargetFeedCard';
 import React, {
   CSSProperties,
   forwardRef,
@@ -124,7 +124,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
 
   const renderForYouEndList = (className = 'mt-3 sm:mt-8') => {
     return (
-      <p className={classNames('text-base text-center text-Neutral-4', className)}>
+      <p className={clsx('text-base text-center text-Neutral-4', className)}>
         Add to your feed by
         <button
           type="button"
@@ -182,7 +182,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       <ul className="pb-2 sm:pb-5 space-y-4">
         {feeds.map((feed) => {
           if (feed.type === FeedItemType.target) {
-            return <TargetFeedItem key={`TargetFeedItem-${feed.id}`} feedItem={feed} />;
+            return <TargetFeedCard key={feed.id} feedItem={feed} />;
           }
           if (feed.type === FeedItemType.transaction) {
             return (

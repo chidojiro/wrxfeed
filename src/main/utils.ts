@@ -219,45 +219,6 @@ const getMentionEntityRanges = (text: string, mentionName: string, mentionKey: n
 };
 
 /**
- * Convert a comment text to Draftjs ContentState
- */
-export function commentTextToContentState(text: string): ContentState {
-  const mentionMatches = text.match(MentionRegex);
-  const rawText = text.replace(MentionRegex, mentionNameReplacer);
-  if (mentionMatches?.length) {
-    // Create content state with mention entities
-    const rawContent = convertToRaw(ContentState.createFromText(rawText));
-    // Create mention draft raw entities
-    const rawMentionState = mentionMatches.reduce<{ [key: string]: RawDraftEntity }>(
-      (map, tag, idx) => {
-        const entity = rawMentionEntityCreator(tag);
-        if (!entity) return map;
-        return { ...map, [idx]: entity };
-      },
-      {},
-    );
-    rawContent.entityMap = rawMentionState;
-    // Map mention entities to content blocks
-    rawContent.blocks = rawContent.blocks.map((block) => {
-      const ranges: RawDraftEntityRange[] = [];
-      Object.keys(rawMentionState).forEach((key) => {
-        const entityRanges = getMentionEntityRanges(
-          block.text,
-          rawMentionState[key].data.mention.name,
-          parseInt(key, 10),
-        );
-        if (entityRanges) {
-          ranges.push(...entityRanges);
-        }
-      });
-      return { ...block, entityRanges: ranges };
-    });
-    return convertFromRaw(rawContent);
-  }
-  return ContentState.createFromText(text);
-}
-
-/**
  * Convert a comment html to Draftjs ContentState
  */
 export function commentHtmlToContentState(text: string): ContentState {
@@ -349,19 +310,6 @@ export const getColorByText = (name?: string | null, id?: number, gradient = fal
 
   return colorsData[bgColorPos];
 };
-
-export function isURL(str: string): boolean {
-  const pattern = new RegExp(
-    '^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$',
-    'i',
-  ); // fragment locator
-  return !!pattern.test(str);
-}
 
 export const getNameAbbreviation = (name?: string): string => {
   if (!name) return '';
@@ -457,13 +405,6 @@ export const getPropIconByType = (
   return BasicsSearchSmall;
 };
 
-export const getWidthInputByLength = (length: number): number => {
-  if (length > 19) return 48;
-  if (length > 13) return 36;
-  if (length > 9) return 28;
-  return 20;
-};
-
 export const getColorByPropertyType = (type: TargetTypeProp): string => {
   if (type === TargetTypeProp.VENDOR) return '#F3AA20';
   if (type === TargetTypeProp.DEPARTMENT) return '#0891B2';
@@ -528,17 +469,6 @@ export const genReviewSentenceFromProperties = (
 
   const sentence = `You're targeting all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`;
   return sentence;
-};
-
-export const getPeriodsByYear = (year: number): TargetPeriod[] => {
-  const periods = [];
-  for (let index = 1; index <= 12; index += 1) {
-    periods.push({
-      year,
-      month: index,
-    });
-  }
-  return periods;
 };
 
 export const getPropsAndPeriodsFromItemSelected = (
@@ -693,33 +623,6 @@ export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
     }
   });
   return targetByTeam;
-};
-
-export const getMultiMonthRange = (periods: TargetPeriod[]): string => {
-  let min = 12;
-  let max = 0;
-  for (let i = 0; i < periods.length; i += 1) {
-    const { amount, month } = periods[i];
-    if (amount !== undefined && month < min) {
-      min = month;
-    }
-    if (amount !== undefined && month > max) {
-      max = month;
-    }
-  }
-
-  let name = '...';
-  if (min !== 0) {
-    name = dayjs()
-      .month(min - 1)
-      .format('MMM');
-  }
-  if (max !== 0 && max !== min) {
-    name += ` - ${dayjs()
-      .month(max - 1)
-      .format('MMM')}`;
-  }
-  return name;
 };
 
 export const getTrackingStatusName = (type: TargetStatusType): string => {

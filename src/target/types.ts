@@ -86,12 +86,6 @@ export enum TargetStatusType {
   Exceeded = 'EXCEEDED',
 }
 
-export type TargetStatusColor = {
-  label: string;
-  background: string;
-  dot: string;
-};
-
 export type TargetSpending = {
   year: number;
   month: number;

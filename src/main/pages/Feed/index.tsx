@@ -10,7 +10,7 @@ import { isApiError } from '@/error/utils';
 import { Category, Department, FeedItem, FeedType, Vendor } from '@/main/entity';
 import RollupCard from '@/main/molecules/RollupCard';
 import { Routes } from '@/routing/routes';
-import { TargetFeedItem } from '@/target/TargetFeedItem';
+import { TargetFeedCard } from '@/feed/TargetFeedCard';
 import * as Sentry from '@sentry/react';
 import React, { useEffect, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
@@ -147,7 +147,7 @@ const FeedPage: React.VFC = () => {
             feedItem={feedItem}
           />
         ) : (
-          <TargetFeedItem
+          <TargetFeedCard
             feedItem={feedItem}
             onRefresh={onRefreshTargetFeedItem}
             onBack={onBackToDashboard}

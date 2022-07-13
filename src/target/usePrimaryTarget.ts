@@ -1,6 +1,6 @@
 import { useFetcher } from '@/common/hooks';
-import { TargetApis } from '@/target/apis';
 import React from 'react';
+import { TargetApis } from './apis';
 import { fallbackTarget } from './constants';
 
 export const usePrimaryTarget = (departmentId: number) => {

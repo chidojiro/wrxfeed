@@ -1,6 +1,6 @@
 import React from 'react';
 import Loading from '@/common/atoms/Loading';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 export interface ListLoadingProps {
   className?: string;
@@ -10,7 +10,7 @@ const ListLoading = React.forwardRef(({ className = '' }: ListLoadingProps, ref:
   return (
     <div
       ref={ref}
-      className={classNames(
+      className={clsx(
         'flex justify-between items-center w-[8.2rem] h-[1.875rem] pl-5 pr-4 m-auto rounded-[15px] border border-Gray-3',
         className,
       )}

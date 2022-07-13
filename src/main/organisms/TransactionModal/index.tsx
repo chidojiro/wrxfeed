@@ -2,7 +2,7 @@ import React from 'react';
 import { useRecoilState } from 'recoil';
 import TransactionCard from '@/main/molecules/TransactionCard';
 import Modal from '@/common/atoms/Modal';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { showTransactionModalState } from './states';
 
 export type TransactionModalProps = {
@@ -16,7 +16,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({ className }) => {
   return (
     <Modal open={transaction !== null} onClose={handleClose}>
       <div
-        className={classNames(
+        className={clsx(
           'flex bg-white max-w-4xl max-h-[40rem] min-w-[30rem] min-h-[15rem] p-6',
           className ?? '',
         )}

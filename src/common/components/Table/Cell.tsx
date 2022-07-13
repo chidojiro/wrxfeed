@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { StringUtils } from '@/common/utils';
 
 export type Props = React.DetailedHTMLProps<
@@ -11,11 +11,7 @@ export const Cell = ({ className, ...restProps }: Props) => {
   return (
     <td
       {...restProps}
-      className={classNames(
-        StringUtils.withProjectClassNamePrefix('table-cell'),
-        'py-2 px-4',
-        className,
-      )}
+      className={clsx(StringUtils.withProjectClassNamePrefix('table-cell'), 'py-2 px-4', className)}
     ></td>
   );
 };

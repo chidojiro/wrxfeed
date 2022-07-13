@@ -1,39 +1,36 @@
-import { EditorState } from 'draft-js';
-import { cloneDeep } from 'lodash-es';
-import React, { useRef, useState } from 'react';
-import { SubmitHandler } from 'react-hook-form';
-import { TargetChartView } from './TargetChartView';
-import { useDisclosure } from '@dwarvesf/react-hooks';
-
 import { GetUploadTokenBody, UploadTypes } from '@/api/types';
-import { Target } from '@/target/types';
-import { TargetApis } from './apis';
-import { PaginationParams } from '@/rest/types';
-import { CommentFormModel } from '@/main/types';
-import { commentEditorRawParser, getTargetName } from '@/main/utils';
-import { FeedItem, User, Visibility } from '@/main/entity';
-import { classNames, distanceToNow } from '@/common/utils';
-// assets
 import { ExclamationCircle, EyeHideIcon } from '@/assets';
-// hooks
-import { useIdentity } from '@/identity/hooks';
+import Loading from '@/common/atoms/Loading';
 import { useHandler } from '@/common/hooks';
-import { useMention } from '@/main/hooks';
-import { useFeedComment } from '@/main/hooks/feedComment.hook';
-// components
+import { distanceToNow } from '@/common/utils';
+import { useIdentity } from '@/identity/hooks';
 import CommentViewAll from '@/main/atoms/CommentViewAll';
 import ConfirmModal from '@/main/atoms/ConfirmModal';
 import UserAvatar from '@/main/atoms/UserAvatar';
+import { FeedItem, User, Visibility } from '@/main/entity';
+import { useMention } from '@/main/hooks';
+import { useFeedComment } from '@/main/hooks/feedComment.hook';
+import { OptionsButton } from '@/main/molecules';
 import CommentBox from '@/main/molecules/CommentBox';
 import CommentItem from '@/main/molecules/CommentItem';
 import RollupTransactions from '@/main/molecules/RollupTransactions';
 import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
 import FeedBackModal from '@/main/organisms/FeedBackModal';
+import { CommentFormModel } from '@/main/types';
+import { commentEditorRawParser, getTargetName } from '@/main/utils';
+import { PaginationParams } from '@/rest/types';
 import { AddTargetModal } from '@/target/AddTargetModal';
-import Loading from '@/common/atoms/Loading';
-import { OptionsButton } from '@/main/molecules';
+import { TargetApis } from '@/target/apis';
+import { Target } from '@/target/types';
+import { useDisclosure } from '@dwarvesf/react-hooks';
+import clsx from 'clsx';
+import { EditorState } from 'draft-js';
+import { cloneDeep } from 'lodash-es';
+import React from 'react';
+import { SubmitHandler } from 'react-hook-form';
+import { TargetFeedOverview } from './TargetFeedOverview';
 
-export interface TargetFeedItemProps {
+export interface TargetFeedCardProps {
   feedItem: FeedItem;
   onRefresh?: () => void;
   onBack?: () => void;
@@ -49,23 +46,23 @@ interface ConfirmModalProps {
 const INITIAL_COMMENT_NUMBER = 2;
 const LIMIT_GET_COMMENT = 20;
 
-export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
+export const TargetFeedCard: React.VFC<TargetFeedCardProps> = React.memo(
   ({ feedItem, onRefresh, onBack }) => {
     const identity = useIdentity();
-    const [filterComment, setFilterComment] = useState<PaginationParams>({
+    const [filterComment, setFilterComment] = React.useState<PaginationParams>({
       offset: 0,
       limit: INITIAL_COMMENT_NUMBER,
     });
 
     // Refs
-    const containerRef = useRef<HTMLLIElement>(null);
+    const containerRef = React.useRef<HTMLLIElement>(null);
     // Local states
-    const [curFeed, setCurFeed] = useState<FeedItem>(feedItem);
-    const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
-    const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
-    const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
-    const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
-    const [itemEditing, setItemEditing] = useState<Target | null>(null);
+    const [curFeed, setCurFeed] = React.useState<FeedItem>(feedItem);
+    const [confirmModal, setConfirmModal] = React.useState<ConfirmModalProps>();
+    const [isOpenFeedbackModal, openFeedbackModal] = React.useState(false);
+    const [attachFileComment, setAttachFileComment] = React.useState<File | null>(null);
+    const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
+    const [itemEditing, setItemEditing] = React.useState<Target | null>(null);
     const addTargetModalDisclosure = useDisclosure();
     // Data hooks
     const { mentions } = useMention();
@@ -221,7 +218,7 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
               }}
             />
             <div
-              className={classNames(
+              className={clsx(
                 isHidden ? 'bg-purple-8' : 'bg-white',
                 'flex-col space-y-2 px-8 py-6',
               )}
@@ -255,7 +252,7 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
               </div>
             </div>
           </div>
-          <TargetChartView target={curFeed.target} onEdit={onClickEditTarget} />
+          <TargetFeedOverview target={curFeed.target} />
           <RollupTransactions
             feedId={curFeed?.id}
             trans={curFeed?.transactions}
@@ -348,4 +345,4 @@ export const TargetFeedItem: React.VFC<TargetFeedItemProps> = React.memo(
   },
 );
 
-TargetFeedItem.displayName = 'TargetFeedItem';
+TargetFeedCard.displayName = 'TargetFeedCard';

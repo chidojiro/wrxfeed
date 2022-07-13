@@ -1,6 +1,6 @@
 import React, { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 import { ReactComponent as GoogleLogo } from '@/assets/icons/google-logo.svg';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 export enum AuthProvider {
   GOOGLE = 'GOOGLE',
@@ -33,7 +33,7 @@ const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
   return (
     <button
       type="button"
-      className={classNames(
+      className={clsx(
         'flex justify-center items-center space-x-3 px-20 h-16 bg-primary text-xl text-white rounded-sm disabled:opacity-50',
         className,
       )}

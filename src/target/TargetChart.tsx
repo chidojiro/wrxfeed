@@ -3,7 +3,7 @@ import { AreaChart, ResponsiveContainer, Tooltip, YAxis, TooltipProps, Area } fr
 
 import { ChartLineProps, LineChartData } from '@/main/types';
 import { getChartLevels } from '@/main/chart.utils';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import Loading from '@/common/atoms/Loading';
 import { INITIAL_CHART_DATA } from '@/common/constants';
@@ -40,12 +40,10 @@ export const TargetChart: <T>(
   const maxValueForChart = Math.max(maxValueWithSurplus, MIN_Y_VALUE);
   const chartLevels = getChartLevels(maxValueForChart);
 
-  console.log(chartData);
-
   return (
     <div
       style={containerStyle}
-      className={classNames('flex flex-col w-full h-full', containerClass || '')}
+      className={clsx('flex flex-col w-full h-full', containerClass || '')}
     >
       <div className="flex relative flex-col flex-1">
         <div className="absolute top-[-3px] flex w-full h-full justify-between flex-col-reverse">
@@ -57,7 +55,7 @@ export const TargetChart: <T>(
                 className="flex flex-row space-x-4 items-center w-full"
               >
                 <p
-                  className={classNames(
+                  className={clsx(
                     'text-xs font-semibold text-right w-8',
                     textColor,
                     levelLabelClass,
@@ -66,7 +64,7 @@ export const TargetChart: <T>(
                   {level?.title}
                 </p>
                 <div
-                  className={classNames(
+                  className={clsx(
                     'flex flex-1 w-auto h-px',
                     level?.isTarget ? 'dashed-line' : 'bg-Gray-11',
                   )}

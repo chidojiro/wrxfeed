@@ -1,4 +1,4 @@
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import React, { Fragment, useState, useCallback } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import AddTargetTagInput from '@/main/atoms/AddTargetTagInput';
@@ -42,11 +42,11 @@ const ExceptDropdown: React.VFC<ExceptDropdownProps> = ({
   );
 
   return (
-    <div className={classNames(className)}>
+    <div className={clsx(className)}>
       <Popover as="div" className="flex-shrink-0 relative">
         {({ open }) => (
           <>
-            <Popover.Button className={classNames('', open ? '' : '')}>
+            <Popover.Button className={clsx('', open ? '' : '')}>
               <button
                 type="button"
                 className="w-[30px] h-[30px] hover:bg-Gray-12 flex justify-center items-center rounded-sm border border-Gray-11"
@@ -65,7 +65,7 @@ const ExceptDropdown: React.VFC<ExceptDropdownProps> = ({
                 leaveTo="transform opacity-0 scale-95"
               >
                 <div
-                  className={classNames(
+                  className={clsx(
                     'flex w-[384px] h-[207px] flex-col py-4 px-6 space-y-2 absolute z-50 mt-2 -right-8 shadow-propertyDropdown border border-Gray-11 rounded-sm bg-white',
                     classPopover,
                   )}

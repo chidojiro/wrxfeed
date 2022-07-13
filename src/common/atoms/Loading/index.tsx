@@ -1,4 +1,4 @@
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import React from 'react';
 
 interface LoadingProps {
@@ -10,7 +10,7 @@ interface LoadingProps {
 
 const Loading: React.VFC<LoadingProps> = ({ width, height, className = '', color = 'primary' }) => {
   return (
-    <div className={classNames('flex justify-center items-center', className)}>
+    <div className={clsx('flex justify-center items-center', className)}>
       <div
         style={{ width: width ?? 32, height: height ?? 32 }}
         className={`animate-spin rounded-full h-2 w-2 border-b-2 border-${color}`}

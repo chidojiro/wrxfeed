@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import { TransLineItem } from './lineItem.entity';
 
 export enum Visibility {

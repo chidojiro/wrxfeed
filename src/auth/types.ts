@@ -46,11 +46,6 @@ export interface ForgotPwdFormModel {
   email: string;
 }
 
-export interface ResetPwdFormModel {
-  newPassword: string;
-  confirmPassword: string;
-}
-
 export enum SearchTypes {
   Local = 'Local',
   Api = 'Api',
