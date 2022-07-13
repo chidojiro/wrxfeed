@@ -1,20 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useApi } from '@/api';
+import * as Sentry from '@sentry/react';
+import React from 'react';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { FeedFilters } from '@/api/types';
 import { ChevronLeftIcon } from '@/assets';
 import { MainGroups } from '@/common/constants';
-import { useLegacyQuery } from '@/common/hooks';
+import { useFetcher, useLegacyQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
+import { FeedApis } from '@/feed/apis';
 import { Category, Department, Vendor } from '@/main/entity';
-import { FilterKeys } from '@/main/hooks';
 import { useVendor } from '@/main/hooks/vendor.hook';
 import FeedList from '@/main/organisms/FeedList';
 import VendorList from '@/main/organisms/VendorList';
 import { scrollToTop } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
-import * as Sentry from '@sentry/react';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -22,60 +21,18 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const VendorsPage: React.VFC = () => {
+const VendorsPage: React.FC = () => {
   const history = useHistory();
   const { id: vendorId } = useParams<{ id?: string }>();
-  const { getVendorById } = useApi();
+  const [vendor, setVendor] = React.useState<Vendor | null>();
+
   const query = useLegacyQuery();
   const location = useLocation();
-  // Vendors states
-  const [filter, setFilter] = useState<PaginationParams>(INIT_PAGINATION);
+
+  const [filter, setFilter] = React.useState<PaginationParams>(INIT_PAGINATION);
   const { vendors, hasMore, isLoading } = useVendor(filter);
-  const [vendor, setVendor] = useState<Vendor | null>();
-  // Feeds states
-  const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
-    vendorId
-      ? {
-          page: INIT_PAGINATION,
-          vendorId: parseInt(vendorId, 10),
-          forYou: 0,
-        }
-      : {
-          page: { offset: 0, limit: 0 }, // Don't load feed at the first launch
-          forYou: 0,
-        },
-  );
-  // Variables
-  const isFiltering = !!feedsFilter.vendorId;
 
-  const getFilterVendorById = async (venId: string) => {
-    const venById = await getVendorById(parseInt(venId, 10));
-    setVendor(venById);
-  };
-
-  const filterByRoute = useCallback(() => {
-    if (vendorId) {
-      const newFilter: { [key: string]: string | number | PaginationParams | null } = {
-        page: INIT_PAGINATION,
-        vendor: parseInt(vendorId, 10),
-      };
-      FilterKeys.forEach((key) => {
-        if (query.get(key)) {
-          newFilter[key] = query.get(key);
-        }
-      });
-      setFeedsFilter(newFilter);
-      getFilterVendorById(vendorId);
-    } else {
-      setFeedsFilter({ page: { offset: 0, limit: 0 } }); // Clean up transaction
-    }
-  }, [vendorId, query.toString(), feedsFilter.vendorId]);
-
-  useEffect(() => {
-    filterByRoute();
-  }, [filterByRoute]);
-
-  const handleLoadMore = useCallback(() => {
+  const handleLoadMoreVendor = React.useCallback(() => {
     if (!hasMore || isLoading) return;
     setFilter((prevFilter) => ({
       ...prevFilter,
@@ -83,7 +40,19 @@ const VendorsPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  const handleVendorSelect = (value?: Vendor): void => {
+  useFetcher(
+    vendorId && !isNaN(+vendorId) && ['vendor', vendorId],
+    () => FeedApis.getVendor(parseInt(vendorId ?? '0', 10)),
+    {
+      onSuccess: setVendor,
+    },
+  );
+
+  React.useEffect(() => {
+    setVendor(null);
+  }, [vendorId]);
+
+  const handleSelectVendor = (value?: Vendor): void => {
     setVendor(value);
     history.push({
       pathname: `/vendors/${value?.id.toString()}`,
@@ -110,27 +79,25 @@ const VendorsPage: React.VFC = () => {
   return (
     <MainLayout>
       <h1 className="sr-only">Department list</h1>
-      {isFiltering && (
+      {vendorId && (
         <div className="flex items-center justify-between space-x-4 pb-8">
           <div className="flex flex-1 items-center space-x-4">
             <ChevronLeftIcon onClick={clearFilter} />
-            <h1 className="text-Gray-1 text-xl font-bold">{vendor?.name}</h1>
+            <h1 className="text-Gray-1 text-xl font-bold">{vendor?.name ?? '...'}</h1>
           </div>
         </div>
       )}
-      {!isFiltering ? (
+      {!vendorId && (
         <VendorList
           vendors={vendors}
           isLoading={isLoading}
           hasMore={hasMore}
-          onLoadMore={handleLoadMore}
-          onSelect={handleVendorSelect}
+          onLoadMore={handleLoadMoreVendor}
+          onSelect={handleSelectVendor}
         />
-      ) : (
-        <FeedList
-          onFilter={handleFeedsFilter}
-          vendorId={vendorId ? parseInt(vendorId, 10) : undefined}
-        />
+      )}
+      {vendorId && !isNaN(+vendorId) && (
+        <FeedList onFilter={handleFeedsFilter} vendorId={parseInt(vendorId, 10)} />
       )}
     </MainLayout>
   );
