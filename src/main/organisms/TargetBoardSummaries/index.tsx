@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { TargetArrowFilled, TrendDown, TrendUp, WarningFilled } from '@/assets';
 import { useDashboard } from '@/main/hooks/dashboard.hook';
 import { getSummaryNumber } from '@/main/utils';
+import { TargetSummaries } from '@/target/types';
 
 export interface TargetBoardSummariesProps {
   className?: string;

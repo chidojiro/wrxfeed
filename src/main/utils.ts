@@ -637,5 +637,5 @@ export const getSummaryNumber = (value: number, total: number): string => {
   if (total === 0) {
     return '0%';
   }
-  return `${((value / total ?? 1) * 100 ?? 0).toFixed(0)}%`;
+  return `${Math.round((value * 100) / total)}%`;
 };
