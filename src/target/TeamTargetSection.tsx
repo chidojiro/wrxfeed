@@ -7,6 +7,8 @@ import React from 'react';
 import { AddTargetModal } from './AddTargetModal';
 import { TargetCards } from './TargetCards';
 import { useTargets } from './useTargets';
+import { useHistory } from 'react-router-dom';
+import { MainGroups } from '@/common/constants';
 
 export interface TeamTargetSectionProps {
   className?: string;
@@ -18,6 +20,7 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
   departmentId,
 }) => {
   const addTargetModalDisclosure = useDisclosure();
+  const history = useHistory();
 
   const { data: department } = useDepartment(departmentId);
   const { data: targets = [], mutate: mutateTargets } = useTargets({
@@ -29,6 +32,16 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
     () => getColorByText(department?.name ?? '', department?.id, true),
     [department?.id, department?.name],
   );
+
+  const onClickTeamName = () => {
+    if (isNaN(departmentId)) {
+      return;
+    }
+    history.push({
+      pathname: `/departments/${departmentId}`,
+      search: `?route=${MainGroups.Following}`,
+    });
+  };
 
   return (
     <div className={clsx('flex flex-col', className)} key={`targets-by-team-${department?.id}`}>
@@ -43,7 +56,9 @@ export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
             width={16}
             height={16}
           />
-          <p className="text-white font-semibold">{department?.name}</p>
+          <button type="button" onClick={onClickTeamName}>
+            <p className="text-white font-semibold">{department?.name}</p>
+          </button>
         </div>
         <button
           type="button"
