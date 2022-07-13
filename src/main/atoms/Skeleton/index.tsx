@@ -4,8 +4,6 @@ interface SkeletonProps {
   className?: string;
 }
 
-export const Skeleton = (props: SkeletonProps) => {
-  const { className } = props;
-
+export const Skeleton = ({ className }: SkeletonProps) => {
   return <div className={clsx(className, 'animate-pulse bg-black/40')} />;
 };

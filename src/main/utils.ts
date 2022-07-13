@@ -5,7 +5,6 @@ import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basi
 import { ReactComponent as Files } from '@/assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@/assets/icons/outline/group-users.svg';
 import { ReactComponent as VendorIcon } from '@/assets/icons/outline/vendor.svg';
-import { Skeleton } from './atoms/Skeleton';
 import {
   FeedItem,
   Transaction,
