@@ -5,6 +5,7 @@ import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basi
 import { ReactComponent as Files } from '@/assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@/assets/icons/outline/group-users.svg';
 import { ReactComponent as VendorIcon } from '@/assets/icons/outline/vendor.svg';
+import { Skeleton } from './atoms/Skeleton';
 import {
   FeedItem,
   Transaction,
@@ -38,6 +39,7 @@ import { Match } from 'linkify-it';
 import { cloneDeep } from 'lodash-es';
 import numeral from 'numeral';
 import { SearchResult } from './types';
+import React from 'react';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -431,7 +433,7 @@ export const getTargetName = (target?: Target): string => {
   if (typeof name === 'string' && name.length > 1) {
     return name;
   }
-  if (!Array.isArray(props) || props.length === 0) return 'Invalid target!';
+  if (!Array.isArray(props) || props.length === 0) return '';
   if (typeof target.props[0].name !== 'string' || target.props[0].name.length < 1) {
     return 'This target have no name!';
   }
