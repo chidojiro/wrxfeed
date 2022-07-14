@@ -19,6 +19,8 @@ import React, {
   useImperativeHandle,
 } from 'react';
 import { useHistory } from 'react-router-dom';
+import { LineItemDrawer } from '@/feed/LineItemDrawer';
+import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 
 interface FeedListProps {
   style?: CSSProperties;
@@ -70,6 +72,9 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     categoryId,
     vendorId,
   });
+
+  const { isLineItemDrawerOpen, selectedLineItem, closeLineItemDrawer, feedId } =
+    useLineItemDrawer();
 
   const { feeds, hasMore, isLoading, updateCategory, cleanData } = useFeed(feedFilters);
   const query = useLegacyQuery();
@@ -179,6 +184,12 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}
     >
+      <LineItemDrawer
+        open={isLineItemDrawerOpen}
+        onClose={closeLineItemDrawer}
+        lineItem={selectedLineItem}
+        feedId={feedId}
+      />
       <ul className="pb-2 sm:pb-5 space-y-4">
         {feeds.map((feed) => {
           if (feed.type === FeedItemType.target) {

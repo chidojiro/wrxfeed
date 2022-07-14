@@ -22,6 +22,7 @@ export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
         hidePropertyDropdowns
         onUpdateSuccess={(target) => mutate([target])}
         onDeleteSuccess={() => mutate()}
+        deletable={false}
       />
     </OverlayLoader>
   );

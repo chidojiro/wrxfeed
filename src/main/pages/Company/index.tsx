@@ -16,8 +16,6 @@ import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevro
 import { MainGroups } from '@/common/constants';
 import { useLegacyQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
-import { LineItemDrawer } from '@/feed/LineItemDrawer';
-import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
 import { useFeed } from '@/main/hooks/feed.hook';
 import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
@@ -33,9 +31,6 @@ const INIT_FEED_FILTER = Object.freeze({
 });
 
 const CompanyPage: React.FC = () => {
-  const { isLineItemDrawerOpen, selectedLineItem, closeLineItemDrawer, feedId } =
-    useLineItemDrawer();
-
   const query = useLegacyQuery();
   const history = useHistory();
   const location = useLocation();
@@ -161,13 +156,6 @@ const CompanyPage: React.FC = () => {
 
   return (
     <MainLayout rightSide={false}>
-      <LineItemDrawer
-        open={isLineItemDrawerOpen}
-        onClose={closeLineItemDrawer}
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        lineItem={selectedLineItem!}
-        feedId={feedId}
-      />
       <h1 className="sr-only">Feed list</h1>
       {!!filterKey && (
         <div className="flex items-center space-x-4 pb-8">
