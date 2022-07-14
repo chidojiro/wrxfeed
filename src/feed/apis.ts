@@ -1,5 +1,6 @@
-import { Category, TransLineItem, Vendor } from '@/main/entity';
+import { Category, TransLineItem } from '@/main/entity';
 import { RestApis } from '@/rest/apis';
+import { Vendor } from '@/vendor/types';
 import { GetLineItemPayload } from './types';
 
 const getLineItemDetails = ({ lineItemId }: GetLineItemPayload) =>

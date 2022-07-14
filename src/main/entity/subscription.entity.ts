@@ -1,4 +1,5 @@
-import { Category, Department, Vendor } from '@/main/entity/transaction.entity';
+import { Category, Department } from '@/main/entity/transaction.entity';
+import { Vendor } from '@/vendor/types';
 
 export type Subscription = {
   departments?: Department[];
