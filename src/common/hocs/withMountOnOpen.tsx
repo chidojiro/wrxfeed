@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash';
 import React from 'react';
 import { useDelayableState } from '../hooks';
 import { OpenClose } from '../types';
@@ -9,7 +8,7 @@ export const withMountOnOpen =
   <T extends OpenProps>(Component: (props: T) => JSX.Element | null) =>
   // eslint-disable-next-line react/display-name
   (props: T) => {
-    const [tempProps, setTempProps] = React.useState<T | Record<string, never>>(props);
+    const [cachedProps, setCachedProps] = React.useState<T>(props);
     const [delayabeOpen, setDelayableOpen] = useDelayableState(500, props.open);
 
     React.useEffect(() => {
@@ -17,25 +16,18 @@ export const withMountOnOpen =
     }, [props.open, setDelayableOpen]);
 
     React.useEffect(() => {
-      // Keep props on first open
-      if (!delayabeOpen && !props.open) {
-        setTempProps((prev) => (isEqual(prev, {}) ? prev : {}));
-        return;
+      if (props.open) {
+        setCachedProps(props);
       }
-
-      // Clean up props after completely close
-      if (!delayabeOpen) {
-        setTempProps((prev) => (isEqual(prev, props) ? prev : props));
-        return;
-      }
-    }, [delayabeOpen, props]);
+    }, [props]);
 
     if (!delayabeOpen) {
       return null;
     }
 
+    // Use cachedProps while closing to retain the data
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { open, onClose, ...restProps } = tempProps;
+    const { open, onClose, ...restProps } = props.open ? props : cachedProps;
 
     return <Component {...(restProps as any)} onClose={props.onClose} open={props.open} />;
   };
