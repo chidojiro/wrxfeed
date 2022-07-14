@@ -15,7 +15,7 @@ export interface NotificationItemProps {
   onClick: (item: Notification) => void;
 }
 
-const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) => {
+const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) => {
   const avatarBgColor = React.useMemo(() => getColorByText(item?.content ?? ''), [item?.content]);
   const isNew = item.status === NotifyStatus.UNREAD;
   const identity = useIdentity();

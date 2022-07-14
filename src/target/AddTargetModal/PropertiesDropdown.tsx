@@ -31,7 +31,7 @@ interface PropertiesDropdownProps {
   onChangeItems?: (items: SearchResult[]) => void;
 }
 
-const PropertiesDropdown: React.VFC<PropertiesDropdownProps> = ({
+const PropertiesDropdown: React.FC<PropertiesDropdownProps> = ({
   className = '',
   classPopover = '',
   showError = false,

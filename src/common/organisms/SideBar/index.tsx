@@ -10,7 +10,7 @@ import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
-const SideBar: React.VFC = () => {
+const SideBar: React.FC = () => {
   const [menuItems, setMenuItems] = useRecoilState(menuItemsValue);
   const setFeedCount = useSetRecoilState(newFeedCountState);
   async function getFeedCount() {

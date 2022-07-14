@@ -8,7 +8,7 @@ interface LoadingProps {
   color?: string;
 }
 
-const Loading: React.VFC<LoadingProps> = ({ width, height, className = '', color = 'primary' }) => {
+const Loading: React.FC<LoadingProps> = ({ width, height, className = '', color = 'primary' }) => {
   return (
     <div className={clsx('flex justify-center items-center', className)}>
       <div

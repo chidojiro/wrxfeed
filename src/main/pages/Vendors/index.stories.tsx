@@ -8,4 +8,4 @@ export default {
   component: VendorsPage,
 } as Meta;
 
-export const Default: React.VFC = () => <VendorsPage />;
+export const Default: React.FC = () => <VendorsPage />;

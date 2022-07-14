@@ -12,7 +12,7 @@ interface Dimentions {
   height?: number;
 }
 
-const CommentImage: React.VFC<CommentImageProps> = ({ src }) => {
+const CommentImage: React.FC<CommentImageProps> = ({ src }) => {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [isPortionView, setPortionView] = useState(true);
   const [dimentions, setDimentions] = useState<Dimentions>({});

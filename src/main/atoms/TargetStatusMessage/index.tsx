@@ -7,7 +7,7 @@ interface TargetStatusMessageProps {
   exceeding: number;
 }
 
-const TargetStatusMessage: React.VFC<TargetStatusMessageProps> = ({
+const TargetStatusMessage: React.FC<TargetStatusMessageProps> = ({
   type,
   riskRange,
   exceeding,

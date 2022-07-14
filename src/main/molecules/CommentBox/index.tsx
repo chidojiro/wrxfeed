@@ -33,7 +33,7 @@ export interface CommentFormProps {
   mentionData?: MentionData[];
 }
 
-const CommentBox: React.VFC<CommentFormProps> = ({
+const CommentBox: React.FC<CommentFormProps> = ({
   id,
   className,
   defaultContent,

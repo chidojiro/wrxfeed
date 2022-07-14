@@ -22,7 +22,7 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const VendorsPage: React.VFC = () => {
+const VendorsPage: React.FC = () => {
   const history = useHistory();
   const { id: vendorId } = useParams<{ id?: string }>();
   const { getVendorById } = useApi();

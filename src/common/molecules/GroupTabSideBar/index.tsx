@@ -13,7 +13,7 @@ interface GroupTabSideBarProps {
   onClickExpand?: () => void;
 }
 
-const GroupTabSideBar: React.VFC<GroupTabSideBarProps> = ({
+const GroupTabSideBar: React.FC<GroupTabSideBarProps> = ({
   className,
   group,
   onClickExpand = () => undefined,

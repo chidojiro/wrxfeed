@@ -15,7 +15,7 @@ interface LeftTabCardProps {
   tab: LeftTab;
 }
 
-const LeftTabCard: React.VFC<LeftTabCardProps> = ({ className = '', tab, showTabIcon = false }) => {
+const LeftTabCard: React.FC<LeftTabCardProps> = ({ className = '', tab, showTabIcon = false }) => {
   const history = useHistory();
   const location = useLocation();
   const newFeedCount = useRecoilValue(newFeedCountState);

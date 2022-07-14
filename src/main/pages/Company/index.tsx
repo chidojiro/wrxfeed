@@ -32,7 +32,7 @@ const INIT_FEED_FILTER = Object.freeze({
   page: INIT_PAGINATION,
 });
 
-const CompanyPage: React.VFC = () => {
+const CompanyPage: React.FC = () => {
   const { isLineItemDrawerOpen, selectedLineItem, closeLineItemDrawer, feedId } =
     useLineItemDrawer();
 
@@ -164,6 +164,7 @@ const CompanyPage: React.VFC = () => {
       <LineItemDrawer
         open={isLineItemDrawerOpen}
         onClose={closeLineItemDrawer}
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         lineItem={selectedLineItem!}
         feedId={feedId}
       />

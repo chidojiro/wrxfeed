@@ -1,4 +1,4 @@
-import React, { VFC } from 'react';
+import React from 'react';
 import { ReactComponent as TickCircle } from '@/assets/icons/solid/tick-circle.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/outline/close.svg';
 
@@ -7,7 +7,7 @@ interface BannerProps {
   onClose: () => void;
 }
 
-const Banner: VFC<BannerProps> = ({ message, onClose }) => {
+const Banner: React.FC<BannerProps> = ({ message, onClose }) => {
   return (
     <div className="relative w-full flex items-start">
       <div className="w-full flex flex-col items-start">

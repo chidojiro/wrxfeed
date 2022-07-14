@@ -47,7 +47,7 @@ interface ConfirmModalProps {
   confirmLabel: string;
 }
 
-const TransactionCard: React.VFC<TransactionCardProps> = ({
+const TransactionCard: React.FC<TransactionCardProps> = ({
   transaction,
   onClickDepartment,
   onClickVendor,
