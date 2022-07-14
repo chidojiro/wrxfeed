@@ -146,11 +146,11 @@ export const TargetCard = ({
               <TargetStatus type={target.trackingStatus} exceeding={exceeding} />
             ) : (
               <Button
-                className="rounded-full pl-2 pr-2.5 h-5 max-h-5 bg-Accent-8 text-Accent-2 flex justify-center items-center space-x-1.5"
+                className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex"
                 onClick={addTargetModalDisclosure.onOpen}
               >
-                Set target
-                <RightSmallIcon className="h-2 text-Accent-2" />
+                <span className="font-medium text-xs">Set target</span>
+                <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />
               </Button>
             )}
           </div>
