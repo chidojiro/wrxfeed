@@ -21,7 +21,7 @@ export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeade
 
   const department = {
     id: departmentId,
-    name: '',
+    name: teamName,
   };
 
   return (
@@ -50,6 +50,7 @@ export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeade
         onUnfollow={() => unsubscribe('departments', department)}
         btnClassName="!border-white"
         textClassName="!text-white"
+        hideName
       />
     </div>
   );

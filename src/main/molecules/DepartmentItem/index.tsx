@@ -15,6 +15,7 @@ interface DepartmentItemProps {
   onUnfollow?: MouseEventHandler<HTMLButtonElement>;
   btnClassName?: string;
   textClassName?: string;
+  hideName?: boolean;
 }
 
 const DepartmentItem: React.FC<DepartmentItemProps> = ({
@@ -26,6 +27,7 @@ const DepartmentItem: React.FC<DepartmentItemProps> = ({
   onUnfollow,
   btnClassName = '',
   textClassName = '',
+  hideName = false,
 }) => {
   const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -48,7 +50,7 @@ const DepartmentItem: React.FC<DepartmentItemProps> = ({
       onClick={onClick}
     >
       <div className="flex flex-1">
-        <p className="text-sm font-medium text-Gray-1">{item?.name}</p>
+        {!hideName && <p className="text-sm font-medium text-Gray-1">{item?.name}</p>}
       </div>
       {!disableFollow &&
         (isFollowing ? (
