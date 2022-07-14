@@ -14,6 +14,10 @@ export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
     mutate,
   } = useTargets({ type: 'company' });
 
+  React.useEffect(() => {
+    console.log('targets: ' + JSON.stringify(targets));
+  }, [targets]);
+
   return (
     <OverlayLoader loading={isInitializing} className={className}>
       <TargetCard
@@ -22,6 +26,7 @@ export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
         hidePropertyDropdowns
         onUpdateSuccess={(target) => mutate([target])}
         onDeleteSuccess={() => mutate()}
+        deletable={false}
       />
     </OverlayLoader>
   );
