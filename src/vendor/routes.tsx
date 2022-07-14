@@ -4,12 +4,12 @@ import { VendorPage } from './VendorPage';
 import { VendorsPage } from './VendorsPage';
 
 export const VendorRoutes: Record<string, RouteItem> = {
-  Dashboard: {
+  Vendor: {
     path: '/vendors/:vendorId',
     component: VendorPage,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  DashboardAllCompany: {
+  Vendors: {
     path: '/vendors',
     component: VendorsPage,
     permissions: [UserRole.ADMIN, UserRole.USER],
