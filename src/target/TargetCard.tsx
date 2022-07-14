@@ -64,7 +64,7 @@ export const TargetCard = ({
       type="button"
       key={`Dashboard-TargetChartView-${target.id}`}
       className={clsx(
-        'bg-white relative w-full overflow-hidden rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
+        'bg-white relative w-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
         className,
       )}
     >
@@ -81,7 +81,7 @@ export const TargetCard = ({
       <div className="flex flex-1 flex-col pb-4 space-y-2 w-full">
         <div
           style={{ background: showColorfulHeading ? headingColor : undefined }}
-          className="h-2 mb-4"
+          className="h-2 mb-4 rounded-t-card"
         />
         <div className="flex flex-col px-6 space-y-4">
           <div className="flex flex-row space-x-1">
@@ -101,7 +101,7 @@ export const TargetCard = ({
                   src={target.updatedBy?.avatar}
                 />
                 <span className="text-Gray-6 text-xs">
-                  Last edited {distanceToNow(target.updatedBy?.updatedAt)}
+                  Last edited {distanceToNow(target?.updatedAt)}
                 </span>
               </div>
             </div>
@@ -142,7 +142,11 @@ export const TargetCard = ({
           </div>
         </div>
         <div className="flex flex-1 flex-col px-4">
-          <MiniChartView target={target} xAxisClass="font-normal text-2xs" />
+          <MiniChartView
+            target={target}
+            className="overflow-hidden"
+            xAxisClass="font-normal text-2xs"
+          />
         </div>
       </div>
       {isDeletingTarget && (
