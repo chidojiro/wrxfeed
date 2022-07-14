@@ -41,7 +41,7 @@ export const LineItemDrawer = withMountOnOpen(
 
     return (
       <Drawer open={open} onClose={onClose}>
-        <div className={clsx('relative flex flex-1 flex-col pt-navbar h-full', className)}>
+        <div className={clsx('relative z-20 flex flex-1 flex-col pt-navbar h-full', className)}>
           <LineItemDetails onCloseClick={onClose} loading={isValidating} item={lineItemDetails} />
         </div>
       </Drawer>
