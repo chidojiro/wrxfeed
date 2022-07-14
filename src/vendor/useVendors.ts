@@ -3,5 +3,5 @@ import { VendorApis } from './apis';
 import { GetVendorsParams } from './types';
 
 export const useVendors = (params: GetVendorsParams) => {
-  return useFetcher(['vendors'], () => VendorApis.getList(params));
+  return useFetcher(['vendors', params], () => VendorApis.getList(params));
 };
