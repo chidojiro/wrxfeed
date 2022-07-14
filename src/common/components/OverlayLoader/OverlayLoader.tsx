@@ -33,7 +33,7 @@ export const OverlayLoader = ({ loading, children, className }: OverlayLoaderPro
         ref={ref}
         className={clsx(
           StringUtils.withProjectClassNamePrefix('overlay-loader'),
-          'absolute z-[51] flex justify-center inset-0 bg-black/10',
+          'absolute z-[999] flex justify-center inset-0 bg-black/10',
           { hidden: !loading },
         )}
       >
