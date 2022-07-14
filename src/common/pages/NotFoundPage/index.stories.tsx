@@ -8,4 +8,4 @@ export default {
   component: NotFoundPage,
 } as Meta;
 
-export const Primary: React.VFC = () => <NotFoundPage />;
+export const Primary: React.FC = () => <NotFoundPage />;

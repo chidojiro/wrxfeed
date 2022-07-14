@@ -14,7 +14,7 @@ export interface NotifyDetailsProps {
   isLoading?: boolean;
 }
 
-const NotifyDetails: React.VFC<NotifyDetailsProps> = ({
+const NotifyDetails: React.FC<NotifyDetailsProps> = ({
   style = '',
   isOpen,
   onClose,

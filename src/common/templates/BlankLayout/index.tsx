@@ -9,7 +9,7 @@ interface BlankLayoutProps {
   navBar?: boolean;
 }
 
-const BlankLayout: React.VFC<BlankLayoutProps> = ({
+const BlankLayout: React.FC<BlankLayoutProps> = ({
   children,
   className,
   navBar = false,

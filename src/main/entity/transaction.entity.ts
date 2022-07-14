@@ -1,4 +1,5 @@
-// eslint-disable-next-line import/no-cycle
+/* eslint-disable import/no-cycle */
+import { Vendor } from '@/vendor/types';
 import { TransLineItem } from './lineItem.entity';
 
 export enum Visibility {
@@ -161,17 +162,6 @@ export type TopCategories = {
   id: number;
   name: string;
   spend: number;
-};
-
-export type Vendor = {
-  id: number;
-  name: string;
-  avatar?: string;
-  contactEmail?: string;
-  contactNumber?: string;
-  website?: string;
-  description?: string;
-  categories?: Category[];
 };
 
 export type TranMeta = {

@@ -2,10 +2,12 @@
 import { SearchFilters } from '@/api/types';
 import { getApiClient } from '@/api/utils';
 import { SearchTypes } from '@/auth/types';
-import { Category, Department, Vendor } from '@/main/entity';
+import { Category, Department } from '@/main/entity';
 import { GlobalSearchType, searchState } from '@/main/states/search.state';
 import { SearchResult } from '@/main/types';
 import { TargetTypeProp } from '@/target/types';
+import { VendorApis } from '@/vendor/apis';
+import { Vendor } from '@/vendor/types';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRecoilState } from 'recoil';
@@ -122,7 +124,7 @@ export function useSearch({
           includeSub: 1,
         }),
         apiClient.getCategories(INIT_PAGINATION),
-        apiClient.getVendors(INIT_PAGINATION),
+        VendorApis.getList(INIT_PAGINATION),
       ]);
 
       setGlobalSearch({

@@ -1,10 +1,10 @@
-import React, { MouseEventHandler } from 'react';
-import Button from '@/common/atoms/Button';
-import { Category, Department, Vendor } from '@/main/entity';
-// Icons
 import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
+import Button from '@/common/atoms/Button';
+import { Category, Department } from '@/main/entity';
+import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
+import React, { MouseEventHandler } from 'react';
 
 interface DepartmentItemProps {
   item: Department | Category | Vendor;
@@ -15,9 +15,10 @@ interface DepartmentItemProps {
   onUnfollow?: MouseEventHandler<HTMLButtonElement>;
   btnClassName?: string;
   textClassName?: string;
+  hideName?: boolean;
 }
 
-const DepartmentItem: React.VFC<DepartmentItemProps> = ({
+const DepartmentItem: React.FC<DepartmentItemProps> = ({
   item,
   isFollowing,
   disableFollow = false,
@@ -26,6 +27,7 @@ const DepartmentItem: React.VFC<DepartmentItemProps> = ({
   onUnfollow,
   btnClassName = '',
   textClassName = '',
+  hideName = false,
 }) => {
   const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -48,7 +50,7 @@ const DepartmentItem: React.VFC<DepartmentItemProps> = ({
       onClick={onClick}
     >
       <div className="flex flex-1">
-        <p className="text-sm font-medium text-Gray-1">{item?.name}</p>
+        {!hideName && <p className="text-sm font-medium text-Gray-1">{item?.name}</p>}
       </div>
       {!disableFollow &&
         (isFollowing ? (

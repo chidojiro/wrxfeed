@@ -2,10 +2,11 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { ReactComponent as DownSmall } from '@/assets/icons/outline/down-small.svg';
 import { DATE_FORMAT } from '@/common/utils';
-import clsx from 'clsx';
-import { Transaction, TransLineItem, TranStatusType, Vendor } from '@/main/entity';
+import { Transaction, TransLineItem, TranStatusType } from '@/main/entity';
 import TranLineItemsList from '@/main/molecules/TranLineItemsList';
 import { decimalLogic, DecimalType, getTransactionStatus } from '@/main/utils';
+import { Vendor } from '@/vendor/types';
+import clsx from 'clsx';
 import dayjs from 'dayjs';
 import React from 'react';
 
@@ -19,7 +20,7 @@ export interface RollupTranRowProps {
 
 const A_WEEK_IN_MILLISECONDS = 1000 * 60 * 60 * 24 * 7;
 
-const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, onView }) => {
+const RollupTranRow: React.FC<RollupTranRowProps> = ({ tran, onClick, onView }) => {
   const viewRef = React.useRef<HTMLButtonElement>(null);
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const { lineItems = [] } = tran;

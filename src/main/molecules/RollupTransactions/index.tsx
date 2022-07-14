@@ -17,7 +17,7 @@ interface RollupTransactionsProps {
   tranHidden?: boolean;
 }
 
-const RollupTransactions: React.VFC<RollupTransactionsProps> = ({
+const RollupTransactions: React.FC<RollupTransactionsProps> = ({
   trans,
   autoShowTrans = false,
   showTopDivider = false,

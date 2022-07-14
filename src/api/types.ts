@@ -21,8 +21,6 @@ import {
   Transaction,
   TransLineItem,
   User,
-  Vendor,
-  VendorDescription,
 } from '@/main/entity';
 import { FeedBackFormModel, InviteFormModel, SearchResult } from '@/main/types';
 import { PaginationParams } from '@/rest/types';
@@ -54,8 +52,6 @@ export interface ApiClient {
   addFeedItemComment: (feedId: number, data: AddFeedCommentParams) => Promise<Comment>;
   getFeedItemById: (feedId: number) => Promise<FeedItem>;
   getCategoryById: (catId: number) => Promise<Category>;
-  getVendorById: (venId: number) => Promise<Vendor>;
-  updateVendorById: (id: number, data: VendorDescription) => Promise<void>;
   getDepartmentById: (depId: number) => Promise<Department>;
   getTopCategories: (depId: number) => Promise<TopCategories[]>;
   maskLineItemAsRead: (id: number) => Promise<void>;
@@ -77,7 +73,6 @@ export interface ApiClient {
   // Directory
   getDepartments: (filters?: DepartmentFilter) => Promise<Department[]>;
   getCategories: (filter?: CategoryFilter) => Promise<Category[]>;
-  getVendors: (pagination?: PaginationParams) => Promise<Vendor[]>;
   updateCategory: (data?: Partial<Category>) => Promise<void>;
   // Notification
   getNotifications: (page?: PaginationParams) => Promise<NotificationsResponse>;

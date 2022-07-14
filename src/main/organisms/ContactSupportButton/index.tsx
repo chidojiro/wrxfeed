@@ -6,7 +6,7 @@ import { EMAIL_SUPPORT_ADDRESS } from '@/config';
 export interface ContactSupportButtonProps {
   className?: string;
 }
-const ContactSupportButton: React.VFC<ContactSupportButtonProps> = ({ className }) => {
+const ContactSupportButton: React.FC<ContactSupportButtonProps> = ({ className }) => {
   const onClickContactSupport = () => {
     window?.open(`mailto:${EMAIL_SUPPORT_ADDRESS}`);
   };

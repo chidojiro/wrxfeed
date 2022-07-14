@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, VFC } from 'react';
+import React, { MouseEventHandler } from 'react';
 import Button from '@/common/atoms/Button';
 import { Department } from '@/main/entity';
 // Icons
@@ -14,7 +14,7 @@ interface DirectoryItem {
   onUnfollow?: MouseEventHandler<HTMLButtonElement>;
 }
 
-const RootDepartmentHeader: VFC<DirectoryItem> = ({
+const RootDepartmentHeader: React.FC<DirectoryItem> = ({
   item,
   isFollowing,
   onClick,

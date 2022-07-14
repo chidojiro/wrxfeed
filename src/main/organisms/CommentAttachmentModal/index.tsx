@@ -21,7 +21,7 @@ export type AttachmentModalProps = ModalProps & {
   onFileUploaded: (data: CommentFormModel) => void;
 };
 
-const CommentAttachmentModal: React.VFC<AttachmentModalProps> = ({
+const CommentAttachmentModal: React.FC<AttachmentModalProps> = ({
   depName,
   catName,
   open,

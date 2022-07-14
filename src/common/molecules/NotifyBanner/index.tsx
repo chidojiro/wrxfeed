@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useRef, useState, VFC } from 'react';
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ReactComponent as TickCircle } from '@/assets/icons/solid/tick-circle.svg';
 import { Transition } from '@headlessui/react';
 import EventEmitter, { EventName } from '@/main/EventEmitter';
@@ -31,7 +31,7 @@ const NotifyBanner = {
   },
 };
 
-export const NotifyBannerContainer: VFC<NotifyBannerOptions> = ({ timeout, topOffset }) => {
+export const NotifyBannerContainer: React.FC<NotifyBannerOptions> = ({ timeout, topOffset }) => {
   const timeoutRef = useRef(timeout ?? DEFAULT_TIMEOUT);
   const topOffsetRef = useRef(topOffset ?? 0);
   const typeRef = useRef<NotifyType>(NotifyType.INFO);

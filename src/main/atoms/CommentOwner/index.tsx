@@ -14,7 +14,7 @@ export interface CommentOwnerProps {
   showAva?: boolean;
 }
 
-const CommentOwner: React.VFC<CommentOwnerProps> = ({
+const CommentOwner: React.FC<CommentOwnerProps> = ({
   owner,
   commentDate,
   className,

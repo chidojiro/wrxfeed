@@ -21,7 +21,7 @@ export const OptionsButton = ({
   menuIconClass,
 }: OptionsButtonProps) => {
   return (
-    <Menu as="div" className={clsx('relative inline-block z-20 text-left', className)}>
+    <Menu as="div" className={clsx('relative inline-block z-10 text-left', className)}>
       <div>
         <Menu.Button
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => event.stopPropagation()}

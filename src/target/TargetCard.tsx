@@ -23,6 +23,7 @@ export type TargetCardProps = ClassName &
   Pick<AddTargetModalProps, 'hidePropertyDropdowns'> & {
     target: Target;
     showColorfulHeading?: boolean;
+    deletable?: boolean;
   };
 
 export const TargetCard = ({
@@ -32,6 +33,7 @@ export const TargetCard = ({
   onDeleteSuccess,
   showColorfulHeading = true,
   hidePropertyDropdowns,
+  deletable = true,
 }: TargetCardProps) => {
   const history = useHistory();
   const department = target.department;
@@ -91,7 +93,7 @@ export const TargetCard = ({
                 <OptionsButton
                   onViewClick={goToTargetDetails}
                   onEditClick={addTargetModalDisclosure.onOpen}
-                  onDeleteClick={target.isPrimary ? undefined : handleDeleteClick}
+                  onDeleteClick={!target.isPrimary && deletable ? handleDeleteClick : undefined}
                 />
               </div>
               <div className="flex items-center gap-2 h-6 max-h-6 mt-2">

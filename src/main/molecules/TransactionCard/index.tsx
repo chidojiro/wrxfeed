@@ -5,7 +5,6 @@ import { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-
 import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
 import NotifyBanner from '@/common/molecules/NotifyBanner';
 import { formatDate } from '@/common/utils';
-import clsx from 'clsx';
 import { ProtectedFeatures } from '@/identity/constants';
 import { useIdentity, usePermission } from '@/identity/hooks';
 import CommentRemaining from '@/main/atoms/CommentRemaining';
@@ -13,7 +12,7 @@ import ConfirmModal from '@/main/atoms/ConfirmModal';
 import DepartmentColorSection from '@/main/atoms/DepartmentColorSection';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
-import { Category, Department, Transaction, Vendor, Visibility } from '@/main/entity';
+import { Category, Department, Transaction, Visibility } from '@/main/entity';
 import { useComment, useMention } from '@/main/hooks';
 import CommentBox from '@/main/molecules/CommentBox';
 import CommentItem from '@/main/molecules/CommentItem';
@@ -22,8 +21,10 @@ import FeedBackModal from '@/main/organisms/FeedBackModal';
 import { CommentFormModel } from '@/main/types';
 import { commentEditorHtmlParser, decimalLogic, DecimalType } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
+import { Vendor } from '@/vendor/types';
 // Tailwind components
 import { Menu } from '@headlessui/react';
+import clsx from 'clsx';
 import { EditorState } from 'draft-js';
 import React, { useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
@@ -47,7 +48,7 @@ interface ConfirmModalProps {
   confirmLabel: string;
 }
 
-const TransactionCard: React.VFC<TransactionCardProps> = ({
+const TransactionCard: React.FC<TransactionCardProps> = ({
   transaction,
   onClickDepartment,
   onClickVendor,

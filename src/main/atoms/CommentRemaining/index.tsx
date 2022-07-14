@@ -11,7 +11,7 @@ export interface CommentRemainingProps {
   className?: string;
 }
 
-const CommentRemaining: React.VFC<CommentRemainingProps> = ({
+const CommentRemaining: React.FC<CommentRemainingProps> = ({
   hiddenCount,
   className,
   onClick,

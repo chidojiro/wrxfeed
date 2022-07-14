@@ -12,7 +12,7 @@ import ConfirmModal from '@/main/atoms/ConfirmModal';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 // constants
-import { Category, Department, FeedItem, Vendor, Visibility } from '@/main/entity';
+import { Category, Department, FeedItem, Visibility } from '@/main/entity';
 import { useMention } from '@/main/hooks';
 import { useFeedComment } from '@/main/hooks/feedComment.hook';
 import CommentBox from '@/main/molecules/CommentBox';
@@ -35,6 +35,7 @@ import { EditorState } from 'draft-js';
 import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { Vendor } from '@/vendor/types';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -55,7 +56,7 @@ interface ConfirmModalProps {
 const INITIAL_COMMENT_NUMBER = 2;
 const LIMIT_GET_COMMENT = 20;
 
-const RollupCard: React.VFC<RollupCardProps> = ({
+const RollupCard: React.FC<RollupCardProps> = ({
   feedItem,
   onClickDepartment,
   onClickCategory,

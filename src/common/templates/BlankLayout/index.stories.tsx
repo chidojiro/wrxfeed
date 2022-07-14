@@ -8,7 +8,7 @@ export default {
   component: BlankLayout,
 } as Meta;
 
-export const Default: React.VFC = () => (
+export const Default: React.FC = () => (
   <BlankLayout>
     {[...new Array(12)]
       .map(

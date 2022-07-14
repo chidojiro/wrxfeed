@@ -19,7 +19,7 @@ interface DepartmentListProps {
   onSelectRoot?: (dept: Department) => void;
 }
 
-const DepartmentList: React.VFC<DepartmentListProps> = ({
+const DepartmentList: React.FC<DepartmentListProps> = ({
   departments,
   isLoading,
   onLoadMore,

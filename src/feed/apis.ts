@@ -1,5 +1,6 @@
 import { Category, TransLineItem } from '@/main/entity';
 import { RestApis } from '@/rest/apis';
+import { Vendor } from '@/vendor/types';
 import { GetLineItemPayload } from './types';
 
 const getLineItemDetails = ({ lineItemId }: GetLineItemPayload) =>
@@ -8,7 +9,11 @@ const getLineItemDetails = ({ lineItemId }: GetLineItemPayload) =>
 const getCategory = (id: number) =>
   RestApis.get<Category>(`/feed/categories/${id}`).then((res) => res.data);
 
+const getVendor = (id: number) =>
+  RestApis.get<Vendor>(`/feed/vendors/${id}`).then((res) => res.data);
+
 export const FeedApis = {
   getLineItemDetails,
   getCategory,
+  getVendor,
 };

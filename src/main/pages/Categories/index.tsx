@@ -2,19 +2,19 @@
 import { FeedFilters } from '@/api/types';
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@/common/constants';
-import { useLegacyQuery } from '@/common/hooks';
+import { useFetcher, useLegacyQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
 import { FeedApis } from '@/feed/apis';
-import { Category, Department, Vendor } from '@/main/entity';
+import { Category, Department } from '@/main/entity';
 import { useCategory } from '@/main/hooks/category.hook';
 import CategoryList from '@/main/organisms/CategoryList';
 import FeedList from '@/main/organisms/FeedList';
 import { scrollToTop } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
+import { Vendor } from '@/vendor/types';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { useFetcher } from '@/common/hooks';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -22,7 +22,7 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const CategoriesPage: React.VFC = () => {
+const CategoriesPage: React.FC = () => {
   const history = useHistory();
   const { id: catId } = useParams<{ id?: string }>();
   const query = useLegacyQuery();
