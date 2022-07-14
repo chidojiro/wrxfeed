@@ -14,6 +14,8 @@ import dayjs from 'dayjs';
 import { range } from 'lodash-es';
 import { decimalLogic, DecimalType } from './utils';
 
+const Accent6 = '#818CF8';
+
 const DATA_DATE_FORMAT = 'MMM DD';
 
 const getYearSpending = (target: Target, year: number) =>
@@ -98,9 +100,9 @@ export const getLineChartDataInMonth = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: overallTarget !== 0 ? dotStatusColor : '#818CF8',
+      stroke: overallTarget !== 0 ? dotStatusColor : Accent6,
       dot: false,
-      fill: overallTarget !== 0 ? backgroundStatusColor : '#818CF8',
+      fill: overallTarget !== 0 ? backgroundStatusColor : Accent6,
     },
   ];
 
@@ -271,9 +273,9 @@ export const getTargetMonthsLineChartData = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: overallTarget !== 0 ? dotStatusColor : '#818CF8',
+      stroke: overallTarget !== 0 ? dotStatusColor : Accent6,
       dot: false,
-      fill: overallTarget !== 0 ? backgroundStatusColor : '#818CF8',
+      fill: overallTarget !== 0 ? backgroundStatusColor : Accent6,
     },
   ];
 

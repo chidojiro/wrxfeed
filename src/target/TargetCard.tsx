@@ -8,7 +8,13 @@ import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
-import { getColorByText, getDisplayUsdAmount, getTargetPeriodsAmountTotal } from '@/main/utils';
+import {
+  getColorByText,
+  getDisplayUsdAmount,
+  getTargetPeriodsAmountTotal,
+  toMonthName,
+  toUSD,
+} from '@/main/utils';
 import { Routes } from '@/routing/routes';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
@@ -61,12 +67,11 @@ export const TargetCard = ({
     onDeleteSuccess(target.id);
   };
 
+  const currentMonth = Number(target.spendings && target.spendings[0]?.month);
+
   return (
     <button
-      onClick={(e) => {
-        e.stopPropagation();
-        goToTargetDetails;
-      }}
+      onClick={goToTargetDetails}
       type="button"
       key={`Dashboard-TargetChartView-${target.id}`}
       className={clsx(
@@ -145,13 +150,29 @@ export const TargetCard = ({
             {overallTarget !== 0 && target.trackingStatus ? (
               <TargetStatus type={target.trackingStatus} exceeding={exceeding} />
             ) : (
-              <Button
-                className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex"
-                onClick={addTargetModalDisclosure.onOpen}
-              >
-                <span className="font-medium text-xs">Set target</span>
-                <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />
-              </Button>
+              <div className="group relative">
+                <Button
+                  className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex"
+                  onClick={addTargetModalDisclosure.onOpen}
+                >
+                  <span className="font-medium text-xs">Set target</span>
+                  <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />
+                </Button>
+                <div className="invisible group-hover:visible absolute -top-16 right-0 w-56">
+                  <div className="bg-primary p-2 rounded-sm px-4 py-2 space-x-2 flex flex-col text-xs space-y-1">
+                    <p className="text-Gray-12 font-semibold text-left pl-4.5">
+                      {toMonthName(currentMonth)}
+                    </p>
+                    <div className="flex justify-between">
+                      <div className="flex justify-between items-center space-x-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-Green-400" />
+                        <p className="text-Gray-12">Spend</p>
+                      </div>
+                      <p className="text-Gray-12 font-semibold">{toUSD.format(currentSpend)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>
