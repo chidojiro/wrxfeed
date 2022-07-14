@@ -1,3 +1,4 @@
+import Button from '@/common/atoms/Button';
 import Loading from '@/common/atoms/Loading';
 import { Avatar } from '@/common/components';
 import { useHandler } from '@/common/hooks';
@@ -11,12 +12,12 @@ import { getColorByText, getDisplayUsdAmount, getTargetPeriodsAmountTotal } from
 import { Routes } from '@/routing/routes';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
-import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { AddTargetModal, AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
 import { MiniChartView } from './MiniChartView';
 import { Target } from './types';
+import { RightSmallIcon } from '@/assets';
 
 export type TargetCardProps = ClassName &
   Required<Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'>> &
@@ -62,7 +63,10 @@ export const TargetCard = ({
 
   return (
     <button
-      onClick={goToTargetDetails}
+      onClick={(e) => {
+        e.stopPropagation();
+        goToTargetDetails;
+      }}
       type="button"
       key={`Dashboard-TargetChartView-${target.id}`}
       className={clsx(
@@ -138,14 +142,23 @@ export const TargetCard = ({
                 </p>
               </div>
             </div>
-            {target.trackingStatus && (
+            {overallTarget !== 0 && target.trackingStatus ? (
               <TargetStatus type={target.trackingStatus} exceeding={exceeding} />
+            ) : (
+              <Button
+                className="rounded-full pl-2 pr-2.5 h-5 max-h-5 bg-Accent-8 text-Accent-2 flex justify-center items-center space-x-1.5"
+                onClick={addTargetModalDisclosure.onOpen}
+              >
+                Set target
+                <RightSmallIcon className="h-2 text-Accent-2" />
+              </Button>
             )}
           </div>
         </div>
         <div className="flex flex-1 flex-col px-4">
           <MiniChartView
             target={target}
+            overallTarget={overallTarget}
             className="overflow-hidden"
             xAxisClass="font-normal text-2xs"
           />

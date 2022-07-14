@@ -30,6 +30,7 @@ export const getLineChartDataInMonth = (
   target: Target,
   targetMonth: TargetMonth,
   trackingStatus?: TargetStatusType,
+  overallTarget?: number,
 ): LineChartData => {
   const targetDate = dayjs().set('month', targetMonth.month - 1);
   const isThisMonth = dayjs().month() === targetMonth.month - 1;
@@ -97,9 +98,9 @@ export const getLineChartDataInMonth = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: dotStatusColor,
+      stroke: overallTarget !== 0 ? dotStatusColor : '#818CF8',
       dot: false,
-      fill: backgroundStatusColor,
+      fill: overallTarget !== 0 ? backgroundStatusColor : '#818CF8',
     },
   ];
 
@@ -147,6 +148,7 @@ export const getTargetMonthsLineChartData = (
   target: Target,
   targetMonths: TargetMonth[],
   trackingStatus?: TargetStatusType,
+  overallTarget?: number,
 ): LineChartData => {
   if (!target) return INITIAL_CHART_DATA;
 
@@ -269,9 +271,9 @@ export const getTargetMonthsLineChartData = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: dotStatusColor,
+      stroke: overallTarget !== 0 ? dotStatusColor : '#818CF8',
       dot: false,
-      fill: backgroundStatusColor,
+      fill: overallTarget !== 0 ? backgroundStatusColor : '#818CF8',
     },
   ];
 
