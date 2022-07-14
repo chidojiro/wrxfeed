@@ -9,7 +9,7 @@ interface ExceptListProps {
   onRemoveItem?: (item: SearchResult) => void;
 }
 
-const ExceptList: React.VFC<ExceptListProps> = ({
+const ExceptList: React.FC<ExceptListProps> = ({
   className = '',
   items = [],
   onRemoveItem = () => undefined,

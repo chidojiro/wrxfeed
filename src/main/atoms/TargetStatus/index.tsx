@@ -11,7 +11,7 @@ interface TargetStatusProps {
   exceeding: number;
 }
 
-const TargetStatus: React.VFC<TargetStatusProps> = ({ className = '', type, exceeding }) => {
+const TargetStatus: React.FC<TargetStatusProps> = ({ className = '', type, exceeding }) => {
   const { label, background, dot } = TargetStatusConfig[type];
   return (
     <div

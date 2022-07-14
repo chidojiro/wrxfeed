@@ -7,7 +7,7 @@ type UploadButtonProps = React.LabelHTMLAttributes<Element> & {
   onFileSelected: (file: File | null) => void;
 };
 
-const UploadButton: React.VFC<UploadButtonProps> = ({
+const UploadButton: React.FC<UploadButtonProps> = ({
   children,
   id,
   className,

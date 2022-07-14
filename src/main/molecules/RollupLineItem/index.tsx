@@ -20,7 +20,7 @@ export interface RollupLineItemProps {
   onClickVendor?: (vendor: Vendor) => void;
 }
 
-const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick }) => {
+const RollupLineItem: React.FC<RollupLineItemProps> = ({ lineItem, onClick }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
   const isVisible = useIntersection(viewRef.current || undefined, '0px');
   const { maskLineItemAsRead } = useApi();

@@ -55,7 +55,7 @@ interface ConfirmModalProps {
 const INITIAL_COMMENT_NUMBER = 2;
 const LIMIT_GET_COMMENT = 20;
 
-const RollupCard: React.VFC<RollupCardProps> = ({
+const RollupCard: React.FC<RollupCardProps> = ({
   feedItem,
   onClickDepartment,
   onClickCategory,

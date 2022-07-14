@@ -10,7 +10,7 @@ export interface NotifyRowProps {
   onClickNotifyAndSeen: () => void;
 }
 
-const NotifyRow: React.VFC<NotifyRowProps> = ({ item, onClickNotifyAndSeen }) => {
+const NotifyRow: React.FC<NotifyRowProps> = ({ item, onClickNotifyAndSeen }) => {
   return (
     <button
       type="button"

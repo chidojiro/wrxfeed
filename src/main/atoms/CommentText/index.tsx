@@ -10,7 +10,7 @@ export interface CommentTextProps {
   style?: React.CSSProperties;
 }
 
-const CommentText: React.VFC<CommentTextProps> = ({ content, className = '', style }) => {
+const CommentText: React.FC<CommentTextProps> = ({ content, className = '', style }) => {
   const tokenizedContent = tokenizeComment(content);
   return (
     <TokenizedText className={clsx('whitespace-pre-wrap break-words', className)} style={style}>

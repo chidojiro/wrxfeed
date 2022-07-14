@@ -15,7 +15,7 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT_GET_NOTIFICATIONS,
 });
 
-const Notifications: React.VFC = () => {
+const Notifications: React.FC = () => {
   const [filter, setFilter] = React.useState<PaginationParams>(INIT_PAGINATION);
   const { notifications, isLoading, hasMore, patchNotification } = useNotification(filter);
   const history = useHistory();

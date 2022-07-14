@@ -10,7 +10,7 @@ type TargetFeedOverviewProps = ClassName & {
   target: Target;
 };
 
-export const TargetFeedOverview: React.VFC<TargetFeedOverviewProps> = ({ className, target }) => {
+export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({ className, target }) => {
   const { overallTarget, currentSpend, targetToDate, exceeding } =
     getTargetPeriodsAmountTotal(target);
 

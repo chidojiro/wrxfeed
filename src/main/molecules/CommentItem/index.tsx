@@ -46,7 +46,7 @@ interface ConfirmModalProps {
   confirmLabel: string;
 }
 
-const CommentItem: React.VFC<CommentItemProps> = ({
+const CommentItem: React.FC<CommentItemProps> = ({
   className,
   comment,
   mentionData,

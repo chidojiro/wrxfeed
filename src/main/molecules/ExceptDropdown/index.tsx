@@ -17,7 +17,7 @@ interface ExceptDropdownProps {
   onItemAdd: (item: SearchResult) => void;
 }
 
-const ExceptDropdown: React.VFC<ExceptDropdownProps> = ({
+const ExceptDropdown: React.FC<ExceptDropdownProps> = ({
   className = '',
   classPopover = '',
   placeholder = 'Except',

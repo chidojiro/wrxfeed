@@ -2,7 +2,6 @@
 import {
   BasicsEditCircle,
   BasicsXRegular,
-  BasicTickSmall,
   ChainLinkIcon,
   DetailLogoDefault,
   EmailIcon,
@@ -216,14 +215,6 @@ const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDet
       >
         <div className="w-24 h-24 mr-4">
           <DetailLogoDefault className="w-24 h-24" />
-        </div>
-        <div className="flex rounded-full border border-white text-white text-sm h-9 p-2">
-          <BasicTickSmall
-            className="mr-2.5 w-4 h-4 stroke-current text-white"
-            width={20}
-            height={20}
-          />
-          <span>Following</span>
         </div>
         <button type="button" onClick={onCloseClick} className="flex-1 w-4 h-4">
           <BasicsXRegular

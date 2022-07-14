@@ -13,7 +13,7 @@ interface PopoverMenuItemProps {
   iconClass?: string;
 }
 
-const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({
+const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
   value,
   label,
   className = '',

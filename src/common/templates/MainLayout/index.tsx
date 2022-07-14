@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useEffect } from 'react';
 
 import clsx from 'clsx';
 import { scrollToTop } from '@/main/utils';
 
 import SideBar from '@/common/organisms/SideBar';
 import NavBar from '@/common/organisms/NavBar';
-import { Children } from '@/common/types';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -16,7 +14,7 @@ interface MainLayoutProps {
   mainClass?: string;
 }
 
-const MainLayout: React.VFC<MainLayoutProps> = ({
+const MainLayout: React.FC<MainLayoutProps> = ({
   children,
   className,
   showNavBar = true,

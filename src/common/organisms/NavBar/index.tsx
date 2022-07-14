@@ -9,7 +9,7 @@ import { profileState } from '@/auth/containers/ProfileEditForm/states';
 
 import NavBarStatic from '../NavBarStatic';
 
-const NavBar: React.VFC = () => {
+const NavBar: React.FC = () => {
   const identity = useIdentity();
   const { roles } = usePermission();
   const isAdmin = roles?.includes(UserRole.ADMIN);

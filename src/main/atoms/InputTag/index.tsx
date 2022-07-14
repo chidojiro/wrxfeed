@@ -1,4 +1,4 @@
-import React, { VFC } from 'react';
+import React from 'react';
 
 interface InputTagProps {
   text: string;
@@ -6,7 +6,7 @@ interface InputTagProps {
   color?: string;
 }
 
-const InputTag: VFC<InputTagProps> = ({ text, onDelete, color }) => {
+const InputTag: React.FC<InputTagProps> = ({ text, onDelete, color }) => {
   return (
     <div
       className="flex items-center h-5 rounded-sm px-2 m-px text-3xs text-white bg-Accent-2"

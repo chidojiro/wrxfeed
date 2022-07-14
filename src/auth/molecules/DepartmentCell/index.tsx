@@ -32,7 +32,7 @@ interface DepartmentCellProps {
   enableUnfollowUserDept?: boolean;
 }
 
-const DepartmentCell: React.VFC<DepartmentCellProps> = ({
+const DepartmentCell: React.FC<DepartmentCellProps> = ({
   className = '',
   dept,
   onFollowedTeam = () => undefined,

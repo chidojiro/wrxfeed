@@ -17,7 +17,7 @@ interface NotificationListProps {
   onClickNotification: (item: Notification) => void;
 }
 
-const NotificationList: React.VFC<NotificationListProps> = ({
+const NotificationList: React.FC<NotificationListProps> = ({
   style,
   notifications,
   isLoading,
