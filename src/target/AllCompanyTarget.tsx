@@ -14,10 +14,6 @@ export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
     mutate,
   } = useTargets({ type: 'company' });
 
-  React.useEffect(() => {
-    console.log('targets: ' + JSON.stringify(targets));
-  }, [targets]);
-
   return (
     <OverlayLoader loading={isInitializing} className={className}>
       <TargetCard
