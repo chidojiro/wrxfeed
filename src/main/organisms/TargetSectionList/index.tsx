@@ -24,7 +24,7 @@ interface TargetSectionListProps {
   EmptyStateComponent?: React.FunctionComponent | undefined;
 }
 
-const TargetSectionList: React.VFC<TargetSectionListProps> = ({
+const TargetSectionList: React.FC<TargetSectionListProps> = ({
   style,
   enableLoadMore,
   endMessage,

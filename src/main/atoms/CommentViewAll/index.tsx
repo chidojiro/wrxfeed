@@ -11,7 +11,7 @@ export interface CommentRemainingProps {
   title?: string;
 }
 
-const CommentViewAll: React.VFC<CommentRemainingProps> = ({
+const CommentViewAll: React.FC<CommentRemainingProps> = ({
   className,
   onClick,
   loading,

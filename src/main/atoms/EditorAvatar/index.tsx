@@ -9,7 +9,7 @@ export interface EditorAvatarProps {
   size?: number;
 }
 
-const EditorAvatar: React.VFC<EditorAvatarProps> = ({ className = '', updater, size = 24 }) => {
+const EditorAvatar: React.FC<EditorAvatarProps> = ({ className = '', updater, size = 24 }) => {
   const updaterName = updater?.fullName ?? '';
 
   return (

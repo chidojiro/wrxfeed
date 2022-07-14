@@ -13,7 +13,7 @@ export interface UserAvatarProps {
   onClick?: (value?: string) => void;
 }
 
-const UserAvatar: React.VFC<UserAvatarProps> = ({ size, className = '', user }) => {
+const UserAvatar: React.FC<UserAvatarProps> = ({ size, className = '', user }) => {
   const profile = useRecoilValue(profileState);
   const avatarBgColor = React.useMemo(() => getColorByText(user?.fullName ?? ''), [user?.fullName]);
 

@@ -46,7 +46,7 @@ interface ConfirmModalProps {
 const INITIAL_COMMENT_NUMBER = 2;
 const LIMIT_GET_COMMENT = 20;
 
-export const TargetFeedCard: React.VFC<TargetFeedCardProps> = React.memo(
+export const TargetFeedCard: React.FC<TargetFeedCardProps> = React.memo(
   ({ feedItem, onRefresh, onBack }) => {
     const identity = useIdentity();
     const [filterComment, setFilterComment] = React.useState<PaginationParams>({

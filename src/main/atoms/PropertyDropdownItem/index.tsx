@@ -1,6 +1,6 @@
 import { SearchResult } from '@/main/types';
 import { getIconByResultType, getPropTypeDisplayName } from '@/main/utils';
-import React, { useEffect, useRef, VFC } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface PropertyDropdownItemProps {
   result: SearchResult;
@@ -8,7 +8,7 @@ interface PropertyDropdownItemProps {
   onClickHandler: () => void;
 }
 
-const PropertyDropdownItem: VFC<PropertyDropdownItemProps> = ({
+const PropertyDropdownItem: React.FC<PropertyDropdownItemProps> = ({
   result,
   focus,
   onClickHandler,

@@ -5,7 +5,7 @@ import Loading from '@/common/atoms/Loading';
 import { useLegacyQuery } from '@/common/hooks';
 import { isApiError } from '@/error/utils';
 import { Routes } from '@/routing/routes';
-import React, { useCallback, useEffect, useState, VFC } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 const QUERY_ID = 'inviteId';
@@ -22,7 +22,7 @@ interface Error {
   message: string;
 }
 
-const AcceptInvitation: VFC = () => {
+const AcceptInvitation: React.FC = () => {
   const { acceptInvitation } = useApi();
   const query = useLegacyQuery();
   const router = useHistory();

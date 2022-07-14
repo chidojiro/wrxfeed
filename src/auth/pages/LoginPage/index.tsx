@@ -26,7 +26,7 @@ export interface LocationState {
   metadata?: any;
 }
 
-const LoginPage: React.VFC = () => {
+const LoginPage: React.FC = () => {
   const { signInWithGoogle, getProfile } = useApi();
   const { redirect } = useNavUtils();
   const location = useLocation<LocationState>();

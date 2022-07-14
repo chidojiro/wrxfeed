@@ -15,7 +15,7 @@ interface CategoryListProps {
   onSelect?: (cat: Category) => void;
 }
 
-const CategoryList: React.VFC<CategoryListProps> = ({
+const CategoryList: React.FC<CategoryListProps> = ({
   categories,
   isLoading,
   onLoadMore,

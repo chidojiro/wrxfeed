@@ -17,7 +17,7 @@ import { useErrorHandler } from 'react-error-boundary';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const FeedPage: React.VFC = () => {
+const FeedPage: React.FC = () => {
   const history = useHistory();
   const { redirect } = useNavUtils();
   const ApiClient = useApi();

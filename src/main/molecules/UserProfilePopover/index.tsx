@@ -26,7 +26,7 @@ export type ProfileChanges = {
   value: string;
 };
 
-const UserProfilePopover: React.VFC<UserProfilePopoverProps> = ({ style }) => {
+const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
   const [profile, setProfile] = useRecoilState(profileState);
   const [profileUser, setProfileUser] = useState<Profile>(profile);
   const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();

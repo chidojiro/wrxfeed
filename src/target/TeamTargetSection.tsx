@@ -15,7 +15,7 @@ export interface TeamTargetSectionProps {
   departmentId: number;
 }
 
-export const TeamTargetSection: React.VFC<TeamTargetSectionProps> = ({
+export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
   className = '',
   departmentId,
 }) => {

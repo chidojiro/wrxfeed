@@ -7,12 +7,12 @@ import { useProfile, useRefreshProfile } from './hooks';
 
 export type ProfileEditFormProps = Omit<ProfileFormProps, 'defaultValues'>;
 
-const LoadableProfileForm: React.VFC<ProfileEditFormProps> = ({ onSubmit }) => {
+const LoadableProfileForm: React.FC<ProfileEditFormProps> = ({ onSubmit }) => {
   const profile = useProfile();
   return <ProfileForm defaultValues={profile} onSubmit={onSubmit} />;
 };
 
-const ProfileEditForm: React.VFC<ProfileEditFormProps> = (props) => {
+const ProfileEditForm: React.FC<ProfileEditFormProps> = (props) => {
   const [flag, refresh] = useRefreshProfile();
   const defaultHandler = useErrorHandler();
   const handleError: ErrorHandler = React.useCallback(

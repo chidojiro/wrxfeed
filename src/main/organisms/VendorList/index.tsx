@@ -15,7 +15,7 @@ interface VendorListProps {
   onSelect?: (dept: Vendor) => void;
 }
 
-const VendorList: React.VFC<VendorListProps> = ({ vendors, isLoading, onLoadMore, onSelect }) => {
+const VendorList: React.FC<VendorListProps> = ({ vendors, isLoading, onLoadMore, onSelect }) => {
   const identity = useIdentity();
 
   useEffect(() => {

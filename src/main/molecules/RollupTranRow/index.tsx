@@ -19,7 +19,7 @@ export interface RollupTranRowProps {
 
 const A_WEEK_IN_MILLISECONDS = 1000 * 60 * 60 * 24 * 7;
 
-const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, onView }) => {
+const RollupTranRow: React.FC<RollupTranRowProps> = ({ tran, onClick, onView }) => {
   const viewRef = React.useRef<HTMLButtonElement>(null);
   const [isOpen, setOpen] = React.useState<boolean>(false);
   const { lineItems = [] } = tran;

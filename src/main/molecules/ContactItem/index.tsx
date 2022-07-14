@@ -1,4 +1,4 @@
-import React, { VFC } from 'react';
+import React from 'react';
 import { Contact } from '@/main/entity';
 import clsx from 'clsx';
 
@@ -8,7 +8,7 @@ interface ContactItemProps {
   onSelect?: (contact: Contact) => void;
 }
 
-const ContactItem: VFC<ContactItemProps> = ({ className, contact, onSelect }) => {
+const ContactItem: React.FC<ContactItemProps> = ({ className, contact, onSelect }) => {
   return (
     <li
       aria-hidden="true"

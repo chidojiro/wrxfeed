@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, VFC } from 'react';
+import React, { MouseEventHandler } from 'react';
 import Button from '@/common/atoms/Button';
 import { Category, Department, Vendor } from '@/main/entity';
 // Icons
@@ -15,7 +15,7 @@ interface DirectoryItem {
   itemType: 'categories' | 'vendors' | 'departments';
 }
 
-const DirectoryItem: VFC<DirectoryItem> = ({
+const DirectoryItem: React.FC<DirectoryItem> = ({
   item,
   disableFollow = false,
   onClick,

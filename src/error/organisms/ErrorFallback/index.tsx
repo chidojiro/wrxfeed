@@ -9,7 +9,7 @@ import {
 import { ApiErrorCode } from '../../types';
 import { isApiError } from '../../utils';
 
-const ErrorFallback: React.VFC<FallbackProps> = ({ error, resetErrorBoundary }) => {
+const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
   let message = 'An error occurred in the app.';
   let icon: React.ReactElement = <ExclamationCircleIcon width={80} height={80} />;
   if (isApiError(error)) {

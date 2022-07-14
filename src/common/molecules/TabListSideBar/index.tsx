@@ -11,7 +11,7 @@ interface TabListSideBarProps {
   isOpen?: boolean;
 }
 
-const TabListSideBar: React.VFC<TabListSideBarProps> = ({
+const TabListSideBar: React.FC<TabListSideBarProps> = ({
   className = '',
   tabs,
   showTabIcon = false,

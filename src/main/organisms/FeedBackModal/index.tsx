@@ -18,7 +18,7 @@ interface FeedBackModalProps {
   type?: FeedBackType;
 }
 
-const FeedBackModal: React.VFC<FeedBackModalProps> = ({
+const FeedBackModal: React.FC<FeedBackModalProps> = ({
   open,
   onClose,
   itemId,
