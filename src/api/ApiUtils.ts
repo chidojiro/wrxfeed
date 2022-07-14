@@ -1,43 +1,24 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { UserToken, Identity } from '@/identity/types';
 import {
-  Comment,
-  Transaction,
-  User,
-  Contact,
-  Department,
-  Category,
-  Vendor,
-  Notification,
-  Subscription,
-  FeedItem,
-  TransLineItem,
-  VendorDescription,
-  LineItem,
-  TopCategories,
-} from '@/main/entity';
-import { ApiError } from '@/error';
-import {
+  AddCommentParams,
+  AddFeedCommentParams,
   ApiClient,
+  CategoryFilter,
   ChangePasswordDto,
   CommentFilters,
-  GetUploadTokenBody,
-  ResetPasswordDto,
-  TransactionBody,
-  UploadToken,
-  GetUsersFilter,
-  GetContactsFilter,
-  AddCommentParams,
-  OrderDirection,
   DepartmentFilter,
-  SubscriptionParams,
-  NotificationsResponse,
-  FeedItemFilters,
   FeedCommentFilters,
-  AddFeedCommentParams,
   FeedFilters,
-  CategoryFilter,
+  FeedItemFilters,
+  GetContactsFilter,
+  GetUploadTokenBody,
+  GetUsersFilter,
+  NotificationsResponse,
+  OrderDirection,
+  ResetPasswordDto,
+  SubscriptionParams,
+  UploadToken,
 } from '@/api/types';
+import { handleResponseFail } from '@/api/utils';
 import {
   AuthProfile,
   ForgotPwdFormModel,
@@ -45,9 +26,25 @@ import {
   Profile,
   ProfileFormModel,
 } from '@/auth/types';
-import { handleResponseFail } from '@/api/utils';
-import { InviteFormModel, FeedBackFormModel } from '@/main/types';
+import { ApiError } from '@/error';
+import { Identity, UserToken } from '@/identity/types';
+import {
+  Category,
+  Comment,
+  Contact,
+  Department,
+  FeedItem,
+  LineItem,
+  Notification,
+  Subscription,
+  TopCategories,
+  Transaction,
+  TransLineItem,
+  User,
+} from '@/main/entity';
+import { FeedBackFormModel, InviteFormModel } from '@/main/types';
 import { PaginationParams } from '@/rest/types';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export default class ApiUtils implements ApiClient {
   private client: AxiosInstance;
@@ -317,15 +314,6 @@ export default class ApiUtils implements ApiClient {
     return res.data;
   };
 
-  getVendors = async (pagination?: PaginationParams): Promise<Vendor[]> => {
-    const res = await this.request<Vendor[]>({
-      url: '/feed/vendors',
-      method: 'GET',
-      params: pagination,
-    });
-    return res.data;
-  };
-
   updateCategory = async (data?: Partial<Category>): Promise<void> => {
     const res = await this.request<void>({
       url: `/feed/categories/${data?.id}`,
@@ -478,23 +466,6 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<TopCategories[]>({
       url: `/feed/departments/${departmentId}/categories`,
       method: 'GET',
-    });
-    return res.data;
-  };
-
-  getVendorById = async (venId: number): Promise<Vendor> => {
-    const res = await this.request<Vendor>({
-      url: `/feed/vendors/${venId}`,
-      method: 'GET',
-    });
-    return res.data;
-  };
-
-  updateVendorById = async (id: number, data: VendorDescription): Promise<void> => {
-    const res = await this.request<void>({
-      url: `/feed/vendors/${id}`,
-      method: 'PATCH',
-      data,
     });
     return res.data;
   };

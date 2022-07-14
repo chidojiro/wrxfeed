@@ -1,12 +1,12 @@
-import React, { MouseEventHandler } from 'react';
-import Button from '@/common/atoms/Button';
-import { Category, Department, Vendor } from '@/main/entity';
-// Icons
 import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
-import { getColorByText, getNameAbbreviation } from '@/main/utils';
+import Button from '@/common/atoms/Button';
 import Loading from '@/common/atoms/Loading';
+import { Category, Department } from '@/main/entity';
 import { useSubscription } from '@/main/hooks/subscription.hook';
+import { getColorByText, getNameAbbreviation } from '@/main/utils';
+import { Vendor } from '@/vendor/types';
+import React, { MouseEventHandler } from 'react';
 
 interface DirectoryItem {
   item: Department | Category | Vendor;

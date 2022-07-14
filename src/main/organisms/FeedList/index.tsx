@@ -2,14 +2,17 @@
 import { FeedFilters } from '@/api/types';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import { useLegacyQuery } from '@/common/hooks';
-import clsx from 'clsx';
+import { LineItemDrawer } from '@/feed/LineItemDrawer';
+import { TargetFeedCard } from '@/feed/TargetFeedCard';
+import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 import ListEndComponent from '@/main/atoms/ListEndComponent';
 import ListLoading from '@/main/atoms/ListLoading';
-import { Category, Department, Vendor } from '@/main/entity';
+import { Category, Department } from '@/main/entity';
 import { FilterKeys } from '@/main/hooks';
 import { useFeed } from '@/main/hooks/feed.hook';
 import RollupCard from '@/main/molecules/RollupCard';
-import { TargetFeedCard } from '@/feed/TargetFeedCard';
+import { Vendor } from '@/vendor/types';
+import clsx from 'clsx';
 import React, {
   CSSProperties,
   forwardRef,
@@ -19,8 +22,6 @@ import React, {
   useImperativeHandle,
 } from 'react';
 import { useHistory } from 'react-router-dom';
-import { LineItemDrawer } from '@/feed/LineItemDrawer';
-import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 
 interface FeedListProps {
   style?: CSSProperties;
@@ -65,6 +66,9 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
   },
   ref,
 ) => {
+  const { isLineItemDrawerOpen, selectedLineItem, closeLineItemDrawer, feedId } =
+    useLineItemDrawer();
+
   const [feedFilters, setFeedFilters] = React.useState<FeedFilters>({
     ...INIT_FEED_FILTER,
     forYou,
@@ -72,9 +76,6 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     categoryId,
     vendorId,
   });
-
-  const { isLineItemDrawerOpen, selectedLineItem, closeLineItemDrawer, feedId } =
-    useLineItemDrawer();
 
   const { feeds, hasMore, isLoading, updateCategory, cleanData } = useFeed(feedFilters);
   const query = useLegacyQuery();

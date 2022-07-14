@@ -1,18 +1,14 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useEffect, useState, useRef } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-
 import { useApi } from '@/api';
 import { useIntersection } from '@/common/hooks';
-
-import { TransLineItem, Vendor } from '@/main/entity';
-import clsx from 'clsx';
-import { decimalLogic, DecimalType, getVendorNameFromLineItem } from '@/main/utils';
-
+import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@/config';
+import { TransLineItem } from '@/main/entity';
 import { lineItemSelectState } from '@/main/states/lineItems.state';
 import { slideOverOpenState } from '@/main/states/slideOver.state';
-import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@/config';
+import { decimalLogic, DecimalType, getVendorNameFromLineItem } from '@/main/utils';
+import { Vendor } from '@/vendor/types';
+import clsx from 'clsx';
+import React, { useEffect, useRef, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;

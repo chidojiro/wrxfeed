@@ -1,3 +1,4 @@
+import { VendorApis } from './../../vendor/apis';
 import { useApi } from '@/api';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
@@ -24,7 +25,7 @@ export function useUpdateVendor(callback?: VendorDescriptionModalCallback): Upda
     async (id: number, data: VendorDescription) => {
       try {
         setLoading(true);
-        await ApiClient.updateVendorById(id, data);
+        await VendorApis.update(id, data);
         callback?.onSuccess(data);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {

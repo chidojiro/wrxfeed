@@ -1,25 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import * as Sentry from '@sentry/react';
-import mixpanel from 'mixpanel-browser';
-import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-
 import { useApi } from '@/api';
 import { FeedFilters } from '@/api/types';
-import { useIdentity } from '@/identity/hooks';
-import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@/main/hooks';
-
-import { Category, Department, Vendor } from '@/main/entity';
-import { scrollToTop } from '@/main/utils';
-
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@/common/constants';
 import { useLegacyQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
+import { useIdentity } from '@/identity';
 import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
+import { Category, Department } from '@/main/entity';
+import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@/main/hooks';
 import { useFeed } from '@/main/hooks/feed.hook';
 import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
 import FeedList from '@/main/organisms/FeedList';
+import { scrollToTop } from '@/main/utils';
+import { VendorApis } from '@/vendor/apis';
+import { Vendor } from '@/vendor/types';
+import * as Sentry from '@sentry/react';
+import mixpanel from 'mixpanel-browser';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const LIMIT = 5;
 const INIT_PAGINATION = {
@@ -30,11 +29,11 @@ const INIT_FEED_FILTER = Object.freeze({
   page: INIT_PAGINATION,
 });
 
-const CompanyPage: React.FC = () => {
+const CompanyPage = () => {
   const query = useLegacyQuery();
   const history = useHistory();
   const location = useLocation();
-  const { readAllTransactions, getVendorById, getCategoryById, getDepartmentById } = useApi();
+  const { readAllTransactions, getCategoryById, getDepartmentById } = useApi();
   const [feedFilters, setFeedFilters] = useState<FeedFilters>(INIT_FEED_FILTER);
   const [filterTitle, setFilterTitle] = useState('');
   const filterKey = FilterKeys.find((key) => query.get(key));
@@ -50,7 +49,7 @@ const CompanyPage: React.FC = () => {
     if (key === FilterKeys[2] && filterKey && query.get(filterKey)) {
       const venId = query.get(filterKey);
       if (!venId) return;
-      const vendor = await getVendorById(parseInt(venId, 10));
+      const vendor = await VendorApis.get(parseInt(venId, 10));
       setFilterTitle(vendor?.name);
     }
   };

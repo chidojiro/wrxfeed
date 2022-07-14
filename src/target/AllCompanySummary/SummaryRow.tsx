@@ -45,7 +45,7 @@ export const SummaryRow = ({
     });
   };
 
-  const targetSpends = target?.spendings?.reduce((acc, cur) => acc + cur.total, 0);
+  const targetSpends = target?.periods?.reduce((acc, cur) => acc + (cur.amount ?? 0), 0);
 
   const baseWrapperClassName = clsx(
     'grid grid-cols-10 items-center',
