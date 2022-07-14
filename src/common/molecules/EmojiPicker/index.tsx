@@ -22,7 +22,7 @@ const EmojiPicker = {
   },
 };
 
-export const EmojiPickerContainer: React.VFC = () => {
+export const EmojiPickerContainer: React.FC = () => {
   const referenceElement = useRef<HTMLDivElement>(null);
   const callbackRef = useRef<(emoji: EmojiData) => void>();
   const onHoverRef = useRef<(isHover: boolean) => void>();

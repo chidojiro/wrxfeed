@@ -188,7 +188,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       <LineItemDrawer
         open={isLineItemDrawerOpen}
         onClose={closeLineItemDrawer}
-        lineItem={selectedLineItem!}
+        lineItem={selectedLineItem}
         feedId={feedId}
       />
       <ul className="pb-2 sm:pb-5 space-y-4">

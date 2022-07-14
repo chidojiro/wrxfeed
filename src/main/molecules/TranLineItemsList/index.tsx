@@ -18,7 +18,7 @@ export interface TranLineItemsListProps {
   isOpen: boolean;
 }
 
-const TranLineItemsList: React.VFC<TranLineItemsListProps> = ({
+const TranLineItemsList: React.FC<TranLineItemsListProps> = ({
   className,
   rollupsClass,
   lineItems,

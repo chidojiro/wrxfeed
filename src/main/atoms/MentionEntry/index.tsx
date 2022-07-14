@@ -17,7 +17,7 @@ export interface EntryComponentProps {
   searchValue?: string;
 }
 
-const MentionEntry: React.VFC<EntryComponentProps> = (props) => {
+const MentionEntry: React.FC<EntryComponentProps> = (props) => {
   const { mention, theme, isFocused, ...parentProps } = props;
 
   return (

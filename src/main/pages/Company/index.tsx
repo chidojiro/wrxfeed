@@ -5,7 +5,7 @@ import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevro
 import { MainGroups } from '@/common/constants';
 import { useLegacyQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
-import { useIdentity } from '@/identity/hooks';
+import { useIdentity } from '@/identity';
 import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
 import { Category, Department } from '@/main/entity';
 import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@/main/hooks';
@@ -29,7 +29,7 @@ const INIT_FEED_FILTER = Object.freeze({
   page: INIT_PAGINATION,
 });
 
-const CompanyPage: React.VFC = () => {
+const CompanyPage = () => {
   const query = useLegacyQuery();
   const history = useHistory();
   const location = useLocation();

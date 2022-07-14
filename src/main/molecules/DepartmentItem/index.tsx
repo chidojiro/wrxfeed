@@ -17,7 +17,7 @@ interface DepartmentItemProps {
   textClassName?: string;
 }
 
-const DepartmentItem: React.VFC<DepartmentItemProps> = ({
+const DepartmentItem: React.FC<DepartmentItemProps> = ({
   item,
   isFollowing,
   disableFollow = false,

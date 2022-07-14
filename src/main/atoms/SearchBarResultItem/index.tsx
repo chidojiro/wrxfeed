@@ -1,6 +1,6 @@
 import { SearchResult } from '@/main/types';
 import { getIconByResultType, getPropTypeDisplayName } from '@/main/utils';
-import React, { useEffect, useRef, VFC } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ReactComponent as ArrowRight2 } from '@/assets/icons/outline/arrow-right-2.svg';
 import clsx from 'clsx';
 
@@ -10,7 +10,11 @@ interface SearchBarResultItemProps {
   onClickHandler: () => void;
 }
 
-const SearchBarResultItem: VFC<SearchBarResultItemProps> = ({ result, focus, onClickHandler }) => {
+const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({
+  result,
+  focus,
+  onClickHandler,
+}) => {
   const ref = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {

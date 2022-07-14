@@ -23,7 +23,7 @@ export interface NotifyPopoverProps {
 
 const LIMIT = 15;
 
-const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
+const NotifyPopover: React.FC<NotifyPopoverProps> = ({
   style,
   showNumberNotify = false,
   useDropDown = true,

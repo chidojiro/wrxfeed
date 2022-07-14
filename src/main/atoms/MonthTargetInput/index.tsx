@@ -13,7 +13,7 @@ interface MonthTargetInputProps {
   defaultAmount?: number;
 }
 
-const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
+const MonthTargetInput: React.FC<MonthTargetInputProps> = ({
   isInRange = false,
   className = '',
   onChange,

@@ -8,4 +8,4 @@ export default {
   component: NoPermission,
 } as Meta;
 
-export const Primary: React.VFC = () => <NoPermission />;
+export const Primary: React.FC = () => <NoPermission />;

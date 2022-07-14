@@ -31,7 +31,7 @@ const userNavigation = [
   { name: 'Sign out', href: '#' },
 ];
 
-const NavBarStatic: React.VFC<NavBarStaticProps> = ({
+const NavBarStatic: React.FC<NavBarStaticProps> = ({
   className = '',
   companyName,
   companyStyle = '',

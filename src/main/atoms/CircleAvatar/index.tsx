@@ -12,7 +12,7 @@ export interface CircleAvatarProps {
   onClick?: (value?: string) => void;
 }
 
-const CircleAvatar: React.VFC<CircleAvatarProps> = ({
+const CircleAvatar: React.FC<CircleAvatarProps> = ({
   size,
   className,
   name,

@@ -17,7 +17,7 @@ import { useHistory } from 'react-router-dom';
 
 const DEBOUNCE_WAIT = 0;
 
-const SearchBar: React.VFC = () => {
+const SearchBar: React.FC = () => {
   const history = useHistory();
   const useableViewRef = useRef(null);
 

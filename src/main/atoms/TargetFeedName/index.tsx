@@ -8,7 +8,7 @@ export interface TargetFeedNameProps {
   target: Target;
 }
 
-const TargetFeedName: React.VFC<TargetFeedNameProps> = ({ className = '', target }) => {
+const TargetFeedName: React.FC<TargetFeedNameProps> = ({ className = '', target }) => {
   return (
     <div className={clsx('group relative', className)}>
       <p className="text-base text-primary text-left font-bold line-clamp-1 overflow-ellipsis">

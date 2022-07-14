@@ -6,7 +6,7 @@ import { ProfileFormModel } from '../../types';
 import MainLayout from '../../../common/templates/MainLayout';
 import ProfileEditForm from '../../containers/ProfileEditForm';
 
-const ProfilePage: React.VFC = () => {
+const ProfilePage: React.FC = () => {
   const api = useApi();
   const handleSubmit: SubmitHandler<ProfileFormModel> = React.useCallback(
     async (data) => {

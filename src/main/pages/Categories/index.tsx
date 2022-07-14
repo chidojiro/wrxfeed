@@ -22,7 +22,7 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const CategoriesPage: React.VFC = () => {
+const CategoriesPage: React.FC = () => {
   const history = useHistory();
   const { id: catId } = useParams<{ id?: string }>();
   const query = useLegacyQuery();

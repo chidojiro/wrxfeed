@@ -15,7 +15,7 @@ export type SummaryInfoType = {
   value: string;
 };
 
-const TargetBoardSummaries: React.VFC<TargetBoardSummariesProps> = ({ className = '' }) => {
+const TargetBoardSummaries: React.FC<TargetBoardSummariesProps> = ({ className = '' }) => {
   const { summaries } = useDashboard();
 
   const summariesList: SummaryInfoType[] = [

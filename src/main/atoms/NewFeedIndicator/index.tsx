@@ -1,6 +1,6 @@
 import { ArrowUpIcon } from '@/assets';
 import { Transition } from '@headlessui/react';
-import React, { Fragment, MouseEventHandler, VFC } from 'react';
+import React, { Fragment, MouseEventHandler } from 'react';
 
 interface NewFeedIndicatorProps {
   isVisible: boolean;
@@ -8,7 +8,7 @@ interface NewFeedIndicatorProps {
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
-const NewFeedIndicator: VFC<NewFeedIndicatorProps> = ({ isVisible, counter, onClick }) => {
+const NewFeedIndicator: React.FC<NewFeedIndicatorProps> = ({ isVisible, counter, onClick }) => {
   const title = counter > 1 ? `${counter} New Items` : `${counter} New Item`;
   return (
     <div

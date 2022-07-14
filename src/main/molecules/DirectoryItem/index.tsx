@@ -6,7 +6,7 @@ import { Category, Department } from '@/main/entity';
 import { useSubscription } from '@/main/hooks/subscription.hook';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
 import { Vendor } from '@/vendor/types';
-import React, { MouseEventHandler, VFC } from 'react';
+import React, { MouseEventHandler } from 'react';
 
 interface DirectoryItem {
   item: Department | Category | Vendor;
@@ -15,7 +15,7 @@ interface DirectoryItem {
   itemType: 'categories' | 'vendors' | 'departments';
 }
 
-const DirectoryItem: VFC<DirectoryItem> = ({
+const DirectoryItem: React.FC<DirectoryItem> = ({
   item,
   disableFollow = false,
   onClick,

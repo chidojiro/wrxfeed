@@ -22,7 +22,7 @@ import { cloneDeep } from 'lodash-es';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-const OnboardPage: React.VFC = () => {
+const OnboardPage: React.FC = () => {
   const identity = useIdentity();
   const { redirect } = useNavUtils();
   const { updateProfile } = useApi();

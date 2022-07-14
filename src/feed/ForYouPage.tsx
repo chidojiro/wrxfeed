@@ -19,7 +19,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 
 const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
-export const ForYouPage: React.VFC = Sentry.withProfiler(
+export const ForYouPage: React.FC = Sentry.withProfiler(
   () => {
     const history = useHistory();
     const query = useLegacyQuery();

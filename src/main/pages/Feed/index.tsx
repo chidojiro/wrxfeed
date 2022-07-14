@@ -18,7 +18,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Vendor } from '@/vendor/types';
 
-const FeedPage: React.VFC = () => {
+const FeedPage: React.FC = () => {
   const history = useHistory();
   const { redirect } = useNavUtils();
   const ApiClient = useApi();

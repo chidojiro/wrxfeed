@@ -16,7 +16,7 @@ export interface ProfileFormProps {
   onSubmit: SubmitHandler<ProfileFormModel>;
 }
 
-const ProfileForm: React.VFC<ProfileFormProps> = ({ defaultValues, onSubmit }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({ defaultValues, onSubmit }) => {
   const {
     control,
     handleSubmit,

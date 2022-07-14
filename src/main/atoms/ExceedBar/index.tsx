@@ -6,7 +6,7 @@ interface ExceedBarProps {
   color?: string;
 }
 
-const ExceedBar: React.VFC<ExceedBarProps> = ({ className = '' }) => {
+const ExceedBar: React.FC<ExceedBarProps> = ({ className = '' }) => {
   return (
     <div
       className={clsx(
