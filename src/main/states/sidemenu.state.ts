@@ -1,7 +1,8 @@
 import { TeamIcon } from '@/assets';
 import { MainGroups, MainMenu } from '@/common/constants';
 import { LeftTab, SectionTab } from '@/common/types';
-import { Category, Department, Subscription, Vendor } from '@/main/entity';
+import { Category, Department, Subscription } from '@/main/entity';
+import { Vendor } from '@/vendor/types';
 import { cloneDeep } from 'lodash-es';
 import { atom, selector } from 'recoil';
 import { subscriptionState } from './subscription.state';

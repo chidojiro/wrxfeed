@@ -9,10 +9,10 @@ import Categories from '@/main/pages/Categories';
 import Company from '@/main/pages/Company';
 import Feed from '@/main/pages/Feed';
 import Notifications from '@/main/pages/Notifications';
-import Vendors from '@/main/pages/Vendors';
 import { TargetRoutes } from '@/target/routes';
 import { TeamPage } from '@/team/TeamPage';
 import { TeamsPage } from '@/team/TeamsPage';
+import { VendorRoutes } from '@/vendor/routes';
 import { Route } from './types';
 
 export const Routes: Route = {
@@ -60,11 +60,6 @@ export const Routes: Route = {
     component: Categories,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  Vendors: {
-    path: ['/vendors', '/vendors/:id'],
-    component: Vendors,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
   Company: {
     path: '/company',
     component: Company,
@@ -72,4 +67,5 @@ export const Routes: Route = {
   },
   ...TargetRoutes,
   ...FeedRoutes,
+  ...VendorRoutes,
 };

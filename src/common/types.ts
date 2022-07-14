@@ -1,4 +1,5 @@
-import { Category, Department, Subscription, Vendor } from '@/main/entity';
+import { Category, Department, Subscription } from '@/main/entity';
+import { Vendor } from '@/vendor/types';
 import React, { FunctionComponent, SVGAttributes } from 'react';
 
 export interface HOC<T> {

@@ -1,10 +1,10 @@
-import React from 'react';
-import clsx from 'clsx';
-
-import { TransLineItem, Vendor } from '@/main/entity';
 import Loading from '@/common/atoms/Loading';
-import RollupLineItem from '@/main/molecules/RollupLineItem';
 import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
+import { TransLineItem } from '@/main/entity';
+import RollupLineItem from '@/main/molecules/RollupLineItem';
+import { Vendor } from '@/vendor/types';
+import clsx from 'clsx';
+import React from 'react';
 
 export interface TranLineItemsListProps {
   className?: string;

@@ -7,7 +7,7 @@ import { useLegacyQuery, useNavUtils } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
 import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
-import { Category, Department, FeedItem, FeedType, Vendor } from '@/main/entity';
+import { Category, Department, FeedItem, FeedType } from '@/main/entity';
 import RollupCard from '@/main/molecules/RollupCard';
 import { Routes } from '@/routing/routes';
 import { TargetFeedCard } from '@/feed/TargetFeedCard';
@@ -16,6 +16,7 @@ import React, { useEffect, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Vendor } from '@/vendor/types';
 
 const FeedPage: React.VFC = () => {
   const history = useHistory();
