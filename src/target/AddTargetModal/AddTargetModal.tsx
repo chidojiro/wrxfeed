@@ -14,7 +14,7 @@ import ListLoading from '@/main/atoms/ListLoading';
 import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
 import ExceptDropdown from '@/main/molecules/ExceptDropdown';
 import ExceptList from '@/main/molecules/ExceptList';
-import MultiMonthDropdown from '@/main/molecules/MultiMonthDropdown';
+import MultiMonthDropdown from './MultiMonthDropdown';
 import { LineChartData, SearchResult } from '@/main/types';
 import {
   decimalLogic,
@@ -258,7 +258,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
         return;
       }
 
-      if (propSelected.length === 0) {
+      if (!hidePropertyDropdowns && propSelected.length === 0) {
         setShowErrorProp(true);
         return;
       }
