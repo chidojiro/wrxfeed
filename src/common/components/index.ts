@@ -12,3 +12,4 @@ export * from './Spinner';
 export * from './OverlayLoader';
 export * from './ListLoader';
 export * from './Drawer';
+export * from './Input';
