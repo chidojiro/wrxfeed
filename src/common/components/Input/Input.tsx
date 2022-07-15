@@ -33,7 +33,7 @@ const BaseInput = React.forwardRef(
 
 BaseInput.displayName = 'BaseInput';
 
-type InputProps = Omit<BaseInputProps, 'min' | 'max'> & {
+export type InputProps = Omit<BaseInputProps, 'min' | 'max'> & {
   includeNumberSeparator?: boolean;
   min?: number;
   max?: number;
