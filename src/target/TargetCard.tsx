@@ -1,3 +1,4 @@
+import Button from '@/common/atoms/Button';
 import Loading from '@/common/atoms/Loading';
 import { Avatar } from '@/common/components';
 import { useHandler } from '@/common/hooks';
@@ -7,16 +8,23 @@ import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedType } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
-import { getColorByText, getDisplayUsdAmount, getTargetPeriodsAmountTotal } from '@/main/utils';
+import {
+  getColorByText,
+  getDisplayUsdAmount,
+  getTargetPeriodsAmountTotal,
+  toMonthName,
+  toUSD,
+} from '@/main/utils';
 import { Routes } from '@/routing/routes';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
-import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { AddTargetModal, AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
 import { MiniChartView } from './MiniChartView';
 import { Target } from './types';
+import { RightSmallIcon } from '@/assets';
+import { MouseEvent } from 'react';
 
 export type TargetCardProps = ClassName &
   Required<Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'>> &
@@ -48,6 +56,11 @@ export const TargetCard = ({
     );
   };
 
+  const handleSetTarget = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+    addTargetModalDisclosure.onOpen();
+    e.stopPropagation();
+  };
+
   const { overallTarget, currentSpend, targetToDate, exceeding } =
     getTargetPeriodsAmountTotal(target);
 
@@ -59,6 +72,8 @@ export const TargetCard = ({
     await deleteTarget(target.id);
     onDeleteSuccess(target.id);
   };
+
+  const currentMonth = Number(target.spendings && target.spendings[0]?.month);
 
   return (
     <button
@@ -138,14 +153,39 @@ export const TargetCard = ({
                 </p>
               </div>
             </div>
-            {target.trackingStatus && (
+            {overallTarget !== 0 && target.trackingStatus ? (
               <TargetStatus type={target.trackingStatus} exceeding={exceeding} />
+            ) : (
+              <div className="group relative">
+                <Button
+                  className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex"
+                  onClick={(e) => handleSetTarget(e)}
+                >
+                  <span className="font-medium text-xs">Set target</span>
+                  <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />
+                </Button>
+                <div className="invisible group-hover:visible absolute -top-16 right-0 w-56">
+                  <div className="bg-primary p-2 rounded-sm px-4 py-2 space-x-2 flex flex-col text-xs space-y-1">
+                    <p className="text-Gray-12 font-semibold text-left pl-4.5">
+                      {toMonthName(currentMonth)}
+                    </p>
+                    <div className="flex justify-between">
+                      <div className="flex justify-between items-center space-x-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-Green-400" />
+                        <p className="text-Gray-12">Spend</p>
+                      </div>
+                      <p className="text-Gray-12 font-semibold">{toUSD.format(currentSpend)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>
         <div className="flex flex-1 flex-col px-4">
           <MiniChartView
             target={target}
+            overallTarget={overallTarget}
             className="overflow-hidden"
             xAxisClass="font-normal text-2xs"
           />

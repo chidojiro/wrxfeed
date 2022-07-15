@@ -30,6 +30,7 @@ export { ReactComponent as CalendarMinus } from '@/assets/icons/solid/calendar-m
 export { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
 export { ReactComponent as IntersectIcon } from '@/assets/icons/outline/intersect.svg';
 export { ReactComponent as LeftSmallIcon } from '@/assets/icons/outline/left-small.svg';
+export { ReactComponent as RightSmallIcon } from '@/assets/icons/outline/right-small.svg';
 export { ReactComponent as AddSmallIcon } from '@/assets/icons/outline/add-small.svg';
 export { ReactComponent as TargetIcon } from '@/assets/icons/outline/target.svg';
 export { ReactComponent as DetailLogoDefault } from '@/assets/icons/solid/details-logo-default.svg';

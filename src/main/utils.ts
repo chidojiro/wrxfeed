@@ -640,3 +640,17 @@ export const getSummaryNumber = (value: number, total: number): string => {
   }
   return `${Math.round((value * 100) / total)}%`;
 };
+
+export const toMonthName = (value: number) => {
+  const date = new Date();
+  date.setMonth(value - 1);
+
+  return date.toLocaleString('en-US', {
+    month: 'short',
+  });
+};
+
+export const toUSD = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
