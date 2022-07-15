@@ -24,6 +24,7 @@ import { TargetApis } from './apis';
 import { MiniChartView } from './MiniChartView';
 import { Target } from './types';
 import { RightSmallIcon } from '@/assets';
+import { MouseEvent } from 'react';
 
 export type TargetCardProps = ClassName &
   Required<Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'>> &
@@ -55,6 +56,11 @@ export const TargetCard = ({
     );
   };
 
+  const handleGotoDetail = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+    e.stopPropagation;
+    goToTargetDetails;
+  };
+
   const { overallTarget, currentSpend, targetToDate, exceeding } =
     getTargetPeriodsAmountTotal(target);
 
@@ -71,7 +77,7 @@ export const TargetCard = ({
 
   return (
     <button
-      onClick={goToTargetDetails}
+      onClick={(e) => handleGotoDetail(e)}
       type="button"
       key={`Dashboard-TargetChartView-${target.id}`}
       className={clsx(
