@@ -56,9 +56,9 @@ export const TargetCard = ({
     );
   };
 
-  const handleGotoDetail = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
-    e.stopPropagation;
-    goToTargetDetails;
+  const handleSetTarget = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+    addTargetModalDisclosure.onOpen();
+    e.stopPropagation();
   };
 
   const { overallTarget, currentSpend, targetToDate, exceeding } =
@@ -77,7 +77,7 @@ export const TargetCard = ({
 
   return (
     <button
-      onClick={(e) => handleGotoDetail(e)}
+      onClick={goToTargetDetails}
       type="button"
       key={`Dashboard-TargetChartView-${target.id}`}
       className={clsx(
@@ -159,7 +159,7 @@ export const TargetCard = ({
               <div className="group relative">
                 <Button
                   className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex"
-                  onClick={addTargetModalDisclosure.onOpen}
+                  onClick={(e) => handleSetTarget(e)}
                 >
                   <span className="font-medium text-xs">Set target</span>
                   <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />
