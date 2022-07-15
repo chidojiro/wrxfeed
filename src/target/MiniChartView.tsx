@@ -5,7 +5,6 @@ import { decimalLogic, DecimalType } from '@/main/utils';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { cloneDeep, range } from 'lodash-es';
-import React from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { TargetChart } from './TargetChart';
@@ -18,6 +17,7 @@ interface MiniChartViewProps {
   legendLabelClass?: string;
   xAxisClass?: string;
   showLegends?: boolean;
+  overallTarget?: number;
 }
 
 export const MiniChartView = ({
@@ -26,6 +26,7 @@ export const MiniChartView = ({
   legendLabelClass = '',
   xAxisClass = '',
   showLegends = false,
+  overallTarget = 0,
 }: MiniChartViewProps) => {
   const targetMonths = (() => {
     const { periods, props } = target;
@@ -52,9 +53,19 @@ export const MiniChartView = ({
 
   const chartData: LineChartData = (() => {
     if (startMonth === endMonth) {
-      return getLineChartDataInMonth(target, targetMonths[startMonth - 1], target?.trackingStatus);
+      return getLineChartDataInMonth(
+        target,
+        targetMonths[startMonth - 1],
+        target?.trackingStatus,
+        overallTarget,
+      );
     }
-    return getTargetMonthsLineChartData(target, targetMonths, target?.trackingStatus);
+    return getTargetMonthsLineChartData(
+      target,
+      targetMonths,
+      target?.trackingStatus,
+      overallTarget,
+    );
   })();
 
   const renderChartLegends = () => {
