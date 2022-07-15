@@ -68,7 +68,7 @@ export const Popover = ({
     <>
       {clonedTrigger}
       <ConditionalWrapper if={{ condition: usePortal, component: Portal as any }}>
-        <div ref={popoverRef} style={styles.popper} {...attributes.popper}>
+        <div ref={popoverRef} style={styles.popper} {...attributes.popper} className="z-50">
           {!!open && <div>{children}</div>}
         </div>
       </ConditionalWrapper>

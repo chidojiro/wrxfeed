@@ -56,6 +56,8 @@ module.exports = {
         'Gray-24': 'rgba(192, 191, 223, 0.1)',
         'Gray-28': '#e5e7eb',
 
+        'cyan-1': '#0891b2',
+
         'Green-1': '#4A944E',
         'Green-2': '#13b9b9',
         'Green-3': 'rgba(19, 185, 185, 0.3)',
@@ -88,6 +90,8 @@ module.exports = {
         'yellow-1': '#FEF3C7',
         'yellow-2': '#FBBF24',
         'yellow-3': '#92400E',
+
+        'orange-1': '#f3aa20',
 
         'purple-4': '#6D28D9',
         'purple-5': '#7A3FEB',

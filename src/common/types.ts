@@ -49,6 +49,17 @@ export type OpenClose = {
   onClose?: () => void;
 };
 
+export type Option<T = string, P = React.ReactNode> = {
+  value: T;
+  label: P;
+};
+
+export type ValueChangeProps<T = any> = {
+  value?: T;
+  onChange?: (value: T) => void;
+  defaultValue?: T;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Fn = (...arg: any[]) => any;
 
