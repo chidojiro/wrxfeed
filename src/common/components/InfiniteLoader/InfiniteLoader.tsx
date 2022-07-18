@@ -4,7 +4,7 @@ import ListLoading from '@/main/atoms/ListLoading';
 import { ClassName } from '@/common/types';
 import clsx from 'clsx';
 
-type InfiniteLoaderProps<T = unknown> = ClassName &
+export type InfiniteLoaderProps<T = unknown> = ClassName &
   Omit<UseInfiniteLoaderProps<T>, 'anchor'> & {
     //
   };

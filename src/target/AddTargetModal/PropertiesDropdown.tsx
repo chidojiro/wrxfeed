@@ -1,211 +1,117 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { AlertRed } from '@/assets';
+import {
+  Form,
+  TagColorScheme,
+  TagProps,
+  TagsDropdown,
+  TagsDropdownOptionProps,
+  TagsDropdownProps,
+} from '@/common/components';
 import { useDebounce } from '@/common/hooks';
 import clsx from 'clsx';
-import AddTargetTagInput from '@/main/atoms/AddTargetTagInput';
-import PropertyDropdownItem from '@/main/atoms/PropertyDropdownItem';
-import useRoveFocus from '@/main/hooks/focus.hook';
-import { useSearch } from '@/main/hooks/search.hook';
-import { SearchResult } from '@/main/types';
-import { getColorByPropertyType } from '@/main/utils';
-import { TargetTypeProp } from '@/target/types';
-import { Popover, Transition } from '@headlessui/react';
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
 
-export enum DropdownEdge {
-  LEFT = 'left-0',
-  RIGHT = '-right-32',
-}
+type PropertiesName = 'vendors' | 'categories' | 'departments' | 'exceptions';
 
-interface PropertiesDropdownProps {
-  className?: string;
-  classPopover?: string;
-  showError?: boolean;
-  closeError?: () => void;
-  placeholder?: string;
-  IconComponent: React.FC<React.SVGAttributes<SVGElement>>;
-  title: string;
-  type: TargetTypeProp;
-  dropdownEdge?: DropdownEdge;
-  defaultItems?: SearchResult[];
-  onChangeItems?: (items: SearchResult[]) => void;
-}
-
-const PropertiesDropdown: React.FC<PropertiesDropdownProps> = ({
-  className = '',
-  classPopover = '',
-  showError = false,
-  closeError = () => undefined,
-  placeholder = '',
-  IconComponent,
-  title,
-  type,
-  dropdownEdge = DropdownEdge.LEFT,
-  onChangeItems,
-  defaultItems,
-}) => {
-  const [keyword, setKeyword] = useState<string>('');
-  const [items, setItems] = useState<SearchResult[]>(defaultItems ?? []);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  const { results } = useSearch({
-    keyword,
-    searchCate: type === TargetTypeProp.CATEGORY,
-    searchDept: type === TargetTypeProp.DEPARTMENT,
-    searchVend: type === TargetTypeProp.VENDOR,
-    ignoreEmptyKeyword: false,
-  });
-
-  const [focus, setFocus] = useRoveFocus(results?.length + 1);
-
-  useEffect(() => {
-    if (showError) {
-      buttonRef?.current?.click();
-    }
-  }, [showError]);
-
-  useEffect(() => {
-    onChangeItems?.(items);
-  }, [items, onChangeItems]);
-
-  const onSearchKeyword = useCallback(
-    (value: string) => {
-      setKeyword(value);
-      if (showError) {
-        closeError();
-      }
-    },
-    [closeError, showError],
-  );
-
-  const debounceSearchRequest = useDebounce(onSearchKeyword);
-
-  const colorByType = getColorByPropertyType(type);
-
-  const renderErrorProperty = () => {
-    if (!showError) return null;
-    return (
-      <div className="flex flex-row items-center px-2 space-x-1 mt-2">
-        <AlertRed width={15} height={15} className="w-4 h-4" viewBox="0 0 15 15" />
-        <p className="text-xs text-Gray-6">Targets need at least one property</p>
-      </div>
-    );
-  };
-  const renderItemSelected = (itemSelected: SearchResult) => {
-    return (
-      <button
-        type="button"
-        key={`renderItemSelected-${itemSelected.id}`}
-        className="flex flex-row h-[30px] items-center mb-1 space-x-1 px-2 py-1 rounded-sm"
-        style={{ backgroundColor: colorByType }}
-      >
-        <IconComponent
-          className="w-5 h-5 fill-current path-no-filled text-white object-scale-down"
-          width={20}
-          height={20}
-          viewBox="0 0 20 20"
-        />
-        <p className="text-white text-left text-3xs font-semibold truncate max-w-[100px]">
-          {itemSelected?.title}
-        </p>
-        <div
-          key={`renderItemSelected-close-${itemSelected.id}`}
-          className="text-xs text-white font-bold ml-2"
-          onClick={(event) => {
-            event.stopPropagation();
-            setItems((pre) => pre.filter((item: SearchResult) => item.id !== itemSelected.id));
-          }}
-        >
-          &times;
-        </div>
-      </button>
-    );
-  };
-  const renderButton = () => {
-    if (items.length === 0) {
-      return (
-        <button
-          type="button"
-          className="flex flex-row h-[30px] items-center space-x-1 px-2 py-1 rounded-sm"
-          style={{ backgroundColor: colorByType }}
-        >
-          <IconComponent
-            className="w-5 h-5 fill-current path-no-filled text-white object-scale-down"
-            width={20}
-            height={20}
-            viewBox="0 0 20 20"
-          />
-          <p className="text-white text-left text-3xs font-semibold truncate max-w-[86px]">
-            {title}
-          </p>
-          <div className="text-xs text-white font-bold ml-2">&times;</div>
-        </button>
-      );
-    }
-    return (
-      <div className="flex flex-col items-start hide-scrollbar max-h-[120px] overflow-y-scroll">
-        {items?.map(renderItemSelected)}
-      </div>
-    );
+export type PropertiesDropdownOption = Pick<TagProps, 'colorScheme'> &
+  Pick<TagsDropdownOptionProps, 'searchValue'> & {
+    value: string;
+    icon: React.ReactNode;
+    label: React.ReactNode;
   };
 
-  return (
-    <div className={clsx(className)}>
-      <Popover as="div" className="flex-shrink-0 relative">
-        {({ open }) => (
-          <>
-            <Popover.Button ref={buttonRef} className={clsx('', open ? '' : '')}>
-              {renderButton()}
-            </Popover.Button>
-            <Popover.Panel className="absolute z-50">
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
-              >
-                <div
-                  className={clsx(
-                    'flex w-[384px] h-[240px] flex-col py-4 px-6 absolute z-50 mt-2 shadow-propertyDropdown border border-Gray-11 rounded-sm bg-white',
-                    dropdownEdge,
-                    classPopover,
-                  )}
-                >
-                  <AddTargetTagInput
-                    focus={focus === 0}
-                    placeholder={placeholder}
-                    autoFocus
-                    setFocus={setFocus}
-                    onTextChange={debounceSearchRequest}
-                  />
-                  {renderErrorProperty()}
-                  <div className="flex flex-col mt-2 w-full max-h-[200px] overflow-y-scroll hide-scrollbar">
-                    {results?.map((result, index) => (
-                      <PropertyDropdownItem
-                        key={`renderSearchResult-${result?.id}`}
-                        result={result}
-                        focus={focus === index + 1}
-                        onClickHandler={() => {
-                          setFocus(index);
-                          const isIncluded = items.includes(result);
-                          if (!isIncluded) {
-                            setItems((pre) => [...pre, result]);
-                          }
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </Transition>
-            </Popover.Panel>
-          </>
-        )}
-      </Popover>
-    </div>
-  );
+type PropertiesDropdownProps = Pick<TagsDropdownProps, 'placement'> & {
+  name: PropertiesName;
+  placeholder?: React.ReactNode;
+  options: PropertiesDropdownOption[];
+  searchPlaceholder: string;
+  trigger?: React.ReactNode;
+  onChange?: (value: string[]) => void;
+  showOptionsOnEmptySearch?: boolean;
+  error?: boolean;
 };
 
-export default PropertiesDropdown;
+const ColorByColorScheme: Record<TagColorScheme, string> = {
+  accent: 'text-Accent-2',
+  cyan: 'text-cyan-1',
+  orange: 'text-orange-1',
+};
+
+export const PropertiesDropdown = React.forwardRef(
+  (
+    {
+      name,
+      placeholder,
+      options,
+      searchPlaceholder,
+      trigger,
+      onChange,
+      placement,
+      showOptionsOnEmptySearch = true,
+      error,
+    }: PropertiesDropdownProps,
+    ref: any,
+  ) => {
+    const internalRef = React.useRef<any>();
+    const [search, setSearch] = React.useState('');
+    const setSearchDebounced = useDebounce(setSearch, 300);
+
+    React.useImperativeHandle(ref, () => internalRef.current);
+
+    React.useEffect(() => {
+      if (error) {
+        internalRef.current?.open();
+      }
+    }, [error, internalRef]);
+
+    return (
+      <Form.TagsDropdown
+        ref={internalRef}
+        className="max-w-[140px] h-[fit-content] flex-shrink-0"
+        trigger={trigger}
+        name={name}
+        placeholder={placeholder}
+        onChange={onChange}
+        placement={placement}
+      >
+        <TagsDropdown.Search
+          placeholder={searchPlaceholder}
+          onChange={(e) => setSearchDebounced(e.target.value)}
+        />
+        {!!error && (
+          <div className="flex flex-row items-center px-2 space-x-1 mb-2">
+            <AlertRed width={15} height={15} className="w-4 h-4" viewBox="0 0 15 15" />
+            <p className="text-xs text-Gray-6">Targets need at least one property</p>
+          </div>
+        )}
+        <div className={clsx({ 'min-h-[200px]': !showOptionsOnEmptySearch })}>
+          <div className={clsx({ hidden: !showOptionsOnEmptySearch && !search })}>
+            {options.map(({ value, icon, label, colorScheme, searchValue }) => (
+              <TagsDropdown.Option
+                key={value}
+                icon={
+                  <div className={clsx('w-5 h-5', ColorByColorScheme[colorScheme])}>{icon}</div>
+                }
+                tagProps={{
+                  colorScheme,
+                  icon,
+                  children: (
+                    <span className="whitespace-nowrap overflow-hidden overflow-ellipsis">
+                      {label}
+                    </span>
+                  ),
+                }}
+                value={value}
+                searchValue={searchValue}
+              >
+                <div className="whitespace-nowrap overflow-hidden overflow-ellipsis">{label}</div>
+              </TagsDropdown.Option>
+            ))}
+          </div>
+        </div>
+      </Form.TagsDropdown>
+    );
+  },
+);
+
+PropertiesDropdown.displayName = 'PropertiesDropdown';

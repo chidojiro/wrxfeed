@@ -48,7 +48,6 @@ const Modal: React.FC<ModalProps> = ({
           </span>
         )}
         <div
-          onClick={(event) => event.stopPropagation()}
           className={clsx(
             'inline-block bg-white rounded-sm text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle',
             contentClass,

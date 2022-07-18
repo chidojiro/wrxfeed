@@ -26,7 +26,7 @@ export const useInfiniteLoader = <T = unknown>({
   anchor,
 }: UseInfiniteLoaderProps<T>): UseInfiniteLoaderReturn => {
   const [page, setPage] = React.useState(1);
-  const readyForNextLoadTimeout = React.useRef<number>();
+  const readyForNextLoadTimeout = React.useRef<NodeJS.Timeout>();
 
   const isIntersected = useIntersection(anchor);
 

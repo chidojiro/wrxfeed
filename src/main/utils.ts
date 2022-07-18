@@ -448,58 +448,40 @@ export const getTransactionStatus = (status: string): TranStatusType => {
   return TranStatusNameColor[status];
 };
 
-export const getItemsSentence = (items: SearchResult[], pre = ''): string => {
+export const getItemsSentence = (items: TargetProps[], pre = ''): string => {
   const cloneItems = cloneDeep(items);
   if (cloneItems.length === 0) return '';
-  if (cloneItems.length === 1) return pre + cloneItems[0].title;
-  if (cloneItems.length === 2) return `${pre} ${cloneItems[0].title} and ${cloneItems[1].title}`;
+  if (cloneItems.length === 1) return pre + cloneItems[0].name;
+  if (cloneItems.length === 2) return `${pre} ${cloneItems[0].name} and ${cloneItems[1].name}`;
   const popped = cloneItems.pop();
-  return `${cloneItems.map((item: SearchResult) => item.title).join(', ')} and ${popped?.title}`;
+  return `${cloneItems.map((item: TargetProps) => item.name).join(', ')} and ${popped?.name}`;
 };
 
 export const genReviewSentenceFromProperties = (
-  vend: SearchResult[] = [],
-  team: SearchResult[] = [],
-  cat: SearchResult[] = [],
-  except: SearchResult[] = [],
+  vendorProps: TargetProps[] = [],
+  categoryProps: TargetProps[] = [],
+  departmentProps: TargetProps[] = [],
+  exceptionProps: TargetProps[] = [],
 ): string => {
-  const vendorSen = getItemsSentence(vend);
-  const catSen = getItemsSentence(cat, ' spend within ');
-  const teamSen = getItemsSentence(team, ' for ');
-  const exceptSen = getItemsSentence(except, ', except ');
+  const vendorSen = getItemsSentence(vendorProps);
+  const catSen = getItemsSentence(categoryProps, ' spend within ');
+  const teamSen = getItemsSentence(departmentProps, ' for ');
+  const exceptSen = getItemsSentence(exceptionProps, ', except ');
 
   const sentence = `You're targeting all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`;
+
   return sentence;
 };
 
-export const getPropsAndPeriodsFromItemSelected = (
-  propSelected: SearchResult[],
-  excepts: SearchResult[],
-  targetMonths: TargetMonth[],
-  curYear: number,
-): { props: TargetProps[]; periods: TargetPeriod[] } => {
-  const props: TargetProps[] = propSelected.map((prop: SearchResult) => {
-    return {
-      id: prop?.directoryId,
-      type: prop?.type,
-      name: prop?.title ?? '',
-      exclude: false,
-    };
-  });
-  excepts.forEach((except: SearchResult) => {
-    props.push({
-      id: except?.directoryId,
-      type: except?.type,
-      name: except?.title ?? '',
-      exclude: true,
-    });
-  });
+export const getPeriodsFromTargetMonths = (targetMonths: TargetMonth[], curYear: number) => {
   const periods: TargetPeriod[] = [];
   const availableMonths = targetMonths
     .filter((target) => target.amount !== undefined)
     .map((target) => target.month);
+
   const minMonth = Math.min(...availableMonths);
   const maxMonth = Math.max(...availableMonths);
+
   targetMonths.forEach((target: TargetMonth) => {
     if (target.month >= minMonth && target.month <= maxMonth) {
       periods.push({
@@ -509,10 +491,8 @@ export const getPropsAndPeriodsFromItemSelected = (
       });
     }
   });
-  return {
-    props,
-    periods,
-  };
+
+  return periods;
 };
 
 export const getTargetPeriodsAmountTotal = (

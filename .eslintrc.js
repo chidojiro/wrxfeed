@@ -7,28 +7,12 @@ module.exports = {
     ecmaFeatures: {
       jsx: true, // Allows for the parsing of JSX
     },
-    project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint', 'react', 'react-hooks', 'import', 'jsx-a11y', 'jest', 'prettier'],
   env: {
     browser: true,
     es2020: true,
     'jest/globals': true,
-  },
-  settings: {
-    react: {
-      version: 'detect', // Tells eslint-plugin-react to automatically detect the version of React to use
-    },
-    // Apply special parsing for TypeScript files
-    'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx', '.d.ts'],
-    },
-    // Append 'ts' extensions to Airbnb 'import/resolver' setting
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
-    },
   },
   extends: [
     'plugin:react/recommended', // Uses the recommended rules from @eslint-plugin-react
@@ -107,6 +91,7 @@ module.exports = {
     ],
 
     'react/react-in-jsx-scope': 'off',
+    'react/no-unescaped-entities': 'off',
 
     // Append 'tsx' to Airbnb 'react/jsx-filename-extension' rule
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-filename-extension.md

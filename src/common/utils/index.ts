@@ -1,17 +1,14 @@
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
-import updateLocale from 'dayjs/plugin/updateLocale';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import updateLocale from 'dayjs/plugin/updateLocale';
 import numeral from 'numeral';
-import { FieldValues } from 'react-hook-form';
-import * as yup from 'yup';
-import { LazyBuilder } from 'yup/lib/Lazy';
-import { PROJECT_CLASS_NAME_PREFIX } from '../constants';
-export { DateUtils } from './date';
 export { AssertUtils } from './assert';
-export { StringUtils } from './string';
+export { DateUtils } from './date';
 export { ReactUtils } from './react';
+export { StringUtils } from './string';
+export { NumberUtils } from './number';
 
 // Dayjs plugins
 dayjs.extend(isToday);

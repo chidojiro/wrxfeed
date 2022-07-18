@@ -1,3 +1,6 @@
-export type GetLineItemPayload = {
-  lineItemId: number;
+import { PaginationParams } from '@/rest/types';
+
+export type GetCategoriesParams = Partial<PaginationParams> & {
+  term?: string;
+  dep?: number;
 };

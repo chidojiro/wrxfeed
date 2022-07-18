@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 declare module '*.module.css' {
   interface IClassNames {
     [className: string]: string;
