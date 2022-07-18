@@ -33,7 +33,7 @@ export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeade
       style={{ background: teamHeaderColor }}
     >
       <div className="flex flex-row items-center space-x-4">
-        <div className="flex justify-center items-center w-9 h-9 rounded-full border border-white">
+        <div className="flex justify-center flex-shrink-0 items-center w-9 h-9 rounded-full border border-white">
           <TeamIcon
             className="w-5 h-5 fill-current path-no-filled text-white opacity-100"
             aria-hidden="true"
