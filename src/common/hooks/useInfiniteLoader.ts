@@ -11,11 +11,13 @@ export type UseInfiniteLoaderProps<T = unknown> = {
   onSuccess?: (data: T) => void;
   onError?: (error: any) => void;
   anchor: React.RefObject<HTMLElement> | HTMLElement | null;
+  mode?: 'ON_DEMAND' | 'ON_SIGHT';
 };
 
 export type UseInfiniteLoaderReturn = {
   isExhausted: boolean;
   isLoading: boolean;
+  loadMore: () => void;
 };
 
 export const useInfiniteLoader = <T = unknown>({
@@ -24,6 +26,7 @@ export const useInfiniteLoader = <T = unknown>({
   onError,
   onSuccess,
   anchor,
+  mode = 'ON_SIGHT',
 }: UseInfiniteLoaderProps<T>): UseInfiniteLoaderReturn => {
   const [page, setPage] = React.useState(1);
   const readyForNextLoadTimeout = React.useRef<NodeJS.Timeout>();
@@ -60,18 +63,22 @@ export const useInfiniteLoader = <T = unknown>({
     },
   );
 
+  const increasePage = React.useCallback(() => {
+    setPage((prev) => prev + 1);
+  }, []);
+
   const increasePageOnIntersection = React.useCallback(() => {
     if (isIntersected && readyForNextLoadDisclosure.isOpen) {
-      setPage((prev) => prev + 1);
+      increasePage();
     }
-  }, [isIntersected, readyForNextLoadDisclosure.isOpen]);
+  }, [increasePage, isIntersected, readyForNextLoadDisclosure.isOpen]);
 
   React.useEffect(() => {
     increasePageOnIntersection();
-  }, [increasePageOnIntersection]);
+  }, [increasePageOnIntersection, mode]);
 
   return React.useMemo(
-    () => ({ isLoading, isExhausted: exhaustedDisclosure.isOpen }),
-    [exhaustedDisclosure.isOpen, isLoading],
+    () => ({ isLoading, isExhausted: exhaustedDisclosure.isOpen, loadMore: increasePage }),
+    [exhaustedDisclosure.isOpen, increasePage, isLoading],
   );
 };
