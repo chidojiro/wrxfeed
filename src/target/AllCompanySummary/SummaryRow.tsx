@@ -36,9 +36,7 @@ export const SummaryRow = ({
   );
 
   const handleClick = async () => {
-    if (!target) return;
     await viewDepartmentSummary(id);
-
     history.push({
       pathname: `/departments/${id}`,
       search: `?route=${MainGroups.Following}`,
@@ -55,16 +53,10 @@ export const SummaryRow = ({
   );
 
   return (
-    <ConditionalWrapper
-      if={{
-        condition: !!targetSpends,
-        component: 'button',
-        props: {
-          onClick: handleClick,
-          className: clsx(baseWrapperClassName, 'list-row-hover'),
-        },
-      }}
-      else={{ component: 'div', props: { className: baseWrapperClassName } }}
+    <button
+      type="button"
+      onClick={handleClick}
+      className={clsx(baseWrapperClassName, 'cursor-pointer list-row-hover')}
     >
       <div className="col-span-5 flex items-center gap-2 text-Gray-3 text-left">
         <div
@@ -79,14 +71,14 @@ export const SummaryRow = ({
       <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(targetSpends)}</div>
       <div className="col-span-1 relative flex items-center justify-center">
         {!!commentCount && (
-          <>
+          <a href={`/feed/${target?.id}?route=TargetFeed`}>
             <CommentIcon className="text-Gray-7" />
             <div className="absolute top-0.5 left-1/2 transform -translate-x-1/2 text-Gray-3 text-xs">
               {commentCount}
             </div>
-          </>
+          </a>
         )}
       </div>
-    </ConditionalWrapper>
+    </button>
   );
 };
