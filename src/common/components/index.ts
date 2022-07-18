@@ -13,5 +13,5 @@ export * from './Spinner';
 export * from './StatusTag';
 export * from './Table';
 export * from './Tabs';
-export * from './TagsDropdown';
+export * from './TagsSelect';
 export * from './Tooltip';

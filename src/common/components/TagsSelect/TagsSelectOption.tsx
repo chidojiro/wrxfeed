@@ -3,9 +3,9 @@ import { Children, ClassName } from '@/common/types';
 import clsx from 'clsx';
 import React from 'react';
 import { TagProps } from './Tag';
-import { useTagsDropdownContext } from './TagsDropdownProvider';
+import { useTagsSelectContext } from './TagsSelectProvider';
 
-export type TagsDropdownOptionProps<T = string> = Children &
+export type TagsSelectOptionProps<T = string> = Children &
   ClassName & {
     value: T;
     tagProps: Omit<TagProps, 'onRemoveClick'>;
@@ -13,7 +13,7 @@ export type TagsDropdownOptionProps<T = string> = Children &
     searchValue?: string;
   };
 
-export const TagsDropdownOption = React.memo(
+export const TagsSelectOption = React.memo(
   ({
     children,
     value: valueProp,
@@ -21,8 +21,8 @@ export const TagsDropdownOption = React.memo(
     className,
     icon,
     searchValue,
-  }: TagsDropdownOptionProps<any>) => {
-    const { value, addOption, addTag, search } = useTagsDropdownContext();
+  }: TagsSelectOptionProps<any>) => {
+    const { value, addOption, addTag, search } = useTagsSelectContext();
     const [delayableOpen, setDelayableOpen] = useDelayableState(0, false);
 
     React.useEffect(() => {
@@ -56,4 +56,4 @@ export const TagsDropdownOption = React.memo(
   },
 );
 
-TagsDropdownOption.displayName = 'TagsDropdownOption';
+TagsSelectOption.displayName = 'TagsSelectOption';

@@ -309,7 +309,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
               readOnly
               className="w-0 h-0 overflow-hidden"
             />
-            <div className="flex flex-col w-[685px] outline-none pt-4">
+            <div className="flex flex-col w-[685px] outline-none">
               <div className="flex flex-col space-y-2 px-10 py-4 w-full">
                 <p className="text-primary text-xs font-semibold">Target Name*</p>
                 <Form.Input

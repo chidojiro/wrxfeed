@@ -6,7 +6,7 @@ import {
   FormProps as HeadlessFormProps,
 } from '../../headless';
 import { Input, InputProps } from '../Input';
-import { TagsDropdown, TagsDropdownProps } from '../TagsDropdown';
+import { TagsSelect, TagsSelectProps } from '../TagsSelect';
 
 export type FormProps = HeadlessFormProps;
 
@@ -16,10 +16,10 @@ type FormField<T> = Omit<FieldProps, 'component'> & Omit<T, keyof FieldProps>;
 
 const FormInput = (props: FormField<InputProps>) => <Field {...props} component={Input} />;
 
-const FormTagsDropdown = React.forwardRef((props: FormField<TagsDropdownProps>, ref: any) => (
-  <Field {...props} component={TagsDropdown as any} emptyValue={[]} ref={ref} />
+const FormTagsSelect = React.forwardRef((props: FormField<TagsSelectProps>, ref: any) => (
+  <Field {...props} component={TagsSelect as any} emptyValue={[]} ref={ref} />
 ));
-FormTagsDropdown.displayName = 'FormTagsDropdown';
+FormTagsSelect.displayName = 'FormTagsSelect';
 
 Form.Input = FormInput;
-Form.TagsDropdown = FormTagsDropdown;
+Form.TagsSelect = FormTagsSelect;
