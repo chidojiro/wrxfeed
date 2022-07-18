@@ -70,10 +70,6 @@ export interface ApiClient {
   getUsers: (filters: GetUsersFilter) => Promise<User[]>;
   getContacts: (filters: GetContactsFilter) => Promise<Contact[]>;
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
-  // Directory
-  getDepartments: (filters?: DepartmentFilter) => Promise<Department[]>;
-  getCategories: (filter?: CategoryFilter) => Promise<Category[]>;
-  updateCategory: (data?: Partial<Category>) => Promise<void>;
   // Notification
   getNotifications: (page?: PaginationParams) => Promise<NotificationsResponse>;
   patchNotification: (id: number) => Promise<void>;
@@ -135,16 +131,6 @@ export interface GetContactsFilter {
 export interface AddCommentParams {
   content?: string;
   attachment?: string;
-}
-
-export interface DepartmentFilter extends PaginationParams {
-  parent?: number;
-  term?: string;
-  includeSub?: 1 | 0;
-}
-export interface CategoryFilter extends PaginationParams {
-  term?: string;
-  dep?: number;
 }
 
 export interface SubscriptionParams {

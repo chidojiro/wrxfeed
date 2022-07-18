@@ -1,12 +1,12 @@
 import { CategoryIcon } from '@/assets';
 import { OverlayLoader } from '@/common/components';
 import { TopCategories as TTopCategories } from '@/main/entity';
-import TopCategoriesChartTooltip from '@/main/molecules/TopCategoriesChartTooltip';
 import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Cell, Pie, PieChart, Tooltip } from 'recharts';
 import { useTopCategories } from '../useTopCategories';
 import PieActiveShape from './PieActiveShape';
+import TopCategoriesChartTooltip from './TopCategoriesChartTooltip';
 
 const COLORS = ['#165DFF', '#0FC6C2', '#F7BA1E', '#7A3FEB', '#3491FA', '#DFE1E6'];
 

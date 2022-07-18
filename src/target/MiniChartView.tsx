@@ -10,9 +10,9 @@ import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipCont
 import { TargetChart } from './TargetChart';
 import { Target, TargetPeriod } from './types';
 
-interface MiniChartViewProps {
+interface MiniChartViewProps<T extends Pick<Target, 'props' | 'periods' | 'trackingStatus'>> {
   className?: string;
-  target: Target;
+  target: T;
   onEdit?: () => void;
   legendLabelClass?: string;
   xAxisClass?: string;
@@ -20,27 +20,27 @@ interface MiniChartViewProps {
   overallTarget?: number;
 }
 
-export const MiniChartView = ({
+export const MiniChartView = <
+  T extends Pick<Target, 'props' | 'periods' | 'trackingStatus' | 'spendings'>,
+>({
   className = '',
   target,
   legendLabelClass = '',
   xAxisClass = '',
   showLegends = false,
   overallTarget = 0,
-}: MiniChartViewProps) => {
+}: MiniChartViewProps<T>) => {
   const targetMonths = (() => {
-    const { periods, props } = target;
-    if (periods?.length > 0 && props?.length > 0) {
+    const { periods = [] } = target;
+    if (!!periods?.length) {
       const dataMonth = cloneDeep(defaultTargetMonths);
+
       periods.forEach((period: TargetPeriod) => {
-        if (
-          period?.amount !== undefined &&
-          dataMonth[period?.month - 1] &&
-          dataMonth[period?.month - 1]
-        ) {
+        if (period?.amount !== undefined && dataMonth[period?.month - 1]) {
           dataMonth[period?.month - 1].amount = period?.amount;
         }
       });
+
       return dataMonth;
     }
 

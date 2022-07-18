@@ -1,25 +1,18 @@
 import React from 'react';
-
 import { HTMLDivProps } from '../../types';
+import { useTabsContext } from './TabsProvider';
 
-import { TabsContext } from './TabsContext';
+type TabRenderProp = (props: { onClick: () => void; isActive: boolean }) => JSX.Element | null;
 
-type TabItemRenderProp = (props: { onClick: () => void; isActive: boolean }) => JSX.Element | null;
-
-export type TabItemProps = Omit<HTMLDivProps, 'children'> & {
-  children: TabItemRenderProp;
+export type TabProps = Omit<HTMLDivProps, 'children'> & {
+  children: TabRenderProp;
   content?: React.ReactNode;
   value?: string;
 };
 
-export const Item = ({ children, content, value }: TabItemProps) => {
+export const Tab = ({ children, content, value }: TabProps) => {
   const [index, setIndex] = React.useState(-1);
-  const {
-    value: selectedValue,
-    handleChange,
-    setContent,
-    increaseTabsCount,
-  } = React.useContext(TabsContext);
+  const { value: selectedValue, handleChange, setContent, increaseTabsCount } = useTabsContext();
 
   React.useEffect(() => {
     const index = increaseTabsCount();

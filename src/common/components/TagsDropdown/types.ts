@@ -1,10 +1,18 @@
 import { PopoverProps } from './../Popover/Popover';
-import { Children, ValueChangeProps } from '../../types';
+import { Children, ClassName, OpenClose, ValueChangeProps } from '../../types';
 import { TagProps } from './Tag';
 
-export type TagsDropdownProps<T = string> = ValueChangeProps<T[]> &
+export type TagsDropdownProps<T = string> = ClassName &
   Children &
-  Pick<PopoverProps, 'placement'> &
-  Pick<TagProps, 'colorScheme'> & {
+  OpenClose &
+  ValueChangeProps<T[]> &
+  Pick<PopoverProps, 'placement'> & {
     placeholder: React.ReactNode;
+    trigger?: React.ReactNode;
+    ref?: any;
   };
+
+export type Option<T = string> = {
+  value: T;
+  tagProps: Omit<TagProps, 'onRemoveClick'>;
+};

@@ -1,5 +1,5 @@
+import { ReactUtils } from '@/common/utils';
 import React from 'react';
-import { noop } from 'lodash-es';
 
 export type Value = number | string;
 
@@ -12,11 +12,4 @@ export type TabsProvider<T> = {
   increaseTabsCount: () => number;
 };
 
-export const TabsContext = React.createContext<TabsProvider<any>>({
-  value: undefined,
-  handleChange: noop,
-  content: undefined,
-  setContent: noop,
-  tabsCount: 0,
-  increaseTabsCount: () => -1,
-});
+export const [TabsProvider, useTabsContext] = ReactUtils.createContext<TabsProvider<any>>();

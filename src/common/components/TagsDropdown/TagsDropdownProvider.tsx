@@ -1,6 +1,5 @@
-import { Option } from '@/common/types';
 import { ReactUtils } from '../../utils';
-import { TagsDropdownProps } from './types';
+import { TagsDropdownProps, Option } from './types';
 
 export type TagsDropdownProviderValue<T = string> = {
   value: T[];
@@ -9,6 +8,9 @@ export type TagsDropdownProviderValue<T = string> = {
   TagsDropdownProps: TagsDropdownProps<T>;
   removeTag: (value: T) => void;
   addTag: (value: T) => void;
+  search: string;
+  setSearch: (value: string) => void;
+  setSearchDebounced: (value: string) => void;
 };
 
 const [TagsDropdownProvider, useTagsDropdownContext] =

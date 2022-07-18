@@ -18,18 +18,17 @@ const Accent6 = '#818CF8';
 
 const DATA_DATE_FORMAT = 'MMM DD';
 
-const getYearSpending = (target: Target, year: number) =>
-  target.spendings?.filter((cur) => cur.year === year).reduce((acc, { total }) => total + acc, 0) ??
-  0;
+const getYearSpending = (spendings: TargetSpending[], year: number) =>
+  spendings?.filter((cur) => cur.year === year).reduce((acc, { total }) => total + acc, 0) ?? 0;
 
-export const getThisYearSpending = (target: Target) =>
-  getYearSpending(target, new Date().getFullYear());
+export const getThisYearSpending = (spendings: TargetSpending[]) =>
+  getYearSpending(spendings, new Date().getFullYear());
 
-export const getLastYearSpending = (target: Target) =>
-  getYearSpending(target, new Date().getFullYear() - 1);
+export const getLastYearSpending = (spendings: TargetSpending[]) =>
+  getYearSpending(spendings, new Date().getFullYear() - 1);
 
 export const getLineChartDataInMonth = (
-  target: Target,
+  target: Partial<Target>,
   targetMonth: TargetMonth,
   trackingStatus?: TargetStatusType,
   overallTarget?: number,
@@ -37,8 +36,8 @@ export const getLineChartDataInMonth = (
   const targetDate = dayjs().set('month', targetMonth.month - 1);
   const isThisMonth = dayjs().month() === targetMonth.month - 1;
 
-  const totalThisYear = getThisYearSpending(target);
-  const totalLastYear = getLastYearSpending(target);
+  const totalThisYear = getThisYearSpending(target.spendings ?? []);
+  const totalLastYear = getLastYearSpending(target.spendings ?? []);
   const data: ChartDataPoint[] = Array(targetDate.daysInMonth())
     .fill({
       name: '',
@@ -147,7 +146,7 @@ export const getChartLevels = (maxValue: number): ChartLevel[] => {
 };
 
 export const getTargetMonthsLineChartData = (
-  target: Target,
+  target: Partial<Target>,
   targetMonths: TargetMonth[],
   trackingStatus?: TargetStatusType,
   overallTarget?: number,
@@ -189,8 +188,14 @@ export const getTargetMonthsLineChartData = (
     }
     const month = dayjs().month(index).format(monthFormat);
     // Calculate cumulative values
-    cumulativeThisYear += round(thisYearSorted[index]?.total ?? 0, 2);
-    cumulativeLastYear += round(lastYearSorted[index]?.total ?? 0, 2);
+    cumulativeThisYear += round(
+      thisYearSorted.find(({ month }) => month === target.month)?.total ?? 0,
+      2,
+    );
+    cumulativeLastYear += round(
+      lastYearSorted.find(({ month }) => month === target.month)?.total ?? 0,
+      2,
+    );
     cumulativeTarget += round(target?.amount ?? 0, 2);
 
     // Generate data point

@@ -10,6 +10,7 @@ import { FeedFilters } from '@/api/types';
 import { isBadRequest } from '@/error/utils';
 import { Category, FeedItem } from '@/main/entity';
 import { USE_CONTACT_BUTTON_MESSAGE } from '@/error/errorMessages';
+import { FeedApis } from '@/feed/apis';
 
 interface FeedHookValues {
   feeds: FeedItem[];
@@ -63,7 +64,7 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
   const updateCategory = useCallback(
     async (category: Partial<Category>) => {
       try {
-        await ApiClient.updateCategory(category);
+        await FeedApis.updateCategory(category);
         // Update current feeds
         setFeeds((prev) => {
           const newFeeds = prev.map((item) => {

@@ -25,8 +25,8 @@ export const LineItemDrawer = withMountOnOpen(
     const identity = useIdentity();
 
     const { isValidating, data: lineItemDetails } = useFetcher(
-      !!lineItem?.id && ['lineItem', lineItem?.id],
-      () => FeedApis.getLineItemDetails({ lineItemId: lineItem?.id }),
+      !!lineItem?.id && ['lineItem', lineItem.id],
+      () => FeedApis.getLineItem(lineItem.id),
     );
 
     React.useEffect(() => {

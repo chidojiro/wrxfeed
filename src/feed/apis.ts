@@ -1,19 +1,30 @@
 import { Category, TransLineItem } from '@/main/entity';
 import { RestApis } from '@/rest/apis';
+import { RestUtils } from '@/rest/utils';
 import { Vendor } from '@/vendor/types';
-import { GetLineItemPayload } from './types';
+import { GetCategoriesParams } from './types';
 
-const getLineItemDetails = ({ lineItemId }: GetLineItemPayload) =>
-  RestApis.get<TransLineItem>(`/feed/line-items/${lineItemId}`).then((res) => res.data);
+const getLineItem = (id: number) =>
+  RestApis.get<TransLineItem>(`/feed/line-items/${id}`).then((res) => res.data);
 
 const getCategory = (id: number) =>
   RestApis.get<Category>(`/feed/categories/${id}`).then((res) => res.data);
+
+const getCategories = async (params?: GetCategoriesParams) =>
+  RestApis.get<Category[]>('/feed/categories', {
+    params: RestUtils.withDefaultPaginationParams(params),
+  }).then((res) => res.data);
+
+const updateCategory = async (payload?: Partial<Category>) =>
+  RestApis.patch<Category>(`/feed/categories/${payload?.id}`, payload).then((res) => res.data);
 
 const getVendor = (id: number) =>
   RestApis.get<Vendor>(`/feed/vendors/${id}`).then((res) => res.data);
 
 export const FeedApis = {
-  getLineItemDetails,
+  getLineItem,
   getCategory,
   getVendor,
+  getCategories,
+  updateCategory,
 };

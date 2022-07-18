@@ -131,7 +131,7 @@ export const Input = React.forwardRef(
       );
     }
 
-    return <BaseInput {...restProps} ref={ref} type={type} />;
+    return <BaseInput {...restProps} ref={ref} type={type} value={value} onChange={setValue} />;
   },
 );
 

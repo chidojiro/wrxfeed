@@ -1,6 +1,8 @@
-import { GetRecentlyViewedDepartmentSummariesParams } from './types';
+import { RestUtils } from '@/rest/utils';
+import { GetDepartmentsParams, GetRecentlyViewedDepartmentSummariesParams } from './types';
 import { RestApis } from '@/rest/apis';
 import { DepartmentSummary, Target } from '@/target/types';
+import { Department } from '@/main/entity';
 
 const viewSummary = (id: number) =>
   RestApis.put<void>(`/recent/departments/${id}`).then(({ data }) => data);
@@ -16,4 +18,9 @@ const getRecentlyViewedSummaries = ({
 const getSummaries = () =>
   RestApis.get<DepartmentSummary[]>('/target/departments').then(({ data }) => data);
 
-export const DepartmentApis = { viewSummary, getRecentlyViewedSummaries, getSummaries };
+const getList = async (params?: GetDepartmentsParams): Promise<Department[]> =>
+  RestApis.get<Department[]>('/feed/departments', {
+    params: RestUtils.withDefaultPaginationParams(params),
+  }).then(({ data }) => data);
+
+export const DepartmentApis = { getList, viewSummary, getRecentlyViewedSummaries, getSummaries };
