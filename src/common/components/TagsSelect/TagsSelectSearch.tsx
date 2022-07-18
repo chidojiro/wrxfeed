@@ -9,22 +9,23 @@ type TagsSelectSearchProps = Omit<InputProps, 'value' | 'ref'> & {
 };
 
 export const TagsSelectSearch = ({ className, onChange, ...restProps }: TagsSelectSearchProps) => {
-  const { setSearchDebounced } = useTagsSelectContext();
+  const { setSearch, search } = useTagsSelectContext();
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setSearchDebounced(e.target.value);
+    setSearch(e.target.value);
     onChange?.(e);
   };
 
   return (
     <Input
-      autoFocus
       {...restProps}
+      autoFocus
       className={clsx(
         StringUtils.withProjectClassNamePrefix('tags-dropdown-search'),
-        'mb-2',
+        'mb-2 flex-shrink-0',
         className,
       )}
+      value={search}
       onChange={handleChange}
     />
   );
