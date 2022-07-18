@@ -10,7 +10,6 @@ import { useFeed } from '@/main/hooks/feed.hook';
 import DepartmentList from '@/main/organisms/DepartmentList';
 import { scrollToTop } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
-import * as Sentry from '@sentry/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -20,7 +19,7 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const WrappedTeamsPage = () => {
+export const TeamsPage = () => {
   const history = useHistory();
   const { id: deptId } = useParams<{ id?: string }>();
   const query = useLegacyQuery();
@@ -100,5 +99,3 @@ const WrappedTeamsPage = () => {
     </MainLayout>
   );
 };
-
-export const TeamsPage = Sentry.withProfiler(WrappedTeamsPage, { name: 'DepartmentsPage' });
