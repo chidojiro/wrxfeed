@@ -19,6 +19,15 @@
   .list-row-hover {
     @apply hover:ring-1 hover:ring-Accent-4 hover:shadow-targetHover
   }
+
+  .invisible-scrollbar {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .invisible-scrollbar::-webkit-scrollbar {
+      display: none;  /* Safari and Chrome */
+  }
 }
 
 body {

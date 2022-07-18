@@ -1,18 +1,18 @@
 import { useControllable, useDebounce } from '@/common/hooks';
+import { StringUtils } from '@/common/utils';
 import { useDisclosure } from '@dwarvesf/react-hooks';
+import clsx from 'clsx';
 import { uniq, uniqBy } from 'lodash-es';
 import React from 'react';
 import { Popover } from '../Popover';
-import { TagsSelectOption } from './TagsSelectOption';
 import { SelectedTags } from './SelectedTags';
+import { TagsSelectOptions } from './TagsSelectOptions';
 import { TagsSelectProvider, TagsSelectProviderValue } from './TagsSelectProvider';
-import { Option, TagsSelectProps } from './types';
-import clsx from 'clsx';
-import { StringUtils } from '@/common/utils';
 import { TagsSelectSearch } from './TagsSelectSearch';
+import { Option, TagsSelectProps } from './types';
 
 type TagsSelectComponent = (<T>(props: TagsSelectProps<T>) => React.ReactNode) & {
-  Option: typeof TagsSelectOption;
+  Options: typeof TagsSelectOptions;
   Search: typeof TagsSelectSearch;
 };
 
@@ -39,12 +39,6 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
     const [search, setSearch] = React.useState('');
     const [options, setOptions] = React.useState<Option<T>[]>([]);
 
-    const setSearchDebounced = useDebounce(setSearch, 300);
-
-    const addOption = React.useCallback((option: Option<T>) => {
-      setOptions((prev) => uniqBy([...prev, option], 'value'));
-    }, []);
-
     const addTag = React.useCallback(
       (value: T) => {
         setValue((prev: T[]) => uniq([...prev, value]));
@@ -64,14 +58,13 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
         TagsSelectProps: props,
         value,
         onChange: setValue,
-        addOption,
+        registerOptions: setOptions,
         addTag,
         removeTag,
         search,
         setSearch,
-        setSearchDebounced,
       }),
-      [addOption, addTag, props, removeTag, search, setSearchDebounced, setValue, value],
+      [addTag, props, removeTag, search, setValue, value],
     );
 
     const popoverDisclosure = useDisclosure();
@@ -119,9 +112,10 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
         >
           <div
             className={clsx(
-              StringUtils.withProjectClassNamePrefix('tags-select-dropdown'),
+              StringUtils.withProjectClassNamePrefix('tags-select'),
               'shadow-shadowCard border border-Gray-11 px-6 py-4 bg-white',
-              'w-[400px] max-h-[240px] overflow-auto',
+              'w-[400px] max-h-[240px] overflow-hidden',
+              'flex flex-col',
             )}
           >
             {children}
@@ -132,5 +126,5 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
   },
 ) as any;
 
-TagsSelect.Option = TagsSelectOption;
+TagsSelect.Options = TagsSelectOptions;
 TagsSelect.Search = TagsSelectSearch;

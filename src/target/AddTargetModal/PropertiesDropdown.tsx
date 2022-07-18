@@ -1,12 +1,6 @@
 import { AlertRed } from '@/assets';
-import {
-  Form,
-  TagColorScheme,
-  TagProps,
-  TagsSelect,
-  TagsSelectOptionProps,
-  TagsSelectProps,
-} from '@/common/components';
+import { Form, TagColorScheme, TagProps, TagsSelect, TagsSelectProps } from '@/common/components';
+import { TagsSelectOption } from '@/common/components';
 import { useDebounce } from '@/common/hooks';
 import clsx from 'clsx';
 import React from 'react';
@@ -14,7 +8,7 @@ import React from 'react';
 type PropertiesName = 'vendors' | 'categories' | 'departments' | 'exceptions';
 
 export type PropertiesDropdownOption = Pick<TagProps, 'colorScheme'> &
-  Pick<TagsSelectOptionProps, 'searchValue'> & {
+  Pick<TagsSelectOption, 'searchValue'> & {
     value: string;
     icon: React.ReactNode;
     label: React.ReactNode;
@@ -84,15 +78,15 @@ export const PropertiesDropdown = React.forwardRef(
             <p className="text-xs text-Gray-6">Targets need at least one property</p>
           </div>
         )}
-        <div className={clsx({ 'min-h-[200px]': !showOptionsOnEmptySearch })}>
+        <div
+          className={clsx('invisible-scrollbar flex-1 overflow-auto', {
+            'min-h-[200px]': !showOptionsOnEmptySearch,
+          })}
+        >
           <div className={clsx({ hidden: !showOptionsOnEmptySearch && !search })}>
-            {options.map(({ value, icon, label, colorScheme, searchValue }) => (
-              <TagsSelect.Option
-                key={value}
-                icon={
-                  <div className={clsx('w-5 h-5', ColorByColorScheme[colorScheme])}>{icon}</div>
-                }
-                tagProps={{
+            <TagsSelect.Options
+              options={options.map(({ value, icon, label, colorScheme, searchValue }) => ({
+                tagProps: {
                   colorScheme,
                   icon,
                   children: (
@@ -100,13 +94,17 @@ export const PropertiesDropdown = React.forwardRef(
                       {label}
                     </span>
                   ),
-                }}
-                value={value}
-                searchValue={searchValue}
-              >
-                <div className="whitespace-nowrap overflow-hidden overflow-ellipsis">{label}</div>
-              </TagsSelect.Option>
-            ))}
+                },
+                value,
+                icon: (
+                  <div className={clsx('w-5 h-5', ColorByColorScheme[colorScheme])}>{icon}</div>
+                ),
+                searchValue,
+                children: (
+                  <div className="whitespace-nowrap overflow-hidden overflow-ellipsis">{label}</div>
+                ),
+              }))}
+            />
           </div>
         </div>
       </Form.TagsSelect>

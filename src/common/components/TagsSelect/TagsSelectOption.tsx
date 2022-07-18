@@ -1,49 +1,36 @@
 import { useDelayableState } from '@/common/hooks';
 import { Children, ClassName } from '@/common/types';
 import clsx from 'clsx';
+import { isEqual } from 'lodash-es';
 import React from 'react';
-import { TagProps } from './Tag';
-import { useTagsSelectContext } from './TagsSelectProvider';
 
 export type TagsSelectOptionProps<T = string> = Children &
   ClassName & {
     value: T;
-    tagProps: Omit<TagProps, 'onRemoveClick'>;
     icon?: React.ReactNode;
-    searchValue?: string;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    addTag: (value: T) => void;
+    selected?: boolean;
   };
 
 export const TagsSelectOption = React.memo(
-  ({
-    children,
-    value: valueProp,
-    tagProps,
-    className,
-    icon,
-    searchValue,
-  }: TagsSelectOptionProps<any>) => {
-    const { value, addOption, addTag, search } = useTagsSelectContext();
+  ({ children, value, className, icon, onClick, addTag, selected }: TagsSelectOptionProps<any>) => {
     const [delayableOpen, setDelayableOpen] = useDelayableState(0, false);
 
     React.useEffect(() => {
-      addOption({ value: valueProp, tagProps });
-    }, [addOption, tagProps, valueProp]);
+      setDelayableOpen(!!selected, !selected);
+    }, [selected, setDelayableOpen]);
 
-    const isOpen = !value.includes(valueProp);
+    if (!delayableOpen) return null;
 
-    React.useEffect(() => {
-      setDelayableOpen(!!isOpen, !isOpen);
-    }, [isOpen, setDelayableOpen]);
-
-    if (
-      !delayableOpen ||
-      (searchValue && !searchValue.toLowerCase().includes(search.toLowerCase()))
-    )
-      return null;
+    const handleClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+      onClick?.(e);
+      addTag(value);
+    };
 
     return (
       <button
-        onClick={() => addTag(valueProp)}
+        onClick={handleClick}
         className={clsx(
           'text-left overflow-ellipsis h-10 px-7 text-xs hover:bg-Gray-12 w-full flex items-center gap-2 overflow-hidden',
           className,
@@ -54,6 +41,7 @@ export const TagsSelectOption = React.memo(
       </button>
     );
   },
+  (prev, next) => isEqual(prev, next),
 );
 
 TagsSelectOption.displayName = 'TagsSelectOption';
