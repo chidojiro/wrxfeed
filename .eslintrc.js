@@ -91,6 +91,7 @@ module.exports = {
     ],
 
     'react/react-in-jsx-scope': 'off',
+    'react/no-unescaped-entities': 'off',
 
     // Append 'tsx' to Airbnb 'react/jsx-filename-extension' rule
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-filename-extension.md
