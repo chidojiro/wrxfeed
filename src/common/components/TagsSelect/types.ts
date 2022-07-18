@@ -1,8 +1,8 @@
-import { PopoverProps } from './../Popover/Popover';
+import { PopoverProps } from '../Popover/Popover';
 import { Children, ClassName, OpenClose, ValueChangeProps } from '../../types';
 import { TagProps } from './Tag';
 
-export type TagsDropdownProps<T = string> = ClassName &
+export type TagsSelectProps<T = string> = ClassName &
   Children &
   OpenClose &
   ValueChangeProps<T[]> &

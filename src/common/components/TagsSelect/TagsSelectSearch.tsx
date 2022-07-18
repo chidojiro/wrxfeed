@@ -2,18 +2,14 @@ import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import React from 'react';
 import { Input, InputProps } from '../Input';
-import { useTagsDropdownContext } from './TagsDropdownProvider';
+import { useTagsSelectContext } from './TagsSelectProvider';
 
-type TagsDropdownSearchProps = Omit<InputProps, 'value' | 'ref'> & {
+type TagsSelectSearchProps = Omit<InputProps, 'value' | 'ref'> & {
   ref?: React.RefObject<HTMLInputElement>;
 };
 
-export const TagsDropdownSearch = ({
-  className,
-  onChange,
-  ...restProps
-}: TagsDropdownSearchProps) => {
-  const { setSearchDebounced } = useTagsDropdownContext();
+export const TagsSelectSearch = ({ className, onChange, ...restProps }: TagsSelectSearchProps) => {
+  const { setSearchDebounced } = useTagsSelectContext();
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setSearchDebounced(e.target.value);

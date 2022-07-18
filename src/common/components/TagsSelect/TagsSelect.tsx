@@ -3,22 +3,22 @@ import { useDisclosure } from '@dwarvesf/react-hooks';
 import { uniq, uniqBy } from 'lodash-es';
 import React from 'react';
 import { Popover } from '../Popover';
-import { TagsDropdownOption } from './TagsDropdownOption';
+import { TagsSelectOption } from './TagsSelectOption';
 import { SelectedTags } from './SelectedTags';
-import { TagsDropdownProvider, TagsDropdownProviderValue } from './TagsDropdownProvider';
-import { Option, TagsDropdownProps } from './types';
+import { TagsSelectProvider, TagsSelectProviderValue } from './TagsSelectProvider';
+import { Option, TagsSelectProps } from './types';
 import clsx from 'clsx';
 import { StringUtils } from '@/common/utils';
-import { TagsDropdownSearch } from './TagsDropdownSearch';
+import { TagsSelectSearch } from './TagsSelectSearch';
 
-type TTagsDropdown = (<T>(props: TagsDropdownProps<T>) => React.ReactNode) & {
-  Option: typeof TagsDropdownOption;
-  Search: typeof TagsDropdownSearch;
+type TagsSelectComponent = (<T>(props: TagsSelectProps<T>) => React.ReactNode) & {
+  Option: typeof TagsSelectOption;
+  Search: typeof TagsSelectSearch;
 };
 
 // eslint-disable-next-line react/display-name
-export const TagsDropdown: TTagsDropdown = React.forwardRef(
-  <T,>(props: TagsDropdownProps<T>, ref: any) => {
+export const TagsSelect: TagsSelectComponent = React.forwardRef(
+  <T,>(props: TagsSelectProps<T>, ref: any) => {
     const {
       value: valueProp,
       onChange,
@@ -59,9 +59,9 @@ export const TagsDropdown: TTagsDropdown = React.forwardRef(
       [setValue],
     );
 
-    const providerValue = React.useMemo<TagsDropdownProviderValue<T>>(
+    const providerValue = React.useMemo<TagsSelectProviderValue<T>>(
       () => ({
-        TagsDropdownProps: props,
+        TagsSelectProps: props,
         value,
         onChange: setValue,
         addOption,
@@ -99,7 +99,7 @@ export const TagsDropdown: TTagsDropdown = React.forwardRef(
     }, [popoverDisclosure.isOpen]);
 
     return (
-      <TagsDropdownProvider value={providerValue}>
+      <TagsSelectProvider value={providerValue}>
         <Popover
           placement={placement}
           trigger={
@@ -127,10 +127,10 @@ export const TagsDropdown: TTagsDropdown = React.forwardRef(
             {children}
           </div>
         </Popover>
-      </TagsDropdownProvider>
+      </TagsSelectProvider>
     );
   },
 ) as any;
 
-TagsDropdown.Option = TagsDropdownOption;
-TagsDropdown.Search = TagsDropdownSearch;
+TagsSelect.Option = TagsSelectOption;
+TagsSelect.Search = TagsSelectSearch;

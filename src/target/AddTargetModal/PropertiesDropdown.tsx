@@ -3,9 +3,9 @@ import {
   Form,
   TagColorScheme,
   TagProps,
-  TagsDropdown,
-  TagsDropdownOptionProps,
-  TagsDropdownProps,
+  TagsSelect,
+  TagsSelectOptionProps,
+  TagsSelectProps,
 } from '@/common/components';
 import { useDebounce } from '@/common/hooks';
 import clsx from 'clsx';
@@ -14,13 +14,13 @@ import React from 'react';
 type PropertiesName = 'vendors' | 'categories' | 'departments' | 'exceptions';
 
 export type PropertiesDropdownOption = Pick<TagProps, 'colorScheme'> &
-  Pick<TagsDropdownOptionProps, 'searchValue'> & {
+  Pick<TagsSelectOptionProps, 'searchValue'> & {
     value: string;
     icon: React.ReactNode;
     label: React.ReactNode;
   };
 
-type PropertiesDropdownProps = Pick<TagsDropdownProps, 'placement'> & {
+type PropertiesDropdownProps = Pick<TagsSelectProps, 'placement'> & {
   name: PropertiesName;
   placeholder?: React.ReactNode;
   options: PropertiesDropdownOption[];
@@ -65,7 +65,7 @@ export const PropertiesDropdown = React.forwardRef(
     }, [error, internalRef]);
 
     return (
-      <Form.TagsDropdown
+      <Form.TagsSelect
         ref={internalRef}
         className="max-w-[140px] h-[fit-content] flex-shrink-0"
         trigger={trigger}
@@ -74,7 +74,7 @@ export const PropertiesDropdown = React.forwardRef(
         onChange={onChange}
         placement={placement}
       >
-        <TagsDropdown.Search
+        <TagsSelect.Search
           placeholder={searchPlaceholder}
           onChange={(e) => setSearchDebounced(e.target.value)}
         />
@@ -87,7 +87,7 @@ export const PropertiesDropdown = React.forwardRef(
         <div className={clsx({ 'min-h-[200px]': !showOptionsOnEmptySearch })}>
           <div className={clsx({ hidden: !showOptionsOnEmptySearch && !search })}>
             {options.map(({ value, icon, label, colorScheme, searchValue }) => (
-              <TagsDropdown.Option
+              <TagsSelect.Option
                 key={value}
                 icon={
                   <div className={clsx('w-5 h-5', ColorByColorScheme[colorScheme])}>{icon}</div>
@@ -105,11 +105,11 @@ export const PropertiesDropdown = React.forwardRef(
                 searchValue={searchValue}
               >
                 <div className="whitespace-nowrap overflow-hidden overflow-ellipsis">{label}</div>
-              </TagsDropdown.Option>
+              </TagsSelect.Option>
             ))}
           </div>
         </div>
-      </Form.TagsDropdown>
+      </Form.TagsSelect>
     );
   },
 );
