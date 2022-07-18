@@ -1,12 +1,11 @@
 import { CommentIcon } from '@/assets';
-import { ConditionalWrapper } from '@/common/components';
 import { MainGroups } from '@/common/constants';
 import { useHandler } from '@/common/hooks';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { DepartmentSummary, TargetStatusType } from '../types';
 
 type SummaryRowProps = {
@@ -45,18 +44,11 @@ export const SummaryRow = ({
 
   const targetSpends = target?.periods?.reduce((acc, cur) => acc + (cur.amount ?? 0), 0);
 
-  const baseWrapperClassName = clsx(
-    'grid grid-cols-10 items-center',
-    'w-full py-0.5 px-1',
-    'border-b border-Gray-28',
-    'text-xs text-center',
-  );
-
   return (
     <button
       type="button"
       onClick={handleClick}
-      className={clsx(baseWrapperClassName, 'cursor-pointer list-row-hover')}
+      className="grid grid-cols-10 items-center w-full py-0.5 px-1 border-b border-Gray-28 text-xs text-center list-row-hover"
     >
       <div className="col-span-5 flex items-center gap-2 text-Gray-3 text-left">
         <div
@@ -71,12 +63,12 @@ export const SummaryRow = ({
       <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(targetSpends)}</div>
       <div className="col-span-1 relative flex items-center justify-center">
         {!!commentCount && (
-          <a href={`/feed/${target?.id}?route=TargetFeed`}>
+          <Link to={`/feed/${target?.id}?route=TargetFeed`}>
             <CommentIcon className="text-Gray-7" />
             <div className="absolute top-0.5 left-1/2 transform -translate-x-1/2 text-Gray-3 text-xs">
               {commentCount}
             </div>
-          </a>
+          </Link>
         )}
       </div>
     </button>
