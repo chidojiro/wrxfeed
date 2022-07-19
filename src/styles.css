@@ -28,6 +28,10 @@
   .invisible-scrollbar::-webkit-scrollbar {
       display: none;  /* Safari and Chrome */
   }
+
+  .disabled {
+    @apply cursor-default pointer-events-none opacity-50 !important;
+  }
 }
 
 body {
