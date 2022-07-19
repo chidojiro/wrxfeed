@@ -31,7 +31,7 @@ export const useInfiniteLoader = <T = unknown>({
   mode = 'ON_SIGHT',
   defaultPage,
 }: UseInfiniteLoaderProps<T>): UseInfiniteLoaderReturn => {
-  const [page, setPage] = React.useState(defaultPage ?? mode === 'ON_DEMAND' ? 0 : 1);
+  const [page, setPage] = React.useState(defaultPage ?? (mode === 'ON_DEMAND' ? 0 : 1));
   const readyForNextLoadTimeout = React.useRef<NodeJS.Timeout>();
 
   const isIntersected = useIntersection(anchor);

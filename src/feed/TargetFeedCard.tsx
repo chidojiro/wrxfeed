@@ -280,7 +280,7 @@ export const TargetFeedCard: React.FC<TargetFeedCardProps> = React.memo(
               </ul>
             )}
           </div>
-          <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4 mt-1 sm:mt-2">
+          <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4">
             <CommentBox
               id={curFeed.id.toString()}
               className="bg-white"

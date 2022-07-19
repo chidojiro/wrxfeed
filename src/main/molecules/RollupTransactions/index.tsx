@@ -8,49 +8,35 @@ import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 import { Divider, InfiniteLoader, InfiniteLoaderRenderProps } from '@/common/components';
 import { FeedApis } from '@/feed/apis';
 import { ClassName } from '@/common/types';
-import { useFetcher } from '@/common/hooks';
 import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
+import { LoadMoreButton } from './LoadMoreButton';
 
 export const TRANSACTION_SHOW_NUMBER = 10;
 
 type RollupTransactionsProps = ClassName & {
   feed: FeedItem;
-  loadOnMount?: boolean;
+  defaultExpand?: boolean;
 };
 
-const RollupTransactions: React.FC<RollupTransactionsProps> = ({ feed, loadOnMount }) => {
+const RollupTransactions = ({ feed, defaultExpand }: RollupTransactionsProps) => {
   const { openLineItemDrawer } = useLineItemDrawer();
 
-  const [loadedTransactions, setLoadedTransactions] = React.useState<Transaction[]>([]);
-
-  useFetcher(
-    loadOnMount && ['firstTransactionsLoad'],
-    () =>
-      FeedApis.getTransactions({
-        feedItemId: feed.id,
-        limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
-        offset: 0,
-      }),
-    { onSuccess: setLoadedTransactions },
+  const [loadedTransactions, setLoadedTransactions] = React.useState<Transaction[]>(
+    defaultExpand ? feed.transactions : [],
   );
 
-  const renderLoadButton = ({ isExhausted, loadMore }: InfiniteLoaderRenderProps) => {
-    if (isExhausted) return null;
+  const expandDefaultTransactions = () => {
+    setLoadedTransactions(feed.transactions);
+  };
 
-    return (
-      <button
-        className={clsx(
-          StringUtils.withProjectClassNamePrefix('infinite-loader', 'infinite-loader--on-demand'),
-          'inline-block text-xs px-4',
-          'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
-          'bg-white',
-        )}
-        type="button"
-        onClick={loadMore}
-      >
-        {loadedTransactions.length ? 'Load More' : 'View Transactions'}
-      </button>
-    );
+  const renderLoadButton = ({ isExhausted, loadMore }: InfiniteLoaderRenderProps) => {
+    if (!defaultExpand && feed.transactions.length)
+      return <LoadMoreButton onClick={expandDefaultTransactions}>View Transactions</LoadMoreButton>;
+
+    if (feed.transactions.length === DEFAULT_ITEMS_PER_INFINITE_LOAD && !isExhausted)
+      return <LoadMoreButton onClick={loadMore}>Load More</LoadMoreButton>;
+
+    return null;
   };
 
   return (
@@ -72,9 +58,9 @@ const RollupTransactions: React.FC<RollupTransactionsProps> = ({ feed, loadOnMou
       </ul>
       <RestrictedWarning className="mb-1" show={feed.hidden && !!loadedTransactions.length} />
       <div className="relative flex items-center">
-        <Divider className="my-4" />
+        <Divider className="my-2" />
         <InfiniteLoader<Transaction[]>
-          defaultPage={loadOnMount ? 1 : 0}
+          defaultPage={2}
           mode="ON_DEMAND"
           onLoad={(paginationParams) =>
             FeedApis.getTransactions({ feedItemId: feed.id, ...paginationParams })

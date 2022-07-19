@@ -35,7 +35,6 @@ export const InfiniteLoader = <T,>({
   const until = untilProp ?? ((data: T) => (data as any).length < itemsPerLoad);
 
   const handleLoad = (page: number) =>
-    (console.log('onLoad') as any) ||
     onLoad({
       limit: itemsPerLoad,
       offset: (page - 1) * itemsPerLoad,
