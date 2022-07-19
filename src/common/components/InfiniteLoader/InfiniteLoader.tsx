@@ -9,6 +9,7 @@ import { StringUtils } from '@/common/utils';
 
 export type InfiniteLoaderRenderProps = {
   isExhausted: boolean;
+  isLoading: boolean;
   loadMore: () => void;
   anchorRef: React.RefObject<HTMLElement>;
 };
@@ -40,7 +41,7 @@ export const InfiniteLoader = <T,>({
       offset: (page - 1) * itemsPerLoad,
     });
 
-  const { isExhausted, loadMore } = useInfiniteLoader({
+  const { isExhausted, loadMore, isLoading } = useInfiniteLoader({
     ...restProps,
     mode,
     onLoad: handleLoad,
@@ -48,7 +49,7 @@ export const InfiniteLoader = <T,>({
     anchor: ref,
   });
 
-  if (children) return <>{children({ isExhausted, loadMore, anchorRef: ref })}</>;
+  if (children) return <>{children({ isExhausted, loadMore, anchorRef: ref, isLoading })}</>;
 
   if (mode === 'ON_DEMAND') {
     if (isExhausted) return null;

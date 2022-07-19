@@ -59,7 +59,7 @@ export const useInfiniteLoader = <T = unknown>({
     }, WAIT_FOR_NEXT_LOAD_TIMEOUT);
   };
 
-  const { isInitializing: isLoading } = useFetcher(
+  const { isInitializing: isLoadingOnSight } = useFetcher(
     mode === 'ON_SIGHT' && !!page && ['infiniteLoader', page],
     () => handleLoad(page),
     {
@@ -68,7 +68,7 @@ export const useInfiniteLoader = <T = unknown>({
     },
   );
 
-  const { handle: loadMoreOnDemand } = useHandler(
+  const { handle: loadMoreOnDemand, isLoading: isLoadingOnDemand } = useHandler(
     async () => {
       const newPage = page + 1;
       setPage((prev) => prev + 1);
@@ -98,10 +98,17 @@ export const useInfiniteLoader = <T = unknown>({
 
   return React.useMemo(
     () => ({
-      isLoading,
+      isLoading: isLoadingOnSight || isLoadingOnDemand,
       isExhausted: exhaustedDisclosure.isOpen,
       loadMore: mode === 'ON_DEMAND' ? loadMoreOnDemand : increasePage,
     }),
-    [exhaustedDisclosure.isOpen, increasePage, isLoading, loadMoreOnDemand, mode],
+    [
+      exhaustedDisclosure.isOpen,
+      increasePage,
+      isLoadingOnSight,
+      isLoadingOnDemand,
+      loadMoreOnDemand,
+      mode,
+    ],
   );
 };
