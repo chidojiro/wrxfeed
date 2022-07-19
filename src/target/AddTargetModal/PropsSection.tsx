@@ -18,17 +18,12 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
   const exceptionsDropdownRef = React.useRef<any>();
 
   const { data: departments = [] } = useDepartments({
-    limit: 0,
     includeSub: 1,
   });
 
-  const { data: vendors = [] } = useVendors({
-    limit: 0,
-  });
+  const { data: vendors = [] } = useVendors();
 
-  const { data: categories = [] } = useCategories({
-    limit: 0,
-  });
+  const { data: categories = [] } = useCategories();
 
   const vendorOptions = React.useMemo<PropertiesDropdownOption[]>(
     () =>

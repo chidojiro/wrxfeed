@@ -1,4 +1,3 @@
-import { RestUtils } from '@/rest/utils';
 import { GetDepartmentsParams, GetRecentlyViewedDepartmentSummariesParams } from './types';
 import { RestApis } from '@/rest/apis';
 import { DepartmentSummary, Target } from '@/target/types';
@@ -20,7 +19,7 @@ const getSummaries = () =>
 
 const getList = async (params?: GetDepartmentsParams): Promise<Department[]> =>
   RestApis.get<Department[]>('/feed/departments', {
-    params: RestUtils.withDefaultPaginationParams(params),
+    params,
   }).then(({ data }) => data);
 
 export const DepartmentApis = { getList, viewSummary, getRecentlyViewedSummaries, getSummaries };

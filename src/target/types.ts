@@ -3,7 +3,7 @@ import { Department } from '@/main/entity/transaction.entity';
 import { BitBoolean } from '@/common/types';
 import { PaginationParams } from '@/rest/types';
 
-export type GetTargetsParams = Partial<PaginationParams> & {
+export type GetTargetsParams = PaginationParams & {
   dep?: number;
   forYou?: BitBoolean;
   month?: number;
@@ -28,7 +28,7 @@ export type UpdateTargetPayload = {
   periods: TargetPeriod[];
 };
 
-export type TargetFilter = Partial<PaginationParams> & {
+export type TargetFilter = PaginationParams & {
   year?: number;
   month?: number;
   timestamp?: number;
