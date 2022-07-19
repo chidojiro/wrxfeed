@@ -305,7 +305,7 @@ const RollupCard: React.FC<RollupCardProps> = ({
           </div>
         </div>
         {Array.isArray(feedItem?.transactions) && feedItem?.transactions?.length > 0 && (
-          <RollupTransactions feed={feedItem} loadOnMount />
+          <RollupTransactions feed={feedItem} defaultExpand />
         )}
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
@@ -333,7 +333,7 @@ const RollupCard: React.FC<RollupCardProps> = ({
             </ul>
           )}
         </div>
-        <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4 mt-1 sm:mt-2">
+        <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4">
           <CommentBox
             id={feedItem?.id.toString()}
             className="bg-white"
