@@ -3,7 +3,7 @@ import React from 'react';
 export const useDelayableState = <T = any>(delayBy: number, defaultState?: T) => {
   const [state, setState] = React.useState<any>(defaultState);
 
-  const timeoutRef = React.useRef<number>();
+  const timeoutRef = React.useRef<NodeJS.Timeout>();
 
   const delayedSetState = React.useCallback(
     (param: any, shouldDelay: boolean) => {

@@ -2,10 +2,8 @@ import {
   AddCommentParams,
   AddFeedCommentParams,
   ApiClient,
-  CategoryFilter,
   ChangePasswordDto,
   CommentFilters,
-  DepartmentFilter,
   FeedCommentFilters,
   FeedFilters,
   FeedItemFilters,
@@ -288,36 +286,6 @@ export default class ApiUtils implements ApiClient {
     const res = await this.request<void>({
       url: `/feed/items/${transactionId}/feedback`,
       method: 'POST',
-      data,
-    });
-    return res.data;
-  };
-
-  // DIRECTORY
-  getDepartments = async (filters?: DepartmentFilter): Promise<Department[]> => {
-    const res = await this.request<Department[]>({
-      url: '/feed/departments',
-      method: 'GET',
-      params: filters,
-    });
-    return res.data;
-  };
-
-  getCategories = async (filter?: CategoryFilter): Promise<Category[]> => {
-    const res = await this.request<Category[]>({
-      url: '/feed/categories',
-      method: 'GET',
-      params: {
-        ...filter,
-      },
-    });
-    return res.data;
-  };
-
-  updateCategory = async (data?: Partial<Category>): Promise<void> => {
-    const res = await this.request<void>({
-      url: `/feed/categories/${data?.id}`,
-      method: 'PATCH',
       data,
     });
     return res.data;

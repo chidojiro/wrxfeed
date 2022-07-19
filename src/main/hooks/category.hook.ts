@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useApi } from '@/api';
-import { CategoryFilter } from '@/api/types';
 import { useErrorHandler } from '@/error/hooks';
+import { FeedApis } from '@/feed/apis';
+import { GetCategoriesParams } from '@/feed/types';
 import { Category } from '@/main/entity';
+import { useCallback, useEffect, useState } from 'react';
 
 export interface UseCategoryParams {
-  filter?: CategoryFilter;
+  params?: GetCategoriesParams;
   concatNewData?: boolean;
 }
 
@@ -17,13 +17,12 @@ interface CategoryHookValues {
 }
 
 export function useCategory({
-  filter,
+  params,
   concatNewData = true,
 }: UseCategoryParams): CategoryHookValues {
   const [categories, setCategories] = useState<Category[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
   const cleanData = () => setCategories([]);
@@ -31,8 +30,8 @@ export function useCategory({
   const getCategories = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await ApiClient.getCategories(filter);
-      if (concatNewData && filter?.limit) {
+      const res = await FeedApis.getCategories(params);
+      if (concatNewData && params?.limit) {
         setCategories((prevTrans) => [...prevTrans, ...res]);
       } else {
         setCategories(res);
@@ -43,7 +42,7 @@ export function useCategory({
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, concatNewData, errorHandler, filter]);
+  }, [concatNewData, errorHandler, params]);
 
   useEffect(() => {
     getCategories().then();

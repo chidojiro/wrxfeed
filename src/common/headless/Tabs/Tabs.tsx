@@ -1,9 +1,9 @@
-import { useControllable } from '../../hooks';
 import React from 'react';
+import { useControllable } from '../../hooks';
 import { Children } from '../../types';
-import { Item } from './Item';
-import { TabsContext, TabsProvider, Value } from './TabsContext';
-import { Content } from './Content';
+import { TabContent } from './TabContent';
+import { Tab } from './Tab';
+import { TabsProvider, Value } from './TabsProvider';
 
 export type TabsProps<T extends Value = Value> = Children & {
   value?: T;
@@ -33,8 +33,8 @@ export const Tabs = <T extends Value>({ value: valueProp, onChange, children }: 
     [content, increaseTabsCount, setValue, value],
   );
 
-  return <TabsContext.Provider value={providerValue}>{children}</TabsContext.Provider>;
+  return <TabsProvider value={providerValue}>{children}</TabsProvider>;
 };
 
-Tabs.Item = Item;
-Tabs.Content = Content;
+Tabs.Item = Tab;
+Tabs.Content = TabContent;

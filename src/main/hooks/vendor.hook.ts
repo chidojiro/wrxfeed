@@ -1,4 +1,3 @@
-import { UseFetcherConfiguration } from '@/common/hooks';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
 import { PaginationParams } from '@/rest/types';

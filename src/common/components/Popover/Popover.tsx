@@ -1,5 +1,6 @@
 import { useOnClickOutside } from '@/common/hooks';
 import { Children, OpenClose } from '@/common/types';
+import clsx from 'clsx';
 import React, { useState } from 'react';
 import { PopperProps, usePopper } from 'react-popper';
 import { ConditionalWrapper } from '../ConditionalWrapper';
@@ -21,7 +22,7 @@ export const Popover = ({
   usePortal = true,
   trigger,
   placement = 'bottom-start',
-  offset = [0, 4],
+  offset = [0, 8],
   closeOnClickOutside = true,
   open,
   onClose,
@@ -68,8 +69,8 @@ export const Popover = ({
     <>
       {clonedTrigger}
       <ConditionalWrapper if={{ condition: usePortal, component: Portal as any }}>
-        <div ref={popoverRef} style={styles.popper} {...attributes.popper}>
-          {!!open && <div>{children}</div>}
+        <div ref={popoverRef} style={styles.popper} {...attributes.popper} className="z-50">
+          <div className={clsx({ hidden: !open })}>{children}</div>
         </div>
       </ConditionalWrapper>
     </>

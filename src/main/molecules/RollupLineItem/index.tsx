@@ -27,7 +27,7 @@ const RollupLineItem: React.FC<RollupLineItemProps> = ({ lineItem, onClick }) =>
   const [isRead, setRead] = useState(false);
 
   useEffect(() => {
-    let timeout: number;
+    let timeout: NodeJS.Timeout;
     if (isVisible) {
       timeout = setTimeout(() => {
         setRead(true);

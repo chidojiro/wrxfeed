@@ -44,7 +44,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
   );
 
   useEffect(() => {
-    let timeout: number;
+    let timeout: NodeJS.Timeout;
     if (isSent) {
       setShowSuccessBanner(true);
       // Close banner after 3s

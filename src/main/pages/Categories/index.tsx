@@ -5,6 +5,7 @@ import { MainGroups } from '@/common/constants';
 import { useFetcher, useLegacyQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
 import { FeedApis } from '@/feed/apis';
+import { GetCategoriesParams } from '@/feed/types';
 import { Category, Department } from '@/main/entity';
 import { useCategory } from '@/main/hooks/category.hook';
 import CategoryList from '@/main/organisms/CategoryList';
@@ -27,8 +28,8 @@ const CategoriesPage: React.FC = () => {
   const { id: catId } = useParams<{ id?: string }>();
   const query = useLegacyQuery();
   const location = useLocation();
-  const [filter, setFilter] = React.useState<PaginationParams>(INIT_PAGINATION);
-  const { categories, hasMore, isLoading } = useCategory({ filter });
+  const [filter, setFilter] = React.useState<GetCategoriesParams>(INIT_PAGINATION);
+  const { categories, hasMore, isLoading } = useCategory({ params: filter });
   const [category, setCategory] = React.useState<Category | null>();
 
   const handleLoadMoreCategories = React.useCallback(() => {

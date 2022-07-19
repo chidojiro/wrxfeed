@@ -10,8 +10,7 @@ import Company from '@/main/pages/Company';
 import Feed from '@/main/pages/Feed';
 import Notifications from '@/main/pages/Notifications';
 import { TargetRoutes } from '@/target/routes';
-import { TeamPage } from '@/team/TeamPage';
-import { TeamsPage } from '@/team/TeamsPage';
+import { TeamRoutes } from '@/team/routes';
 import { VendorRoutes } from '@/vendor/routes';
 import { Route } from './types';
 
@@ -45,16 +44,6 @@ export const Routes: Route = {
     component: Notifications,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  Department: {
-    path: ['/departments/:id'],
-    component: TeamPage,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  Departments: {
-    path: ['/departments'],
-    component: TeamsPage,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
   Categories: {
     path: ['/categories', '/categories/:id'],
     component: Categories,
@@ -68,4 +57,5 @@ export const Routes: Route = {
   ...TargetRoutes,
   ...FeedRoutes,
   ...VendorRoutes,
+  ...TeamRoutes,
 };

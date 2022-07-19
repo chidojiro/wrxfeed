@@ -247,18 +247,13 @@ export const TargetFeedCard: React.FC<TargetFeedCardProps> = React.memo(
                   id={`question-title-${curFeed?.id}`}
                   className="mt-1 text-xs font-normal text-Gray-6"
                 >
-                  {`edited ${distanceToNow(curFeed.lastInteraction)}`}
+                  {`edited ${distanceToNow(curFeed.target.updatedAt)}`}
                 </h2>
               </div>
             </div>
           </div>
           <TargetFeedOverview target={curFeed.target} />
-          <RollupTransactions
-            feedId={curFeed?.id}
-            trans={curFeed?.transactions}
-            tranHidden={curFeed?.hidden}
-            showTopDivider
-          />
+          {!!curFeed && <RollupTransactions feed={curFeed} />}
           <div className="space-y-4 px-4 sm:px-12 mt-1.5">
             {hasMoreComment && (
               <CommentViewAll
@@ -285,7 +280,7 @@ export const TargetFeedCard: React.FC<TargetFeedCardProps> = React.memo(
               </ul>
             )}
           </div>
-          <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4 mt-1 sm:mt-2">
+          <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4">
             <CommentBox
               id={curFeed.id.toString()}
               className="bg-white"

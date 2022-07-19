@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SearchFilters } from '@/api/types';
-import { getApiClient } from '@/api/utils';
 import { SearchTypes } from '@/auth/types';
+import { FeedApis } from '@/feed/apis';
 import { Category, Department } from '@/main/entity';
 import { GlobalSearchType, searchState } from '@/main/states/search.state';
 import { SearchResult } from '@/main/types';
 import { TargetTypeProp } from '@/target/types';
+import { DepartmentApis } from '@/team/apis';
 import { VendorApis } from '@/vendor/apis';
 import { Vendor } from '@/vendor/types';
 import { useCallback, useEffect, useState } from 'react';
@@ -116,14 +117,13 @@ export function useSearch({
   async function fetchAllSearchData() {
     try {
       setLoading(true);
-      const apiClient = await getApiClient();
       // eslint-disable-next-line prefer-const
       let [departments, categories, vendors] = await Promise.all([
-        apiClient.getDepartments({
+        DepartmentApis.getList({
           ...INIT_PAGINATION,
           includeSub: 1,
         }),
-        apiClient.getCategories(INIT_PAGINATION),
+        FeedApis.getCategories(INIT_PAGINATION),
         VendorApis.getList(INIT_PAGINATION),
       ]);
 

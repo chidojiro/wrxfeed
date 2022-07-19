@@ -1,17 +1,13 @@
+import { ReactComponent as BasicsAddSmall } from '@/assets/icons/solid/basics-add-small.svg';
+import { ReactComponent as BasicsTickSmall } from '@/assets/icons/solid/basics-tick-small.svg';
+import Loading from '@/common/atoms/Loading';
+import { useIdentity } from '@/identity/hooks';
+import { Department } from '@/main/entity';
+import { useSubscription } from '@/main/hooks/subscription.hook';
+import { DepartmentApis } from '@/team/apis';
+import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-
-import clsx from 'clsx';
-import { Department } from '@/main/entity';
-
-import { useSubscription } from '@/main/hooks/subscription.hook';
-import { useIdentity } from '@/identity/hooks';
-
-import Loading from '@/common/atoms/Loading';
-
-import { ReactComponent as BasicsTickSmall } from '@/assets/icons/solid/basics-tick-small.svg';
-import { ReactComponent as BasicsAddSmall } from '@/assets/icons/solid/basics-add-small.svg';
-import { useApi } from '@/api';
 
 const LIMIT = 9999;
 const INIT_PAGINATION = Object.freeze({
@@ -45,7 +41,6 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
   enableUnfollowUserDept = true,
 }) => {
   const identity = useIdentity();
-  const ApiClient = useApi();
   const [childs, setChilds] = useState<Department[]>([]);
 
   const onFollowSuccess = async () => {
@@ -64,12 +59,12 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
     });
 
   const getChilds = useCallback(async () => {
-    const deptChild: Department[] = await ApiClient.getDepartments({
+    const deptChild: Department[] = await DepartmentApis.getList({
       parent: dept.id,
       ...INIT_PAGINATION,
     });
     setChilds(deptChild);
-  }, [ApiClient, dept.id]);
+  }, [dept.id]);
 
   useEffect(() => {
     getChilds();
