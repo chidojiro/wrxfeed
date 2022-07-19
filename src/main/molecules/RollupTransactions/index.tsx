@@ -1,101 +1,89 @@
 import React from 'react';
-import { Transaction } from '@/main/entity';
+import { FeedItem, Transaction } from '@/main/entity';
 import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import RollupTranRow from '../RollupTranRow';
 import RestrictedWarning from '@/main/atoms/RestrictedWarning';
 import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
+import { Divider, InfiniteLoader, InfiniteLoaderRenderProps } from '@/common/components';
+import { FeedApis } from '@/feed/apis';
+import { ClassName } from '@/common/types';
+import { useFetcher } from '@/common/hooks';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 
 export const TRANSACTION_SHOW_NUMBER = 10;
 
-interface RollupTransactionsProps {
-  className?: string;
-  trans: Transaction[];
-  autoShowTrans?: boolean;
-  showTopDivider?: boolean;
-  feedId: number;
-  tranHidden?: boolean;
-}
+type RollupTransactionsProps = ClassName & {
+  feed: FeedItem;
+  loadOnMount?: boolean;
+};
 
-const RollupTransactions: React.FC<RollupTransactionsProps> = ({
-  trans,
-  autoShowTrans = false,
-  showTopDivider = false,
-  feedId,
-  tranHidden = false,
-}) => {
+const RollupTransactions: React.FC<RollupTransactionsProps> = ({ feed, loadOnMount }) => {
   const { openLineItemDrawer } = useLineItemDrawer();
-  const [position, setPosition] = React.useState(autoShowTrans ? TRANSACTION_SHOW_NUMBER : 0);
-  const [transactions, setTransactions] = React.useState(trans?.slice(0, position));
-  const [hasMore, setHasMore] = React.useState(
-    autoShowTrans ? trans?.length > TRANSACTION_SHOW_NUMBER : trans?.length > 0,
+
+  const [loadedTransactions, setLoadedTransactions] = React.useState<Transaction[]>([]);
+
+  useFetcher(
+    loadOnMount && ['firstTransactionsLoad'],
+    () =>
+      FeedApis.getTransactions({
+        feedItemId: feed.id,
+        limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
+        offset: 0,
+      }),
+    { onSuccess: setLoadedTransactions },
   );
 
-  const onClickLoadMore = () => {
-    if (!hasMore) {
-      return;
-    }
-    const newPos = position + TRANSACTION_SHOW_NUMBER;
-    if (newPos > trans?.length) {
-      setHasMore(false);
-      setTransactions(trans);
-    } else {
-      setTransactions(trans.slice(0, newPos));
-      setPosition(newPos);
-    }
-  };
+  const renderLoadButton = ({ isExhausted, loadMore }: InfiniteLoaderRenderProps) => {
+    if (isExhausted) return null;
 
-  const renderLoadMore = () => {
-    if (!hasMore) {
-      return (
-        <div className="flex h-px w-full items-center">
-          <div className="bg-Gray-11 h-px w-auto flex-1" />
-        </div>
-      );
-    }
     return (
-      <div className="flex w-full h-5 flex-row items-center mt-1">
-        <div className="bg-Gray-11 h-px w-auto flex-1" />
-        <button
-          onClick={onClickLoadMore}
-          type="button"
-          className="flex px-2 justify-center items-center"
-        >
-          <p className="text-Gray-1 text-xs font-normal">
-            {position === 0 && trans.length > 0 ? 'View Transactions' : 'Load more'}
-          </p>
-        </button>
-        <div className="bg-Gray-11 h-px w-auto flex-1" />
-      </div>
+      <button
+        className={clsx(
+          StringUtils.withProjectClassNamePrefix('infinite-loader', 'infinite-loader--on-demand'),
+          'inline-block text-xs px-4',
+          'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
+          'bg-white',
+        )}
+        type="button"
+        onClick={loadMore}
+      >
+        {loadedTransactions.length ? 'Load More' : 'View Transactions'}
+      </button>
     );
   };
-  if (trans.length === 0) {
-    if (showTopDivider) {
-      return <div className={clsx('bg-Gray-11 h-px w-full', showTopDivider ? 'mt-3' : '')} />;
-    }
-    return null;
-  }
-  const showTranClicked = position > TRANSACTION_SHOW_NUMBER;
+
   return (
-    <div className={clsx('flex flex-col', showTopDivider ? 'mt-3' : '')}>
-      {transactions.length > 0 && showTopDivider && <div className="bg-Gray-11 h-px w-full" />}
+    <div className="flex flex-col">
       <ul
         className={clsx(
           StringUtils.withProjectClassNamePrefix('rollup-transactions'),
           'flex flex-col',
-          transactions.length > 0 ? 'py-2' : '',
+          loadedTransactions.length > 0 ? 'py-2' : '',
         )}
       >
-        {transactions.map((item: Transaction) => {
+        {loadedTransactions.map((item: Transaction) => {
           return (
             <li key={`RollupTransactions-item-${item?.id}`}>
-              <RollupTranRow tran={item} onView={(item) => openLineItemDrawer(item, feedId)} />
+              <RollupTranRow tran={item} onView={(item) => openLineItemDrawer(item, feed.id)} />
             </li>
           );
         })}
       </ul>
-      <RestrictedWarning className="mb-1" show={tranHidden && (autoShowTrans || showTranClicked)} />
-      {renderLoadMore()}
+      <RestrictedWarning className="mb-1" show={feed.hidden && !!loadedTransactions.length} />
+      <div className="relative flex items-center">
+        <Divider className="my-4" />
+        <InfiniteLoader<Transaction[]>
+          defaultPage={loadOnMount ? 1 : 0}
+          mode="ON_DEMAND"
+          onLoad={(paginationParams) =>
+            FeedApis.getTransactions({ feedItemId: feed.id, ...paginationParams })
+          }
+          onSuccess={(data) => setLoadedTransactions((prev) => [...prev, ...data])}
+        >
+          {renderLoadButton}
+        </InfiniteLoader>
+      </div>
     </div>
   );
 };

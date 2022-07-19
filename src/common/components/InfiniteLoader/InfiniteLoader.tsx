@@ -7,11 +7,18 @@ import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import { PaginationParams } from '@/rest/types';
 import { StringUtils } from '@/common/utils';
 
+export type InfiniteLoaderRenderProps = {
+  isExhausted: boolean;
+  loadMore: () => void;
+  anchorRef: React.RefObject<HTMLElement>;
+};
+
 export type InfiniteLoaderProps<T = unknown> = ClassName &
   Omit<UseInfiniteLoaderProps<T>, 'anchor' | 'onLoad' | 'until'> & {
     itemsPerLoad?: number;
     onLoad: (params: PaginationParams) => Promise<T>;
     until?: UseInfiniteLoaderProps<T>['until'];
+    children?: (props: InfiniteLoaderRenderProps) => React.ReactNode;
   };
 
 export const InfiniteLoader = <T,>({
@@ -20,9 +27,10 @@ export const InfiniteLoader = <T,>({
   onLoad,
   until: untilProp,
   mode = 'ON_SIGHT',
+  children,
   ...restProps
 }: InfiniteLoaderProps<T>) => {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = React.useRef<HTMLElement>(null);
 
   const until = untilProp ?? ((data: T) => (data as any).length < itemsPerLoad);
 
@@ -40,6 +48,8 @@ export const InfiniteLoader = <T,>({
     until,
     anchor: ref,
   });
+
+  if (children) return <>{children({ isExhausted, loadMore, anchorRef: ref })}</>;
 
   if (mode === 'ON_DEMAND') {
     if (isExhausted) return null;

@@ -253,12 +253,7 @@ export const TargetFeedCard: React.FC<TargetFeedCardProps> = React.memo(
             </div>
           </div>
           <TargetFeedOverview target={curFeed.target} />
-          <RollupTransactions
-            feedId={curFeed?.id}
-            trans={curFeed?.transactions}
-            tranHidden={curFeed?.hidden}
-            showTopDivider
-          />
+          {!!curFeed && <RollupTransactions feed={curFeed} />}
           <div className="space-y-4 px-4 sm:px-12 mt-1.5">
             {hasMoreComment && (
               <CommentViewAll

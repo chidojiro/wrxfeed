@@ -1,2 +1,2 @@
 export { InfiniteLoader } from './InfiniteLoader';
-export type { InfiniteLoaderProps } from './InfiniteLoader';
+export type { InfiniteLoaderProps, InfiniteLoaderRenderProps } from './InfiniteLoader';
