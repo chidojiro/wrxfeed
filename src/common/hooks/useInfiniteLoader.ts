@@ -1,6 +1,7 @@
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import React from 'react';
 import { useFetcher } from './useFetcher';
+import { useHandler } from './useHandler';
 import { useIntersection } from './useIntersection';
 
 const WAIT_FOR_NEXT_LOAD_TIMEOUT = 500;
@@ -12,6 +13,7 @@ export type UseInfiniteLoaderProps<T = unknown> = {
   onError?: (error: any) => void;
   anchor: React.RefObject<HTMLElement> | HTMLElement | null;
   mode?: 'ON_DEMAND' | 'ON_SIGHT';
+  defaultPage?: number;
 };
 
 export type UseInfiniteLoaderReturn = {
@@ -27,8 +29,9 @@ export const useInfiniteLoader = <T = unknown>({
   onSuccess,
   anchor,
   mode = 'ON_SIGHT',
+  defaultPage,
 }: UseInfiniteLoaderProps<T>): UseInfiniteLoaderReturn => {
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState(defaultPage ?? mode === 'ON_DEMAND' ? 0 : 1);
   const readyForNextLoadTimeout = React.useRef<NodeJS.Timeout>();
 
   const isIntersected = useIntersection(anchor);
@@ -42,23 +45,37 @@ export const useInfiniteLoader = <T = unknown>({
     return onLoad(page);
   };
 
+  const handleSuccess = (data: T) => {
+    onSuccess?.(data);
+
+    if (until(data)) {
+      exhaustedDisclosure.onOpen();
+    } else {
+      exhaustedDisclosure.onClose();
+    }
+
+    readyForNextLoadTimeout.current = setTimeout(() => {
+      readyForNextLoadDisclosure.onOpen();
+    }, WAIT_FOR_NEXT_LOAD_TIMEOUT);
+  };
+
   const { isInitializing: isLoading } = useFetcher(
-    ['infiniteLoader', page],
+    mode === 'ON_SIGHT' && !!page && ['infiniteLoader', page],
     () => handleLoad(page),
     {
-      onSuccess: (data) => {
-        onSuccess?.(data);
+      onSuccess: handleSuccess,
+      onError,
+    },
+  );
 
-        if (until(data)) {
-          exhaustedDisclosure.onOpen();
-        } else {
-          exhaustedDisclosure.onClose();
-        }
-
-        readyForNextLoadTimeout.current = setTimeout(() => {
-          readyForNextLoadDisclosure.onOpen();
-        }, WAIT_FOR_NEXT_LOAD_TIMEOUT);
-      },
+  const { handle: loadMoreOnDemand } = useHandler(
+    async () => {
+      const newPage = page + 1;
+      setPage((prev) => prev + 1);
+      return handleLoad(newPage);
+    },
+    {
+      onSuccess: handleSuccess,
       onError,
     },
   );
@@ -74,11 +91,17 @@ export const useInfiniteLoader = <T = unknown>({
   }, [increasePage, isIntersected, readyForNextLoadDisclosure.isOpen]);
 
   React.useEffect(() => {
-    increasePageOnIntersection();
+    if (mode === 'ON_SIGHT') {
+      increasePageOnIntersection();
+    }
   }, [increasePageOnIntersection, mode]);
 
   return React.useMemo(
-    () => ({ isLoading, isExhausted: exhaustedDisclosure.isOpen, loadMore: increasePage }),
-    [exhaustedDisclosure.isOpen, increasePage, isLoading],
+    () => ({
+      isLoading,
+      isExhausted: exhaustedDisclosure.isOpen,
+      loadMore: mode === 'ON_DEMAND' ? loadMoreOnDemand : increasePage,
+    }),
+    [exhaustedDisclosure.isOpen, increasePage, isLoading, loadMoreOnDemand, mode],
   );
 };

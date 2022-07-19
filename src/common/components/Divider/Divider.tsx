@@ -10,7 +10,7 @@ export const Divider = ({ direction = 'horizontal', className }: DividerProps) =
   return (
     <div
       className={clsx(
-        'border-Gray-11',
+        'border-Gray-11 w-full',
         { 'border-b': direction === 'horizontal', 'border-l': direction === 'vertical' },
         className,
       )}
