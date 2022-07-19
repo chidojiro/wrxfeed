@@ -25,15 +25,15 @@ const RollupTransactions = ({ feed, defaultExpand }: RollupTransactionsProps) =>
     defaultExpand ? feed.transactions : [],
   );
 
-  const expandDefaultTransactions = () => {
+  const expandInitialTransactions = () => {
     setLoadedTransactions(feed.transactions);
   };
 
   const renderLoadButton = ({ isExhausted, loadMore, isLoading }: InfiniteLoaderRenderProps) => {
     const hasExpandedInitialTransactions = feed.transactions.length && loadedTransactions.length;
 
-    if (!defaultExpand && !hasExpandedInitialTransactions)
-      return <LoadMoreButton onClick={expandDefaultTransactions}>View Transactions</LoadMoreButton>;
+    if (!hasExpandedInitialTransactions)
+      return <LoadMoreButton onClick={expandInitialTransactions}>View Transactions</LoadMoreButton>;
 
     if (feed.transactions.length === DEFAULT_ITEMS_PER_INFINITE_LOAD && !isExhausted)
       return (
@@ -56,7 +56,7 @@ const RollupTransactions = ({ feed, defaultExpand }: RollupTransactionsProps) =>
       >
         {loadedTransactions.map((item: Transaction) => {
           return (
-            <li key={`RollupTransactions-item-${item?.id}`}>
+            <li key={item?.id}>
               <RollupTranRow tran={item} onView={(item) => openLineItemDrawer(item, feed.id)} />
             </li>
           );
@@ -66,7 +66,7 @@ const RollupTransactions = ({ feed, defaultExpand }: RollupTransactionsProps) =>
       <div className="relative flex items-center">
         <Divider className="my-2" />
         <InfiniteLoader<Transaction[]>
-          defaultPage={2}
+          defaultPage={1}
           mode="ON_DEMAND"
           onLoad={(paginationParams) =>
             FeedApis.getTransactions({ feedItemId: feed.id, ...paginationParams })
