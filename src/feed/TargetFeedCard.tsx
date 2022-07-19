@@ -247,7 +247,7 @@ export const TargetFeedCard: React.FC<TargetFeedCardProps> = React.memo(
                   id={`question-title-${curFeed?.id}`}
                   className="mt-1 text-xs font-normal text-Gray-6"
                 >
-                  {`edited ${distanceToNow(curFeed.lastInteraction)}`}
+                  {`edited ${distanceToNow(curFeed.target.updatedAt)}`}
                 </h2>
               </div>
             </div>
