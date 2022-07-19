@@ -12,7 +12,7 @@ export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
     data: targets = [fallbackTarget],
     isInitializing,
     mutate,
-  } = useTargets({ type: 'company' });
+  } = useTargets({ type: 'company', limit: 1 });
 
   return (
     <OverlayLoader loading={isInitializing} className={className}>

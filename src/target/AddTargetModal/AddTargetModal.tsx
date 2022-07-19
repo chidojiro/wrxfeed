@@ -79,17 +79,12 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     } = methods;
 
     const { isValidating: isValidatingDepartments, data: departments = [] } = useDepartments({
-      limit: 0,
       includeSub: 1,
     });
 
-    const { isValidating: isValidatingVendors } = useVendors({
-      limit: 0,
-    });
+    const { isValidating: isValidatingVendors } = useVendors();
 
-    const { isValidating: isValidatingCategories } = useCategories({
-      limit: 0,
-    });
+    const { isValidating: isValidatingCategories } = useCategories();
 
     React.useEffect(() => {
       const getTagValueFromProps = ({ id, name, type }: TargetProps) => `${type}-${id}-${name}`;
