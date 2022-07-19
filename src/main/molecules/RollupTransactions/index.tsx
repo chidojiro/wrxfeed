@@ -30,12 +30,10 @@ const RollupTransactions = ({ feed, defaultExpand }: RollupTransactionsProps) =>
   };
 
   const renderLoadButton = ({ isExhausted, loadMore, isLoading }: InfiniteLoaderRenderProps) => {
-    if (!defaultExpand && feed.transactions.length)
-      return (
-        <LoadMoreButton disabled={isLoading} onClick={expandDefaultTransactions}>
-          View Transactions
-        </LoadMoreButton>
-      );
+    const hasExpandedInitialTransactions = feed.transactions.length && loadedTransactions.length;
+
+    if (!defaultExpand && !hasExpandedInitialTransactions)
+      return <LoadMoreButton onClick={expandDefaultTransactions}>View Transactions</LoadMoreButton>;
 
     if (feed.transactions.length === DEFAULT_ITEMS_PER_INFINITE_LOAD && !isExhausted)
       return (
