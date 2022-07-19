@@ -42,7 +42,7 @@ export function useFeedComment(feed: FeedItem, page?: PaginationParams): Comment
       } else {
         setComments([...reverse]);
       }
-      setHasMore(!!page && page?.limit <= res.length);
+      setHasMore(!!page?.limit && page.limit <= res.length);
     } catch (error) {
       if (isBadRequest(error)) {
         toast.error('Can not get comments');

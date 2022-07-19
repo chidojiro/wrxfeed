@@ -1,7 +1,7 @@
 import { Category } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
 
-export type GetVendorsParams = Partial<PaginationParams>;
+export type GetVendorsParams = PaginationParams;
 
 export type Vendor = {
   id: number;
