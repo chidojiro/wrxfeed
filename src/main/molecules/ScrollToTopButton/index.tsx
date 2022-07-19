@@ -7,7 +7,7 @@ interface ScrollToTopButtonProps {
   visible: boolean;
 }
 
-const ScrollToTopButton: React.VFC<ScrollToTopButtonProps> = ({ onClick, visible }) => {
+const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({ onClick, visible }) => {
   return (
     <Transition
       as={Fragment}

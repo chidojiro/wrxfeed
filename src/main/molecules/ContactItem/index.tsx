@@ -1,6 +1,6 @@
-import React, { VFC } from 'react';
+import React from 'react';
 import { Contact } from '@/main/entity';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 interface ContactItemProps {
   className?: string;
@@ -8,11 +8,11 @@ interface ContactItemProps {
   onSelect?: (contact: Contact) => void;
 }
 
-const ContactItem: VFC<ContactItemProps> = ({ className, contact, onSelect }) => {
+const ContactItem: React.FC<ContactItemProps> = ({ className, contact, onSelect }) => {
   return (
     <li
       aria-hidden="true"
-      className={classNames(
+      className={clsx(
         'flex flex-row items-center justify-between min-h-[46px] px-2 hover:bg-Gray-12',
         className || '',
       )}

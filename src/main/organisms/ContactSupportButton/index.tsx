@@ -1,12 +1,12 @@
 import React from 'react';
 import { ReactComponent as EnvelopeIcon } from '@/assets/icons/outline/envelope.svg';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { EMAIL_SUPPORT_ADDRESS } from '@/config';
 
 export interface ContactSupportButtonProps {
   className?: string;
 }
-const ContactSupportButton: React.VFC<ContactSupportButtonProps> = ({ className }) => {
+const ContactSupportButton: React.FC<ContactSupportButtonProps> = ({ className }) => {
   const onClickContactSupport = () => {
     window?.open(`mailto:${EMAIL_SUPPORT_ADDRESS}`);
   };
@@ -31,7 +31,7 @@ const ContactSupportButton: React.VFC<ContactSupportButtonProps> = ({ className 
       <button
         type="button"
         onClick={onClickContactSupport}
-        className={classNames(
+        className={clsx(
           'fixed group flex w-[50px] h-[50px] rounded-full justify-center items-center bg-primary hover:bg-Accent-2 z-10 bottom-12 right-12',
           className ?? '',
         )}

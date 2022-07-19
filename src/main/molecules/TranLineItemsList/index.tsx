@@ -1,9 +1,10 @@
-import React from 'react';
-import { classNames } from '@/common/utils';
-
-import { TransLineItem, Vendor } from '@/main/entity';
 import Loading from '@/common/atoms/Loading';
+import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
+import { TransLineItem } from '@/main/entity';
 import RollupLineItem from '@/main/molecules/RollupLineItem';
+import { Vendor } from '@/vendor/types';
+import clsx from 'clsx';
+import React from 'react';
 
 export interface TranLineItemsListProps {
   className?: string;
@@ -17,7 +18,7 @@ export interface TranLineItemsListProps {
   isOpen: boolean;
 }
 
-const TranLineItemsList: React.VFC<TranLineItemsListProps> = ({
+const TranLineItemsList: React.FC<TranLineItemsListProps> = ({
   className,
   rollupsClass,
   lineItems,
@@ -28,6 +29,8 @@ const TranLineItemsList: React.VFC<TranLineItemsListProps> = ({
   onClickVendor,
   isOpen = false,
 }) => {
+  const { openLineItemDrawer } = useLineItemDrawer();
+
   const renderLoading = () => {
     if (!isLoadMore) return null;
     return (
@@ -63,11 +66,15 @@ const TranLineItemsList: React.VFC<TranLineItemsListProps> = ({
     return <div />;
   }
   return lineItems?.length ? (
-    <div className={classNames('relative flex flex-col pb-2 transition-[height]', className ?? '')}>
-      <ul className={classNames('w-full', rollupsClass ?? '')}>
+    <div className={clsx('relative flex flex-col pb-2 transition-[height]', className ?? '')}>
+      <ul className={clsx('w-full', rollupsClass ?? '')}>
         {lineItems.map((lineItem: TransLineItem) => (
           <li key={lineItem?.id}>
-            <RollupLineItem lineItem={lineItem} onClickVendor={onClickVendor} />
+            <RollupLineItem
+              onClick={openLineItemDrawer}
+              lineItem={lineItem}
+              onClickVendor={onClickVendor}
+            />
           </li>
         ))}
       </ul>

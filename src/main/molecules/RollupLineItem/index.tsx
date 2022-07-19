@@ -1,19 +1,14 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useEffect, useState, useRef } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-
 import { useApi } from '@/api';
 import { useIntersection } from '@/common/hooks';
-
-import EventEmitter, { EventName } from '@/main/EventEmitter';
-import { TransLineItem, Vendor } from '@/main/entity';
-import { classNames } from '@/common/utils';
-import { decimalLogic, DecimalType, getVendorNameFromLineItem } from '@/main/utils';
-
+import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@/config';
+import { TransLineItem } from '@/main/entity';
 import { lineItemSelectState } from '@/main/states/lineItems.state';
 import { slideOverOpenState } from '@/main/states/slideOver.state';
-import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@/config';
+import { decimalLogic, DecimalType, getVendorNameFromLineItem } from '@/main/utils';
+import { Vendor } from '@/vendor/types';
+import clsx from 'clsx';
+import React, { useEffect, useRef, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 export interface RollupLineItemProps {
   lineItem: TransLineItem;
@@ -21,7 +16,7 @@ export interface RollupLineItemProps {
   onClickVendor?: (vendor: Vendor) => void;
 }
 
-const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick }) => {
+const RollupLineItem: React.FC<RollupLineItemProps> = ({ lineItem, onClick }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
   const isVisible = useIntersection(viewRef.current || undefined, '0px');
   const { maskLineItemAsRead } = useApi();
@@ -32,7 +27,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick }) =
   const [isRead, setRead] = useState(false);
 
   useEffect(() => {
-    let timeout: number;
+    let timeout: NodeJS.Timeout;
     if (isVisible) {
       timeout = setTimeout(() => {
         setRead(true);
@@ -56,21 +51,14 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick }) =
     return <div className="flex w-1 h-1 rounded-full mr-1.5" />;
   };
 
-  // const onClickLineItemVendor = (event: React.MouseEvent<HTMLElement>) => {
-  //   event.stopPropagation();
-  //   if (onClickVendor && lineItem.vendor) {
-  //     onClickVendor(lineItem.vendor);
-  //   }
-  // };
+  const onClickLineItem: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    // prevent close line item drawer
+    e.stopPropagation();
 
-  const onClickLineItem = () => {
     if (onClick) onClick(lineItem);
     setLineItemSelect(lineItem);
     setRead(true);
     maskLineItemAsRead(lineItem?.id);
-    EventEmitter.dispatch(EventName.SHOW_LINE_ITEM_DETAILS, {
-      item: lineItem,
-    });
   };
 
   const renderVendorName = () => {
@@ -90,7 +78,7 @@ const RollupLineItem: React.VFC<RollupLineItemProps> = ({ lineItem, onClick }) =
       ref={viewRef}
       type="button"
       aria-hidden="true"
-      className={classNames(
+      className={clsx(
         'flex flex-row w-full items-center px-2 sm:px-10 py-1 min-h-[24px] hover:bg-Gray-12 z-10 relative mt-0.5',
         bgColor,
       )}

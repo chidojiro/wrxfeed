@@ -1,5 +1,5 @@
 import React from 'react';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import NavBarStatic from '@/common/organisms/NavBarStatic';
 // import NavBar from '@/common/organisms/NavBar';
 
@@ -9,7 +9,7 @@ interface BlankLayoutProps {
   navBar?: boolean;
 }
 
-const BlankLayout: React.VFC<BlankLayoutProps> = ({
+const BlankLayout: React.FC<BlankLayoutProps> = ({
   children,
   className,
   navBar = false,
@@ -17,7 +17,7 @@ const BlankLayout: React.VFC<BlankLayoutProps> = ({
 }) => {
   return (
     <div
-      className={classNames('fixed inset-0 rounded-md bg-white overflow-scroll', className ?? '')}
+      className={clsx('fixed inset-0 rounded-md bg-white overflow-scroll', className ?? '')}
       {...rest}
     >
       {navBar && <NavBarStatic />}

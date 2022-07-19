@@ -2,7 +2,8 @@ import React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { User } from '@/main/entity';
-import { classNames, formatDate } from '@/common/utils';
+import { formatDate } from '@/common/utils';
+import clsx from 'clsx';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
 import { profileState } from '@/auth/containers/ProfileEditForm/states';
 
@@ -13,7 +14,7 @@ export interface CommentOwnerProps {
   showAva?: boolean;
 }
 
-const CommentOwner: React.VFC<CommentOwnerProps> = ({
+const CommentOwner: React.FC<CommentOwnerProps> = ({
   owner,
   commentDate,
   className,
@@ -43,7 +44,7 @@ const CommentOwner: React.VFC<CommentOwnerProps> = ({
     );
   };
   return (
-    <div className={classNames('flex space-x-1 items-center', className ?? '')}>
+    <div className={clsx('flex space-x-1 items-center', className ?? '')}>
       {showAva && renderAvaOrShortName()}
       <p className="text-Gray-1 text-sm font-semibold">{owner.fullName}</p>
       {!!commentDate && (

@@ -1,5 +1,6 @@
 import React from 'react';
-import { stringToColor, classNames } from '@/common/utils';
+import { stringToColor } from '@/common/utils';
+import clsx from 'clsx';
 
 const DEFAULT_SIZE = 32;
 
@@ -11,7 +12,7 @@ export interface CircleAvatarProps {
   onClick?: (value?: string) => void;
 }
 
-const CircleAvatar: React.VFC<CircleAvatarProps> = ({
+const CircleAvatar: React.FC<CircleAvatarProps> = ({
   size,
   className,
   name,
@@ -25,7 +26,7 @@ const CircleAvatar: React.VFC<CircleAvatarProps> = ({
   return (
     <div
       aria-hidden="true"
-      className={classNames('flex justify-center items-center', className ?? '')}
+      className={clsx('flex justify-center items-center', className ?? '')}
       style={{
         width: size ?? DEFAULT_SIZE,
         height: size ?? DEFAULT_SIZE,

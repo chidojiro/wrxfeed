@@ -1,11 +1,11 @@
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, matchPath } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { LeftTab } from '@/common/types';
 import { useSubscription } from '@/main/hooks/subscription.hook';
 import { newFeedCountState } from '@/main/states/sidemenu.state';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { BasicsXSmall } from '@/assets';
 import Loading from '@/common/atoms/Loading';
 
@@ -15,7 +15,7 @@ interface LeftTabCardProps {
   tab: LeftTab;
 }
 
-const LeftTabCard: React.VFC<LeftTabCardProps> = ({ className = '', tab, showTabIcon = false }) => {
+const LeftTabCard: React.FC<LeftTabCardProps> = ({ className = '', tab, showTabIcon = false }) => {
   const history = useHistory();
   const location = useLocation();
   const newFeedCount = useRecoilValue(newFeedCountState);
@@ -26,14 +26,19 @@ const LeftTabCard: React.VFC<LeftTabCardProps> = ({ className = '', tab, showTab
   };
 
   const { icon: TabIcon } = tab;
-  const isCurrentTab = location.pathname.includes(tab.location.pathname);
+
+  const isCurrentTab = matchPath(location.pathname, {
+    path: tab.location.pathMatch ?? tab.location.pathname,
+    exact: true,
+    strict: false,
+  });
 
   const renderCounter = (item: LeftTab) => {
     const counter = newFeedCount[item.location.pathname];
     return (
       !!counter && (
         <div
-          className={classNames(
+          className={clsx(
             'flex px-1.5 h-[18px] rounded-full mr-2 justify-center items-center',
             isCurrentTab ? 'bg-Gray-12' : 'bg-Gray-11',
           )}
@@ -48,7 +53,7 @@ const LeftTabCard: React.VFC<LeftTabCardProps> = ({ className = '', tab, showTab
     <button
       type="button"
       onClick={() => onClickLeftTab(tab.location.pathname)}
-      className={classNames(
+      className={clsx(
         isCurrentTab ? 'text-Accent-2 font-semibold' : 'text-Gray-3 font-regular',
         'flex flex-row items-center w-full',
         className,
@@ -58,7 +63,7 @@ const LeftTabCard: React.VFC<LeftTabCardProps> = ({ className = '', tab, showTab
         {TabIcon && showTabIcon ? (
           <div className="flex w-5 h-5 justify-center items-center">
             <TabIcon
-              className={classNames(
+              className={clsx(
                 'flex-shrink-0 h-4 w-4 fill-current path-no-filled opacity-100',
                 isCurrentTab ? 'text-Accent-2' : 'text-Gray-3',
               )}
@@ -114,7 +119,7 @@ const LeftTabCard: React.VFC<LeftTabCardProps> = ({ className = '', tab, showTab
         )}
         {tab?.isShowCounter && renderCounter(tab)}
       </div>
-      <div className={classNames('h-6 w-1 rounded-full', isCurrentTab ? 'bg-Accent-2' : '')} />
+      <div className={clsx('h-6 w-1 rounded-full', isCurrentTab ? 'bg-Accent-2' : '')} />
     </button>
   );
 };

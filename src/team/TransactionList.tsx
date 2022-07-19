@@ -1,3 +1,7 @@
+import clsx from 'clsx';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+
 import { ChatIcon, LoopBoldIcon } from '@/assets';
 import {
   Avatar,
@@ -12,9 +16,6 @@ import { ClassName } from '@/common/types';
 import { DateUtils } from '@/common/utils';
 import { TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
-import clsx from 'clsx';
-import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { useTransactions } from './useTransactions';
 
 const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {

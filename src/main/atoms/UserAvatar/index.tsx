@@ -4,7 +4,7 @@ import { useRecoilValue } from 'recoil';
 import { profileState } from '@/auth/containers/ProfileEditForm/states';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
 import { User } from '@/main/entity';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 export interface UserAvatarProps {
   size?: number;
@@ -13,7 +13,7 @@ export interface UserAvatarProps {
   onClick?: (value?: string) => void;
 }
 
-const UserAvatar: React.VFC<UserAvatarProps> = ({ size, className = '', user }) => {
+const UserAvatar: React.FC<UserAvatarProps> = ({ size, className = '', user }) => {
   const profile = useRecoilValue(profileState);
   const avatarBgColor = React.useMemo(() => getColorByText(user?.fullName ?? ''), [user?.fullName]);
 
@@ -30,7 +30,7 @@ const UserAvatar: React.VFC<UserAvatarProps> = ({ size, className = '', user }) 
   if (isMine) {
     return (
       <img
-        className={classNames('w-6 h-6 rounded-full', className)}
+        className={clsx('w-6 h-6 rounded-full', className)}
         style={{
           ...sizeToWidthHeight,
         }}
@@ -42,7 +42,7 @@ const UserAvatar: React.VFC<UserAvatarProps> = ({ size, className = '', user }) 
   if (user?.avatar) {
     return (
       <img
-        className={classNames('w-6 h-6 rounded-full', className)}
+        className={clsx('w-6 h-6 rounded-full', className)}
         style={{
           ...sizeToWidthHeight,
         }}
@@ -55,7 +55,7 @@ const UserAvatar: React.VFC<UserAvatarProps> = ({ size, className = '', user }) 
 
   return (
     <div
-      className={classNames('flex w-6 h-6 rounded-full justify-center items-center', className)}
+      className={clsx('flex w-6 h-6 rounded-full justify-center items-center', className)}
       style={{
         backgroundColor: user?.fullName ? avatarBgColor : '#DFE1E6',
         ...sizeToWidthHeight,

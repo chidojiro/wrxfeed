@@ -1,4 +1,5 @@
-import { Category, Department, Subscription, Vendor } from '@/main/entity';
+import { Category, Department, Subscription } from '@/main/entity';
+import { Vendor } from '@/vendor/types';
 import React, { FunctionComponent, SVGAttributes } from 'react';
 
 export interface HOC<T> {
@@ -7,7 +8,7 @@ export interface HOC<T> {
 
 export type LeftTab = {
   name: string;
-  location: Partial<Omit<Location, 'pathname'>> & { pathname: string };
+  location: Partial<Omit<Location, 'pathname'>> & { pathname: string; pathMatch?: string };
   icon: FunctionComponent<SVGAttributes<SVGElement>> | null;
   subscription?: {
     type: keyof Subscription;
@@ -43,10 +44,28 @@ export type ClassName = {
   className?: string;
 };
 
+export type OpenClose = {
+  open?: boolean;
+  onClose?: () => void;
+};
+
+export type Option<T = string, P = React.ReactNode> = {
+  value: T;
+  label: P;
+};
+
+export type ValueChangeProps<T = any> = {
+  value?: T;
+  onChange?: (value: T) => void;
+  defaultValue?: T;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Fn = (...arg: any[]) => any;
 
 export type HTMLElementOrHTMLElementRef = HTMLElement | React.RefObject<HTMLElement>;
+
+export type ElementOrHTMLElementRef = Element | React.RefObject<Element>;
 
 export type HTMLDivProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,

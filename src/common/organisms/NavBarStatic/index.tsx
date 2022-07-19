@@ -3,7 +3,7 @@ import { Popover } from '@headlessui/react';
 import { useHistory } from 'react-router-dom';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { Routes } from '@/routing/routes';
 
 import SearchBar from '@/common/molecules/SearchBar';
@@ -31,7 +31,7 @@ const userNavigation = [
   { name: 'Sign out', href: '#' },
 ];
 
-const NavBarStatic: React.VFC<NavBarStaticProps> = ({
+const NavBarStatic: React.FC<NavBarStaticProps> = ({
   className = '',
   companyName,
   companyStyle = '',
@@ -72,7 +72,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
       <button
         type="button"
         onClick={onClickInviteButton}
-        className={classNames(
+        className={clsx(
           hoverStyle,
           'ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-offset-2 focus:ring-rose-500',
         )}
@@ -87,7 +87,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
     <Popover
       as="header"
       className={({ open }) => {
-        return classNames(
+        return clsx(
           open ? 'inset-0 overflow-y-auto' : '',
           'bg-primary z-40 fixed w-full shadow-sm lg:overflow-y-visible',
           className,
@@ -99,7 +99,7 @@ const NavBarStatic: React.VFC<NavBarStaticProps> = ({
           <div className="mx-auto max-w-3xl md:max-w-[1440px]">
             <div className="relative flex justify-between h-navbar md:grid md:grid-cols-12">
               <div className="flex flex-col justify-center md:col-span-3 pl-2 sm:pl-12 pr-3">
-                <h1 className={classNames('text-lg font-bold text-white', companyStyle)}>
+                <h1 className={clsx('text-lg font-bold text-white', companyStyle)}>
                   {companyName}
                 </h1>
               </div>

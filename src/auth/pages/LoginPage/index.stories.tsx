@@ -8,4 +8,4 @@ export default {
   component: LoginPage,
 } as Meta;
 
-export const Default: React.VFC = () => <LoginPage />;
+export const Default: React.FC = () => <LoginPage />;

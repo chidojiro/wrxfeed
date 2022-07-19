@@ -1,25 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useApi } from '@/api';
+import { FeedFilters } from '@/api/types';
+import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
+import { MainGroups } from '@/common/constants';
+import { useLegacyQuery } from '@/common/hooks';
+import MainLayout from '@/common/templates/MainLayout';
+import { useIdentity } from '@/identity';
+import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
+import { Category, Department } from '@/main/entity';
+import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@/main/hooks';
+import { useFeed } from '@/main/hooks/feed.hook';
+import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
+import FeedList from '@/main/organisms/FeedList';
+import { scrollToTop } from '@/main/utils';
+import { VendorApis } from '@/vendor/apis';
+import { Vendor } from '@/vendor/types';
 import * as Sentry from '@sentry/react';
 import mixpanel from 'mixpanel-browser';
-
-import { useIdentity } from '@/identity/hooks';
-import { FeedFilters } from '@/api/types';
-import { FeedChannelEvents, FeedEventData, FilterKeys, useFeedChannel } from '@/main/hooks';
-import { useApi } from '@/api';
-
-import { scrollToTop } from '@/main/utils';
-import { Category, Department, Vendor } from '@/main/entity';
-
-import FeedList from '@/main/organisms/FeedList';
-import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
-import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
-import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
-import { useFeed } from '@/main/hooks/feed.hook';
-import { MainGroups } from '@/common/constants';
-import MainLayout from '@/common/templates/MainLayout';
-import { useLegacyQuery } from '@/common/hooks';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const LIMIT = 5;
 const INIT_PAGINATION = {
@@ -30,11 +29,11 @@ const INIT_FEED_FILTER = Object.freeze({
   page: INIT_PAGINATION,
 });
 
-const CompanyPage: React.VFC = () => {
+const CompanyPage = () => {
   const query = useLegacyQuery();
   const history = useHistory();
   const location = useLocation();
-  const { readAllTransactions, getVendorById, getCategoryById, getDepartmentById } = useApi();
+  const { readAllTransactions, getCategoryById, getDepartmentById } = useApi();
   const [feedFilters, setFeedFilters] = useState<FeedFilters>(INIT_FEED_FILTER);
   const [filterTitle, setFilterTitle] = useState('');
   const filterKey = FilterKeys.find((key) => query.get(key));
@@ -50,7 +49,7 @@ const CompanyPage: React.VFC = () => {
     if (key === FilterKeys[2] && filterKey && query.get(filterKey)) {
       const venId = query.get(filterKey);
       if (!venId) return;
-      const vendor = await getVendorById(parseInt(venId, 10));
+      const vendor = await VendorApis.get(parseInt(venId, 10));
       setFilterTitle(vendor?.name);
     }
   };
@@ -116,7 +115,7 @@ const CompanyPage: React.VFC = () => {
 
   const handleFilter = (key: keyof FeedFilters, value?: Department | Category | Vendor): void => {
     // Update according to AP-889 https://heyarrow.atlassian.net/browse/AP-889
-    if (key === 'department') {
+    if (key === 'departmentId') {
       history.push({
         pathname: `/departments/${value?.id}`,
         search: `?route=${MainGroups.Following}`,

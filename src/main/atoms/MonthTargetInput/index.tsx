@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ChangeEvent, useState, useRef, KeyboardEventHandler, useEffect } from 'react';
-import { classNames, formatCurrency, replaceAll } from '@/common/utils';
+import { formatCurrency, replaceAll } from '@/common/utils';
+import clsx from 'clsx';
 
 interface MonthTargetInputProps {
   month: number;
@@ -12,7 +13,7 @@ interface MonthTargetInputProps {
   defaultAmount?: number;
 }
 
-const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
+const MonthTargetInput: React.FC<MonthTargetInputProps> = ({
   isInRange = false,
   className = '',
   onChange,
@@ -75,7 +76,7 @@ const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
 
   return (
     <div
-      className={classNames(
+      className={clsx(
         'w-24 h-7 flex px-1 justify-center items-center border-2 border-Gray-12 hover:bg-Gray-12',
         isInRange ? 'bg-Gray-12' : '',
         className,
@@ -83,7 +84,7 @@ const MonthTargetInput: React.VFC<MonthTargetInputProps> = ({
     >
       <input
         ref={amountInputRef}
-        className={classNames(
+        className={clsx(
           'flex text-xs text-right flex-1 w-5 bg-transparent outline-none text-Gray-3 placeholder-Gray-6',
         )}
         placeholder={isFocus ? '$0' : ''}

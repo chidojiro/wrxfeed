@@ -21,8 +21,6 @@ import {
   Transaction,
   TransLineItem,
   User,
-  Vendor,
-  VendorDescription,
 } from '@/main/entity';
 import { FeedBackFormModel, InviteFormModel, SearchResult } from '@/main/types';
 import { PaginationParams } from '@/rest/types';
@@ -41,14 +39,12 @@ export interface ApiClient {
   resetPassword: (data: ResetPasswordDto) => Promise<void>;
   acceptInvitation: (id: string) => Promise<void>;
   // Feed
-  getTransactions: (body?: TransactionBody) => Promise<Transaction[]>;
   getUnreadLineItemsCount: (filters?: FeedFilters) => Promise<number>;
   readAllTransactions: () => Promise<void>;
   getComments: (filters: CommentFilters) => Promise<Comment[]>;
   addComment: (transactionId: number, data: AddCommentParams) => Promise<Comment>;
   deleteComment: (commentId: number) => Promise<void>;
   editComment: (commentId: number, data: AddCommentParams) => Promise<void>;
-  getTransactionById: (id: number) => Promise<Transaction>;
   getFeeds: (filters: FeedFilters) => Promise<FeedItem[]>;
   getFeedItemTransactions: (id: FeedItemFilters) => Promise<Transaction[]>;
   getFeedLineItems: (id: FeedItemFilters) => Promise<TransLineItem[]>;
@@ -56,8 +52,6 @@ export interface ApiClient {
   addFeedItemComment: (feedId: number, data: AddFeedCommentParams) => Promise<Comment>;
   getFeedItemById: (feedId: number) => Promise<FeedItem>;
   getCategoryById: (catId: number) => Promise<Category>;
-  getVendorById: (venId: number) => Promise<Vendor>;
-  updateVendorById: (id: number, data: VendorDescription) => Promise<void>;
   getDepartmentById: (depId: number) => Promise<Department>;
   getTopCategories: (depId: number) => Promise<TopCategories[]>;
   maskLineItemAsRead: (id: number) => Promise<void>;
@@ -76,11 +70,6 @@ export interface ApiClient {
   getUsers: (filters: GetUsersFilter) => Promise<User[]>;
   getContacts: (filters: GetContactsFilter) => Promise<Contact[]>;
   postFeedback: (transactionId: number, data: FeedBackFormModel) => Promise<void>;
-  // Directory
-  getDepartments: (filters?: DepartmentFilter) => Promise<Department[]>;
-  getCategories: (filter?: CategoryFilter) => Promise<Category[]>;
-  getVendors: (pagination?: PaginationParams) => Promise<Vendor[]>;
-  updateCategory: (data?: Partial<Category>) => Promise<void>;
   // Notification
   getNotifications: (page?: PaginationParams) => Promise<NotificationsResponse>;
   patchNotification: (id: number) => Promise<void>;
@@ -101,11 +90,6 @@ export interface ResetPasswordDto {
 export enum OrderDirection {
   ASC = 'ASC',
   DESC = 'DESC',
-}
-
-export interface MentionsFilters {
-  order?: OrderDirection;
-  pagination?: PaginationParams;
 }
 
 export interface CommentFilters {
@@ -149,16 +133,6 @@ export interface AddCommentParams {
   attachment?: string;
 }
 
-export interface DepartmentFilter extends PaginationParams {
-  parent?: number;
-  term?: string;
-  includeSub?: 1 | 0;
-}
-export interface CategoryFilter extends PaginationParams {
-  term?: string;
-  dep?: number;
-}
-
 export interface SubscriptionParams {
   departments?: number[];
   vendors?: number[];
@@ -189,10 +163,10 @@ export interface AddFeedCommentParams {
 export interface FeedFilters {
   page?: PaginationParams;
   forYou?: 1 | 0;
-  department?: number;
+  departmentId?: number;
   targetId?: number;
-  vendor?: number;
-  category?: number;
+  vendorId?: number;
+  categoryId?: number;
   rootDepartment?: number;
   month?: number;
   year?: number;

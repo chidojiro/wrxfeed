@@ -1,17 +1,14 @@
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 import isYesterday from 'dayjs/plugin/isYesterday';
-import updateLocale from 'dayjs/plugin/updateLocale';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import updateLocale from 'dayjs/plugin/updateLocale';
 import numeral from 'numeral';
-import { FieldValues } from 'react-hook-form';
-import * as yup from 'yup';
-import { LazyBuilder } from 'yup/lib/Lazy';
-import { PROJECT_CLASS_NAME_PREFIX } from '../constants';
-export { DateUtils } from './date';
 export { AssertUtils } from './assert';
-export { StringUtils } from './string';
+export { DateUtils } from './date';
 export { ReactUtils } from './react';
+export { StringUtils } from './string';
+export { NumberUtils } from './number';
 
 // Dayjs plugins
 dayjs.extend(isToday);
@@ -36,31 +33,6 @@ dayjs.updateLocale('en', {
     yy: '%dy',
   },
 });
-
-export function hasSubArray(master: string[], sub: string[]): boolean {
-  return master && sub && sub.every((value, index) => master.indexOf(value, index) + 1 > 0);
-}
-
-export async function sleep(millisecond: number): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, millisecond));
-}
-
-/**
- * Yup validation rule, allow value to be empty string or number.
- * @example
- * const schema = yup.object().shape({
- *  income: yup.lazy(emptyStringOrNumber),
- *  outcome: yup.lazy(emptyStringOrNumber),
- * });
- */
-export const emptyStringOrNumber: LazyBuilder = (value) =>
-  value === '' ? yup.string() : yup.number().positive().integer('This field must be integer');
-
-export function removeEmptyFields(data: FieldValues): FieldValues {
-  return Object.entries(data).reduce((current, [key, value]) => {
-    return value ? { ...current, [key]: value } : current;
-  }, {});
-}
 
 /**
  * Convert a string to color hex
@@ -108,13 +80,6 @@ export function distanceToNow(value?: string | number | Date | dayjs.Dayjs): str
   return dayjs(value).fromNow();
 }
 
-/**
- * Join multiple classNames
- */
-export function classNames(...classes: string[]): string {
-  return classes.filter(Boolean).join(' ');
-}
-
 export const EmailRegex = /[\w\d\\.-]+@[\w\d\\.-]+\.[\w\d\\.-]+/;
 
 export const isEmail = (email: string): boolean => {
@@ -159,10 +124,3 @@ export function formatCurrency({
   const number = supportNegative ? value : Math.abs(parseFloat(replaceAll(`${value}`, ',', '')));
   return numeral(number).format(format);
 }
-
-export const withProjectClassNamePrefix = (...classNames: string[]) => {
-  return [classNames]
-    .flat()
-    .map((className) => PROJECT_CLASS_NAME_PREFIX + className)
-    .join(' ');
-};

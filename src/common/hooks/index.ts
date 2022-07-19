@@ -13,3 +13,5 @@ export * from './useControllable';
 export * from './useScrollbarDetector';
 export * from './useOverlay';
 export * from './useScrollDisable';
+export * from './useDelayableState';
+export * from './useGlobalState';

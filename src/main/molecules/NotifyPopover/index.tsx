@@ -1,6 +1,6 @@
 import { NotifyIcon } from '@/assets';
 import Loading from '@/common/atoms/Loading';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { NotifyRow } from '@/main/atoms';
 import { Notification } from '@/main/entity';
 import {
@@ -23,7 +23,7 @@ export interface NotifyPopoverProps {
 
 const LIMIT = 15;
 
-const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
+const NotifyPopover: React.FC<NotifyPopoverProps> = ({
   style,
   showNumberNotify = false,
   useDropDown = true,
@@ -131,7 +131,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
       <button
         onClick={onClickNotifications}
         type="button"
-        className={classNames('flex-shrink-0 flex relative w-10 h-10 justify-center items-center')}
+        className={clsx('flex-shrink-0 flex relative w-10 h-10 justify-center items-center')}
       >
         {renderNotifyIconWithBell()}
       </button>
@@ -145,7 +145,7 @@ const NotifyPopover: React.VFC<NotifyPopoverProps> = ({
           <>
             <Popover.Button
               onBlur={onBlurIconButton}
-              className={classNames(
+              className={clsx(
                 'mr-2 rounded-full flex focus:outline-none',
                 open ? 'ring-2 ring-offset-2 ring-rose-500' : '',
               )}

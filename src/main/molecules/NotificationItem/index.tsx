@@ -1,6 +1,7 @@
 import { Notification, NotifyStatus } from '@/main/entity';
 import React from 'react';
-import { classNames, distanceToNow } from '@/common/utils';
+import { distanceToNow } from '@/common/utils';
+import clsx from 'clsx';
 import CommentText from '@/main/atoms/CommentText';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
 
@@ -14,7 +15,7 @@ export interface NotificationItemProps {
   onClick: (item: Notification) => void;
 }
 
-const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) => {
+const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) => {
   const avatarBgColor = React.useMemo(() => getColorByText(item?.content ?? ''), [item?.content]);
   const isNew = item.status === NotifyStatus.UNREAD;
   const identity = useIdentity();
@@ -51,14 +52,14 @@ const NotificationItem: React.VFC<NotificationItemProps> = ({ item, onClick }) =
           company: identity?.company?.id,
         });
       }}
-      className={classNames(
+      className={clsx(
         'flex flex-row min-h-16 pl-3 pr-5 py-4 w-full',
         isNew ? 'bg-white' : 'bg-Gray-18',
       )}
     >
       <div className="flex flex-row items-center">
         <div
-          className={classNames(
+          className={clsx(
             'flex self-center w-1.5 h-1.5 rounded-full mr-1.5',
             isNew ? 'bg-system-success' : 'bg-transparent',
           )}

@@ -3,10 +3,12 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import useSwr, { SWRConfiguration } from 'swr';
 
+export type UseFetcherConfiguration<T = any> = SWRConfiguration<T>;
+
 export const useFetcher = <T = unknown>(
   key: string | unknown[] | null | undefined | false,
   callback: (...args: unknown[]) => Promise<T>,
-  options?: SWRConfiguration<T>,
+  options?: UseFetcherConfiguration<T>,
 ) => {
   const { onError, ...restOptions } = options ?? {};
 

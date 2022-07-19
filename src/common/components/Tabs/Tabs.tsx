@@ -3,7 +3,7 @@ import React from 'react';
 import { ClassName } from '../../types';
 import { Tabs as HeadlessTabs, TabsProps as HeadlessTabsProps } from '../../headless';
 import clsx from 'clsx';
-import { withProjectClassNamePrefix } from '../../utils';
+import { StringUtils } from '../../utils';
 import { ConditionalWrapper } from '../ConditionalWrapper';
 import { Link } from 'react-router-dom';
 
@@ -22,7 +22,7 @@ export type TabsProps = HeadlessTabsProps &
 export const Tabs = ({ value, onChange, items, className }: TabsProps) => {
   return (
     <HeadlessTabs value={value} onChange={onChange}>
-      <div className={clsx(withProjectClassNamePrefix('tabs'), className)}>
+      <div className={clsx(StringUtils.withProjectClassNamePrefix('tabs'), className)}>
         <nav className="flex items-center mb-4" aria-label="Tabs">
           {items.map((tab, idx) => (
             <HeadlessTabs.Item key={tab.value ?? idx} content={tab.content} value={tab.value}>

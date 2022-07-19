@@ -2,14 +2,17 @@
 import { FeedFilters } from '@/api/types';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import { useLegacyQuery } from '@/common/hooks';
-import { classNames } from '@/common/utils';
+import { LineItemDrawer } from '@/feed/LineItemDrawer';
+import { TargetFeedCard } from '@/feed/TargetFeedCard';
+import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 import ListEndComponent from '@/main/atoms/ListEndComponent';
 import ListLoading from '@/main/atoms/ListLoading';
-import { Category, Department, Vendor } from '@/main/entity';
+import { Category, Department } from '@/main/entity';
 import { FilterKeys } from '@/main/hooks';
 import { useFeed } from '@/main/hooks/feed.hook';
 import RollupCard from '@/main/molecules/RollupCard';
-import { TargetFeedItem } from '@/target/TargetFeedItem';
+import { Vendor } from '@/vendor/types';
+import clsx from 'clsx';
 import React, {
   CSSProperties,
   forwardRef,
@@ -63,11 +66,17 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
   },
   ref,
 ) => {
+  const { isLineItemDrawerOpen, selectedLineItem, closeLineItemDrawer, feedId } =
+    useLineItemDrawer();
+
   const [feedFilters, setFeedFilters] = React.useState<FeedFilters>({
     ...INIT_FEED_FILTER,
     forYou,
-    department: depId,
+    departmentId: depId,
+    categoryId,
+    vendorId,
   });
+
   const { feeds, hasMore, isLoading, updateCategory, cleanData } = useFeed(feedFilters);
   const query = useLegacyQuery();
   const history = useHistory();
@@ -121,7 +130,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
 
   const renderForYouEndList = (className = 'mt-3 sm:mt-8') => {
     return (
-      <p className={classNames('text-base text-center text-Neutral-4', className)}>
+      <p className={clsx('text-base text-center text-Neutral-4', className)}>
         Add to your feed by
         <button
           type="button"
@@ -176,10 +185,16 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}
     >
+      <LineItemDrawer
+        open={isLineItemDrawerOpen}
+        onClose={closeLineItemDrawer}
+        lineItem={selectedLineItem}
+        feedId={feedId}
+      />
       <ul className="pb-2 sm:pb-5 space-y-4">
         {feeds.map((feed) => {
           if (feed.type === FeedItemType.target) {
-            return <TargetFeedItem key={`TargetFeedItem-${feed.id}`} feedItem={feed} />;
+            return <TargetFeedCard key={feed.id} feedItem={feed} />;
           }
           if (feed.type === FeedItemType.transaction) {
             return (
@@ -187,9 +202,9 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
                 key={`RollupCard-${feed.id}`}
                 feedItem={feed}
                 updateCategory={updateCategory}
-                onClickVendor={(value) => onFilter && onFilter('vendor', value)}
-                onClickDepartment={(value) => onFilter && onFilter('department', value)}
-                onClickCategory={(value) => onFilter && onFilter('category', value)}
+                onClickVendor={(value) => onFilter && onFilter('vendorId', value)}
+                onClickDepartment={(value) => onFilter && onFilter('departmentId', value)}
+                onClickCategory={(value) => onFilter && onFilter('categoryId', value)}
                 onClickRootDept={(value) => onFilter && onFilter('rootDepartment', value)}
               />
             );

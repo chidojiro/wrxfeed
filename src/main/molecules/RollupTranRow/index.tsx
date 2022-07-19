@@ -1,35 +1,34 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useMemo, useRef, useState } from 'react';
-import dayjs from 'dayjs';
-import { useSetRecoilState } from 'recoil';
-
-import EventEmitter, { EventName } from '@/main/EventEmitter';
-import { Transaction, TranStatusType, Vendor } from '@/main/entity';
-import { classNames, DATE_FORMAT } from '@/common/utils';
-
-import TranLineItemsList from '@/main/molecules/TranLineItemsList';
 import { ReactComponent as DownSmall } from '@/assets/icons/outline/down-small.svg';
-import { lineItemSelectState } from '@/main/states/lineItems.state';
+import { DATE_FORMAT } from '@/common/utils';
+import { Transaction, TransLineItem, TranStatusType } from '@/main/entity';
+import TranLineItemsList from '@/main/molecules/TranLineItemsList';
 import { decimalLogic, DecimalType, getTransactionStatus } from '@/main/utils';
+import { Vendor } from '@/vendor/types';
+import clsx from 'clsx';
+import dayjs from 'dayjs';
+import React from 'react';
 
 export interface RollupTranRowProps {
   tran: Transaction;
   onClick?: (tran: Transaction) => void;
   onClickMessage?: () => void;
   onClickVendor?: (vendor: Vendor) => void;
-  feedId: number;
+  onView: (item: TransLineItem) => void;
 }
 
 const A_WEEK_IN_MILLISECONDS = 1000 * 60 * 60 * 24 * 7;
 
-const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, feedId }) => {
-  const viewRef = useRef<HTMLButtonElement>(null);
-  const [isOpen, setOpen] = useState<boolean>(false);
-  const setLineItemSelect = useSetRecoilState(lineItemSelectState);
+const RollupTranRow: React.FC<RollupTranRowProps> = ({ tran, onClick, onView }) => {
+  const viewRef = React.useRef<HTMLButtonElement>(null);
+  const [isOpen, setOpen] = React.useState<boolean>(false);
   const { lineItems = [] } = tran;
 
-  const onClickLineItem = () => {
+  const onClickLineItem: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    // prevent close line item drawer
+    e.stopPropagation();
+
     if (onClick) onClick(tran);
     setOpen((pre) => !pre);
   };
@@ -37,15 +36,11 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, feedId })
   const onClickDetails = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     if (lineItems.length > 0) {
-      setLineItemSelect(lineItems[0]);
-      EventEmitter.dispatch(EventName.SHOW_LINE_ITEM_DETAILS, {
-        item: lineItems[0],
-        feedId,
-      });
+      onView(lineItems[0]);
     }
   };
 
-  const tranType: TranStatusType | null = useMemo(
+  const tranType: TranStatusType | null = React.useMemo(
     () => getTransactionStatus(tran?.status ?? ''),
     [tran?.status],
   );
@@ -88,13 +83,13 @@ const RollupTranRow: React.VFC<RollupTranRowProps> = ({ tran, onClick, feedId })
         ref={viewRef}
         type="button"
         aria-hidden="true"
-        className={classNames(
+        className={clsx(
           'flex flex-row w-full items-center px-2 sm:px-6 py-2 bg-white hover:shadow-topCategoryHover z-10 relative border border-white hover:border-Accent-4',
         )}
         onClick={onClickLineItem}
       >
         <div className="flex w-5 h-5 justify-center items-center">
-          <DownSmall className={classNames(isOpen ? 'rotate-180' : '')} />
+          <DownSmall className={clsx(isOpen ? 'rotate-180' : '')} />
         </div>
         {renderUnreadIndicator()}
         <div className="flex flex-1 h-5 overflow-hidden flex-row items-center mx-1.5 space-x-1">

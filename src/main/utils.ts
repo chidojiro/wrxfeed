@@ -1,3 +1,4 @@
+import { EMPTY_AMOUNT } from '@/common/constants';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Bank, CategoryIcon, TeamIcon } from '@/assets';
 import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basics-search-small.svg';
@@ -37,6 +38,7 @@ import { Match } from 'linkify-it';
 import { cloneDeep } from 'lodash-es';
 import numeral from 'numeral';
 import { SearchResult } from './types';
+import React from 'react';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -218,45 +220,6 @@ const getMentionEntityRanges = (text: string, mentionName: string, mentionKey: n
 };
 
 /**
- * Convert a comment text to Draftjs ContentState
- */
-export function commentTextToContentState(text: string): ContentState {
-  const mentionMatches = text.match(MentionRegex);
-  const rawText = text.replace(MentionRegex, mentionNameReplacer);
-  if (mentionMatches?.length) {
-    // Create content state with mention entities
-    const rawContent = convertToRaw(ContentState.createFromText(rawText));
-    // Create mention draft raw entities
-    const rawMentionState = mentionMatches.reduce<{ [key: string]: RawDraftEntity }>(
-      (map, tag, idx) => {
-        const entity = rawMentionEntityCreator(tag);
-        if (!entity) return map;
-        return { ...map, [idx]: entity };
-      },
-      {},
-    );
-    rawContent.entityMap = rawMentionState;
-    // Map mention entities to content blocks
-    rawContent.blocks = rawContent.blocks.map((block) => {
-      const ranges: RawDraftEntityRange[] = [];
-      Object.keys(rawMentionState).forEach((key) => {
-        const entityRanges = getMentionEntityRanges(
-          block.text,
-          rawMentionState[key].data.mention.name,
-          parseInt(key, 10),
-        );
-        if (entityRanges) {
-          ranges.push(...entityRanges);
-        }
-      });
-      return { ...block, entityRanges: ranges };
-    });
-    return convertFromRaw(rawContent);
-  }
-  return ContentState.createFromText(text);
-}
-
-/**
  * Convert a comment html to Draftjs ContentState
  */
 export function commentHtmlToContentState(text: string): ContentState {
@@ -349,19 +312,6 @@ export const getColorByText = (name?: string | null, id?: number, gradient = fal
   return colorsData[bgColorPos];
 };
 
-export function isURL(str: string): boolean {
-  const pattern = new RegExp(
-    '^(https?:\\/\\/)?' + // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$',
-    'i',
-  ); // fragment locator
-  return !!pattern.test(str);
-}
-
 export const getNameAbbreviation = (name?: string): string => {
   if (!name) return '';
   const nameStr = name;
@@ -418,7 +368,7 @@ export const getMultiRandomInt = (multi: number, min: number, max: number): numb
 };
 
 // Vendor information updates when created by "Concur Integrations"
-export const getVendorNameFromLineItem = (item: TransLineItem): string => {
+export const getVendorNameFromLineItem = (item?: TransLineItem): string => {
   // let vendorName = item?.vendor?.name || item?.description || `Expense: ${item?.vendorName}`;
   let vendorName = item?.vendor?.name || item?.description || '...';
 
@@ -456,13 +406,6 @@ export const getPropIconByType = (
   return BasicsSearchSmall;
 };
 
-export const getWidthInputByLength = (length: number): number => {
-  if (length > 19) return 48;
-  if (length > 13) return 36;
-  if (length > 9) return 28;
-  return 20;
-};
-
 export const getColorByPropertyType = (type: TargetTypeProp): string => {
   if (type === TargetTypeProp.VENDOR) return '#F3AA20';
   if (type === TargetTypeProp.DEPARTMENT) return '#0891B2';
@@ -489,7 +432,7 @@ export const getTargetName = (target?: Target): string => {
   if (typeof name === 'string' && name.length > 1) {
     return name;
   }
-  if (!Array.isArray(props) || props.length === 0) return 'Invalid target!';
+  if (!Array.isArray(props) || props.length === 0) return '';
   if (typeof target.props[0].name !== 'string' || target.props[0].name.length < 1) {
     return 'This target have no name!';
   }
@@ -505,69 +448,40 @@ export const getTransactionStatus = (status: string): TranStatusType => {
   return TranStatusNameColor[status];
 };
 
-export const getItemsSentence = (items: SearchResult[], pre = ''): string => {
+export const getItemsSentence = (items: TargetProps[], pre = ''): string => {
   const cloneItems = cloneDeep(items);
   if (cloneItems.length === 0) return '';
-  if (cloneItems.length === 1) return pre + cloneItems[0].title;
-  if (cloneItems.length === 2) return `${pre} ${cloneItems[0].title} and ${cloneItems[1].title}`;
+  if (cloneItems.length === 1) return pre + cloneItems[0].name;
+  if (cloneItems.length === 2) return `${pre} ${cloneItems[0].name} and ${cloneItems[1].name}`;
   const popped = cloneItems.pop();
-  return `${cloneItems.map((item: SearchResult) => item.title).join(', ')} and ${popped?.title}`;
+  return `${cloneItems.map((item: TargetProps) => item.name).join(', ')} and ${popped?.name}`;
 };
 
 export const genReviewSentenceFromProperties = (
-  vend: SearchResult[] = [],
-  team: SearchResult[] = [],
-  cat: SearchResult[] = [],
-  except: SearchResult[] = [],
+  vendorProps: TargetProps[] = [],
+  categoryProps: TargetProps[] = [],
+  departmentProps: TargetProps[] = [],
+  exceptionProps: TargetProps[] = [],
 ): string => {
-  const vendorSen = getItemsSentence(vend);
-  const catSen = getItemsSentence(cat, ' spend within ');
-  const teamSen = getItemsSentence(team, ' for ');
-  const exceptSen = getItemsSentence(except, ', except ');
+  const vendorSen = getItemsSentence(vendorProps);
+  const catSen = getItemsSentence(categoryProps, ' spend within ');
+  const teamSen = getItemsSentence(departmentProps, ' for ');
+  const exceptSen = getItemsSentence(exceptionProps, ', except ');
 
   const sentence = `You're targeting all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`;
+
   return sentence;
 };
 
-export const getPeriodsByYear = (year: number): TargetPeriod[] => {
-  const periods = [];
-  for (let index = 1; index <= 12; index += 1) {
-    periods.push({
-      year,
-      month: index,
-    });
-  }
-  return periods;
-};
-
-export const getPropsAndPeriodsFromItemSelected = (
-  propSelected: SearchResult[],
-  excepts: SearchResult[],
-  targetMonths: TargetMonth[],
-  curYear: number,
-): { props: TargetProps[]; periods: TargetPeriod[] } => {
-  const props: TargetProps[] = propSelected.map((prop: SearchResult) => {
-    return {
-      id: prop?.directoryId,
-      type: prop?.type,
-      name: prop?.title ?? '',
-      exclude: false,
-    };
-  });
-  excepts.forEach((except: SearchResult) => {
-    props.push({
-      id: except?.directoryId,
-      type: except?.type,
-      name: except?.title ?? '',
-      exclude: true,
-    });
-  });
+export const getPeriodsFromTargetMonths = (targetMonths: TargetMonth[], curYear: number) => {
   const periods: TargetPeriod[] = [];
   const availableMonths = targetMonths
     .filter((target) => target.amount !== undefined)
     .map((target) => target.month);
+
   const minMonth = Math.min(...availableMonths);
   const maxMonth = Math.max(...availableMonths);
+
   targetMonths.forEach((target: TargetMonth) => {
     if (target.month >= minMonth && target.month <= maxMonth) {
       periods.push({
@@ -577,10 +491,8 @@ export const getPropsAndPeriodsFromItemSelected = (
       });
     }
   });
-  return {
-    props,
-    periods,
-  };
+
+  return periods;
 };
 
 export const getTargetPeriodsAmountTotal = (
@@ -614,7 +526,11 @@ export const getTargetPeriodsAmountTotal = (
       return sum;
     }, 0) ?? 0;
   const exceeding: number =
-    currentSpend > overallTarget ? ((currentSpend - overallTarget) / overallTarget) * 100 : 0;
+    overallTarget !== 0
+      ? currentSpend > overallTarget
+        ? ((currentSpend - overallTarget) / overallTarget) * 100
+        : 0
+      : 100;
   return { overallTarget, targetToDate, exceeding, currentSpend };
 };
 
@@ -672,6 +588,9 @@ export const decimalLogic = (
   return withCurrency + result;
 };
 
+export const getDisplayUsdAmount = (num?: number) =>
+  num ? decimalLogic(num, DecimalType.SummedNumbers) : EMPTY_AMOUNT;
+
 export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
   const targetByTeam: TargetByTeam[] = [];
   data.forEach((item: Target) => {
@@ -691,33 +610,6 @@ export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
   return targetByTeam;
 };
 
-export const getMultiMonthRange = (periods: TargetPeriod[]): string => {
-  let min = 12;
-  let max = 0;
-  for (let i = 0; i < periods.length; i += 1) {
-    const { amount, month } = periods[i];
-    if (amount !== undefined && month < min) {
-      min = month;
-    }
-    if (amount !== undefined && month > max) {
-      max = month;
-    }
-  }
-
-  let name = '...';
-  if (min !== 0) {
-    name = dayjs()
-      .month(min - 1)
-      .format('MMM');
-  }
-  if (max !== 0 && max !== min) {
-    name += ` - ${dayjs()
-      .month(max - 1)
-      .format('MMM')}`;
-  }
-  return name;
-};
-
 export const getTrackingStatusName = (type: TargetStatusType): string => {
   return TargetStatusConfig[type].name;
 };
@@ -726,5 +618,19 @@ export const getSummaryNumber = (value: number, total: number): string => {
   if (total === 0) {
     return '0%';
   }
-  return `${((value / total ?? 1) * 100 ?? 0).toFixed(0)}%`;
+  return `${Math.round((value * 100) / total)}%`;
 };
+
+export const toMonthName = (value: number) => {
+  const date = new Date();
+  date.setMonth(value - 1);
+
+  return date.toLocaleString('en-US', {
+    month: 'short',
+  });
+};
+
+export const toUSD = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});

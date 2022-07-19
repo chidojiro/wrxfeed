@@ -1,7 +1,7 @@
 import React, { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 import { EssentialsSendIcon, EssentialsSendEnableIcon } from '@/assets';
 
-const SendButtonAirplane: React.VFC<
+const SendButtonAirplane: React.FC<
   DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 > = ({ disabled, ...rest }) => {
   const SendIcon = disabled ? (

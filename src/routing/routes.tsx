@@ -3,16 +3,15 @@ import AcceptInvitation from '@/auth/pages/AcceptInvitation';
 import Login from '@/auth/pages/LoginPage';
 import Onboard from '@/auth/pages/OnboardPage';
 import NotFoundPage from '@/common/pages/NotFoundPage';
+import { FeedRoutes } from '@/feed/routes';
 import { UserRole } from '@/identity/constants';
 import Categories from '@/main/pages/Categories';
 import Company from '@/main/pages/Company';
 import Feed from '@/main/pages/Feed';
-import ForYou from '@/main/pages/ForYou';
 import Notifications from '@/main/pages/Notifications';
-import Vendors from '@/main/pages/Vendors';
 import { TargetRoutes } from '@/target/routes';
-import { TeamPage } from '@/team/TeamPage';
-import { TeamsPage } from '@/team/TeamsPage';
+import { TeamRoutes } from '@/team/routes';
+import { VendorRoutes } from '@/vendor/routes';
 import { Route } from './types';
 
 export const Routes: Route = {
@@ -40,34 +39,14 @@ export const Routes: Route = {
     component: Onboard,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  ForYou: {
-    path: '/for-you',
-    component: ForYou,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
   Notifications: {
     path: '/notifications',
     component: Notifications,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
-  Department: {
-    path: ['/departments/:id'],
-    component: TeamPage,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  Departments: {
-    path: ['/departments'],
-    component: TeamsPage,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
   Categories: {
     path: ['/categories', '/categories/:id'],
     component: Categories,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  Vendors: {
-    path: ['/vendors', '/vendors/:id'],
-    component: Vendors,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Company: {
@@ -76,4 +55,7 @@ export const Routes: Route = {
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   ...TargetRoutes,
+  ...FeedRoutes,
+  ...VendorRoutes,
+  ...TeamRoutes,
 };

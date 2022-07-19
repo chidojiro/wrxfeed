@@ -1,5 +1,5 @@
 import React, { FunctionComponent, SVGAttributes } from 'react';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { TargetArrowFilled, TrendDown, TrendUp, WarningFilled } from '@/assets';
 import { useDashboard } from '@/main/hooks/dashboard.hook';
 import { getSummaryNumber } from '@/main/utils';
@@ -15,7 +15,7 @@ export type SummaryInfoType = {
   value: string;
 };
 
-const TargetBoardSummaries: React.VFC<TargetBoardSummariesProps> = ({ className = '' }) => {
+const TargetBoardSummaries: React.FC<TargetBoardSummariesProps> = ({ className = '' }) => {
   const { summaries } = useDashboard();
 
   const summariesList: SummaryInfoType[] = [
@@ -46,18 +46,13 @@ const TargetBoardSummaries: React.VFC<TargetBoardSummariesProps> = ({ className 
   ];
 
   return (
-    <div
-      className={classNames(
-        'flex flex-row flex-grow flex-wrap justify-between w-full max-w-[500px] dashboard:max-w-[1016px] mr-4 dashboard:mr-8',
-        className,
-      )}
-    >
+    <div className={clsx('grid grid-cols-2 lg:grid-cols-4 gap-6 mb-2', className)}>
       {summariesList.map((item: SummaryInfoType) => {
         const { icon: IconInfo } = item;
         return (
           <div
-            key={`summaries-${item.id}`}
-            className="h-24 w-[236px] flex flex-row my-3 dashboard:my-0 items-center px-4 space-x-4.5 rounded-card bg-white shadow-shadowCard"
+            key={item.id}
+            className="h-24 flex flex-row dashboard:my-0 items-center px-4 space-x-4.5 rounded-card bg-white shadow-shadowCard"
           >
             <div className="w-14 h-14 rounded-full bg-Gray-12 flex justify-center items-center">
               {IconInfo && (

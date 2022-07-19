@@ -1,18 +1,28 @@
 import { CategoryIcon } from '@/assets';
 import { OverlayLoader } from '@/common/components';
 import { TopCategories as TTopCategories } from '@/main/entity';
-import TopCategoriesChartTooltip from '@/main/molecules/TopCategoriesChartTooltip';
 import React, { useCallback, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Cell, Pie, PieChart, Tooltip } from 'recharts';
 import { useTopCategories } from '../useTopCategories';
 import PieActiveShape from './PieActiveShape';
+import TopCategoriesChartTooltip from './TopCategoriesChartTooltip';
 
 const COLORS = ['#165DFF', '#0FC6C2', '#F7BA1E', '#7A3FEB', '#3491FA', '#DFE1E6'];
+
+export type CategoryPieCell = {
+  percentage: number;
+  color: string;
+  id: number;
+  name: string;
+  spend: number;
+};
 
 export const TopCategories = () => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const { data = [], isValidating } = useTopCategories();
+  const history = useHistory();
 
   const handlePieEnter = useCallback(
     (_: unknown, index: number) => {
@@ -36,7 +46,10 @@ export const TopCategories = () => {
       name: 'Other',
       spend: 0,
     } as TTopCategories);
-  const chartData = [...primaryCategories, otherCategories.spend && otherCategories]
+  const chartData: CategoryPieCell[] = [
+    ...primaryCategories,
+    otherCategories.spend && otherCategories,
+  ]
     .filter((item): item is TTopCategories => !!item)
     .map((item, idx) => ({
       ...item,
@@ -44,6 +57,15 @@ export const TopCategories = () => {
       color: COLORS[idx],
     }))
     .reverse();
+
+  const handleClickCategoryCell = (cell: CategoryPieCell) => {
+    if (isNaN(cell.id)) {
+      return;
+    }
+    history.push({
+      pathname: `/categories/${cell?.id}`,
+    });
+  };
 
   return (
     <OverlayLoader loading={isValidating}>
@@ -72,6 +94,7 @@ export const TopCategories = () => {
               labelLine={false}
               onMouseEnter={handlePieEnter}
               onMouseLeave={handlePieLeave}
+              onClick={(_: unknown, index: number) => handleClickCategoryCell(chartData[index])}
             >
               {chartData.map(({ color, name }) => (
                 // eslint-disable-next-line react/no-array-index-key

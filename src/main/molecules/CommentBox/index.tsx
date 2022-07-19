@@ -10,7 +10,7 @@ import SendButton from '@/main/atoms/SendButton';
 import { EmojiData } from 'emoji-mart';
 import { EditorState, Modifier } from 'draft-js';
 import { MentionData } from '@draft-js-plugins/mention';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { UPLOAD_FILE_ACCEPT } from '@/config';
 
 export interface CommentFormProps {
@@ -33,7 +33,7 @@ export interface CommentFormProps {
   mentionData?: MentionData[];
 }
 
-const CommentBox: React.VFC<CommentFormProps> = ({
+const CommentBox: React.FC<CommentFormProps> = ({
   id,
   className,
   defaultContent,
@@ -145,7 +145,7 @@ const CommentBox: React.VFC<CommentFormProps> = ({
       ref={formRef}
     >
       <div
-        className={classNames(
+        className={clsx(
           focused || alwaysFocus ? 'border-purple-5 bg-white' : ' border-Gray-11',
           'group flex flex-grow min-w-[70%] items-end border transition-all rounded-[1px] py-1.5 pl-2 pr-1.5',
           className ?? '',

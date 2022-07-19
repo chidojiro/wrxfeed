@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { EditorState } from 'draft-js';
 import { commentEditorRawParser } from '@/main/utils';
 import { FeedBackType } from '@/main/types';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import LinearProgress from '@/common/atoms/LinearProgress';
 import Modal from '@/common/atoms/Modal';
 
@@ -18,7 +18,7 @@ interface FeedBackModalProps {
   type?: FeedBackType;
 }
 
-const FeedBackModal: React.VFC<FeedBackModalProps> = ({
+const FeedBackModal: React.FC<FeedBackModalProps> = ({
   open,
   onClose,
   itemId,
@@ -108,7 +108,7 @@ const FeedBackModal: React.VFC<FeedBackModalProps> = ({
           </button>
           <button
             type="button"
-            className={classNames(
+            className={clsx(
               'rounded text-sm font-bold text-white ml-2 px-5',
               isSendable ? 'bg-purple-5' : 'bg-Gray-4',
             )}

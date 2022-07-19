@@ -1,8 +1,8 @@
 import { SearchResult } from '@/main/types';
 import { getIconByResultType, getPropTypeDisplayName } from '@/main/utils';
-import React, { useEffect, useRef, VFC } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ReactComponent as ArrowRight2 } from '@/assets/icons/outline/arrow-right-2.svg';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 interface SearchBarResultItemProps {
   result: SearchResult;
@@ -10,7 +10,11 @@ interface SearchBarResultItemProps {
   onClickHandler: () => void;
 }
 
-const SearchBarResultItem: VFC<SearchBarResultItemProps> = ({ result, focus, onClickHandler }) => {
+const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({
+  result,
+  focus,
+  onClickHandler,
+}) => {
   const ref = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -29,7 +33,7 @@ const SearchBarResultItem: VFC<SearchBarResultItemProps> = ({ result, focus, onC
       onClick={onClickHandler}
       type="button"
       key={result?.id}
-      className={classNames(
+      className={clsx(
         'relative group py-2 px-6 w-full flex flex-row items-center hover:bg-Gray-12',
       )}
       tabIndex={focus ? 0 : -1}

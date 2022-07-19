@@ -56,6 +56,8 @@ module.exports = {
         'Gray-24': 'rgba(192, 191, 223, 0.1)',
         'Gray-28': '#e5e7eb',
 
+        'cyan-1': '#0891b2',
+
         'Green-1': '#4A944E',
         'Green-2': '#13b9b9',
         'Green-3': 'rgba(19, 185, 185, 0.3)',
@@ -72,6 +74,7 @@ module.exports = {
         'Accent-5': '#E0E7FF',
         'Accent-6': '#818CF8',
         'Accent-7': '#3730A3',
+        'Accent-8': '#F3F3FC',
 
         LightBG: '#F9FAFB',
         Highlight: '#DDFF55',
@@ -87,6 +90,8 @@ module.exports = {
         'yellow-1': '#FEF3C7',
         'yellow-2': '#FBBF24',
         'yellow-3': '#92400E',
+
+        'orange-1': '#f3aa20',
 
         'purple-4': '#6D28D9',
         'purple-5': '#7A3FEB',
@@ -117,6 +122,30 @@ module.exports = {
         propertyDropdown: '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
         targetHover:
           '0px 3px 10px rgba(101, 101, 251, 0.1), -4px 10px 8px rgba(101, 101, 251, 0.03)',
+      },
+      keyframes: {
+        'drawer-enter': {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        'drawer-leave': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+        'modal-enter': {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
+        'modal-leave': {
+          '0%': { opacity: 1 },
+          '100%': { opacity: 0 },
+        },
+      },
+      animation: {
+        'drawer-enter': 'drawer-enter .2s ease-in-out',
+        'drawer-leave': 'drawer-leave .2s ease-in-out',
+        'modal-enter': 'modal-enter .2s ease-out',
+        'modal-leave': 'modal-leave .2s ease-in',
       },
     },
   },

@@ -1,9 +1,9 @@
-import { useApi } from '@/api';
-import { DepartmentFilter } from '@/api/types';
 import { useErrorHandler } from '@/error/hooks';
 import { isApiError, isBadRequest } from '@/error/utils';
 import { Department } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
+import { DepartmentApis } from '@/team/apis';
+import { GetDepartmentsParams } from '@/team/types';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -25,11 +25,10 @@ interface DepartmentHookValues {
   onClear: () => void;
 }
 
-export function useDepartment(filters: DepartmentFilter): DepartmentHookValues {
+export function useDepartment(params: GetDepartmentsParams): DepartmentHookValues {
   const [departments, setDepartments] = useState<DepartmentSection[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
   const onClear = () => setDepartments([]);
@@ -37,22 +36,22 @@ export function useDepartment(filters: DepartmentFilter): DepartmentHookValues {
   const getDepartments = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await ApiClient.getDepartments(filters);
+      const res = await DepartmentApis.getList(params);
       if (res.length) {
         const childrenData = await Promise.all(
-          res.map((dept) => ApiClient.getDepartments({ parent: dept.id, ...DEPT_PAGINATION })),
+          res.map((dept) => DepartmentApis.getList({ parent: dept.id, ...DEPT_PAGINATION })),
         );
         const sectionData: DepartmentSection[] = res.map((dept, idx) => ({
           ...dept,
           children: childrenData[idx],
         }));
-        if (filters?.offset) {
+        if (params?.offset) {
           setDepartments((prevTrans) => [...prevTrans, ...sectionData]);
         } else {
           setDepartments(sectionData);
         }
       }
-      if (filters.offset === 0 && res.length === 0) {
+      if (params.offset === 0 && res.length === 0) {
         setDepartments([]);
       }
       setHasMore(!!res.length);
@@ -67,7 +66,7 @@ export function useDepartment(filters: DepartmentFilter): DepartmentHookValues {
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, errorHandler, filters]);
+  }, [errorHandler, params]);
 
   const findDepartmentById = useCallback(
     (id: number): Department | null => {

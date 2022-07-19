@@ -1,6 +1,6 @@
 import React from 'react';
-import classNames from 'classnames';
-import { withProjectClassNamePrefix } from '../../utils';
+import clsx from 'clsx';
+import { StringUtils } from '@/common/utils';
 
 export type Props = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLTableSectionElement>,
@@ -11,7 +11,7 @@ export const Head = ({ className, ...restProps }: Props) => {
   return (
     <thead
       {...restProps}
-      className={classNames(withProjectClassNamePrefix('table-head'), className)}
+      className={clsx(StringUtils.withProjectClassNamePrefix('table-head'), className)}
     ></thead>
   );
 };

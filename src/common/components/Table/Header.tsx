@@ -1,9 +1,9 @@
-import classNames from 'classnames';
+import { StringUtils } from '@/common/utils';
+import clsx from 'clsx';
 import React from 'react';
-import { withProjectClassNamePrefix } from '../../utils';
 import { ConditionalWrapper } from '../ConditionalWrapper';
 import { SortIcon } from './SortIcon';
-import { TableContext } from './Table';
+import { TableContext } from './TableContext';
 
 export type Props = React.DetailedHTMLProps<
   React.ThHTMLAttributes<HTMLTableHeaderCellElement>,
@@ -36,8 +36,8 @@ export const Header = ({ className, sortKey, children, ...restProps }: Props) =>
   return (
     <th
       {...restProps}
-      className={classNames(
-        withProjectClassNamePrefix('table-header'),
+      className={clsx(
+        StringUtils.withProjectClassNamePrefix('table-header'),
         'py-3 px-4',
         'font-semibold text-xs text-Gray-3 text-left',
         className,

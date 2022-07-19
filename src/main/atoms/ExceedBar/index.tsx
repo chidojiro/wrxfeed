@@ -1,15 +1,15 @@
 import React from 'react';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 interface ExceedBarProps {
   className?: string;
   color?: string;
 }
 
-const ExceedBar: React.VFC<ExceedBarProps> = ({ className = '' }) => {
+const ExceedBar: React.FC<ExceedBarProps> = ({ className = '' }) => {
   return (
     <div
-      className={classNames(
+      className={clsx(
         'space-x-1 flex flex-row items-center overflow-hidden',
         'zebra-stripes',
         className,

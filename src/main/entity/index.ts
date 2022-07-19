@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 export * from './account.entity';
 export * from './comment.entity';
 export * from './company.entity';

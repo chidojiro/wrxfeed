@@ -2,18 +2,19 @@
 import { FeedFilters } from '@/api/types';
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@/common/constants';
-import { useLegacyQuery } from '@/common/hooks';
+import { useFetcher, useLegacyQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
-import { Category, Department, Vendor } from '@/main/entity';
-import { FilterKeys } from '@/main/hooks';
+import { FeedApis } from '@/feed/apis';
+import { GetCategoriesParams } from '@/feed/types';
+import { Category, Department } from '@/main/entity';
 import { useCategory } from '@/main/hooks/category.hook';
-import { useFeed } from '@/main/hooks/feed.hook';
 import CategoryList from '@/main/organisms/CategoryList';
 import FeedList from '@/main/organisms/FeedList';
 import { scrollToTop } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
+import { Vendor } from '@/vendor/types';
 import * as Sentry from '@sentry/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 const LIMIT = 10;
@@ -22,61 +23,16 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const CategoriesPage: React.VFC = () => {
+const CategoriesPage: React.FC = () => {
   const history = useHistory();
   const { id: catId } = useParams<{ id?: string }>();
   const query = useLegacyQuery();
   const location = useLocation();
-  // Category states
-  const [filter, setFilter] = useState<PaginationParams>(INIT_PAGINATION);
-  const { categories, hasMore, isLoading } = useCategory({ filter });
-  // Feeds states
-  const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
-    catId
-      ? {
-          page: { offset: 0, limit: 0 },
-          category: parseInt(catId, 10),
-        }
-      : {
-          page: { offset: 0, limit: 0 }, // Don't load feed at the first launch
-        },
-  );
+  const [filter, setFilter] = React.useState<GetCategoriesParams>(INIT_PAGINATION);
+  const { categories, hasMore, isLoading } = useCategory({ params: filter });
+  const [category, setCategory] = React.useState<Category | null>();
 
-  const { feeds, cleanData } = useFeed(feedsFilter);
-  // Variables
-  const isFiltering = !!feedsFilter.category;
-  const [category, setCategory] = useState<Category | null>();
-
-  React.useEffect(() => {
-    if (!isFiltering || feeds.length === 0) return;
-    if (feeds[0]?.category?.id === feedsFilter?.category) {
-      setCategory(feeds[0]?.category);
-    }
-  }, [feeds, isFiltering]);
-
-  const filterByRoute = useCallback(() => {
-    if (catId) {
-      const newFilter: { [key: string]: string | number | PaginationParams | null } = {
-        page: INIT_PAGINATION,
-        category: parseInt(catId, 10),
-      };
-      FilterKeys.forEach((key) => {
-        if (query.get(key)) {
-          newFilter[key] = query.get(key);
-        }
-      });
-      setFeedsFilter(newFilter);
-    } else {
-      setFeedsFilter({ page: { offset: 0, limit: 0 } }); // Clean up feed
-    }
-  }, [catId, query.toString(), feedsFilter.category]);
-
-  useEffect(() => {
-    scrollToTop();
-    filterByRoute();
-  }, [filterByRoute]);
-
-  const handleLoadMore = useCallback(() => {
+  const handleLoadMoreCategories = React.useCallback(() => {
     if (!hasMore || isLoading) return;
     setFilter((prevFilter) => ({
       ...prevFilter,
@@ -84,8 +40,15 @@ const CategoriesPage: React.VFC = () => {
     }));
   }, [hasMore, isLoading]);
 
+  useFetcher(
+    catId && !isNaN(+catId) && ['category', catId],
+    () => FeedApis.getCategory(parseInt(catId ?? '0', 10)),
+    {
+      onSuccess: setCategory,
+    },
+  );
+
   const handleCategorySelect = (value?: Category): void => {
-    cleanData();
     setCategory(value);
     history.push({
       pathname: `/categories/${value?.id.toString()}`,
@@ -108,7 +71,7 @@ const CategoriesPage: React.VFC = () => {
   return (
     <MainLayout>
       <h1 className="sr-only">Category list</h1>
-      {isFiltering && (
+      {catId && (
         <div className="flex items-center justify-between space-x-4 pb-8">
           <div className="flex flex-1 items-center  space-x-4">
             <ChevronLeftIcon onClick={history.goBack} />
@@ -116,19 +79,17 @@ const CategoriesPage: React.VFC = () => {
           </div>
         </div>
       )}
-      {!isFiltering ? (
+      {!catId && (
         <CategoryList
           categories={categories}
           isLoading={isLoading}
           hasMore={hasMore}
-          onLoadMore={handleLoadMore}
+          onLoadMore={handleLoadMoreCategories}
           onSelect={handleCategorySelect}
         />
-      ) : (
-        <FeedList
-          onFilter={handleFeedsFilter}
-          categoryId={catId ? parseInt(catId, 10) : undefined}
-        />
+      )}
+      {catId && !isNaN(+catId) && (
+        <FeedList onFilter={handleFeedsFilter} categoryId={parseInt(catId, 10)} />
       )}
     </MainLayout>
   );

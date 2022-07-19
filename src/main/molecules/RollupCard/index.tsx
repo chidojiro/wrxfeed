@@ -3,7 +3,7 @@ import { GetUploadTokenBody, UploadTypes } from '@/api/types';
 import { ExclamationCircle, EyeHideIcon, MoreVerticalIcon } from '@/assets';
 // components
 import NotifyBanner from '@/common/molecules/NotifyBanner';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { ProtectedFeatures } from '@/identity/constants';
 // hooks
 import { useIdentity, usePermission } from '@/identity/hooks';
@@ -12,7 +12,7 @@ import ConfirmModal from '@/main/atoms/ConfirmModal';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 // constants
-import { Category, Department, FeedItem, Vendor, Visibility } from '@/main/entity';
+import { Category, Department, FeedItem, Visibility } from '@/main/entity';
 import { useMention } from '@/main/hooks';
 import { useFeedComment } from '@/main/hooks/feedComment.hook';
 import CommentBox from '@/main/molecules/CommentBox';
@@ -32,9 +32,10 @@ import { PaginationParams } from '@/rest/types';
 import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
 import { EditorState } from 'draft-js';
-import React, { useMemo, useRef, useState } from 'react';
+import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { Vendor } from '@/vendor/types';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -55,26 +56,26 @@ interface ConfirmModalProps {
 const INITIAL_COMMENT_NUMBER = 2;
 const LIMIT_GET_COMMENT = 20;
 
-const RollupCard: React.VFC<RollupCardProps> = ({
+const RollupCard: React.FC<RollupCardProps> = ({
   feedItem,
   onClickDepartment,
   onClickCategory,
   updateCategory,
 }) => {
   const identity = useIdentity();
-  const [filterComment, setFilterComment] = useState<PaginationParams>({
+  const [filterComment, setFilterComment] = React.useState<PaginationParams>({
     offset: 0,
     limit: INITIAL_COMMENT_NUMBER,
   });
 
   const { total } = getTotalFeedItem(feedItem);
   // Refs
-  const containerRef = useRef<HTMLLIElement>(null);
+  const containerRef = React.useRef<HTMLLIElement>(null);
   // Local states
-  const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
-  const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
-  const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
-  const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
+  const [confirmModal, setConfirmModal] = React.useState<ConfirmModalProps>();
+  const [isOpenFeedbackModal, openFeedbackModal] = React.useState(false);
+  const [attachFileComment, setAttachFileComment] = React.useState<File | null>(null);
+  const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
   // Data hooks
   const { mentions } = useMention();
   const { checkPermission } = usePermission();
@@ -205,7 +206,10 @@ const RollupCard: React.VFC<RollupCardProps> = ({
   };
 
   const catName = feedItem?.category?.name ?? 'unknown';
-  const itemGradientBg = useMemo(() => getColorByText(catName ?? '', undefined, true), [catName]);
+  const itemGradientBg = React.useMemo(
+    () => getColorByText(catName ?? '', undefined, true),
+    [catName],
+  );
 
   return (
     <>
@@ -217,7 +221,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
       >
         <div className="flex flex-row">
           <div
-            className={classNames(
+            className={clsx(
               isHidden ? 'bg-purple-8' : 'bg-white',
               'flex-grow w-4/5 px-6 py-5 border-b border-Gray-11',
             )}
@@ -301,12 +305,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
           </div>
         </div>
         {Array.isArray(feedItem?.transactions) && feedItem?.transactions?.length > 0 && (
-          <RollupTransactions
-            feedId={feedItem?.id}
-            trans={feedItem?.transactions}
-            tranHidden={feedItem?.hidden}
-            autoShowTrans
-          />
+          <RollupTransactions feed={feedItem} defaultExpand />
         )}
         <div className="space-y-4 px-4 sm:px-12 mt-1.5">
           {hasMoreComment && (
@@ -334,7 +333,7 @@ const RollupCard: React.VFC<RollupCardProps> = ({
             </ul>
           )}
         </div>
-        <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4 mt-1 sm:mt-2">
+        <div className="px-4 sm:px-6 lg:px-12 py-1.5 mb-2 sm:mb-4">
           <CommentBox
             id={feedItem?.id.toString()}
             className="bg-white"

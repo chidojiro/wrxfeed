@@ -9,15 +9,18 @@ export const useDebounce = <T extends (...args: any[]) => void>(
   wait = DEFAULT_DEBOUNCE_TIMEOUT,
 ): T => {
   // Create hook to hold timer and callback
-  const lastTimeout = React.useRef<number>();
+  const lastTimeout = React.useRef<NodeJS.Timeout>();
 
-  const debouncedCallback = (...args: any[]) => {
-    clearTimeout(lastTimeout.current);
+  const debouncedCallback = React.useCallback(
+    (...args: any[]) => {
+      clearTimeout(lastTimeout.current);
 
-    lastTimeout.current = setTimeout(() => {
-      callback(...args);
-    }, wait);
-  };
+      lastTimeout.current = setTimeout(() => {
+        callback(...args);
+      }, wait);
+    },
+    [callback, wait],
+  );
 
   return debouncedCallback as any;
 };

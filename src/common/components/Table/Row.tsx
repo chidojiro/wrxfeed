@@ -1,6 +1,6 @@
 import React from 'react';
-import classNames from 'classnames';
-import { withProjectClassNamePrefix } from '../../utils';
+import clsx from 'clsx';
+import { StringUtils } from '@/common/utils';
 
 export type Props = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLTableRowElement>,
@@ -11,8 +11,8 @@ export const Row = ({ className, ...restProps }: Props) => {
   return (
     <tr
       {...restProps}
-      className={classNames(
-        withProjectClassNamePrefix('table-row'),
+      className={clsx(
+        StringUtils.withProjectClassNamePrefix('table-row'),
         'group',
         'border-b border-Gray-28',
         className,

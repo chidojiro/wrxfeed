@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { FunctionComponent, SVGAttributes } from 'react';
 import { Menu } from '@headlessui/react';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 
 interface PopoverMenuItemProps {
   value: string;
@@ -13,7 +13,7 @@ interface PopoverMenuItemProps {
   iconClass?: string;
 }
 
-const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({
+const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
   value,
   label,
   className = '',
@@ -34,7 +34,7 @@ const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({
       {({ active }) => (
         <a
           aria-hidden="true"
-          className={classNames(
+          className={clsx(
             'flex flex-row items-center space-x-2 px-4 py-2 text-sm cursor-pointer text-Gray-1',
             active ? 'bg-purple-7' : '',
             className,
@@ -43,7 +43,7 @@ const PopoverMenuItem: React.VFC<PopoverMenuItemProps> = ({
         >
           {Icon && (
             <Icon
-              className={classNames('w-4 h-4 fill-current path-no-filled', iconClass)}
+              className={clsx('w-4 h-4 fill-current path-no-filled', iconClass)}
               aria-hidden="false"
               viewBox="0 0 16 16"
             />

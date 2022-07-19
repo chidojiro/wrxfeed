@@ -1,26 +1,15 @@
-import classNames from 'classnames';
+import { StringUtils } from '@/common/utils';
+import clsx from 'clsx';
 import React from 'react';
 import { Children, ClassName } from '../../types';
-import { withProjectClassNamePrefix } from '../../utils';
 import { Body } from './Body';
 import { Cell } from './Cell';
 import { Footer } from './Footer';
 import { Head } from './Head';
 import { Header } from './Header';
 import { Row } from './Row';
-
-export type TableProps = React.DetailedHTMLProps<
-  React.TableHTMLAttributes<HTMLTableElement>,
-  HTMLTableElement
-> & {
-  sort?: string;
-  onSortChange?: (sort: string) => void;
-};
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-type TableProviderValue = { tableProps: TableProps };
-
-export const TableContext = React.createContext<TableProviderValue>({ tableProps: {} });
+import { TableContext, TableProviderValue } from './TableContext';
+import { TableProps } from './types';
 
 export const Table = (props: TableProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -31,8 +20,8 @@ export const Table = (props: TableProps) => {
     <TableContext.Provider value={providerValue}>
       <table
         {...restProps}
-        className={classNames(
-          withProjectClassNamePrefix('table'),
+        className={clsx(
+          StringUtils.withProjectClassNamePrefix('table'),
           'w-full border-collapse table-auto bg-white',
           className,
         )}
@@ -43,8 +32,8 @@ export const Table = (props: TableProps) => {
 
 const OverflowContainer = ({ children, className }: Children & ClassName) => (
   <div
-    className={classNames(
-      withProjectClassNamePrefix('table-overflow-container'),
+    className={clsx(
+      StringUtils.withProjectClassNamePrefix('table-overflow-container'),
       'max-w-full overflow-auto',
       'text-xs text-Gray-6',
       // display horizontal ring

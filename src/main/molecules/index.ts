@@ -4,6 +4,7 @@ import CommentItem from './CommentItem';
 import UserProfilePopover from './UserProfilePopover';
 import NotifyPopover from './NotifyPopover';
 import NotifyDetails from './NotifyDetails';
+import { OptionsButton } from './OptionsButton';
 
 export {
   ScrollToTopButton,
@@ -12,4 +13,5 @@ export {
   UserProfilePopover,
   NotifyPopover,
   NotifyDetails,
+  OptionsButton,
 };

@@ -7,17 +7,18 @@ import { useLegacyQuery, useNavUtils } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
 import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
-import { Category, Department, FeedItem, FeedType, Vendor } from '@/main/entity';
+import { Category, Department, FeedItem, FeedType } from '@/main/entity';
 import RollupCard from '@/main/molecules/RollupCard';
 import { Routes } from '@/routing/routes';
-import { TargetFeedItem } from '@/target/TargetFeedItem';
+import { TargetFeedCard } from '@/feed/TargetFeedCard';
 import * as Sentry from '@sentry/react';
 import React, { useEffect, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Vendor } from '@/vendor/types';
 
-const FeedPage: React.VFC = () => {
+const FeedPage: React.FC = () => {
   const history = useHistory();
   const { redirect } = useNavUtils();
   const ApiClient = useApi();
@@ -147,7 +148,7 @@ const FeedPage: React.VFC = () => {
             feedItem={feedItem}
           />
         ) : (
-          <TargetFeedItem
+          <TargetFeedCard
             feedItem={feedItem}
             onRefresh={onRefreshTargetFeedItem}
             onBack={onBackToDashboard}

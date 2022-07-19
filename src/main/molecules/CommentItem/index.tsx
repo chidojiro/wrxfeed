@@ -3,7 +3,7 @@ import { MentionData } from '@draft-js-plugins/mention';
 import { EditorState } from 'draft-js';
 import { SubmitHandler } from 'react-hook-form';
 import { Comment } from '@/main/entity';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import CommentOwner from '@/main/atoms/CommentOwner';
 import CommentText from '@/main/atoms/CommentText';
 import CommentImage from '@/main/atoms/CommentImage';
@@ -46,7 +46,7 @@ interface ConfirmModalProps {
   confirmLabel: string;
 }
 
-const CommentItem: React.VFC<CommentItemProps> = ({
+const CommentItem: React.FC<CommentItemProps> = ({
   className,
   comment,
   mentionData,
@@ -136,7 +136,7 @@ const CommentItem: React.VFC<CommentItemProps> = ({
   return !isEditing ? (
     <>
       <div
-        className={classNames(
+        className={clsx(
           'group bg-purple-10 py-2 px-3.5 space-y-1 hover:bg-purple-11',
           className ?? '',
         )}

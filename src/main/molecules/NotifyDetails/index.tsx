@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { classNames } from '@/common/utils';
+import clsx from 'clsx';
 import { Dialog, Transition } from '@headlessui/react';
 import { Notification, Transaction } from '@/main/entity';
 import Loading from '@/common/atoms/Loading';
@@ -14,7 +14,7 @@ export interface NotifyDetailsProps {
   isLoading?: boolean;
 }
 
-const NotifyDetails: React.VFC<NotifyDetailsProps> = ({
+const NotifyDetails: React.FC<NotifyDetailsProps> = ({
   style = '',
   isOpen,
   onClose,
@@ -74,7 +74,7 @@ const NotifyDetails: React.VFC<NotifyDetailsProps> = ({
               leaveTo="opacity-0 scale-95"
             >
               <div
-                className={classNames(
+                className={clsx(
                   'inline-block w-full max-w-5xl p-8 my-12 overflow-scroll transition-all transform align-middle bg-white shadow-xl rounded-2xl',
                   style,
                 )}

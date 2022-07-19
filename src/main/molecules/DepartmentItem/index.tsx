@@ -1,9 +1,10 @@
-import React, { MouseEventHandler } from 'react';
-import Button from '@/common/atoms/Button';
-import { Category, Department, Vendor } from '@/main/entity';
-// Icons
 import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
+import Button from '@/common/atoms/Button';
+import { Category, Department } from '@/main/entity';
+import { Vendor } from '@/vendor/types';
+import clsx from 'clsx';
+import React, { MouseEventHandler } from 'react';
 
 interface DepartmentItemProps {
   item: Department | Category | Vendor;
@@ -12,15 +13,21 @@ interface DepartmentItemProps {
   onClick?: MouseEventHandler<HTMLDivElement>;
   onFollow?: MouseEventHandler<HTMLButtonElement>;
   onUnfollow?: MouseEventHandler<HTMLButtonElement>;
+  btnClassName?: string;
+  textClassName?: string;
+  hideName?: boolean;
 }
 
-const DepartmentItem: React.VFC<DepartmentItemProps> = ({
+const DepartmentItem: React.FC<DepartmentItemProps> = ({
   item,
   isFollowing,
   disableFollow = false,
   onClick,
   onFollow,
   onUnfollow,
+  btnClassName = '',
+  textClassName = '',
+  hideName = false,
 }) => {
   const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -43,28 +50,34 @@ const DepartmentItem: React.VFC<DepartmentItemProps> = ({
       onClick={onClick}
     >
       <div className="flex flex-1">
-        <p className="text-sm font-medium text-Gray-1">{item?.name}</p>
+        {!hideName && <p className="text-sm font-medium text-Gray-1">{item?.name}</p>}
       </div>
       {!disableFollow &&
         (isFollowing ? (
-          <Button onClick={handleUnfollow} className="rounded-full border-Gray-3">
+          <Button
+            onClick={handleUnfollow}
+            className={clsx('rounded-full border-Gray-3', btnClassName)}
+          >
             <TickIcon
               width={16}
               height={16}
-              className="stroke-current path-no-stroke text-Gray-3"
+              className={clsx('stroke-current path-no-stroke text-Gray-3', textClassName)}
               viewBox="0 0 15 15"
             />
-            <span>Following</span>
+            <span className={textClassName}>Following</span>
           </Button>
         ) : (
-          <Button onClick={handleFollow} className="rounded-full border-Gray-3">
+          <Button
+            onClick={handleFollow}
+            className={clsx('rounded-full border-Gray-3', btnClassName)}
+          >
             <AddIcon
               width={16}
               height={16}
-              className="stroke-current stroke-1 path-no-stroke text-Gray-3"
+              className={clsx('stroke-current stroke-1 path-no-stroke text-Gray-3', textClassName)}
               viewBox="0 0 15 15"
             />
-            <span className="text-Gray-3">Follow</span>
+            <span className={clsx('text-Gray-3', textClassName)}>Follow</span>
           </Button>
         ))}
     </div>
