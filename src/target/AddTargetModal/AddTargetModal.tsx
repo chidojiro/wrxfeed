@@ -7,7 +7,7 @@ import Modal from '@/common/atoms/Modal';
 import { Form, OverlayLoader } from '@/common/components';
 import { defaultTargetMonths, EMPTY_ARRAY } from '@/common/constants';
 import { withMountOnOpen } from '@/common/hocs/withMountOnOpen';
-import { useHandler } from '@/common/hooks';
+import { useFetcher, useHandler } from '@/common/hooks';
 import { formatCurrency, round } from '@/common/utils';
 import { useCategories } from '@/feed/useCategories';
 import { genReviewSentenceFromProperties, getPeriodsFromTargetMonths } from '@/main/utils';
@@ -16,6 +16,7 @@ import {
   Target,
   TargetPeriod,
   TargetProps,
+  TargetSpending,
   TargetTypeProp,
   UpdateTargetPayload,
 } from '@/target/types';
@@ -166,6 +167,33 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
       [categoryProps, departmentProps, exceptionProps, vendorProps],
     );
 
+    const isValidPeriods = (periods: TargetPeriod[]) =>
+      periods.some((v: TargetPeriod) => !!v.amount && v.amount > 0);
+
+    const { isValidating: isValidatingSpendings, data: spendingsRaw = EMPTY_ARRAY } = useFetcher(
+      !!props.length && isValidPeriods(periods) && ['targetSpending', props],
+      () => TargetApis.getSpending({ props, periods }),
+    );
+
+    const spendings = new Array(12)
+      .fill(null)
+      .map((_, index) => {
+        const currentMonth = index + 1;
+
+        const spendingsRawForCurrentMonth = spendingsRaw.filter(
+          ({ month }) => month === currentMonth,
+        );
+
+        if (!spendingsRawForCurrentMonth.length) return;
+
+        return {
+          year: THIS_YEAR,
+          month: currentMonth,
+          total: spendingsRawForCurrentMonth.reduce((acc, cur) => cur.total + acc, 0),
+        };
+      })
+      .filter((item): item is TargetSpending => !!item);
+
     React.useEffect(() => {
       setValue('props', props);
     }, [props, setValue]);
@@ -275,10 +303,8 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
       exceptionProps,
     );
 
-    const isValidating = isValidatingDepartments || isValidatingCategories || isValidatingVendors;
-
-    const isValidPeriods = (periods: TargetPeriod[]) =>
-      periods.some((v: TargetPeriod) => !!v.amount && v.amount > 0);
+    const isValidatingOptions =
+      isValidatingDepartments || isValidatingCategories || isValidatingVendors;
 
     const hasNameError = !!errors.name;
     const hasPeriodsError = !!errors.periods;
@@ -286,7 +312,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
 
     return (
       <Modal open={open} onClose={onClose} center={false}>
-        <OverlayLoader loading={isValidating}>
+        <OverlayLoader loading={isValidatingOptions}>
           <Form methods={methods} onSubmit={isEdit ? handleSave : handleCreate}>
             <Form.Input
               name="props"
@@ -355,15 +381,22 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
               </div>
               {!!hasPeriodsError && renderNoMonthError()}
               <div className="h-[270px] px-10">
-                <MiniChartView
-                  target={{
-                    props,
-                    periods,
-                    spendings: target?.spendings ?? [],
-                    trackingStatus: target?.trackingStatus,
-                  }}
-                  overallTarget={isValidPeriods(periods) ? 1 : 0}
-                />
+                <OverlayLoader
+                  loading={!isValidatingOptions && isValidatingSpendings}
+                  className="h-full"
+                >
+                  <div className="h-full w-full rounded-lg">
+                    <MiniChartView
+                      target={{
+                        props,
+                        periods,
+                        spendings,
+                        trackingStatus: target?.trackingStatus,
+                      }}
+                      overallTarget={isValidPeriods(periods) ? 1 : 0}
+                    />
+                  </div>
+                </OverlayLoader>
               </div>
               <div className="flex flex-row pt-4 pb-6 px-10 space-x-4 items-center justify-end text-primary text-xs font-semibold">
                 <p className="">
