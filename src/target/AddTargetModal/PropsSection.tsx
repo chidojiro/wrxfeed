@@ -1,5 +1,6 @@
 import { Bank, CategoryIcon, IntersectIcon, TeamIcon } from '@/assets';
 import { Tag } from '@/common/components';
+import { EMPTY_ARRAY } from '@/common/constants';
 import { useCategories } from '@/feed/useCategories';
 import { useDepartments } from '@/team/useDepartments';
 import { useVendors } from '@/vendor/useVendors';
@@ -17,13 +18,18 @@ type PropsSectionProps = {
 export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: PropsSectionProps) => {
   const exceptionsDropdownRef = React.useRef<any>();
 
-  const { data: departments = [] } = useDepartments({
+  const { data: departments = EMPTY_ARRAY } = useDepartments({
+    limit: 0,
     includeSub: 1,
   });
 
-  const { data: vendors = [] } = useVendors();
+  const { data: vendors = EMPTY_ARRAY } = useVendors({
+    limit: 0,
+  });
 
-  const { data: categories = [] } = useCategories();
+  const { data: categories = EMPTY_ARRAY } = useCategories({
+    limit: 0,
+  });
 
   const vendorOptions = React.useMemo<PropertiesDropdownOption[]>(
     () =>

@@ -10,6 +10,7 @@ export type TagsSelectProviderValue<T = string> = {
   addTag: (value: T) => void;
   search: string;
   setSearch: (value: string) => void;
+  isOpen: boolean;
 };
 
 const [TagsSelectProvider, useTagsSelectContext] =

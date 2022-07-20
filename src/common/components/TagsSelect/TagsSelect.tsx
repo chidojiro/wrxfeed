@@ -54,6 +54,14 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
       [setValue],
     );
 
+    const popoverDisclosure = useDisclosure();
+
+    React.useEffect(() => {
+      if (!popoverDisclosure.isOpen) {
+        setSearch('');
+      }
+    }, [popoverDisclosure.isOpen]);
+
     const providerValue = React.useMemo<TagsSelectProviderValue<T>>(
       () => ({
         TagsSelectProps: props,
@@ -64,11 +72,10 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
         removeTag,
         search,
         setSearch,
+        isOpen: popoverDisclosure.isOpen,
       }),
-      [addTag, props, removeTag, search, setValue, value],
+      [addTag, popoverDisclosure.isOpen, props, removeTag, search, setValue, value],
     );
-
-    const popoverDisclosure = useDisclosure();
 
     React.useImperativeHandle(ref, () => ({ addTag, removeTag, open: popoverDisclosure.onOpen }), [
       addTag,
@@ -90,12 +97,6 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
       popoverDisclosure.onClose();
       onClose?.();
     };
-
-    React.useEffect(() => {
-      if (!popoverDisclosure.isOpen) {
-        setSearch('');
-      }
-    }, [popoverDisclosure.isOpen]);
 
     return (
       <TagsSelectProvider value={providerValue}>
