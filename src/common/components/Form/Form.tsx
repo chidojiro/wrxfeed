@@ -12,7 +12,7 @@ export type FormProps = HeadlessFormProps;
 
 export const Form = (props: FormProps) => <HeadlessFrom {...props} />;
 
-type FormField<T> = Omit<FieldProps, 'component'> & Omit<T, keyof FieldProps>;
+type FormField<T> = Omit<FieldProps, 'component'> & Omit<T, keyof FieldProps> & { name: string };
 
 const FormInput = (props: FormField<InputProps>) => <Field {...props} component={Input} />;
 

@@ -4,17 +4,17 @@ import { Routes } from '@/routing/routes';
 import React from 'react';
 import { Route, RouteProps, Redirect, useLocation } from 'react-router-dom';
 
-export interface ProtectedRouteProps extends RouteProps {
+export type ProtectedRouteProps = RouteProps & {
   loginUrl?: string;
   permissions?: string[];
-}
+};
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+const ProtectedRoute = ({
   path,
   component,
   loginUrl = Routes.Login.path as string,
   permissions = [],
-}) => {
+}: ProtectedRouteProps) => {
   const identity = useIdentity();
   const { roles } = usePermission();
   const location = useLocation();

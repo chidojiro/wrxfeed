@@ -24,8 +24,11 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = (props) => {
     [defaultHandler],
   );
 
+  // Workaround to fix type incompatibility
+  const ErrorBoundaryAsAny = ErrorBoundary as any;
+
   return (
-    <ErrorBoundary
+    <ErrorBoundaryAsAny
       FallbackComponent={ErrorFallback}
       onReset={refresh}
       resetKeys={[flag]}
@@ -34,7 +37,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = (props) => {
       <React.Suspense fallback={<LoadingFallback />}>
         <LoadableProfileForm {...props} />
       </React.Suspense>
-    </ErrorBoundary>
+    </ErrorBoundaryAsAny>
   );
 };
 

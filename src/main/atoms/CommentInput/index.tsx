@@ -1,30 +1,36 @@
-import React, {
-  forwardRef,
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 
+import MentionEntry from '@/main/atoms/MentionEntry';
+import Editor from '@draft-js-plugins/editor';
+import createLinkifyPlugin from '@draft-js-plugins/linkify';
+import createMentionPlugin, {
+  defaultSuggestionsFilter,
+  defaultTheme,
+  MentionData,
+} from '@draft-js-plugins/mention';
 import {
+  ContentBlock,
+  ContentState,
   convertToRaw,
   DraftHandleValue,
   EditorProps,
   EditorState,
   KeyBindingUtil,
+  Modifier,
   RichUtils,
+  SelectionState,
 } from 'draft-js';
-import Editor from '@draft-js-plugins/editor';
-import createMentionPlugin, {
-  defaultSuggestionsFilter,
-  MentionData,
-  defaultTheme,
-} from '@draft-js-plugins/mention';
-import createLinkifyPlugin from '@draft-js-plugins/linkify';
-import MentionEntry from '@/main/atoms/MentionEntry';
-import { useCombinedRefs } from '@/common/hooks/useCombinedRefs';
+import React, {
+  forwardRef,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 const { isSoftNewlineEvent } = KeyBindingUtil;
 
@@ -37,18 +43,114 @@ const linkifyPlugin = createLinkifyPlugin({
   },
 });
 
-interface CommentInputProps extends EditorProps {
-  onEnterPress?: () => void;
+export const getCurrentBlock = (editorState: EditorState) => {
+  if (editorState.getSelection) {
+    const selectionState = editorState.getSelection();
+    const contentState = editorState.getCurrentContent();
+    const block = contentState.getBlockForKey(selectionState.getStartKey());
+    return block;
+  }
+};
+
+export const findEntityRanges = (
+  type: string,
+  contentBlock: ContentBlock,
+  contentState: ContentState,
+) => {
+  const ranges: [number, number][] = [];
+
+  contentBlock.findEntityRanges(
+    (character) => {
+      const entityKey = character.getEntity();
+      return entityKey !== null && contentState.getEntity(entityKey).getType() === type;
+    },
+    (start, end) => ranges.push([start, end]),
+  );
+
+  return ranges;
+};
+
+export type ReplaceTextParams = {
+  editorState: EditorState;
+  entityType?: string;
+  start?: number;
+  end?: number;
+  newText: string;
+  data?: any;
+  mutability?: 'MUTABLE' | 'IMMUTABLE';
+};
+
+export const replaceText = (params: ReplaceTextParams) => {
+  const {
+    editorState,
+    entityType = '',
+    start: startParam,
+    end: endParam,
+    newText,
+    mutability = 'IMMUTABLE',
+    data,
+  } = params;
+
+  const start = startParam ?? editorState.getSelection().getStartOffset();
+  const end = endParam ?? editorState.getSelection().getEndOffset();
+
+  const currentBlock = getCurrentBlock(editorState);
+  if (!currentBlock) {
+    return editorState;
+  }
+  const blockKey = currentBlock.getKey();
+
+  const isWithEntity = entityType && mutability;
+
+  const contentState = editorState.getCurrentContent();
+  const modifiedContentState = isWithEntity
+    ? contentState.createEntity(entityType, mutability, data)
+    : contentState;
+  const entityKey = isWithEntity ? modifiedContentState.getLastCreatedEntityKey() : undefined;
+
+  const contentStateWithReplacedText = Modifier.replaceText(
+    modifiedContentState,
+    new SelectionState({
+      anchorKey: blockKey,
+      anchorOffset: start,
+      focusKey: blockKey,
+      focusOffset: end,
+      isBackward: false,
+      hasFocus: true,
+    }),
+    newText,
+    undefined,
+    entityKey,
+  );
+
+  const newEditorState = EditorState.set(editorState, {
+    currentContent: contentStateWithReplacedText,
+    selection: new SelectionState({
+      anchorKey: blockKey,
+      anchorOffset: start + newText.length,
+      focusKey: blockKey,
+      focusOffset: start + newText.length,
+      isBackward: false,
+      hasFocus: true,
+    }),
+  });
+
+  return newEditorState;
+};
+
+interface CommentInputProps extends Omit<EditorProps, 'editorState' | 'onChange'> {
+  onSubmit?: () => void;
   mentions?: MentionData[];
   autoFocus?: boolean;
+  value: EditorState;
+  onChange: (editorState: EditorState) => void;
 }
 
 const CommentInput: React.ForwardRefRenderFunction<Editor, CommentInputProps> = (
-  { onEnterPress, mentions, onChange, autoFocus, ...rest },
+  { onSubmit, mentions, onChange, autoFocus, value, ...rest },
   ref,
 ) => {
   const editorRef = useRef<Editor>(null);
-  const combinedRef = useCombinedRefs(ref, editorRef);
   const containerRef = useRef<HTMLDivElement>(null);
   const [openMention, setOpenMention] = useState(false);
   const [suggestions, setSuggestions] = useState(mentions || []);
@@ -82,18 +184,32 @@ const CommentInput: React.ForwardRefRenderFunction<Editor, CommentInputProps> = 
     };
   }, []);
 
+  const insertText = React.useCallback(
+    (text: string) => {
+      const newEditorState = replaceText({ editorState: value, newText: text });
+
+      onChange(newEditorState);
+    },
+    [value, onChange],
+  );
+
+  useImperativeHandle(ref, () => ({
+    ...(editorRef.current as any),
+    insertText,
+  }));
+
   useEffect(() => {
-    if (combinedRef?.current && autoFocus) {
+    if (editorRef?.current && autoFocus) {
       // Waiting for initializing mentions
-      setTimeout(() => combinedRef.current?.focus(), 200);
+      setTimeout(() => editorRef.current?.focus(), 200);
     }
-  }, [autoFocus, combinedRef]);
+  }, [autoFocus, editorRef]);
 
   const handleReturn = (event: KeyboardEvent): DraftHandleValue => {
     if (event.key === 'Enter' && !isSoftNewlineEvent(event)) {
       const isMentionOpen = openMention && suggestions.length > 0;
-      if (onEnterPress && !isMentionOpen) {
-        onEnterPress();
+      if (onSubmit && !isMentionOpen) {
+        onSubmit();
         return 'handled';
       }
     }
@@ -104,7 +220,7 @@ const CommentInput: React.ForwardRefRenderFunction<Editor, CommentInputProps> = 
     const newState = RichUtils.handleKeyCommand(editorState, command);
 
     if (newState) {
-      onChange(newState);
+      onChange?.(newState);
       return 'handled';
     }
 
@@ -129,22 +245,23 @@ const CommentInput: React.ForwardRefRenderFunction<Editor, CommentInputProps> = 
     const { entityMap } = convertToRaw(state.getCurrentContent());
     const mentionedData = Object.values(entityMap).map((entity) => entity.data[entity.type]) ?? [];
     setMentioned(mentionedData);
-    onChange(state);
+    onChange?.(state);
   };
 
   return (
     <div
       ref={containerRef}
       className="editor hide-scrollbar"
-      onClick={() => combinedRef.current?.focus()}
+      onClick={() => editorRef.current?.focus()}
       aria-hidden="true"
     >
       <Editor
-        ref={combinedRef}
+        ref={editorRef}
         handleReturn={handleReturn}
         handleKeyCommand={handleKeyCommand}
         editorKey="editor"
         plugins={plugins}
+        editorState={value}
         onChange={handleEditorChange}
         {...rest}
       ></Editor>

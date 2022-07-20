@@ -8,11 +8,8 @@ import React from 'react';
 // Please adjust the code if it's time to have more placements
 export type DrawerProps = Omit<HeadlessDrawerProps, 'placement'> & OpenClose;
 
-export const Drawer = React.forwardRef(
-  (
-    { children, open: openProp, onClose }: DrawerProps,
-    ref: React.ForwardedRef<HTMLDivElement | null>,
-  ) => {
+export const Drawer = React.forwardRef<any, DrawerProps>(
+  ({ children, open: openProp, onClose }, ref) => {
     const [delayableOpen, setDelayableOpen] = useDelayableState(200, openProp);
 
     React.useEffect(() => {

@@ -9,7 +9,7 @@ export default {
 } as Meta;
 
 const Template: Story = () => {
-  return <CommentBox onSubmit={() => undefined} />;
+  return <CommentBox />;
 };
 
 export const Default = Template.bind({});
