@@ -35,7 +35,7 @@ export const Popover = ({
 
   const isHTMLElementTrigger = !!(trigger as HTMLElement)?.tagName;
 
-  const { styles, attributes } = usePopper(
+  const { styles, attributes, forceUpdate } = usePopper(
     isHTMLElementTrigger ? (trigger as any) : triggerElement,
     popoverRef.current,
     {
@@ -61,6 +61,7 @@ export const Popover = ({
 
   React.useEffect(() => {
     setActuallyOpen(!!open, true);
+    forceUpdate?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trigger, open, setActuallyOpen, (trigger as HTMLElement)?.innerHTML]);
 

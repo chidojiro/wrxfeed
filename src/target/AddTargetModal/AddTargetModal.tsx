@@ -311,7 +311,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     const hasPropsError = !!errors.props;
 
     return (
-      <Modal open={open} onClose={onClose} center={false} contentClass="top-[450px]">
+      <Modal open={open} onClose={onClose} center={false}>
         <OverlayLoader loading={isValidatingOptions}>
           <Form methods={methods} onSubmit={isEdit ? handleSave : handleCreate}>
             <Form.Input
