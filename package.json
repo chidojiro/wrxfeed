@@ -36,6 +36,8 @@
     "@hookform/resolvers": "^2.8.1",
     "@microlink/react": "^5.5.7",
     "@popperjs/core": "^2.10.2",
+    "@react-hook/resize-observer": "^1.2.5",
+    "@react-hook/window-size": "^3.0.7",
     "@sentry/react": "^6.16.1",
     "@sentry/tracing": "^6.16.1",
     "@tailwindcss/line-clamp": "^0.3.0",
@@ -131,5 +133,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://dev-api.gravitylabs.co"
+  "proxy": "https://staging-api.gravitylabs.co"
 }

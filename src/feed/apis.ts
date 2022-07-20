@@ -1,3 +1,4 @@
+import { withDefaultPaginationParams } from './../rest/utils';
 import { Transaction } from './../main/entity/transaction.entity';
 import { Category, TransLineItem } from '@/main/entity';
 import { RestApis } from '@/rest/apis';
@@ -12,7 +13,7 @@ const getCategory = (id: number) =>
 
 const getCategories = async (params?: GetCategoriesParams) =>
   RestApis.get<Category[]>('/feed/categories', {
-    params,
+    params: withDefaultPaginationParams(params),
   }).then((res) => res.data);
 
 const updateCategory = async (payload?: Partial<Category>) =>

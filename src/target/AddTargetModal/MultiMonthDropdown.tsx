@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { cloneDeep } from 'lodash-es';
 import React, { forwardRef, ForwardRefRenderFunction, useEffect, useRef, useState } from 'react';
+import { useWindowSize } from '@react-hook/window-size';
 
 interface MultiMonthDropdownProps {
   className?: string;
@@ -70,6 +71,8 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
     targetMonthValues.reduce((total, target) => total + (target?.amount ?? 0), 0),
   );
   const applyEnableState = selectedMonths.length > 0 && !isLoadingData ? 'bg-primary' : 'bg-Gray-6';
+
+  const [, height] = useWindowSize();
 
   const popoverDisclosure = useDisclosure();
 
@@ -180,12 +183,16 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
     popoverDisclosure.onOpen();
   };
 
+  // Popover will be partially cropped
+  const HEIGHT_LIMIT = 950;
+  const isHeightRestricted = height < HEIGHT_LIMIT;
+
   return (
     <div className={clsx('flex-shrink-0 relative', className)} ref={useableViewRef}>
       <Popover
         open={popoverDisclosure.isOpen}
         onClose={popoverDisclosure.onClose}
-        placement="bottom-start"
+        placement={isHeightRestricted ? 'right-start' : 'bottom-start'}
         trigger={
           <button
             onClick={onClickOpenModal}
@@ -200,6 +207,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
         <div
           className={clsx(
             'flex w-[348px] h-[528px] flex-col absolute z-50 left-0 shadow-propertyDropdown border border-Gray-11 rounded-sm bg-white',
+            { 'transform -translate-y-1/4': isHeightRestricted },
             classPopover,
           )}
         >
