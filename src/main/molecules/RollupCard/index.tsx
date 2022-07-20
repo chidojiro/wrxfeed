@@ -295,11 +295,11 @@ const RollupCard: React.FC<RollupCardProps> = ({
                 </span>
               </h2>
               <h2 className="mr-7">
-                {`Last Month: ${decimalLogic(
-                  feedItem?.prevMonthSpend,
-                  DecimalType.SummedNumbers,
-                  '$',
-                )}`}
+                {`Last Month: ${
+                  feedItem?.prevMonthSpend === 0
+                    ? '--'
+                    : decimalLogic(feedItem?.prevMonthSpend, DecimalType.SummedNumbers, '$')
+                }`}
               </h2>
             </div>
           </div>
