@@ -35,7 +35,7 @@ export const Popover = ({
 
   const isHTMLElementTrigger = !!(trigger as HTMLElement)?.tagName;
 
-  const { styles, attributes } = usePopper(
+  const { styles, attributes, forceUpdate } = usePopper(
     isHTMLElementTrigger ? (trigger as any) : triggerElement,
     popoverRef.current,
     {
@@ -51,10 +51,6 @@ export const Popover = ({
     },
   );
 
-  React.useEffect(() => {
-    setActuallyOpen(!!open, true);
-  }, [trigger, open, setActuallyOpen]);
-
   const clonedTrigger = React.useMemo(() => {
     if (isHTMLElementTrigger || !trigger) return null;
 
@@ -62,6 +58,12 @@ export const Popover = ({
       ref: setTriggerElement,
     });
   }, [isHTMLElementTrigger, trigger]);
+
+  React.useEffect(() => {
+    setActuallyOpen(!!open, true);
+    forceUpdate?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trigger, open, setActuallyOpen, (trigger as HTMLElement)?.innerHTML]);
 
   useOnClickOutside(closeOnClickOutside && [popoverRef, triggerElement], onClose);
 
