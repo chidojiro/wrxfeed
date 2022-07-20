@@ -48,7 +48,7 @@ const Modal: React.FC<ModalProps> = ({
           className={clsx(
             'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
             'inline-block bg-white rounded-sm text-left shadow-xl transform transition-all',
-            'max-h-[95vh] overflow-auto',
+            'max-h-[95vh] lg:max-h-[75vh] overflow-auto',
             contentClass,
           )}
         >

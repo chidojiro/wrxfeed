@@ -8,6 +8,7 @@ import {
   TargetSummaries,
   UpdateTargetPayload,
 } from './types';
+import { getFullYearPeriods } from './utils';
 
 const getList = ({
   forYou = 0,
@@ -29,18 +30,10 @@ const update = (id: number, payload: UpdateTargetPayload) =>
 const _delete = (id: number) => RestApis.delete(`/target/targets/${id}`).then(({ data }) => data);
 
 const getSpending = (params: GetTargetSpendingParams): Promise<TargetSpending[]> => {
-  const periods = params.periods
-    .filter(({ amount }) => !!amount)
-    .map(({ amount, month, threshold, year }) => ({
-      amount,
-      month,
-      threshold: threshold ?? 0,
-      year: year ?? new Date().getFullYear(),
-    }));
-
-  return RestApis.patch<TargetSpending[]>('/target/spending', { ...params, periods }).then(
-    ({ data }) => data,
-  );
+  return RestApis.patch<TargetSpending[]>('/target/spending', {
+    ...params,
+    periods: getFullYearPeriods(params.periods),
+  }).then(({ data }) => data);
 };
 
 const getSummaries = () =>
