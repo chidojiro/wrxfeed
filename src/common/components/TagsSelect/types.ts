@@ -10,6 +10,7 @@ export type TagsSelectProps<T = string> = ClassName &
     placeholder: React.ReactNode;
     trigger?: React.ReactNode;
     ref?: any;
+    name?: string;
   };
 
 export type Option<T = string> = {

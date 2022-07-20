@@ -1,9 +1,10 @@
 import React from 'react';
+import { RouteProps } from 'react-router-dom';
 
-export type RouteItem<T = any> = {
+export type RouteItem = {
   path: string | readonly string[];
-  component: T;
+  component: RouteProps['component'];
   permissions?: string[];
 };
 
-export type Route = Record<string, RouteItem<React.ComponentType<any>>>;
+export type Route = Record<string, RouteItem>;

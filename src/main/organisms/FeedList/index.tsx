@@ -177,14 +177,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
   );
 
   return (
-    <InfiniteScroller
-      className="pb-4 sm:pb-12 mr-0.5"
-      style={style}
-      threshold={500}
-      onLoadMore={handleLoadMore}
-      isLoading={isLoading}
-      LoadingComponent={<ListLoading />}
-    >
+    <>
       <LineItemDrawer
         open={isLineItemDrawerOpen}
         onClose={closeLineItemDrawer}
@@ -192,7 +185,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
         feedId={feedId}
       />
       <ul className="pb-2 sm:pb-5 space-y-4">
-        {feeds.map((feed) => {
+        {feeds.slice(0, 1).map((feed) => {
           if (feed.type === FeedItemType.target) {
             return <TargetFeedCard key={feed.id} feedItem={feed} />;
           }
@@ -214,7 +207,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       </ul>
       {!isLoading && !feeds.length && renderEmptyList}
       {!isLoading && feeds.length > 0 && !hasMore && renderEndComponent}
-    </InfiniteScroller>
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDom from 'react-dom';
 import { v4 as UUID } from 'uuid';
 import { AssertUtils, StringUtils } from '../utils';
 
@@ -91,8 +91,7 @@ export const useOverlay = ({ active, asChildOf: asChildOfProp, component }: UseO
 
       parentElement.appendChild(overlayingSpinnerContainer);
 
-      const root = createRoot(overlayingSpinnerContainer);
-      root.render(<>{component}</>);
+      ReactDom.render(<>{component}</>, overlayingSpinnerContainer);
     } else {
       unregisterSpinnerId();
     }
