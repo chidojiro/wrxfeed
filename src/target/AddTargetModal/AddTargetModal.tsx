@@ -74,7 +74,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
       watch,
       setValue,
       reset,
-      formState: { errors },
+      formState: { errors, isSubmitting },
       clearErrors,
     } = methods;
 
@@ -170,7 +170,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
       setValue('props', props);
     }, [props, setValue]);
 
-    const { isLoading: isCreating, handle: createTarget } = useHandler(
+    const { handle: createTarget } = useHandler(
       (payload: CreateTargetPayload) => TargetApis.create(payload),
       {
         onSuccess: (data) => {
@@ -181,7 +181,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
       },
     );
 
-    const { isLoading: isUpdating, handle: updateTarget } = useHandler(
+    const { handle: updateTarget } = useHandler(
       (id: number, payload: UpdateTargetPayload) => TargetApis.update(id, payload),
       {
         onSuccess: (data) => {
@@ -224,7 +224,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     };
 
     const renderIconNextOrLoading = () => {
-      if (isCreating || isUpdating)
+      if (isSubmitting)
         return <Loading width={12} height={12} color="white" className="w-4 h-4 ml-2" />;
 
       return (
