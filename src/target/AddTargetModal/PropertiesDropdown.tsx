@@ -81,7 +81,7 @@ export const PropertiesDropdown = React.forwardRef(
         )}
         <div
           className={clsx('invisible-scrollbar flex-1 overflow-auto', {
-            'min-h-[200px]': !showOptionsOnEmptySearch,
+            'min-h-[150px]': !showOptionsOnEmptySearch,
           })}
         >
           <div className={clsx({ hidden: !showOptionsOnEmptySearch && !search })}>

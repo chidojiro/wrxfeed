@@ -16,7 +16,7 @@ type TagsSelectOptionsProps = ClassName & {
 };
 
 export const TagsSelectOptions = ({ className, options }: TagsSelectOptionsProps) => {
-  const { value, addTag, search, registerOptions } = useTagsSelectContext();
+  const { value, addTag, search, registerOptions, isOpen } = useTagsSelectContext();
 
   const filteredOptions = search
     ? options.filter(
@@ -29,6 +29,8 @@ export const TagsSelectOptions = ({ className, options }: TagsSelectOptionsProps
     registerOptions(options ?? []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options, registerOptions]);
+
+  if (!isOpen) return null;
 
   return (
     <div

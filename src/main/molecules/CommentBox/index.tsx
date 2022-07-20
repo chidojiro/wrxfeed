@@ -8,10 +8,10 @@ import SendButton from '@/main/atoms/SendButton';
 import { CommentFormModel } from '@/main/types';
 import { MentionData } from '@draft-js-plugins/mention';
 import clsx from 'clsx';
-import { EditorState, Modifier } from 'draft-js';
+import { ContentState, EditorState } from 'draft-js';
 import { EmojiData } from 'emoji-mart';
 import React, { FocusEventHandler, useCallback, useEffect, useRef, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler } from 'react-hook-form';
 
 export interface CommentFormProps {
   id?: string;
@@ -42,13 +42,11 @@ const CommentBox: React.FC<CommentFormProps> = ({
   showSend = true,
   showEmoji = true,
   placeholder = '💬 Add a comment',
-  style = {},
   alwaysFocus = false,
   onAttachFile,
   onChange,
   mentionData,
 }) => {
-  const defaultState = defaultContent ?? EditorState.createEmpty();
   const [editorState, setEditorState] = React.useState(defaultContent ?? EditorState.createEmpty());
 
   const handleEditorStateChange = (editorState: EditorState) => {
@@ -60,7 +58,15 @@ const CommentBox: React.FC<CommentFormProps> = ({
   const inputRef = useRef<any>(null);
 
   const reset = () => {
-    setEditorState(defaultState);
+    setEditorState((prev) => {
+      const emptyEditorState = EditorState.push(
+        prev,
+        ContentState.createFromText(''),
+        'insert-characters',
+      );
+
+      return EditorState.moveFocusToEnd(emptyEditorState);
+    });
   };
 
   const handleSubmit = () => {
