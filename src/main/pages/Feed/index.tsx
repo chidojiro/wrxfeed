@@ -166,7 +166,7 @@ const FeedPage: React.FC = () => {
         <LineItemDrawer
           open={isLineItemDrawerOpen}
           onClose={closeLineItemDrawer}
-          lineItem={selectedLineItem!}
+          lineItem={selectedLineItem}
           feedId={feedIdDetailView}
         />
       </div>
