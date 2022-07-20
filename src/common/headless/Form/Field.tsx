@@ -13,7 +13,7 @@ export type FieldProps<T = any> = {
   valueAs?: (value: any) => any;
   changeAs?: (value: any) => any;
   ref?: any;
-};
+} & T;
 
 type FieldComponent = <T>(props: FieldProps<T>) => JSX.Element;
 
@@ -34,7 +34,7 @@ export const Field: FieldComponent = React.forwardRef(
     }: FieldProps<T>,
     ref: any,
   ) => {
-    const Component = component;
+    const Component = component as any;
 
     const {
       formState: { errors },

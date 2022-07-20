@@ -290,7 +290,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
           <Form methods={methods} onSubmit={isEdit ? handleSave : handleCreate}>
             <Form.Input
               name="props"
-              rules={{ validate: { required: (value) => !!value.length } }}
+              rules={{ validate: { required: (value: TargetProps[]) => !!value.length } }}
               readOnly
               className="w-0 h-0 overflow-hidden"
             />

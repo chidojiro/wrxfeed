@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState, useCallback, FocusEventHandler } from 'react';
 import { ReactComponent as AttachIcon } from '@/assets/icons/outline/attach.svg';
 import { ReactComponent as SmileIcon } from '@/assets/icons/outline/mood-smile.svg';
 import UploadButton from '@/common/atoms/UploadButton';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { CommentFormModel } from '@/main/types';
 import EmojiPicker from '@/common/molecules/EmojiPicker';
+import { UPLOAD_FILE_ACCEPT } from '@/config';
 import CommentInput from '@/main/atoms/CommentInput';
 import SendButton from '@/main/atoms/SendButton';
-import { EmojiData } from 'emoji-mart';
-import { EditorState, Modifier } from 'draft-js';
+import { CommentFormModel } from '@/main/types';
 import { MentionData } from '@draft-js-plugins/mention';
 import clsx from 'clsx';
-import { UPLOAD_FILE_ACCEPT } from '@/config';
+import { EditorState, Modifier } from 'draft-js';
+import { EmojiData } from 'emoji-mart';
+import React, { FocusEventHandler, useCallback, useEffect, useRef, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 export interface CommentFormProps {
   id?: string;
@@ -48,61 +48,37 @@ const CommentBox: React.FC<CommentFormProps> = ({
   onChange,
   mentionData,
 }) => {
+  const defaultState = defaultContent ?? EditorState.createEmpty();
+  const [editorState, setEditorState] = React.useState(defaultContent ?? EditorState.createEmpty());
+
+  const handleEditorStateChange = (editorState: EditorState) => {
+    setEditorState(editorState);
+    onChange?.(editorState);
+  };
+
   const emojiRef = useRef<HTMLButtonElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const {
-    control,
-    handleSubmit,
-    reset,
-    setValue,
-    getValues,
-    setFocus,
-    watch,
-    formState: { isSubmitted },
-  } = useForm<CommentFormModel>({
-    defaultValues: {
-      content: defaultContent ?? EditorState.createEmpty(),
-    },
-  });
-  const watchContent = watch('content', EditorState.createEmpty());
+  const inputRef = useRef<any>(null);
+
+  const reset = () => {
+    setEditorState(defaultState);
+  };
+
+  const handleSubmit = () => {
+    onSubmit?.({ content: editorState });
+    reset();
+  };
+
   const [focused, setFocused] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [isEmojiHovering, setEmojiHovering] = useState(false);
   // useCallback functions
-  const onSelectEmoji = useCallback(
-    (emoji: EmojiData) => {
-      if ('native' in emoji) {
-        const values = getValues();
-        const currentEditorState = values.content as EditorState;
-        const currentContent = currentEditorState.getCurrentContent();
-        const selection = currentEditorState.getSelection();
-        const nextContent = Modifier.insertText(currentContent, selection, emoji.native);
-        const nextEditorState = EditorState.push(
-          currentEditorState,
-          nextContent,
-          'insert-characters',
-        );
-        setValue('content', nextEditorState);
-      }
-      // Turn off emoji picker after picked
-      EmojiPicker.close();
-    },
-    [getValues, setValue],
-  );
-
-  useEffect(() => {
-    if (isSubmitted) {
-      reset();
-      // Waiting for reset form is completed. Seem like it's async
-      setTimeout(() => setFocus('content'));
+  const onSelectEmoji = useCallback((emoji: EmojiData) => {
+    if ('native' in emoji) {
+      (inputRef.current as any).insertText(emoji.native);
     }
-  }, [isSubmitted, reset, setFocus]);
-
-  useEffect(() => {
-    if (onChange) {
-      onChange(watchContent);
-    }
-  }, [onChange, watchContent]);
+    // Turn off emoji picker after picked
+    EmojiPicker.close();
+  }, []);
 
   useEffect(() => {
     if (!(focused || hovered || isEmojiHovering)) {
@@ -138,37 +114,26 @@ const CommentBox: React.FC<CommentFormProps> = ({
   };
 
   return (
-    <form
-      id={`form-${id}`}
-      onSubmit={onSubmit && handleSubmit(onSubmit)}
-      style={{ ...style }}
-      ref={formRef}
-    >
+    <div>
       <div
         className={clsx(
           focused || alwaysFocus ? 'border-purple-5 bg-white' : ' border-Gray-11',
-          'group flex flex-grow min-w-[70%] items-end border transition-all rounded-[1px] py-1.5 pl-2 pr-1.5',
+          'relative group flex flex-grow min-w-[70%] items-end border transition-all rounded-[1px] py-1.5 pl-2 pr-1.5',
           className ?? '',
         )}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <Controller
-          name="content"
-          control={control}
-          render={({ field }) => (
-            <CommentInput
-              ref={field.ref}
-              autoFocus={alwaysFocus}
-              onChange={field.onChange}
-              editorState={field.value as EditorState}
-              onFocus={onFocusCommentInput}
-              onBlur={() => setFocused(false)}
-              onEnterPress={onSubmit && handleSubmit(onSubmit)}
-              placeholder={placeholder}
-              mentions={mentionData}
-            />
-          )}
+        <CommentInput
+          ref={inputRef}
+          autoFocus={alwaysFocus}
+          value={editorState}
+          onChange={handleEditorStateChange}
+          onFocus={onFocusCommentInput}
+          onBlur={() => setFocused(false)}
+          placeholder={placeholder}
+          mentions={mentionData}
+          onSubmit={handleSubmit}
         />
         <div
           style={{ transform: focused || hovered || isEmojiHovering ? 'scaleX(1)' : 'scaleX(0)' }}
@@ -212,13 +177,13 @@ const CommentBox: React.FC<CommentFormProps> = ({
               <hr className="divider divider-vertical h-5" />
               <SendButton
                 className="w-5 h-5"
-                disabled={!watchContent.getCurrentContent().hasText()}
+                disabled={!editorState.getCurrentContent().hasText()}
               />
             </>
           )}
         </div>
       </div>
-    </form>
+    </div>
   );
 };
 

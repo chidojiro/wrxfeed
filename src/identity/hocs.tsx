@@ -4,7 +4,7 @@ import { HOC } from '../common/types';
 import { useIdentity } from './hooks';
 
 export default function withAuth<T>(loginUrl = '/login'): HOC<T> {
-  const hoc: HOC<T> = (Component) => {
+  const hoc: HOC<T> = (Component: any) => {
     const WithAuth: React.ComponentType<T> = (props) => {
       const identity = useIdentity();
       const location = useLocation();
