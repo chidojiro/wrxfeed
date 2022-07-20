@@ -67,6 +67,7 @@ export const PropertiesDropdown = React.forwardRef(
         placeholder={placeholder}
         onChange={onChange}
         placement={placement}
+        onClose={() => setSearch('')}
       >
         <TagsSelect.Search
           placeholder={searchPlaceholder}
