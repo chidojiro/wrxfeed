@@ -51,10 +51,6 @@ export const Popover = ({
     },
   );
 
-  React.useEffect(() => {
-    setActuallyOpen(!!open, true);
-  }, [trigger, open, setActuallyOpen]);
-
   const clonedTrigger = React.useMemo(() => {
     if (isHTMLElementTrigger || !trigger) return null;
 
@@ -62,6 +58,11 @@ export const Popover = ({
       ref: setTriggerElement,
     });
   }, [isHTMLElementTrigger, trigger]);
+
+  React.useEffect(() => {
+    setActuallyOpen(!!open, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trigger, open, setActuallyOpen, (trigger as HTMLElement)?.innerHTML]);
 
   useOnClickOutside(closeOnClickOutside && [popoverRef, triggerElement], onClose);
 
