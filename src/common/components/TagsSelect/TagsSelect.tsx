@@ -1,8 +1,8 @@
-import { useControllable, useDebounce } from '@/common/hooks';
+import { useControllable } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
-import { uniq, uniqBy } from 'lodash-es';
+import { uniq } from 'lodash-es';
 import React from 'react';
 import { Popover } from '../Popover';
 import { SelectedTags } from './SelectedTags';
@@ -28,6 +28,7 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
       placeholder,
       trigger,
       className,
+      onClose,
     } = props;
 
     const [value, setValue] = useControllable({
@@ -85,6 +86,11 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
       );
     };
 
+    const handleClose = () => {
+      popoverDisclosure.onClose();
+      onClose?.();
+    };
+
     React.useEffect(() => {
       if (!popoverDisclosure.isOpen) {
         setSearch('');
@@ -108,7 +114,7 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
             </button>
           }
           open={popoverDisclosure.isOpen}
-          onClose={popoverDisclosure.onClose}
+          onClose={handleClose}
         >
           <div
             className={clsx(
