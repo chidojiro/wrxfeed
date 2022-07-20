@@ -16,6 +16,7 @@ import {
   Target,
   TargetPeriod,
   TargetProps,
+  TargetSpending,
   TargetTypeProp,
   UpdateTargetPayload,
 } from '@/target/types';
@@ -169,10 +170,29 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     const isValidPeriods = (periods: TargetPeriod[]) =>
       periods.some((v: TargetPeriod) => !!v.amount && v.amount > 0);
 
-    const { isValidating: isValidatingSpendings, data: spendings = EMPTY_ARRAY } = useFetcher(
+    const { isValidating: isValidatingSpendings, data: spendingsRaw = EMPTY_ARRAY } = useFetcher(
       !!props.length && isValidPeriods(periods) && ['targetSpending', props],
       () => TargetApis.getSpending({ props, periods }),
     );
+
+    const spendings = new Array(12)
+      .fill(null)
+      .map((_, index) => {
+        const currentMonth = index + 1;
+
+        const spendingsRawForCurrentMonth = spendingsRaw.filter(
+          ({ month }) => month === currentMonth,
+        );
+
+        if (!spendingsRawForCurrentMonth.length) return;
+
+        return {
+          year: THIS_YEAR,
+          month: currentMonth,
+          total: spendingsRawForCurrentMonth.reduce((acc, cur) => cur.total + acc, 0),
+        };
+      })
+      .filter((item): item is TargetSpending => !!item);
 
     React.useEffect(() => {
       setValue('props', props);
