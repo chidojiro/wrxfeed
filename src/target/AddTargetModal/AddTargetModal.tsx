@@ -5,7 +5,7 @@ import { ReactComponent as CarbonTrashCan } from '@/assets/icons/outline/carbon-
 import Loading from '@/common/atoms/Loading';
 import Modal from '@/common/atoms/Modal';
 import { Form, OverlayLoader } from '@/common/components';
-import { defaultTargetMonths } from '@/common/constants';
+import { defaultTargetMonths, EMPTY_ARRAY } from '@/common/constants';
 import { withMountOnOpen } from '@/common/hocs/withMountOnOpen';
 import { useHandler } from '@/common/hooks';
 import { formatCurrency, round } from '@/common/utils';
@@ -78,9 +78,10 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
       clearErrors,
     } = methods;
 
-    const { isValidating: isValidatingDepartments, data: departments = [] } = useDepartments({
-      includeSub: 1,
-    });
+    const { isValidating: isValidatingDepartments, data: departments = EMPTY_ARRAY } =
+      useDepartments({
+        includeSub: 1,
+      });
 
     const { isValidating: isValidatingVendors } = useVendors();
 
@@ -160,7 +161,6 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     const exceptionProps = selectedExceptions.map(
       (value) => ({ ...getPropFromTagValue(value), exclude: true } as TargetProps),
     );
-
     const props = React.useMemo(
       () => [vendorProps, categoryProps, departmentProps, exceptionProps].flat(),
       [categoryProps, departmentProps, exceptionProps, vendorProps],
@@ -285,7 +285,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     const hasPropsError = !!errors.props;
 
     return (
-      <Modal open={open} onClose={onClose} center={false} contentClass="sm:my-24 overflow-visible">
+      <Modal open={open} onClose={onClose} center={false}>
         <OverlayLoader loading={isValidating}>
           <Form methods={methods} onSubmit={isEdit ? handleSave : handleCreate}>
             <Form.Input

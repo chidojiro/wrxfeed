@@ -1,4 +1,4 @@
-import { useOnClickOutside } from '@/common/hooks';
+import { useDelayableState, useOnClickOutside } from '@/common/hooks';
 import { Children, OpenClose } from '@/common/types';
 import clsx from 'clsx';
 import React, { useState } from 'react';
@@ -30,9 +30,12 @@ export const Popover = ({
   const [triggerElement, setTriggerElement] = useState(null);
   const popoverRef = React.useRef(null);
 
+  // Workaround to resolve misalignment on initial render
+  const [actuallyOpen, setActuallyOpen] = useDelayableState(0, false);
+
   const isHTMLElementTrigger = !!(trigger as HTMLElement)?.tagName;
 
-  const { styles, attributes, forceUpdate } = usePopper(
+  const { styles, attributes } = usePopper(
     isHTMLElementTrigger ? (trigger as any) : triggerElement,
     popoverRef.current,
     {
@@ -49,11 +52,8 @@ export const Popover = ({
   );
 
   React.useEffect(() => {
-    if (open) {
-      forceUpdate?.();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trigger, forceUpdate, (trigger as HTMLElement)?.innerHTML, open]);
+    setActuallyOpen(!!open, true);
+  }, [trigger, open, setActuallyOpen]);
 
   const clonedTrigger = React.useMemo(() => {
     if (isHTMLElementTrigger || !trigger) return null;
@@ -70,7 +70,7 @@ export const Popover = ({
       {clonedTrigger}
       <ConditionalWrapper if={{ condition: usePortal, component: Portal as any }}>
         <div ref={popoverRef} style={styles.popper} {...attributes.popper} className="z-50">
-          <div className={clsx({ hidden: !open })}>{children}</div>
+          <div className={clsx({ hidden: !actuallyOpen })}>{children}</div>
         </div>
       </ConditionalWrapper>
     </>

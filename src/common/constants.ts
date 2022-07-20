@@ -93,3 +93,7 @@ export const INITIAL_CHART_DATA: LineChartData = {
 export const ENABLE_GET_FEED_COUNT = false;
 
 export const EMPTY_AMOUNT = '--';
+
+// Needed as fallback value in cases it's a dependency of a hook
+// The intention is to prevent unnecessary rerenders, or even infinite rerenders
+export const EMPTY_ARRAY = [];
