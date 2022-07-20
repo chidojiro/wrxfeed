@@ -24,8 +24,8 @@ export const useHandler = <T = void>(
   const errorHandler = useErrorHandler();
 
   const handle = React.useCallback((...params: unknown[]) => {
+    argsRef.current = params ?? [];
     setRefreshToken(Math.random());
-    argsRef.current = params;
 
     dataPromiseRef.current = new Promise((res) => {
       dataResolveRef.current = res;
@@ -51,7 +51,7 @@ export const useHandler = <T = void>(
   const args = argsRef.current;
 
   const { data, error, isValidating } = useSwr(
-    args && [args, refreshToken],
+    !!args && [args, refreshToken],
     async (args) => {
       const res = await callback(...(args as unknown[]));
 
