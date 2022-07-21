@@ -11,7 +11,6 @@ import { useCategory } from '@/main/hooks/category.hook';
 import CategoryList from '@/main/organisms/CategoryList';
 import FeedList from '@/main/organisms/FeedList';
 import { scrollToTop } from '@/main/utils';
-import { PaginationParams } from '@/rest/types';
 import { Vendor } from '@/vendor/types';
 import * as Sentry from '@sentry/react';
 import React from 'react';
@@ -42,7 +41,7 @@ const CategoriesPage: React.FC = () => {
 
   useFetcher(
     catId && !isNaN(+catId) && ['category', catId],
-    () => FeedApis.getCategory(parseInt(catId ?? '0', 10)),
+    () => FeedApis.getCategory(parseInt(`${catId}`, 10)),
     {
       onSuccess: setCategory,
     },
