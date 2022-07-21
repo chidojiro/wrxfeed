@@ -280,7 +280,6 @@ export const getTargetMonthsLineChartData = (
       dataKey: 'thisYear',
       strokeWidth: 3,
       stroke: overallTarget !== 0 ? dotStatusColor : Accent6,
-      // stroke: dotStatusColor,
       dot: false,
       fill: overallTarget !== 0 ? backgroundStatusColor : Accent6,
     },
