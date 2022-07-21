@@ -8,7 +8,7 @@ import { Form, OverlayLoader } from '@/common/components';
 import { defaultTargetMonths, EMPTY_ARRAY } from '@/common/constants';
 import { withMountOnOpen } from '@/common/hocs/withMountOnOpen';
 import { useFetcher, useHandler } from '@/common/hooks';
-import { formatCurrency, round } from '@/common/utils';
+import { AssertUtils, formatCurrency, round } from '@/common/utils';
 import { useCategories } from '@/feed/useCategories';
 import { genReviewSentenceFromProperties, getPeriodsFromTargetMonths } from '@/main/utils';
 import {
@@ -168,7 +168,7 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
     );
 
     const isValidPeriods = (periods: TargetPeriod[]) =>
-      periods.some((v: TargetPeriod) => !!v.amount && v.amount > 0);
+      periods.some((v: TargetPeriod) => !AssertUtils.isNullOrUndefined(v.amount));
 
     const { isValidating: isValidatingSpendings, data: spendingsRaw = EMPTY_ARRAY } = useFetcher(
       !!props.length && isValidPeriods(periods) && ['targetSpending', props],
@@ -285,7 +285,9 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
         ?.filter(({ year }) => year === THIS_YEAR)
         .reduce((total, target) => total + (target.total ?? 0), 0) ?? 0;
 
-    const isReadyToCreate = !!periods.length && !!props.length && !!name?.length;
+    console.log(periods);
+
+    const isReadyToCreate = isValidPeriods(periods) && !!props.length && !!name?.length;
 
     const renderNoMonthError = () => {
       return (
