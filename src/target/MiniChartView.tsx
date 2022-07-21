@@ -186,10 +186,6 @@ export const MiniChartView = <
     return null;
   };
 
-  React.useEffect(() => {
-    console.log('chartData: ' + JSON.stringify(chartData));
-  }, [chartData]);
-
   return (
     <div className={clsx('flex flex-1 flex-col w-full h-full', className)}>
       {chartData && (

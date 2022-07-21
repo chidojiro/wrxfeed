@@ -252,6 +252,7 @@ export const getTargetMonthsLineChartData = (
     dotStatusColor = dot;
     backgroundStatusColor = background;
   }
+
   const lines: ChartLineProps[] = [
     {
       name: 'target',
@@ -279,6 +280,7 @@ export const getTargetMonthsLineChartData = (
       dataKey: 'thisYear',
       strokeWidth: 3,
       stroke: overallTarget !== 0 ? dotStatusColor : Accent6,
+      // stroke: dotStatusColor,
       dot: false,
       fill: overallTarget !== 0 ? backgroundStatusColor : Accent6,
     },

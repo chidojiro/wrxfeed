@@ -172,7 +172,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       className="pb-4 sm:pb-12 mr-0.5"
       style={style}
       threshold={500}
-      onLoadMore={handleLoadMore}
+      // onLoadMore={handleLoadMore}
       isLoading={isLoading}
       LoadingComponent={<ListLoading />}
     >
