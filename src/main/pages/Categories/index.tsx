@@ -11,7 +11,6 @@ import { useCategory } from '@/main/hooks/category.hook';
 import CategoryList from '@/main/organisms/CategoryList';
 import FeedList from '@/main/organisms/FeedList';
 import { scrollToTop } from '@/main/utils';
-import { PaginationParams } from '@/rest/types';
 import { Vendor } from '@/vendor/types';
 import * as Sentry from '@sentry/react';
 import React from 'react';
@@ -40,13 +39,10 @@ const CategoriesPage: React.FC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  useFetcher(
-    catId && !isNaN(+catId) && ['category', catId],
-    () => FeedApis.getCategory(parseInt(catId ?? '0', 10)),
-    {
-      onSuccess: setCategory,
-    },
-  );
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  useFetcher(catId && !isNaN(+catId) && ['category', catId], () => FeedApis.getCategory(+catId!), {
+    onSuccess: setCategory,
+  });
 
   const handleCategorySelect = (value?: Category): void => {
     setCategory(value);

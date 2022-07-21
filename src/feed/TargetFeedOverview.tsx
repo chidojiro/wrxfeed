@@ -64,7 +64,7 @@ export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({ classNam
           </div>
         </div>
         <div className="p-2 rounded-card h-[240px]">
-          <MiniChartView target={target} />
+          <MiniChartView target={target} overallTarget={overallTarget} />
         </div>
       </div>
     </div>

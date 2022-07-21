@@ -17,6 +17,8 @@ import { useErrorHandler } from 'react-error-boundary';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Vendor } from '@/vendor/types';
+import { LineItemDrawer } from '@/feed/LineItemDrawer';
+import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 
 const FeedPage: React.FC = () => {
   const history = useHistory();
@@ -28,6 +30,13 @@ const FeedPage: React.FC = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const errorHandler = useErrorHandler();
   const route = query.get('route');
+
+  const {
+    isLineItemDrawerOpen,
+    selectedLineItem,
+    closeLineItemDrawer,
+    feedId: feedIdDetailView,
+  } = useLineItemDrawer();
 
   const getFeedItem = async (id: number) => {
     try {
@@ -154,6 +163,12 @@ const FeedPage: React.FC = () => {
             onBack={onBackToDashboard}
           />
         )}
+        <LineItemDrawer
+          open={isLineItemDrawerOpen}
+          onClose={closeLineItemDrawer}
+          lineItem={selectedLineItem}
+          feedId={feedIdDetailView}
+        />
       </div>
     );
   };
