@@ -26,6 +26,7 @@ import {
   decimalLogic,
   DecimalType,
   getColorByText,
+  getDisplayUsdAmount,
   getTotalFeedItem,
 } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
@@ -295,11 +296,7 @@ const RollupCard: React.FC<RollupCardProps> = ({
                 </span>
               </h2>
               <h2 className="mr-7">
-                {`Last Month: ${
-                  feedItem?.prevMonthSpend === 0
-                    ? '--'
-                    : decimalLogic(feedItem?.prevMonthSpend, DecimalType.SummedNumbers, '$')
-                }`}
+                {`Last Month: ${getDisplayUsdAmount(feedItem?.prevMonthSpend)}`}
               </h2>
             </div>
           </div>
