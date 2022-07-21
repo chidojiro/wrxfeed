@@ -9,7 +9,6 @@ import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { TargetChart } from './TargetChart';
 import { Target, TargetPeriod } from './types';
-import React from 'react';
 
 interface MiniChartViewProps<T extends Pick<Target, 'props' | 'periods' | 'trackingStatus'>> {
   className?: string;
