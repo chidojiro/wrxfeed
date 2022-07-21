@@ -9,6 +9,7 @@ import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { TargetChart } from './TargetChart';
 import { Target, TargetPeriod } from './types';
+import React from 'react';
 
 interface MiniChartViewProps<T extends Pick<Target, 'props' | 'periods' | 'trackingStatus'>> {
   className?: string;
@@ -184,6 +185,10 @@ export const MiniChartView = <
     }
     return null;
   };
+
+  React.useEffect(() => {
+    console.log('chartData: ' + JSON.stringify(chartData));
+  }, [chartData]);
 
   return (
     <div className={clsx('flex flex-1 flex-col w-full h-full', className)}>
