@@ -252,6 +252,7 @@ export const getTargetMonthsLineChartData = (
     dotStatusColor = dot;
     backgroundStatusColor = background;
   }
+
   const lines: ChartLineProps[] = [
     {
       name: 'target',

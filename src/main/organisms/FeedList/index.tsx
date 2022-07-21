@@ -54,16 +54,7 @@ const INIT_FEED_FILTER = Object.freeze({
 });
 
 const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
-  {
-    style,
-    hasEmptyStateComponent,
-    hasEndComponent,
-    onFilter,
-    depId,
-    forYou = 0,
-    categoryId,
-    vendorId,
-  },
+  { style, hasEmptyStateComponent, hasEndComponent, onFilter, depId, forYou, categoryId, vendorId },
   ref,
 ) => {
   const { isLineItemDrawerOpen, selectedLineItem, closeLineItemDrawer, feedId } =
@@ -92,9 +83,9 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     cleanData();
     setFeedFilters({
       ...INIT_FEED_FILTER,
-      ...(depId !== undefined ? { department: depId } : {}),
-      ...(categoryId !== undefined ? { category: categoryId } : {}),
-      ...(vendorId !== undefined ? { vendor: vendorId } : {}),
+      ...(depId !== undefined ? { departmentId: depId } : {}),
+      ...(categoryId !== undefined ? { categoryId } : {}),
+      ...(vendorId !== undefined ? { vendorId } : {}),
     });
   }, [depId, categoryId, vendorId]);
 
@@ -188,7 +179,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       <LineItemDrawer
         open={isLineItemDrawerOpen}
         onClose={closeLineItemDrawer}
-        lineItem={selectedLineItem!}
+        lineItem={selectedLineItem}
         feedId={feedId}
       />
       <ul className="pb-2 sm:pb-5 space-y-4">
