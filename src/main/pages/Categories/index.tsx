@@ -39,13 +39,10 @@ const CategoriesPage: React.FC = () => {
     }));
   }, [hasMore, isLoading]);
 
-  useFetcher(
-    catId && !isNaN(+catId) && ['category', catId],
-    () => FeedApis.getCategory(parseInt(`${catId}`, 10)),
-    {
-      onSuccess: setCategory,
-    },
-  );
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  useFetcher(catId && !isNaN(+catId) && ['category', catId], () => FeedApis.getCategory(+catId!), {
+    onSuccess: setCategory,
+  });
 
   const handleCategorySelect = (value?: Category): void => {
     setCategory(value);
