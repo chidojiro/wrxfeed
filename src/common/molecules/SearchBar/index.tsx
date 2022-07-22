@@ -3,6 +3,7 @@ import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basi
 import { ReactComponent as BasicsXSmall } from '@/assets/icons/outline/basics-x-small.svg';
 import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
 import Loading from '@/common/atoms/Loading';
+import { Button } from '@/common/components';
 import { MainGroups } from '@/common/constants';
 import { useDebounce } from '@/common/hooks';
 import SearchBarResultItem from '@/main/atoms/SearchBarResultItem';
@@ -153,8 +154,7 @@ const SearchBar: React.FC = () => {
                 onBlur={() => setFocus(false)}
               />
               {(isFocus || isSearching) && (
-                <button
-                  type="button"
+                <Button
                   onClick={onClickClearSearchInput}
                   className="absolute z-30 inset-y-0 right-2 sm:right-7 flex flex-row items-center group-focus:invisible"
                 >
@@ -164,7 +164,7 @@ const SearchBar: React.FC = () => {
                     className="h-5 w-5 fill-current path-no-filled object-fill text-Gray-12"
                     aria-hidden="true"
                   />
-                </button>
+                </Button>
               )}
             </div>
             <Transition

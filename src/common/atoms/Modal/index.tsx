@@ -36,7 +36,10 @@ const Modal: React.FC<ModalProps> = ({
       open={open}
       onClose={onClose}
     >
-      <div className="relative flex items-center justify-center h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div
+        className="relative flex items-center justify-center h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+        onClick={(e) => e.stopPropagation()}
+      >
         <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
         {/* This element is to trick the browser into centering the modal contents. */}
         {center && (

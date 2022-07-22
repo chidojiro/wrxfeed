@@ -1,9 +1,6 @@
-import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
-import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
-import Button from '@/common/atoms/Button';
+import { ToggleFollowButton } from '@/common/components';
 import { Category, Department } from '@/main/entity';
 import { Vendor } from '@/vendor/types';
-import clsx from 'clsx';
 import React, { MouseEventHandler } from 'react';
 
 interface DepartmentItemProps {
@@ -13,9 +10,8 @@ interface DepartmentItemProps {
   onClick?: MouseEventHandler<HTMLDivElement>;
   onFollow?: MouseEventHandler<HTMLButtonElement>;
   onUnfollow?: MouseEventHandler<HTMLButtonElement>;
-  btnClassName?: string;
-  textClassName?: string;
   hideName?: boolean;
+  inHeader?: boolean;
 }
 
 const DepartmentItem: React.FC<DepartmentItemProps> = ({
@@ -25,9 +21,8 @@ const DepartmentItem: React.FC<DepartmentItemProps> = ({
   onClick,
   onFollow,
   onUnfollow,
-  btnClassName = '',
-  textClassName = '',
   hideName = false,
+  inHeader,
 }) => {
   const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
@@ -52,34 +47,14 @@ const DepartmentItem: React.FC<DepartmentItemProps> = ({
       <div className="flex flex-1">
         {!hideName && <p className="text-sm font-medium text-Gray-1">{item?.name}</p>}
       </div>
-      {!disableFollow &&
-        (isFollowing ? (
-          <Button
-            onClick={handleUnfollow}
-            className={clsx('rounded-full border-Gray-3', btnClassName)}
-          >
-            <TickIcon
-              width={16}
-              height={16}
-              className={clsx('stroke-current path-no-stroke text-Gray-3', textClassName)}
-              viewBox="0 0 15 15"
-            />
-            <span className={textClassName}>Following</span>
-          </Button>
-        ) : (
-          <Button
-            onClick={handleFollow}
-            className={clsx('rounded-full border-Gray-3', btnClassName)}
-          >
-            <AddIcon
-              width={16}
-              height={16}
-              className={clsx('stroke-current stroke-1 path-no-stroke text-Gray-3', textClassName)}
-              viewBox="0 0 15 15"
-            />
-            <span className={clsx('text-Gray-3', textClassName)}>Follow</span>
-          </Button>
-        ))}
+      {!disableFollow && (
+        <ToggleFollowButton
+          colorScheme={inHeader ? 'white' : 'primary'}
+          following={!!isFollowing}
+          onFollow={handleFollow}
+          onUnFollow={handleUnfollow}
+        />
+      )}
     </div>
   );
 };

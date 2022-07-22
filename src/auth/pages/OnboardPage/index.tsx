@@ -5,6 +5,7 @@ import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-
 import { ReactComponent as SharpSpaceDashboard } from '@/assets/icons/solid/sharp-space-dashboard.svg';
 import DepartmentCell from '@/auth/molecules/DepartmentCell';
 import Loading from '@/common/atoms/Loading';
+import { Button } from '@/common/components';
 import { useDebounce, useLegacyQuery, useNavUtils } from '@/common/hooks';
 import NavBarStatic from '@/common/organisms/NavBarStatic';
 import BlankLayout from '@/common/templates/BlankLayout';
@@ -270,10 +271,10 @@ const OnboardPage: React.FC = () => {
         </div>
         <div className="flex flex-row self-center mb-12 sm:mb-20 mt-4">
           {isDoneOnboard && <Loading width={12} height={12} className="mr-4" />}
-          <button type="button" onClick={onClickIamDone} className="flex flex-col items-center">
+          <Button onClick={onClickIamDone} className="flex flex-col items-center">
             <p className="text-Accent-2 text-sm">{"I'm Done —>"}</p>
             <div className="h-px bg-Accent-2 w-full" />
-          </button>
+          </Button>
         </div>
       </div>
     </BlankLayout>

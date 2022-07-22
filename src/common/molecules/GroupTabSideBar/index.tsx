@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import { ReactComponent as DownSmall } from '@/assets/icons/outline/down-small.svg';
 import { AddSmallIcon } from '@/assets';
 import TabListSideBar from '../TabListSideBar';
+import { Button } from '@/common/components';
 
 interface GroupTabSideBarProps {
   className?: string;
@@ -32,8 +33,7 @@ const GroupTabSideBar: React.FC<GroupTabSideBarProps> = ({
 
   return (
     <div className={className}>
-      <button
-        type="button"
+      <Button
         onClick={onClickGroupTab}
         className="group-scope flex flex-1 w-full flex-row justify-between py-2 items-center pl-6 pr-6 text-sm rounded-sm"
       >
@@ -94,7 +94,7 @@ const GroupTabSideBar: React.FC<GroupTabSideBarProps> = ({
             </div>
           </div>
         </span>
-      </button>
+      </Button>
       <TabListSideBar tabs={tabsInGroup} isOpen={group.isOpened} />
       {addItemRoute && group.isOpened && (
         <RouterLink

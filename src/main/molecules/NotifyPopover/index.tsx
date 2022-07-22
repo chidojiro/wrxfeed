@@ -14,6 +14,7 @@ import { Routes } from '@/routing/routes';
 import { Popover, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Button } from '@/common/components';
 
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;
@@ -93,13 +94,12 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
       markAllAsRead();
     };
     return (
-      <button
+      <Button
         onClick={onClickMarkAllAsRead}
-        type="button"
         className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-3xs font-semibold"
       >
         Mark all as read
-      </button>
+      </Button>
     );
   };
 
@@ -128,13 +128,12 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
 
   if (!useDropDown) {
     return (
-      <button
+      <Button
         onClick={onClickNotifications}
-        type="button"
         className={clsx('flex-shrink-0 flex relative w-10 h-10 justify-center items-center')}
       >
         {renderNotifyIconWithBell()}
-      </button>
+      </Button>
     );
   }
 

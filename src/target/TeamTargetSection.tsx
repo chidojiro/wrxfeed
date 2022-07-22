@@ -9,6 +9,7 @@ import { TargetCards } from './TargetCards';
 import { useTargets } from './useTargets';
 import { useHistory } from 'react-router-dom';
 import { MainGroups } from '@/common/constants';
+import { Button } from '@/common/components';
 
 export interface TeamTargetSectionProps {
   className?: string;
@@ -56,23 +57,26 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
             width={16}
             height={16}
           />
-          <button type="button" onClick={onClickTeamName}>
+          <Button onClick={onClickTeamName}>
             <p className="text-white font-semibold">{department?.name}</p>
-          </button>
+          </Button>
         </div>
-        <button
-          type="button"
+        <Button
           onClick={addTargetModalDisclosure.onOpen}
-          className="flex flex-row items-center space-x-2 pr-3"
+          variant="text"
+          colorScheme="white"
+          className="text-sm"
+          iconLeft={
+            <AddSmallSolid
+              width={16}
+              height={16}
+              className="stroke-current path-no-stroke"
+              viewBox="0 0 16 16"
+            />
+          }
         >
-          <AddSmallSolid
-            width={16}
-            height={16}
-            className="stroke-current path-no-stroke text-white"
-            viewBox="0 0 16 16"
-          />
-          <p className="text-white text-sm">Create Target</p>
-        </button>
+          Create Target
+        </Button>
       </div>
       <TargetCards
         targets={targets}

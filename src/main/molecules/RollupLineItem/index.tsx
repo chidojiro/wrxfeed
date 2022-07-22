@@ -1,4 +1,5 @@
 import { useApi } from '@/api';
+import { Button } from '@/common/components';
 import { useIntersection } from '@/common/hooks';
 import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@/config';
 import { TransLineItem } from '@/main/entity';
@@ -74,9 +75,8 @@ const RollupLineItem: React.FC<RollupLineItemProps> = ({ lineItem, onClick }) =>
   const bgColor = isItemShowing ? 'bg-Gray-12' : 'bg-transparent';
 
   return (
-    <button
+    <Button
       ref={viewRef}
-      type="button"
       aria-hidden="true"
       className={clsx(
         'flex flex-row w-full items-center px-2 sm:px-10 py-1 min-h-[24px] hover:bg-Gray-12 z-10 relative mt-0.5',
@@ -91,7 +91,7 @@ const RollupLineItem: React.FC<RollupLineItemProps> = ({ lineItem, onClick }) =>
           ? 'Error'
           : `${decimalLogic(lineItem?.amountUsd, DecimalType.DetailView, '$')}`}
       </p>
-    </button>
+    </Button>
   );
 };
 

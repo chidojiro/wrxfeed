@@ -48,9 +48,8 @@ export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeade
         isFollowing={isFollowing('departments', department)}
         onFollow={() => subscribe('departments', department)}
         onUnfollow={() => unsubscribe('departments', department)}
-        btnClassName="!border-white"
-        textClassName="!text-white"
         hideName
+        inHeader
       />
     </div>
   );

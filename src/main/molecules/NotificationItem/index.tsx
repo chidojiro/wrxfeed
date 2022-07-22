@@ -7,6 +7,7 @@ import { getColorByText, getNameAbbreviation } from '@/main/utils';
 
 import mixpanel from 'mixpanel-browser';
 import { useIdentity } from '@/identity/hooks';
+import { Button } from '@/common/components';
 
 export interface NotificationItemProps {
   item: Notification;
@@ -41,8 +42,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
   };
 
   return (
-    <button
-      type="button"
+    <Button
       onClick={() => {
         onClick(item);
 
@@ -76,7 +76,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
           {distanceToNow(item?.createdAt)}
         </div>
       </div>
-    </button>
+    </Button>
   );
 };
 

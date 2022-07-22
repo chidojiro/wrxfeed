@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import { PaginationParams } from '@/rest/types';
 import { StringUtils } from '@/common/utils';
+import { Button } from '../Button';
 
 export type InfiniteLoaderRenderProps = {
   isExhausted: boolean;
@@ -55,16 +56,15 @@ export const InfiniteLoader = <T,>({
     if (isExhausted) return null;
 
     return (
-      <button
+      <Button
         className={clsx(
           StringUtils.withProjectClassNamePrefix('infinite-loader', 'infinite-loader--on-demand'),
           'inline-block text-xs p-2',
         )}
-        type="button"
         onClick={loadMore}
       >
         Load More
-      </button>
+      </Button>
     );
   }
 

@@ -3,6 +3,7 @@ import { useRecoilState } from 'recoil';
 import { ReactComponent as CsvIcon } from '@/assets/icons/outline/csvIcon.svg';
 import Modal from '@/common/atoms/Modal';
 import { showUploadCSVModalState } from './states';
+import { Button } from '@/common/components';
 
 export type UploadCSVModalProps = {
   open?: boolean;
@@ -32,20 +33,15 @@ const UploadCSVModal: React.FC<UploadCSVModalProps> = ({ open = false }) => {
         </div>
         <hr className="divider divider-horizontal" />
         <div className="flex flex-row space-x-6 py-32 h-[4.125rem] justify-end">
-          <button
-            type="button"
-            className="rounded text-sm font-bold text-Gray-2 px-5"
-            onClick={handleClose}
-          >
+          <Button className="rounded text-sm font-bold text-Gray-2 px-5" onClick={handleClose}>
             Cancel
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
             className="bg-purple-5 rounded text-sm font-bold text-white ml-2 px-5"
             onClick={handleClose}
           >
             Upload file
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

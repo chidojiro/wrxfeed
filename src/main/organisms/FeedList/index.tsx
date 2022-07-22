@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FeedFilters } from '@/api/types';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import { Button } from '@/common/components';
 import { useLegacyQuery } from '@/common/hooks';
 import { LineItemDrawer } from '@/feed/LineItemDrawer';
 import { TargetFeedCard } from '@/feed/TargetFeedCard';
@@ -123,13 +124,9 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     return (
       <p className={clsx('text-base text-center text-Neutral-4', className)}>
         Add to your feed by
-        <button
-          type="button"
-          onClick={onClickFollowingMoreTeams}
-          className="ml-1 text-Gray-3 underline"
-        >
+        <Button onClick={onClickFollowingMoreTeams} className="ml-1 text-Gray-3 underline">
           <u>following more teams</u>
-        </button>
+        </Button>
         <span role="img" aria-label="rocket">
           {' '}
           🚀

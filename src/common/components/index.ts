@@ -1,4 +1,5 @@
 export * from './Avatar';
+export * from './Button';
 export * from './ConditionalWrapper';
 export * from './Divider';
 export * from './Drawer';
@@ -14,4 +15,5 @@ export * from './StatusTag';
 export * from './Table';
 export * from './Tabs';
 export * from './TagsSelect';
+export * from './ToggleFollowButton';
 export * from './Tooltip';
