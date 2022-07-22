@@ -1,10 +1,7 @@
 import React, { MouseEventHandler } from 'react';
-import Button from '@/common/atoms/Button';
 import { Department } from '@/main/entity';
-// Icons
-import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
-import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
 import { getColorByText } from '@/main/utils';
+import { ToggleFollowButton } from '@/common/components';
 
 interface DirectoryItem {
   item: Department;
@@ -46,27 +43,11 @@ const RootDepartmentHeader: React.FC<DirectoryItem> = ({
       onClick={onClick}
     >
       <h3 className="text-sm text-white uppercase font-semibold">{item.name || 'Unknown'}</h3>
-      {isFollowing ? (
-        <Button onClick={handleUnfollow} className="rounded-full border-white">
-          <TickIcon
-            width={16}
-            height={16}
-            className="stroke-current path-no-stroke text-white"
-            viewBox="0 0 15 15"
-          />
-          <span className="text-white">Following</span>
-        </Button>
-      ) : (
-        <Button onClick={handleFollow} className="rounded-full border-white">
-          <AddIcon
-            width={16}
-            height={16}
-            className="stroke-current path-no-stroke text-white"
-            viewBox="0 0 15 15"
-          />
-          <span className="text-white">Follow</span>
-        </Button>
-      )}
+      <ToggleFollowButton
+        following={!!isFollowing}
+        onFollow={handleFollow}
+        onUnFollow={handleUnfollow}
+      />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { ReactComponent as DownSmall } from '@/assets/icons/outline/down-small.svg';
+import { Button } from '@/common/components';
 import { DATE_FORMAT } from '@/common/utils';
 import { Transaction, TransLineItem, TranStatusType } from '@/main/entity';
 import TranLineItemsList from '@/main/molecules/TranLineItemsList';
@@ -79,9 +80,8 @@ const RollupTranRow: React.FC<RollupTranRowProps> = ({ tran, onClick, onView }) 
 
   return (
     <div className="flex flex-col mt-px w-auto overflow-hidden">
-      <button
+      <Button
         ref={viewRef}
-        type="button"
         aria-hidden="true"
         className={clsx(
           'flex flex-row w-full items-center px-2 sm:px-6 py-2 bg-white hover:shadow-topCategoryHover z-10 relative border border-white hover:border-Accent-4',
@@ -123,7 +123,7 @@ const RollupTranRow: React.FC<RollupTranRowProps> = ({ tran, onClick, onView }) 
         >
           Details
         </p>
-      </button>
+      </Button>
       <TranLineItemsList lineItems={lineItems} isOpen={isOpen} />
     </div>
   );

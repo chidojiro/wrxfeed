@@ -13,6 +13,7 @@ import { UserPlusIcon } from '@/assets';
 
 import mixpanel from 'mixpanel-browser';
 import { useIdentity } from '@/identity/hooks';
+import { Button } from '@/common/components';
 
 interface NavBarStaticProps {
   className?: string;
@@ -69,8 +70,7 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
     }
     const hoverStyle = isOpenInviteModal ? 'ring-2' : '';
     return (
-      <button
-        type="button"
+      <Button
         onClick={onClickInviteButton}
         className={clsx(
           hoverStyle,
@@ -79,7 +79,7 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
       >
         <UserPlusIcon className="flex mr-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500" />
         Invite
-      </button>
+      </Button>
     );
   };
 
@@ -139,14 +139,13 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
                   <div className="text-base font-medium text-gray-800">{userName}</div>
                   <div className="text-sm font-medium text-gray-500">{userEmail}</div>
                 </div>
-                <button
-                  type="button"
+                <Button
                   onClick={onClickNotification}
                   className="ml-auto flex-shrink-0 bg-white rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
                 >
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
+                </Button>
               </div>
               <div className="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4">
                 {userNavigation.map((item) => (

@@ -7,9 +7,9 @@ import { EMPTY_VENDOR_DESCRIPTION, VendorDescription } from '@/main/entity';
 import { useSetRecoilState } from 'recoil';
 import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
 import { useUpdateVendor } from '@/main/hooks/updateVendor.hook';
-import Loading from '@/common/atoms/Loading';
 import Modal from '@/common/atoms/Modal';
 import clsx from 'clsx';
+import { Button } from '@/common/components';
 
 export type UpdateVendorInfoModalProps = {
   open: boolean;
@@ -86,8 +86,6 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
     updateVendorById(id, data);
   };
 
-  const createReadyState = isReadyToSave(vendorDescription) ? 'bg-primary' : 'bg-Gray-6';
-
   return (
     <Modal
       open={open}
@@ -154,29 +152,23 @@ const UpdateVendorInfoModal: React.FC<UpdateVendorInfoModalProps> = ({
         </div>
 
         <hr className="divider divider-horizontal w-full" />
-        <div className="flex flex-row w-full px-12 py-4">
-          <button
-            type="button"
-            onClick={onClickCancel}
-            className="flex px-4 py-2 rounded-sm hover:bg-Gray-12 mr-3 ml-auto"
-          >
-            <p className="text-Gray-6 text-xs font-semibold">Cancel</p>
-          </button>
-          <button
-            type="button"
+        <div className="flex w-full px-12 py-4 justify-end gap-3">
+          <Button variant="ghost" colorScheme="gray" onClick={onClickCancel}>
+            Cancel
+          </Button>
+          <Button
+            variant="solid"
+            colorScheme={isReadyToSave(vendorDescription) ? 'primary' : 'gray'}
+            className="hover:bg-primary"
+            loading={isLoading}
             onClick={() => {
               if (vendorDescription.vendorId) {
                 onSaveHandler(vendorDescription.vendorId, vendorDescription);
               }
             }}
-            className={clsx(
-              'flex flex-row items-center px-4 py-2 rounded-sm hover:bg-primary',
-              createReadyState,
-            )}
           >
-            <p className="text-white text-xs font-semibold">Save Changes</p>
-            {isLoading && <Loading width={12} height={12} color="white" className="w-4 h-4 ml-2" />}
-          </button>
+            Save Changes
+          </Button>
         </div>
       </div>
     </Modal>

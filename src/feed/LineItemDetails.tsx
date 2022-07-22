@@ -10,6 +10,7 @@ import {
 } from '@/assets';
 import Loading from '@/common/atoms/Loading';
 import Tooltip from '@/common/atoms/Tooltip';
+import { Button } from '@/common/components';
 import { ClassName } from '@/common/types';
 import UpdateDetailsLineItemInfoModal from '@/feed/UpdateDetailsLineItemInfoModal';
 import { TransLineItem, TranStatusType } from '@/main/entity';
@@ -142,27 +143,29 @@ const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDet
 
   const renderEditVendorInfoButton = () => {
     return (
-      <button
-        type="button"
-        className="flex flex-none ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
+      <Button
+        size="sm"
+        variant="ghost"
+        colorScheme="gray"
+        iconLeft={<BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />}
         onClick={showEditVendorDescriptionModal}
       >
-        <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
-        <p className="text-xs text-Gray-3 font-normal">Edit</p>
-      </button>
+        Edit
+      </Button>
     );
   };
 
   const renderEditLineItemDescriptionButton = () => {
     return (
-      <button
-        type="button"
-        className="flex flex-none ml-auto flex-row items-center px-3 py-1.5 space-x-2 rounded-sm hover:bg-Gray-12"
+      <Button
+        size="sm"
+        variant="ghost"
+        colorScheme="gray"
+        iconLeft={<BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />}
         onClick={showEditLineItemModal}
       >
-        <BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />
-        <p className="text-xs text-Gray-3 font-normal">Edit</p>
-      </button>
+        Edit
+      </Button>
     );
   };
 
@@ -216,13 +219,13 @@ const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDet
         <div className="w-24 h-24 mr-4">
           <DetailLogoDefault className="w-24 h-24" />
         </div>
-        <button type="button" onClick={onCloseClick} className="flex-1 w-4 h-4">
+        <Button onClick={onCloseClick} className="flex-1 w-4 h-4">
           <BasicsXRegular
             className="w-4 h-4 float-right stroke-current text-white"
             width={20}
             height={20}
           />
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-col my-5 px-8 overflow-y-auto flex-1">

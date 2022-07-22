@@ -5,7 +5,7 @@ import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { TargetSummary } from './TargetSummary';
+import { TeamTargetSummary } from './TeamTargetSummary';
 import { TeamHeader } from './TeamHeader';
 import { TopCategories } from './TopCategories';
 import { TransactionList } from './TransactionList';
@@ -33,7 +33,7 @@ export const TeamPage = () => {
           />
         </OverlayLoader>
         <div className="col-span-9 lg:col-span-4 flex flex-col gap-6">
-          <TargetSummary departmentId={departmentId} />
+          <TeamTargetSummary departmentId={departmentId} />
           <TopCategories />
         </div>
       </div>

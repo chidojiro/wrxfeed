@@ -3,6 +3,7 @@ import { EyeHideIcon } from '@/assets';
 import { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';
 // Icons
 import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
+import { Button } from '@/common/components';
 import NotifyBanner from '@/common/molecules/NotifyBanner';
 import { formatDate } from '@/common/utils';
 import { ProtectedFeatures } from '@/identity/constants';
@@ -199,15 +200,14 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
             <div className="flex items-center space-x-3">
               <div className="flex items-center min-w-0 flex-1">
                 <p className="text-xs text-Gray-6">
-                  <button
-                    type="button"
+                  <Button
                     className="hover:underline"
                     onClick={() => {
                       return onClickDepartment && onClickDepartment(transaction.department);
                     }}
                   >
                     {transaction.department.name}
-                  </button>
+                  </Button>
                 </p>
                 {isHidden && (
                   <>
@@ -246,13 +246,12 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
               {transaction.category.name}
             </h2>
             <p className="mt-1 text-xs text-Gray-6">
-              <button
-                type="button"
+              <Button
                 className="hover:underline"
                 onClick={() => onClickVendor && onClickVendor(transaction.vendor)}
               >
                 {transaction.vendor.name}
-              </button>
+              </Button>
               {' • '}
               <time dateTime={transaction.transDate}>{formatDate(transaction.transDate)}</time>
             </p>

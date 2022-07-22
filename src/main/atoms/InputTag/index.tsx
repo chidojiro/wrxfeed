@@ -1,3 +1,4 @@
+import { Button } from '@/common/components';
 import React from 'react';
 
 interface InputTagProps {
@@ -14,13 +15,15 @@ const InputTag: React.FC<InputTagProps> = ({ text, onDelete, color }) => {
       key={text}
     >
       {text}
-      <button
-        type="button"
-        className="text-xs text-white font-bold ml-2"
+      <Button
+        variant="text"
+        colorScheme="white"
+        square
+        className="ml-2"
         onClick={() => onDelete(text)}
       >
         &times;
-      </button>
+      </Button>
     </div>
   );
 };

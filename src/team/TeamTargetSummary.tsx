@@ -1,6 +1,6 @@
 import { TargetArrowFilled } from '@/assets';
 import { ReactComponent as BasicsAddSmall } from '@/assets/icons/outline/basics-add-small.svg';
-import { OverlayLoader } from '@/common/components';
+import { Button, OverlayLoader } from '@/common/components';
 import { AddTargetModal } from '@/target/AddTargetModal';
 import { useTargets } from '@/target/useTargets';
 import { useDisclosure } from '@dwarvesf/react-hooks';
@@ -8,11 +8,11 @@ import clsx from 'clsx';
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-type TargetSummaryProps = {
+type TeamTargetSummaryProps = {
   departmentId: number;
 };
 
-export const TargetSummary = ({ departmentId }: TargetSummaryProps) => {
+export const TeamTargetSummary = ({ departmentId }: TeamTargetSummaryProps) => {
   const history = useHistory();
 
   const addTargetModalDisclosure = useDisclosure();
@@ -34,7 +34,7 @@ export const TargetSummary = ({ departmentId }: TargetSummaryProps) => {
               </div>
             </Link>
 
-            <button className="pl-4 text-center" onClick={addTargetModalDisclosure.onOpen}>
+            <Button className="pl-4 text-center" onClick={addTargetModalDisclosure.onOpen}>
               <div className="text-center justify-center flex items-center gap-2 mx-auto">
                 <p className="text-md font-semibold">Create a target</p>
                 <div className="rounded bg-Accent-2 !m-0 text-white">
@@ -45,7 +45,7 @@ export const TargetSummary = ({ departmentId }: TargetSummaryProps) => {
                 Align your teams to common goals. Targets help you track spend with categories and
                 vendors.
               </p>
-            </button>
+            </Button>
           </div>
         </div>
       </OverlayLoader>

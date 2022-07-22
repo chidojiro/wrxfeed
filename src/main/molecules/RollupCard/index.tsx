@@ -37,6 +37,7 @@ import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { Vendor } from '@/vendor/types';
+import { Button } from '@/common/components';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -233,13 +234,12 @@ const RollupCard: React.FC<RollupCardProps> = ({
             <div className="flex items-center space-x-3">
               <div className="flex items-center min-w-0 flex-1 ">
                 <p className="text-base text-white">
-                  <button
-                    type="button"
+                  <Button
                     className="hover:underline text-left font-bold"
                     onClick={() => onClickCategory && onClickCategory(feedItem?.category)}
                   >
                     {feedItem?.category?.name}
-                  </button>
+                  </Button>
                 </p>
                 {isHidden && (
                   <div className="flex flex-row items-center bg-Gray-3-50 py-0.5 px-2 ml-2 rounded-full">

@@ -1,6 +1,7 @@
 import { ReactComponent as BasicsAddSmall } from '@/assets/icons/solid/basics-add-small.svg';
 import { ReactComponent as BasicsTickSmall } from '@/assets/icons/solid/basics-tick-small.svg';
 import Loading from '@/common/atoms/Loading';
+import { Button } from '@/common/components';
 import { useIdentity } from '@/identity/hooks';
 import { Department } from '@/main/entity';
 import { useSubscription } from '@/main/hooks/subscription.hook';
@@ -128,8 +129,7 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
   const renderFollowButton = () => {
     if (!enableUnfollowUserDept && isUserDepartment) return null;
     return (
-      <button
-        type="button"
+      <Button
         onClick={onClickFollowDepartment}
         className={clsx(
           'flex flex-row items-center px-3 py-2 space-x-1.5 rounded-full border border-transparent',
@@ -139,7 +139,7 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
       >
         {renderIcon()}
         <p className={clsx('text-sm', textColor)}>{isFollowed ? 'Following' : 'Follow'}</p>
-      </button>
+      </Button>
     );
   };
 

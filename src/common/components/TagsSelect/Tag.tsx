@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 import { Children, ClassName } from '../../types';
+import { Button } from '../Button';
 
 export type TagColorScheme = 'orange' | 'accent' | 'cyan';
 
@@ -30,9 +31,9 @@ export const Tag = ({ children, className, onRemoveClick, colorScheme, icon }: T
       {!!icon && <div className="flex-shrink-0">{icon}</div>}
       {children}
       {!!onRemoveClick && (
-        <button className="text-xs font-bold" onClick={onRemoveClick}>
+        <Button className="text-xs font-bold" onClick={onRemoveClick}>
           &times;
-        </button>
+        </Button>
       )}
     </div>
   );

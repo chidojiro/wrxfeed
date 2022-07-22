@@ -1,6 +1,6 @@
-import Button from '@/common/atoms/Button';
+import { RightSmallIcon } from '@/assets';
 import Loading from '@/common/atoms/Loading';
-import { Avatar } from '@/common/components';
+import { Avatar, Button } from '@/common/components';
 import { useHandler } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { distanceToNow } from '@/common/utils';
@@ -18,13 +18,12 @@ import {
 import { Routes } from '@/routing/routes';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
+import { MouseEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 import { AddTargetModal, AddTargetModalProps } from './AddTargetModal';
 import { TargetApis } from './apis';
 import { MiniChartView } from './MiniChartView';
 import { Target } from './types';
-import { RightSmallIcon } from '@/assets';
-import { MouseEvent } from 'react';
 
 export type TargetCardProps = ClassName &
   Required<Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'>> &
@@ -87,9 +86,8 @@ export const TargetCard = ({
         onDeleteSuccess={onDeleteSuccess}
         hidePropertyDropdowns={hidePropertyDropdowns}
       />
-      <button
+      <Button
         onClick={goToTargetDetails}
-        type="button"
         key={`Dashboard-TargetChartView-${target.id}`}
         className={clsx(
           'bg-white relative w-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
@@ -159,7 +157,7 @@ export const TargetCard = ({
               ) : (
                 <div className="group relative">
                   <Button
-                    className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex"
+                    className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex border border-Gray-11"
                     onClick={(e) => handleSetTarget(e)}
                   >
                     <span className="font-medium text-xs">Set target</span>
@@ -197,7 +195,7 @@ export const TargetCard = ({
             <Loading color="Gray-3" />
           </div>
         )}
-      </button>
+      </Button>
     </>
   );
 };
