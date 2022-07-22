@@ -47,6 +47,7 @@ const RootDepartmentHeader: React.FC<DirectoryItem> = ({
         following={!!isFollowing}
         onFollow={handleFollow}
         onUnFollow={handleUnfollow}
+        colorScheme="white"
       />
     </div>
   );

@@ -19,10 +19,10 @@ export const ToggleFollowButton = ({
   loading,
 }: ToggleFollowButtonProps) => {
   const baseProps = {
-    circle: true,
+    pill: true,
     variant: 'outline' as any,
     colorScheme,
-    loading: loading,
+    loading,
   };
 
   return following ? (
