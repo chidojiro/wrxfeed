@@ -69,7 +69,8 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     vendorId,
   });
 
-  const { feeds, hasMore, isLoading, updateCategory, cleanData } = useFeed(feedFilters);
+  const { feeds, hasMore, isLoading, updateCategory, cleanData, onDeleteSuccess } =
+    useFeed(feedFilters);
   const query = useLegacyQuery();
   const history = useHistory();
   const filterKey = FilterKeys.find((key) => query.get(key));
@@ -182,7 +183,13 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       <ul className="pb-2 sm:pb-5 space-y-4">
         {feeds.map((feed) => {
           if (feed.type === FeedItemType.target) {
-            return <TargetFeedCard key={feed.id} feedItem={feed} />;
+            return (
+              <TargetFeedCard
+                key={feed.id}
+                feedItem={feed}
+                onDeleteSuccess={() => onDeleteSuccess(feed.target.id)}
+              />
+            );
           }
           if (feed.type === FeedItemType.transaction) {
             return (
