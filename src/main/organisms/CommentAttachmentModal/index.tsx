@@ -1,5 +1,6 @@
 import LinearProgress from '@/common/atoms/LinearProgress';
 import Modal, { ModalProps } from '@/common/atoms/Modal';
+import { Button } from '@/common/components';
 import { useFileUploader } from '@/common/hooks/useFileUploader';
 import CircleAvatar from '@/main/atoms/CircleAvatar';
 import ImageFilePreview from '@/main/atoms/ImageFilePreview';
@@ -82,24 +83,24 @@ const CommentAttachmentModal: React.FC<AttachmentModalProps> = ({
         </div>
         {isUploading && <LinearProgress />}
         <hr className="divider divider-horizontal" />
-        <div className="flex justify-end h-[66px] px-6 py-4">
-          <button
+        <div className="flex justify-end h-[66px] px-6 py-4 gap-3">
+          <Button
+            colorScheme="gray"
+            variant="ghost"
             ref={cancelButtonRef}
-            type="button"
             disabled={isUploading}
-            className="rounded text-sm font-bold text-Gray-2 px-5"
             onClick={onClose}
           >
             Cancel
-          </button>
-          <button
-            type="button"
-            className="bg-purple-5 rounded text-sm font-bold text-white ml-2 px-5"
+          </Button>
+          <Button
+            colorScheme="purple"
+            variant="solid"
             disabled={isUploading}
             onClick={handleFileUpload}
           >
             Upload
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

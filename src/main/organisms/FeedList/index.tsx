@@ -1,4 +1,5 @@
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import { Button } from '@/common/components';
 import { useLegacyQuery } from '@/common/hooks';
 import { LineItemDrawer } from '@/feed/LineItemDrawer';
 import { TargetFeedCard } from '@/feed/TargetFeedCard';
@@ -67,7 +68,8 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     vendorId,
   });
 
-  const { feeds, hasMore, isLoading, updateCategory, cleanData } = useFeed(feedFilters);
+  const { feeds, hasMore, isLoading, updateCategory, cleanData, onDeleteSuccess } =
+    useFeed(feedFilters);
   const query = useLegacyQuery();
   const history = useHistory();
   const filterKey = FilterKeys.find((key) => query.get(key));
@@ -125,13 +127,9 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     return (
       <p className={clsx('text-base text-center text-Neutral-4', className)}>
         Add to your feed by
-        <button
-          type="button"
-          onClick={onClickFollowingMoreTeams}
-          className="ml-1 text-Gray-3 underline"
-        >
+        <Button onClick={onClickFollowingMoreTeams} className="ml-1 text-Gray-3 underline">
           <u>following more teams</u>
-        </button>
+        </Button>
         <span role="img" aria-label="rocket">
           {' '}
           🚀
@@ -187,7 +185,13 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       <ul className="pb-2 sm:pb-5 space-y-4">
         {feeds.map((feed) => {
           if (feed.type === FeedItemType.target) {
-            return <TargetFeedCard key={feed.id} feedItem={feed} />;
+            return (
+              <TargetFeedCard
+                key={feed.id}
+                feedItem={feed}
+                onDeleteSuccess={() => onDeleteSuccess(feed.target.id)}
+              />
+            );
           }
           if (feed.type === FeedItemType.transaction) {
             return (

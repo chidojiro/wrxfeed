@@ -8,6 +8,7 @@ import { FeedBackType } from '@/main/types';
 import clsx from 'clsx';
 import LinearProgress from '@/common/atoms/LinearProgress';
 import Modal from '@/common/atoms/Modal';
+import { Button } from '@/common/components';
 
 interface FeedBackModalProps {
   open: boolean;
@@ -98,16 +99,14 @@ const FeedBackModal: React.FC<FeedBackModalProps> = ({
         {isLoading && <LinearProgress />}
         <hr className="divider divider-horizontal" />
         <div className="flex justify-end h-[66px] px-6 py-4">
-          <button
-            type="button"
+          <Button
             disabled={isLoading}
             className="rounded text-sm font-bold text-Gray-2 px-5"
             onClick={handleClose}
           >
             Cancel
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
             className={clsx(
               'rounded text-sm font-bold text-white ml-2 px-5',
               isSendable ? 'bg-purple-5' : 'bg-Gray-4',
@@ -116,7 +115,7 @@ const FeedBackModal: React.FC<FeedBackModalProps> = ({
             onClick={handleSubmit}
           >
             Submit
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

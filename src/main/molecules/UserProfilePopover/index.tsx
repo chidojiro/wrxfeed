@@ -3,6 +3,7 @@ import { profileState } from '@/auth/containers/ProfileEditForm/states';
 import { Profile } from '@/auth/types';
 import Loading from '@/common/atoms/Loading';
 import UploadButton from '@/common/atoms/UploadButton';
+import { Button } from '@/common/components';
 import { useFileUploader } from '@/common/hooks/useFileUploader';
 import { UPLOAD_FILE_ACCEPT } from '@/config';
 import { useSetIdentity } from '@/identity/hooks';
@@ -195,13 +196,9 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
       return (
         <div className="flex py-4 items-center flex-row self-center">
           <div className="px-6 py-2 rounded-full hover:bg-gray-100">
-            <button
-              type="button"
-              className="flex text-blue-500 font-medium"
-              onClick={onClickSaveChange}
-            >
+            <Button className="flex text-blue-500 font-medium" onClick={onClickSaveChange}>
               Save changes
-            </button>
+            </Button>
           </div>
           {!!loading && <Loading width={25} height={25} className="border-white mx-4" />}
         </div>
@@ -210,9 +207,9 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
     return (
       <div className="flex py-4 flex-col items-center">
         <div className="px-6 py-2 rounded-full hover:bg-gray-100">
-          <button type="button" className="flex text-red-500 font-medium" onClick={logout}>
+          <Button className="flex text-red-500 font-medium" onClick={logout}>
             Logout
-          </button>
+          </Button>
         </div>
       </div>
     );

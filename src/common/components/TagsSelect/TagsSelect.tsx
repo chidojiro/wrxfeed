@@ -4,6 +4,7 @@ import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import { uniq } from 'lodash-es';
 import React from 'react';
+import { Button } from '../Button';
 import { Popover } from '../Popover';
 import { SelectedTags } from './SelectedTags';
 import { TagsSelectOptions } from './TagsSelectOptions';
@@ -103,8 +104,7 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
         <Popover
           placement={placement}
           trigger={
-            <button
-              type="button"
+            <Button
               onClick={popoverDisclosure.onToggle}
               className={clsx(
                 StringUtils.withProjectClassNamePrefix('tags-select-trigger'),
@@ -112,7 +112,7 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
               )}
             >
               {renderTrigger()}
-            </button>
+            </Button>
           }
           open={popoverDisclosure.isOpen}
           onClose={handleClose}

@@ -33,6 +33,7 @@ import { TargetFeedOverview } from './TargetFeedOverview';
 export interface TargetFeedCardProps {
   feedItem: FeedItem;
   onRefresh?: () => void;
+  onDeleteSuccess?: () => void;
   onBack?: () => void;
 }
 
@@ -47,7 +48,7 @@ const INITIAL_COMMENT_NUMBER = 2;
 const LIMIT_GET_COMMENT = 20;
 
 export const TargetFeedCard: React.FC<TargetFeedCardProps> = React.memo(
-  ({ feedItem, onRefresh, onBack }) => {
+  ({ feedItem, onRefresh, onBack, onDeleteSuccess }) => {
     const identity = useIdentity();
     const [filterComment, setFilterComment] = React.useState<PaginationParams>({
       offset: 0,
@@ -198,8 +199,9 @@ export const TargetFeedCard: React.FC<TargetFeedCardProps> = React.memo(
       );
     };
 
-    const onDeleteTarget = () => {
-      deleteTarget(curFeed?.target?.id);
+    const onDeleteTarget = async () => {
+      await deleteTarget(curFeed?.target?.id);
+      onDeleteSuccess?.();
     };
 
     return (

@@ -2,9 +2,8 @@
 import { AlertRed } from '@/assets';
 import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
 import { ReactComponent as CarbonTrashCan } from '@/assets/icons/outline/carbon-trash-can.svg';
-import Loading from '@/common/atoms/Loading';
 import Modal from '@/common/atoms/Modal';
-import { Form, OverlayLoader } from '@/common/components';
+import { Button, Form, OverlayLoader } from '@/common/components';
 import { defaultTargetMonths, EMPTY_ARRAY } from '@/common/constants';
 import { withMountOnOpen } from '@/common/hocs/withMountOnOpen';
 import { useFetcher, useHandler } from '@/common/hooks';
@@ -22,7 +21,6 @@ import {
 } from '@/target/types';
 import { useDepartments } from '@/team/useDepartments';
 import { useVendors } from '@/vendor/useVendors';
-import clsx from 'clsx';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { TargetApis } from '../apis';
@@ -251,23 +249,6 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
       });
     };
 
-    const renderIconNextOrLoading = () => {
-      if (isSubmitting)
-        return <Loading width={12} height={12} color="white" className="w-4 h-4 ml-2" />;
-
-      return (
-        <ArrowRight className="w-4 h-4 ml-2 fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />
-      );
-    };
-
-    const renderIconDeleteOrLoading = () => {
-      if (isDeleting) {
-        return <Loading width={12} height={12} color="primary" className="w-4 h-4" />;
-      }
-
-      return <CarbonTrashCan width={16} height={16} className="w-4 h-4" />;
-    };
-
     const renderErrorName = () => {
       return (
         <div className="flex flex-row items-center px-2 space-x-1">
@@ -425,32 +406,34 @@ export const AddTargetModal: React.FC<AddTargetModalProps> = withMountOnOpen(
               <hr className="divider divider-horizontal w-full" />
               <div className="flex flex-row w-full px-12 py-4">
                 {!!isEdit && (
-                  <button
+                  <Button
+                    variant="ghost"
+                    loading={isDeleting}
+                    colorScheme="gray"
                     type="button"
+                    iconLeft={<CarbonTrashCan width={16} height={16} className="w-4 h-4" />}
                     onClick={deleteTarget}
-                    className="flex flex-row items-center px-4 py-2 rounded-sm hover:bg-Gray-12 space-x-2"
                   >
-                    {renderIconDeleteOrLoading()}
                     <p className="text-Gray-6 text-xs font-semibold">Delete</p>
-                  </button>
+                  </Button>
                 )}
-                <button
-                  type="button"
-                  onClick={onCancel}
-                  className="flex px-4 py-2 rounded-sm hover:bg-Gray-12 mr-3 ml-auto"
-                >
-                  <p className="text-Gray-6 text-xs font-semibold">Cancel</p>
-                </button>
-                <button
-                  type="submit"
-                  className={clsx(
-                    'flex flex-row items-center px-4 py-2 rounded-sm hover:bg-primary',
-                    isReadyToCreate ? 'bg-primary' : 'bg-Gray-6',
-                  )}
-                >
-                  <p className="text-white text-xs font-semibold">{isEdit ? 'Save' : 'Create'}</p>
-                  {renderIconNextOrLoading()}
-                </button>
+                <div className="flex gap-3 ml-auto">
+                  <Button variant="ghost" colorScheme="gray" onClick={onCancel}>
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    loading={isSubmitting}
+                    variant="solid"
+                    colorScheme={isReadyToCreate ? 'primary' : 'gray'}
+                    className="hover:bg-primary"
+                    iconRight={
+                      <ArrowRight className="fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />
+                    }
+                  >
+                    {isEdit ? 'Save' : 'Create'}
+                  </Button>
+                </div>
               </div>
             </div>
           </Form>

@@ -1,7 +1,4 @@
-import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
-import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
-import Button from '@/common/atoms/Button';
-import Loading from '@/common/atoms/Loading';
+import { ToggleFollowButton } from '@/common/components';
 import { Category, Department } from '@/main/entity';
 import { useSubscription } from '@/main/hooks/subscription.hook';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
@@ -64,41 +61,14 @@ const DirectoryItem: React.FC<DirectoryItem> = ({
 
   const renderIcon = () => {
     if (disableFollow) return null;
-    if (isFollow) {
-      return (
-        <Button onClick={handleUnfollow} className="rounded-full border-Gray-3">
-          {isLoading ? (
-            <div className="flex w-4 h-4 justify-center items-center">
-              <Loading width={12} height={12} color="Gray-3" />
-            </div>
-          ) : (
-            <TickIcon
-              width={16}
-              height={16}
-              className="stroke-current path-no-stroke text-Gray-3"
-              viewBox="0 0 15 15"
-            />
-          )}
-          <span>Following</span>
-        </Button>
-      );
-    }
+
     return (
-      <Button onClick={handleFollow} className="rounded-full border-Gray-3">
-        {isLoading ? (
-          <div className="flex w-4 h-4 justify-center items-center">
-            <Loading width={12} height={12} color="Gray-3" />
-          </div>
-        ) : (
-          <AddIcon
-            width={16}
-            height={16}
-            className="stroke-current stroke-1 path-no-stroke text-Gray-3"
-            viewBox="0 0 15 15"
-          />
-        )}
-        <span className="text-Gray-3">Follow</span>
-      </Button>
+      <ToggleFollowButton
+        following={!!isFollow}
+        onFollow={handleFollow}
+        onUnFollow={handleUnfollow}
+        loading={isLoading}
+      />
     );
   };
 

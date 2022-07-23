@@ -1,4 +1,5 @@
 import Loading from '@/common/atoms/Loading';
+import { Button } from '@/common/components';
 import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 import { TransLineItem } from '@/main/entity';
 import RollupLineItem from '@/main/molecules/RollupLineItem';
@@ -51,13 +52,9 @@ const TranLineItemsList: React.FC<TranLineItemsListProps> = ({
     return (
       <div className="flex h-5 px-4 sm:px-6 md:px-12 flex-row items-center absolute left-0 right-0 -bottom-2.5">
         <div className="bg-Gray-11 h-px w-auto flex-1" />
-        <button
-          onClick={onLoadMore}
-          type="button"
-          className="flex px-2 justify-center items-center"
-        >
+        <Button onClick={onLoadMore} className="flex px-2 justify-center items-center">
           <p className="text-Gray-1 text-xs font-normal">Load more</p>
-        </button>
+        </Button>
         <div className="bg-Gray-11 h-px w-auto flex-1" />
       </div>
     );

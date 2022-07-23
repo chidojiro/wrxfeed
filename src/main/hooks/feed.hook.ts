@@ -13,6 +13,7 @@ interface FeedHookValues {
   feeds: FeedItem[];
   hasMore: boolean;
   isLoading: boolean;
+  onDeleteSuccess: (feedId: number) => void;
   updateCategory: (category: Partial<Category>) => Promise<void>;
   cleanData: () => void;
 }
@@ -23,6 +24,14 @@ export function useFeed(filters: GetFeedsParams): FeedHookValues {
   const errorHandler = useErrorHandler();
   const cleanData = () => setFeeds([]);
   const identity = useIdentity();
+
+  const onDeleteSuccess = (feedId: number) => {
+    const indexOfObject = feeds.findIndex((feed) => {
+      return feed.target.id === feedId;
+    });
+    feeds.splice(indexOfObject, 1);
+    getFeeds();
+  };
 
   const getFeeds = useCallback(async () => {
     try {
@@ -95,5 +104,6 @@ export function useFeed(filters: GetFeedsParams): FeedHookValues {
     isLoading,
     updateCategory,
     cleanData,
+    onDeleteSuccess,
   };
 }

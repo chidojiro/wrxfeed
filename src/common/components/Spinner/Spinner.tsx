@@ -7,15 +7,27 @@ export type SpinnerProps = {
 };
 
 export const Spinner = ({ className }: SpinnerProps) => {
+  const wrapperRef = React.useRef<HTMLDivElement>(null);
+  const spinnerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useLayoutEffect(() => {
+    const color = wrapperRef.current
+      ? window.getComputedStyle(wrapperRef.current).color
+      : '#374151';
+
+    spinnerRef.current?.style.setProperty('border-color', color);
+  }, []);
+
   return (
     <div
+      ref={wrapperRef}
       className={clsx(
         StringUtils.withProjectClassNamePrefix('spinner'),
-        'flex justify-center items-center',
+        'flex justify-center items-center w-8 h-8',
         className,
       )}
     >
-      <div className="animate-spin rounded-full border-b-2 border-Gray-3 w-8 h-8" />
+      <div ref={spinnerRef} className="animate-spin rounded-full border-b-2 w-full h-full" />
     </div>
   );
 };

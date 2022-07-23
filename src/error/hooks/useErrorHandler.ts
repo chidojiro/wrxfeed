@@ -11,7 +11,7 @@ export default function useErrorHandler(): ErrorHandler {
   return React.useCallback(
     async (error) => {
       if (!isApiError(error)) {
-        toast.error('An error occurred in the app.');
+        toast.error((error as Error).message ?? 'An error occurred in the app.');
         return;
       }
 

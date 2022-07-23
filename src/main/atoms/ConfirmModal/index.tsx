@@ -1,6 +1,7 @@
 import { ReactComponent as CloseIcon } from '@/assets/icons/outline/close.svg';
 import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
 import Modal, { ModalProps } from '@/common/atoms/Modal';
+import { Button } from '@/common/components';
 import { Dialog } from '@headlessui/react';
 import React, { useRef } from 'react';
 
@@ -36,22 +37,17 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <div className="pl-10 pr-8 pt-1 space-y-3">
           {children}
           <div className="flex items-center space-x-2">
-            <button
+            <Button
               ref={cancelButtonRef}
-              type="button"
               className="text-sm font-semibold text-Gray-6 hover:underline"
               onClick={onClose}
             >
               {cancelLabel}
-            </button>
+            </Button>
             <div className="w-[3px] h-[3px] rounded-[1.5px] flex-grow-0 bg-Neutral-Light" />
-            <button
-              type="button"
-              className="text-sm font-semibold text-purple-6 hover:underline"
-              onClick={onOk}
-            >
+            <Button className="text-sm font-semibold text-purple-6 hover:underline" onClick={onOk}>
               {okLabel}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { ArrowUpIcon } from '@/assets';
+import { Button } from '@/common/components';
 import { Transition } from '@headlessui/react';
 import React, { Fragment, MouseEventHandler } from 'react';
 
@@ -26,19 +27,23 @@ const NewFeedIndicator: React.FC<NewFeedIndicatorProps> = ({ isVisible, counter,
           leaveFrom="opacity-100 translate-y-0"
           leaveTo="opacity-0 translate-y-[-10rem]"
         >
-          <button
-            type="button"
+          <Button
+            variant="solid"
+            colorScheme="primary"
+            size="lg"
+            pill
             aria-hidden="true"
-            className="flex flex-row justify-center items-center px-4 py-2.5 rounded-full bg-primary shadow-sm space-x-1 pointer-events-auto"
             onClick={onClick}
+            iconRight={
+              <ArrowUpIcon
+                width={20}
+                height={20}
+                className="stroke-current path-no-stroke text-white stroke-[1.5]"
+              />
+            }
           >
-            <p className="text-sm font-semibold text-white">{title}</p>
-            <ArrowUpIcon
-              width={20}
-              height={20}
-              className="stroke-current path-no-stroke text-white stroke-[1.5]"
-            />
-          </button>
+            {title}
+          </Button>
         </Transition>
       </div>
     </div>

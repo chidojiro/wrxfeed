@@ -8,6 +8,7 @@ import { newFeedCountState } from '@/main/states/sidemenu.state';
 import clsx from 'clsx';
 import { BasicsXSmall } from '@/assets';
 import Loading from '@/common/atoms/Loading';
+import { Button } from '@/common/components';
 
 interface LeftTabCardProps {
   className?: string;
@@ -50,8 +51,7 @@ const LeftTabCard: React.FC<LeftTabCardProps> = ({ className = '', tab, showTabI
   };
 
   return (
-    <button
-      type="button"
+    <Button
       onClick={() => onClickLeftTab(tab.location.pathname)}
       className={clsx(
         isCurrentTab ? 'text-Accent-2 font-semibold' : 'text-Gray-3 font-regular',
@@ -120,7 +120,7 @@ const LeftTabCard: React.FC<LeftTabCardProps> = ({ className = '', tab, showTabI
         {tab?.isShowCounter && renderCounter(tab)}
       </div>
       <div className={clsx('h-6 w-1 rounded-full', isCurrentTab ? 'bg-Accent-2' : '')} />
-    </button>
+    </Button>
   );
 };
 

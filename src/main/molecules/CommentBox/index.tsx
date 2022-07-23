@@ -1,6 +1,7 @@
 import { ReactComponent as AttachIcon } from '@/assets/icons/outline/attach.svg';
 import { ReactComponent as SmileIcon } from '@/assets/icons/outline/mood-smile.svg';
 import UploadButton from '@/common/atoms/UploadButton';
+import { Button } from '@/common/components';
 import EmojiPicker from '@/common/molecules/EmojiPicker';
 import { UPLOAD_FILE_ACCEPT } from '@/config';
 import CommentInput from '@/main/atoms/CommentInput';
@@ -147,8 +148,7 @@ const CommentBox: React.FC<CommentFormProps> = ({
         >
           {showEmoji && (
             <>
-              <button
-                type="button"
+              <Button
                 ref={emojiRef}
                 className="flex justify-center items-center w-5 h-5 rounded-sm hover:bg-purple-8 transition-all"
                 onClick={openEmojiPicker}
@@ -160,7 +160,7 @@ const CommentBox: React.FC<CommentFormProps> = ({
                   height={14}
                   viewBox="0 0 17 17"
                 />
-              </button>
+              </Button>
             </>
           )}
           {!!showAttach && (
