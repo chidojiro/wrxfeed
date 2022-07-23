@@ -1,8 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { FeedFilters } from '@/api/types';
 import { MainGroups } from '@/common/constants';
 import { useLegacyQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
+import { GetFeedsParams } from '@/feed/types';
 import { Department } from '@/main/entity';
 import { FilterKeys } from '@/main/hooks';
 import { useDepartment } from '@/main/hooks/department.hook';
@@ -28,14 +27,16 @@ export const TeamsPage = () => {
   const { departments, hasMore, isLoading } = useDepartment(filter);
 
   // Feeds states
-  const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
+  const [feedsFilter, setFeedsFilter] = useState<GetFeedsParams>(
     deptId
       ? {
-          page: INIT_PAGINATION,
+          ...INIT_PAGINATION,
           rootDepartment: parseInt(deptId, 10),
         }
       : {
-          page: { offset: 0, limit: 0 }, // Don't load feed items at the first launch
+          // Don't load feed items at the first launch
+          offset: 0,
+          limit: 0,
         },
   );
   const { cleanData } = useFeed(feedsFilter);
@@ -55,8 +56,9 @@ export const TeamsPage = () => {
       cleanData();
       setFeedsFilter(newFilter);
     } else {
-      setFeedsFilter({ page: { offset: 0, limit: 0 } }); // Clean up feed item
+      setFeedsFilter({ offset: 0, limit: 0 }); // Clean up feed item
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deptId, query.toString(), feedsFilter.rootDepartment]);
 
   useEffect(() => {

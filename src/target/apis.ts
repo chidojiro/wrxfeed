@@ -19,25 +19,23 @@ const getList = ({
 }: GetTargetsParams) =>
   RestApis.get<Target[]>('/target/targets', {
     params: { forYou, year, isPrimary, type, ...restParams },
-  }).then((res) => res.data);
+  });
 
-const create = (payload: CreateTargetPayload) =>
-  RestApis.post<Target>('/target/targets', payload).then((res) => res.data);
+const create = (payload: CreateTargetPayload) => RestApis.post<Target>('/target/targets', payload);
 
 const update = (id: number, payload: UpdateTargetPayload) =>
-  RestApis.put<Target>(`/target/targets/${id}`, payload).then((res) => res.data);
+  RestApis.put<Target>(`/target/targets/${id}`, payload);
 
-const _delete = (id: number) => RestApis.delete(`/target/targets/${id}`).then(({ data }) => data);
+const _delete = (id: number) => RestApis.delete(`/target/targets/${id}`);
 
 const getSpending = (params: GetTargetSpendingParams): Promise<TargetSpending[]> => {
   return RestApis.patch<TargetSpending[]>('/target/spending', {
     ...params,
     periods: getFullYearPeriods(params.periods),
-  }).then(({ data }) => data);
+  });
 };
 
-const getSummaries = () =>
-  RestApis.get<TargetSummaries>('/target/summaries').then(({ data }) => data);
+const getSummaries = () => RestApis.get<TargetSummaries>('/target/summaries');
 
 export const TargetApis = {
   getList,

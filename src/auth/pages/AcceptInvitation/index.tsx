@@ -1,9 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useApi } from '@/api';
 import Loading from '@/common/atoms/Loading';
 import { useLegacyQuery } from '@/common/hooks';
 import { isApiError } from '@/error/utils';
+import { InvitationApis } from '@/invitation/apis';
 import { Routes } from '@/routing/routes';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
@@ -23,7 +21,6 @@ interface Error {
 }
 
 const AcceptInvitation: React.FC = () => {
-  const { acceptInvitation } = useApi();
   const query = useLegacyQuery();
   const router = useHistory();
   const [error, setError] = useState<Error | null>(null);
@@ -35,7 +32,7 @@ const AcceptInvitation: React.FC = () => {
       setLoading(false);
     } else {
       try {
-        const result = await acceptInvitation(inviteId);
+        const result = await InvitationApis.accept(inviteId);
         // Redirect to login
         router.replace(Routes.Login.path as string, {
           fromInvite: true,
@@ -65,10 +62,11 @@ const AcceptInvitation: React.FC = () => {
         setLoading(false);
       }
     }
-  }, [query, router, acceptInvitation]);
+  }, [query, router]);
 
   useEffect(() => {
     acceptInvitationRequest();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

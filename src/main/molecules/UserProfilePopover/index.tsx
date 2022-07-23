@@ -1,21 +1,19 @@
-import React, { Fragment, useState, useCallback, useEffect } from 'react';
-import { Popover, Transition } from '@headlessui/react';
-import { useRecoilState } from 'recoil';
-import { toast } from 'react-toastify';
-
-import { Profile } from '@/auth/types';
+import { AuthApis } from '@/auth/apis';
 import { profileState } from '@/auth/containers/ProfileEditForm/states';
-import { getNameAbbreviation } from '@/main/utils';
-import clsx from 'clsx';
-import { GetUploadTokenBody, UploadTypes } from '@/api/types';
-
-import { useApi } from '@/api';
-import { useSetIdentity } from '@/identity/hooks';
-import { useFileUploader } from '@/common/hooks/useFileUploader';
-
+import { Profile } from '@/auth/types';
 import Loading from '@/common/atoms/Loading';
 import UploadButton from '@/common/atoms/UploadButton';
+import { useFileUploader } from '@/common/hooks/useFileUploader';
 import { UPLOAD_FILE_ACCEPT } from '@/config';
+import { useSetIdentity } from '@/identity/hooks';
+import { getNameAbbreviation } from '@/main/utils';
+import { GetUploadFileTokenPayload } from '@/media/types';
+import { ProfileApis } from '@/profile/apis';
+import { Popover, Transition } from '@headlessui/react';
+import clsx from 'clsx';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useRecoilState } from 'recoil';
 
 export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
@@ -29,20 +27,18 @@ export type ProfileChanges = {
 const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
   const [profile, setProfile] = useRecoilState(profileState);
   const [profileUser, setProfileUser] = useState<Profile>(profile);
-  const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
+  const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadFileTokenPayload>();
   const [userAvatar, setAvatar] = useState<string>('');
   const [changeData, setChangeData] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { updateProfile } = useApi();
   const setIdentity = useSetIdentity();
-  const apiClient = useApi();
 
   const logout = useCallback(async () => {
-    await apiClient.logout();
+    await AuthApis.logout();
     setIdentity(undefined);
-  }, [setIdentity, apiClient]);
+  }, [setIdentity]);
 
   const profileForms = [
     {
@@ -96,7 +92,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
       lastLoginAt: profileUser.lastLoginAt || '',
       avatar: avatarUri,
     };
-    await updateProfile(updates);
+    await ProfileApis.update(updates);
     toast.success('Upload image successfully!');
     setProfile({
       ...profile,
@@ -121,7 +117,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
     setUploadFileOptions({
       filename: `${profileUser.id}-${Date.now()}-${file.name}`,
       contentType: file.type,
-      uploadType: UploadTypes.Attachments,
+      uploadType: 'attachments',
     });
     uploadFile(file, uploadFileOptions);
   };
@@ -185,12 +181,12 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
       bio: profileUser.bio || '',
       lastLoginAt: profileUser.lastLoginAt || '',
     };
-    await updateProfile(updates);
+    await ProfileApis.update(updates);
     setLoading(false);
     toast.success("Update your's profile info successfully!");
     setChangeData(false);
 
-    const userProfile = await apiClient.getProfile();
+    const userProfile = await ProfileApis.get();
     setProfileUser(userProfile);
   };
 

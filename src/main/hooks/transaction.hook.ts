@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import usePusher from '@/api/hooks/usePusher';
+import { usePusher } from '@/push-notification/usePusher';
 import { useIdentity } from '@/identity/hooks';
 import React from 'react';
 

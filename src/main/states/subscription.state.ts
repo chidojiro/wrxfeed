@@ -1,6 +1,6 @@
-import { selector, atom } from 'recoil';
-import { getApiClient } from '@/api/utils';
 import { Subscription } from '@/main/entity';
+import { atom, selector } from 'recoil';
+import { SubscriptionApis } from '@/subscription/apis';
 
 export const subscriptionState = atom<Subscription>({
   key: 'main/subscription',
@@ -8,8 +8,7 @@ export const subscriptionState = atom<Subscription>({
     key: 'main/subscription/default',
     get: async () => {
       try {
-        const apiClient = await getApiClient();
-        return await apiClient.getSubscriptions();
+        return await SubscriptionApis.get();
       } catch {
         return {
           departments: [],

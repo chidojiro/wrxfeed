@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useApi } from '@/api';
-import usePusher from '@/api/hooks/usePusher';
+import { usePusher } from '@/push-notification/usePusher';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
 import { useIdentity } from '@/identity/hooks';
 import { Notification } from '@/main/entity';
 import { newNotifyCountState } from '@/main/states/notify.state';
+import { NotificationApis } from '@/notification/apis';
 import { PaginationParams } from '@/rest/types';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -30,12 +29,11 @@ export function useNotification(page: PaginationParams): NotificationHookValues 
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isMarkAll, setMarkAll] = useState<boolean>(false);
   const [unreadCount, setUnreadCount] = useState<number>(0);
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
   const patchNotification = async (id: number) => {
     try {
-      await ApiClient.patchNotification(id);
+      await NotificationApis.markAsRead(id);
       const newNotifies = notifications.filter((item) => item.id !== id);
       setNotifications(newNotifies);
     } catch (error) {
@@ -51,7 +49,7 @@ export function useNotification(page: PaginationParams): NotificationHookValues 
     try {
       setLoading(true);
       if (page?.limit) {
-        const res = await ApiClient.getNotifications(page);
+        const res = await NotificationApis.getList(page);
         setUnreadCount(res.unreadCount);
         setNewNotifyCount(res.unreadCount);
         if (page?.offset) {
@@ -72,12 +70,13 @@ export function useNotification(page: PaginationParams): NotificationHookValues 
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, errorHandler, page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errorHandler, page]);
 
   const markAllAsRead = async () => {
     try {
       setMarkAll(true);
-      await ApiClient.patchAllNotification();
+      await NotificationApis.markAllAsRead();
       setUnreadCount(0);
       setNewNotifyCount(0);
       setMarkAll(false);
@@ -135,5 +134,6 @@ export function useNotifyChannel(
     return () => {
       channel.unbind(eventName, callback);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }

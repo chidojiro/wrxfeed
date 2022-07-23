@@ -1,7 +1,7 @@
-import { useApi } from '@/api';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
-import { LineItem } from '@/main/entity';
+import { FeedApis } from '@/feed/apis';
+import { LineItem, TransLineItem } from '@/main/entity';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -17,14 +17,13 @@ interface LineItemModalCallback {
 
 export function useUpdateLineItem(callback?: LineItemModalCallback): UpdateLineItemHookValues {
   const [isLoading, setLoading] = useState<boolean>(false);
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
   const updateLineItemById = useCallback(
-    async (id: number, data: LineItem) => {
+    async (id: number, data: Partial<TransLineItem>) => {
       try {
         setLoading(true);
-        await ApiClient.updateLineItemById(id, data);
+        await FeedApis.updateLineItem(id, data);
         callback?.onSuccess(data);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
@@ -39,7 +38,7 @@ export function useUpdateLineItem(callback?: LineItemModalCallback): UpdateLineI
         setLoading(false);
       }
     },
-    [ApiClient, callback, errorHandler],
+    [callback, errorHandler],
   );
 
   return { updateLineItemById, isLoading };

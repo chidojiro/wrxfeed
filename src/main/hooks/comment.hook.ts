@@ -1,7 +1,7 @@
-import { useApi } from '@/api';
-import { AddCommentParams, OrderDirection } from '@/api/types';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
+import { FeedApis } from '@/feed/apis';
+import { CreateCommentPayload } from '@/feed/types';
 import { useIdentity } from '@/identity/hooks';
 import { Comment, Transaction } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
@@ -13,7 +13,7 @@ interface CommentHookValues {
   total: number;
   isLoading: boolean;
   showLessComments: (keep: number) => void;
-  addComment: (comment: AddCommentParams) => Promise<void>;
+  addComment: (comment: CreateCommentPayload) => Promise<void>;
   editComment: (comment: Comment) => Promise<void>;
   deleteComment: (comment: Comment) => Promise<void>;
 }
@@ -23,7 +23,6 @@ export function useComment(
   pagination?: PaginationParams,
 ): CommentHookValues {
   const identity = useIdentity();
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [comments, setComments] = useState<Comment[]>([]);
   const [total, setTotal] = useState(transaction.commentCount ?? 0);
@@ -32,10 +31,9 @@ export function useComment(
   const getComments = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await ApiClient.getComments({
-        transactionId: transaction.id,
-        order: OrderDirection.DESC,
-        pagination,
+      const res = await FeedApis.getComments(transaction.id, {
+        order: 'DESC',
+        ...pagination,
       });
       // Comments're shown from bottom to top => need to reverse it;
       const reverse = res.reverse();
@@ -53,13 +51,13 @@ export function useComment(
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, errorHandler, transaction.id, pagination]);
+  }, [errorHandler, transaction.id, pagination]);
 
   const showLessComments = (keep: number): void => {
     setComments((prevComments) => prevComments.slice(-keep));
   };
 
-  const addComment = async (comment: AddCommentParams) => {
+  const addComment = async (comment: CreateCommentPayload) => {
     try {
       // const res = await ApiClient.addComment(transaction.id, comment);
       // if (!res.user) {

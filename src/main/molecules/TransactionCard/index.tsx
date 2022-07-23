@@ -1,7 +1,5 @@
-import { GetUploadTokenBody, UploadTypes } from '@/api/types';
 import { EyeHideIcon } from '@/assets';
 import { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';
-// Icons
 import { ReactComponent as ExclamationCircle } from '@/assets/icons/solid/exclamation-circle.svg';
 import NotifyBanner from '@/common/molecules/NotifyBanner';
 import { formatDate } from '@/common/utils';
@@ -20,9 +18,9 @@ import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
 import FeedBackModal from '@/main/organisms/FeedBackModal';
 import { CommentFormModel } from '@/main/types';
 import { commentEditorHtmlParser, decimalLogic, DecimalType } from '@/main/utils';
+import { GetUploadFileTokenPayload } from '@/media/types';
 import { PaginationParams } from '@/rest/types';
 import { Vendor } from '@/vendor/types';
-// Tailwind components
 import { Menu } from '@headlessui/react';
 import clsx from 'clsx';
 import { EditorState } from 'draft-js';
@@ -67,7 +65,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   const [confirmModal, setConfirmModal] = useState<ConfirmModalProps>();
   const [isOpenFeedbackModal, openFeedbackModal] = useState(false);
   const [attachFileComment, setAttachFileComment] = useState<File | null>(null);
-  const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
+  const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadFileTokenPayload>();
   // Data hooks
   const identity = useIdentity();
   const { comments, total, isLoading, addComment, editComment, deleteComment, showLessComments } =
@@ -150,7 +148,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
     setUploadFileOptions({
       filename: `${transaction.id}-${Date.now()}-${file.name}`,
       contentType: file.type,
-      uploadType: UploadTypes.Attachments,
+      uploadType: 'attachments',
     });
     setAttachFileComment(file);
   };

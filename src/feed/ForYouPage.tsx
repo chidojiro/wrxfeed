@@ -1,5 +1,3 @@
-import { useApi } from '@/api';
-import { FeedFilters } from '@/api/types';
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@/common/constants';
 import { useLegacyQuery } from '@/common/hooks';
@@ -16,6 +14,8 @@ import * as Sentry from '@sentry/react';
 import mixpanel from 'mixpanel-browser';
 import React, { useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import { FeedApis } from './apis';
+import { GetFeedsParams } from './types';
 
 const FilterKeys: string[] = ['department', 'category', 'vendor', 'rootDepartment'];
 
@@ -24,7 +24,6 @@ export const ForYouPage: React.FC = Sentry.withProfiler(
     const history = useHistory();
     const query = useLegacyQuery();
     const location = useLocation();
-    const { readAllTransactions } = useApi();
     const identity = useIdentity();
     const filterKey = FilterKeys.find((key) => query.get(key));
     const [filterTitle, setFilterTitle] = React.useState('');
@@ -43,7 +42,7 @@ export const ForYouPage: React.FC = Sentry.withProfiler(
 
     useEffect(() => {
       if (newFeedNumber > 0)
-        readAllTransactions().then(() => {
+        FeedApis.markAllTransactionsAsRead().then(() => {
           upsertNewFeedCount(location.pathname, 0);
         });
 
@@ -59,10 +58,13 @@ export const ForYouPage: React.FC = Sentry.withProfiler(
       feedListRef.current?.resetFeedFilters();
       scrollToTop();
       upsertNewFeedCount(location.pathname, 0);
-      readAllTransactions();
+      FeedApis.markAllTransactionsAsRead();
     };
 
-    const handleFilter = (key: keyof FeedFilters, value?: Department | Category | Vendor): void => {
+    const handleFilter = (
+      key: keyof GetFeedsParams,
+      value?: Department | Category | Vendor,
+    ): void => {
       // Update according to AP-889 https://heyarrow.atlassian.net/browse/AP-889
       if (key === 'departmentId') {
         history.push({

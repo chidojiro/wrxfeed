@@ -1,10 +1,9 @@
-import { VendorApis } from './../../vendor/apis';
-import { useApi } from '@/api';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
 import { VendorDescription } from '@/main/entity';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
+import { VendorApis } from '@/vendor/apis';
 
 interface UpdateVendorHookValues {
   updateVendorById: (id: number, data: VendorDescription) => Promise<void>;
@@ -18,7 +17,6 @@ interface VendorDescriptionModalCallback {
 
 export function useUpdateVendor(callback?: VendorDescriptionModalCallback): UpdateVendorHookValues {
   const [isLoading, setLoading] = useState<boolean>(false);
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
 
   const updateVendorById = useCallback(
@@ -40,7 +38,7 @@ export function useUpdateVendor(callback?: VendorDescriptionModalCallback): Upda
         setLoading(false);
       }
     },
-    [ApiClient, callback, errorHandler],
+    [callback, errorHandler],
   );
 
   return { updateVendorById, isLoading };

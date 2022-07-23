@@ -1,8 +1,8 @@
-import { FeedFilters } from '@/api/types';
 import { ChevronLeftIcon } from '@/assets';
 import { ListLoader } from '@/common/components';
 import { useQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
+import { GetFeedsParams } from '@/feed/types';
 import { Category, Department } from '@/main/entity';
 import FeedList from '@/main/organisms/FeedList';
 import React from 'react';
@@ -24,7 +24,7 @@ export const VendorPage = () => {
   const { data: vendor, isValidating } = useVendor(vendorId, { onError: goBack });
 
   const handleFeedsFilter = (
-    key: keyof FeedFilters,
+    key: keyof GetFeedsParams,
     value?: Department | Category | Vendor,
   ): void => {
     query.set(key, value?.id.toString() ?? '');

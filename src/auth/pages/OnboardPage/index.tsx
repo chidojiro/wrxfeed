@@ -1,6 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useApi } from '@/api';
 import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
 import { ReactComponent as SharpSpaceDashboard } from '@/assets/icons/solid/sharp-space-dashboard.svg';
 import DepartmentCell from '@/auth/molecules/DepartmentCell';
@@ -17,6 +14,7 @@ import { useSearch } from '@/main/hooks/search.hook';
 import { useSubscription } from '@/main/hooks/subscription.hook';
 import { SearchResult } from '@/main/types';
 import { getMultiRandomInt, getUniqueListBy } from '@/main/utils';
+import { ProfileApis } from '@/profile/apis';
 import { Routes } from '@/routing/routes';
 import { cloneDeep } from 'lodash-es';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -25,7 +23,6 @@ import { toast } from 'react-toastify';
 const OnboardPage: React.FC = () => {
   const identity = useIdentity();
   const { redirect } = useNavUtils();
-  const { updateProfile } = useApi();
   const errorHandler = useErrorHandler();
   const query = useLegacyQuery();
 
@@ -61,6 +58,7 @@ const OnboardPage: React.FC = () => {
     if (identity?.token && identity?.lastLoginAt && authDirect) {
       redirect(Routes.Dashboard.path as string);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [redirect, identity]);
 
   useEffect(() => {
@@ -89,6 +87,7 @@ const OnboardPage: React.FC = () => {
       setSuggestedTeams(teamNotFollowYet);
     }
     setIgnoreEmpty(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [departments]);
 
   const onClickIamDone = async () => {
@@ -102,7 +101,7 @@ const OnboardPage: React.FC = () => {
         bio: identity?.bio || '',
         lastLoginAt: currentTime.toISOString(),
       };
-      await updateProfile(updates);
+      await ProfileApis.update(updates);
       redirect(Routes.Dashboard.path as string);
     } catch (error: unknown) {
       if (isApiError(error)) {
@@ -120,6 +119,7 @@ const OnboardPage: React.FC = () => {
       setKeyword(event.target.value.toString());
       onClear();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [setKeyword],
   );
 

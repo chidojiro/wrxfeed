@@ -1,16 +1,13 @@
+import { USE_CONTACT_BUTTON_MESSAGE } from '@/error/errorMessages';
+import { useErrorHandler } from '@/error/hooks';
+import { isBadRequest } from '@/error/utils';
+import { FeedApis } from '@/feed/apis';
+import { GetFeedsParams } from '@/feed/types';
+import { useIdentity } from '@/identity/hooks';
+import { Category, FeedItem } from '@/main/entity';
+import mixpanel from 'mixpanel-browser';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import mixpanel from 'mixpanel-browser';
-
-import { useApi } from '@/api';
-import { useErrorHandler } from '@/error/hooks';
-import { useIdentity } from '@/identity/hooks';
-
-import { FeedFilters } from '@/api/types';
-import { isBadRequest } from '@/error/utils';
-import { Category, FeedItem } from '@/main/entity';
-import { USE_CONTACT_BUTTON_MESSAGE } from '@/error/errorMessages';
-import { FeedApis } from '@/feed/apis';
 
 interface FeedHookValues {
   feeds: FeedItem[];
@@ -19,11 +16,10 @@ interface FeedHookValues {
   updateCategory: (category: Partial<Category>) => Promise<void>;
   cleanData: () => void;
 }
-export function useFeed(filters: FeedFilters): FeedHookValues {
+export function useFeed(filters: GetFeedsParams): FeedHookValues {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const cleanData = () => setFeeds([]);
   const identity = useIdentity();
@@ -31,9 +27,9 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
   const getFeeds = useCallback(async () => {
     try {
       setLoading(true);
-      if (filters?.page?.limit) {
-        const res = await ApiClient.getFeeds(filters);
-        if (filters?.page?.offset !== 0) {
+      if (filters?.limit) {
+        const res = await FeedApis.getList(filters);
+        if (filters?.offset !== 0) {
           setFeeds((prevTrans) => [...prevTrans, ...res]);
 
           mixpanel.track('Feed Load More', {
@@ -45,7 +41,7 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
         } else {
           setFeeds(res);
         }
-        setHasMore(!!filters.page && filters.page?.limit <= res.length);
+        setHasMore(!!filters && filters?.limit <= res.length);
       } else {
         setHasMore(false);
       }
@@ -59,12 +55,12 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ApiClient, errorHandler, filters]);
+  }, [errorHandler, filters]);
 
   const updateCategory = useCallback(
     async (category: Partial<Category>) => {
       try {
-        await FeedApis.updateCategory(category);
+        await FeedApis.updateCategory(category.id!, category);
         // Update current feeds
         setFeeds((prev) => {
           const newFeeds = prev.map((item) => {
@@ -87,7 +83,7 @@ export function useFeed(filters: FeedFilters): FeedHookValues {
         }
       }
     },
-    [ApiClient, errorHandler],
+    [errorHandler],
   );
 
   useEffect(() => {

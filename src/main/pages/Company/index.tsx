@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useApi } from '@/api';
-import { FeedFilters } from '@/api/types';
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@/common/constants';
 import { useLegacyQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
+import { FeedApis } from '@/feed/apis';
+import { GetFeedsParams } from '@/feed/types';
 import { useIdentity } from '@/identity';
 import NewFeedIndicator from '@/main/atoms/NewFeedIndicator';
 import { Category, Department } from '@/main/entity';
@@ -13,6 +12,7 @@ import { useFeed } from '@/main/hooks/feed.hook';
 import { useNewFeedCount } from '@/main/hooks/newFeedCount.hook';
 import FeedList from '@/main/organisms/FeedList';
 import { scrollToTop } from '@/main/utils';
+import { DepartmentApis } from '@/team/apis';
 import { VendorApis } from '@/vendor/apis';
 import { Vendor } from '@/vendor/types';
 import * as Sentry from '@sentry/react';
@@ -25,16 +25,13 @@ const INIT_PAGINATION = {
   offset: 0,
   limit: LIMIT,
 };
-const INIT_FEED_FILTER = Object.freeze({
-  page: INIT_PAGINATION,
-});
+const INIT_FEED_FILTER = Object.freeze(INIT_PAGINATION);
 
 const CompanyPage = () => {
   const query = useLegacyQuery();
   const history = useHistory();
   const location = useLocation();
-  const { readAllTransactions, getCategoryById, getDepartmentById } = useApi();
-  const [feedFilters, setFeedFilters] = useState<FeedFilters>(INIT_FEED_FILTER);
+  const [feedFilters, setFeedFilters] = useState<GetFeedsParams>(INIT_FEED_FILTER);
   const [filterTitle, setFilterTitle] = useState('');
   const filterKey = FilterKeys.find((key) => query.get(key));
 
@@ -58,7 +55,7 @@ const CompanyPage = () => {
     if (key === FilterKeys[1] && filterKey && query.get(filterKey)) {
       const catId = query.get(filterKey);
       if (!catId) return;
-      const category = await getCategoryById(parseInt(catId, 10));
+      const category = await FeedApis.getCategory(parseInt(catId, 10));
       setFilterTitle(category?.name);
     }
   };
@@ -67,7 +64,7 @@ const CompanyPage = () => {
     if (key === FilterKeys[0] && filterKey && query.get(filterKey)) {
       const depId = query.get(filterKey);
       if (!depId) return;
-      const department = await getDepartmentById(parseInt(depId, 10));
+      const department = await DepartmentApis.get(parseInt(depId, 10));
       setFilterTitle(department?.name);
     }
   };
@@ -78,6 +75,7 @@ const CompanyPage = () => {
       email: identity?.email,
       company: identity?.company?.id,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -96,12 +94,13 @@ const CompanyPage = () => {
           break;
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [feeds]);
 
   useEffect(() => {
     if (filterKey) {
       setFeedFilters({
-        page: INIT_PAGINATION,
+        ...INIT_PAGINATION,
         [filterKey]: query.get(filterKey),
         forYou: 0,
       });
@@ -111,9 +110,13 @@ const CompanyPage = () => {
     } else {
       setFeedFilters(INIT_FEED_FILTER);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setFeedFilters, filterKey]);
 
-  const handleFilter = (key: keyof FeedFilters, value?: Department | Category | Vendor): void => {
+  const handleFilter = (
+    key: keyof GetFeedsParams,
+    value?: Department | Category | Vendor,
+  ): void => {
     // Update according to AP-889 https://heyarrow.atlassian.net/browse/AP-889
     if (key === 'departmentId') {
       history.push({
@@ -137,11 +140,11 @@ const CompanyPage = () => {
   };
 
   const refetchNewItems = () => {
-    setFeedFilters({ ...feedFilters, page: INIT_PAGINATION });
+    setFeedFilters({ ...feedFilters, ...INIT_PAGINATION });
     scrollToTop();
     // Clear counter
     upsertNewFeedCount(location.pathname, 0);
-    readAllTransactions();
+    FeedApis.markAllTransactionsAsRead();
   };
 
   useFeedChannel(FeedChannelEvents.NEW_ITEM, (data: FeedEventData) => {

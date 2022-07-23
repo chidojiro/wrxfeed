@@ -1,4 +1,4 @@
-import { useApi } from '@/api';
+import { FeedApis } from '@/feed/apis';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
 import { useState } from 'react';
@@ -18,7 +18,6 @@ interface FeedbackHookValues {
 }
 
 export function useFeedBack(callback: FeedBackModalCallback): FeedbackHookValues {
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [isLoading, setLoading] = useState(false);
   const [isSent, setSent] = useState(false);
@@ -28,9 +27,9 @@ export function useFeedBack(callback: FeedBackModalCallback): FeedbackHookValues
       setSent(false);
       setLoading(true);
       if (type === FeedBackType.Rollup) {
-        await ApiClient.postFeedBackFeed(itemId, data);
+        await FeedApis.createFeedback(itemId, data);
       } else {
-        await ApiClient.postFeedBackLineItem(itemId, data);
+        await FeedApis.createFeedback(itemId, data);
       }
       setSent(true);
       callback.onSuccess();

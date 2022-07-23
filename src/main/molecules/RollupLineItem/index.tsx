@@ -1,6 +1,6 @@
-import { useApi } from '@/api';
 import { useIntersection } from '@/common/hooks';
 import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@/config';
+import { FeedApis } from '@/feed/apis';
 import { TransLineItem } from '@/main/entity';
 import { lineItemSelectState } from '@/main/states/lineItems.state';
 import { slideOverOpenState } from '@/main/states/slideOver.state';
@@ -19,7 +19,6 @@ export interface RollupLineItemProps {
 const RollupLineItem: React.FC<RollupLineItemProps> = ({ lineItem, onClick }) => {
   const viewRef = useRef<HTMLButtonElement>(null);
   const isVisible = useIntersection(viewRef.current || undefined, '0px');
-  const { maskLineItemAsRead } = useApi();
 
   const [lineItemSelect, setLineItemSelect] = useRecoilState(lineItemSelectState);
   const slideOverOpened = useRecoilValue(slideOverOpenState);
@@ -40,9 +39,9 @@ const RollupLineItem: React.FC<RollupLineItemProps> = ({ lineItem, onClick }) =>
 
   useEffect(() => {
     if (lineItem?.meta?.isRead === false) {
-      maskLineItemAsRead(lineItem?.id);
+      FeedApis.markLineItemAsRead(lineItem?.id);
     }
-  }, [lineItem?.id, lineItem?.meta?.isRead, maskLineItemAsRead]);
+  }, [lineItem?.id, lineItem?.meta?.isRead]);
 
   const renderGreenDot = () => {
     if (lineItem?.meta?.isRead === false && isRead === false) {
@@ -58,7 +57,7 @@ const RollupLineItem: React.FC<RollupLineItemProps> = ({ lineItem, onClick }) =>
     if (onClick) onClick(lineItem);
     setLineItemSelect(lineItem);
     setRead(true);
-    maskLineItemAsRead(lineItem?.id);
+    FeedApis.markLineItemAsRead(lineItem?.id);
   };
 
   const renderVendorName = () => {

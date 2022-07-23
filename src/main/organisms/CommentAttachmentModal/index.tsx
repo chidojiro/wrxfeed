@@ -1,15 +1,14 @@
-import React, { useRef } from 'react';
-import { EditorState } from 'draft-js';
-import { MentionData } from '@draft-js-plugins/mention';
-
-import CommentBox from '@/main/molecules/CommentBox';
-import { GetUploadTokenBody } from '@/api/types';
-import CircleAvatar from '@/main/atoms/CircleAvatar';
-import ImageFilePreview from '@/main/atoms/ImageFilePreview';
-import { CommentFormModel } from '@/main/types';
-import { useFileUploader } from '@/common/hooks/useFileUploader';
 import LinearProgress from '@/common/atoms/LinearProgress';
 import Modal, { ModalProps } from '@/common/atoms/Modal';
+import { useFileUploader } from '@/common/hooks/useFileUploader';
+import CircleAvatar from '@/main/atoms/CircleAvatar';
+import ImageFilePreview from '@/main/atoms/ImageFilePreview';
+import CommentBox from '@/main/molecules/CommentBox';
+import { CommentFormModel } from '@/main/types';
+import { GetUploadFileTokenPayload } from '@/media/types';
+import { MentionData } from '@draft-js-plugins/mention';
+import { EditorState } from 'draft-js';
+import React, { useRef } from 'react';
 
 export type AttachmentModalProps = ModalProps & {
   style?: React.CSSProperties;
@@ -17,7 +16,7 @@ export type AttachmentModalProps = ModalProps & {
   catName?: string;
   file: File | null;
   mentionData: MentionData[];
-  uploadOptions?: GetUploadTokenBody;
+  uploadOptions?: GetUploadFileTokenPayload;
   onFileUploaded: (data: CommentFormModel) => void;
 };
 

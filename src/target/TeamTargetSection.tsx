@@ -8,7 +8,7 @@ import { AddTargetModal } from './AddTargetModal';
 import { TargetCards } from './TargetCards';
 import { useTargets } from './useTargets';
 import { useHistory } from 'react-router-dom';
-import { MainGroups } from '@/common/constants';
+import { EMPTY_ARRAY, MainGroups } from '@/common/constants';
 
 export interface TeamTargetSectionProps {
   className?: string;
@@ -23,7 +23,7 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
   const history = useHistory();
 
   const { data: department } = useDepartment(departmentId);
-  const { data: targets = [], mutate: mutateTargets } = useTargets({
+  const { data: targets = EMPTY_ARRAY, mutate: mutateTargets } = useTargets({
     dep: departmentId,
     forYou: 1,
   });
