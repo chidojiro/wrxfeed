@@ -151,7 +151,9 @@ export const MiniChartView = <
                 <p className="text-white text-2xs">Target</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers, '$')}
+                {dataPoints?.target !== 0
+                  ? decimalLogic(dataPoints?.target, DecimalType.SummedNumbers, '$')
+                  : 'N/A'}
               </p>
             </div>
             <div
@@ -163,7 +165,9 @@ export const MiniChartView = <
                 <p className="text-white text-2xs">Current</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.thisYear ?? 0, DecimalType.SummedNumbers, '$')}
+                {dataPoints?.thisYear !== 0
+                  ? decimalLogic(dataPoints?.thisYear, DecimalType.SummedNumbers, '$')
+                  : 'N/A'}
               </p>
             </div>
             <div
@@ -175,7 +179,9 @@ export const MiniChartView = <
                 <p className="text-white text-2xs">Last Year</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.lastYear ?? 0, DecimalType.SummedNumbers, '$')}
+                {dataPoints?.lastYear !== 0
+                  ? decimalLogic(dataPoints?.lastYear, DecimalType.SummedNumbers, '$')
+                  : 'N/A'}
               </p>
             </div>
           </div>
