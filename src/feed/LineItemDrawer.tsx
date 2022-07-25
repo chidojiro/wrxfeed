@@ -4,6 +4,7 @@ import { useFetcher } from '@/common/hooks';
 import { OpenClose } from '@/common/types';
 import { useIdentity } from '@/identity/hooks';
 import { TransLineItem } from '@/main/entity';
+import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import mixpanel from 'mixpanel-browser';
 import React from 'react';
@@ -29,6 +30,8 @@ export const LineItemDrawer = withMountOnOpen(
       () => FeedApis.getLineItem(lineItem.id),
     );
 
+    const closeOnClickOutsideDisclosure = useDisclosure({ defaultIsOpen: true });
+
     React.useEffect(() => {
       mixpanel.track('Feed Detail View', {
         user_id: identity?.id,
@@ -40,9 +43,19 @@ export const LineItemDrawer = withMountOnOpen(
     }, [feedId, identity?.company?.id, identity?.email, identity?.id, lineItem?.id]);
 
     return (
-      <Drawer open={open} onClose={onClose}>
+      <Drawer
+        open={open}
+        onClose={onClose}
+        closeOnClickOutside={closeOnClickOutsideDisclosure.isOpen}
+      >
         <div className={clsx('relative z-20 flex flex-1 flex-col pt-navbar h-full', className)}>
-          <LineItemDetails onCloseClick={onClose} loading={isValidating} item={lineItemDetails} />
+          <LineItemDetails
+            onCloseClick={onClose}
+            loading={isValidating}
+            item={lineItemDetails}
+            onModalOpen={closeOnClickOutsideDisclosure.onClose}
+            onModalClose={closeOnClickOutsideDisclosure.onOpen}
+          />
         </div>
       </Drawer>
     );

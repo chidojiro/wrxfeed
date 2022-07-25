@@ -49,9 +49,7 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const INIT_FEED_FILTER = Object.freeze({
-  page: INIT_PAGINATION,
-});
+const INIT_FEED_FILTER = Object.freeze(INIT_PAGINATION);
 
 const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
   { style, hasEmptyStateComponent, hasEndComponent, onFilter, depId, forYou, categoryId, vendorId },
@@ -107,10 +105,8 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     setFeedFilters((prevFilter) => {
       return {
         ...prevFilter,
-        page: {
-          limit: prevFilter?.limit ?? LIMIT,
-          offset: (prevFilter?.offset ?? 0) + (prevFilter?.limit ?? LIMIT),
-        },
+        limit: prevFilter?.limit ?? LIMIT,
+        offset: (prevFilter?.offset ?? 0) + (prevFilter?.limit ?? LIMIT),
         forYou,
       };
     });

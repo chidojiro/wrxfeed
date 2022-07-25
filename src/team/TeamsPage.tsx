@@ -45,7 +45,7 @@ export const TeamsPage = () => {
     if (deptId) {
       const idNum = parseInt(deptId, 10);
       const newFilter: { [key: string]: string | number | PaginationParams | null } = {
-        page: INIT_PAGINATION,
+        ...INIT_PAGINATION,
         rootDepartment: idNum,
       };
       FilterKeys.forEach((key) => {
