@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { SearchFilters } from '@/api/types';
 import { SearchTypes } from '@/auth/types';
 import { FeedApis } from '@/feed/apis';
 import { Category, Department } from '@/main/entity';
@@ -12,6 +10,16 @@ import { Vendor } from '@/vendor/types';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRecoilState } from 'recoil';
+
+export type SearchFilters = {
+  keyword: string;
+  searchDept?: boolean;
+  searchVend?: boolean;
+  searchCate?: boolean;
+  ignoreEmptyKeyword?: boolean;
+  searchType?: SearchTypes;
+  except?: SearchResult[] | null;
+};
 
 const LIMIT = 2999;
 const INIT_PAGINATION = Object.freeze({

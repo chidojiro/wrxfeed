@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import Pusher from 'pusher-js';
-import PusherContext from '@/api/contexts/PusherContext';
+import PusherContext from './PusherContext';
 import { PUSHER_APP_KEY, PUSHER_APP_CLUSTER } from '@/config';
 import { Children } from '@/common/types';
 

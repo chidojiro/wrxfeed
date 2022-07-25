@@ -17,6 +17,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = (props) => {
   const defaultHandler = useErrorHandler();
   const handleError: ErrorHandler = React.useCallback(
     async (error) => {
+      console.error(error);
       if (isUnauthenticated(error)) {
         defaultHandler(error);
       }

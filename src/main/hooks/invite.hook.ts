@@ -1,4 +1,4 @@
-import { useApi } from '@/api';
+import { InvitationApis } from '@/invitation/apis';
 import { useErrorHandler } from '@/error/hooks';
 import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
@@ -15,7 +15,6 @@ interface InviteHookValues {
 }
 
 export function useInvite(): InviteHookValues {
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [isLoading, setLoading] = useState(false);
   const [isSent, setSent] = useState(false);
@@ -25,7 +24,7 @@ export function useInvite(): InviteHookValues {
   const sendInvitation = async (contact: Partial<Contact>) => {
     try {
       setLoading(true);
-      await ApiClient.sendInvitation({ email: contact?.email ?? '' });
+      await InvitationApis.send({ email: contact?.email ?? '' });
       setSent(true);
 
       mixpanel.track('Invite Sent', {

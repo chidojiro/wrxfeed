@@ -1,4 +1,4 @@
-import { getApiClient } from '@/api/utils';
+import { AuthApis } from '@/auth/apis';
 import { AuthProfile } from '@/auth/types';
 import { atom, AtomEffect, selector } from 'recoil';
 import { Identity } from './types';
@@ -30,8 +30,7 @@ export const authProfileState = selector<AuthProfile | null>({
   get: async ({ get }) => {
     get(identityState);
     try {
-      const apiClient = await getApiClient();
-      return await apiClient.getAuthProfile();
+      return await AuthApis.getProfile();
     } catch {
       return null;
     }

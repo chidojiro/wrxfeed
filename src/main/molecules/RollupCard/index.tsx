@@ -1,17 +1,12 @@
-import { GetUploadTokenBody, UploadTypes } from '@/api/types';
-// assets
 import { ExclamationCircle, EyeHideIcon, MoreVerticalIcon } from '@/assets';
-// components
+import { Button } from '@/common/components';
 import NotifyBanner from '@/common/molecules/NotifyBanner';
-import clsx from 'clsx';
 import { ProtectedFeatures } from '@/identity/constants';
-// hooks
 import { useIdentity, usePermission } from '@/identity/hooks';
 import CommentViewAll from '@/main/atoms/CommentViewAll';
 import ConfirmModal from '@/main/atoms/ConfirmModal';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
-// constants
 import { Category, Department, FeedItem, Visibility } from '@/main/entity';
 import { useMention } from '@/main/hooks';
 import { useFeedComment } from '@/main/hooks/feedComment.hook';
@@ -29,15 +24,16 @@ import {
   getDisplayUsdAmount,
   getTotalFeedItem,
 } from '@/main/utils';
+import { GetUploadFileTokenPayload } from '@/media/types';
 import { PaginationParams } from '@/rest/types';
+import { Vendor } from '@/vendor/types';
 import { Menu } from '@headlessui/react';
+import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { EditorState } from 'draft-js';
 import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { Vendor } from '@/vendor/types';
-import { Button } from '@/common/components';
 
 export interface RollupCardProps {
   feedItem: FeedItem;
@@ -77,7 +73,7 @@ const RollupCard: React.FC<RollupCardProps> = ({
   const [confirmModal, setConfirmModal] = React.useState<ConfirmModalProps>();
   const [isOpenFeedbackModal, openFeedbackModal] = React.useState(false);
   const [attachFileComment, setAttachFileComment] = React.useState<File | null>(null);
-  const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
+  const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadFileTokenPayload>();
   // Data hooks
   const { mentions } = useMention();
   const { checkPermission } = usePermission();
@@ -159,7 +155,7 @@ const RollupCard: React.FC<RollupCardProps> = ({
     setUploadFileOptions({
       filename: `${feedItem?.id}-${Date.now()}-${file.name}`,
       contentType: file.type,
-      uploadType: UploadTypes.Attachments,
+      uploadType: 'attachments',
     });
     setAttachFileComment(file);
   };

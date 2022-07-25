@@ -1,29 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/accessible-emoji */
-import { useApi } from '@/api';
 import Loading from '@/common/atoms/Loading';
 import { MainGroups } from '@/common/constants';
 import { useLegacyQuery, useNavUtils } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
 import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
+import { FeedApis } from '@/feed/apis';
+import { LineItemDrawer } from '@/feed/LineItemDrawer';
+import { TargetFeedCard } from '@/feed/TargetFeedCard';
+import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 import { Category, Department, FeedItem, FeedType } from '@/main/entity';
 import RollupCard from '@/main/molecules/RollupCard';
 import { Routes } from '@/routing/routes';
-import { TargetFeedCard } from '@/feed/TargetFeedCard';
+import { Vendor } from '@/vendor/types';
 import * as Sentry from '@sentry/react';
 import React, { useEffect, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Vendor } from '@/vendor/types';
-import { LineItemDrawer } from '@/feed/LineItemDrawer';
-import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 
 const FeedPage: React.FC = () => {
   const history = useHistory();
   const { redirect } = useNavUtils();
-  const ApiClient = useApi();
   const query = useLegacyQuery();
   const { id: feedId } = useParams<{ id: string }>();
   const [feedItem, setFeedItem] = useState<FeedItem | undefined>();
@@ -41,7 +40,7 @@ const FeedPage: React.FC = () => {
   const getFeedItem = async (id: number) => {
     try {
       setLoading(true);
-      const res = await ApiClient.getFeedItemById(id);
+      const res = await FeedApis.get(id);
       setFeedItem(res);
     } catch (error: unknown) {
       if (isApiError(error)) {
@@ -60,11 +59,9 @@ const FeedPage: React.FC = () => {
   const getTargetFeedItem = async (targetId: number) => {
     try {
       setLoading(true);
-      const res = await ApiClient.getFeeds({
-        page: {
-          offset: 0,
-          limit: 10,
-        },
+      const res = await FeedApis.getList({
+        offset: 0,
+        limit: 10,
         targetId,
       });
       if (res.length > 0) {

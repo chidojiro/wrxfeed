@@ -1,7 +1,7 @@
-import { useApi } from '@/api';
-import { AddCommentParams, OrderDirection } from '@/api/types';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
+import { FeedApis } from '@/feed/apis';
+import { CreateCommentPayload } from '@/feed/types';
 import { useIdentity } from '@/identity/hooks';
 import { Comment, FeedItem } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
@@ -13,7 +13,7 @@ interface CommentHookValues {
   comments: Comment[];
   isLoading: boolean;
   showLessComments: (keep: number) => void;
-  addComment: (comment: AddCommentParams) => Promise<void>;
+  addComment: (comment: CreateCommentPayload) => Promise<void>;
   editComment: (comment: Comment) => Promise<void>;
   deleteComment: (comment: Comment) => Promise<void>;
   hasMore: boolean;
@@ -21,7 +21,6 @@ interface CommentHookValues {
 
 export function useFeedComment(feed: FeedItem, page?: PaginationParams): CommentHookValues {
   const identity = useIdentity();
-  const ApiClient = useApi();
   const errorHandler = useErrorHandler();
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setLoading] = useState(false);
@@ -30,10 +29,9 @@ export function useFeedComment(feed: FeedItem, page?: PaginationParams): Comment
   const getComments = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await ApiClient.getFeedItemComments({
-        feedId: feed?.id,
-        order: OrderDirection.DESC,
-        page,
+      const res = await FeedApis.getComments(feed?.id, {
+        order: 'DESC',
+        ...page,
       });
       // Comments're shown from bottom to top => need to reverse it;
       const reverse = res.reverse();
@@ -52,15 +50,15 @@ export function useFeedComment(feed: FeedItem, page?: PaginationParams): Comment
     } finally {
       setLoading(false);
     }
-  }, [ApiClient, errorHandler, feed?.id, page]);
+  }, [errorHandler, feed?.id, page]);
 
   const showLessComments = (keep: number): void => {
     setComments((prevComments) => prevComments.slice(-keep));
   };
 
-  const addComment = async (comment: AddCommentParams) => {
+  const addComment = async (comment: CreateCommentPayload) => {
     try {
-      const res = await ApiClient.addFeedItemComment(feed.id, comment);
+      const res = await FeedApis.createComment(feed.id, comment);
       if (!res.user) {
         res.user = {
           id: identity?.id,
@@ -92,7 +90,7 @@ export function useFeedComment(feed: FeedItem, page?: PaginationParams): Comment
     try {
       setLoading(true);
       // Request API to update
-      await ApiClient.editComment(comment.id, comment);
+      await FeedApis.updateComment(comment.id, comment);
       // Replace old comment
       const oldIdx = comments.findIndex((cmt) => cmt.id === comment.id);
       if (oldIdx > -1) {
@@ -116,7 +114,7 @@ export function useFeedComment(feed: FeedItem, page?: PaginationParams): Comment
   const deleteComment = async (comment: Comment) => {
     try {
       setLoading(true);
-      await ApiClient.deleteComment(comment.id);
+      await FeedApis.deleteComment(comment.id);
       // Remove comment from current list
       setComments((prevComments) => prevComments.filter((cmt) => cmt.id !== comment.id));
     } catch (error) {

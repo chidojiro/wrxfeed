@@ -1,9 +1,9 @@
-import { useApi } from '@/api';
-import { SubscriptionParams } from '@/api/types';
 import { isApiError } from '@/error/utils';
 import { useIdentity } from '@/identity/hooks';
 import { Category, Department, Subscription } from '@/main/entity';
 import { subscriptionState } from '@/main/states/subscription.state';
+import { SubscriptionApis } from '@/subscription/apis';
+import { UpdateSubscriptionPayload } from '@/subscription/types';
 import { Vendor } from '@/vendor/types';
 import { cloneDeep } from 'lodash-es';
 import mixpanel from 'mixpanel-browser';
@@ -28,7 +28,6 @@ interface SubscriptionHookValues {
   isFollowing: (type: keyof Subscription, channel: Department | Category | Vendor) => boolean;
 }
 export function useSubscription(callback?: SubscribeCallback): SubscriptionHookValues {
-  const ApiClient = useApi();
   const [subscription, setSubscription] = useRecoilState(subscriptionState);
   const [isFollowLoading, setFollowLoading] = useState<boolean>(false);
   const [isUnfollowLoading, setUnfollowLoading] = useState<boolean>(false);
@@ -38,7 +37,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
   function unsubscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
     // Call API to unsubscribe follow data
     setUnfollowLoading(true);
-    ApiClient.deleteSubscriptions({ [type]: [channel.id] })
+    SubscriptionApis.delete({ [type]: [channel.id] })
       .then(() => {
         if (callback && callback.onUnfollowSuccess) callback?.onUnfollowSuccess();
         const newSubscription: Subscription = cloneDeep(subscription);
@@ -84,12 +83,12 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
 
   function batchUnsubscribe(subs: Subscription) {
     setUnfollowLoading(true);
-    const params: SubscriptionParams = {
+    const params: UpdateSubscriptionPayload = {
       departments: subs.departments?.map((dep) => dep.id) || [],
       categories: subs.categories?.map((cat) => cat.id) || [],
       vendors: subs.vendors?.map((vendor) => vendor.id) || [],
     };
-    ApiClient.deleteSubscriptions(params)
+    SubscriptionApis.delete(params)
       .then(() => {
         if (callback && callback.onUnfollowSuccess) callback?.onUnfollowSuccess();
         const newSubscription: Subscription = cloneDeep(subscription);
@@ -123,7 +122,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
   function subscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
     setFollowLoading(true);
     // Call API to update follow data
-    ApiClient.updateSubscriptions({ [type]: [channel.id] })
+    SubscriptionApis.update({ [type]: [channel.id] })
       .then(() => {
         if (callback && callback.onFollowSuccess) callback?.onFollowSuccess();
         const newSubscription: Subscription = cloneDeep(subscription);
@@ -175,12 +174,12 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
 
   function batchSubscribe(subs: Subscription) {
     setFollowLoading(true);
-    const params: SubscriptionParams = {
+    const params: UpdateSubscriptionPayload = {
       departments: subs.departments?.map((dep) => dep.id) || [],
       categories: subs.categories?.map((cat) => cat.id) || [],
       vendors: subs.vendors?.map((vendor) => vendor.id) || [],
     };
-    ApiClient.updateSubscriptions(params)
+    SubscriptionApis.update(params)
       .then(() => {
         if (callback && callback.onFollowSuccess) callback?.onFollowSuccess();
         const newSubscription: Subscription = cloneDeep(subscription);

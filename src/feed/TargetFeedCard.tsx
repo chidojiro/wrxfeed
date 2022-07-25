@@ -1,4 +1,3 @@
-import { GetUploadTokenBody, UploadTypes } from '@/api/types';
 import { ExclamationCircle, EyeHideIcon } from '@/assets';
 import Loading from '@/common/atoms/Loading';
 import { useHandler } from '@/common/hooks';
@@ -18,6 +17,7 @@ import AttachmentModal from '@/main/organisms/CommentAttachmentModal';
 import FeedBackModal from '@/main/organisms/FeedBackModal';
 import { CommentFormModel } from '@/main/types';
 import { commentEditorRawParser, getTargetName } from '@/main/utils';
+import { GetUploadFileTokenPayload } from '@/media/types';
 import { PaginationParams } from '@/rest/types';
 import { AddTargetModal } from '@/target/AddTargetModal';
 import { TargetApis } from '@/target/apis';
@@ -62,7 +62,7 @@ export const TargetFeedCard: React.FC<TargetFeedCardProps> = React.memo(
     const [confirmModal, setConfirmModal] = React.useState<ConfirmModalProps>();
     const [isOpenFeedbackModal, openFeedbackModal] = React.useState(false);
     const [attachFileComment, setAttachFileComment] = React.useState<File | null>(null);
-    const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadTokenBody>();
+    const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadFileTokenPayload>();
     const [itemEditing, setItemEditing] = React.useState<Target | null>(null);
     const addTargetModalDisclosure = useDisclosure();
     // Data hooks
@@ -129,8 +129,8 @@ export const TargetFeedCard: React.FC<TargetFeedCardProps> = React.memo(
       setUploadFileOptions({
         filename: `${curFeed?.id}-${Date.now()}-${file.name}`,
         contentType: file.type,
-        uploadType: UploadTypes.Attachments,
-      });
+        uploadType: 'attachments',
+      } as GetUploadFileTokenPayload);
       setAttachFileComment(file);
     };
 

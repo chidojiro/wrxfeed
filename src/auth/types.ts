@@ -50,3 +50,8 @@ export enum SearchTypes {
   Local = 'Local',
   Api = 'Api',
 }
+
+export type LoginPayload = {
+  email: string;
+  password: string;
+};

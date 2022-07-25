@@ -1,23 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { useLocation } from 'react-router-dom';
-import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
-
-import { useNavUtils } from '@/common/hooks';
-import { useIdentity, useSetIdentity } from '@/identity/hooks';
-import { useApi } from '@/api';
-import { useErrorHandler, isApiError, ApiErrorCode } from '@/error';
-
-import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@/config';
-import { Routes } from '@/routing/routes';
-import { ProviderName } from '@/main/entity';
-
-import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
+import { AuthApis } from '@/auth/apis';
 import NotInvited from '@/auth/molecules/NotInvited';
+import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
+import { useNavUtils } from '@/common/hooks';
 import NotifyBanner from '@/common/molecules/NotifyBanner';
-
+import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@/config';
+import { ApiErrorCode, isApiError, useErrorHandler } from '@/error';
+import { useIdentity, useSetIdentity } from '@/identity/hooks';
+import { ProviderName } from '@/main/entity';
+import { ProfileApis } from '@/profile/apis';
+import { Routes } from '@/routing/routes';
 import mixpanel from 'mixpanel-browser';
+import React, { useEffect, useState } from 'react';
+import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import { useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export interface LocationState {
   fromInvite?: boolean;
@@ -27,7 +23,6 @@ export interface LocationState {
 }
 
 const LoginPage: React.FC = () => {
-  const { signInWithGoogle, getProfile } = useApi();
   const { redirect } = useNavUtils();
   const location = useLocation<LocationState>();
   const identity = useIdentity();
@@ -62,9 +57,9 @@ const LoginPage: React.FC = () => {
     try {
       if ('accessToken' in response) {
         const { accessToken } = response;
-        const userToken = await signInWithGoogle(accessToken);
+        const userToken = await AuthApis.signInWithGoogle(accessToken);
         const googleProfile = 'profileObj' in response ? response.profileObj : null;
-        const userProfile = await getProfile();
+        const userProfile = await ProfileApis.get();
         setIdentity({
           token: userToken.token,
           expireAt: userToken.expireAt,

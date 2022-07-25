@@ -1,6 +1,6 @@
+import { ProfileApis } from '@/profile/apis';
+import { Profile } from '@/profile/types';
 import { atom, selector } from 'recoil';
-import { getApiClient } from '../../../api';
-import { Profile } from '../../types';
 
 export const refreshProfileFlag = atom<number>({
   key: 'admin/load-profile',
@@ -13,8 +13,7 @@ export const profileState = atom<Profile>({
     key: 'main/profile/default',
     get: async () => {
       try {
-        const apiClient = await getApiClient();
-        return await apiClient.getProfile();
+        return await ProfileApis.get();
       } catch {
         return {};
       }

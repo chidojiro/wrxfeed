@@ -1,28 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { getApiClient } from '@/api/utils';
 import { ENABLE_GET_FEED_COUNT } from '@/common/constants';
 import GroupTabSideBar from '@/common/molecules/GroupTabSideBar';
 import TabListSideBar from '@/common/molecules/TabListSideBar';
 import { GroupTab, SectionTab } from '@/common/types';
+import { FeedApis } from '@/feed/apis';
 import { menuItemsValue, newFeedCountState } from '@/main/states/sidemenu.state';
 import { cloneDeep } from 'lodash-es';
 import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
-const SideBar: React.FC = () => {
+const SideBar = () => {
   const [menuItems, setMenuItems] = useRecoilState(menuItemsValue);
   const setFeedCount = useSetRecoilState(newFeedCountState);
   async function getFeedCount() {
     if (ENABLE_GET_FEED_COUNT) {
       try {
-        const apiClient = await getApiClient();
-        const companyRequest = apiClient.getUnreadLineItemsCount({
-          page: { offset: 0, limit: 1 },
-        });
-        const forYouRequest = apiClient.getUnreadLineItemsCount({
+        const companyRequest = FeedApis.getUnreadLineItemsCount();
+        const forYouRequest = FeedApis.getUnreadLineItemsCount({
           forYou: 1,
-          page: { offset: 0, limit: 1 },
         });
         const [companyCount, forYouCount] = await Promise.all([companyRequest, forYouRequest]);
 

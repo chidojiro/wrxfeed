@@ -1,8 +1,6 @@
-import { useApi } from '@/api';
+import { DepartmentApis } from '@/team/apis';
 import { useFetcher } from '@/common/hooks';
 
-export const useDepartment = (id?: number) => {
-  const api = useApi();
-
-  return useFetcher(!!id && ['department', id], () => api.getDepartmentById(id ?? 0));
+export const useDepartment = (id: number) => {
+  return useFetcher(['department', id], () => DepartmentApis.get(id));
 };

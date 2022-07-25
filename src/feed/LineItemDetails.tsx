@@ -35,6 +35,8 @@ export type LineItemDetailsProps = ClassName & {
   loading?: boolean;
   item?: TransLineItem;
   onCloseClick?: () => void;
+  onModalOpen: () => void;
+  onModalClose: () => void;
 };
 
 export interface SelectItemProps {
@@ -47,7 +49,14 @@ export type LineInfo = {
   value: string;
 };
 
-const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDetailsProps) => {
+const LineItemDetails = ({
+  className,
+  onCloseClick,
+  loading,
+  item,
+  onModalClose,
+  onModalOpen,
+}: LineItemDetailsProps) => {
   const [showEditVendorDescription, setShowEditVendorDescription] = useState<boolean>(false);
   const vendorUpdate = useRecoilValue(vendorUpdateState);
   const setVendorUpdate = useSetRecoilState(vendorUpdateState);
@@ -76,18 +85,22 @@ const LineItemDetails = ({ className, onCloseClick, loading, item }: LineItemDet
 
   const hideEditVendorDescriptionModal = () => {
     setShowEditVendorDescription(false);
+    onModalClose();
   };
 
   const showEditVendorDescriptionModal = () => {
     setShowEditVendorDescription(true);
+    onModalOpen();
   };
 
   const hideEditLineItemModal = () => {
     setShowEditLineItem(false);
+    onModalClose();
   };
 
   const showEditLineItemModal = () => {
     setShowEditLineItem(true);
+    onModalOpen();
   };
 
   const goToCategoryPage = (categoryId?: number) => {

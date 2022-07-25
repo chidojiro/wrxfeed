@@ -1,11 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { FeedFilters } from '@/api/types';
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@/common/constants';
 import { useFetcher, useLegacyQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
 import { FeedApis } from '@/feed/apis';
-import { GetCategoriesParams } from '@/feed/types';
+import { GetCategoriesParams, GetFeedsParams } from '@/feed/types';
 import { Category, Department } from '@/main/entity';
 import { useCategory } from '@/main/hooks/category.hook';
 import CategoryList from '@/main/organisms/CategoryList';
@@ -53,7 +51,7 @@ const CategoriesPage: React.FC = () => {
   };
 
   const handleFeedsFilter = (
-    key: keyof FeedFilters,
+    key: keyof GetFeedsParams,
     value?: Department | Category | Vendor,
   ): void => {
     query.set(key, value?.id.toString() ?? '');

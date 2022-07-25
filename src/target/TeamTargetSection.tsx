@@ -1,15 +1,15 @@
 import { AddSmallSolid, TeamIcon } from '@/assets';
-import clsx from 'clsx';
+import { Button } from '@/common/components';
+import { EMPTY_ARRAY, MainGroups } from '@/common/constants';
 import { getColorByText } from '@/main/utils';
 import { useDepartment } from '@/team/useDepartment';
 import { useDisclosure } from '@dwarvesf/react-hooks';
+import clsx from 'clsx';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { AddTargetModal } from './AddTargetModal';
 import { TargetCards } from './TargetCards';
 import { useTargets } from './useTargets';
-import { useHistory } from 'react-router-dom';
-import { MainGroups } from '@/common/constants';
-import { Button } from '@/common/components';
 
 export interface TeamTargetSectionProps {
   className?: string;
@@ -24,7 +24,7 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
   const history = useHistory();
 
   const { data: department } = useDepartment(departmentId);
-  const { data: targets = [], mutate: mutateTargets } = useTargets({
+  const { data: targets = EMPTY_ARRAY, mutate: mutateTargets } = useTargets({
     dep: departmentId,
     forYou: 1,
   });

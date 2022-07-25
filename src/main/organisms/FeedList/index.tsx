@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { FeedFilters } from '@/api/types';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import { Button } from '@/common/components';
 import { useLegacyQuery } from '@/common/hooks';
 import { LineItemDrawer } from '@/feed/LineItemDrawer';
 import { TargetFeedCard } from '@/feed/TargetFeedCard';
+import { GetFeedsParams } from '@/feed/types';
 import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 import ListEndComponent from '@/main/atoms/ListEndComponent';
 import ListLoading from '@/main/atoms/ListLoading';
@@ -28,7 +27,7 @@ interface FeedListProps {
   style?: CSSProperties;
   hasEmptyStateComponent?: boolean;
   hasEndComponent?: boolean;
-  onFilter?: (key: keyof FeedFilters, value?: Department | Category | Vendor) => void;
+  onFilter?: (key: keyof GetFeedsParams, value?: Department | Category | Vendor) => void;
   depId?: number;
   forYou?: 1 | 0;
   categoryId?: number;
@@ -50,9 +49,7 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const INIT_FEED_FILTER = Object.freeze({
-  page: INIT_PAGINATION,
-});
+const INIT_FEED_FILTER = Object.freeze(INIT_PAGINATION);
 
 const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
   { style, hasEmptyStateComponent, hasEndComponent, onFilter, depId, forYou, categoryId, vendorId },
@@ -61,7 +58,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
   const { isLineItemDrawerOpen, selectedLineItem, closeLineItemDrawer, feedId } =
     useLineItemDrawer();
 
-  const [feedFilters, setFeedFilters] = React.useState<FeedFilters>({
+  const [feedFilters, setFeedFilters] = React.useState<GetFeedsParams>({
     ...INIT_FEED_FILTER,
     forYou,
     departmentId: depId,
@@ -77,7 +74,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
 
   useImperativeHandle(ref, () => ({
     resetFeedFilters: (): void => {
-      setFeedFilters({ ...feedFilters, page: INIT_PAGINATION });
+      setFeedFilters({ ...feedFilters, ...INIT_PAGINATION });
     },
   }));
 
@@ -89,6 +86,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
       ...(categoryId !== undefined ? { categoryId } : {}),
       ...(vendorId !== undefined ? { vendorId } : {}),
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [depId, categoryId, vendorId]);
 
   useEffect(() => {
@@ -99,6 +97,7 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
         [filterKey]: query.get(filterKey),
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterKey]);
 
   const handleLoadMore = useCallback(() => {
@@ -106,13 +105,12 @@ const FeedList: ForwardRefRenderFunction<FeedListHandler, FeedListProps> = (
     setFeedFilters((prevFilter) => {
       return {
         ...prevFilter,
-        page: {
-          limit: prevFilter?.page?.limit ?? LIMIT,
-          offset: (prevFilter?.page?.offset ?? 0) + (prevFilter?.page?.limit ?? LIMIT),
-        },
+        limit: prevFilter?.limit ?? LIMIT,
+        offset: (prevFilter?.offset ?? 0) + (prevFilter?.limit ?? LIMIT),
         forYou,
       };
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMore, isLoading]);
 
   const onClickFollowingMoreTeams = () => {
