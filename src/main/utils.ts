@@ -573,7 +573,7 @@ export const decimalLogic = (
 
   if (type === DecimalType.SummedNumbers) {
     format = '0,0';
-    defaultValue = '0';
+    defaultValue = 'N/A';
     result = n ? numeral(n).format(format) : defaultValue;
     if (parseFloat(`${n}`) >= 1000000) {
       result = nFormatter(parseFloat(`${n}`), '', '0,0.00');
@@ -585,7 +585,7 @@ export const decimalLogic = (
   if (toNumber) {
     return result + 0;
   }
-  return withCurrency + result;
+  return result !== 'N/A' ? withCurrency + result : defaultValue;
 };
 
 export const getDisplayUsdAmount = (num?: number) =>
