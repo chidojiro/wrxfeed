@@ -31,7 +31,10 @@ export const useInfiniteData = <T extends { id: number }>(
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   useFetcher(initialFetch && [randomKey.current], initialFetch!, {
-    onSuccess: (data) => setLoadedData(reverse ? data.slice().reverse() : data),
+    onSuccess: (data) =>
+      setLoadedData((prev) =>
+        reverse ? [...data.slice().reverse(), ...prev] : [...prev, ...data],
+      ),
   });
 
   const { isLoading, handle: loadMore } = useHandler(fetcher, restConfigs);
