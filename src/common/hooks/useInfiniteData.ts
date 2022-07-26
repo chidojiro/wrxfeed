@@ -5,7 +5,7 @@ import { useHandler, UseHandlerConfigurations } from './useHandler';
 export type UseInfiniteFetcherConfigs<T> = UseHandlerConfigurations<T[]> & {
   defaultData?: T[];
   initialFetch?: () => Promise<T[]>;
-  handleUpdate?: (id: number, payload: Partial<T>) => any;
+  handleUpdate?: (id: number, payload: any) => any;
   handleDelete?: (id: number) => any;
   handleCreate?: (payload: any) => any;
   reverse?: boolean;
