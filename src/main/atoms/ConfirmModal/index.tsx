@@ -24,6 +24,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onOk,
 }) => {
   const cancelButtonRef = useRef(null);
+
+  const handleOk = () => {
+    onOk?.();
+    onClose();
+  };
+
   return (
     <Modal initialFocus={cancelButtonRef} open={open} onClose={onClose}>
       <div className="px-4 py-5 sm:max-w-[400px] sm:w-full">
@@ -45,7 +51,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
               {cancelLabel}
             </Button>
             <div className="w-[3px] h-[3px] rounded-[1.5px] flex-grow-0 bg-Neutral-Light" />
-            <Button className="text-sm font-semibold text-purple-6 hover:underline" onClick={onOk}>
+            <Button
+              className="text-sm font-semibold text-purple-6 hover:underline"
+              onClick={handleOk}
+            >
               {okLabel}
             </Button>
           </div>

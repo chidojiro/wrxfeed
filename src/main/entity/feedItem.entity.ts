@@ -1,9 +1,10 @@
+import { FeedType } from '@/feed/types';
 import { Category, Department, Transaction } from '@/main/entity';
 import { Target } from '@/target/types';
 
 export type FeedItem = {
   id: number;
-  type: string;
+  type: FeedType;
   year?: number;
   month?: number;
   prevMonthSpend?: number;
@@ -17,7 +18,7 @@ export type FeedItem = {
   hidden?: boolean;
 };
 
-export enum FeedType {
+export enum FeedRouteType {
   TransFeed = 'TransFeed',
   TargetFeed = 'TargetFeed',
 }

@@ -38,3 +38,5 @@ export type GetLineItemsParams = PaginationParams &
   SortByParams & {
     depId: number;
   };
+
+export type FeedType = 'target' | 'transaction';

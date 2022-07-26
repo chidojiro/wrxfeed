@@ -1,6 +1,6 @@
 import { Notification } from '@/main/entity';
 import React from 'react';
-import CommentText from '@/main/atoms/CommentText';
+import { CommentText } from '@/feed/CommentText';
 import { formatDate } from '@/common/utils';
 import { Button } from '@/common/components';
 
@@ -20,8 +20,7 @@ const NotifyRow: React.FC<NotifyRowProps> = ({ item, onClickNotifyAndSeen }) => 
       <div className="flex flex-1 w-full flex-row">
         <CommentText
           content={item.content}
-          className="w-full text-left leading-6 break-words"
-          style={{ whiteSpace: 'normal' }}
+          className="w-full text-left leading-6 break-words !whitespace-normal"
         />
         <div className="flex w-40">
           <div

@@ -1,19 +1,15 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/accessible-emoji */
 import Loading from '@/common/atoms/Loading';
-import { MainGroups } from '@/common/constants';
-import { useLegacyQuery, useNavUtils } from '@/common/hooks';
+import { useHandler, useLegacyQuery, useNavUtils } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
 import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
 import { FeedApis } from '@/feed/apis';
+import { FeedCard } from '@/feed/FeedCard';
 import { LineItemDrawer } from '@/feed/LineItemDrawer';
-import { TargetFeedCard } from '@/feed/TargetFeedCard';
 import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
-import { Category, Department, FeedItem, FeedType } from '@/main/entity';
-import RollupCard from '@/main/molecules/RollupCard';
+import { FeedItem, FeedRouteType } from '@/main/entity';
 import { Routes } from '@/routing/routes';
-import { Vendor } from '@/vendor/types';
+import { TargetApis } from '@/target/apis';
 import * as Sentry from '@sentry/react';
 import React, { useEffect, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
@@ -24,11 +20,13 @@ const FeedPage: React.FC = () => {
   const history = useHistory();
   const { redirect } = useNavUtils();
   const query = useLegacyQuery();
-  const { id: feedId } = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
   const [feedItem, setFeedItem] = useState<FeedItem | undefined>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const errorHandler = useErrorHandler();
   const route = query.get('route');
+
+  const feedId = +params.id;
 
   const {
     isLineItemDrawerOpen,
@@ -82,45 +80,20 @@ const FeedPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (route === FeedType.TargetFeed) {
-      getTargetFeedItem(parseInt(feedId, 10));
+    if (route === FeedRouteType.TargetFeed) {
+      getTargetFeedItem(feedId);
     } else {
-      getFeedItem(parseInt(feedId, 10));
+      getFeedItem(feedId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [feedId, route]);
 
-  const onClickCategory = (category?: Category) => {
-    history.push({
-      pathname: `/categories/${category?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
-    });
-  };
-  const onClickDepartment = (department?: Department) => {
-    history.push({
-      pathname: `/departments/${department?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
-    });
-  };
-  const onClickRootDept = (rootDept?: Department) => {
-    history.push({
-      pathname: `/departments/${rootDept?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
-    });
-  };
-  const onClickVendor = (vendor?: Vendor) => {
-    history.push({
-      pathname: `/vendors/${vendor?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
-    });
-  };
-  const onRefreshTargetFeedItem = () => {
-    setFeedItem(undefined);
-    getTargetFeedItem(parseInt(feedId, 10));
-  };
-
-  const onBackToDashboard = () => {
+  const goBackToDashboard = () => {
     redirect(Routes.Dashboard.path as string);
   };
+
+  const { handle: updateTarget } = useHandler(TargetApis.update);
+  const { handle: deleteTarget } = useHandler(TargetApis.delete, { onSuccess: goBackToDashboard });
 
   const renderFeed = () => {
     if (isLoading) {
@@ -145,21 +118,12 @@ const FeedPage: React.FC = () => {
 
     return (
       <div className="w-full h-full overflow-scroll hide-scrollbar">
-        {feedItem.type === 'transaction' ? (
-          <RollupCard
-            onClickCategory={onClickCategory}
-            onClickDepartment={onClickDepartment}
-            onClickRootDept={onClickRootDept}
-            onClickVendor={onClickVendor}
-            feedItem={feedItem}
-          />
-        ) : (
-          <TargetFeedCard
-            feedItem={feedItem}
-            onRefresh={onRefreshTargetFeedItem}
-            onBack={onBackToDashboard}
-          />
-        )}
+        <FeedCard
+          feed={feedItem}
+          categoryRedirectHref={(category) => `/categories/${category?.id.toString()}`}
+          onDeleteTarget={deleteTarget}
+          onUpdateTarget={updateTarget}
+        />
         <LineItemDrawer
           open={isLineItemDrawerOpen}
           onClose={closeLineItemDrawer}

@@ -1,18 +1,16 @@
 import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
 import { MainGroups } from '@/common/constants';
-import { useFetcher, useLegacyQuery } from '@/common/hooks';
+import { useFetcher } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
 import { FeedApis } from '@/feed/apis';
-import { GetCategoriesParams, GetFeedsParams } from '@/feed/types';
-import { Category, Department } from '@/main/entity';
+import { Feeds } from '@/feed/Feeds';
+import { GetCategoriesParams } from '@/feed/types';
+import { Category } from '@/main/entity';
 import { useCategory } from '@/main/hooks/category.hook';
 import CategoryList from '@/main/organisms/CategoryList';
-import FeedList from '@/main/organisms/FeedList';
-import { scrollToTop } from '@/main/utils';
-import { Vendor } from '@/vendor/types';
 import * as Sentry from '@sentry/react';
 import React from 'react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -23,8 +21,6 @@ const INIT_PAGINATION = Object.freeze({
 const CategoriesPage: React.FC = () => {
   const history = useHistory();
   const { id: catId } = useParams<{ id?: string }>();
-  const query = useLegacyQuery();
-  const location = useLocation();
   const [filter, setFilter] = React.useState<GetCategoriesParams>(INIT_PAGINATION);
   const { categories, hasMore, isLoading } = useCategory({ params: filter });
   const [category, setCategory] = React.useState<Category | null>();
@@ -50,18 +46,6 @@ const CategoriesPage: React.FC = () => {
     });
   };
 
-  const handleFeedsFilter = (
-    key: keyof GetFeedsParams,
-    value?: Department | Category | Vendor,
-  ): void => {
-    query.set(key, value?.id.toString() ?? '');
-    history.push({
-      pathname: location.pathname,
-      search: query.toString(),
-    });
-    scrollToTop();
-  };
-
   return (
     <MainLayout>
       <h1 className="sr-only">Category list</h1>
@@ -82,9 +66,7 @@ const CategoriesPage: React.FC = () => {
           onSelect={handleCategorySelect}
         />
       )}
-      {catId && !isNaN(+catId) && (
-        <FeedList onFilter={handleFeedsFilter} categoryId={parseInt(catId, 10)} />
-      )}
+      {catId && !isNaN(+catId) && <Feeds categoryId={parseInt(catId, 10)} />}
     </MainLayout>
   );
 };

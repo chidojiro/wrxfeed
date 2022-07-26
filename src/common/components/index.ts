@@ -10,6 +10,7 @@ export * from './ListLoader';
 export * from './OverlayLoader';
 export * from './Popover';
 export * from './Portal';
+export * from './SanitizedHtmlContent';
 export * from './Spinner';
 export * from './StatusTag';
 export * from './Table';

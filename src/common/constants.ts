@@ -21,7 +21,7 @@ export const MainMenu: SectionTab[] = [
         name: 'Targets',
         location: {
           pathname: '/dashboard/all-company',
-          pathMatch: '/dashboard/:slug',
+          pathMatches: ['/dashboard/all-company', '/dashboard/:slug'],
         },
         icon: TargetIcon,
         isShowCounter: true,
@@ -64,13 +64,19 @@ export const MainMenu: SectionTab[] = [
     tabs: [
       {
         name: 'For you',
-        location: { pathname: '/for-you' },
+        location: {
+          pathname: '/feeds/for-you',
+          pathMatches: ['/feeds/for-you', '/feeds/for-you/category/:categoryId'],
+        },
         icon: FeedIcon,
         isShowCounter: true,
       },
       {
         name: 'Company',
-        location: { pathname: '/company' },
+        location: {
+          pathname: '/feeds/company',
+          pathMatches: ['/feeds/company', '/feeds/company/category/:categoryId'],
+        },
         icon: FeedIcon,
         isShowCounter: true,
       },

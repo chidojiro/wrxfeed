@@ -6,7 +6,6 @@ import NotFoundPage from '@/common/pages/NotFoundPage';
 import { FeedRoutes } from '@/feed/routes';
 import { UserRole } from '@/identity/constants';
 import Categories from '@/main/pages/Categories';
-import Company from '@/main/pages/Company';
 import Feed from '@/main/pages/Feed';
 import Notifications from '@/main/pages/Notifications';
 import { TargetRoutes } from '@/target/routes';
@@ -47,11 +46,6 @@ export const Routes: Route = {
   Categories: {
     path: ['/categories', '/categories/:id'],
     component: Categories,
-    permissions: [UserRole.ADMIN, UserRole.USER],
-  },
-  Company: {
-    path: '/company',
-    component: Company,
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   ...TargetRoutes,

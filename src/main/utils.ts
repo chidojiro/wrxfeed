@@ -37,8 +37,8 @@ import {
 import { Match } from 'linkify-it';
 import { cloneDeep } from 'lodash-es';
 import numeral from 'numeral';
-import { SearchResult } from './types';
 import React from 'react';
+import { Fn } from '@/common/types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -339,7 +339,24 @@ export const nFormatter = (num: number, withCurrency = '$', format = '0.0'): str
   return `${isNegative}${withCurrency}${numeral(num).format(format)}`;
 };
 
-export const scrollToTop = (): void => {
+export const scrollToTop = (cb?: Fn): void => {
+  if (cb) {
+    // https://stackoverflow.com/questions/4620906/how-do-i-know-when-ive-stopped-scrolling
+    let timer: NodeJS.Timeout;
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (timer !== null) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+          cb();
+        }, 150);
+      },
+      false,
+    );
+  }
+
   if (window.scrollY > 0) {
     window.scrollTo({
       top: 0,
@@ -532,15 +549,6 @@ export const getTargetPeriodsAmountTotal = (
         : 0
       : 100;
   return { overallTarget, targetToDate, exceeding, currentSpend };
-};
-
-export const getTotalFeedItem = (feed: FeedItem): { total: number } => {
-  const { transactions } = feed;
-  let total = 0;
-  transactions.forEach((tran: Transaction) => {
-    total += tran.amountUsd;
-  });
-  return { total };
 };
 
 export const DecimalType = {
