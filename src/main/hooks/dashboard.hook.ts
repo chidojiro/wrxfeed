@@ -1,9 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useErrorHandler } from '@/error/hooks';
+import { useFetcher } from '@/common/hooks';
 import { isApiError } from '@/error/utils';
 import { TargetApis } from '@/target/apis';
 import { TargetSummaries } from '@/target/types';
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { toast } from 'react-toastify';
 
 export const TargetSummariesDefault: TargetSummaries = {
@@ -19,29 +18,23 @@ interface DashboardHookValues {
 }
 
 export function useDashboard(): DashboardHookValues {
-  const [summaries, setSummaries] = useState<TargetSummaries>(TargetSummariesDefault);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const errorHandler = useErrorHandler();
+  const [summaries, setSummaries] = React.useState<TargetSummaries>(TargetSummariesDefault);
 
-  const getTargetSummaries = async () => {
-    try {
-      setLoading(true);
+  const { isInitializing: isLoading } = useFetcher(
+    ['dashboard.hook'],
+    async () => {
       const res = await TargetApis.getSummaries();
       setSummaries(res);
-    } catch (error) {
-      if (isApiError(error)) {
-        toast.error(error.details?.message);
-      } else {
-        await errorHandler(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getTargetSummaries().then();
-  }, []);
+    },
+    {
+      onError: (error) => {
+        if (isApiError(error)) {
+          toast.error(error.details?.message);
+          return false;
+        }
+      },
+    },
+  );
 
   return {
     isLoading,

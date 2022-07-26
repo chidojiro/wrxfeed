@@ -1,18 +1,16 @@
+import NavBar from '@/common/organisms/NavBar';
+import SideBar from '@/common/organisms/SideBar';
+import { Children } from '@/common/types';
+import { scrollToTop } from '@/main/utils';
+import clsx from 'clsx';
 import React, { useEffect } from 'react';
 
-import clsx from 'clsx';
-import { scrollToTop } from '@/main/utils';
-
-import SideBar from '@/common/organisms/SideBar';
-import NavBar from '@/common/organisms/NavBar';
-
-interface MainLayoutProps {
-  children: React.ReactNode;
+type MainLayoutProps = Children & {
   className?: string;
   showNavBar?: boolean;
   rightSide?: boolean;
   mainClass?: string;
-}
+};
 
 const MainLayout: React.FC<MainLayoutProps> = ({
   children,
