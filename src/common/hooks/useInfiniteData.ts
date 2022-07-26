@@ -80,11 +80,11 @@ export const useInfiniteData = <T extends { id: number }>(
     async (payload: any) => {
       const data = (await _handleCreate?.(payload)) ?? payload;
 
-      setLoadedData((prev) => (data ? [data, ...prev] : prev));
+      setLoadedData((prev) => (reverse ? [data, ...prev] : [...prev, data]));
 
       return data;
     },
-    [_handleCreate],
+    [_handleCreate, reverse],
   );
 
   const reset = React.useCallback(() => {
