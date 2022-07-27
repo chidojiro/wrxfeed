@@ -12,7 +12,7 @@ import { InviteModal } from '@/main/organisms';
 import { UserPlusIcon } from '@/assets';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import { Button } from '@/common/components';
 
 interface NavBarStaticProps {
@@ -47,7 +47,7 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
   const history = useHistory();
   const [isOpenInviteModal, openInviteModal] = useState(false);
 
-  const identity = useIdentity();
+  const { data: profile } = useProfile();
 
   const onClickNotification = () => {
     history.push(Routes?.Notifications?.path as string);
@@ -56,9 +56,9 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
     openInviteModal(true);
 
     mixpanel.track('Invite Button Click', {
-      user_id: identity?.id,
-      email: identity?.email,
-      company: identity?.company?.id,
+      user_id: profile?.id,
+      email: profile?.email,
+      company: profile?.company?.id,
     });
   };
 

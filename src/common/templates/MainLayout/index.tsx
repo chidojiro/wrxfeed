@@ -1,18 +1,16 @@
-import React, { useEffect } from 'react';
-
-import clsx from 'clsx';
-import { scrollToTop } from '@/main/utils';
-
-import SideBar from '@/common/organisms/SideBar';
 import NavBar from '@/common/organisms/NavBar';
+import SideBar from '@/common/organisms/SideBar';
+import { Children } from '@/common/types';
+import { scrollToTop } from '@/main/utils';
+import clsx from 'clsx';
+import React from 'react';
 
-interface MainLayoutProps {
-  children: React.ReactNode;
+type MainLayoutProps = Children & {
   className?: string;
   showNavBar?: boolean;
   rightSide?: boolean;
   mainClass?: string;
-}
+};
 
 const MainLayout: React.FC<MainLayoutProps> = ({
   children,
@@ -21,9 +19,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   rightSide = true,
   mainClass = '',
 }) => {
-  useEffect(() => {
+  React.useEffect(() => {
     scrollToTop();
   }, []);
+
   return (
     <div className={clsx('relative', className ?? '')}>
       {showNavBar && <NavBar />}

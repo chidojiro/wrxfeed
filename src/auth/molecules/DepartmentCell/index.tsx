@@ -2,7 +2,7 @@ import { ReactComponent as BasicsAddSmall } from '@/assets/icons/solid/basics-ad
 import { ReactComponent as BasicsTickSmall } from '@/assets/icons/solid/basics-tick-small.svg';
 import Loading from '@/common/atoms/Loading';
 import { Button } from '@/common/components';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import { Department } from '@/main/entity';
 import { useSubscription } from '@/main/hooks/subscription.hook';
 import { DepartmentApis } from '@/team/apis';
@@ -41,7 +41,7 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
   enableAction,
   enableUnfollowUserDept = true,
 }) => {
-  const identity = useIdentity();
+  const { data: profile } = useProfile();
   const [childs, setChilds] = useState<Department[]>([]);
 
   const onFollowSuccess = async () => {
@@ -124,7 +124,7 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
     return <BasicsAddSmall width={20} height={20} className="w-5 h-5 stroke-current" />;
   };
 
-  const isUserDepartment = identity?.depId === dept?.id;
+  const isUserDepartment = profile?.depId === dept?.id;
   const hoverStyle = isFollowed ? 'hover:bg-Gray-2' : 'hover:bg-Accent-3';
   const renderFollowButton = () => {
     if (!enableUnfollowUserDept && isUserDepartment) return null;

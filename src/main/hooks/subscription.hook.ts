@@ -1,5 +1,5 @@
 import { isApiError } from '@/error/utils';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import { Category, Department, Subscription } from '@/main/entity';
 import { subscriptionState } from '@/main/states/subscription.state';
 import { SubscriptionApis } from '@/subscription/apis';
@@ -32,7 +32,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
   const [isFollowLoading, setFollowLoading] = useState<boolean>(false);
   const [isUnfollowLoading, setUnfollowLoading] = useState<boolean>(false);
 
-  const identity = useIdentity();
+  const { data: profile } = useProfile();
 
   function unsubscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
     // Call API to unsubscribe follow data
@@ -63,9 +63,9 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         setSubscription(newSubscription);
 
         mixpanel.track(`${type} Remove Subscription`, {
-          user_id: identity?.id,
-          email: identity?.email,
-          company: identity?.company?.id,
+          user_id: profile?.id,
+          email: profile?.email,
+          company: profile?.company?.id,
         });
       })
       .catch((error: unknown) => {
@@ -154,9 +154,9 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
         setSubscription(newSubscription);
 
         mixpanel.track(`${type} Add Subscription`, {
-          user_id: identity?.id,
-          email: identity?.email,
-          company: identity?.company?.id,
+          user_id: profile?.id,
+          email: profile?.email,
+          company: profile?.company?.id,
         });
       })
       .catch((error: unknown) => {

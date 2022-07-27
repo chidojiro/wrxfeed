@@ -1,8 +1,8 @@
-import { useIdentity } from '@/identity/hooks';
 import DirectoryItem from '@/main/molecules/DirectoryItem';
 import { Vendor } from './types';
 import mixpanel from 'mixpanel-browser';
 import React from 'react';
+import { useProfile } from '@/profile/useProfile';
 
 type VendorListProps = {
   vendors: Vendor[];
@@ -10,13 +10,13 @@ type VendorListProps = {
 };
 
 export const VendorList: React.VFC<VendorListProps> = ({ vendors, onVendorClick }) => {
-  const identity = useIdentity();
+  const { data: profile } = useProfile();
 
   React.useEffect(() => {
     mixpanel.track('Vendor Directory View', {
-      user_id: identity?.id,
-      email: identity?.email,
-      company: identity?.company?.id,
+      user_id: profile?.id,
+      email: profile?.email,
+      company: profile?.company?.id,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -1,10 +1,9 @@
+import { UserRole } from '@/auth/constants';
+import { NotFoundPage } from '@/auth/NotFoundPage';
 import AcceptInvitation from '@/auth/pages/AcceptInvitation';
-// Pages
 import Login from '@/auth/pages/LoginPage';
 import Onboard from '@/auth/pages/OnboardPage';
-import NotFoundPage from '@/common/pages/NotFoundPage';
 import { FeedRoutes } from '@/feed/routes';
-import { UserRole } from '@/identity/constants';
 import Categories from '@/main/pages/Categories';
 import Feed from '@/main/pages/Feed';
 import Notifications from '@/main/pages/Notifications';

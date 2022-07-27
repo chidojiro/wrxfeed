@@ -1,4 +1,4 @@
-import { UserRole } from '@/identity/constants';
+import { UserRole } from '@/auth/constants';
 import { RouteItem } from '@/routing/types';
 import * as Sentry from '@sentry/react';
 import React from 'react';

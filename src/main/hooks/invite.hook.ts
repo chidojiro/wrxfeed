@@ -1,3 +1,4 @@
+import { useProfile } from '@/profile/useProfile';
 import { InvitationApis } from '@/invitation/apis';
 import { useErrorHandler } from '@/error/hooks';
 import { ApiErrorCode } from '@/error/types';
@@ -6,7 +7,6 @@ import { Contact } from '@/main/entity';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@/identity/hooks';
 
 interface InviteHookValues {
   isSent: boolean;
@@ -19,7 +19,7 @@ export function useInvite(): InviteHookValues {
   const [isLoading, setLoading] = useState(false);
   const [isSent, setSent] = useState(false);
 
-  const identity = useIdentity();
+  const { data: profile } = useProfile();
 
   const sendInvitation = async (contact: Partial<Contact>) => {
     try {
@@ -28,9 +28,9 @@ export function useInvite(): InviteHookValues {
       setSent(true);
 
       mixpanel.track('Invite Sent', {
-        user_id: identity?.id,
-        email: identity?.email,
-        company: identity?.company?.id,
+        user_id: profile?.id,
+        email: profile?.email,
+        company: profile?.company?.id,
       });
     } catch (error: unknown) {
       setSent(false);

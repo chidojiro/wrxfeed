@@ -58,3 +58,10 @@ export type ResetPasswordPayload = {
 };
 
 export type GetMentionsParams = PaginationParams;
+
+export type GoogleProfile = {
+  googleLoginId: string;
+  roles: string[];
+  id: number;
+  status: 'ACTIVE';
+};

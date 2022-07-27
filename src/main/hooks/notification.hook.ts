@@ -1,7 +1,7 @@
 import { usePusher } from '@/push-notification/usePusher';
 import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import { Notification } from '@/main/entity';
 import { newNotifyCountState } from '@/main/states/notify.state';
 import { NotificationApis } from '@/notification/apis';
@@ -124,8 +124,8 @@ export function useNotifyChannel(
   callback: (data: NotifyEventData) => void,
 ): void {
   const pusher = usePusher();
-  const identity = useIdentity();
-  const channelName = `notification-${identity?.id}`;
+  const { data: profile } = useProfile();
+  const channelName = `notification-${profile?.id}`;
 
   useEffect(() => {
     // Subscribe notify channel

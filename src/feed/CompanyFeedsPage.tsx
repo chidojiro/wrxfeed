@@ -1,5 +1,5 @@
 import MainLayout from '@/common/templates/MainLayout';
-import { useIdentity } from '@/identity';
+import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -8,13 +8,13 @@ import { Feeds } from './Feeds';
 export const CompanyFeedsPage = () => {
   const { pathname } = useLocation();
 
-  const identity = useIdentity();
+  const { data: profile } = useProfile();
 
   useEffect(() => {
     mixpanel.track('Company Feed View', {
-      user_id: identity?.id,
-      email: identity?.email,
-      company: identity?.company?.id,
+      user_id: profile?.id,
+      email: profile?.email,
+      company: profile?.company?.id,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

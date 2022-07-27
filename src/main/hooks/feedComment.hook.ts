@@ -2,7 +2,7 @@ import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
 import { FeedApis } from '@/feed/apis';
 import { CreateCommentPayload } from '@/feed/types';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import { Comment, FeedItem } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
 import mixpanel from 'mixpanel-browser';
@@ -20,7 +20,7 @@ interface CommentHookValues {
 }
 
 export function useFeedComment(feed: FeedItem, page?: PaginationParams): CommentHookValues {
-  const identity = useIdentity();
+  const { data: profile } = useProfile();
   const errorHandler = useErrorHandler();
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setLoading] = useState(false);
@@ -61,18 +61,18 @@ export function useFeedComment(feed: FeedItem, page?: PaginationParams): Comment
       const res = await FeedApis.createComment(feed.id, comment);
       if (!res.user) {
         res.user = {
-          id: identity?.id,
-          email: identity?.email || '',
-          fullName: identity?.fullName || identity?.email || '',
-          avatar: identity?.avatar,
+          id: profile?.id,
+          email: profile?.email || '',
+          fullName: profile?.fullName || profile?.email || '',
+          avatar: profile?.avatar,
         };
       }
       setComments((prevComments) => [...prevComments, res]);
 
       mixpanel.track('Feed Add Comment', {
-        user_id: identity?.id,
-        email: identity?.email,
-        company: identity?.company?.id,
+        user_id: profile?.id,
+        email: profile?.email,
+        company: profile?.company?.id,
         feed_id: feed.id,
         total_feed_comments: comments.length + 1,
       });

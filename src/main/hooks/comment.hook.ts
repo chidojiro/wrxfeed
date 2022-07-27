@@ -2,7 +2,7 @@ import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
 import { FeedApis } from '@/feed/apis';
 import { CreateCommentPayload } from '@/feed/types';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import { Comment, Transaction } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
 import { useCallback, useEffect, useState } from 'react';
@@ -22,7 +22,7 @@ export function useComment(
   transaction: Transaction,
   pagination?: PaginationParams,
 ): CommentHookValues {
-  const identity = useIdentity();
+  const { data: profile } = useProfile();
   const errorHandler = useErrorHandler();
   const [comments, setComments] = useState<Comment[]>([]);
   const [total, setTotal] = useState(transaction.commentCount ?? 0);
@@ -59,22 +59,14 @@ export function useComment(
 
   const addComment = async (comment: CreateCommentPayload) => {
     try {
-      // const res = await ApiClient.addComment(transaction.id, comment);
-      // if (!res.user) {
-      //   res.user = {
-      //     id: identity?.id,
-      //     email: identity?.email || '',
-      //     fullName: identity?.fullName || identity?.email || '',
-      //   };
-      // }
       const res: Comment = {
         id: Date.now(),
         createdAt: new Date().toISOString(),
         content: comment.content ?? '',
         user: {
-          id: identity?.id,
-          email: identity?.email || '',
-          fullName: identity?.fullName || identity?.email || '',
+          id: profile?.id,
+          email: profile?.email || '',
+          fullName: profile?.fullName || profile?.email || '',
         },
       };
       setComments((prevComments) => [...prevComments, res]);

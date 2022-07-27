@@ -5,7 +5,7 @@ import ListLoading from '@/main/atoms/ListLoading';
 import ListEndComponent from '@/main/atoms/ListEndComponent';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 
 interface NotificationListProps {
@@ -25,13 +25,13 @@ const NotificationList: React.FC<NotificationListProps> = ({
   onClickNotification,
   hasMore,
 }) => {
-  const identity = useIdentity();
+  const { data: profile } = useProfile();
 
   useEffect(() => {
     mixpanel.track('Notifications View', {
-      user_id: identity?.id,
-      email: identity?.email,
-      company: identity?.company?.id,
+      user_id: profile?.id,
+      email: profile?.email,
+      company: profile?.company?.id,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

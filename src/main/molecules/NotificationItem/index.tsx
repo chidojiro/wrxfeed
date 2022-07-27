@@ -6,7 +6,7 @@ import { CommentText } from '@/feed/CommentText';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
 
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import { Button } from '@/common/components';
 
 export interface NotificationItemProps {
@@ -19,7 +19,7 @@ export interface NotificationItemProps {
 const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) => {
   const avatarBgColor = React.useMemo(() => getColorByText(item?.content ?? ''), [item?.content]);
   const isNew = item.status === NotifyStatus.UNREAD;
-  const identity = useIdentity();
+  const { data: profile } = useProfile();
 
   const renderAvatarOrShortname = () => {
     const shortName = getNameAbbreviation(item?.causedByUser?.fullName);
@@ -47,9 +47,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
         onClick(item);
 
         mixpanel.track('Notification Click', {
-          user_id: identity?.id,
-          email: identity?.email,
-          company: identity?.company?.id,
+          user_id: profile?.id,
+          email: profile?.email,
+          company: profile?.company?.id,
         });
       }}
       className={clsx(

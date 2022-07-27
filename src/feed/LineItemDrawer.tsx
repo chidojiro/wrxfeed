@@ -2,7 +2,7 @@ import { Drawer } from '@/common/components';
 import { withMountOnOpen } from '@/common/hocs';
 import { useFetcher } from '@/common/hooks';
 import { OpenClose } from '@/common/types';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import { TransLineItem } from '@/main/entity';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
@@ -23,7 +23,7 @@ export type LineItemDrawerProps = OpenClose & {
 
 export const LineItemDrawer = withMountOnOpen(
   ({ className, onClose, feedId, lineItem, open }: LineItemDrawerProps) => {
-    const identity = useIdentity();
+    const { data: profile } = useProfile();
 
     const { isValidating, data: lineItemDetails } = useFetcher(
       !!lineItem?.id && ['lineItem', lineItem.id],
@@ -34,13 +34,13 @@ export const LineItemDrawer = withMountOnOpen(
 
     React.useEffect(() => {
       mixpanel.track('Feed Detail View', {
-        user_id: identity?.id,
-        email: identity?.email,
-        company: identity?.company?.id,
+        user_id: profile?.id,
+        email: profile?.email,
+        company: profile?.company?.id,
         feed_id: feedId,
         line_item_id: lineItem?.id,
       });
-    }, [feedId, identity?.company?.id, identity?.email, identity?.id, lineItem?.id]);
+    }, [feedId, profile?.company?.id, profile?.email, profile?.id, lineItem?.id]);
 
     return (
       <Drawer
