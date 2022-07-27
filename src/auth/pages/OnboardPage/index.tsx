@@ -11,7 +11,6 @@ import { useErrorHandler } from '@/error/hooks';
 import { isApiError } from '@/error/utils';
 import { useIdentity } from '@/identity/hooks';
 import { Department } from '@/main/entity';
-import { useSearch } from '@/main/hooks/search.hook';
 import { useSubscription } from '@/main/hooks/subscription.hook';
 import { SearchResult } from '@/main/types';
 import { getMultiRandomInt, getUniqueListBy } from '@/main/utils';
@@ -20,6 +19,7 @@ import { Routes } from '@/routing/routes';
 import { cloneDeep } from 'lodash-es';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useSearch } from '@/misc/useSearch';
 
 const OnboardPage: React.FC = () => {
   const identity = useIdentity();
@@ -43,7 +43,7 @@ const OnboardPage: React.FC = () => {
   const {
     results: departments,
     isLoading,
-    onClear,
+    clearSearchResults,
   } = useSearch({
     keyword,
     searchCate: false,
@@ -118,7 +118,7 @@ const OnboardPage: React.FC = () => {
   const onSearchTeam = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(event.target.value.toString());
-      onClear();
+      clearSearchResults();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [setKeyword],
