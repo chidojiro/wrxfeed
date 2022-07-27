@@ -2,7 +2,7 @@ import { Notification, NotifyStatus } from '@/main/entity';
 import React from 'react';
 import { distanceToNow } from '@/common/utils';
 import clsx from 'clsx';
-import CommentText from '@/main/atoms/CommentText';
+import { CommentText } from '@/feed/CommentText';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
 
 import mixpanel from 'mixpanel-browser';
@@ -68,8 +68,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
       </div>
       <CommentText
         content={item.content}
-        className="text-left leading-6 break-words ml-4"
-        style={{ whiteSpace: 'normal' }}
+        className="text-left leading-6 break-words ml-4 !whitespace-normal"
       />
       <div className="flex w-40 ml-auto">
         <div className="flex text-Gray-6 font-regular ml-auto text-right text-xs">

@@ -5,7 +5,6 @@ import { GetFeedsParams } from '@/feed/types';
 import { Department } from '@/main/entity';
 import { FilterKeys } from '@/main/hooks';
 import { useDepartment } from '@/main/hooks/department.hook';
-import { useFeed } from '@/main/hooks/feed.hook';
 import DepartmentList from '@/main/organisms/DepartmentList';
 import { scrollToTop } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
@@ -39,7 +38,6 @@ export const TeamsPage = () => {
           limit: 0,
         },
   );
-  const { cleanData } = useFeed(feedsFilter);
 
   const filterByRoute = useCallback(() => {
     if (deptId) {
@@ -53,7 +51,6 @@ export const TeamsPage = () => {
           newFilter[key] = query.get(key);
         }
       });
-      cleanData();
       setFeedsFilter(newFilter);
     } else {
       setFeedsFilter({ offset: 0, limit: 0 }); // Clean up feed item

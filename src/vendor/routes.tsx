@@ -1,5 +1,6 @@
 import { UserRole } from '@/identity/constants';
 import { RouteItem } from '@/routing/types';
+import * as Sentry from '@sentry/react';
 import React from 'react';
 
 const VendorPage = React.lazy(() =>
@@ -13,12 +14,12 @@ const VendorsPage = React.lazy(() =>
 export const VendorRoutes: Record<string, RouteItem> = {
   Vendor: {
     path: '/vendors/:vendorId',
-    component: VendorPage,
+    component: Sentry.withProfiler(VendorPage, { name: 'VendorPage' }),
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Vendors: {
     path: '/vendors',
-    component: VendorsPage,
+    component: Sentry.withProfiler(VendorsPage, { name: 'VendorsPage' }),
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
 };

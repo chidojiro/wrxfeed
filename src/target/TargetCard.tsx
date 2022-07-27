@@ -6,7 +6,7 @@ import { ClassName } from '@/common/types';
 import { distanceToNow } from '@/common/utils';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
-import { FeedType } from '@/main/entity';
+import { FeedRouteType } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
 import {
   getColorByText,
@@ -18,15 +18,16 @@ import {
 import { Routes } from '@/routing/routes';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
-import { MouseEvent } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { AddTargetModal, AddTargetModalProps } from './AddTargetModal';
+import { AddTargetModalWithDefaultApisProps } from './AddTargetModal/AddTargetModal';
 import { TargetApis } from './apis';
 import { MiniChartView } from './MiniChartView';
 import { Target } from './types';
 
 export type TargetCardProps = ClassName &
-  Required<Pick<AddTargetModalProps, 'onUpdateSuccess' | 'onDeleteSuccess'>> &
+  Required<Pick<AddTargetModalWithDefaultApisProps, 'onUpdateSuccess' | 'onDeleteSuccess'>> &
   Pick<AddTargetModalProps, 'hidePropertyDropdowns'> & {
     target: Target;
     showColorfulHeading?: boolean;
@@ -51,11 +52,14 @@ export const TargetCard = ({
 
   const goToTargetDetails = () => {
     history.push(
-      `${(Routes.Feed.path as string).replace(':id', `${target.id}?route=${FeedType.TargetFeed}`)}`,
+      `${(Routes.Feed.path as string).replace(
+        ':id',
+        `${target.id}?route=${FeedRouteType.TargetFeed}`,
+      )}`,
     );
   };
 
-  const handleSetTarget = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+  const handleSetTarget = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
     addTargetModalDisclosure.onOpen();
     e.stopPropagation();
   };

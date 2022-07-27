@@ -8,14 +8,16 @@ export type UseFetcherConfiguration<T = any> = SWRConfiguration<T>;
 export const useFetcher = <T = unknown>(
   key: string | unknown[] | null | undefined | false,
   callback: (...args: unknown[]) => Promise<T>,
-  options?: UseFetcherConfiguration<T>,
+  configs?: UseFetcherConfiguration<T>,
 ) => {
-  const { onError, ...restOptions } = options ?? {};
+  const { onError, ...restConfigs } = configs ?? {};
 
   const errorHandler = useErrorHandler();
 
   const handleError: SWRConfiguration['onError'] = async (error, key, config) => {
-    onError?.(error, key, config);
+    const shouldUseDefaultErrorHandler = onError?.(error, key, config) ?? true;
+
+    if (!shouldUseDefaultErrorHandler) return;
 
     if (isApiError(error)) {
       toast.error(error.details?.message);
@@ -26,7 +28,7 @@ export const useFetcher = <T = unknown>(
 
   const swrReturn = useSwr<T>(key, callback, {
     onError: handleError,
-    ...restOptions,
+    ...restConfigs,
   });
 
   return React.useMemo(

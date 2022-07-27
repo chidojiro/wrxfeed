@@ -74,8 +74,8 @@ const getComments = (id: number, params?: GetFeedCommentsParams) =>
     params: withDefaultPaginationParams(params),
   });
 
-const createComment = (id: number, payload: CreateCommentPayload) =>
-  RestApis.post<Comment>(`/feed/items/${id}/comments`, payload);
+const createComment = (feedId: number, payload: CreateCommentPayload) =>
+  RestApis.post<Comment>(`/feed/items/${feedId}/comments`, payload);
 
 const updateComment = (id: number, payload: UpdateCommentPayload) =>
   RestApis.put<Comment>(`/feed/comments/${id}`, payload);

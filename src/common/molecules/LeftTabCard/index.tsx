@@ -28,11 +28,19 @@ const LeftTabCard: React.FC<LeftTabCardProps> = ({ className = '', tab, showTabI
 
   const { icon: TabIcon } = tab;
 
-  const isCurrentTab = matchPath(location.pathname, {
-    path: tab.location.pathMatch ?? tab.location.pathname,
-    exact: true,
-    strict: false,
-  });
+  const isCurrentTab = tab.location.pathMatches?.length
+    ? tab.location.pathMatches.some((patchMatch) =>
+        matchPath(location.pathname, {
+          path: patchMatch,
+          exact: true,
+          strict: false,
+        }),
+      )
+    : matchPath(location.pathname, {
+        path: tab.location.pathname,
+        exact: true,
+        strict: false,
+      });
 
   const renderCounter = (item: LeftTab) => {
     const counter = newFeedCount[item.location.pathname];

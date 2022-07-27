@@ -1,18 +1,12 @@
 import { ChevronLeftIcon } from '@/assets';
 import { ListLoader } from '@/common/components';
-import { useQuery } from '@/common/hooks';
 import MainLayout from '@/common/templates/MainLayout';
-import { GetFeedsParams } from '@/feed/types';
-import { Category, Department } from '@/main/entity';
-import FeedList from '@/main/organisms/FeedList';
-import React from 'react';
+import { Feeds } from '@/feed/Feeds';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import { Vendor } from './types';
 import { useVendor } from './useVendor';
 
 export const VendorPage = () => {
   const history = useHistory();
-  const query = useQuery();
 
   const { vendorId: vendorIdParam } = useParams() as Record<string, string>;
   const vendorId = +vendorIdParam;
@@ -23,13 +17,6 @@ export const VendorPage = () => {
 
   const { data: vendor, isValidating } = useVendor(vendorId, { onError: goBack });
 
-  const handleFeedsFilter = (
-    key: keyof GetFeedsParams,
-    value?: Department | Category | Vendor,
-  ): void => {
-    query.set(key, value?.id.toString() ?? '');
-  };
-
   return (
     <MainLayout>
       <h1 className="sr-only">Department list</h1>
@@ -38,7 +25,7 @@ export const VendorPage = () => {
         <h1 className="text-Gray-1 text-xl font-bold">{vendor?.name ?? '...'}</h1>
       </Link>
       <ListLoader loading={isValidating}>
-        <FeedList onFilter={handleFeedsFilter} vendorId={vendorId} />
+        <Feeds vendorId={vendorId} />
       </ListLoader>
     </MainLayout>
   );

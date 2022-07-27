@@ -23,7 +23,7 @@ export const Spinner = ({ className }: SpinnerProps) => {
       ref={wrapperRef}
       className={clsx(
         StringUtils.withProjectClassNamePrefix('spinner'),
-        'flex justify-center items-center w-8 h-8',
+        'flex justify-center items-center w-8 h-8 max-w-full max-h-full',
         className,
       )}
     >
