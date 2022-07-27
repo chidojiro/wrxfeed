@@ -13,7 +13,7 @@ import { UserPlusIcon } from '@/assets';
 
 import mixpanel from 'mixpanel-browser';
 import { useIdentity } from '@/identity/hooks';
-import { Button } from '@/common/components';
+import { Avatar, Button } from '@/common/components';
 
 interface NavBarStaticProps {
   className?: string;
@@ -133,7 +133,7 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
             <div className="border-t border-gray-200 pt-4">
               <div className="max-w-3xl mx-auto px-4 flex items-center sm:px-6">
                 <div className="flex-shrink-0">
-                  <img className="h-10 w-10 rounded-full" src={userAva} alt="" />
+                  <Avatar className="h-10 w-10" src={userAva} fullName={userName as string} />
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-gray-800">{userName}</div>
