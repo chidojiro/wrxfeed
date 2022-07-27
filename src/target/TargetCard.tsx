@@ -86,7 +86,6 @@ export const TargetCard = ({
   return (
     <>
       <AddTargetModal
-        useDefaultApis
         open={addTargetModalDisclosure.isOpen}
         onClose={addTargetModalDisclosure.onClose}
         onCancel={addTargetModalDisclosure.onClose}

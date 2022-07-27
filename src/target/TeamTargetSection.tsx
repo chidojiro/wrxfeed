@@ -93,7 +93,6 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
         }
         onUpdateSuccess={() => mutateTargets()}
         onCreateSuccess={() => mutateTargets()}
-        useDefaultApis
       />
     </div>
   );

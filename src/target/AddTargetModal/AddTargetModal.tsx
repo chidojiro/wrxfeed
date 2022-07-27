@@ -67,7 +67,15 @@ const getPropFromTagValue = (value: string) => {
 };
 
 export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
-  const { open, onClose, onCancel, departmentId, target, hidePropertyDropdowns } = props;
+  const {
+    open,
+    onClose,
+    onCancel,
+    departmentId,
+    target,
+    hidePropertyDropdowns,
+    useDefaultApis = true,
+  } = props;
   const isEdit = !!target;
 
   const methods = useForm();
@@ -210,9 +218,9 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
 
   const { onCreate, onUpdate, onDelete } = props as AddTargetModalWithoutDefaultApisProps;
 
-  const createApi = props.useDefaultApis ? TargetApis.create : onCreate;
-  const updateApi = props.useDefaultApis ? TargetApis.update : onUpdate;
-  const deleteApi = props.useDefaultApis ? TargetApis.delete : onDelete;
+  const createApi = useDefaultApis ? TargetApis.create : onCreate;
+  const updateApi = useDefaultApis ? TargetApis.update : onUpdate;
+  const deleteApi = useDefaultApis ? TargetApis.delete : onDelete;
 
   const { handle: createTarget } = useHandler(
     (payload: CreateTargetPayload) => createApi!(payload),

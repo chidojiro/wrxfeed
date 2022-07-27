@@ -49,7 +49,6 @@ export const TeamTargetSummary = ({ departmentId }: TeamTargetSummaryProps) => {
         </div>
       </OverlayLoader>
       <AddTargetModal
-        useDefaultApis
         open={addTargetModalDisclosure.isOpen}
         onClose={addTargetModalDisclosure.onClose}
         onCancel={addTargetModalDisclosure.onClose}
