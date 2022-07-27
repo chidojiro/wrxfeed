@@ -32,6 +32,7 @@ export type TargetCardProps = ClassName &
     target: Target;
     showColorfulHeading?: boolean;
     deletable?: boolean;
+    chartContainerClass?: string;
   };
 
 export const TargetCard = ({
@@ -42,6 +43,7 @@ export const TargetCard = ({
   showColorfulHeading = true,
   hidePropertyDropdowns,
   deletable = true,
+  chartContainerClass = 'flex-1',
 }: TargetCardProps) => {
   const history = useHistory();
   const department = target.department;
@@ -69,7 +71,10 @@ export const TargetCard = ({
 
   const addTargetModalDisclosure = useDisclosure();
 
-  const headingColor = getColorByText(target.name, undefined, true);
+  const teamHeaderColor: string = React.useMemo(
+    () => getColorByText(department?.name ?? '', department?.id, true),
+    [department?.id, department?.name],
+  );
 
   const handleDeleteClick = async () => {
     await deleteTarget(target.id);
@@ -81,6 +86,7 @@ export const TargetCard = ({
   return (
     <>
       <AddTargetModal
+        useDefaultApis
         open={addTargetModalDisclosure.isOpen}
         onClose={addTargetModalDisclosure.onClose}
         onCancel={addTargetModalDisclosure.onClose}
@@ -92,7 +98,7 @@ export const TargetCard = ({
       />
       <Button
         onClick={goToTargetDetails}
-        key={`Dashboard-TargetChartView-${target.id}`}
+        key={target.id}
         className={clsx(
           'bg-white relative w-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
           className,
@@ -100,8 +106,8 @@ export const TargetCard = ({
       >
         <div className="flex flex-1 flex-col pb-4 space-y-2 w-full">
           <div
-            style={{ background: showColorfulHeading ? headingColor : undefined }}
-            className="h-2 mb-4 rounded-t-card"
+            style={{ background: showColorfulHeading ? teamHeaderColor : undefined }}
+            className="h-2 rounded-t-card"
           />
           <div className="flex flex-col px-6 space-y-4">
             <div className="flex flex-row space-x-1">
@@ -127,9 +133,9 @@ export const TargetCard = ({
               </div>
             </div>
             <div className="flex flex-row justify-between">
-              <div className="flex flex-row space-x-2.5 text-Gray-6">
-                <div className="flex flex-col datas-start min-w-[70px] h-9 pr-1.5">
-                  <div className="flex items-center datas-center space-x-1">
+              <div className="flex flex-row space-x-2.5 text-Gray-6 min-h-9">
+                <div className="flex flex-col items-start min-w-[70px] pr-1.5">
+                  <div className="flex items-center space-x-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-Green-400" />
                     <p className="text-2xs">Spend</p>
                   </div>
@@ -137,8 +143,8 @@ export const TargetCard = ({
                     {getDisplayUsdAmount(currentSpend)}
                   </p>
                 </div>
-                <div className="flex flex-col datas-start min-w-[70px] h-9 pr-1.5">
-                  <div className="flex items-center datas-center space-x-1">
+                <div className="flex flex-col items-start min-w-[70px] pr-1.5">
+                  <div className="flex items-center space-x-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-Gray-6" />
                     <p className="text-2xs">Target To Date</p>
                   </div>
@@ -146,8 +152,8 @@ export const TargetCard = ({
                     {getDisplayUsdAmount(targetToDate)}
                   </p>
                 </div>
-                <div className="flex flex-col datas-start min-w-[70px] h-9 pr-1.5">
-                  <div className="flex items-center datas-center space-x-1">
+                <div className="flex flex-col items-start min-w-[70px] pr-1.5">
+                  <div className="flex items-center space-x-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-Gray-6" />
                     <p className="text-2xs">Overall Target</p>
                   </div>
@@ -185,7 +191,7 @@ export const TargetCard = ({
               )}
             </div>
           </div>
-          <div className="flex flex-1 flex-col px-4">
+          <div className={clsx('flex w-full flex-col px-5', chartContainerClass)}>
             <MiniChartView
               target={target}
               overallTarget={overallTarget}
@@ -195,7 +201,7 @@ export const TargetCard = ({
           </div>
         </div>
         {isDeletingTarget && (
-          <div className="absolute flex justify-center datas-center inset-0 rounded-card bg-black/10">
+          <div className="absolute flex justify-center items-center inset-0 rounded-card bg-black/10">
             <Loading color="Gray-3" />
           </div>
         )}

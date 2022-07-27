@@ -189,7 +189,7 @@ export const MiniChartView = <
     <div className={clsx('flex flex-1 flex-col w-full h-full', className)}>
       {chartData && (
         <>
-          <div className="relative flex flex-1 flex-col justify-center items-center w-auto mx-[-8px] pr-4 pb-1 pl-2 pt-1 h-[184px] border border-Gray-12 rounded-2.5xl">
+          <div className="relative flex flex-1 flex-col justify-center items-center w-auto p-4 h-[184px] border border-Gray-12 rounded-2.5xl">
             <TargetChart
               containerClass="flex flex-col mt-2"
               chartData={chartData}

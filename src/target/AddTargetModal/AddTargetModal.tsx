@@ -382,7 +382,7 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
               </div>
             </div>
             {!!hasPeriodsError && renderNoMonthError()}
-            <div className="h-[270px] px-10">
+            <div className="h-[270px] px-6">
               <OverlayLoader
                 loading={!isValidatingOptions && isValidatingSpendings}
                 className="h-full"
