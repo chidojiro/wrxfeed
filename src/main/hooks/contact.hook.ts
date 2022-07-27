@@ -1,10 +1,10 @@
+import { useFetcher } from '@/common/hooks';
 import { USE_CONTACT_BUTTON_MESSAGE } from '@/error/errorMessages';
-import { useErrorHandler } from '@/error/hooks';
 import { isBadRequest } from '@/error/utils';
 import { InvitationApis } from '@/invitation/apis';
 import { GetInvitationContactsParams } from '@/invitation/types';
 import { Contact } from '@/main/entity';
-import { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { toast } from 'react-toastify';
 
 interface ContactsHookValues {
@@ -14,14 +14,12 @@ interface ContactsHookValues {
 }
 
 export function useGetContacts(filter: GetInvitationContactsParams): ContactsHookValues {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [hasMore, setHasMore] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const errorHandler = useErrorHandler();
+  const [contacts, setContacts] = React.useState<Contact[]>([]);
+  const [hasMore, setHasMore] = React.useState(false);
 
-  const getContacts = useCallback(async () => {
-    try {
-      setLoading(true);
+  const { isInitializing: isLoading } = useFetcher(
+    ['contact.hook', filter],
+    async () => {
       const res = await InvitationApis.getContacts(filter);
       if (filter.offset) {
         setContacts((prevTrans) => [...prevTrans, ...res]);
@@ -29,19 +27,16 @@ export function useGetContacts(filter: GetInvitationContactsParams): ContactsHoo
         setContacts(res);
       }
       setHasMore(!!res.length);
-    } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error(USE_CONTACT_BUTTON_MESSAGE);
-      } else {
-        await errorHandler(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [errorHandler, filter]);
+    },
+    {
+      onError: (error) => {
+        if (isBadRequest(error)) {
+          toast.error(USE_CONTACT_BUTTON_MESSAGE);
+          return false;
+        }
+      },
+    },
+  );
 
-  useEffect(() => {
-    getContacts().then();
-  }, [getContacts]);
   return { contacts, hasMore, isLoading };
 }

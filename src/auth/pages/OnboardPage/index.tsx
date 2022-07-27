@@ -3,11 +3,10 @@ import { ReactComponent as SharpSpaceDashboard } from '@/assets/icons/solid/shar
 import DepartmentCell from '@/auth/molecules/DepartmentCell';
 import Loading from '@/common/atoms/Loading';
 import { Button } from '@/common/components';
-import { useDebounce, useLegacyQuery, useNavUtils } from '@/common/hooks';
+import { useDebounce, useHandler, useLegacyQuery, useNavUtils } from '@/common/hooks';
 import NavBarStatic from '@/common/organisms/NavBarStatic';
 import BlankLayout from '@/common/templates/BlankLayout';
 import { TEAM_SUGGEST_RANDOM_NUMBER } from '@/config';
-import { useErrorHandler } from '@/error/hooks';
 import { isApiError } from '@/error/utils';
 import { useIdentity } from '@/identity/hooks';
 import { Department } from '@/main/entity';
@@ -24,7 +23,6 @@ import { useSearch } from '@/misc/useSearch';
 const OnboardPage: React.FC = () => {
   const identity = useIdentity();
   const { redirect } = useNavUtils();
-  const errorHandler = useErrorHandler();
   const query = useLegacyQuery();
 
   const autoDirectString: string = query.get('autoDirect') ?? '1';
@@ -36,7 +34,6 @@ const OnboardPage: React.FC = () => {
   const [yourTeams, setYourTeams] = useState<Department[]>([]);
   const [suggestedTeams, setSuggestedTeams] = useState<Department[]>([]);
   const [keyword, setKeyword] = useState('');
-  const [isDoneOnboard, setDoneOnboard] = useState(false);
   const [isHandlingAction, setHandlingAction] = useState(false);
   const [ignoreEmpty, setIgnoreEmpty] = useState(false);
 
@@ -91,9 +88,8 @@ const OnboardPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [departments]);
 
-  const onClickIamDone = async () => {
-    try {
-      setDoneOnboard(true);
+  const { handle: handleIAmDoneClick, isLoading: isOnboarding } = useHandler(
+    async () => {
       const currentTime = new Date();
       const updates = {
         ...identity,
@@ -104,16 +100,17 @@ const OnboardPage: React.FC = () => {
       };
       await ProfileApis.update(updates);
       redirect(Routes.Dashboard.path as string);
-    } catch (error: unknown) {
-      if (isApiError(error)) {
-        toast.error(error?.details?.message);
-      } else {
-        await errorHandler(error);
-      }
-    } finally {
-      setDoneOnboard(false);
-    }
-  };
+    },
+    {
+      onError: (error: unknown) => {
+        if (isApiError(error)) {
+          toast.error(error?.details?.message);
+
+          return false;
+        }
+      },
+    },
+  );
 
   const onSearchTeam = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -270,8 +267,8 @@ const OnboardPage: React.FC = () => {
           </div>
         </div>
         <div className="flex flex-row self-center mb-12 sm:mb-20 mt-4">
-          {isDoneOnboard && <Loading width={12} height={12} className="mr-4" />}
-          <Button onClick={onClickIamDone} className="flex flex-col items-center">
+          {!!isOnboarding && <Loading width={12} height={12} className="mr-4" />}
+          <Button onClick={handleIAmDoneClick} className="flex flex-col items-center">
             <p className="text-Accent-2 text-sm">{"I'm Done —>"}</p>
             <div className="h-px bg-Accent-2 w-full" />
           </Button>

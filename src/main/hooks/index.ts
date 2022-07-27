@@ -1,5 +1,4 @@
 export * from './transaction.hook';
-export * from './comment.hook';
 export * from './mention.hook';
 export * from './invite.hook';
 export * from './feedback.hook';

@@ -1,12 +1,12 @@
 import { InvitationApis } from '@/invitation/apis';
-import { useErrorHandler } from '@/error/hooks';
 import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
 import { Contact } from '@/main/entity';
-import { useState } from 'react';
 import { toast } from 'react-toastify';
 import mixpanel from 'mixpanel-browser';
 import { useIdentity } from '@/identity/hooks';
+import { useHandler } from '@/common/hooks';
+import React from 'react';
 
 interface InviteHookValues {
   isSent: boolean;
@@ -15,35 +15,31 @@ interface InviteHookValues {
 }
 
 export function useInvite(): InviteHookValues {
-  const errorHandler = useErrorHandler();
-  const [isLoading, setLoading] = useState(false);
-  const [isSent, setSent] = useState(false);
-
+  const [isSent, setSent] = React.useState(false);
   const identity = useIdentity();
 
-  const sendInvitation = async (contact: Partial<Contact>) => {
-    try {
-      setLoading(true);
+  const { handle: sendInvitation, isLoading } = useHandler(
+    async (contact: Partial<Contact>) => {
+      setSent(false);
       await InvitationApis.send({ email: contact?.email ?? '' });
-      setSent(true);
-
       mixpanel.track('Invite Sent', {
         user_id: identity?.id,
         email: identity?.email,
         company: identity?.company?.id,
       });
-    } catch (error: unknown) {
-      setSent(false);
-      if (isApiError(error)) {
-        if (error.code === ApiErrorCode.BadRequest) {
-          toast.error(error.details?.message);
-        } else {
-          errorHandler(error);
+      setSent(true);
+    },
+    {
+      onError: (error: unknown) => {
+        if (isApiError(error)) {
+          if (error.code === ApiErrorCode.BadRequest) {
+            toast.error(error.details?.message);
+            return false;
+          }
         }
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+      },
+    },
+  );
+
   return { isSent, isLoading, sendInvitation };
 }
