@@ -1,12 +1,12 @@
-import { usePusher } from '@/push-notification/usePusher';
-import { useErrorHandler } from '@/error/hooks';
+import { useFetcher, useHandler } from '@/common/hooks';
 import { isBadRequest } from '@/error/utils';
 import { useIdentity } from '@/identity/hooks';
 import { Notification } from '@/main/entity';
 import { newNotifyCountState } from '@/main/states/notify.state';
 import { NotificationApis } from '@/notification/apis';
+import { usePusher } from '@/push-notification/usePusher';
 import { PaginationParams } from '@/rest/types';
-import { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { toast } from 'react-toastify';
 import { SetterOrUpdater, useRecoilState } from 'recoil';
 
@@ -23,31 +23,31 @@ interface NotificationHookValues {
 }
 
 export function useNotification(page: PaginationParams): NotificationHookValues {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = React.useState<Notification[]>([]);
   const [newNotifyCount, setNewNotifyCount] = useRecoilState<number>(newNotifyCountState);
-  const [hasMore, setHasMore] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [isMarkAll, setMarkAll] = useState<boolean>(false);
-  const [unreadCount, setUnreadCount] = useState<number>(0);
-  const errorHandler = useErrorHandler();
+  const [hasMore, setHasMore] = React.useState<boolean>(false);
+  const [isMarkAll, setMarkAll] = React.useState<boolean>(false);
+  const [unreadCount, setUnreadCount] = React.useState<number>(0);
 
-  const patchNotification = async (id: number) => {
-    try {
+  const { handle: patchNotification } = useHandler(
+    async (id: number) => {
       await NotificationApis.markAsRead(id);
       const newNotifies = notifications.filter((item) => item.id !== id);
       setNotifications(newNotifies);
-    } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error('Can not patch notification 🤦!');
-      } else {
-        await errorHandler(error);
-      }
-    }
-  };
+    },
+    {
+      onError: (error) => {
+        if (isBadRequest(error)) {
+          toast.error('Can not patch notification 🤦!');
+          return false;
+        }
+      },
+    },
+  );
 
-  const getNotifications = useCallback(async () => {
-    try {
-      setLoading(true);
+  const { isInitializing: isLoading } = useFetcher(
+    ['notification.hook', page],
+    async () => {
       if (page?.limit) {
         const res = await NotificationApis.getList(page);
         setUnreadCount(res.unreadCount);
@@ -61,39 +61,35 @@ export function useNotification(page: PaginationParams): NotificationHookValues 
       } else {
         setHasMore(false);
       }
-    } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error("Can't get notifications 🤦!");
-      } else {
-        await errorHandler(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [errorHandler, page]);
+    },
+    {
+      onError: (error) => {
+        if (isBadRequest(error)) {
+          toast.error("Can't get notifications 🤦!");
+          return false;
+        }
+      },
+    },
+  );
 
-  const markAllAsRead = async () => {
-    try {
+  const { handle: markAllAsRead } = useHandler(
+    async () => {
       setMarkAll(true);
       await NotificationApis.markAllAsRead();
       setUnreadCount(0);
       setNewNotifyCount(0);
       setMarkAll(false);
-      // setNotifications([]);
-      // toast.success('Mark all notify as read successfully 🙌!');
-    } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error("Can't mark all notify as read 😤!");
-      } else {
-        await errorHandler(error);
-      }
-    }
-  };
+    },
+    {
+      onError: (error) => {
+        if (isBadRequest(error)) {
+          toast.error("Can't mark all notify as read 😤!");
+          return false;
+        }
+      },
+    },
+  );
 
-  useEffect(() => {
-    getNotifications().then();
-  }, [getNotifications]);
   return {
     notifications,
     hasMore,
@@ -127,7 +123,7 @@ export function useNotifyChannel(
   const identity = useIdentity();
   const channelName = `notification-${identity?.id}`;
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Subscribe notify channel
     const channel = pusher.subscribe(channelName);
     channel.bind(eventName, callback);

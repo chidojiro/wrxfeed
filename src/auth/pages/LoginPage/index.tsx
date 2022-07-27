@@ -1,10 +1,10 @@
 import { AuthApis } from '@/auth/apis';
 import NotInvited from '@/auth/molecules/NotInvited';
 import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
-import { useNavUtils } from '@/common/hooks';
+import { useHandler, useNavUtils } from '@/common/hooks';
 import NotifyBanner from '@/common/molecules/NotifyBanner';
 import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@/config';
-import { ApiErrorCode, isApiError, useErrorHandler } from '@/error';
+import { ApiErrorCode, isApiError } from '@/error';
 import { useIdentity, useSetIdentity } from '@/identity/hooks';
 import { ProviderName } from '@/main/entity';
 import { ProfileApis } from '@/profile/apis';
@@ -27,7 +27,6 @@ const LoginPage: React.FC = () => {
   const location = useLocation<LocationState>();
   const identity = useIdentity();
   const setIdentity = useSetIdentity();
-  const errorHandler = useErrorHandler();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
   const { message, from, fromInvite, metadata } = location.state ?? {};
@@ -51,10 +50,8 @@ const LoginPage: React.FC = () => {
     }
   }, [redirect, identity, from]);
 
-  const handleResponseSuccess = async (
-    response: GoogleLoginResponse | GoogleLoginResponseOffline,
-  ) => {
-    try {
+  const { handle: handleResponseSuccess } = useHandler(
+    async (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
       if ('accessToken' in response) {
         const { accessToken } = response;
         const userToken = await AuthApis.signInWithGoogle(accessToken);
@@ -81,16 +78,18 @@ const LoginPage: React.FC = () => {
           email: googleProfile?.email,
         });
       }
-    } catch (error: unknown) {
-      if (isApiError(error)) {
-        if (error.code === ApiErrorCode.Unauthenticated) {
-          setNotInvited(true);
-        } else {
-          await errorHandler(error);
+    },
+    {
+      onError: (error: unknown) => {
+        if (isApiError(error)) {
+          if (error.code === ApiErrorCode.Unauthenticated) {
+            setNotInvited(true);
+            return false;
+          }
         }
-      }
-    }
-  };
+      },
+    },
+  );
 
   const handleResponseFailure = (error: any) => {
     if ('details' in error) {

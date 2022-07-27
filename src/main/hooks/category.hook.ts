@@ -1,8 +1,8 @@
-import { useErrorHandler } from '@/error/hooks';
+import { useFetcher } from '@/common/hooks';
 import { FeedApis } from '@/feed/apis';
 import { GetCategoriesParams } from '@/feed/types';
 import { Category } from '@/main/entity';
-import { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 
 export interface UseCategoryParams {
   params?: GetCategoriesParams;
@@ -20,33 +20,20 @@ export function useCategory({
   params,
   concatNewData = true,
 }: UseCategoryParams): CategoryHookValues {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [hasMore, setHasMore] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const errorHandler = useErrorHandler();
+  const [categories, setCategories] = React.useState<Category[]>([]);
+  const [hasMore, setHasMore] = React.useState<boolean>(false);
 
   const cleanData = () => setCategories([]);
 
-  const getCategories = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await FeedApis.getCategories(params);
-      if (concatNewData && params?.limit) {
-        setCategories((prevTrans) => [...prevTrans, ...res]);
-      } else {
-        setCategories(res);
-      }
-      setHasMore(!!res.length);
-    } catch (error) {
-      errorHandler(error);
-    } finally {
-      setLoading(false);
+  const { isInitializing: isLoading } = useFetcher(['category.hook', params], async () => {
+    const res = await FeedApis.getCategories(params);
+    if (concatNewData && params?.limit) {
+      setCategories((prevTrans) => [...prevTrans, ...res]);
+    } else {
+      setCategories(res);
     }
-  }, [concatNewData, errorHandler, params]);
-
-  useEffect(() => {
-    getCategories().then();
-  }, [getCategories]);
+    setHasMore(!!res.length);
+  });
 
   return { categories, hasMore, isLoading, cleanData };
 }
