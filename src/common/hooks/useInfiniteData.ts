@@ -27,14 +27,18 @@ export const useInfiniteData = <T extends { id: number }>(
     ...restConfigs
   } = configs ?? {};
 
+  const [initialData, setInitialData] = React.useState<T[]>(defaultData ?? []);
   const [loadedData, setLoadedData] = React.useState<T[]>(defaultData ?? []);
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   useFetcher(initialFetch && [randomKey.current], initialFetch!, {
-    onSuccess: (data) =>
-      setLoadedData((prev) =>
-        reverse ? [...data.slice().reverse(), ...prev] : [...prev, ...data],
-      ),
+    onSuccess: (data) => {
+      const setData = (prev: T[]) =>
+        reverse ? [...data.slice().reverse(), ...prev] : [...prev, ...data];
+
+      setLoadedData(setData);
+      setInitialData(setData);
+    },
   });
 
   const { isLoading, handle: loadMore } = useHandler(fetcher, restConfigs);
@@ -83,11 +87,11 @@ export const useInfiniteData = <T extends { id: number }>(
     async (payload: any) => {
       const data = (await _handleCreate?.(payload)) ?? payload;
 
-      setLoadedData((prev) => (reverse ? [data, ...prev] : [...prev, data]));
+      setLoadedData((prev) => (data ? [...prev, data] : prev));
 
       return data;
     },
-    [_handleCreate, reverse],
+    [_handleCreate],
   );
 
   const reset = React.useCallback(() => {
@@ -98,12 +102,22 @@ export const useInfiniteData = <T extends { id: number }>(
     () => ({
       loadMore: handleLoadMore,
       data: loadedData,
+      initialData,
       isLoading,
       delete: handleDelete,
       update: handleUpdate,
       create: handleCreate,
       reset,
     }),
-    [handleCreate, handleDelete, handleLoadMore, handleUpdate, isLoading, loadedData, reset],
+    [
+      handleCreate,
+      handleDelete,
+      handleLoadMore,
+      handleUpdate,
+      initialData,
+      isLoading,
+      loadedData,
+      reset,
+    ],
   );
 };
