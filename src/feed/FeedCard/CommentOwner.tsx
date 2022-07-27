@@ -28,22 +28,10 @@ export const CommentOwner = ({
   const renderAvaOrShortName = () => {
     const isMyComment = owner?.id === profile?.id;
     if (isMyComment) {
-      return (
-        <Avatar
-          className="w-6 h-6 rounded-full"
-          src={profile?.avatar}
-          fullName={profile?.fullName as string}
-        />
-      );
+      return <Avatar size="sm" src={profile?.avatar} fullName={profile?.fullName as string} />;
     }
     if (owner?.avatar) {
-      return (
-        <Avatar
-          className="w-6 h-6 rounded-full"
-          src={owner?.avatar}
-          fullName={owner?.fullName as string}
-        />
-      );
+      return <Avatar size="sm" src={owner?.avatar} fullName={owner?.fullName as string} />;
     }
     const shortName = getNameAbbreviation(owner?.fullName);
     return (

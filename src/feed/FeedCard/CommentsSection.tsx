@@ -2,7 +2,7 @@ import { InfiniteLoader } from '@/common/components';
 import { useInfiniteData } from '@/common/hooks';
 import { isBadRequest } from '@/error';
 import { useIdentity } from '@/identity';
-import { Comment, FeedItem, Visibility } from '@/main/entity';
+import { FeedItem, Visibility } from '@/main/entity';
 import { useMention } from '@/main/hooks';
 import { CommentFormModel } from '@/main/types';
 import { commentEditorHtmlParser } from '@/main/utils';
@@ -114,7 +114,7 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
           </InfiniteLoader>
         )}
         <ul className="flex flex-col mt-1.5">
-          {comments?.map((comment: Comment) => (
+          {comments?.map((comment) => (
             <li key={comment.id}>
               <CommentItem
                 className={isHidden ? 'bg-purple-11' : 'bg-Gray-24'}
