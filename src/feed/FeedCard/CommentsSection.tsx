@@ -34,6 +34,7 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
   const { mentions } = useMention();
 
   const {
+    initialData: initialComments,
     data: comments,
     loadMore: loadMoreComments,
     create: createComment,
@@ -54,7 +55,6 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
           limit: INITIAL_COMMENTS,
         }),
       handleCreate: (payload: CreateCommentPayload) => FeedApis.createComment(feed.id, payload),
-      handleUpdate: FeedApis.updateComment,
       handleDelete: FeedApis.deleteComment,
       reverse: true,
       onError: (error: any) => {
@@ -65,6 +65,12 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
       },
     },
   );
+
+  const handleUpdateComment = async (id: number, payload: CreateCommentPayload) => {
+    await FeedApis.updateComment(id, payload);
+
+    updateComment(id, payload);
+  };
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
     const contentState = values?.content as EditorState;
@@ -94,7 +100,7 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
   return (
     <div>
       <div className="space-y-4 px-4 sm:px-12 mt-1.5">
-        {comments.length >= 2 && (
+        {initialComments.length >= 2 && (
           <InfiniteLoader
             onLoad={loadMoreComments}
             itemsPerLoad={COMMENTS_PER_INFINITE_LOAD}
@@ -115,7 +121,7 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
                 comment={comment}
                 mentionData={mentions}
                 editable={identity?.id === comment.user.id}
-                onEdit={(data) => updateComment(data.id, data)}
+                onEdit={(data) => handleUpdateComment(data.id, { ...comment, ...data })}
                 onDelete={({ id }) => deleteComment(id)}
                 isShowUserAva
               />
