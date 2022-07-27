@@ -80,7 +80,7 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
 
     const parsedContent = commentEditorHtmlParser(contentState.getCurrentContent());
 
-    createComment({
+    return createComment({
       content: parsedContent,
       attachment: values.attachment,
     });

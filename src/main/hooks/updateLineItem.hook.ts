@@ -1,8 +1,7 @@
-import { useErrorHandler } from '@/error/hooks';
+import { useHandler } from '@/common/hooks';
 import { isBadRequest } from '@/error/utils';
 import { FeedApis } from '@/feed/apis';
 import { LineItem, TransLineItem } from '@/main/entity';
-import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 
 interface UpdateLineItemHookValues {
@@ -16,29 +15,23 @@ interface LineItemModalCallback {
 }
 
 export function useUpdateLineItem(callback?: LineItemModalCallback): UpdateLineItemHookValues {
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const errorHandler = useErrorHandler();
-
-  const updateLineItemById = useCallback(
+  const { handle: updateLineItemById, isLoading } = useHandler(
     async (id: number, data: Partial<TransLineItem>) => {
-      try {
-        setLoading(true);
-        await FeedApis.updateLineItem(id, data);
-        callback?.onSuccess(data);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
+      await FeedApis.updateLineItem(id, data);
+      callback?.onSuccess(data);
+    },
+    {
+      onError: (error: any) => {
         if (callback?.onError) {
           callback?.onError(error);
-        } else if (isBadRequest(error)) {
-          toast.error(error?.details?.message);
-        } else {
-          await errorHandler(error);
+          return false;
         }
-      } finally {
-        setLoading(false);
-      }
+        if (isBadRequest(error)) {
+          toast.error(error?.details?.message);
+          return false;
+        }
+      },
     },
-    [callback, errorHandler],
   );
 
   return { updateLineItemById, isLoading };

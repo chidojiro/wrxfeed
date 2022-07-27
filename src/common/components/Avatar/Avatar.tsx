@@ -27,7 +27,7 @@ export const Avatar = ({ src, className, fullName, size = 'sm' }: AvatarProps) =
         placement="top-start"
         trigger={
           src ? (
-            <img src={src} alt="" className="object-cover" />
+            <img src={src} alt="" className="object-cover w-full h-full" />
           ) : (
             <div
               className={clsx(
