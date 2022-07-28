@@ -22,7 +22,6 @@ export const TargetCards = ({
           key={target.id}
           target={target}
           chartContainerClass="h-[184px]"
-          // className="min-h-[330px]"
           onDeleteSuccess={onDeleteSuccess}
           onUpdateSuccess={onUpdateSuccess}
         />
