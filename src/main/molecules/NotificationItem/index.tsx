@@ -1,13 +1,12 @@
-import { Notification, NotifyStatus } from '@/main/entity';
-import React from 'react';
+import { Avatar, Button } from '@/common/components';
 import { distanceToNow } from '@/common/utils';
-import clsx from 'clsx';
 import { CommentText } from '@/feed/CommentText';
+import { Notification, NotifyStatus } from '@/main/entity';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
-
-import mixpanel from 'mixpanel-browser';
 import { useProfile } from '@/profile/useProfile';
-import { Button } from '@/common/components';
+import clsx from 'clsx';
+import mixpanel from 'mixpanel-browser';
+import React from 'react';
 
 export interface NotificationItemProps {
   item: Notification;
@@ -30,9 +29,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
         style={{ backgroundColor: avatarBgColor }}
       >
         {isHaveAvatar && (
-          <img
-            className="flex w-10 h-10 rounded-full"
-            alt="avatar-who-mention"
+          <Avatar
+            className="w-10 h-10"
+            fullName={item.causedByUser.fullName as string}
             src={isHaveAvatar}
           />
         )}

@@ -2,7 +2,7 @@ import { AuthApis } from '@/auth/apis';
 import { profileState } from '@/auth/containers/ProfileEditForm/states';
 import Loading from '@/common/atoms/Loading';
 import UploadButton from '@/common/atoms/UploadButton';
-import { Button } from '@/common/components';
+import { Avatar, Button } from '@/common/components';
 import { useFileUploader } from '@/common/hooks/useFileUploader';
 import { UPLOAD_FILE_ACCEPT } from '@/config';
 import { getNameAbbreviation } from '@/main/utils';
@@ -62,7 +62,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
 
   const renderAvatarIcon = () => {
     if (userAvatar !== '') {
-      return <img className="h-8 w-8 rounded-full" src={userAvatar} alt="Ava" />;
+      return <Avatar className="h-8 w-8" src={userAvatar} fullName={profile.fullName as string} />;
     }
     const shortName = getNameAbbreviation(profileUser.fullName);
     return (

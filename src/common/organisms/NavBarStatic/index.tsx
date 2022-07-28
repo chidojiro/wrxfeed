@@ -1,19 +1,16 @@
-import React, { useState } from 'react';
-import { Popover } from '@headlessui/react';
-import { useHistory } from 'react-router-dom';
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
-
-import clsx from 'clsx';
-import { Routes } from '@/routing/routes';
-
+import { UserPlusIcon } from '@/assets';
+import { Avatar, Button } from '@/common/components';
 import SearchBar from '@/common/molecules/SearchBar';
 import { NotifyPopover, UserProfilePopover } from '@/main/molecules';
 import { InviteModal } from '@/main/organisms';
-import { UserPlusIcon } from '@/assets';
-
-import mixpanel from 'mixpanel-browser';
 import { useProfile } from '@/profile/useProfile';
-import { Button } from '@/common/components';
+import { Routes } from '@/routing/routes';
+import { Popover } from '@headlessui/react';
+import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+import clsx from 'clsx';
+import mixpanel from 'mixpanel-browser';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 interface NavBarStaticProps {
   className?: string;
@@ -133,7 +130,7 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
             <div className="border-t border-gray-200 pt-4">
               <div className="max-w-3xl mx-auto px-4 flex items-center sm:px-6">
                 <div className="flex-shrink-0">
-                  <img className="h-10 w-10 rounded-full" src={userAva} alt="" />
+                  <Avatar className="h-10 w-10" src={userAva} fullName={userName as string} />
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-gray-800">{userName}</div>
