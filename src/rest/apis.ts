@@ -1,4 +1,4 @@
-import { CookiesUtils } from '@/common/utils';
+import { AuthUtils } from '@/auth/utils';
 import { API_BASE_URL } from '@/config';
 import { ApiErrorCode } from '@/error';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
@@ -20,9 +20,7 @@ myAxios.interceptors.response.use(
       error.response?.status === ApiErrorCode.Unauthenticated &&
       window.location.pathname !== '/login'
     ) {
-      CookiesUtils.remove('token');
-      localStorage.clear();
-      window.location.href = '/login';
+      AuthUtils.logout();
     }
     return Promise.reject(error);
   },

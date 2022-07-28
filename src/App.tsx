@@ -1,25 +1,25 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import { RecoilRoot as _RecoilRoot, RecoilRootProps } from 'recoil';
-import { ToastContainer } from 'react-toastify';
-
-import 'react-toastify/dist/ReactToastify.css';
-import 'emoji-mart/css/emoji-mart.css';
-import 'draft-js/dist/Draft.css';
-import '@draft-js-plugins/mention/lib/plugin.css';
-import '@draft-js-plugins/linkify/lib/plugin.css';
-import '@/styles.css';
-
-import LoadingFallback from '@/common/atoms/LoadingFallback';
-import NotFoundPage from '@/common/pages/NotFoundPage';
-import { Routes } from '@/routing/routes';
-import { ProtectedRoute } from '@/identity';
-import { UploadCSVModal } from '@/main/organisms';
+import { NotFoundPage } from '@/auth/NotFoundPage';
+import { ProtectedRoute } from '@/auth/ProtectedRoute';
 import { EmojiPickerContainer } from '@/common/molecules/EmojiPicker';
 import { NotifyBannerContainer } from '@/common/molecules/NotifyBanner';
+import { Children } from '@/common/types';
+import { UploadCSVModal } from '@/main/organisms';
 import ContactSupportButton from '@/main/organisms/ContactSupportButton';
 import { PusherProvider } from '@/push-notification/PusherProvider';
-import { Children } from '@/common/types';
+import { Routes } from '@/routing/routes';
+import React from 'react';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import { RecoilRoot as _RecoilRoot, RecoilRootProps } from 'recoil';
+import LoadingFallback from './common/atoms/LoadingFallback';
+import { RouteItem } from './routing/types';
+
+import '@/styles.css';
+import '@draft-js-plugins/linkify/lib/plugin.css';
+import '@draft-js-plugins/mention/lib/plugin.css';
+import 'draft-js/dist/Draft.css';
+import 'emoji-mart/css/emoji-mart.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RecoilRoot = _RecoilRoot as React.FC<RecoilRootProps & Children>;
 
@@ -38,30 +38,39 @@ const StyledToastContainer = () => (
   />
 );
 
+const { protectedRoutes, publicRoutes } = Object.values(Routes).reduce(
+  (acc, cur) => {
+    return cur.permissions?.length
+      ? { ...acc, protectedRoutes: [...acc.protectedRoutes, cur] }
+      : { ...acc, publicRoutes: [...acc.publicRoutes, cur] };
+  },
+  {
+    protectedRoutes: [] as RouteItem[],
+    publicRoutes: [] as RouteItem[],
+  },
+);
+
 const App: React.FC = () => {
   return (
     <RecoilRoot>
       <PusherProvider>
-        <Router key={Math.random()}>
-          <Suspense fallback={<LoadingFallback />}>
+        <Router>
+          <React.Suspense fallback={<LoadingFallback />}>
             <Switch>
-              {Object.entries(Routes).map(([key, route]) =>
-                route.permissions?.length ? (
-                  // Added property`key` to Router to fix warning
-                  // when hot reloading Route component
-                  <ProtectedRoute key={key} exact {...route} />
-                ) : (
-                  <Route key={key} exact {...route} />
-                ),
-              )}
-              {/* Redirect home to login */}
-              <Route key="Home" exact path="/" component={() => <Redirect to="/login" />} />
-              {/* 404 homepage */}
+              {publicRoutes.map((route, index) => (
+                <Route key={index} exact {...route} />
+              ))}
+
+              {protectedRoutes.map((route, index) => (
+                <ProtectedRoute key={index} exact {...route} permissions={route.permissions} />
+              ))}
+
+              <Route exact path="/" component={() => <Redirect to="/dashboard/all-company" />} />
               <Route>
                 <NotFoundPage />
               </Route>
             </Switch>
-          </Suspense>
+          </React.Suspense>
         </Router>
         <UploadCSVModal />
         <StyledToastContainer />

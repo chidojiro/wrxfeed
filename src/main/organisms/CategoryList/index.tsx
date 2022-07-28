@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
-import { Category } from '@/main/entity';
-import ListLoading from '@/main/atoms/ListLoading';
-import DirectoryItem from '@/main/molecules/DirectoryItem';
-
-import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@/identity/hooks';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import ListLoading from '@/main/atoms/ListLoading';
+import { Category } from '@/main/entity';
+import DirectoryItem from '@/main/molecules/DirectoryItem';
+import { useProfile } from '@/profile/useProfile';
+import mixpanel from 'mixpanel-browser';
+import React, { useEffect } from 'react';
 
 interface CategoryListProps {
   categories: Category[];
@@ -21,13 +20,13 @@ const CategoryList: React.FC<CategoryListProps> = ({
   onLoadMore,
   onSelect,
 }) => {
-  const identity = useIdentity();
+  const { profile } = useProfile();
 
   useEffect(() => {
     mixpanel.track('Category Directory View', {
-      user_id: identity?.id,
-      email: identity?.email,
-      company: identity?.company?.id,
+      user_id: profile?.id,
+      email: profile?.email,
+      company: profile?.company?.id,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

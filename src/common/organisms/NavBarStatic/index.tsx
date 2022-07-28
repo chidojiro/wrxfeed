@@ -1,19 +1,16 @@
-import React, { useState } from 'react';
-import { Popover } from '@headlessui/react';
-import { useHistory } from 'react-router-dom';
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
-
-import clsx from 'clsx';
-import { Routes } from '@/routing/routes';
-
+import { UserPlusIcon } from '@/assets';
+import { Avatar, Button } from '@/common/components';
 import SearchBar from '@/common/molecules/SearchBar';
 import { NotifyPopover, UserProfilePopover } from '@/main/molecules';
 import { InviteModal } from '@/main/organisms';
-import { UserPlusIcon } from '@/assets';
-
+import { useProfile } from '@/profile/useProfile';
+import { Routes } from '@/routing/routes';
+import { Popover } from '@headlessui/react';
+import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+import clsx from 'clsx';
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@/identity/hooks';
-import { Avatar, Button } from '@/common/components';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 interface NavBarStaticProps {
   className?: string;
@@ -47,7 +44,7 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
   const history = useHistory();
   const [isOpenInviteModal, openInviteModal] = useState(false);
 
-  const identity = useIdentity();
+  const { profile } = useProfile();
 
   const onClickNotification = () => {
     history.push(Routes?.Notifications?.path as string);
@@ -56,9 +53,9 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
     openInviteModal(true);
 
     mixpanel.track('Invite Button Click', {
-      user_id: identity?.id,
-      email: identity?.email,
-      company: identity?.company?.id,
+      user_id: profile?.id,
+      email: profile?.email,
+      company: profile?.company?.id,
     });
   };
 

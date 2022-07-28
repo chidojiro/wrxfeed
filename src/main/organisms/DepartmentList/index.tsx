@@ -1,14 +1,13 @@
-import React, { useEffect } from 'react';
-import mixpanel from 'mixpanel-browser';
-
-import { useSubscription } from '@/main/hooks/subscription.hook';
-import { useIdentity } from '@/identity/hooks';
+import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import ListLoading from '@/main/atoms/ListLoading';
 import { Department } from '@/main/entity';
 import { DepartmentSection } from '@/main/hooks/department.hook';
-import ListLoading from '@/main/atoms/ListLoading';
-import RootDepartmentHeader from '@/main/molecules/RootDepartmentHeader';
+import { useSubscription } from '@/main/hooks/subscription.hook';
 import DepartmentItem from '@/main/molecules/DepartmentItem';
-import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import RootDepartmentHeader from '@/main/molecules/RootDepartmentHeader';
+import { useProfile } from '@/profile/useProfile';
+import mixpanel from 'mixpanel-browser';
+import React, { useEffect } from 'react';
 
 interface DepartmentListProps {
   departments: DepartmentSection[];
@@ -29,13 +28,13 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
   const { subscribe, batchSubscribe, unsubscribe, batchUnsubscribe, isFollowing } =
     useSubscription();
 
-  const identity = useIdentity();
+  const { profile } = useProfile();
 
   useEffect(() => {
     mixpanel.track('Team Directory View', {
-      user_id: identity?.id,
-      email: identity?.email,
-      company: identity?.company?.id,
+      user_id: profile?.id,
+      email: profile?.email,
+      company: profile?.company?.id,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

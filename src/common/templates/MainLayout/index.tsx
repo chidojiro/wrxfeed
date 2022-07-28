@@ -3,7 +3,7 @@ import SideBar from '@/common/organisms/SideBar';
 import { Children } from '@/common/types';
 import { scrollToTop } from '@/main/utils';
 import clsx from 'clsx';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 type MainLayoutProps = Children & {
   className?: string;
@@ -19,9 +19,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   rightSide = true,
   mainClass = '',
 }) => {
-  useEffect(() => {
+  React.useEffect(() => {
     scrollToTop();
   }, []);
+
   return (
     <div className={clsx('relative', className ?? '')}>
       {showNavBar && <NavBar />}

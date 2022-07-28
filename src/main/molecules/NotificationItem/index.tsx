@@ -1,13 +1,12 @@
-import { Notification, NotifyStatus } from '@/main/entity';
-import React from 'react';
-import { distanceToNow } from '@/common/utils';
-import clsx from 'clsx';
-import { CommentText } from '@/feed/CommentText';
-import { getColorByText, getNameAbbreviation } from '@/main/utils';
-
-import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@/identity/hooks';
 import { Avatar, Button } from '@/common/components';
+import { distanceToNow } from '@/common/utils';
+import { CommentText } from '@/feed/CommentText';
+import { Notification, NotifyStatus } from '@/main/entity';
+import { getColorByText, getNameAbbreviation } from '@/main/utils';
+import { useProfile } from '@/profile/useProfile';
+import clsx from 'clsx';
+import mixpanel from 'mixpanel-browser';
+import React from 'react';
 
 export interface NotificationItemProps {
   item: Notification;
@@ -19,7 +18,7 @@ export interface NotificationItemProps {
 const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) => {
   const avatarBgColor = React.useMemo(() => getColorByText(item?.content ?? ''), [item?.content]);
   const isNew = item.status === NotifyStatus.UNREAD;
-  const identity = useIdentity();
+  const { profile } = useProfile();
 
   const renderAvatarOrShortname = () => {
     const shortName = getNameAbbreviation(item?.causedByUser?.fullName);
@@ -47,9 +46,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
         onClick(item);
 
         mixpanel.track('Notification Click', {
-          user_id: identity?.id,
-          email: identity?.email,
-          company: identity?.company?.id,
+          user_id: profile?.id,
+          email: profile?.email,
+          company: profile?.company?.id,
         });
       }}
       className={clsx(

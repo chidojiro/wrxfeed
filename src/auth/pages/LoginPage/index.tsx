@@ -1,18 +1,16 @@
 import { AuthApis } from '@/auth/apis';
 import NotInvited from '@/auth/molecules/NotInvited';
+import { AuthUtils } from '@/auth/utils';
 import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
-import { useHandler, useNavUtils } from '@/common/hooks';
+import { useNavUtils } from '@/common/hooks';
 import NotifyBanner from '@/common/molecules/NotifyBanner';
 import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@/config';
-import { ApiErrorCode, isApiError } from '@/error';
-import { useIdentity, useSetIdentity } from '@/identity/hooks';
-import { ProviderName } from '@/main/entity';
-import { ProfileApis } from '@/profile/apis';
+import { useProfile } from '@/profile/useProfile';
 import { Routes } from '@/routing/routes';
 import mixpanel from 'mixpanel-browser';
 import React, { useEffect, useState } from 'react';
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export interface LocationState {
@@ -23,10 +21,10 @@ export interface LocationState {
 }
 
 const LoginPage: React.FC = () => {
+  const history = useHistory();
   const { redirect } = useNavUtils();
   const location = useLocation<LocationState>();
-  const identity = useIdentity();
-  const setIdentity = useSetIdentity();
+  const { profile } = useProfile();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
   const { message, from, fromInvite, metadata } = location.state ?? {};
@@ -42,54 +40,31 @@ const LoginPage: React.FC = () => {
   }, [message]);
 
   useEffect(() => {
-    if (identity?.token) {
-      const nextRoute =
-        identity?.lastLoginAt === null ? Routes.Onboard.path : Routes.Dashboard.path;
+    if (AuthUtils.getToken()) {
+      const nextRoute = profile?.lastLoginAt === null ? Routes.Onboard.path : Routes.Dashboard.path;
       const callbackUrl = from?.pathname || (nextRoute as string);
       redirect(callbackUrl);
     }
-  }, [redirect, identity, from]);
+  }, [redirect, from, profile?.lastLoginAt]);
 
-  const { handle: handleResponseSuccess } = useHandler(
-    async (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-      if ('accessToken' in response) {
-        const { accessToken } = response;
-        const userToken = await AuthApis.signInWithGoogle(accessToken);
-        const googleProfile = 'profileObj' in response ? response.profileObj : null;
-        const userProfile = await ProfileApis.get();
-        setIdentity({
-          token: userToken.token,
-          expireAt: userToken.expireAt,
-          ...userProfile,
-          provider: {
-            name: ProviderName.GOOGLE,
-            profile: {
-              id: googleProfile?.googleId,
-              email: googleProfile?.email,
-              name: googleProfile?.name,
-              givenName: googleProfile?.givenName,
-              familyName: googleProfile?.familyName,
-            },
-          },
-        });
+  const handleResponseSuccess = async (
+    response: GoogleLoginResponse | GoogleLoginResponseOffline,
+  ) => {
+    if ('accessToken' in response) {
+      const { accessToken } = response;
+      const userToken = await AuthApis.signInWithGoogle(accessToken);
+      const googleProfile = 'profileObj' in response ? response.profileObj : null;
 
-        mixpanel.track('Log In', {
-          user_id: googleProfile?.googleId,
-          email: googleProfile?.email,
-        });
-      }
-    },
-    {
-      onError: (error: unknown) => {
-        if (isApiError(error)) {
-          if (error.code === ApiErrorCode.Unauthenticated) {
-            setNotInvited(true);
-            return false;
-          }
-        }
-      },
-    },
-  );
+      AuthUtils.setToken(userToken.token);
+
+      mixpanel.track('Log In', {
+        user_id: googleProfile?.googleId,
+        email: googleProfile?.email,
+      });
+
+      history.push('/dashboard/all-company');
+    }
+  };
 
   const handleResponseFailure = (error: any) => {
     if ('details' in error) {

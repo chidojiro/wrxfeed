@@ -1,28 +1,18 @@
-import React, { useState } from 'react';
-import { useRecoilValue } from 'recoil';
-
-import { UserRole } from '@/identity/constants';
-import { Profile } from '@/auth/types';
-
-import { useIdentity, usePermission } from '@/identity/hooks';
-import { profileState } from '@/auth/containers/ProfileEditForm/states';
-
+import { UserRole } from '@/auth/constants';
+import { useProfile } from '@/profile/useProfile';
+import React from 'react';
 import NavBarStatic from '../NavBarStatic';
 
-const NavBar: React.FC = () => {
-  const identity = useIdentity();
-  const { roles } = usePermission();
-  const isAdmin = roles?.includes(UserRole.ADMIN);
-
-  const profile = useRecoilValue(profileState);
-  const [profileUser] = useState<Profile>(profile);
+const NavBar = () => {
+  const { profile } = useProfile();
+  const isAdmin = profile?.roles?.includes(UserRole.ADMIN);
 
   return (
     <NavBarStatic
-      companyName={identity?.company?.name || '...'}
-      userAva={profileUser?.avatar}
-      userName={profileUser?.fullName}
-      userEmail={profileUser?.email}
+      companyName={profile?.company?.name || '...'}
+      userAva={profile?.avatar}
+      userName={profile?.fullName}
+      userEmail={profile?.email}
       showAva
       showNoti
       showInvite={isAdmin}

@@ -1,6 +1,6 @@
 import { useFetcher, useHandler } from '@/common/hooks';
 import { isBadRequest } from '@/error/utils';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import { Notification } from '@/main/entity';
 import { newNotifyCountState } from '@/main/states/notify.state';
 import { NotificationApis } from '@/notification/apis';
@@ -120,8 +120,8 @@ export function useNotifyChannel(
   callback: (data: NotifyEventData) => void,
 ): void {
   const pusher = usePusher();
-  const identity = useIdentity();
-  const channelName = `notification-${identity?.id}`;
+  const { profile } = useProfile();
+  const channelName = `notification-${profile?.id}`;
 
   React.useEffect(() => {
     // Subscribe notify channel

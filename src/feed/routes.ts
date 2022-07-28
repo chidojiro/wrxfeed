@@ -1,7 +1,7 @@
-import { UserRole } from '@/identity/constants';
 import { RouteItem } from '@/routing/types';
 import React from 'react';
 import * as Sentry from '@sentry/react';
+import { UserRole } from '@/auth/constants';
 
 const ForYouFeedsPage = React.lazy(() =>
   import(/* webpackPreload: true */ './ForYouFeedsPage').then(({ ForYouFeedsPage }) => ({

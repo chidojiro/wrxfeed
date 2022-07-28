@@ -13,6 +13,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 const SideBar = () => {
   const [menuItems, setMenuItems] = useRecoilState(menuItemsValue);
   const setFeedCount = useSetRecoilState(newFeedCountState);
+
   async function getFeedCount() {
     if (ENABLE_GET_FEED_COUNT) {
       try {
