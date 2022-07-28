@@ -7,7 +7,7 @@ import { getColorByText, getNameAbbreviation } from '@/main/utils';
 
 import mixpanel from 'mixpanel-browser';
 import { useIdentity } from '@/identity/hooks';
-import { Button } from '@/common/components';
+import { Avatar, Button } from '@/common/components';
 
 export interface NotificationItemProps {
   item: Notification;
@@ -30,9 +30,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
         style={{ backgroundColor: avatarBgColor }}
       >
         {isHaveAvatar && (
-          <img
-            className="flex w-10 h-10 rounded-full"
-            alt="avatar-who-mention"
+          <Avatar
+            className="w-10 h-10"
+            fullName={item.causedByUser.fullName as string}
             src={isHaveAvatar}
           />
         )}
