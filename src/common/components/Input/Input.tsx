@@ -6,10 +6,11 @@ import React from 'react';
 
 type BaseInputProps = HTMLInputProps & {
   variant?: 'underline';
+  error?: boolean;
 };
 
 const BaseInput = React.forwardRef(
-  ({ type = 'text', variant, className, ...restProps }: BaseInputProps, ref: any) => {
+  ({ type = 'text', variant, className, error, ...restProps }: BaseInputProps, ref: any) => {
     return (
       <input
         {...restProps}
@@ -19,10 +20,12 @@ const BaseInput = React.forwardRef(
           'outline-none',
           'w-full h-9 px-2.5',
           'text-primary text-sm placeholder-Gray-6',
+          'border border-transparent',
           {
             'bg-Gray-12': !variant,
-            'border-b border-Gray-11 focus:bg-Gray-12 focus:border-transparent':
+            'border-0 border-b border-Gray-11 focus:bg-Gray-12 focus:border-transparent':
               variant === 'underline',
+            'border-danger': error,
           },
           className,
         )}
