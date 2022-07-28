@@ -20,7 +20,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
   onLoadMore,
   onSelect,
 }) => {
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   useEffect(() => {
     mixpanel.track('Category Directory View', {

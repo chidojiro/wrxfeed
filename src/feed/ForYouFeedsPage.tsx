@@ -7,7 +7,7 @@ import { Feeds } from './Feeds';
 
 export const ForYouFeedsPage = () => {
   const { pathname } = useLocation();
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   React.useEffect(() => {
     mixpanel.track('For You Feed View', {

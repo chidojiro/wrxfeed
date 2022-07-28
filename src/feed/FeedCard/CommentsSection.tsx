@@ -30,7 +30,7 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
   const [attachFileComment, setAttachFileComment] = React.useState<File | null>(null);
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadFileTokenPayload>();
 
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
   const { mentions } = useMention();
 
   const {

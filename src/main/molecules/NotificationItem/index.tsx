@@ -19,7 +19,7 @@ export interface NotificationItemProps {
 const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) => {
   const avatarBgColor = React.useMemo(() => getColorByText(item?.content ?? ''), [item?.content]);
   const isNew = item.status === NotifyStatus.UNREAD;
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   const renderAvatarOrShortname = () => {
     const shortName = getNameAbbreviation(item?.causedByUser?.fullName);

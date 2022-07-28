@@ -10,7 +10,7 @@ type VendorListProps = {
 };
 
 export const VendorList: React.VFC<VendorListProps> = ({ vendors, onVendorClick }) => {
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   React.useEffect(() => {
     mixpanel.track('Vendor Directory View', {

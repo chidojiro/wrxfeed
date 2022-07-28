@@ -24,7 +24,7 @@ const LoginPage: React.FC = () => {
   const history = useHistory();
   const { redirect } = useNavUtils();
   const location = useLocation<LocationState>();
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
   const { message, from, fromInvite, metadata } = location.state ?? {};

@@ -4,7 +4,7 @@ import React from 'react';
 import NavBarStatic from '../NavBarStatic';
 
 const NavBar = () => {
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
   const isAdmin = profile?.roles?.includes(UserRole.ADMIN);
 
   return (

@@ -47,7 +47,7 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
   const history = useHistory();
   const [isOpenInviteModal, openInviteModal] = useState(false);
 
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   const onClickNotification = () => {
     history.push(Routes?.Notifications?.path as string);

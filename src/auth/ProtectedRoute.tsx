@@ -8,9 +8,9 @@ export type ProtectedRouteProps = RouteProps & {
 };
 
 export const ProtectedRoute = ({ path, component, permissions }: ProtectedRouteProps) => {
-  const { data: profile, isValidating } = useProfile();
+  const { profile, isValidatingProfile } = useProfile();
 
-  if (isValidating) return <MainLayout></MainLayout>;
+  if (isValidatingProfile) return <MainLayout></MainLayout>;
 
   const isAccessible = !permissions || profile?.roles?.some((role) => permissions?.includes(role));
 

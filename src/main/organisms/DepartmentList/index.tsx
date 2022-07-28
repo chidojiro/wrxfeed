@@ -28,7 +28,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
   const { subscribe, batchSubscribe, unsubscribe, batchUnsubscribe, isFollowing } =
     useSubscription();
 
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   useEffect(() => {
     mixpanel.track('Team Directory View', {

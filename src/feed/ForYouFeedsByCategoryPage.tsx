@@ -9,7 +9,7 @@ import { useCategory } from './useCategory';
 
 export const ForYouFeedsByCategoryPage = () => {
   const params = useParams() as Record<string, string>;
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   React.useEffect(() => {
     mixpanel.track('For You Feeds By Category View', {

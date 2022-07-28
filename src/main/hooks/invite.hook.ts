@@ -16,7 +16,7 @@ interface InviteHookValues {
 
 export function useInvite(): InviteHookValues {
   const [isSent, setSent] = React.useState(false);
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   const { handle: sendInvitation, isLoading } = useHandler(
     async (contact: Partial<Contact>) => {

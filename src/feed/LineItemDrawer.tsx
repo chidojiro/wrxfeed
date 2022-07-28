@@ -23,7 +23,7 @@ export type LineItemDrawerProps = OpenClose & {
 
 export const LineItemDrawer = withMountOnOpen(
   ({ className, onClose, feedId, lineItem, open }: LineItemDrawerProps) => {
-    const { data: profile } = useProfile();
+    const { profile } = useProfile();
 
     const { isValidating, data: lineItemDetails } = useFetcher(
       !!lineItem?.id && ['lineItem', lineItem.id],

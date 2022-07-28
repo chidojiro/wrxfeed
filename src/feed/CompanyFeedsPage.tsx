@@ -8,7 +8,7 @@ import { Feeds } from './Feeds';
 export const CompanyFeedsPage = () => {
   const { pathname } = useLocation();
 
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   useEffect(() => {
     mixpanel.track('Company Feed View', {

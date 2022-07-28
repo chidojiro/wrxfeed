@@ -22,7 +22,7 @@ import { toast } from 'react-toastify';
 import { AuthUtils } from '@/auth/utils';
 
 const OnboardPage: React.FC = () => {
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
   const { redirect } = useNavUtils();
   const query = useLegacyQuery();
 

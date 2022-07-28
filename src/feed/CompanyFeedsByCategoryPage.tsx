@@ -10,7 +10,7 @@ import { useProfile } from '@/profile/useProfile';
 export const CompanyFeedsByCategoryPage = () => {
   const params = useParams() as Record<string, string>;
 
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   useEffect(() => {
     mixpanel.track('Company Feed View', {

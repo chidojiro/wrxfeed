@@ -27,21 +27,21 @@ export const useProfile = () => {
     [googleProfile?.roles],
   );
 
-  const combineProfile = React.useMemo<(Profile & GoogleProfile) | undefined>(
+  const combinedProfile = React.useMemo<(Profile & GoogleProfile) | undefined>(
     () => (profile && googleProfile ? { ...profile, ...googleProfile } : undefined),
     [googleProfile, profile],
   );
 
   return React.useMemo(
     () => ({
-      data: combineProfile,
+      profile: combinedProfile,
       isPermittedToFeature,
-      isInitializing: isInitializingGoogleProfile || isInitializingProfile,
-      isValidating: isValidatingGoogleProfile || isValidatingProfile,
-      mutate,
+      isInitializingProfile: isInitializingGoogleProfile || isInitializingProfile,
+      isValidatingProfile: isValidatingGoogleProfile || isValidatingProfile,
+      mutateProfile: mutate,
     }),
     [
-      combineProfile,
+      combinedProfile,
       isInitializingGoogleProfile,
       isInitializingProfile,
       isPermittedToFeature,

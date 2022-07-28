@@ -27,7 +27,7 @@ export function useFeedChannel(
   callback: (data: FeedEventData) => void,
 ): void {
   const pusher = usePusher();
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
   const channelName = `feed-${profile?.id}`;
   // for notifications, channel name will be like notification-${userId}
 

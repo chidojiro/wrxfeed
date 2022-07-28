@@ -25,7 +25,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
   onClickNotification,
   hasMore,
 }) => {
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   useEffect(() => {
     mixpanel.track('Notifications View', {

@@ -32,7 +32,7 @@ export function useSubscription(callback?: SubscribeCallback): SubscriptionHookV
   const [isFollowLoading, setFollowLoading] = useState<boolean>(false);
   const [isUnfollowLoading, setUnfollowLoading] = useState<boolean>(false);
 
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   function unsubscribe(type: keyof Subscription, channel: Department | Category | Vendor) {
     // Call API to unsubscribe follow data

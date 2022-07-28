@@ -41,7 +41,7 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
   enableAction,
   enableUnfollowUserDept = true,
 }) => {
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
   const [childs, setChilds] = useState<Department[]>([]);
 
   const onFollowSuccess = async () => {

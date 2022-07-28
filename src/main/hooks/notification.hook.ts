@@ -120,7 +120,7 @@ export function useNotifyChannel(
   callback: (data: NotifyEventData) => void,
 ): void {
   const pusher = usePusher();
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
   const channelName = `notification-${profile?.id}`;
 
   React.useEffect(() => {
