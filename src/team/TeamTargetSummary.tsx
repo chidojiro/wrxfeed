@@ -5,7 +5,6 @@ import { AddTargetModal } from '@/target/AddTargetModal';
 import { useTargets } from '@/target/useTargets';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
-import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 type TeamTargetSummaryProps = {

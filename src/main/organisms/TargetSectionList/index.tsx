@@ -91,10 +91,7 @@ const TargetSectionList: React.FC<TargetSectionListProps> = ({
     >
       <ul className="flex flex-1 flex-col mb-2">
         {targetByTeam.map((item: TargetByTeam) => (
-          <TeamTargetSection
-            departmentId={item.department.id}
-            key={`targets-by-team-${item?.department?.id}`}
-          />
+          <TeamTargetSection departmentId={item.department.id} key={item?.department?.id} />
         ))}
       </ul>
       {!isGetTargets && !targetByTeam.length && renderEmptyList}

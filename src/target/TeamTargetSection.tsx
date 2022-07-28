@@ -29,7 +29,7 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
     forYou: 1,
   });
 
-  const teamHeaderColor = React.useMemo(
+  const teamHeaderColor: string = React.useMemo(
     () => getColorByText(department?.name ?? '', department?.id, true),
     [department?.id, department?.name],
   );

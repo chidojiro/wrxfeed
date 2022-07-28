@@ -94,7 +94,7 @@ export const TargetFeedCard = React.memo(
             <div
               className={clsx(
                 isHidden ? 'bg-purple-8' : 'bg-white',
-                'flex-col space-y-2 px-8 py-6',
+                'flex-col space-y-2 px-8 py-4',
               )}
             >
               <div className="flex flex-row items-center space-x-2">
