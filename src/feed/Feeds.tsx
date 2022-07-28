@@ -15,7 +15,7 @@ import { FeedCard } from './FeedCard';
 import { TransactionsFeedCardProps } from './FeedCard/TransactionsFeedCard';
 import { LineItemDrawer } from './LineItemDrawer';
 import { NewFeedIndicator } from './NewFeedIndicator';
-import { useLineItemDrawer } from './useLineItemDrawer';
+import { useLineItemDrawer } from './LineItemDrawer';
 
 type FeedsProps = Pick<TransactionsFeedCardProps, 'categoryRedirectHref'> & {
   departmentId?: number;

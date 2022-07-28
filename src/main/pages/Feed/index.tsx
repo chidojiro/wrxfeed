@@ -6,7 +6,7 @@ import { isApiError } from '@/error/utils';
 import { FeedApis } from '@/feed/apis';
 import { FeedCard } from '@/feed/FeedCard';
 import { LineItemDrawer } from '@/feed/LineItemDrawer';
-import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
+import { useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { FeedItem, FeedRouteType } from '@/main/entity';
 import { Routes } from '@/routing/routes';
 import { TargetApis } from '@/target/apis';
