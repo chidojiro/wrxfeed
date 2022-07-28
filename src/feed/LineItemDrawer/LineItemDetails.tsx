@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   BasicsEditCircle,
   BasicsXRegular,
@@ -12,11 +11,7 @@ import Loading from '@/common/atoms/Loading';
 import Tooltip from '@/common/atoms/Tooltip';
 import { Button } from '@/common/components';
 import { ClassName } from '@/common/types';
-import UpdateDetailsLineItemInfoModal from '@/feed/UpdateDetailsLineItemInfoModal';
-import { TransLineItem, TranStatusType } from '@/main/entity';
-import UpdateVendorInfoModal from '@/main/organisms/UpdateVendorInfoModal';
-import { lineItemUpdateState } from '@/main/states/lineItemUpdate.state';
-import { vendorUpdateState } from '@/main/states/vendorUpdate.state';
+import { TransLineItem } from '@/main/entity';
 import {
   decimalLogic,
   DecimalType,
@@ -25,11 +20,14 @@ import {
   getVendorNameFromLineItem,
   isEmptyOrSpaces,
 } from '@/main/utils';
+import { VendorApis } from '@/vendor/apis';
+import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
-import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { FeedApis } from '../apis';
+import { UpdateDetailsLineItemInfoModal } from './UpdateDetailsLineItemInfoModal';
+import { UpdateVendorInfoModal } from './UpdateVendorInfoModal';
 
 export type LineItemDetailsProps = ClassName & {
   loading?: boolean;
@@ -37,6 +35,8 @@ export type LineItemDetailsProps = ClassName & {
   onCloseClick?: () => void;
   onModalOpen: () => void;
   onModalClose: () => void;
+  onVendorUpdate: typeof VendorApis.update;
+  onLineItemUpdate: typeof FeedApis.updateLineItem;
 };
 
 export interface SelectItemProps {
@@ -49,58 +49,39 @@ export type LineInfo = {
   value: string;
 };
 
-const LineItemDetails = ({
+export const LineItemDetails = ({
   className,
-  onCloseClick,
   loading,
   item,
+  onLineItemUpdate,
+  onVendorUpdate,
+  onCloseClick,
   onModalClose,
   onModalOpen,
 }: LineItemDetailsProps) => {
-  const [showEditVendorDescription, setShowEditVendorDescription] = useState<boolean>(false);
-  const vendorUpdate = useRecoilValue(vendorUpdateState);
-  const setVendorUpdate = useSetRecoilState(vendorUpdateState);
-
-  const [showEditLineItem, setShowEditLineItem] = useState<boolean>(false);
-  const lineItemUpdate = useRecoilValue(lineItemUpdateState);
-  const setLineItemUpdate = useSetRecoilState(lineItemUpdateState);
-
   const history = useHistory();
 
-  useEffect(() => {
-    setVendorUpdate({
-      vendorId: item?.vendor?.id,
-      vendorName: item?.vendor?.name,
-      description: item?.vendor?.description,
-      website: item?.vendor?.website,
-      contactEmail: item?.vendor?.contactEmail,
-      contactNumber: item?.vendor?.contactNumber,
-    });
+  const lineItemModalDisclosure = useDisclosure();
+  const vendorModalDisclosure = useDisclosure();
 
-    setLineItemUpdate({
-      id: item?.id,
-      description: item?.description,
-    });
-  }, [item]);
-
-  const hideEditVendorDescriptionModal = () => {
-    setShowEditVendorDescription(false);
-    onModalClose();
-  };
-
-  const showEditVendorDescriptionModal = () => {
-    setShowEditVendorDescription(true);
+  const openLineItemModal = () => {
+    lineItemModalDisclosure.onOpen();
     onModalOpen();
   };
 
-  const hideEditLineItemModal = () => {
-    setShowEditLineItem(false);
+  const closeLineItemModal = () => {
+    lineItemModalDisclosure.onClose();
     onModalClose();
   };
 
-  const showEditLineItemModal = () => {
-    setShowEditLineItem(true);
+  const openVendorModal = () => {
+    vendorModalDisclosure.onOpen();
     onModalOpen();
+  };
+
+  const closeVendorModal = () => {
+    vendorModalDisclosure.onClose();
+    onModalClose();
   };
 
   const goToCategoryPage = (categoryId?: number) => {
@@ -161,7 +142,7 @@ const LineItemDetails = ({
         variant="ghost"
         colorScheme="gray"
         iconLeft={<BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />}
-        onClick={showEditVendorDescriptionModal}
+        onClick={openVendorModal}
       >
         Edit
       </Button>
@@ -175,17 +156,14 @@ const LineItemDetails = ({
         variant="ghost"
         colorScheme="gray"
         iconLeft={<BasicsEditCircle className="w-4 h-4 path-no-filled text-Gray-6 fill-current" />}
-        onClick={showEditLineItemModal}
+        onClick={openLineItemModal}
       >
         Edit
       </Button>
     );
   };
 
-  const tranType: TranStatusType | null = useMemo(
-    () => getTransactionStatus(item?.transaction?.status ?? ''),
-    [item?.transaction?.status],
-  );
+  const tranType = getTransactionStatus(item?.transaction?.status ?? '');
 
   const renderTransactionType = () => {
     return (
@@ -220,6 +198,8 @@ const LineItemDetails = ({
 
   const lineItems = item?.transaction?.lineItems || [];
 
+  const { vendor } = item ?? {};
+
   return (
     <div className={clsx('h-full flex flex-1 flex-col bg-white shadow-xl', className)}>
       <div
@@ -232,7 +212,7 @@ const LineItemDetails = ({
         <div className="w-24 h-24 mr-4">
           <DetailLogoDefault className="w-24 h-24" />
         </div>
-        <Button onClick={onCloseClick} className="flex-1 w-4 h-4">
+        <Button onClick={onCloseClick} className="ml-auto w-4 h-4">
           <BasicsXRegular
             className="w-4 h-4 float-right stroke-current text-white"
             width={20}
@@ -253,29 +233,27 @@ const LineItemDetails = ({
               width={20}
               height={20}
             />
-            <span>{vendorUpdate.website}</span>
+            <span>{vendor?.website}</span>
           </div>
           <div className="flex mr-4 text-xs">
             <EmailIcon className="mr-1 stroke-current text-gray-500" width={20} height={20} />
-            <span>{vendorUpdate.contactEmail}</span>
+            <span>{vendor?.contactEmail}</span>
           </div>
           <div className="flex text-xs">
             <PhoneIcon className="stroke-current text-gray-500" width={20} height={20} />
-            <span>{vendorUpdate.contactNumber}</span>
+            <span>{vendor?.contactNumber}</span>
           </div>
         </div>
         <div
           className="flex-row w-[524px] text-sm text-gray-500 rounded-lg border border-gray-200 p-3 hover:cursor-pointer"
-          onClick={showEditVendorDescriptionModal}
+          onClick={openVendorModal}
         >
-          {vendorUpdate.description ?? 'Add a vendor description'}
+          {vendor?.description ?? 'Add a vendor description'}
         </div>
 
         <div className="flex flex-col mt-6 rounded-lg border border-gray-200 p-3 bg-gray-50 w-[524px]">
           <div className="flex flex-row w-full text-sm text-gray-500 group mb-2">
-            <p className="flex-auto text-base font-bold text-Gray-3 mr-2">
-              {lineItemUpdate.description}
-            </p>
+            <p className="flex-auto text-base font-bold text-Gray-3 mr-2">{item?.description}</p>
             {!!loading && <Loading className="mx-4" width={12} height={12} />}
             <div className="hidden group-hover:block">{renderEditLineItemDescriptionButton()}</div>
             <div className="flex group-hover:hidden">
@@ -368,22 +346,21 @@ const LineItemDetails = ({
         </div>
       </div>
       <UpdateVendorInfoModal
-        open={showEditVendorDescription}
-        onClose={() => hideEditVendorDescriptionModal()}
-        onCancel={() => hideEditVendorDescriptionModal()}
-        itemEditing={vendorUpdate}
+        open={vendorModalDisclosure.isOpen}
+        onClose={closeVendorModal}
+        onCancel={closeVendorModal}
+        vendor={vendor}
+        onConfirm={onVendorUpdate}
       />
       {item && (
         <UpdateDetailsLineItemInfoModal
-          open={showEditLineItem}
-          onClose={() => hideEditLineItemModal()}
-          onCancel={() => hideEditLineItemModal()}
-          itemEditing={lineItemUpdate}
+          open={lineItemModalDisclosure.isOpen}
+          onClose={closeLineItemModal}
+          onCancel={closeLineItemModal}
           transLineItem={item}
+          onConfirm={onLineItemUpdate}
         />
       )}
     </div>
   );
 };
-
-export default LineItemDetails;
