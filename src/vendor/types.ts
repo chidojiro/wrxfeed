@@ -13,3 +13,10 @@ export type Vendor = {
   description?: string;
   categories?: Category[];
 };
+
+export type UpdateVendorPayload = {
+  website?: string;
+  contactEmail?: string;
+  contactNumber?: string;
+  description?: string;
+};

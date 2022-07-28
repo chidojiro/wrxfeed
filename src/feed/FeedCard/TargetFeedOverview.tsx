@@ -28,8 +28,8 @@ export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({ classNam
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className={clsx('flex flex-col mt-4 w-full px-8', className)}>
-        <div className="flex flex-row space-x-4 w-auto items-center">
+      <div className={clsx('flex flex-col w-full px-6', className)}>
+        <div className="flex flex-row space-x-4 w-auto items-center px-2">
           <div className="flex flex-col">
             <div className="flex items-center">
               {renderTrackingStatusIndicator(target.trackingStatus)}
@@ -63,7 +63,7 @@ export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({ classNam
             )}
           </div>
         </div>
-        <div className="p-2 rounded-card h-[240px]">
+        <div className="py-2 rounded-card h-[240px]">
           <MiniChartView target={target} overallTarget={overallTarget} />
         </div>
       </div>

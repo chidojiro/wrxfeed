@@ -108,6 +108,7 @@ module.exports = {
         'system-success': '#5DC258',
         'system-alert': '#FF5F68',
         'blue-upload': 'rgba(67, 36, 158, 0.44)',
+        danger: '#FF5F68',
       },
       spacing: {
         navbar: '56px',

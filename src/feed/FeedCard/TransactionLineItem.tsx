@@ -3,13 +3,11 @@ import { useIntersection } from '@/common/hooks';
 import { REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT } from '@/config';
 import { FeedApis } from '@/feed/apis';
 import { TransLineItem } from '@/main/entity';
-import { lineItemSelectState } from '@/main/states/lineItems.state';
-import { slideOverOpenState } from '@/main/states/slideOver.state';
 import { decimalLogic, DecimalType, getVendorNameFromLineItem } from '@/main/utils';
 import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useLineItemDrawer } from '../useLineItemDrawer';
 
 export type TransactionLineItemProps = {
   lineItem: TransLineItem;
@@ -21,8 +19,7 @@ export const TransactionLineItem = ({ lineItem, onClick }: TransactionLineItemPr
   const viewRef = useRef<HTMLButtonElement>(null);
   const isVisible = useIntersection(viewRef.current || undefined, '0px');
 
-  const [lineItemSelect, setLineItemSelect] = useRecoilState(lineItemSelectState);
-  const slideOverOpened = useRecoilValue(slideOverOpenState);
+  const { selectedLineItem } = useLineItemDrawer();
 
   const [isRead, setRead] = useState(false);
 
@@ -56,7 +53,6 @@ export const TransactionLineItem = ({ lineItem, onClick }: TransactionLineItemPr
     e.stopPropagation();
 
     if (onClick) onClick(lineItem);
-    setLineItemSelect(lineItem);
     setRead(true);
     FeedApis.markLineItemAsRead(lineItem?.id);
   };
@@ -70,7 +66,7 @@ export const TransactionLineItem = ({ lineItem, onClick }: TransactionLineItemPr
     );
   };
 
-  const isItemShowing = slideOverOpened && lineItemSelect?.id === lineItem?.id;
+  const isItemShowing = selectedLineItem?.id === lineItem?.id;
   const bgColor = isItemShowing ? 'bg-Gray-12' : 'bg-transparent';
 
   return (
