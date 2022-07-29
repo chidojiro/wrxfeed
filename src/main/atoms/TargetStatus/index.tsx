@@ -16,7 +16,7 @@ interface TargetStatusProps {
   className?: string;
   type: TargetStatusType;
   target: Target;
-  onSetTarget: (event: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => void;
+  onTargetSet: (event: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => void;
 }
 
 const TargetStatus: React.FC<TargetStatusProps> = ({
