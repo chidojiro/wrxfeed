@@ -67,7 +67,7 @@ export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({ classNam
               </p>
             </div>
             <div className="flex flex-1 justify-end flex-col items-end">
-              {target.trackingStatus && (
+              {!!target.trackingStatus && (
                 <TargetStatus
                   type={target.trackingStatus}
                   target={target}
