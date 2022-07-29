@@ -1,6 +1,7 @@
 import React from 'react';
 import { ReactComponent as TickCircle } from '@/assets/icons/solid/tick-circle.svg';
 import { ReactComponent as CloseIcon } from '@/assets/icons/outline/close.svg';
+import { Button } from '@/common/components';
 
 interface BannerProps {
   message: string;
@@ -18,9 +19,9 @@ const Banner: React.FC<BannerProps> = ({ message, onClose }) => {
           />
           <span className="text-sm text-white">{message}</span>
 
-          <button type="button" className="absolute right-3 cursor-pointer" onClick={onClose}>
+          <Button className="absolute right-3" onClick={onClose}>
             <CloseIcon className="stroke-current path-no-stroke text-white" />
-          </button>
+          </Button>
         </div>
       </div>
     </div>

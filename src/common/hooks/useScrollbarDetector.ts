@@ -1,6 +1,6 @@
 import React from 'react';
 import { HTMLElementOrHTMLElementRef } from '../types';
-import { AssertUtils } from './../utils/assert';
+import { AssertUtils } from '../utils';
 
 export const useScrollbarDetector = (
   elementOrElementRef: HTMLElementOrHTMLElementRef,

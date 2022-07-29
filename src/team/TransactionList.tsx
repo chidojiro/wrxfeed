@@ -1,7 +1,3 @@
-import clsx from 'clsx';
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-
 import { ChatIcon, LoopBoldIcon } from '@/assets';
 import {
   Avatar,
@@ -11,11 +7,15 @@ import {
   Table,
   Tooltip,
 } from '@/common/components';
-import { useUrlState } from '@/common/hooks';
+import { EMPTY_ARRAY } from '@/common/constants';
+import { useQuery, useUrlState } from '@/common/hooks';
 import { ClassName } from '@/common/types';
-import { DateUtils } from '@/common/utils';
+import { DateUtils, StringUtils } from '@/common/utils';
 import { TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
+import clsx from 'clsx';
+import React from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import { useTransactions } from './useTransactions';
 
 const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
@@ -46,7 +46,15 @@ export const TransactionList = ({ className }: TransactionListProps) => {
   const history = useHistory();
   const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
 
-  const { data: transactions = [], isValidating } = useTransactions();
+  const { id: departmentIdParam } = useParams() as Record<string, string>;
+
+  const query = useQuery();
+  const sortTransactionsByQuery = query.get('sortTransactionsBy');
+
+  const { data: transactions = EMPTY_ARRAY as TransLineItem[], isValidating } = useTransactions({
+    depId: +departmentIdParam,
+    ...StringUtils.toApiSortParam(sortTransactionsByQuery),
+  });
 
   const headers: { label: string; sortKey?: string }[] = [
     { label: '' },

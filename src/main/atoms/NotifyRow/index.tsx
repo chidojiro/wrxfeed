@@ -1,7 +1,8 @@
 import { Notification } from '@/main/entity';
 import React from 'react';
-import CommentText from '@/main/atoms/CommentText';
+import { CommentText } from '@/feed/CommentText';
 import { formatDate } from '@/common/utils';
+import { Button } from '@/common/components';
 
 export interface NotifyRowProps {
   item: Notification;
@@ -12,16 +13,14 @@ export interface NotifyRowProps {
 
 const NotifyRow: React.FC<NotifyRowProps> = ({ item, onClickNotifyAndSeen }) => {
   return (
-    <button
-      type="button"
+    <Button
       onClick={onClickNotifyAndSeen}
       className="flex flex-col mt-2 min-h-16 px-4 py-2 hover:bg-Gray-14"
     >
       <div className="flex flex-1 w-full flex-row">
         <CommentText
           content={item.content}
-          className="w-full text-left leading-6 break-words"
-          style={{ whiteSpace: 'normal' }}
+          className="w-full text-left leading-6 break-words !whitespace-normal"
         />
         <div className="flex w-40">
           <div
@@ -32,7 +31,7 @@ const NotifyRow: React.FC<NotifyRowProps> = ({ item, onClickNotifyAndSeen }) => 
           </div>
         </div>
       </div>
-    </button>
+    </Button>
   );
 };
 

@@ -1,3 +1,4 @@
+import { Button } from '@/common/components';
 import { Transition } from '@headlessui/react';
 import { ChevronDoubleUpIcon } from '@heroicons/react/outline';
 import React, { Fragment } from 'react';
@@ -19,13 +20,16 @@ const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({ onClick, visible 
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <button
-        type="button"
-        className="inline-flex items-center p-3 border border-transparent rounded-full shadow-sm text-white bg-purple-6 hover:bg-purple-5 focus:outline-none"
+      <Button
+        variant="solid"
+        colorScheme="purple"
+        pill
+        square
+        className="h-12 shadow-sm"
         onClick={onClick}
       >
         <ChevronDoubleUpIcon className="h-6 w-6" aria-hidden="true" />
-      </button>
+      </Button>
     </Transition>
   );
 };

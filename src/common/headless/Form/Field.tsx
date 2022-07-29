@@ -13,7 +13,7 @@ export type FieldProps<T = any> = {
   valueAs?: (value: any) => any;
   changeAs?: (value: any) => any;
   ref?: any;
-} & T;
+};
 
 type FieldComponent = <T>(props: FieldProps<T>) => JSX.Element;
 

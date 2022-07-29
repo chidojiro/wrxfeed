@@ -1,38 +1,8 @@
-import { Category, Department, Subscription } from '@/main/entity';
-import { Vendor } from '@/vendor/types';
-import React, { FunctionComponent, SVGAttributes } from 'react';
+import React from 'react';
 
 export interface HOC<T> {
   (c: React.ComponentType<T>): React.ComponentType<T>;
 }
-
-export type LeftTab = {
-  name: string;
-  location: Partial<Omit<Location, 'pathname'>> & { pathname: string; pathMatch?: string };
-  icon: FunctionComponent<SVGAttributes<SVGElement>> | null;
-  subscription?: {
-    type: keyof Subscription;
-    item: Department | Category | Vendor;
-  };
-  removable?: boolean;
-  isShowCounter?: boolean;
-  strict?: boolean; // When true, Left tab is marked as selected only if route equals to left tab location.
-};
-
-export type GroupTab = {
-  name: string;
-  icon: FunctionComponent<SVGAttributes<SVGElement>> | null;
-  tabs?: LeftTab[];
-  addItemRoute?: string;
-  isOpened?: boolean;
-  enable: boolean;
-};
-
-export type SectionTab = {
-  name: string;
-  groups: GroupTab[];
-  tabs: LeftTab[];
-};
 
 export type Children = {
   children?: React.ReactNode;
@@ -46,6 +16,7 @@ export type ClassName = {
 
 export type OpenClose = {
   open?: boolean;
+  defaultOpen?: boolean;
   onClose?: () => void;
 };
 

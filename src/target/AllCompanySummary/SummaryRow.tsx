@@ -1,5 +1,5 @@
 import { CommentIcon } from '@/assets';
-import { MainGroups } from '@/common/constants';
+import { Button } from '@/common/components';
 import { useHandler } from '@/common/hooks';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { DepartmentApis } from '@/team/apis';
@@ -38,15 +38,13 @@ export const SummaryRow = ({
     await viewDepartmentSummary(id);
     history.push({
       pathname: `/departments/${id}`,
-      search: `?route=${MainGroups.Following}`,
     });
   };
 
   const targetSpends = target?.periods?.reduce((acc, cur) => acc + (cur.amount ?? 0), 0);
 
   return (
-    <button
-      type="button"
+    <Button
       onClick={handleClick}
       className="grid grid-cols-10 items-center w-full py-0.5 px-1 border-b border-Gray-28 text-xs text-center list-row-hover"
     >
@@ -71,6 +69,6 @@ export const SummaryRow = ({
           </Link>
         )}
       </div>
-    </button>
+    </Button>
   );
 };

@@ -1,16 +1,12 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { FeedFilters } from '@/api/types';
-import { MainGroups } from '@/common/constants';
 import { useLegacyQuery } from '@/common/hooks';
-import MainLayout from '@/common/templates/MainLayout';
+import { GetFeedsParams } from '@/feed/types';
+import { MainLayout } from '@/layout/MainLayout';
 import { Department } from '@/main/entity';
-import { FilterKeys } from '@/main/hooks';
 import { useDepartment } from '@/main/hooks/department.hook';
-import { useFeed } from '@/main/hooks/feed.hook';
 import DepartmentList from '@/main/organisms/DepartmentList';
 import { scrollToTop } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 const LIMIT = 10;
@@ -19,32 +15,42 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
+const FilterKeys: string[] = [
+  'department',
+  'category',
+  'vendor',
+  'rootDepartment',
+  'month',
+  'year',
+];
+
 export const TeamsPage = () => {
   const history = useHistory();
   const { id: deptId } = useParams<{ id?: string }>();
   const query = useLegacyQuery();
   // Department states
-  const [filter, setFilter] = useState<PaginationParams>(INIT_PAGINATION);
+  const [filter, setFilter] = React.useState<PaginationParams>(INIT_PAGINATION);
   const { departments, hasMore, isLoading } = useDepartment(filter);
 
   // Feeds states
-  const [feedsFilter, setFeedsFilter] = useState<FeedFilters>(
+  const [feedsFilter, setFeedsFilter] = React.useState<GetFeedsParams>(
     deptId
       ? {
-          page: INIT_PAGINATION,
+          ...INIT_PAGINATION,
           rootDepartment: parseInt(deptId, 10),
         }
       : {
-          page: { offset: 0, limit: 0 }, // Don't load feed items at the first launch
+          // Don't load feed items at the first launch
+          offset: 0,
+          limit: 0,
         },
   );
-  const { cleanData } = useFeed(feedsFilter);
 
-  const filterByRoute = useCallback(() => {
+  const filterByRoute = React.useCallback(() => {
     if (deptId) {
       const idNum = parseInt(deptId, 10);
       const newFilter: { [key: string]: string | number | PaginationParams | null } = {
-        page: INIT_PAGINATION,
+        ...INIT_PAGINATION,
         rootDepartment: idNum,
       };
       FilterKeys.forEach((key) => {
@@ -52,14 +58,14 @@ export const TeamsPage = () => {
           newFilter[key] = query.get(key);
         }
       });
-      cleanData();
       setFeedsFilter(newFilter);
     } else {
-      setFeedsFilter({ page: { offset: 0, limit: 0 } }); // Clean up feed item
+      setFeedsFilter({ offset: 0, limit: 0 }); // Clean up feed item
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deptId, query.toString(), feedsFilter.rootDepartment]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (window.scrollY > 0) {
       window.scrollTo({
         top: 0,
@@ -69,7 +75,7 @@ export const TeamsPage = () => {
     filterByRoute();
   }, [filterByRoute]);
 
-  const handleLoadMore = useCallback(() => {
+  const handleLoadMore = React.useCallback(() => {
     if (!hasMore || isLoading) return;
     setFilter((prevFilter) => ({
       ...prevFilter,
@@ -80,7 +86,6 @@ export const TeamsPage = () => {
   const handleDepartmentSelect = (value?: Department): void => {
     history.push({
       pathname: `/departments/${value?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
     });
     scrollToTop();
   };
