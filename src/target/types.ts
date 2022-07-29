@@ -84,6 +84,7 @@ export enum TargetStatusType {
   OnTrack = 'ON_TRACK',
   AtRisk = 'AT_RISK',
   Exceeded = 'EXCEEDED',
+  NotSet = 'NOT_SET',
 }
 
 export type TargetSpending = {
@@ -109,6 +110,12 @@ export const TargetStatusConfig = {
     label: '#991B1B',
     background: '#FFC6C6',
     dot: '#F87171',
+    name: 'Exceeded',
+  },
+  [TargetStatusType.NotSet]: {
+    label: '#7D8490',
+    background: '#D1FAE5',
+    dot: '#7D8490',
     name: 'Exceeded',
   },
 };
