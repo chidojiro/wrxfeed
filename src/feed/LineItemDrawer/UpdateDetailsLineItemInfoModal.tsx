@@ -1,6 +1,7 @@
 import Modal from '@/common/atoms/Modal';
 import { Button, Form } from '@/common/components';
 import { withMountOnOpen } from '@/common/hocs';
+import { useHandler } from '@/common/hooks';
 import { TransLineItem } from '@/main/entity';
 import { getNameAbbreviation } from '@/main/utils';
 import clsx from 'clsx';
@@ -97,12 +98,14 @@ export const UpdateDetailsLineItemInfoModal = withMountOnOpen(
       );
     };
 
+    const { handle: handleConfirm } = useHandler(onConfirm);
+
     return (
       <Modal open={open} onClose={onClose} center={false} contentClass="sm:my-24 overflow-visible">
         <Form
           methods={methods}
           onSubmit={async (data) => {
-            await onConfirm(transLineItem.id, data);
+            await handleConfirm(transLineItem.id, data);
             onClose();
           }}
           className="flex flex-col w-[685px] outline-none pt-4"

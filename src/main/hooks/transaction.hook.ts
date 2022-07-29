@@ -2,15 +2,6 @@ import { usePusher } from '@/push-notification/usePusher';
 import { useProfile } from '@/profile/useProfile';
 import React from 'react';
 
-export const FilterKeys: string[] = [
-  'department',
-  'category',
-  'vendor',
-  'rootDepartment',
-  'month',
-  'year',
-];
-
 /**
  * Subscribe events from Feed channel
  */

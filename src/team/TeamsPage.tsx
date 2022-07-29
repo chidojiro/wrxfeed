@@ -2,7 +2,6 @@ import { useLegacyQuery } from '@/common/hooks';
 import { GetFeedsParams } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
 import { Department } from '@/main/entity';
-import { FilterKeys } from '@/main/hooks';
 import { useDepartment } from '@/main/hooks/department.hook';
 import DepartmentList from '@/main/organisms/DepartmentList';
 import { scrollToTop } from '@/main/utils';
@@ -15,6 +14,15 @@ const INIT_PAGINATION = Object.freeze({
   offset: 0,
   limit: LIMIT,
 });
+
+const FilterKeys: string[] = [
+  'department',
+  'category',
+  'vendor',
+  'rootDepartment',
+  'month',
+  'year',
+];
 
 export const TeamsPage = () => {
   const history = useHistory();

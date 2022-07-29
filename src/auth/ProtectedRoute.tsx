@@ -9,9 +9,11 @@ export type ProtectedRouteProps = RouteProps & {
 };
 
 export const ProtectedRoute = ({ path, component, permissions }: ProtectedRouteProps) => {
-  const { profile } = useProfile();
+  const { profile, isInitializingProfile } = useProfile();
 
   const isAccessible = !permissions || profile?.roles?.some((role) => permissions?.includes(role));
+
+  if (isInitializingProfile) return <MainLayout />;
 
   if (!isAccessible) {
     return <NoPermission />;

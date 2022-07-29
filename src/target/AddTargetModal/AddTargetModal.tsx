@@ -83,7 +83,7 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
     watch,
     setValue,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     clearErrors,
   } = methods;
 
@@ -222,7 +222,7 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
   const updateApi = useDefaultApis ? TargetApis.update : onUpdate;
   const deleteApi = useDefaultApis ? TargetApis.delete : onDelete;
 
-  const { handle: createTarget } = useHandler(
+  const { handle: createTarget, isLoading: isCreatingTarget } = useHandler(
     (payload: CreateTargetPayload) => createApi!(payload),
     {
       onSuccess: (data) => {
@@ -233,7 +233,7 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
     },
   );
 
-  const { handle: updateTarget } = useHandler(
+  const { handle: updateTarget, isLoading: isUpdatingTarget } = useHandler(
     (id: number, payload: UpdateTargetPayload) => updateApi!(id, payload),
     {
       onSuccess: (data) => {
@@ -450,7 +450,7 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
                 </Button>
                 <Button
                   type="submit"
-                  loading={isSubmitting}
+                  loading={isCreatingTarget || isUpdatingTarget}
                   variant="solid"
                   colorScheme={isReadyToCreate ? 'primary' : 'gray'}
                   className="hover:bg-primary"
