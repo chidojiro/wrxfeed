@@ -1,5 +1,5 @@
 import { ChevronLeftIcon } from '@/assets';
-import MainLayout from '@/common/templates/MainLayout';
+import { MainLayout } from '@/layout/MainLayout';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import React from 'react';
@@ -25,7 +25,7 @@ export const ForYouFeedsByCategoryPage = () => {
   const { data: category } = useCategory(categoryId);
 
   return (
-    <MainLayout className="flex flex-col" rightSide={false}>
+    <MainLayout>
       {!!category && (
         <div className="flex items-center space-x-4 pb-8">
           <Link to="/feeds/for-you">

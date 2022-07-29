@@ -1,12 +1,11 @@
-import { profileState } from '@/auth/containers/ProfileEditForm/states';
 import { Avatar } from '@/common/components';
 import { ClassName } from '@/common/types';
 import { formatDate } from '@/common/utils';
 import { User } from '@/main/entity';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
+import { useProfile } from '@/profile/useProfile';
 import clsx from 'clsx';
 import React from 'react';
-import { useRecoilValue } from 'recoil';
 
 export type CommentOwnerProps = ClassName & {
   owner: User;
@@ -20,7 +19,7 @@ export const CommentOwner = ({
   className,
   showAva = false,
 }: CommentOwnerProps) => {
-  const profile = useRecoilValue(profileState);
+  const { profile } = useProfile();
   const avatarBgColor = React.useMemo(
     () => getColorByText(owner?.fullName ?? ''),
     [owner?.fullName],

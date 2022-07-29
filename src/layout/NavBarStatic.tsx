@@ -1,6 +1,5 @@
 import { UserPlusIcon } from '@/assets';
 import { Avatar, Button } from '@/common/components';
-import SearchBar from '@/common/molecules/SearchBar';
 import { NotifyPopover, UserProfilePopover } from '@/main/molecules';
 import { InviteModal } from '@/main/organisms';
 import { useProfile } from '@/profile/useProfile';
@@ -9,10 +8,11 @@ import { Popover } from '@headlessui/react';
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 import clsx from 'clsx';
 import mixpanel from 'mixpanel-browser';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import SearchBar from './SearchBar';
 
-interface NavBarStaticProps {
+type NavBarStaticProps = {
   className?: string;
   companyName?: string;
   companyStyle?: string;
@@ -23,13 +23,13 @@ interface NavBarStaticProps {
   showAva?: boolean;
   showNoti?: boolean;
   showInvite?: boolean;
-}
+};
 const userNavigation = [
   { name: 'Notifications', href: '/notifications' },
   { name: 'Sign out', href: '#' },
 ];
 
-const NavBarStatic: React.FC<NavBarStaticProps> = ({
+export const NavBarStatic = ({
   className = '',
   companyName,
   companyStyle = '',
@@ -40,7 +40,7 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
   showAva = false,
   showNoti = false,
   showInvite = false,
-}) => {
+}: NavBarStaticProps) => {
   const history = useHistory();
   const [isOpenInviteModal, openInviteModal] = useState(false);
 
@@ -165,5 +165,3 @@ const NavBarStatic: React.FC<NavBarStaticProps> = ({
     </Popover>
   );
 };
-
-export default NavBarStatic;

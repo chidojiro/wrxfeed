@@ -1,6 +1,6 @@
 import Loading from '@/common/atoms/Loading';
 import { Button } from '@/common/components';
-import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
+import { useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { TransLineItem } from '@/main/entity';
 import { TransactionLineItem } from './TransactionLineItem';
 import { Vendor } from '@/vendor/types';

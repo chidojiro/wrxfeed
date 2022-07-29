@@ -4,11 +4,13 @@ import Loading from '@/common/atoms/Loading';
 import { Button } from '@/common/components';
 import { useProfile } from '@/profile/useProfile';
 import { Department } from '@/main/entity';
-import { useSubscription } from '@/main/hooks/subscription.hook';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useSubscription } from '@/subscription/useSubscription';
+import { useSubscribe } from '@/subscription/useSubscribe';
+import { useUnsubscribe } from '@/subscription/useUnsubscribe';
 
 const LIMIT = 9999;
 const INIT_PAGINATION = Object.freeze({
@@ -32,10 +34,6 @@ interface DepartmentCellProps {
 const DepartmentCell: React.FC<DepartmentCellProps> = ({
   className = '',
   dept,
-  onFollowedTeam = () => undefined,
-  onFollowTeamFail = () => undefined,
-  onUnfollowedTeam = () => undefined,
-  onUnfollowTeamFail = () => undefined,
   onFollow = () => undefined,
   onUnfollow = () => undefined,
   enableAction,
@@ -44,20 +42,11 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
   const { profile } = useProfile();
   const [childs, setChilds] = useState<Department[]>([]);
 
-  const onFollowSuccess = async () => {
-    onFollowedTeam([dept, ...childs]);
-  };
-  const onUnfollowSuccess = async () => {
-    onUnfollowedTeam([dept, ...childs]);
-  };
-
-  const { isFollowLoading, isUnfollowLoading, isFollowing, batchSubscribe, batchUnsubscribe } =
-    useSubscription({
-      onFollowSuccess,
-      onFollowError: (error: unknown) => onFollowTeamFail(error),
-      onUnfollowSuccess,
-      onUnfollowError: (error: unknown) => onUnfollowTeamFail(error),
-    });
+  const { isSubscribed, mutateSubscription } = useSubscription();
+  const { subscribe, isSubscribing } = useSubscribe({ onSuccess: () => mutateSubscription() });
+  const { unsubscribe, isUnsubscribing } = useUnsubscribe({
+    onSuccess: () => mutateSubscription(),
+  });
 
   const getChilds = useCallback(async () => {
     const deptChild: Department[] = await DepartmentApis.getList({
@@ -71,7 +60,7 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
     getChilds();
   }, [getChilds]);
 
-  const isFollowed = isFollowing('departments', dept);
+  const isFollowed = isSubscribed('departments', dept.id);
 
   const bgColor = isFollowed ? 'bg-Accent-2' : 'bg-white';
   const textColor = isFollowed ? 'text-white' : 'text-Gray-3';
@@ -89,23 +78,23 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
     // setChilds(deptChild);
 
     if (isFollowed) {
-      if (isUnfollowLoading) {
+      if (isUnsubscribing) {
         toast.warn('Please wait a minute!');
         return;
       }
-      batchUnsubscribe({ departments: [dept, ...childs] });
+      unsubscribe({ departments: [dept, ...childs] });
       if (onUnfollow) onUnfollow(dept);
     } else {
-      if (isFollowLoading) {
+      if (isSubscribing) {
         toast.warn('Please wait a minute!');
         return;
       }
-      batchSubscribe({ departments: [dept, ...childs] });
+      subscribe({ departments: [dept, ...childs] });
       if (onFollow) onFollow(dept);
     }
   };
   const renderIcon = () => {
-    if (isFollowLoading || isUnfollowLoading) {
+    if (isUnsubscribing || isSubscribing) {
       return (
         <div className="w-5 h-5 flex justify-center items-center">
           <Loading width={12} height={12} color={isFollowed ? 'white' : 'primary'} />

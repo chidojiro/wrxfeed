@@ -1,10 +1,9 @@
-import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
-import { MainGroups } from '@/common/constants';
+import { ChevronLeftIcon } from '@/assets';
 import { useFetcher } from '@/common/hooks';
-import MainLayout from '@/common/templates/MainLayout';
 import { FeedApis } from '@/feed/apis';
 import { Feeds } from '@/feed/Feeds';
 import { GetCategoriesParams } from '@/feed/types';
+import { MainLayout } from '@/layout/MainLayout';
 import { Category } from '@/main/entity';
 import { useCategory } from '@/main/hooks/category.hook';
 import CategoryList from '@/main/organisms/CategoryList';
@@ -42,7 +41,6 @@ const CategoriesPage: React.FC = () => {
     setCategory(value);
     history.push({
       pathname: `/categories/${value?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
     });
   };
 

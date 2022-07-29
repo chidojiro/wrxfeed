@@ -1,12 +1,11 @@
 import Loading from '@/common/atoms/Loading';
 import { useHandler, useLegacyQuery, useNavUtils } from '@/common/hooks';
-import MainLayout from '@/common/templates/MainLayout';
 import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
 import { FeedApis } from '@/feed/apis';
 import { FeedCard } from '@/feed/FeedCard';
-import { LineItemDrawer } from '@/feed/LineItemDrawer';
-import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
+import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
+import { MainLayout } from '@/layout/MainLayout';
 import { FeedItem, FeedRouteType } from '@/main/entity';
 import { Routes } from '@/routing/routes';
 import { TargetApis } from '@/target/apis';

@@ -1,9 +1,8 @@
 import { UserRole } from '@/auth/constants';
 import { useProfile } from '@/profile/useProfile';
-import React from 'react';
-import NavBarStatic from '../NavBarStatic';
+import { NavBarStatic } from './NavBarStatic';
 
-const NavBar = () => {
+export const NavBar = () => {
   const { profile } = useProfile();
   const isAdmin = profile?.roles?.includes(UserRole.ADMIN);
 
@@ -20,5 +19,3 @@ const NavBar = () => {
     />
   );
 };
-
-export default NavBar;

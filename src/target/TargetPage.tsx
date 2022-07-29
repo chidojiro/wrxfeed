@@ -1,8 +1,7 @@
-import React from 'react';
-import MainLayout from '@/common/templates/MainLayout';
 import { Tabs } from '@/common/components';
-import { AllCompany } from './AllCompany';
+import { MainLayout } from '@/layout/MainLayout';
 import { useParams } from 'react-router-dom';
+import { AllCompany } from './AllCompany';
 import { ForYouDashboard } from './ForYouDashboard';
 
 export const TargetPage = () => {

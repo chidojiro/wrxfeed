@@ -1,38 +1,19 @@
-import React, { MouseEventHandler } from 'react';
 import { Department } from '@/main/entity';
 import { getColorByText } from '@/main/utils';
-import { ToggleFollowButton } from '@/common/components';
+import { ToggleFollowButton } from '@/subscription/ToggleFollowButton';
+import React, { MouseEventHandler } from 'react';
 
 interface DirectoryItem {
   item: Department;
-  isFollowing?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
-  onFollow?: MouseEventHandler<HTMLButtonElement>;
-  onUnfollow?: MouseEventHandler<HTMLButtonElement>;
+  department: Department;
 }
 
-const RootDepartmentHeader: React.FC<DirectoryItem> = ({
-  item,
-  isFollowing,
-  onClick,
-  onFollow,
-  onUnfollow,
-}) => {
+const RootDepartmentHeader = ({ item, onClick, department }: DirectoryItem) => {
   const deptBgColor = React.useMemo(() => getColorByText(item?.name ?? '', item.id, true), [item]);
 
-  const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.stopPropagation();
-    if (onFollow) {
-      onFollow(event);
-    }
-  };
+  console.log(department);
 
-  const handleUnfollow: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.stopPropagation();
-    if (onUnfollow) {
-      onUnfollow(event);
-    }
-  };
   return (
     <div
       aria-hidden="true"
@@ -44,10 +25,9 @@ const RootDepartmentHeader: React.FC<DirectoryItem> = ({
     >
       <h3 className="text-sm text-white uppercase font-semibold">{item.name || 'Unknown'}</h3>
       <ToggleFollowButton
-        following={!!isFollowing}
-        onFollow={handleFollow}
-        onUnFollow={handleUnfollow}
         colorScheme="white"
+        type="departments"
+        item={[department, department.children ?? []].flat()}
       />
     </div>
   );

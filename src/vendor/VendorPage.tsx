@@ -1,7 +1,7 @@
 import { ChevronLeftIcon } from '@/assets';
 import { ListLoader } from '@/common/components';
-import MainLayout from '@/common/templates/MainLayout';
 import { Feeds } from '@/feed/Feeds';
+import { MainLayout } from '@/layout/MainLayout';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { useVendor } from './useVendor';
 

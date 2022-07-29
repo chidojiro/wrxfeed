@@ -1,7 +1,7 @@
-import { Avatar, ToggleFollowButton } from '@/common/components';
+import { Avatar } from '@/common/components';
 import { Category, Department } from '@/main/entity';
-import { useSubscription } from '@/main/hooks/subscription.hook';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
+import { ToggleFollowButton } from '@/subscription/ToggleFollowButton';
 import { Vendor } from '@/vendor/types';
 import React, { MouseEventHandler } from 'react';
 
@@ -18,26 +18,10 @@ const DirectoryItem: React.FC<DirectoryItem> = ({
   onClick,
   itemType = 'categories',
 }) => {
-  const { subscribe, unsubscribe, isFollowing, isFollowLoading, isUnfollowLoading } =
-    useSubscription();
-
   const avatarBgColor = React.useMemo(
     () => getColorByText(item?.name ?? '', item.id, true),
     [item],
   );
-
-  const isFollow = isFollowing(itemType, item);
-  const isLoading = isFollowLoading || isUnfollowLoading;
-
-  const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.stopPropagation();
-    subscribe(itemType, item);
-  };
-
-  const handleUnfollow: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.stopPropagation();
-    unsubscribe(itemType, item);
-  };
 
   const renderAvatarOrShortName = () => {
     const shortName = getNameAbbreviation(item?.name);
@@ -56,14 +40,7 @@ const DirectoryItem: React.FC<DirectoryItem> = ({
   const renderIcon = () => {
     if (disableFollow) return null;
 
-    return (
-      <ToggleFollowButton
-        following={!!isFollow}
-        onFollow={handleFollow}
-        onUnFollow={handleUnfollow}
-        loading={isLoading}
-      />
-    );
+    return <ToggleFollowButton type={itemType} item={item} />;
   };
 
   return (

@@ -1,6 +1,5 @@
 import { CommentIcon } from '@/assets';
 import { Button } from '@/common/components';
-import { MainGroups } from '@/common/constants';
 import { useHandler } from '@/common/hooks';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { DepartmentApis } from '@/team/apis';
@@ -39,7 +38,6 @@ export const SummaryRow = ({
     await viewDepartmentSummary(id);
     history.push({
       pathname: `/departments/${id}`,
-      search: `?route=${MainGroups.Following}`,
     });
   };
 

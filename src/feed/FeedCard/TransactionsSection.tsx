@@ -4,7 +4,7 @@ import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import { TransactionRow } from './TransactionRow';
 import RestrictedWarning from '@/main/atoms/RestrictedWarning';
-import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
+import { useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { Divider, InfiniteLoader, InfiniteLoaderRenderProps } from '@/common/components';
 import { FeedApis } from '@/feed/apis';
 import { ClassName } from '@/common/types';
