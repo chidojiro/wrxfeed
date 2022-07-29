@@ -1,43 +1,23 @@
-import { ToggleFollowButton } from '@/common/components';
 import { Category, Department } from '@/main/entity';
+import { ToggleFollowButton } from '@/subscription/ToggleFollowButton';
 import { Vendor } from '@/vendor/types';
 import React, { MouseEventHandler } from 'react';
 
 interface DepartmentItemProps {
   item: Department | Category | Vendor;
   disableFollow?: boolean;
-  isFollowing?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
-  onFollow?: MouseEventHandler<HTMLButtonElement>;
-  onUnfollow?: MouseEventHandler<HTMLButtonElement>;
   hideName?: boolean;
   inHeader?: boolean;
 }
 
 const DepartmentItem: React.FC<DepartmentItemProps> = ({
   item,
-  isFollowing,
   disableFollow = false,
   onClick,
-  onFollow,
-  onUnfollow,
   hideName = false,
   inHeader,
 }) => {
-  const handleFollow: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.stopPropagation();
-    if (onFollow) {
-      onFollow(event);
-    }
-  };
-
-  const handleUnfollow: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.stopPropagation();
-    if (onUnfollow) {
-      onUnfollow(event);
-    }
-  };
-
   return (
     <div
       aria-hidden="true"
@@ -49,10 +29,9 @@ const DepartmentItem: React.FC<DepartmentItemProps> = ({
       </div>
       {!disableFollow && (
         <ToggleFollowButton
+          type="departments"
+          item={item}
           colorScheme={inHeader ? 'white' : 'primary'}
-          following={!!isFollowing}
-          onFollow={handleFollow}
-          onUnFollow={handleUnfollow}
         />
       )}
     </div>

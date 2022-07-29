@@ -1,4 +1,4 @@
-import MainLayout from '@/common/templates/MainLayout';
+import { MainLayout } from '@/layout/MainLayout';
 import { Notification } from '@/main/entity';
 import { useNotification } from '@/main/hooks';
 import { PaginationParams } from '@/rest/types';

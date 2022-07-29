@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import useSwr from 'swr';
 
 export type UseHandlerConfigurations<T = unknown> = {
-  onError?: (error: unknown) => void;
+  onError?: (error: unknown, handlerParams: any[]) => void;
   onSuccess?: (data: T) => void;
 };
 
@@ -36,10 +36,10 @@ export const useHandler = <T = void>(
 
   const { onError, ...restConfigs } = configs ?? {};
 
-  const _configs: UseHandlerConfigurations<T> = {
+  const _configs: any = {
     ...restConfigs,
-    onError: async (error) => {
-      const shouldUseDefaultErrorHandler = onError?.(error) ?? true;
+    onError: async (error: unknown) => {
+      const shouldUseDefaultErrorHandler = onError?.(error, argsRef.current ?? []) ?? true;
 
       if (!shouldUseDefaultErrorHandler) return;
 

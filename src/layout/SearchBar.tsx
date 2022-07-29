@@ -3,7 +3,6 @@ import { ReactComponent as BasicsXSmall } from '@/assets/icons/outline/basics-x-
 import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
 import Loading from '@/common/atoms/Loading';
 import { Button } from '@/common/components';
-import { MainGroups } from '@/common/constants';
 import { useDebounce } from '@/common/hooks';
 import SearchBarResultItem from '@/main/atoms/SearchBarResultItem';
 import useRoveFocus from '@/main/hooks/focus.hook';
@@ -67,19 +66,16 @@ const SearchBar: React.FC = () => {
       case TargetTypeProp.DEPARTMENT:
         history.push({
           pathname: `/departments/${result?.directoryId}`,
-          search: `?route=${MainGroups.Following}`,
         });
         break;
       case TargetTypeProp.CATEGORY:
         history.push({
           pathname: `/categories/${result?.directoryId}`,
-          search: `?route=${MainGroups.Following}`,
         });
         break;
       case TargetTypeProp.VENDOR:
         history.push({
           pathname: `/vendors/${result?.directoryId}`,
-          search: `?route=${MainGroups.Following}`,
         });
         break;
       default:

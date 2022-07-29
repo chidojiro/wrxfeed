@@ -1,11 +1,8 @@
 import { ReactComponent as AttachIcon } from '@/assets/icons/outline/attach.svg';
 import { ReactComponent as SmileIcon } from '@/assets/icons/outline/mood-smile.svg';
 import UploadButton from '@/common/atoms/UploadButton';
-import { Button } from '@/common/components';
-import EmojiPicker from '@/common/molecules/EmojiPicker';
+import { Button, EmojiPickerDispatcher } from '@/common/components';
 import { UPLOAD_FILE_ACCEPT } from '@/config';
-import { CommentInput } from './CommentInput';
-import { SendButton } from './SendButton';
 import { CommentFormModel } from '@/main/types';
 import { MentionData } from '@draft-js-plugins/mention';
 import clsx from 'clsx';
@@ -13,6 +10,8 @@ import { ContentState, EditorState } from 'draft-js';
 import { EmojiData } from 'emoji-mart';
 import React, { FocusEventHandler, useCallback, useEffect, useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
+import { CommentInput } from './CommentInput';
+import { SendButton } from './SendButton';
 
 export type CommentFormProps = {
   id?: string;
@@ -84,12 +83,12 @@ export const CommentBox = ({
       (inputRef.current as any).insertText(emoji.native);
     }
     // Turn off emoji picker after picked
-    EmojiPicker.close();
+    EmojiPickerDispatcher.close();
   }, []);
 
   useEffect(() => {
     if (!(focused || hovered || isEmojiHovering)) {
-      EmojiPicker.close();
+      EmojiPickerDispatcher.close();
     }
   }, [focused, hovered, isEmojiHovering]);
 
@@ -106,8 +105,8 @@ export const CommentBox = ({
     }
   };
 
-  const openEmojiPicker = () => {
-    EmojiPicker.open({
+  const openEmojiPickerDispatcher = () => {
+    EmojiPickerDispatcher.open({
       anchorEl: emojiRef.current,
       onSelectEmoji,
       onHover: setEmojiHovering,
@@ -151,7 +150,7 @@ export const CommentBox = ({
               <Button
                 ref={emojiRef}
                 className="flex justify-center items-center w-5 h-5 rounded-sm hover:bg-purple-8 transition-all"
-                onClick={openEmojiPicker}
+                onClick={openEmojiPickerDispatcher}
               >
                 <span className="sr-only">Emoji picker</span>
                 <SmileIcon

@@ -34,6 +34,7 @@ export const UpdateVendorInfoModal = withMountOnOpen(
           methods={methods}
           onSubmit={async (data) => {
             await onConfirm(
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               vendor!.id,
               omitBy(data, (v) => !v),
             );

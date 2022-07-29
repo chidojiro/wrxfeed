@@ -40,3 +40,5 @@ export type GetLineItemsParams = PaginationParams &
   };
 
 export type FeedType = 'target' | 'transaction';
+
+export type GetUnreadLineItemCountParams = Omit<GetFeedsParams, keyof PaginationParams>;

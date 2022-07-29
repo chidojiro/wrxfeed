@@ -1,6 +1,6 @@
 import { AddSmallSolid, TeamIcon } from '@/assets';
 import { Button } from '@/common/components';
-import { EMPTY_ARRAY, MainGroups } from '@/common/constants';
+import { EMPTY_ARRAY } from '@/common/constants';
 import { getColorByText } from '@/main/utils';
 import { useDepartment } from '@/team/useDepartment';
 import { useDisclosure } from '@dwarvesf/react-hooks';
@@ -40,7 +40,6 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
     }
     history.push({
       pathname: `/departments/${departmentId}`,
-      search: `?route=${MainGroups.Following}`,
     });
   };
 
