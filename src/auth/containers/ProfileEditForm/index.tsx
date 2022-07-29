@@ -6,6 +6,8 @@ export type ProfileEditFormProps = Omit<ProfileFormProps, 'defaultValues'>;
 const ProfileEditForm = ({ onSubmit }: ProfileEditFormProps) => {
   const { profile } = useProfile();
 
+  if (!profile) return null;
+
   return <ProfileForm defaultValues={profile} onSubmit={onSubmit} />;
 };
 

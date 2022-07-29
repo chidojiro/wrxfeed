@@ -10,13 +10,13 @@ export const useProfile = () => {
     isInitializing: isInitializingProfile,
     isValidating: isValidatingProfile,
     mutate,
-  } = useFetcher(['profile'], () => ProfileApis.get(), { suspense: true });
+  } = useFetcher(['profile'], () => ProfileApis.get());
 
   const {
     data: googleProfile,
     isInitializing: isInitializingGoogleProfile,
     isValidating: isValidatingGoogleProfile,
-  } = useFetcher(['googleProfile'], () => ProfileApis.getGoogleProfile(), { suspense: true });
+  } = useFetcher(['googleProfile'], () => ProfileApis.getGoogleProfile());
 
   const isPermittedToFeature = React.useCallback(
     (feature: ProtectedFeatures): boolean => {
@@ -27,9 +27,8 @@ export const useProfile = () => {
     [googleProfile?.roles],
   );
 
-  const combinedProfile = React.useMemo<Profile & GoogleProfile>(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => ({ ...profile!, ...googleProfile! }),
+  const combinedProfile = React.useMemo<(Profile & GoogleProfile) | undefined>(
+    () => (profile && googleProfile ? { ...profile, ...googleProfile } : undefined),
     [googleProfile, profile],
   );
 

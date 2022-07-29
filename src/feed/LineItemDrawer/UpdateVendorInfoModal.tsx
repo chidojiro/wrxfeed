@@ -1,6 +1,7 @@
 import Modal from '@/common/atoms/Modal';
 import { Button, Form } from '@/common/components';
 import { withMountOnOpen } from '@/common/hocs';
+import { useHandler } from '@/common/hooks';
 import { VendorApis } from '@/vendor/apis';
 import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
@@ -20,7 +21,7 @@ export const UpdateVendorInfoModal = withMountOnOpen(
   ({ open = false, onClose, onCancel, onConfirm, vendor }: UpdateVendorInfoModalProps) => {
     const methods = useForm();
     const {
-      formState: { isValid, isSubmitting },
+      formState: { isValid },
       reset,
     } = methods;
 
@@ -28,12 +29,14 @@ export const UpdateVendorInfoModal = withMountOnOpen(
       reset(vendor);
     }, [reset, vendor]);
 
+    const { handle: handleConfirm, isLoading: isConfirming } = useHandler(onConfirm);
+
     return (
       <Modal open={open} onClose={onClose} contentClass="sm:my-24 overflow-visible">
         <Form
           methods={methods}
           onSubmit={async (data) => {
-            await onConfirm(
+            await handleConfirm(
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               vendor!.id,
               omitBy(data, (v) => !v),
@@ -71,7 +74,7 @@ export const UpdateVendorInfoModal = withMountOnOpen(
             <Button variant="ghost" colorScheme="gray" onClick={onCancel}>
               Cancel
             </Button>
-            <Button variant="solid" type="submit" disabled={!isValid} loading={isSubmitting}>
+            <Button variant="solid" type="submit" disabled={!isValid} loading={isConfirming}>
               Save Changes
             </Button>
           </div>

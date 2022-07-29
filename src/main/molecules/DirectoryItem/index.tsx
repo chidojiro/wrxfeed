@@ -31,7 +31,7 @@ const DirectoryItem: React.FC<DirectoryItem> = ({
         className="w-8 h-8 flex justify-center items-center rounded-full"
         style={{ background: avatarBgColor }}
       >
-        {isHaveAvatar && <Avatar className="w-8 h-8" fullName={item.name} src={isHaveAvatar} />}
+        {isHaveAvatar && <Avatar size="md" fullName={item.name} src={isHaveAvatar} />}
         {!isHaveAvatar && <p className="text-xs font-semibold text-white">{shortName}</p>}
       </div>
     );

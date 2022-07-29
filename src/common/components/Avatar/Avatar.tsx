@@ -20,6 +20,8 @@ export const Avatar = ({ src, className, fullName, size = 'sm' }: AvatarProps) =
         'rounded-full overflow-hidden',
         className,
         { 'w-6 h-6': size === 'sm' },
+        { 'w-8 h-8': size === 'md' },
+        { 'w-10 h-10': size === 'lg' },
       )}
     >
       <Tooltip

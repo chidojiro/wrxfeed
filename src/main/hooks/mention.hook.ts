@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { MentionData } from '@draft-js-plugins/mention';
 import { useErrorHandler } from '@/error/hooks';
 import { User } from '@/main/entity';
@@ -52,6 +51,7 @@ export function useMention(): MentionHookValues {
 
   useEffect(() => {
     handleMentionLoadable();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [membersLoadable]);
 
   return { mentions, isLoading };

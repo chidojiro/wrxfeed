@@ -1,11 +1,10 @@
-import { AddSmallIcon, BasicsXSmall, FeedIcon, TargetIcon, TeamIcon } from '@/assets';
-import { Tooltip } from '@/common/components';
+import { AddSmallIcon, FeedIcon, TargetIcon, TeamIcon } from '@/assets';
 import { useSubscription } from '@/subscription/useSubscription';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { SidebarAccordion } from './SidebarAccordion';
 import { SidebarNavGroup } from './SidebarNavGroup';
 import { SidebarNavItem } from './SidebarNavItem';
+import { UnfollowButton } from './UnfollowButton';
 
 export const SideBar = () => {
   const { subscription } = useSubscription();
@@ -38,18 +37,14 @@ export const SideBar = () => {
               </Link>
             }
           >
-            {departments?.map(({ id, name }) => (
+            {departments?.map((department) => (
               <SidebarNavItem
-                key={id}
-                href={`/departments/${id}`}
+                key={department.id}
+                href={`/departments/${department.id}`}
                 className="group"
-                iconRight={
-                  <Tooltip trigger={<BasicsXSmall className="group-hover:block hidden" />}>
-                    <p className="text-2xs">Unfollow</p>
-                  </Tooltip>
-                }
+                iconRight={<UnfollowButton department={department} />}
               >
-                {name}
+                {department.name}
               </SidebarNavItem>
             ))}
             <SidebarNavItem href="/departments" className="group" activatable={false}>
