@@ -1,3 +1,4 @@
+import { ApiError } from './../error/types';
 import { AuthUtils } from '@/auth/utils';
 import { API_BASE_URL } from '@/config';
 import { ApiErrorCode } from '@/error';
@@ -22,7 +23,8 @@ myAxios.interceptors.response.use(
     ) {
       AuthUtils.logout();
     }
-    return Promise.reject(error);
+
+    return Promise.reject(new ApiError(error));
   },
 );
 
