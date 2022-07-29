@@ -1,4 +1,4 @@
-import { Target, TargetStatusType, TargetPeriod, TargetProps } from './types';
+import { Target, TargetStatusType } from './types';
 
 export const fallbackTarget: Target = {
   id: 0,
@@ -6,6 +6,12 @@ export const fallbackTarget: Target = {
   creator: {},
   updatedBy: {},
   trackingStatus: TargetStatusType.OnTrack,
-  props: [] as TargetProps[],
-  periods: [] as TargetPeriod[],
+  props: [],
+  periods: [],
+  spendings: [],
+  department: {
+    id: 0,
+    name: '',
+  },
+  isPrimary: false,
 };

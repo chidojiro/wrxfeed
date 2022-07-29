@@ -46,7 +46,7 @@ export const TargetCard = ({
   chartContainerClass = 'flex-1',
 }: TargetCardProps) => {
   const history = useHistory();
-  const department = target.department;
+  const department = target?.department;
 
   const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
     TargetApis.delete(targetId),
@@ -56,7 +56,7 @@ export const TargetCard = ({
     history.push(
       `${(Routes.Feed.path as string).replace(
         ':id',
-        `${target.id}?route=${FeedRouteType.TargetFeed}`,
+        `${target?.id}?route=${FeedRouteType.TargetFeed}`,
       )}`,
     );
   };
@@ -66,8 +66,12 @@ export const TargetCard = ({
     e.stopPropagation();
   };
 
-  const { overallTarget, currentSpend, targetToDate, exceeding } =
-    getTargetPeriodsAmountTotal(target);
+  const {
+    overallTarget = 0,
+    currentSpend = 0,
+    targetToDate,
+    exceeding,
+  } = getTargetPeriodsAmountTotal(target);
 
   const addTargetModalDisclosure = useDisclosure();
 
@@ -77,11 +81,11 @@ export const TargetCard = ({
   );
 
   const handleDeleteClick = async () => {
-    await deleteTarget(target.id);
-    onDeleteSuccess(target.id);
+    await deleteTarget(target?.id);
+    onDeleteSuccess(target?.id);
   };
 
-  const currentMonth = Number(target.spendings && target.spendings[0]?.month);
+  const currentMonth = Number(target?.spendings && target?.spendings[0]?.month);
 
   return (
     <>
@@ -97,7 +101,7 @@ export const TargetCard = ({
       />
       <Button
         onClick={goToTargetDetails}
-        key={target.id}
+        key={target?.id}
         className={clsx(
           'bg-white relative w-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
           className,
@@ -116,14 +120,14 @@ export const TargetCard = ({
                   <OptionsButton
                     onViewClick={goToTargetDetails}
                     onEditClick={addTargetModalDisclosure.onOpen}
-                    onDeleteClick={!target.isPrimary && deletable ? handleDeleteClick : undefined}
+                    onDeleteClick={!target?.isPrimary && deletable ? handleDeleteClick : undefined}
                   />
                 </div>
                 <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
                   <Avatar
                     size="sm"
-                    fullName={target.updatedBy?.fullName ?? ''}
-                    src={target.updatedBy?.avatar}
+                    fullName={target?.updatedBy?.fullName ?? ''}
+                    src={target?.updatedBy?.avatar}
                   />
                   <span className="text-Gray-6 text-xs">
                     Last edited {distanceToNow(target?.updatedAt)}
