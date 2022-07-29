@@ -42,11 +42,9 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
   const { profile } = useProfile();
   const [childs, setChilds] = useState<Department[]>([]);
 
-  const { isSubscribed, mutateSubscription } = useSubscription();
-  const { subscribe, isSubscribing } = useSubscribe({ onSuccess: () => mutateSubscription() });
-  const { unsubscribe, isUnsubscribing } = useUnsubscribe({
-    onSuccess: () => mutateSubscription(),
-  });
+  const { isSubscribed } = useSubscription();
+  const { subscribe, isSubscribing } = useSubscribe();
+  const { unsubscribe, isUnsubscribing } = useUnsubscribe();
 
   const getChilds = useCallback(async () => {
     const deptChild: Department[] = await DepartmentApis.getList({

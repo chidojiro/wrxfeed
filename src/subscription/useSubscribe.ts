@@ -5,10 +5,13 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import { SubscriptionApis } from './apis';
 import { UpdateSubscriptionPayload } from './types';
+import { useSubscription } from './useSubscription';
 
 export const useSubscribe = <T extends { id: number; name: string }>(
   configs?: UseHandlerConfigurations<Subscription>,
 ) => {
+  const { mutateSubscription } = useSubscription();
+
   const { handle: subscribe, isLoading: isSubscribing } = useHandler(
     (type: keyof UpdateSubscriptionPayload, item: T | T[]) => {
       const ids = [item].flat().map(({ id }) => id);
@@ -16,7 +19,10 @@ export const useSubscribe = <T extends { id: number; name: string }>(
       return SubscriptionApis.update(params);
     },
     {
-      ...configs,
+      onSuccess: (data) => {
+        configs?.onSuccess?.(data);
+        mutateSubscription();
+      },
       onError: (error, handlerParams) => {
         configs?.onError?.(error, handlerParams);
 

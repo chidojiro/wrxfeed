@@ -139,7 +139,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     if (!variant)
       return (
-        <button {...restProps} ref={ref} className={className} type={type} disabled={disabled}>
+        <button {...restProps} type={type} ref={ref} className={className} disabled={disabled}>
           {children}
         </button>
       );

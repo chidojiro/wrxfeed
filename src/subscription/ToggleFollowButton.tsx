@@ -27,11 +27,9 @@ export const ToggleFollowButton = <T extends { id: number; name: string }>({
     loading,
   };
 
-  const { subscription, isSubscribed, mutateSubscription } = useSubscription();
-  const { subscribe, isSubscribing } = useSubscribe({ onSuccess: () => mutateSubscription() });
-  const { unsubscribe, isUnsubscribing } = useUnsubscribe({
-    onSuccess: () => mutateSubscription(),
-  });
+  const { subscription, isSubscribed } = useSubscription();
+  const { subscribe, isSubscribing } = useSubscribe();
+  const { unsubscribe, isUnsubscribing } = useUnsubscribe();
 
   const subscribed = [item].flat().some(({ id }) => isSubscribed(type, id));
 
