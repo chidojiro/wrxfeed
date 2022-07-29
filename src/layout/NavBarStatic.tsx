@@ -124,13 +124,11 @@ export const NavBarStatic = ({
             </div>
           </div>
           <Popover.Panel as="nav" className="bg-white h-full sm:hidden" aria-label="Global">
-            <div className="max-w-3xl mx-auto px-2 pt-2 pb-3 space-y-1 sm:px-4">
-              {/* <SideBar /> */}
-            </div>
+            <div className="max-w-3xl mx-auto px-2 pt-2 pb-3 space-y-1 sm:px-4"></div>
             <div className="border-t border-gray-200 pt-4">
               <div className="max-w-3xl mx-auto px-4 flex items-center sm:px-6">
                 <div className="flex-shrink-0">
-                  <Avatar className="h-10 w-10" src={userAva} fullName={userName as string} />
+                  <Avatar size="lg" src={userAva} fullName={userName as string} />
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-gray-800">{userName}</div>
