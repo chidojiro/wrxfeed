@@ -149,7 +149,7 @@ export const TargetCard = ({
                   </p>
                 </div>
               </div>
-              {target.trackingStatus && (
+              {!!target.trackingStatus && (
                 <TargetStatus
                   type={target.trackingStatus}
                   target={target}
