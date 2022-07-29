@@ -25,7 +25,7 @@ export const OptionsButton = ({
       <div>
         <Menu.Button
           onClick={(event: React.MouseEvent<HTMLButtonElement>) => event.stopPropagation()}
-          className="-m-2 p-2 rounded-full flex datas-center text-gray-400 hover:text-gray-600"
+          className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600"
         >
           <span className="sr-only">Open options</span>
           <MoreVerticalIcon

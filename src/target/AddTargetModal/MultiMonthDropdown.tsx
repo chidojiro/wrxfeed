@@ -2,7 +2,7 @@
 import { BasicsDownSmall, LeftSmallIcon } from '@/assets';
 import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
 import Loading from '@/common/atoms/Loading';
-import { Popover } from '@/common/components';
+import { Button, Popover } from '@/common/components';
 import { defaultTargetMonths, monthsInYear } from '@/common/constants';
 import { formatCurrency, round } from '@/common/utils';
 import MonthTargetInput from '@/main/atoms/MonthTargetInput';
@@ -70,7 +70,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
   const totalAmount = round(
     targetMonthValues.reduce((total, target) => total + (target?.amount ?? 0), 0),
   );
-  const applyEnableState = selectedMonths.length > 0 && !isLoadingData ? 'bg-primary' : 'bg-Gray-6';
+  const isValidData = selectedMonths.length > 0 && !isLoadingData;
 
   const [, height] = useWindowSize();
 
@@ -194,14 +194,15 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
         onClose={popoverDisclosure.onClose}
         placement={isHeightRestricted ? 'right-start' : 'bottom-start'}
         trigger={
-          <button
+          <Button
+            size="sm"
+            variant="outline"
+            colorScheme="gray"
             onClick={onClickOpenModal}
-            type="button"
-            className="rounded-sm border border-Gray-11 space-x-1 px-2 flex h-[30px] flex-row items-center"
+            iconRight={<BasicsDownSmall width={20} height={20} />}
           >
-            <p className="text-Gray-3 text-xs">{getButtonTitle(minMonth, maxMonth)}</p>
-            <BasicsDownSmall className="w-5 h-5" width={20} height={20} viewBox="0 0 20 20" />
-          </button>
+            {getButtonTitle(minMonth, maxMonth)}
+          </Button>
         }
       >
         {!!popoverDisclosure.isOpen && (
@@ -287,23 +288,29 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
               </p>
             </div>
             <hr className="divider divider-horizontal w-full" />
-            <div className="flex flex-row w-full px-4 items-center h-11">
-              <button
-                type="button"
+            <div className="flex flex-row w-full px-4 items-center h-11 justify-end gap-3">
+              <Button
+                variant="ghost"
+                colorScheme="gray"
+                size="sm"
                 onClick={popoverDisclosure.onClose}
-                className="flex px-4 h-7 items-center rounded-sm hover:bg-Gray-12 mr-3 ml-auto"
+                className="px-4"
               >
                 <p className="text-Gray-6 text-xs font-semibold">Cancel</p>
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="solid"
+                colorScheme={isValidData ? 'primary' : 'gray'}
+                size="sm"
                 disabled={isLoadingData}
                 onClick={onClickApply}
-                className={clsx('flex flex-row items-center px-4 h-7 rounded-sm', applyEnableState)}
+                iconRight={
+                  <ArrowRight className="w-4 h-4 ml-2 fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />
+                }
+                className="px-4"
               >
-                <p className="text-white text-xs font-semibold">Apply</p>
-                <ArrowRight className="w-4 h-4 ml-2 fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />
-              </button>
+                Apply
+              </Button>
             </div>
           </div>
         )}

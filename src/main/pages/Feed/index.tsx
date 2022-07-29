@@ -1,35 +1,30 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable jsx-a11y/accessible-emoji */
-import { useApi } from '@/api';
 import Loading from '@/common/atoms/Loading';
-import { MainGroups } from '@/common/constants';
-import { useLegacyQuery, useNavUtils } from '@/common/hooks';
-import MainLayout from '@/common/templates/MainLayout';
+import { useHandler, useLegacyQuery, useNavUtils } from '@/common/hooks';
 import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
-import { Category, Department, FeedItem, FeedType } from '@/main/entity';
-import RollupCard from '@/main/molecules/RollupCard';
+import { FeedApis } from '@/feed/apis';
+import { FeedCard } from '@/feed/FeedCard';
+import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
+import { MainLayout } from '@/layout/MainLayout';
+import { FeedItem, FeedRouteType } from '@/main/entity';
 import { Routes } from '@/routing/routes';
-import { TargetFeedCard } from '@/feed/TargetFeedCard';
-import * as Sentry from '@sentry/react';
+import { TargetApis } from '@/target/apis';
 import React, { useEffect, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Vendor } from '@/vendor/types';
-import { LineItemDrawer } from '@/feed/LineItemDrawer';
-import { useLineItemDrawer } from '@/feed/useLineItemDrawer';
 
-const FeedPage: React.FC = () => {
+export const FeedPage: React.FC = () => {
   const history = useHistory();
   const { redirect } = useNavUtils();
-  const ApiClient = useApi();
   const query = useLegacyQuery();
-  const { id: feedId } = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
   const [feedItem, setFeedItem] = useState<FeedItem | undefined>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const errorHandler = useErrorHandler();
   const route = query.get('route');
+
+  const feedId = +params.id;
 
   const {
     isLineItemDrawerOpen,
@@ -41,7 +36,7 @@ const FeedPage: React.FC = () => {
   const getFeedItem = async (id: number) => {
     try {
       setLoading(true);
-      const res = await ApiClient.getFeedItemById(id);
+      const res = await FeedApis.get(id);
       setFeedItem(res);
     } catch (error: unknown) {
       if (isApiError(error)) {
@@ -60,11 +55,9 @@ const FeedPage: React.FC = () => {
   const getTargetFeedItem = async (targetId: number) => {
     try {
       setLoading(true);
-      const res = await ApiClient.getFeeds({
-        page: {
-          offset: 0,
-          limit: 10,
-        },
+      const res = await FeedApis.getList({
+        offset: 0,
+        limit: 10,
         targetId,
       });
       if (res.length > 0) {
@@ -85,45 +78,20 @@ const FeedPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (route === FeedType.TargetFeed) {
-      getTargetFeedItem(parseInt(feedId, 10));
+    if (route === FeedRouteType.TargetFeed) {
+      getTargetFeedItem(feedId);
     } else {
-      getFeedItem(parseInt(feedId, 10));
+      getFeedItem(feedId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [feedId, route]);
 
-  const onClickCategory = (category?: Category) => {
-    history.push({
-      pathname: `/categories/${category?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
-    });
-  };
-  const onClickDepartment = (department?: Department) => {
-    history.push({
-      pathname: `/departments/${department?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
-    });
-  };
-  const onClickRootDept = (rootDept?: Department) => {
-    history.push({
-      pathname: `/departments/${rootDept?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
-    });
-  };
-  const onClickVendor = (vendor?: Vendor) => {
-    history.push({
-      pathname: `/vendors/${vendor?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
-    });
-  };
-  const onRefreshTargetFeedItem = () => {
-    setFeedItem(undefined);
-    getTargetFeedItem(parseInt(feedId, 10));
-  };
-
-  const onBackToDashboard = () => {
+  const goBackToDashboard = () => {
     redirect(Routes.Dashboard.path as string);
   };
+
+  const { handle: updateTarget } = useHandler(TargetApis.update);
+  const { handle: deleteTarget } = useHandler(TargetApis.delete, { onSuccess: goBackToDashboard });
 
   const renderFeed = () => {
     if (isLoading) {
@@ -148,21 +116,12 @@ const FeedPage: React.FC = () => {
 
     return (
       <div className="w-full h-full overflow-scroll hide-scrollbar">
-        {feedItem.type === 'transaction' ? (
-          <RollupCard
-            onClickCategory={onClickCategory}
-            onClickDepartment={onClickDepartment}
-            onClickRootDept={onClickRootDept}
-            onClickVendor={onClickVendor}
-            feedItem={feedItem}
-          />
-        ) : (
-          <TargetFeedCard
-            feedItem={feedItem}
-            onRefresh={onRefreshTargetFeedItem}
-            onBack={onBackToDashboard}
-          />
-        )}
+        <FeedCard
+          feed={feedItem}
+          categoryRedirectHref={(category) => `/categories/${category?.id.toString()}`}
+          onDeleteTarget={deleteTarget}
+          onUpdateTarget={updateTarget}
+        />
         <LineItemDrawer
           open={isLineItemDrawerOpen}
           onClose={closeLineItemDrawer}
@@ -180,5 +139,3 @@ const FeedPage: React.FC = () => {
     </MainLayout>
   );
 };
-
-export default Sentry.withProfiler(FeedPage, { name: 'FeedPage' });

@@ -19,7 +19,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["./src/global"]
+    "types": ["./src/global", "./src/rest/global"]
   },
   "include": ["src/**/*"]
 }

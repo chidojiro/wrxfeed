@@ -1,7 +1,7 @@
 import React from 'react';
 import { Children } from '@/common/types';
 
-type Component<T> = ((props: T) => JSX.Element) | string;
+type Component<T> = ((props: T) => React.ReactNode) | string;
 
 type BaseConfigOptions<TProps> = {
   component: Component<TProps>;

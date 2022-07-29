@@ -9,6 +9,7 @@ export { DateUtils } from './date';
 export { ReactUtils } from './react';
 export { StringUtils } from './string';
 export { NumberUtils } from './number';
+export { CookiesUtils } from './cookies';
 
 // Dayjs plugins
 dayjs.extend(isToday);

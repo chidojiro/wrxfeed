@@ -3,18 +3,18 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import useSwr from 'swr';
 
-type HandlerOptions<T = unknown> = {
-  onError?: (error: unknown) => void;
+export type UseHandlerConfigurations<T = unknown> = {
+  onError?: (error: unknown, handlerParams: any[]) => void;
   onSuccess?: (data: T) => void;
 };
 
-type HandlerOptionsKeys = keyof HandlerOptions;
+type HandlerOptionsKeys = keyof UseHandlerConfigurations;
 const HandlerOptionsKeys: HandlerOptionsKeys[] = ['onSuccess', 'onError'];
 
 export const useHandler = <T = void>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callback: (...args: any[]) => Promise<T>,
-  options?: HandlerOptions<T>,
+  configs?: UseHandlerConfigurations<T>,
 ) => {
   const [refreshToken, setRefreshToken] = React.useState<number>();
   const dataPromiseRef = React.useRef<Promise<T>>();
@@ -34,11 +34,14 @@ export const useHandler = <T = void>(
     return dataPromiseRef.current;
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const _options: HandlerOptions<T> = {
-    ...options,
-    onError: async (error) => {
-      options?.onError?.(error);
+  const { onError, ...restConfigs } = configs ?? {};
+
+  const _configs: any = {
+    ...restConfigs,
+    onError: async (error: unknown) => {
+      const shouldUseDefaultErrorHandler = onError?.(error, argsRef.current ?? []) ?? true;
+
+      if (!shouldUseDefaultErrorHandler) return;
 
       if (isApiError(error)) {
         toast.error(error.details?.message);
@@ -59,7 +62,7 @@ export const useHandler = <T = void>(
 
       return res;
     },
-    _options,
+    _configs,
   );
 
   return React.useMemo(

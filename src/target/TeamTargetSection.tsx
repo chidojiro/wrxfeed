@@ -1,14 +1,15 @@
 import { AddSmallSolid, TeamIcon } from '@/assets';
-import clsx from 'clsx';
+import { Button } from '@/common/components';
+import { EMPTY_ARRAY } from '@/common/constants';
 import { getColorByText } from '@/main/utils';
 import { useDepartment } from '@/team/useDepartment';
 import { useDisclosure } from '@dwarvesf/react-hooks';
+import clsx from 'clsx';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { AddTargetModal } from './AddTargetModal';
 import { TargetCards } from './TargetCards';
 import { useTargets } from './useTargets';
-import { useHistory } from 'react-router-dom';
-import { MainGroups } from '@/common/constants';
 
 export interface TeamTargetSectionProps {
   className?: string;
@@ -23,12 +24,12 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
   const history = useHistory();
 
   const { data: department } = useDepartment(departmentId);
-  const { data: targets = [], mutate: mutateTargets } = useTargets({
+  const { data: targets = EMPTY_ARRAY, mutate: mutateTargets } = useTargets({
     dep: departmentId,
     forYou: 1,
   });
 
-  const teamHeaderColor = React.useMemo(
+  const teamHeaderColor: string = React.useMemo(
     () => getColorByText(department?.name ?? '', department?.id, true),
     [department?.id, department?.name],
   );
@@ -39,7 +40,6 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
     }
     history.push({
       pathname: `/departments/${departmentId}`,
-      search: `?route=${MainGroups.Following}`,
     });
   };
 
@@ -56,23 +56,26 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
             width={16}
             height={16}
           />
-          <button type="button" onClick={onClickTeamName}>
+          <Button onClick={onClickTeamName}>
             <p className="text-white font-semibold">{department?.name}</p>
-          </button>
+          </Button>
         </div>
-        <button
-          type="button"
+        <Button
           onClick={addTargetModalDisclosure.onOpen}
-          className="flex flex-row items-center space-x-2 pr-3"
+          variant="text"
+          colorScheme="white"
+          className="text-sm"
+          iconLeft={
+            <AddSmallSolid
+              width={16}
+              height={16}
+              className="stroke-current path-no-stroke"
+              viewBox="0 0 16 16"
+            />
+          }
         >
-          <AddSmallSolid
-            width={16}
-            height={16}
-            className="stroke-current path-no-stroke text-white"
-            viewBox="0 0 16 16"
-          />
-          <p className="text-white text-sm">Create Target</p>
-        </button>
+          Create Target
+        </Button>
       </div>
       <TargetCards
         targets={targets}

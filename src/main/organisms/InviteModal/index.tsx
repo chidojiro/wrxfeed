@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Contact } from '@/main/entity/contact.entity';
-import { GetContactsFilter } from '@/api/types';
 import { useGetContacts } from '@/main/hooks/contact.hook';
 import ContactItem from '@/main/molecules/ContactItem';
 import InviteTagInput from '@/main/atoms/InviteTagInput';
@@ -8,6 +7,7 @@ import { useInvite } from '@/main/hooks';
 import { useDebounce } from '@/common/hooks';
 import Modal from '@/common/atoms/Modal';
 import Banner from '@/common/atoms/Banner';
+import { GetInvitationContactsParams } from '@/invitation/types';
 
 export type InviteModalProps = {
   open: boolean;
@@ -24,9 +24,9 @@ type InviteTagInputHandler = React.ElementRef<typeof InviteTagInput>;
 
 const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
   const tagInputRef = useRef<InviteTagInputHandler>(null);
-  const [filter, setFilter] = useState<GetContactsFilter>({
+  const [filter, setFilter] = useState<GetInvitationContactsParams>({
     text: '',
-    pagination: INIT_PAGINATION,
+    ...INIT_PAGINATION,
   });
   const { contacts } = useGetContacts(filter);
   const { sendInvitation, isSent } = useInvite();
@@ -37,7 +37,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
     (value: string) => {
       setFilter({
         text: value,
-        pagination: INIT_PAGINATION,
+        ...INIT_PAGINATION,
       });
     },
     [setFilter],

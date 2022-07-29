@@ -1,21 +1,17 @@
-import React, { Fragment, useState, useCallback, useEffect } from 'react';
-import { Popover, Transition } from '@headlessui/react';
-import { useRecoilState } from 'recoil';
-import { toast } from 'react-toastify';
-
-import { Profile } from '@/auth/types';
-import { profileState } from '@/auth/containers/ProfileEditForm/states';
-import { getNameAbbreviation } from '@/main/utils';
-import clsx from 'clsx';
-import { GetUploadTokenBody, UploadTypes } from '@/api/types';
-
-import { useApi } from '@/api';
-import { useSetIdentity } from '@/identity/hooks';
-import { useFileUploader } from '@/common/hooks/useFileUploader';
-
+import { AuthApis } from '@/auth/apis';
 import Loading from '@/common/atoms/Loading';
 import UploadButton from '@/common/atoms/UploadButton';
+import { Avatar, Button } from '@/common/components';
+import { useFileUploader } from '@/common/hooks/useFileUploader';
 import { UPLOAD_FILE_ACCEPT } from '@/config';
+import { getNameAbbreviation } from '@/main/utils';
+import { GetUploadFileTokenPayload } from '@/media/types';
+import { ProfileApis } from '@/profile/apis';
+import { useProfile } from '@/profile/useProfile';
+import { Popover, Transition } from '@headlessui/react';
+import clsx from 'clsx';
+import React from 'react';
+import { toast } from 'react-toastify';
 
 export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
@@ -27,49 +23,36 @@ export type ProfileChanges = {
 };
 
 const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
-  const [profile, setProfile] = useRecoilState(profileState);
-  const [profileUser, setProfileUser] = useState<Profile>(profile);
-  const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadTokenBody>();
-  const [userAvatar, setAvatar] = useState<string>('');
-  const [changeData, setChangeData] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadFileTokenPayload>();
+  const [userAvatar, setAvatar] = React.useState<string>('');
+  const [changeData, setChangeData] = React.useState<boolean>(false);
+  const [title, setTitle] = React.useState<string>('');
+  const [loading, setLoading] = React.useState<boolean>(false);
 
-  const { updateProfile } = useApi();
-  const setIdentity = useSetIdentity();
-  const apiClient = useApi();
+  const { profile, mutateProfile } = useProfile();
 
-  const logout = useCallback(async () => {
-    await apiClient.logout();
-    setIdentity(undefined);
-  }, [setIdentity, apiClient]);
+  const logout = async () => {
+    await AuthApis.logout();
+  };
 
   const profileForms = [
     {
       title: 'Name',
-      content: profileUser?.fullName || 'Unknown',
+      content: profile?.fullName || 'Unknown',
       onChange: () => null,
       editable: false,
     },
     {
       title: 'Title',
-      content: profileUser?.title || 'Unknown',
+      content: profile?.title || 'Unknown',
       onChange: (text: string) => {
         setTitle(text);
       },
       editable: false,
     },
-    // {
-    //   title: 'Department',
-    //   content: profileUser?.department || 'Update now',
-    //   onChange: (text: string) => {
-    //     setDepartment(text);
-    //   },
-    //   editable: false,
-    // },
     {
       title: 'Email',
-      content: profileUser?.email || 'Unknown',
+      content: profile?.email || 'Unknown',
       onChange: () => null,
       editable: false,
     },
@@ -77,9 +60,9 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
 
   const renderAvatarIcon = () => {
     if (userAvatar !== '') {
-      return <img className="h-8 w-8 rounded-full" src={userAvatar} alt="Ava" />;
+      return <Avatar size="md" src={userAvatar} fullName={profile?.fullName as string} />;
     }
-    const shortName = getNameAbbreviation(profileUser.fullName);
+    const shortName = getNameAbbreviation(profile?.fullName);
     return (
       <div className="flex h-8 w-8 rounded-full bg-purple-5 justify-center items-center">
         <div className="flex text-white text-xs font-semibold">{shortName}</div>
@@ -89,16 +72,16 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
 
   const updateAvatar = async (avatarUri: string) => {
     const updates = {
-      companyName: profileUser.company?.name || '',
-      title: profileUser.title || '',
-      department: profileUser.department || '',
-      bio: profileUser.bio || '',
-      lastLoginAt: profileUser.lastLoginAt || '',
+      companyName: profile?.company?.name || '',
+      title: profile?.title || '',
+      department: profile?.department || '',
+      bio: profile?.bio || '',
+      lastLoginAt: profile?.lastLoginAt || '',
       avatar: avatarUri,
     };
-    await updateProfile(updates);
+    await ProfileApis.update(updates);
     toast.success('Upload image successfully!');
-    setProfile({
+    mutateProfile({
       ...profile,
       avatar: avatarUri,
     });
@@ -113,15 +96,15 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
     onSuccess: onUploadSuccess,
   });
 
-  useEffect(() => {
-    setAvatar(profileUser?.avatar || '');
-  }, [profileUser]);
+  React.useEffect(() => {
+    setAvatar(profile?.avatar || '');
+  }, [profile]);
 
   const handleAttachFile = (file: File) => {
     setUploadFileOptions({
-      filename: `${profileUser.id}-${Date.now()}-${file.name}`,
+      filename: `${profile?.id}-${Date.now()}-${file.name}`,
       contentType: file.type,
-      uploadType: UploadTypes.Attachments,
+      uploadType: 'attachments',
     });
     uploadFile(file, uploadFileOptions);
   };
@@ -179,19 +162,19 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
   const onClickSaveChange = async () => {
     setLoading(true);
     const updates = {
-      companyName: profileUser.company?.name || '',
-      title: title || profileUser.title,
-      // department: department || profileUser.department,
-      bio: profileUser.bio || '',
-      lastLoginAt: profileUser.lastLoginAt || '',
+      companyName: profile?.company?.name || '',
+      title: title || profile?.title,
+      // department: department || profile?.department,
+      bio: profile?.bio || '',
+      lastLoginAt: profile?.lastLoginAt || '',
     };
-    await updateProfile(updates);
+    await ProfileApis.update(updates);
     setLoading(false);
     toast.success("Update your's profile info successfully!");
     setChangeData(false);
 
-    const userProfile = await apiClient.getProfile();
-    setProfileUser(userProfile);
+    const userProfile = await ProfileApis.get();
+    mutateProfile(userProfile);
   };
 
   const renderLogoutOrSaveChanges = () => {
@@ -199,13 +182,9 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
       return (
         <div className="flex py-4 items-center flex-row self-center">
           <div className="px-6 py-2 rounded-full hover:bg-gray-100">
-            <button
-              type="button"
-              className="flex text-blue-500 font-medium"
-              onClick={onClickSaveChange}
-            >
+            <Button className="flex text-blue-500 font-medium" onClick={onClickSaveChange}>
               Save changes
-            </button>
+            </Button>
           </div>
           {!!loading && <Loading width={25} height={25} className="border-white mx-4" />}
         </div>
@@ -214,9 +193,9 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
     return (
       <div className="flex py-4 flex-col items-center">
         <div className="px-6 py-2 rounded-full hover:bg-gray-100">
-          <button type="button" className="flex text-red-500 font-medium" onClick={logout}>
+          <Button className="flex text-red-500 font-medium" onClick={logout}>
             Logout
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -236,7 +215,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
           </Popover.Button>
           <Popover.Panel className="absolute z-50">
             <Transition
-              as={Fragment}
+              as={React.Fragment}
               enter="transition ease-out duration-100"
               enterFrom="transform opacity-0 scale-95"
               enterTo="transform opacity-100 scale-100"

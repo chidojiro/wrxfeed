@@ -1,10 +1,10 @@
-import { useApi } from '@/api';
-import { useErrorHandler } from '@/error/hooks';
-import { isBadRequest } from '@/error/utils';
-import { useState } from 'react';
-import { toast } from 'react-toastify';
-import { FeedBackFormModel, FeedBackType } from '@/main/types';
+import { useHandler } from '@/common/hooks';
 import { SEND_EMAIL_MESSAGE } from '@/error/errorMessages';
+import { isBadRequest } from '@/error/utils';
+import { FeedApis } from '@/feed/apis';
+import { FeedBackFormModel, FeedBackType } from '@/main/types';
+import React from 'react';
+import { toast } from 'react-toastify';
 
 interface FeedBackModalCallback {
   onSuccess: () => void;
@@ -18,36 +18,33 @@ interface FeedbackHookValues {
 }
 
 export function useFeedBack(callback: FeedBackModalCallback): FeedbackHookValues {
-  const ApiClient = useApi();
-  const errorHandler = useErrorHandler();
-  const [isLoading, setLoading] = useState(false);
-  const [isSent, setSent] = useState(false);
+  const [isSent, setSent] = React.useState(false);
 
-  const postFeedback = async (type: FeedBackType, itemId: number, data: FeedBackFormModel) => {
-    try {
+  const { handle: postFeedback, isLoading } = useHandler(
+    async (type: FeedBackType, itemId: number, data: FeedBackFormModel) => {
       setSent(false);
-      setLoading(true);
       if (type === FeedBackType.Rollup) {
-        await ApiClient.postFeedBackFeed(itemId, data);
+        await FeedApis.createFeedback(itemId, data);
       } else {
-        await ApiClient.postFeedBackLineItem(itemId, data);
+        await FeedApis.createFeedback(itemId, data);
       }
-      setSent(true);
       callback.onSuccess();
       toast.success('Your feedback has been successfully sent!');
-    } catch (error) {
-      setSent(false);
-      if (callback.onError) {
-        callback.onError(error);
-      } else if (isBadRequest(error)) {
-        toast.error(SEND_EMAIL_MESSAGE);
-      } else {
-        await errorHandler(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+      setSent(true);
+    },
+    {
+      onError: (error: unknown) => {
+        if (callback.onError) {
+          callback.onError(error);
+          return false;
+        }
+        if (isBadRequest(error)) {
+          toast.error(SEND_EMAIL_MESSAGE);
+          return false;
+        }
+      },
+    },
+  );
 
   return { isSent, isLoading, postFeedback };
 }

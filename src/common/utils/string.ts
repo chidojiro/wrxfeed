@@ -1,6 +1,9 @@
+import { SortByParams } from '@/rest/types';
 import { PROJECT_CLASS_NAME_PREFIX } from '../constants';
 
-const toApiSortQuery = (sort: string): { sortBy: string; order: 'ASC' | 'DESC' } => {
+const toApiSortParam = (sort: string): SortByParams => {
+  if (!sort) return {};
+
   if (sort.startsWith('-')) return { sortBy: sort.slice(1), order: 'DESC' };
 
   return { sortBy: sort, order: 'ASC' };
@@ -26,7 +29,7 @@ const withProjectClassNamePrefix = (...classNames: string[]) => {
 };
 
 export const StringUtils = {
-  toApiSortQuery,
+  toApiSortParam,
   getNameInitials,
   withProjectClassNamePrefix,
 };

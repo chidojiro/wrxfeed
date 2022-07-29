@@ -1,5 +1,5 @@
 import { Bank, CategoryIcon, IntersectIcon, TeamIcon } from '@/assets';
-import { Tag } from '@/common/components';
+import { Button, Tag } from '@/common/components';
 import { EMPTY_ARRAY } from '@/common/constants';
 import { useCategories } from '@/feed/useCategories';
 import { useDepartments } from '@/team/useDepartments';
@@ -126,12 +126,9 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
           searchPlaceholder="Enter a team, category, or vendor"
           options={exceptionOptions}
           trigger={
-            <button
-              type="button"
-              className="w-[30px] h-[30px] hover:bg-Gray-12 flex justify-center items-center rounded-sm border border-Gray-11"
-            >
+            <Button size="sm" variant="outline" square colorScheme="gray">
               <IntersectIcon className="w-4 h-4" width={16} height={16} />
-            </button>
+            </Button>
           }
           placement="bottom-end"
           showOptionsOnEmptySearch={false}

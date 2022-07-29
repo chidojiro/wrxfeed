@@ -1,10 +1,8 @@
-import React from 'react';
-import { useRecoilValue } from 'recoil';
-
-import { profileState } from '@/auth/containers/ProfileEditForm/states';
-import { getColorByText, getNameAbbreviation } from '@/main/utils';
 import { User } from '@/main/entity';
+import { getColorByText, getNameAbbreviation } from '@/main/utils';
+import { useProfile } from '@/profile/useProfile';
 import clsx from 'clsx';
+import React from 'react';
 
 export interface UserAvatarProps {
   size?: number;
@@ -14,7 +12,7 @@ export interface UserAvatarProps {
 }
 
 const UserAvatar: React.FC<UserAvatarProps> = ({ size, className = '', user }) => {
-  const profile = useRecoilValue(profileState);
+  const { profile } = useProfile();
   const avatarBgColor = React.useMemo(() => getColorByText(user?.fullName ?? ''), [user?.fullName]);
 
   const sizeToWidthHeight =

@@ -6,6 +6,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import FormInput from '@/auth/atoms/FormInput';
 import { ProfileFormModel } from '../../types';
 import { useFormErrorHandler } from '../../../error';
+import { Button } from '@/common/components';
 
 const schema = yup.object({
   displayName: yup.string().required('This field is required'),
@@ -50,9 +51,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ defaultValues, onSubmit }) =>
       <FormInput placeholder="Password" value="******" type="password" contentEditable={false} />
       <div>
         <RouterLink to="/">Cancel</RouterLink>
-        <button disabled={isSubmitting} type="submit">
+        <Button disabled={isSubmitting} type="submit">
           Submit
-        </button>
+        </Button>
       </div>
     </form>
   );

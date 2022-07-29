@@ -1,16 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import usePusher from '@/api/hooks/usePusher';
-import { useIdentity } from '@/identity/hooks';
+import { usePusher } from '@/push-notification/usePusher';
+import { useProfile } from '@/profile/useProfile';
 import React from 'react';
-
-export const FilterKeys: string[] = [
-  'department',
-  'category',
-  'vendor',
-  'rootDepartment',
-  'month',
-  'year',
-];
 
 /**
  * Subscribe events from Feed channel
@@ -28,8 +18,8 @@ export function useFeedChannel(
   callback: (data: FeedEventData) => void,
 ): void {
   const pusher = usePusher();
-  const identity = useIdentity();
-  const channelName = `feed-${identity?.id}`;
+  const { profile } = useProfile();
+  const channelName = `feed-${profile?.id}`;
   // for notifications, channel name will be like notification-${userId}
 
   React.useEffect(() => {

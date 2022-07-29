@@ -1,12 +1,3 @@
-export type VendorDescription = {
-  vendorId?: number;
-  vendorName?: string;
-  website?: string;
-  contactEmail?: string;
-  contactNumber?: string;
-  description?: string;
-};
-
 export const EMPTY_VENDOR_DESCRIPTION = Object.freeze({
   vendorId: undefined,
   vendorName: undefined,

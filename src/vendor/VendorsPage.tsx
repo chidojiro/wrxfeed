@@ -1,5 +1,5 @@
 import { InfiniteLoader } from '@/common/components';
-import MainLayout from '@/common/templates/MainLayout';
+import { MainLayout } from '@/layout/MainLayout';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { VendorApis } from './apis';

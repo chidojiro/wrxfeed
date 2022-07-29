@@ -1,51 +1,47 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useApi } from '@/api';
 import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
 import { ReactComponent as SharpSpaceDashboard } from '@/assets/icons/solid/sharp-space-dashboard.svg';
 import DepartmentCell from '@/auth/molecules/DepartmentCell';
+import { AuthUtils } from '@/auth/utils';
 import Loading from '@/common/atoms/Loading';
-import { useDebounce, useLegacyQuery, useNavUtils } from '@/common/hooks';
-import NavBarStatic from '@/common/organisms/NavBarStatic';
-import BlankLayout from '@/common/templates/BlankLayout';
+import { Button } from '@/common/components';
+import { useDebounce, useHandler, useLegacyQuery, useNavUtils } from '@/common/hooks';
 import { TEAM_SUGGEST_RANDOM_NUMBER } from '@/config';
-import { useErrorHandler } from '@/error/hooks';
 import { isApiError } from '@/error/utils';
-import { useIdentity } from '@/identity/hooks';
+import { BlankLayout } from '@/layout/BlankLayout';
+import { NavBarStatic } from '@/layout/NavBarStatic';
 import { Department } from '@/main/entity';
-import { useSearch } from '@/main/hooks/search.hook';
-import { useSubscription } from '@/main/hooks/subscription.hook';
 import { SearchResult } from '@/main/types';
 import { getMultiRandomInt, getUniqueListBy } from '@/main/utils';
+import { useSearch } from '@/misc/useSearch';
+import { ProfileApis } from '@/profile/apis';
+import { useProfile } from '@/profile/useProfile';
 import { Routes } from '@/routing/routes';
+import { useSubscription } from '@/subscription/useSubscription';
 import { cloneDeep } from 'lodash-es';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-const OnboardPage: React.FC = () => {
-  const identity = useIdentity();
+export const OnboardPage = () => {
+  const { profile } = useProfile();
   const { redirect } = useNavUtils();
-  const { updateProfile } = useApi();
-  const errorHandler = useErrorHandler();
   const query = useLegacyQuery();
 
   const autoDirectString: string = query.get('autoDirect') ?? '1';
   const authDirect: boolean = parseInt(autoDirectString, 10) === 1;
 
-  const { isFollowing } = useSubscription();
+  const { isSubscribed } = useSubscription();
 
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [yourTeams, setYourTeams] = useState<Department[]>([]);
   const [suggestedTeams, setSuggestedTeams] = useState<Department[]>([]);
   const [keyword, setKeyword] = useState('');
-  const [isDoneOnboard, setDoneOnboard] = useState(false);
   const [isHandlingAction, setHandlingAction] = useState(false);
   const [ignoreEmpty, setIgnoreEmpty] = useState(false);
 
   const {
     results: departments,
     isLoading,
-    onClear,
+    clearSearchResults,
   } = useSearch({
     keyword,
     searchCate: false,
@@ -58,10 +54,11 @@ const OnboardPage: React.FC = () => {
   }, [departments]);
 
   useEffect(() => {
-    if (identity?.token && identity?.lastLoginAt && authDirect) {
+    if (AuthUtils.getToken() && profile?.lastLoginAt && authDirect) {
       redirect(Routes.Dashboard.path as string);
     }
-  }, [redirect, identity]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [redirect]);
 
   useEffect(() => {
     if (suggestedTeams.length > 0 || keyword?.length > 0) return;
@@ -70,10 +67,10 @@ const OnboardPage: React.FC = () => {
 
     departments.forEach((item) => {
       const tempDepartment = { id: item?.directoryId, name: item?.title };
-      if (isFollowing('departments', tempDepartment)) {
+      if (isSubscribed('departments', tempDepartment.id)) {
         if (yourTeams.includes(tempDepartment)) return;
         followed.push(tempDepartment);
-      } else if (item?.id !== identity?.depId) {
+      } else if (item?.id !== profile?.depId) {
         teamNotFollowYet.push(tempDepartment);
       }
     });
@@ -89,37 +86,39 @@ const OnboardPage: React.FC = () => {
       setSuggestedTeams(teamNotFollowYet);
     }
     setIgnoreEmpty(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [departments]);
 
-  const onClickIamDone = async () => {
-    try {
-      setDoneOnboard(true);
+  const { handle: handleIAmDoneClick, isLoading: isOnboarding } = useHandler(
+    async () => {
       const currentTime = new Date();
       const updates = {
-        ...identity,
-        companyName: identity?.company?.name || '',
-        title: identity?.title,
-        bio: identity?.bio || '',
+        ...profile,
+        companyName: profile?.company?.name || '',
+        title: profile?.title,
+        bio: profile?.bio || '',
         lastLoginAt: currentTime.toISOString(),
       };
-      await updateProfile(updates);
+      await ProfileApis.update(updates);
       redirect(Routes.Dashboard.path as string);
-    } catch (error: unknown) {
-      if (isApiError(error)) {
-        toast.error(error?.details?.message);
-      } else {
-        await errorHandler(error);
-      }
-    } finally {
-      setDoneOnboard(false);
-    }
-  };
+    },
+    {
+      onError: (error: unknown) => {
+        if (isApiError(error)) {
+          toast.error(error?.details?.message);
+
+          return false;
+        }
+      },
+    },
+  );
 
   const onSearchTeam = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(event.target.value.toString());
-      onClear();
+      clearSearchResults();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [setKeyword],
   );
 
@@ -234,7 +233,7 @@ const OnboardPage: React.FC = () => {
   return (
     <BlankLayout className="flex flex-col p-0 m-0">
       <NavBarStatic
-        companyName={identity?.company?.name || 'Gravity Labs'}
+        companyName={profile?.company?.name || 'Gravity Labs'}
         companyStyle="ml-4 sm:ml-12 md:ml-24 lg:ml-40"
       />
       <div className="flex flex-1 flex-col pt-24 items-center bg-Gray-12 overflow-hidden">
@@ -269,15 +268,13 @@ const OnboardPage: React.FC = () => {
           </div>
         </div>
         <div className="flex flex-row self-center mb-12 sm:mb-20 mt-4">
-          {isDoneOnboard && <Loading width={12} height={12} className="mr-4" />}
-          <button type="button" onClick={onClickIamDone} className="flex flex-col items-center">
+          {!!isOnboarding && <Loading width={12} height={12} className="mr-4" />}
+          <Button onClick={handleIAmDoneClick} className="flex flex-col items-center">
             <p className="text-Accent-2 text-sm">{"I'm Done —>"}</p>
             <div className="h-px bg-Accent-2 w-full" />
-          </button>
+          </Button>
         </div>
       </div>
     </BlankLayout>
   );
 };
-
-export default OnboardPage;

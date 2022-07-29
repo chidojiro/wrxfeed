@@ -1,3 +1,4 @@
+import { Button } from '@/common/components';
 import { emailMatches, isEmail } from '@/common/utils';
 import React, {
   ChangeEvent,
@@ -124,14 +125,13 @@ const InviteTagInput: ForwardRefRenderFunction<InviteTagInputHandler, InviteTagI
           />
         </div>
 
-        <button
-          type="button"
+        <Button
           disabled={!items.length || loading}
           className="h-7 my-[3px] mr-1 px-5 bg-Gray-2 text-sm text-white shadow-sm rounded-sm disabled:bg-Gray-6"
           onClick={() => onInvite && onInvite(items)}
         >
           {loading ? 'Sending...' : 'Invite'}
-        </button>
+        </Button>
       </div>
       {error && <p className="text-system-alert text-xs mt-1">{error}</p>}
     </div>

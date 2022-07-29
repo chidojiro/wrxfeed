@@ -4,7 +4,7 @@ import { useFetcher } from './useFetcher';
 import { useHandler } from './useHandler';
 import { useIntersection } from './useIntersection';
 
-const WAIT_FOR_NEXT_LOAD_TIMEOUT = 500;
+const WAIT_FOR_NEXT_LOAD_TIMEOUT = 1000;
 
 export type UseInfiniteLoaderProps<T = unknown> = {
   onLoad: (page: number) => Promise<T>;

@@ -3,6 +3,7 @@ import { Children, ClassName } from '@/common/types';
 import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
 import React from 'react';
+import { Button } from '../Button';
 
 export type TagsSelectOptionProps<T = string> = Children &
   ClassName & {
@@ -29,7 +30,7 @@ export const TagsSelectOption = React.memo(
     };
 
     return (
-      <button
+      <Button
         onClick={handleClick}
         className={clsx(
           'text-left overflow-ellipsis h-10 px-7 text-xs hover:bg-Gray-12 w-full flex items-center gap-2 overflow-hidden',
@@ -38,7 +39,7 @@ export const TagsSelectOption = React.memo(
       >
         <div className="flex-shrink-0">{icon}</div>
         {children}
-      </button>
+      </Button>
     );
   },
   (prev, next) => isEqual(prev, next),

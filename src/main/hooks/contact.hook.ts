@@ -1,13 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-
+import { useFetcher } from '@/common/hooks';
 import { USE_CONTACT_BUTTON_MESSAGE } from '@/error/errorMessages';
-import { Contact } from '@/main/entity';
-
-import { useApi } from '@/api';
-import { useErrorHandler } from '@/error/hooks';
-import { GetContactsFilter } from '@/api/types';
 import { isBadRequest } from '@/error/utils';
+import { InvitationApis } from '@/invitation/apis';
+import { GetInvitationContactsParams } from '@/invitation/types';
+import { Contact } from '@/main/entity';
+import React from 'react';
+import { toast } from 'react-toastify';
 
 interface ContactsHookValues {
   contacts: Contact[];
@@ -15,36 +13,30 @@ interface ContactsHookValues {
   isLoading: boolean;
 }
 
-export function useGetContacts(filter: GetContactsFilter): ContactsHookValues {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [hasMore, setHasMore] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const ApiClient = useApi();
-  const errorHandler = useErrorHandler();
+export function useGetContacts(filter: GetInvitationContactsParams): ContactsHookValues {
+  const [contacts, setContacts] = React.useState<Contact[]>([]);
+  const [hasMore, setHasMore] = React.useState(false);
 
-  const getContacts = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await ApiClient.getContacts(filter);
-      if (filter.pagination?.offset) {
+  const { isInitializing: isLoading } = useFetcher(
+    ['contact.hook', filter],
+    async () => {
+      const res = await InvitationApis.getContacts(filter);
+      if (filter.offset) {
         setContacts((prevTrans) => [...prevTrans, ...res]);
       } else {
         setContacts(res);
       }
       setHasMore(!!res.length);
-    } catch (error) {
-      if (isBadRequest(error)) {
-        toast.error(USE_CONTACT_BUTTON_MESSAGE);
-      } else {
-        await errorHandler(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [ApiClient, errorHandler, filter]);
+    },
+    {
+      onError: (error) => {
+        if (isBadRequest(error)) {
+          toast.error(USE_CONTACT_BUTTON_MESSAGE);
+          return false;
+        }
+      },
+    },
+  );
 
-  useEffect(() => {
-    getContacts().then();
-  }, [getContacts]);
   return { contacts, hasMore, isLoading };
 }

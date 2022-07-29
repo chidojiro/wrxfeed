@@ -26,11 +26,15 @@
   }
 
   .invisible-scrollbar::-webkit-scrollbar {
-      display: none;  /* Safari and Chrome */
+    display: none;  /* Safari and Chrome */
   }
 
   .disabled {
     @apply cursor-default pointer-events-none opacity-50 !important;
+  }
+
+  .aspect-square {
+    aspect-ratio: 1 / 1;
   }
 }
 

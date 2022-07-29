@@ -2,6 +2,7 @@ import React from 'react';
 import { ReactComponent as EnvelopeIcon } from '@/assets/icons/outline/envelope.svg';
 import clsx from 'clsx';
 import { EMAIL_SUPPORT_ADDRESS } from '@/config';
+import { Button } from '@/common/components';
 
 export interface ContactSupportButtonProps {
   className?: string;
@@ -28,8 +29,7 @@ const ContactSupportButton: React.FC<ContactSupportButtonProps> = ({ className }
   );
   return (
     <>
-      <button
-        type="button"
+      <Button
         onClick={onClickContactSupport}
         className={clsx(
           'fixed group flex w-[50px] h-[50px] rounded-full justify-center items-center bg-primary hover:bg-Accent-2 z-10 bottom-12 right-12',
@@ -38,7 +38,7 @@ const ContactSupportButton: React.FC<ContactSupportButtonProps> = ({ className }
       >
         {renderPopover()}
         <EnvelopeIcon className="w-6 h-6" />
-      </button>
+      </Button>
     </>
   );
 };

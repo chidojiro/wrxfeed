@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/outline';
 import { ApiErrorCode } from '../../types';
 import { isApiError } from '../../utils';
+import { Button } from '@/common/components';
 
 const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
   let message = 'An error occurred in the app.';
@@ -46,9 +47,7 @@ const ErrorFallback: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) =
       <p className="text-center">{icon}</p>
       <p className="text-center">{message}</p>
       <div>
-        <button type="button" onClick={resetErrorBoundary}>
-          Try again
-        </button>
+        <Button onClick={resetErrorBoundary}>Try again</Button>
       </div>
     </div>
   );

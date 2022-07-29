@@ -1,23 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import { useLocation } from 'react-router-dom';
-import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
-
-import { useNavUtils } from '@/common/hooks';
-import { useIdentity, useSetIdentity } from '@/identity/hooks';
-import { useApi } from '@/api';
-import { useErrorHandler, isApiError, ApiErrorCode } from '@/error';
-
-import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@/config';
-import { Routes } from '@/routing/routes';
-import { ProviderName } from '@/main/entity';
-
-import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
+import { AuthApis } from '@/auth/apis';
 import NotInvited from '@/auth/molecules/NotInvited';
-import NotifyBanner from '@/common/molecules/NotifyBanner';
-
+import { AuthUtils } from '@/auth/utils';
+import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
+import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@/config';
+import { NotifyBanner } from '@/layout/NotifyBanner';
 import mixpanel from 'mixpanel-browser';
+import { useEffect, useState } from 'react';
+import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import { useHistory, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export interface LocationState {
   fromInvite?: boolean;
@@ -26,16 +17,12 @@ export interface LocationState {
   metadata?: any;
 }
 
-const LoginPage: React.FC = () => {
-  const { signInWithGoogle, getProfile } = useApi();
-  const { redirect } = useNavUtils();
+export const LoginPage = () => {
+  const history = useHistory();
   const location = useLocation<LocationState>();
-  const identity = useIdentity();
-  const setIdentity = useSetIdentity();
-  const errorHandler = useErrorHandler();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
-  const { message, from, fromInvite, metadata } = location.state ?? {};
+  const { message, fromInvite, metadata } = location.state ?? {};
 
   useEffect(() => {
     if (message) {
@@ -47,53 +34,22 @@ const LoginPage: React.FC = () => {
     }
   }, [message]);
 
-  useEffect(() => {
-    if (identity?.token) {
-      const nextRoute =
-        identity?.lastLoginAt === null ? Routes.Onboard.path : Routes.Dashboard.path;
-      const callbackUrl = from?.pathname || (nextRoute as string);
-      redirect(callbackUrl);
-    }
-  }, [redirect, identity, from]);
-
   const handleResponseSuccess = async (
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => {
-    try {
-      if ('accessToken' in response) {
-        const { accessToken } = response;
-        const userToken = await signInWithGoogle(accessToken);
-        const googleProfile = 'profileObj' in response ? response.profileObj : null;
-        const userProfile = await getProfile();
-        setIdentity({
-          token: userToken.token,
-          expireAt: userToken.expireAt,
-          ...userProfile,
-          provider: {
-            name: ProviderName.GOOGLE,
-            profile: {
-              id: googleProfile?.googleId,
-              email: googleProfile?.email,
-              name: googleProfile?.name,
-              givenName: googleProfile?.givenName,
-              familyName: googleProfile?.familyName,
-            },
-          },
-        });
+    if ('accessToken' in response) {
+      const { accessToken } = response;
+      const userToken = await AuthApis.signInWithGoogle(accessToken);
+      const googleProfile = 'profileObj' in response ? response.profileObj : null;
 
-        mixpanel.track('Log In', {
-          user_id: googleProfile?.googleId,
-          email: googleProfile?.email,
-        });
-      }
-    } catch (error: unknown) {
-      if (isApiError(error)) {
-        if (error.code === ApiErrorCode.Unauthenticated) {
-          setNotInvited(true);
-        } else {
-          await errorHandler(error);
-        }
-      }
+      AuthUtils.setToken(userToken.token);
+
+      mixpanel.track('Log In', {
+        user_id: googleProfile?.googleId,
+        email: googleProfile?.email,
+      });
+
+      history.push('/dashboard/all-company');
     }
   };
 
@@ -142,5 +98,3 @@ const LoginPage: React.FC = () => {
     </div>
   );
 };
-
-export default LoginPage;
