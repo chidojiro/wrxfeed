@@ -4,7 +4,7 @@ import { NavBarStatic } from './NavBarStatic';
 
 export const NavBar = () => {
   const { profile } = useProfile();
-  const isAdmin = !profile?.roles?.includes(UserRole.ADMIN);
+  const isAdmin = profile?.roles?.includes(UserRole.ADMIN);
 
   return (
     <NavBarStatic
