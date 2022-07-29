@@ -2,6 +2,7 @@ import { AddSmallIcon, BasicsXSmall, FeedIcon, TargetIcon, TeamIcon } from '@/as
 import { Tooltip } from '@/common/components';
 import { useSubscription } from '@/subscription/useSubscription';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { SidebarAccordion } from './SidebarAccordion';
 import { SidebarNavGroup } from './SidebarNavGroup';
 import { SidebarNavItem } from './SidebarNavItem';
@@ -26,7 +27,17 @@ export const SideBar = () => {
         </div>
         <div>
           <SidebarNavGroup>Following</SidebarNavGroup>
-          <SidebarAccordion label="Teams" iconLeft={<TeamIcon />}>
+          <SidebarAccordion
+            label="Teams"
+            className="group"
+            iconLeft={<TeamIcon />}
+            iconRight={
+              // stopPropagation to prevent closing accordion
+              <Link to="/departments" onClick={(e) => e.stopPropagation()}>
+                <AddSmallIcon className="group-hover:block hidden" />
+              </Link>
+            }
+          >
             {departments?.map(({ id, name }) => (
               <SidebarNavItem
                 key={id}
@@ -41,7 +52,7 @@ export const SideBar = () => {
                 {name}
               </SidebarNavItem>
             ))}
-            <SidebarNavItem href="/departments" className="group">
+            <SidebarNavItem href="/departments" className="group" activatable={false}>
               <div className="flex gap-2 items-center text-Gray-6 group-hover:text-Gray-9">
                 <AddSmallIcon />
                 Add Teams

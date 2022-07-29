@@ -10,7 +10,7 @@ import { useUnsubscribe } from './useUnsubscribe';
 export type ToggleFollowButtonProps<T> = {
   colorScheme?: 'white' | 'primary';
   loading?: boolean;
-  item: T;
+  item: T | T[];
   type: keyof Subscription;
 };
 
@@ -27,17 +27,22 @@ export const ToggleFollowButton = <T extends { id: number; name: string }>({
     loading,
   };
 
-  const { isSubscribed, mutateSubscription, isValidatingSubscription } = useSubscription();
+  const { subscription, isSubscribed, mutateSubscription } = useSubscription();
   const { subscribe, isSubscribing } = useSubscribe({ onSuccess: () => mutateSubscription() });
   const { unsubscribe, isUnsubscribing } = useUnsubscribe({
     onSuccess: () => mutateSubscription(),
   });
 
-  return isSubscribed(type, item.id) ? (
+  const subscribed = [item].flat().some(({ id }) => isSubscribed(type, id));
+
+  return subscribed ? (
     <Button
       {...baseProps}
-      onClick={() => unsubscribe(type, item)}
-      loading={isUnsubscribing || isValidatingSubscription}
+      onClick={(e) => {
+        e.stopPropagation();
+        unsubscribe(type, item);
+      }}
+      loading={!!subscription && isUnsubscribing}
       iconLeft={
         <TickIcon
           width={16}
@@ -52,8 +57,11 @@ export const ToggleFollowButton = <T extends { id: number; name: string }>({
   ) : (
     <Button
       {...baseProps}
-      onClick={() => subscribe(type, item)}
-      loading={isSubscribing || isValidatingSubscription}
+      onClick={(e) => {
+        e.stopPropagation();
+        subscribe(type, item);
+      }}
+      loading={!!subscription && isSubscribing}
       iconLeft={
         <AddIcon
           width={16}

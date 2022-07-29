@@ -1,25 +1,32 @@
 import { Accordion } from '@/common/components/Accordion';
-import { Children } from '@/common/types';
+import { Children, ClassName } from '@/common/types';
 import clsx from 'clsx';
 import React from 'react';
 import { ReactComponent as DownSmall } from '@/assets/icons/outline/down-small.svg';
 
-export type SidebarAccordionProps = Children & {
-  iconLeft: React.ReactNode;
-  iconRight?: React.ReactNode;
-  label: React.ReactNode;
-};
+export type SidebarAccordionProps = Children &
+  ClassName & {
+    iconLeft: React.ReactNode;
+    iconRight?: React.ReactNode;
+    label: React.ReactNode;
+  };
 
 export const SidebarAccordion = ({
   iconLeft,
   iconRight,
   label,
   children,
+  className,
 }: SidebarAccordionProps) => {
   return (
     <Accordion defaultOpen>
       <Accordion.Button
-        className={clsx('pl-[42px] pr-4 h-9 w-full', 'flex items-center', 'text-sm rounded-sm')}
+        className={clsx(
+          'pl-[42px] pr-4 h-9 w-full',
+          'flex items-center',
+          'text-sm rounded-sm',
+          className,
+        )}
       >
         {({ isOpen }) => (
           <div className="relative flex items-center flex-1 pr-3 gap-4">

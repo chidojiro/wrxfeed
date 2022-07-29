@@ -10,6 +10,7 @@ export type SidebarNavItemProps = ClassName &
     iconRight?: React.ReactNode;
     href: string;
     matches?: string[];
+    activatable?: boolean;
   };
 
 export const SidebarNavItem = ({
@@ -19,6 +20,7 @@ export const SidebarNavItem = ({
   className,
   children,
   matches,
+  activatable,
 }: SidebarNavItemProps) => {
   const isActive = [...(matches ?? []), href].some((patchMatch) =>
     matchPath(location.pathname, {
@@ -46,7 +48,7 @@ export const SidebarNavItem = ({
           {children}
           <div className="w-5 h-5 ml-auto flex items-center justify-center">{iconRight}</div>
         </div>
-        {!!isActive && <div className="w-1 h-6 rounded-full bg-Accent-2" />}
+        {!!activatable && !!isActive && <div className="w-1 h-6 rounded-full bg-Accent-2" />}
       </div>
     </Link>
   );

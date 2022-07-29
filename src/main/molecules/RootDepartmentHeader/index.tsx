@@ -12,6 +12,8 @@ interface DirectoryItem {
 const RootDepartmentHeader = ({ item, onClick, department }: DirectoryItem) => {
   const deptBgColor = React.useMemo(() => getColorByText(item?.name ?? '', item.id, true), [item]);
 
+  console.log(department);
+
   return (
     <div
       aria-hidden="true"
@@ -22,7 +24,11 @@ const RootDepartmentHeader = ({ item, onClick, department }: DirectoryItem) => {
       onClick={onClick}
     >
       <h3 className="text-sm text-white uppercase font-semibold">{item.name || 'Unknown'}</h3>
-      <ToggleFollowButton colorScheme="white" type="departments" item={department} />
+      <ToggleFollowButton
+        colorScheme="white"
+        type="departments"
+        item={[department, department.children ?? []].flat()}
+      />
     </div>
   );
 };
