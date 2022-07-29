@@ -11,8 +11,10 @@ const QUERY_ID = 'inviteId';
 enum ErrorCode {
   UNKNOWN = 1,
   SUCCESS = 200,
-  ALREADY_JOINED = 400,
+  INVALID_REQUEST = 400,
   NOT_FOUND = 404,
+  'INV_INVITATION_ALREADY_ACCEPTED' = 'INV_INVITATION_ALREADY_ACCEPTED',
+  'INV_INVITATION_EXPIRED' = 'INV_INVITATION_EXPIRED',
 }
 
 interface Error {
@@ -41,17 +43,25 @@ const AcceptInvitation: React.FC = () => {
         });
       } catch (err: any) {
         if (isApiError(err)) {
+          const { error: errorDetail } = err.details ?? {};
+
           switch (err.code) {
-            case ErrorCode.ALREADY_JOINED.valueOf(): {
-              setError({ code: ErrorCode.ALREADY_JOINED, message: 'You already joined' });
+            case ErrorCode.INVALID_REQUEST.valueOf(): {
+              if (errorDetail === ErrorCode.INV_INVITATION_ALREADY_ACCEPTED) {
+                setError({
+                  code: ErrorCode.INV_INVITATION_ALREADY_ACCEPTED,
+                  message: 'You already joined',
+                });
+              } else {
+                setError({
+                  code: ErrorCode.INV_INVITATION_EXPIRED,
+                  message: 'The invitation has already been expired',
+                });
+              }
               break;
             }
             case ErrorCode.NOT_FOUND.valueOf(): {
-              setError({ code: ErrorCode.ALREADY_JOINED, message: 'Invitation not found' });
-              break;
-            }
-            default: {
-              setError({ code: ErrorCode.UNKNOWN, message: 'Unknown error' });
+              setError({ code: ErrorCode.NOT_FOUND, message: 'Invitation not found' });
               break;
             }
           }
@@ -72,7 +82,7 @@ const AcceptInvitation: React.FC = () => {
   return (
     <div className="flex flex-col w-screen h-screen justify-center items-center">
       {loading ? <Loading width={80} height={80} /> : error?.message}
-      {error?.code === ErrorCode.ALREADY_JOINED && (
+      {error?.code === ErrorCode.INV_INVITATION_ALREADY_ACCEPTED && (
         <Link
           to="/login"
           className="my-5 px-5 py-2 bg-Gray-2 text-base text-white shadow-sm rounded-sm disabled:bg-Gray-6"
