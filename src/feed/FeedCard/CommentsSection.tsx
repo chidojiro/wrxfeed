@@ -73,7 +73,6 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
   };
 
   const onSubmitComment: SubmitHandler<CommentFormModel> = (values) => {
-    console.log('onSubmitComment');
     const contentState = values?.content as EditorState;
     const isDirty = contentState.getCurrentContent().hasText() || !!values?.attachment;
 

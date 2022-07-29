@@ -11,9 +11,6 @@ interface DirectoryItem {
 
 const RootDepartmentHeader = ({ item, onClick, department }: DirectoryItem) => {
   const deptBgColor = React.useMemo(() => getColorByText(item?.name ?? '', item.id, true), [item]);
-
-  console.log(department);
-
   return (
     <div
       aria-hidden="true"
