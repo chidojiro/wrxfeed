@@ -2,13 +2,10 @@ import { AuthApis } from '@/auth/apis';
 import NotInvited from '@/auth/molecules/NotInvited';
 import { AuthUtils } from '@/auth/utils';
 import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
-import { useNavUtils } from '@/common/hooks';
 import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES } from '@/config';
 import { NotifyBanner } from '@/layout/NotifyBanner';
-import { useProfile } from '@/profile/useProfile';
-import { Routes } from '@/routing/routes';
 import mixpanel from 'mixpanel-browser';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import { useHistory, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -22,12 +19,10 @@ export interface LocationState {
 
 export const LoginPage = () => {
   const history = useHistory();
-  const { redirect } = useNavUtils();
   const location = useLocation<LocationState>();
-  const { profile } = useProfile();
   const [notInvited, setNotInvited] = useState(false);
   // Variables
-  const { message, from, fromInvite, metadata } = location.state ?? {};
+  const { message, fromInvite, metadata } = location.state ?? {};
 
   useEffect(() => {
     if (message) {
@@ -38,14 +33,6 @@ export const LoginPage = () => {
       });
     }
   }, [message]);
-
-  useEffect(() => {
-    if (AuthUtils.getToken()) {
-      const nextRoute = profile?.lastLoginAt === null ? Routes.Onboard.path : Routes.Dashboard.path;
-      const callbackUrl = from?.pathname || (nextRoute as string);
-      redirect(callbackUrl);
-    }
-  }, [redirect, from, profile?.lastLoginAt]);
 
   const handleResponseSuccess = async (
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
