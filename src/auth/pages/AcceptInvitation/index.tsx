@@ -22,7 +22,7 @@ interface Error {
   message: string;
 }
 
-const AcceptInvitation: React.FC = () => {
+export const AcceptInvitationPage = () => {
   const query = useLegacyQuery();
   const router = useHistory();
   const [error, setError] = useState<Error | null>(null);
@@ -93,5 +93,3 @@ const AcceptInvitation: React.FC = () => {
     </div>
   );
 };
-
-export default AcceptInvitation;

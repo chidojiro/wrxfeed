@@ -9,13 +9,12 @@ import { MainLayout } from '@/layout/MainLayout';
 import { FeedItem, FeedRouteType } from '@/main/entity';
 import { Routes } from '@/routing/routes';
 import { TargetApis } from '@/target/apis';
-import * as Sentry from '@sentry/react';
 import React, { useEffect, useState } from 'react';
 import { useErrorHandler } from 'react-error-boundary';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const FeedPage: React.FC = () => {
+export const FeedPage: React.FC = () => {
   const history = useHistory();
   const { redirect } = useNavUtils();
   const query = useLegacyQuery();
@@ -140,5 +139,3 @@ const FeedPage: React.FC = () => {
     </MainLayout>
   );
 };
-
-export default Sentry.withProfiler(FeedPage, { name: 'FeedPage' });

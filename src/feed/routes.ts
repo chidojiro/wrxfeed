@@ -4,31 +4,27 @@ import * as Sentry from '@sentry/react';
 import { UserRole } from '@/auth/constants';
 
 const ForYouFeedsPage = React.lazy(() =>
-  import(/* webpackPreload: true */ './ForYouFeedsPage').then(({ ForYouFeedsPage }) => ({
+  import('./ForYouFeedsPage').then(({ ForYouFeedsPage }) => ({
     default: ForYouFeedsPage,
   })),
 );
 
 const ForYouFeedsByCategoryPage = React.lazy(() =>
-  import(/* webpackPreload: true */ './ForYouFeedsByCategoryPage').then(
-    ({ ForYouFeedsByCategoryPage }) => ({
-      default: ForYouFeedsByCategoryPage,
-    }),
-  ),
+  import('./ForYouFeedsByCategoryPage').then(({ ForYouFeedsByCategoryPage }) => ({
+    default: ForYouFeedsByCategoryPage,
+  })),
 );
 
 const CompanyFeedsPage = React.lazy(() =>
-  import(/* webpackPreload: true */ './CompanyFeedsPage').then(({ CompanyFeedsPage }) => ({
+  import('./CompanyFeedsPage').then(({ CompanyFeedsPage }) => ({
     default: CompanyFeedsPage,
   })),
 );
 
 const CompanyFeedsByCategoryPage = React.lazy(() =>
-  import(/* webpackPreload: true */ './CompanyFeedsByCategoryPage').then(
-    ({ CompanyFeedsByCategoryPage }) => ({
-      default: CompanyFeedsByCategoryPage,
-    }),
-  ),
+  import('./CompanyFeedsByCategoryPage').then(({ CompanyFeedsByCategoryPage }) => ({
+    default: CompanyFeedsByCategoryPage,
+  })),
 );
 
 export const FeedRoutes: Record<string, RouteItem> = {
