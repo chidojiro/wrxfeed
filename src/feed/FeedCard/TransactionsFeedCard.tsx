@@ -1,7 +1,6 @@
 import { ExclamationCircle, EyeHideIcon, MoreVerticalIcon } from '@/assets';
+import { ProtectedFeatures } from '@/auth/constants';
 import { Button, ConditionalWrapper } from '@/common/components';
-import { ProtectedFeatures } from '@/identity/constants';
-import { usePermission } from '@/identity/hooks';
 import ConfirmModal from '@/main/atoms/ConfirmModal';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
@@ -13,6 +12,7 @@ import {
   getDisplayUsdAmount,
   scrollToTop,
 } from '@/main/utils';
+import { useProfile } from '@/profile/useProfile';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import clsx from 'clsx';
@@ -47,10 +47,10 @@ export const TransactionsFeedCard = React.memo(
     const showCategoryConfirmModalDisclosure = useDisclosure();
     const hideCategoryConfirmModalDisclosure = useDisclosure();
 
-    const { checkPermission } = usePermission();
+    const { isPermittedToFeature } = useProfile();
 
     const isHidden = feed.category !== null && feed.category?.visibility === Visibility.HIDDEN;
-    const hideCategoryPermission = checkPermission(ProtectedFeatures.HideCategory);
+    const hideCategoryPermission = isPermittedToFeature(ProtectedFeatures.HideCategory);
 
     const handleCopyFeedLink = () => {
       navigator.clipboard.writeText(`${window.location.host}/feed/${feed.id}`);

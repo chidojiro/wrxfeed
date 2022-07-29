@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-curly-newline */
 import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basics-search-small.svg';
 import { ReactComponent as BasicsXSmall } from '@/assets/icons/outline/basics-x-small.svg';
 import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
@@ -8,8 +7,8 @@ import { MainGroups } from '@/common/constants';
 import { useDebounce } from '@/common/hooks';
 import SearchBarResultItem from '@/main/atoms/SearchBarResultItem';
 import useRoveFocus from '@/main/hooks/focus.hook';
-import { useSearch } from '@/main/hooks/search.hook';
 import { SearchResult } from '@/main/types';
+import { useSearch } from '@/misc/useSearch';
 import { TargetTypeProp } from '@/target/types';
 import { useOnClickOutside } from '@dwarvesf/react-hooks';
 import { Transition } from '@headlessui/react';
@@ -27,7 +26,7 @@ const SearchBar: React.FC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const isSearching = keyword?.length > 0;
 
-  const { results, isLoading, onClear } = useSearch({ keyword, searchVend: false });
+  const { results, isLoading, clearSearchResults } = useSearch({ keyword, searchVend: false });
 
   const [focus, setRoveFocus] = useRoveFocus(results?.length + 1);
 
@@ -41,7 +40,7 @@ const SearchBar: React.FC = () => {
   }, [focus]);
 
   const onCloseDropDownResultsView = () => {
-    onClear();
+    clearSearchResults();
     setKeyword('');
   };
   useOnClickOutside(useableViewRef, onCloseDropDownResultsView);
@@ -58,12 +57,12 @@ const SearchBar: React.FC = () => {
     if (!searchInputRef || !searchInputRef.current) return;
     searchInputRef.current.value = '';
     searchInputRef.current.focus();
-    onClear();
+    clearSearchResults();
     setKeyword('');
   };
 
   const onPressResultRow = (result: SearchResult) => {
-    onClear();
+    clearSearchResults();
     switch (result.type) {
       case TargetTypeProp.DEPARTMENT:
         history.push({

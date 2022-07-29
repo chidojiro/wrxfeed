@@ -1,6 +1,6 @@
+import { Profile } from '@/profile/types';
 import React from 'react';
 import { useSetRecoilState, useRecoilValue, useRecoilState } from 'recoil';
-import { Profile } from '../../types';
 import { refreshProfileFlag, profileState } from './states';
 
 interface Refresh {

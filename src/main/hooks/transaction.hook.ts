@@ -1,5 +1,5 @@
 import { usePusher } from '@/push-notification/usePusher';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import React from 'react';
 
 export const FilterKeys: string[] = [
@@ -27,8 +27,8 @@ export function useFeedChannel(
   callback: (data: FeedEventData) => void,
 ): void {
   const pusher = usePusher();
-  const identity = useIdentity();
-  const channelName = `feed-${identity?.id}`;
+  const { profile } = useProfile();
+  const channelName = `feed-${profile?.id}`;
   // for notifications, channel name will be like notification-${userId}
 
   React.useEffect(() => {

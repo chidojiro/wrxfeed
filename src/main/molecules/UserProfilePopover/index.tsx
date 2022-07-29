@@ -1,18 +1,17 @@
 import { AuthApis } from '@/auth/apis';
 import { profileState } from '@/auth/containers/ProfileEditForm/states';
-import { Profile } from '@/auth/types';
 import Loading from '@/common/atoms/Loading';
 import UploadButton from '@/common/atoms/UploadButton';
-import { Button } from '@/common/components';
+import { Avatar, Button } from '@/common/components';
 import { useFileUploader } from '@/common/hooks/useFileUploader';
 import { UPLOAD_FILE_ACCEPT } from '@/config';
-import { useSetIdentity } from '@/identity/hooks';
 import { getNameAbbreviation } from '@/main/utils';
 import { GetUploadFileTokenPayload } from '@/media/types';
 import { ProfileApis } from '@/profile/apis';
+import { Profile } from '@/profile/types';
 import { Popover, Transition } from '@headlessui/react';
 import clsx from 'clsx';
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { toast } from 'react-toastify';
 import { useRecoilState } from 'recoil';
 
@@ -27,19 +26,16 @@ export type ProfileChanges = {
 
 const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
   const [profile, setProfile] = useRecoilState(profileState);
-  const [profileUser, setProfileUser] = useState<Profile>(profile);
-  const [uploadFileOptions, setUploadFileOptions] = useState<GetUploadFileTokenPayload>();
-  const [userAvatar, setAvatar] = useState<string>('');
-  const [changeData, setChangeData] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [profileUser, setProfileUser] = React.useState<Profile>(profile);
+  const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadFileTokenPayload>();
+  const [userAvatar, setAvatar] = React.useState<string>('');
+  const [changeData, setChangeData] = React.useState<boolean>(false);
+  const [title, setTitle] = React.useState<string>('');
+  const [loading, setLoading] = React.useState<boolean>(false);
 
-  const setIdentity = useSetIdentity();
-
-  const logout = useCallback(async () => {
+  const logout = async () => {
     await AuthApis.logout();
-    setIdentity(undefined);
-  }, [setIdentity]);
+  };
 
   const profileForms = [
     {
@@ -56,14 +52,6 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
       },
       editable: false,
     },
-    // {
-    //   title: 'Department',
-    //   content: profileUser?.department || 'Update now',
-    //   onChange: (text: string) => {
-    //     setDepartment(text);
-    //   },
-    //   editable: false,
-    // },
     {
       title: 'Email',
       content: profileUser?.email || 'Unknown',
@@ -74,7 +62,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
 
   const renderAvatarIcon = () => {
     if (userAvatar !== '') {
-      return <img className="h-8 w-8 rounded-full" src={userAvatar} alt="Ava" />;
+      return <Avatar className="h-8 w-8" src={userAvatar} fullName={profile.fullName as string} />;
     }
     const shortName = getNameAbbreviation(profileUser.fullName);
     return (
@@ -110,7 +98,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
     onSuccess: onUploadSuccess,
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     setAvatar(profileUser?.avatar || '');
   }, [profileUser]);
 
@@ -229,7 +217,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
           </Popover.Button>
           <Popover.Panel className="absolute z-50">
             <Transition
-              as={Fragment}
+              as={React.Fragment}
               enter="transition ease-out duration-100"
               enterFrom="transform opacity-0 scale-95"
               enterTo="transform opacity-100 scale-100"

@@ -1,4 +1,4 @@
-import { ToggleFollowButton } from '@/common/components';
+import { Avatar, ToggleFollowButton } from '@/common/components';
 import { Category, Department } from '@/main/entity';
 import { useSubscription } from '@/main/hooks/subscription.hook';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
@@ -47,13 +47,7 @@ const DirectoryItem: React.FC<DirectoryItem> = ({
         className="w-8 h-8 flex justify-center items-center rounded-full"
         style={{ background: avatarBgColor }}
       >
-        {isHaveAvatar && (
-          <img
-            className="flex w-8 h-8 rounded-full"
-            alt="DirectoryItem-avatar"
-            src={isHaveAvatar}
-          />
-        )}
+        {isHaveAvatar && <Avatar className="w-8 h-8" fullName={item.name} src={isHaveAvatar} />}
         {!isHaveAvatar && <p className="text-xs font-semibold text-white">{shortName}</p>}
       </div>
     );

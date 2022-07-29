@@ -8,9 +8,8 @@ import NavBarStatic from '@/common/organisms/NavBarStatic';
 import BlankLayout from '@/common/templates/BlankLayout';
 import { TEAM_SUGGEST_RANDOM_NUMBER } from '@/config';
 import { isApiError } from '@/error/utils';
-import { useIdentity } from '@/identity/hooks';
+import { useProfile } from '@/profile/useProfile';
 import { Department } from '@/main/entity';
-import { useSearch } from '@/main/hooks/search.hook';
 import { useSubscription } from '@/main/hooks/subscription.hook';
 import { SearchResult } from '@/main/types';
 import { getMultiRandomInt, getUniqueListBy } from '@/main/utils';
@@ -19,9 +18,11 @@ import { Routes } from '@/routing/routes';
 import { cloneDeep } from 'lodash-es';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { AuthUtils } from '@/auth/utils';
+import { useSearch } from '@/misc/useSearch';
 
 const OnboardPage: React.FC = () => {
-  const identity = useIdentity();
+  const { profile } = useProfile();
   const { redirect } = useNavUtils();
   const query = useLegacyQuery();
 
@@ -40,7 +41,7 @@ const OnboardPage: React.FC = () => {
   const {
     results: departments,
     isLoading,
-    onClear,
+    clearSearchResults,
   } = useSearch({
     keyword,
     searchCate: false,
@@ -53,11 +54,11 @@ const OnboardPage: React.FC = () => {
   }, [departments]);
 
   useEffect(() => {
-    if (identity?.token && identity?.lastLoginAt && authDirect) {
+    if (AuthUtils.getToken() && profile?.lastLoginAt && authDirect) {
       redirect(Routes.Dashboard.path as string);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [redirect, identity]);
+  }, [redirect]);
 
   useEffect(() => {
     if (suggestedTeams.length > 0 || keyword?.length > 0) return;
@@ -69,7 +70,7 @@ const OnboardPage: React.FC = () => {
       if (isFollowing('departments', tempDepartment)) {
         if (yourTeams.includes(tempDepartment)) return;
         followed.push(tempDepartment);
-      } else if (item?.id !== identity?.depId) {
+      } else if (item?.id !== profile?.depId) {
         teamNotFollowYet.push(tempDepartment);
       }
     });
@@ -92,10 +93,10 @@ const OnboardPage: React.FC = () => {
     async () => {
       const currentTime = new Date();
       const updates = {
-        ...identity,
-        companyName: identity?.company?.name || '',
-        title: identity?.title,
-        bio: identity?.bio || '',
+        ...profile,
+        companyName: profile?.company?.name || '',
+        title: profile?.title,
+        bio: profile?.bio || '',
         lastLoginAt: currentTime.toISOString(),
       };
       await ProfileApis.update(updates);
@@ -115,7 +116,7 @@ const OnboardPage: React.FC = () => {
   const onSearchTeam = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(event.target.value.toString());
-      onClear();
+      clearSearchResults();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [setKeyword],
@@ -232,7 +233,7 @@ const OnboardPage: React.FC = () => {
   return (
     <BlankLayout className="flex flex-col p-0 m-0">
       <NavBarStatic
-        companyName={identity?.company?.name || 'Gravity Labs'}
+        companyName={profile?.company?.name || 'Gravity Labs'}
         companyStyle="ml-4 sm:ml-12 md:ml-24 lg:ml-40"
       />
       <div className="flex flex-1 flex-col pt-24 items-center bg-Gray-12 overflow-hidden">

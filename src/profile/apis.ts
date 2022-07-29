@@ -6,6 +6,7 @@ import {
   ForgotPasswordPayload,
   GetMentionsParams,
   GetUsersParams,
+  GoogleProfile,
   Profile,
   ResetPasswordPayload,
   UpdateProfilePayload,
@@ -13,6 +14,8 @@ import {
 } from './types';
 
 const get = () => RestApis.get<Profile>('/user/me');
+
+const getGoogleProfile = () => RestApis.get<GoogleProfile>('/auth/me');
 
 const update = (payload: UpdateProfilePayload) => RestApis.patch<Profile>('/user/me', payload);
 
@@ -35,6 +38,7 @@ const getMentions = async (params?: GetMentionsParams) =>
 
 export const ProfileApis = {
   get,
+  getGoogleProfile,
   update,
   getUsers,
   changePassword,

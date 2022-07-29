@@ -1,12 +1,12 @@
 import { InfiniteLoader } from '@/common/components';
 import { useInfiniteData } from '@/common/hooks';
 import { isBadRequest } from '@/error';
-import { useIdentity } from '@/identity';
 import { FeedItem, Visibility } from '@/main/entity';
 import { useMention } from '@/main/hooks';
 import { CommentFormModel } from '@/main/types';
 import { commentEditorHtmlParser } from '@/main/utils';
 import { GetUploadFileTokenPayload } from '@/media/types';
+import { useProfile } from '@/profile/useProfile';
 import { PaginationParams } from '@/rest/types';
 import { EditorState } from 'draft-js';
 import React from 'react';
@@ -30,7 +30,7 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
   const [attachFileComment, setAttachFileComment] = React.useState<File | null>(null);
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadFileTokenPayload>();
 
-  const identity = useIdentity();
+  const { profile } = useProfile();
   const { mentions } = useMention();
 
   const {
@@ -120,7 +120,7 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
                 className={isHidden ? 'bg-purple-11' : 'bg-Gray-24'}
                 comment={comment}
                 mentionData={mentions}
-                editable={identity?.id === comment.user.id}
+                editable={profile?.id === comment.user.id}
                 onEdit={(data) => handleUpdateComment(data.id, { ...comment, ...data })}
                 onDelete={({ id }) => deleteComment(id)}
                 isShowUserAva

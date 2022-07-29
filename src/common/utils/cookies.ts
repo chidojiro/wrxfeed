@@ -12,6 +12,8 @@ const remove = (key: string, options: CookieAttributes = {}) => {
   Cookies.remove(key, options);
 };
 
+const clear = () => (document.cookie = '');
+
 const parse = (cookie: string) =>
   cookie
     ?.split(';')
@@ -26,4 +28,5 @@ export const CookiesUtils = {
   get,
   parse,
   remove,
+  clear,
 };

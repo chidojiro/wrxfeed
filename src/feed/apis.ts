@@ -90,7 +90,7 @@ const getLineItems = (params: GetLineItemsParams) =>
   });
 
 const updateLineItem = (id: number, payload: Partial<TransLineItem>) =>
-  RestApis.patch(`/feed/line-items/${id}`, payload);
+  RestApis.patch<TransLineItem>(`/feed/line-items/${id}`, payload);
 
 const markLineItemAsRead = (id: number) => updateLineItem(id, null as any);
 

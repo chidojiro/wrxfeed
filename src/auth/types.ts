@@ -1,25 +1,3 @@
-import { Company } from '@/main/entity';
-
-export interface Profile {
-  company?: Company;
-  id?: number;
-  email?: string;
-  fullName?: string;
-  title?: string;
-  department?: string;
-  signupDate?: string;
-  bio?: string;
-  lastLoginAt?: string;
-  depId?: number;
-  refererId?: number;
-  avatar?: string;
-}
-
-export interface AuthProfile {
-  googleLoginId: string;
-  roles: string[];
-}
-
 export interface LoginFormModel {
   email: string;
   password: string;
@@ -54,4 +32,10 @@ export enum SearchTypes {
 export type LoginPayload = {
   email: string;
   password: string;
+};
+
+export type GoogleAccessToken = {
+  token: string;
+  expireAt?: string;
+  roles: string[];
 };

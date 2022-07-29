@@ -1,8 +1,8 @@
 import React from 'react';
-import { UserRole } from '@/identity/constants';
 import { RouteItem } from '@/routing/types';
 import { Redirect } from 'react-router-dom';
 import { TargetPage } from './TargetPage';
+import { UserRole } from '@/auth/constants';
 
 export const TargetRoutes: Record<string, RouteItem> = {
   Dashboard: {
