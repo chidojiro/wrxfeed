@@ -183,6 +183,7 @@ export const CommentBox = ({
               <SendButton
                 className="w-5 h-5"
                 disabled={!editorState.getCurrentContent().hasText()}
+                onClick={handleSubmit}
               />
             </>
           )}
