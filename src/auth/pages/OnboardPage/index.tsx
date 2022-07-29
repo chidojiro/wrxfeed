@@ -21,7 +21,7 @@ import { cloneDeep } from 'lodash-es';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-const OnboardPage: React.FC = () => {
+export const OnboardPage = () => {
   const { profile } = useProfile();
   const { redirect } = useNavUtils();
   const query = useLegacyQuery();
@@ -278,5 +278,3 @@ const OnboardPage: React.FC = () => {
     </BlankLayout>
   );
 };
-
-export default OnboardPage;

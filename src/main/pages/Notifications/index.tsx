@@ -3,7 +3,6 @@ import { Notification } from '@/main/entity';
 import { useNotification } from '@/main/hooks';
 import { PaginationParams } from '@/rest/types';
 import { Routes } from '@/routing/routes';
-import * as Sentry from '@sentry/react';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import NotificationList from '../../organisms/NotificationList';
@@ -15,7 +14,7 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT_GET_NOTIFICATIONS,
 });
 
-const Notifications: React.FC = () => {
+export const NotificationsPage = () => {
   const [filter, setFilter] = React.useState<PaginationParams>(INIT_PAGINATION);
   const { notifications, isLoading, hasMore, patchNotification } = useNotification(filter);
   const history = useHistory();
@@ -49,5 +48,3 @@ const Notifications: React.FC = () => {
     </MainLayout>
   );
 };
-
-export default Sentry.withProfiler(Notifications, { name: 'Notifications' });

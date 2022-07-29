@@ -20,7 +20,7 @@ export interface LocationState {
   metadata?: any;
 }
 
-const LoginPage: React.FC = () => {
+export const LoginPage = () => {
   const history = useHistory();
   const { redirect } = useNavUtils();
   const location = useLocation<LocationState>();
@@ -111,5 +111,3 @@ const LoginPage: React.FC = () => {
     </div>
   );
 };
-
-export default LoginPage;
