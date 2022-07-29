@@ -8,16 +8,6 @@ import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';
 
-export const mergeStatusWithOverallTarget = (
-  overallTarget: number,
-  trackingStatus: TargetStatusType,
-): TargetStatusType => {
-  if (overallTarget === 0) {
-    return TargetStatusType.OnTrack;
-  }
-  return trackingStatus;
-};
-
 type TargetFeedOverviewProps = ClassName & {
   target: Target;
 };
@@ -26,9 +16,7 @@ export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({ classNam
   const { overallTarget, currentSpend, targetToDate } = getTargetPeriodsAmountTotal(target);
 
   const renderTrackingStatusIndicator = (trackingStatus?: TargetStatusType) => {
-    const statusColor = trackingStatus
-      ? TargetStatusConfig[mergeStatusWithOverallTarget(overallTarget, trackingStatus)]['dot']
-      : '#7D8490';
+    const statusColor = trackingStatus ? TargetStatusConfig[trackingStatus]['dot'] : '#7D8490';
     return (
       <div className="flex w-2 h-2 justify-center items-center">
         <div
