@@ -10,9 +10,31 @@ export type AvatarProps = ClassName & {
   src?: string;
   fullName: string;
   size?: AvatarSize;
+  showTooltip?: boolean;
 };
 
-export const Avatar = ({ src, className, fullName, size = 'sm' }: AvatarProps) => {
+export const Avatar = ({
+  src,
+  className,
+  fullName,
+  size = 'sm',
+  showTooltip = true,
+}: AvatarProps) => {
+  const renderAvatar = () => {
+    return src ? (
+      <img src={src} alt="" className="object-cover w-full h-full" />
+    ) : (
+      <div
+        className={clsx(
+          'bg-purple-5 text-white font-semibold w-full h-full flex items-center justify-center',
+          { 'text-3xs': size === 'sm' },
+        )}
+      >
+        {StringUtils.getNameInitials(fullName)}
+      </div>
+    );
+  };
+
   return (
     <div
       className={clsx(
@@ -24,26 +46,17 @@ export const Avatar = ({ src, className, fullName, size = 'sm' }: AvatarProps) =
         { 'w-10 h-10': size === 'lg' },
       )}
     >
-      <Tooltip
-        arrowClassName="absolute left-1.5 -bottom-0.5"
-        placement="top-start"
-        trigger={
-          src ? (
-            <img src={src} alt="" className="object-cover w-full h-full" />
-          ) : (
-            <div
-              className={clsx(
-                'bg-purple-5 text-white font-semibold w-full h-full flex items-center justify-center',
-                { 'text-3xs': size === 'sm' },
-              )}
-            >
-              {StringUtils.getNameInitials(fullName)}
-            </div>
-          )
-        }
-      >
-        {fullName}
-      </Tooltip>
+      {showTooltip ? (
+        <Tooltip
+          arrowClassName="absolute left-1.5 -bottom-0.5"
+          placement="top-start"
+          trigger={renderAvatar()}
+        >
+          {fullName}
+        </Tooltip>
+      ) : (
+        renderAvatar()
+      )}
     </div>
   );
 };

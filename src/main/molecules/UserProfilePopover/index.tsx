@@ -60,7 +60,14 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
 
   const renderAvatarIcon = () => {
     if (userAvatar !== '') {
-      return <Avatar size="md" src={userAvatar} fullName={profile?.fullName as string} />;
+      return (
+        <Avatar
+          size="md"
+          src={userAvatar}
+          fullName={profile?.fullName as string}
+          showTooltip={false}
+        />
+      );
     }
     const shortName = getNameAbbreviation(profile?.fullName);
     return (
