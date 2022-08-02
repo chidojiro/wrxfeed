@@ -5,22 +5,18 @@ import { TeamIcon } from '@/assets';
 import { ClassName } from '@/common/types';
 import DepartmentItem from '@/main/molecules/DepartmentItem';
 import { getColorByText } from '@/main/utils';
+import { useDepartment } from './useDepartment';
 
 export type TeamHeaderProps = ClassName & {
   departmentId: number;
-  teamName?: string;
 };
 
-export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeaderProps) => {
+export const TeamHeader = ({ className, departmentId }: TeamHeaderProps) => {
   const teamHeaderColor = React.useMemo(
     () => getColorByText('', departmentId, true),
     [departmentId],
   );
-
-  const department = {
-    id: departmentId,
-    name: teamName,
-  };
+  const { data: department } = useDepartment(departmentId);
 
   return (
     <div
@@ -39,9 +35,9 @@ export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeade
             height={20}
           />
         </div>
-        <p className="text-white font-semibold">{teamName}</p>
+        <p className="text-white font-semibold">{department?.name}</p>
       </div>
-      <DepartmentItem item={department} hideName inHeader />
+      {!!department && <DepartmentItem item={department} hideName inHeader />}
     </div>
   );
 };
