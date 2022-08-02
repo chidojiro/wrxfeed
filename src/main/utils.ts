@@ -522,31 +522,26 @@ export const getTargetPeriodsAmountTotal = (
 } => {
   const curMonth = new Date().getMonth() + 1;
   const curYear = new Date().getFullYear();
-  const { overallTarget, targetToDate } =
-    target?.periods.length > 0
-      ? target?.periods.reduce(
-          (sum, targetPeriod) => ({
-            overallTarget: sum.overallTarget + (targetPeriod.amount ?? 0),
-            targetToDate:
-              targetPeriod.month <= curMonth
-                ? sum.targetToDate + (targetPeriod.amount ?? 0)
-                : sum.targetToDate,
-          }),
-          {
-            overallTarget: 0,
-            targetToDate: 0,
-          },
-        )
-      : { overallTarget: 0, targetToDate: 0 };
+  const { overallTarget, targetToDate } = target?.periods.reduce(
+    (sum, targetPeriod) => ({
+      overallTarget: sum.overallTarget + (targetPeriod.amount ?? 0),
+      targetToDate:
+        targetPeriod.month <= curMonth
+          ? sum.targetToDate + (targetPeriod.amount ?? 0)
+          : sum.targetToDate,
+    }),
+    {
+      overallTarget: 0,
+      targetToDate: 0,
+    },
+  );
   const currentSpend =
-    target?.spendings && target?.spendings?.length > 0
-      ? target?.spendings?.reduce((sum, spending) => {
-          if (spending.year === curYear) {
-            return sum + (spending.total ?? 0);
-          }
-          return sum;
-        }, 0)
-      : 0;
+    target?.spendings?.reduce((sum, spending) => {
+      if (spending.year === curYear) {
+        return sum + (spending.total ?? 0);
+      }
+      return sum;
+    }, 0) ?? 0;
   const exceeding: number =
     overallTarget !== 0
       ? currentSpend > overallTarget

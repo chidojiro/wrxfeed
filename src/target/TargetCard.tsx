@@ -154,7 +154,7 @@ export const TargetCard = ({
                 <TargetStatus
                   type={target.trackingStatus}
                   target={target}
-                  onSetTarget={handleSetTarget}
+                  onTargetSet={handleSetTarget}
                 />
               )}
             </div>

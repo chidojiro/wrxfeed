@@ -23,7 +23,7 @@ const TargetStatus: React.FC<TargetStatusProps> = ({
   className = '',
   type,
   target,
-  onSetTarget,
+  onTargetSet,
 }) => {
   const { label, background, dot } = TargetStatusConfig[type];
   const { overallTarget = 0, currentSpend = 0, exceeding } = getTargetPeriodsAmountTotal(target);
@@ -34,7 +34,7 @@ const TargetStatus: React.FC<TargetStatusProps> = ({
       <div className="group relative">
         <Button
           className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex border border-Gray-11"
-          onClick={onSetTarget}
+          onClick={onTargetSet}
         >
           <span className="font-medium text-xs">Set target</span>
           <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />

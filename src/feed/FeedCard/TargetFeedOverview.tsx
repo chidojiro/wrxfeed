@@ -71,7 +71,7 @@ export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({ classNam
                 <TargetStatus
                   type={target.trackingStatus}
                   target={target}
-                  onSetTarget={handleSetTarget}
+                  onTargetSet={handleSetTarget}
                 />
               )}
             </div>
