@@ -78,7 +78,7 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
   } = props;
   const isEdit = !!target;
 
-  const methods = useForm({ mode: 'onBlur' });
+  const methods = useForm({ mode: 'onChange' });
   const {
     watch,
     setValue,
