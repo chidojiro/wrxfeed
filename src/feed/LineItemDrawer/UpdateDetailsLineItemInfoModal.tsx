@@ -27,7 +27,7 @@ export const UpdateDetailsLineItemInfoModal = withMountOnOpen(
     transLineItem,
     onConfirm,
   }: UpdateDetailsLineItemInfoModalProps) => {
-    const methods = useForm();
+    const methods = useForm({ mode: 'onBlur' });
     const {
       formState: { isValid },
       reset,
@@ -112,12 +112,11 @@ export const UpdateDetailsLineItemInfoModal = withMountOnOpen(
         >
           <div className="flex flex-col space-y-2 px-10 py-4 w-full">
             <p className="text-primary text-xs font-semibold">Line Item Description</p>
-            <div className={clsx('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
-              <Form.Input
-                name="description"
-                placeholder="What goods or services does this business provide?"
-              />
-            </div>
+            <Form.Input
+              name="description"
+              placeholder="What goods or services does this business provide?"
+              rules={{ required: true }}
+            />
 
             <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
               {rows.map((row: LineInfo) => {
