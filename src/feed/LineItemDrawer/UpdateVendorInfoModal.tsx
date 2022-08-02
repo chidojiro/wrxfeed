@@ -19,7 +19,7 @@ export type UpdateVendorInfoModalProps = {
 
 export const UpdateVendorInfoModal = withMountOnOpen(
   ({ open = false, onClose, onCancel, onConfirm, vendor }: UpdateVendorInfoModalProps) => {
-    const methods = useForm();
+    const methods = useForm({ mode: 'onBlur' });
     const {
       formState: { isValid },
       reset,
