@@ -1,12 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { OverlayLoader } from '@/common/components';
-import MainLayout from '@/common/templates/MainLayout';
+import { MainLayout } from '@/layout/MainLayout';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
-import React from 'react';
 import { useParams } from 'react-router-dom';
-import { TeamTargetSummary } from './TeamTargetSummary';
 import { TeamHeader } from './TeamHeader';
+import { TeamTargetSummary } from './TeamTargetSummary';
 import { TopCategories } from './TopCategories';
 import { TransactionList } from './TransactionList';
 

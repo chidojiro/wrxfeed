@@ -1,6 +1,7 @@
 import Modal from '@/common/atoms/Modal';
 import { Button, Form } from '@/common/components';
 import { withMountOnOpen } from '@/common/hocs';
+import { useHandler } from '@/common/hooks';
 import { TransLineItem } from '@/main/entity';
 import { getNameAbbreviation } from '@/main/utils';
 import clsx from 'clsx';
@@ -26,9 +27,9 @@ export const UpdateDetailsLineItemInfoModal = withMountOnOpen(
     transLineItem,
     onConfirm,
   }: UpdateDetailsLineItemInfoModalProps) => {
-    const methods = useForm();
+    const methods = useForm({ mode: 'onBlur' });
     const {
-      formState: { isValid, isSubmitting },
+      formState: { isValid },
       reset,
     } = methods;
 
@@ -97,24 +98,25 @@ export const UpdateDetailsLineItemInfoModal = withMountOnOpen(
       );
     };
 
+    const { handle: handleConfirm, isLoading: isConfirming } = useHandler(onConfirm);
+
     return (
       <Modal open={open} onClose={onClose} center={false} contentClass="sm:my-24 overflow-visible">
         <Form
           methods={methods}
           onSubmit={async (data) => {
-            await onConfirm(transLineItem.id, data);
+            await handleConfirm(transLineItem.id, data);
             onClose();
           }}
           className="flex flex-col w-[685px] outline-none pt-4"
         >
           <div className="flex flex-col space-y-2 px-10 py-4 w-full">
             <p className="text-primary text-xs font-semibold">Line Item Description</p>
-            <div className={clsx('flex flex-col h-[38px] px-2.5 w-auto bg-Gray-12')}>
-              <Form.Input
-                name="description"
-                placeholder="What goods or services does this business provide?"
-              />
-            </div>
+            <Form.Input
+              name="description"
+              placeholder="What goods or services does this business provide?"
+              rules={{ required: true }}
+            />
 
             <ul className="mt-2 flex flex-1 flex-col border-t border-t-Gray-28">
               {rows.map((row: LineInfo) => {
@@ -142,7 +144,7 @@ export const UpdateDetailsLineItemInfoModal = withMountOnOpen(
             <Button variant="ghost" colorScheme="gray" onClick={onCancel}>
               Cancel
             </Button>
-            <Button variant="solid" type="submit" disabled={!isValid} loading={isSubmitting}>
+            <Button variant="solid" type="submit" disabled={!isValid} loading={isConfirming}>
               Save Changes
             </Button>
           </div>

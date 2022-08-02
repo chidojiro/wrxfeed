@@ -29,11 +29,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
         style={{ backgroundColor: avatarBgColor }}
       >
         {isHaveAvatar && (
-          <Avatar
-            className="w-10 h-10"
-            fullName={item.causedByUser.fullName as string}
-            src={isHaveAvatar}
-          />
+          <Avatar size="lg" fullName={item.causedByUser.fullName as string} src={isHaveAvatar} />
         )}
         {!isHaveAvatar && <p className="text-sm font-bold text-white">{shortName}</p>}
       </div>

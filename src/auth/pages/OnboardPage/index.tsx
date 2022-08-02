@@ -1,27 +1,27 @@
 import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
 import { ReactComponent as SharpSpaceDashboard } from '@/assets/icons/solid/sharp-space-dashboard.svg';
 import DepartmentCell from '@/auth/molecules/DepartmentCell';
+import { AuthUtils } from '@/auth/utils';
 import Loading from '@/common/atoms/Loading';
 import { Button } from '@/common/components';
 import { useDebounce, useHandler, useLegacyQuery, useNavUtils } from '@/common/hooks';
-import NavBarStatic from '@/common/organisms/NavBarStatic';
-import BlankLayout from '@/common/templates/BlankLayout';
 import { TEAM_SUGGEST_RANDOM_NUMBER } from '@/config';
 import { isApiError } from '@/error/utils';
-import { useProfile } from '@/profile/useProfile';
+import { BlankLayout } from '@/layout/BlankLayout';
+import { NavBarStatic } from '@/layout/NavBarStatic';
 import { Department } from '@/main/entity';
-import { useSubscription } from '@/main/hooks/subscription.hook';
 import { SearchResult } from '@/main/types';
 import { getMultiRandomInt, getUniqueListBy } from '@/main/utils';
+import { useSearch } from '@/misc/useSearch';
 import { ProfileApis } from '@/profile/apis';
+import { useProfile } from '@/profile/useProfile';
 import { Routes } from '@/routing/routes';
+import { useSubscription } from '@/subscription/useSubscription';
 import { cloneDeep } from 'lodash-es';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { AuthUtils } from '@/auth/utils';
-import { useSearch } from '@/misc/useSearch';
 
-const OnboardPage: React.FC = () => {
+export const OnboardPage = () => {
   const { profile } = useProfile();
   const { redirect } = useNavUtils();
   const query = useLegacyQuery();
@@ -29,7 +29,7 @@ const OnboardPage: React.FC = () => {
   const autoDirectString: string = query.get('autoDirect') ?? '1';
   const authDirect: boolean = parseInt(autoDirectString, 10) === 1;
 
-  const { isFollowing } = useSubscription();
+  const { isSubscribed } = useSubscription();
 
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [yourTeams, setYourTeams] = useState<Department[]>([]);
@@ -67,7 +67,7 @@ const OnboardPage: React.FC = () => {
 
     departments.forEach((item) => {
       const tempDepartment = { id: item?.directoryId, name: item?.title };
-      if (isFollowing('departments', tempDepartment)) {
+      if (isSubscribed('departments', tempDepartment.id)) {
         if (yourTeams.includes(tempDepartment)) return;
         followed.push(tempDepartment);
       } else if (item?.id !== profile?.depId) {
@@ -278,5 +278,3 @@ const OnboardPage: React.FC = () => {
     </BlankLayout>
   );
 };
-
-export default OnboardPage;

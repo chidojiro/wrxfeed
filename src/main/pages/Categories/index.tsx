@@ -1,14 +1,12 @@
-import { ReactComponent as ChevronLeftIcon } from '@/assets/icons/outline/chevron-left.svg';
-import { MainGroups } from '@/common/constants';
+import { ChevronLeftIcon } from '@/assets';
 import { useFetcher } from '@/common/hooks';
-import MainLayout from '@/common/templates/MainLayout';
 import { FeedApis } from '@/feed/apis';
 import { Feeds } from '@/feed/Feeds';
 import { GetCategoriesParams } from '@/feed/types';
+import { MainLayout } from '@/layout/MainLayout';
 import { Category } from '@/main/entity';
 import { useCategory } from '@/main/hooks/category.hook';
 import CategoryList from '@/main/organisms/CategoryList';
-import * as Sentry from '@sentry/react';
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -18,7 +16,7 @@ const INIT_PAGINATION = Object.freeze({
   limit: LIMIT,
 });
 
-const CategoriesPage: React.FC = () => {
+export const CategoriesPage = () => {
   const history = useHistory();
   const { id: catId } = useParams<{ id?: string }>();
   const [filter, setFilter] = React.useState<GetCategoriesParams>(INIT_PAGINATION);
@@ -42,7 +40,6 @@ const CategoriesPage: React.FC = () => {
     setCategory(value);
     history.push({
       pathname: `/categories/${value?.id.toString()}`,
-      search: `?route=${MainGroups.Following}`,
     });
   };
 
@@ -70,5 +67,3 @@ const CategoriesPage: React.FC = () => {
     </MainLayout>
   );
 };
-
-export default Sentry.withProfiler(CategoriesPage, { name: 'CategoriesPage' });

@@ -146,6 +146,7 @@ export type Department = {
   name: string;
   parent?: Department;
   avatar?: string;
+  children?: Department[];
 };
 
 export type Category = {

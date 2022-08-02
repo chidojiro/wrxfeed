@@ -1,4 +1,4 @@
-import MainLayout from '@/common/templates/MainLayout';
+import { MainLayout } from '@/layout/MainLayout';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import { useEffect } from 'react';
@@ -20,7 +20,7 @@ export const CompanyFeedsPage = () => {
   }, []);
 
   return (
-    <MainLayout rightSide={false}>
+    <MainLayout>
       <Feeds categoryRedirectHref={(category) => `${pathname}/category/${category.id}`} />
     </MainLayout>
   );

@@ -1,4 +1,4 @@
-import MainLayout from '@/common/templates/MainLayout';
+import { MainLayout } from '@/layout/MainLayout';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import React from 'react';
@@ -19,7 +19,7 @@ export const ForYouFeedsPage = () => {
   }, []);
 
   return (
-    <MainLayout className="flex flex-col" rightSide={false}>
+    <MainLayout>
       <h1 className="sr-only">For you feed</h1>
       <Feeds
         forYou={1}

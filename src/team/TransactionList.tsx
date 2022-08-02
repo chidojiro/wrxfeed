@@ -62,6 +62,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
     { label: 'Vendor', sortKey: 'vendorName' },
     { label: 'Description' },
     { label: 'Category', sortKey: 'categoryName' },
+    { label: 'Expense', sortKey: 'transRecordType' },
     { label: 'Amount', sortKey: 'amountUsd' },
     { label: 'Status', sortKey: 'transStatus' },
   ];
@@ -111,6 +112,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                 vendor,
                 id,
                 transStatus,
+                transRecordType,
                 feedItemId,
               }: TransLineItem) => (
                 <Table.Row
@@ -145,6 +147,14 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                     </Tooltip>
                   </Table.Cell>
                   <Table.Cell>{category?.name}</Table.Cell>
+                  <Table.Cell>
+                    {transRecordType?.toLowerCase() === 'Expense Report'.toLowerCase() ? (
+                      <div className="flex flex-row items-center space-x-1">
+                        <p className="text-Gray-6 text-sm font-normal">·</p>
+                        <p className="text-Accent-2 text-xs font-normal">Expensed</p>
+                      </div>
+                    ) : null}
+                  </Table.Cell>
                   <Table.Cell className="text-right">{decimalLogic(amountUsd, '$')}</Table.Cell>
                   <Table.Cell>
                     <StatusTag

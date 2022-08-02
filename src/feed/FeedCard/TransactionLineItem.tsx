@@ -7,7 +7,7 @@ import { decimalLogic, DecimalType, getVendorNameFromLineItem } from '@/main/uti
 import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
-import { useLineItemDrawer } from '../useLineItemDrawer';
+import { useLineItemDrawer } from '../LineItemDrawer';
 
 export type TransactionLineItemProps = {
   lineItem: TransLineItem;

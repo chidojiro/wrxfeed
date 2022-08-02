@@ -21,7 +21,7 @@ interface NotifyBannerProps extends NotifyBannerOptions {
   message: string;
 }
 
-const NotifyBanner = {
+export const NotifyBanner = {
   info(message: string, options?: NotifyBannerOptions): void {
     EventEmitter.dispatch(EventName.OPEN_NOTIFY_BANNER, {
       type: NotifyType.INFO,
@@ -108,5 +108,3 @@ export const NotifyBannerContainer: React.FC<NotifyBannerOptions> = ({ timeout, 
     </div>
   );
 };
-
-export default NotifyBanner;

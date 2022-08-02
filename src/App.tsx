@@ -1,7 +1,6 @@
 import { NotFoundPage } from '@/auth/NotFoundPage';
 import { ProtectedRoute } from '@/auth/ProtectedRoute';
-import { EmojiPickerContainer } from '@/common/molecules/EmojiPicker';
-import { NotifyBannerContainer } from '@/common/molecules/NotifyBanner';
+import { EmojiPicker } from '@/common/components';
 import { Children } from '@/common/types';
 import { UploadCSVModal } from '@/main/organisms';
 import ContactSupportButton from '@/main/organisms/ContactSupportButton';
@@ -12,6 +11,7 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-d
 import { ToastContainer } from 'react-toastify';
 import { RecoilRoot as _RecoilRoot, RecoilRootProps } from 'recoil';
 import LoadingFallback from './common/atoms/LoadingFallback';
+import { NotifyBannerContainer } from './layout/NotifyBanner';
 import { RouteItem } from './routing/types';
 
 import '@/styles.css';
@@ -50,7 +50,7 @@ const { protectedRoutes, publicRoutes } = Object.values(Routes).reduce(
   },
 );
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <RecoilRoot>
       <PusherProvider>
@@ -74,7 +74,7 @@ const App: React.FC = () => {
         </Router>
         <UploadCSVModal />
         <StyledToastContainer />
-        <EmojiPickerContainer />
+        <EmojiPicker />
         <NotifyBannerContainer topOffset={56} />
         <ContactSupportButton />
       </PusherProvider>

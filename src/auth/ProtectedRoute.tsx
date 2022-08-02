@@ -1,5 +1,6 @@
-import MainLayout from '@/common/templates/MainLayout';
+import { MainLayout } from '@/layout/MainLayout';
 import { useProfile } from '@/profile/useProfile';
+import React from 'react';
 import { Route, RouteProps } from 'react-router-dom';
 import { NoPermission } from './NoPermission';
 
@@ -8,15 +9,19 @@ export type ProtectedRouteProps = RouteProps & {
 };
 
 export const ProtectedRoute = ({ path, component, permissions }: ProtectedRouteProps) => {
-  const { profile, isValidatingProfile } = useProfile();
-
-  if (isValidatingProfile) return <MainLayout></MainLayout>;
+  const { profile, isInitializingProfile } = useProfile();
 
   const isAccessible = !permissions || profile?.roles?.some((role) => permissions?.includes(role));
+
+  if (isInitializingProfile) return <MainLayout />;
 
   if (!isAccessible) {
     return <NoPermission />;
   }
 
-  return <Route path={path} component={component} exact />;
+  return (
+    <React.Suspense fallback={<MainLayout />}>
+      <Route path={path} component={component} exact />
+    </React.Suspense>
+  );
 };

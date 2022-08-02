@@ -2,7 +2,6 @@ import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import ListLoading from '@/main/atoms/ListLoading';
 import { Department } from '@/main/entity';
 import { DepartmentSection } from '@/main/hooks/department.hook';
-import { useSubscription } from '@/main/hooks/subscription.hook';
 import DepartmentItem from '@/main/molecules/DepartmentItem';
 import RootDepartmentHeader from '@/main/molecules/RootDepartmentHeader';
 import { useProfile } from '@/profile/useProfile';
@@ -25,9 +24,6 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
   onSelect,
   onSelectRoot,
 }) => {
-  const { subscribe, batchSubscribe, unsubscribe, batchUnsubscribe, isFollowing } =
-    useSubscription();
-
   const { profile } = useProfile();
 
   useEffect(() => {
@@ -43,23 +39,15 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
     <div className="shadow-md rounded-card overflow-hidden" key={dept.id}>
       <RootDepartmentHeader
         item={dept}
-        isFollowing={isFollowing('departments', dept)}
+        department={dept}
         onClick={() => onSelectRoot && onSelectRoot(dept)}
-        onFollow={() => batchSubscribe({ departments: [dept, ...dept.children] })}
-        onUnfollow={() => batchUnsubscribe({ departments: [dept, ...dept.children] })}
       />
       {!!dept.children.length && (
         <div className="bg-white">
           <ul className="divide-y divide-gray-200">
             {dept.children.map((child) => (
               <li key={child.id} className="sm:pl-4">
-                <DepartmentItem
-                  item={child}
-                  isFollowing={isFollowing('departments', child)}
-                  onClick={() => onSelect && onSelect(child)}
-                  onFollow={() => subscribe('departments', child)}
-                  onUnfollow={() => unsubscribe('departments', child)}
-                />
+                <DepartmentItem item={child} onClick={() => onSelect && onSelect(child)} />
               </li>
             ))}
           </ul>

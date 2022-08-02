@@ -1,5 +1,4 @@
 import { AuthApis } from '@/auth/apis';
-import { profileState } from '@/auth/containers/ProfileEditForm/states';
 import Loading from '@/common/atoms/Loading';
 import UploadButton from '@/common/atoms/UploadButton';
 import { Avatar, Button } from '@/common/components';
@@ -8,12 +7,11 @@ import { UPLOAD_FILE_ACCEPT } from '@/config';
 import { getNameAbbreviation } from '@/main/utils';
 import { GetUploadFileTokenPayload } from '@/media/types';
 import { ProfileApis } from '@/profile/apis';
-import { Profile } from '@/profile/types';
+import { useProfile } from '@/profile/useProfile';
 import { Popover, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import React from 'react';
 import { toast } from 'react-toastify';
-import { useRecoilState } from 'recoil';
 
 export interface UserProfilePopoverProps {
   style?: React.CSSProperties;
@@ -25,13 +23,13 @@ export type ProfileChanges = {
 };
 
 const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
-  const [profile, setProfile] = useRecoilState(profileState);
-  const [profileUser, setProfileUser] = React.useState<Profile>(profile);
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadFileTokenPayload>();
   const [userAvatar, setAvatar] = React.useState<string>('');
   const [changeData, setChangeData] = React.useState<boolean>(false);
   const [title, setTitle] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
+
+  const { profile, mutateProfile } = useProfile();
 
   const logout = async () => {
     await AuthApis.logout();
@@ -40,13 +38,13 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
   const profileForms = [
     {
       title: 'Name',
-      content: profileUser?.fullName || 'Unknown',
+      content: profile?.fullName || 'Unknown',
       onChange: () => null,
       editable: false,
     },
     {
       title: 'Title',
-      content: profileUser?.title || 'Unknown',
+      content: profile?.title || 'Unknown',
       onChange: (text: string) => {
         setTitle(text);
       },
@@ -54,7 +52,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
     },
     {
       title: 'Email',
-      content: profileUser?.email || 'Unknown',
+      content: profile?.email || 'Unknown',
       onChange: () => null,
       editable: false,
     },
@@ -62,9 +60,16 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
 
   const renderAvatarIcon = () => {
     if (userAvatar !== '') {
-      return <Avatar className="h-8 w-8" src={userAvatar} fullName={profile.fullName as string} />;
+      return (
+        <Avatar
+          size="md"
+          src={userAvatar}
+          fullName={profile?.fullName as string}
+          showTooltip={false}
+        />
+      );
     }
-    const shortName = getNameAbbreviation(profileUser.fullName);
+    const shortName = getNameAbbreviation(profile?.fullName);
     return (
       <div className="flex h-8 w-8 rounded-full bg-purple-5 justify-center items-center">
         <div className="flex text-white text-xs font-semibold">{shortName}</div>
@@ -74,16 +79,16 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
 
   const updateAvatar = async (avatarUri: string) => {
     const updates = {
-      companyName: profileUser.company?.name || '',
-      title: profileUser.title || '',
-      department: profileUser.department || '',
-      bio: profileUser.bio || '',
-      lastLoginAt: profileUser.lastLoginAt || '',
+      companyName: profile?.company?.name || '',
+      title: profile?.title || '',
+      department: profile?.department || '',
+      bio: profile?.bio || '',
+      lastLoginAt: profile?.lastLoginAt || '',
       avatar: avatarUri,
     };
     await ProfileApis.update(updates);
     toast.success('Upload image successfully!');
-    setProfile({
+    mutateProfile({
       ...profile,
       avatar: avatarUri,
     });
@@ -99,12 +104,12 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
   });
 
   React.useEffect(() => {
-    setAvatar(profileUser?.avatar || '');
-  }, [profileUser]);
+    setAvatar(profile?.avatar || '');
+  }, [profile]);
 
   const handleAttachFile = (file: File) => {
     setUploadFileOptions({
-      filename: `${profileUser.id}-${Date.now()}-${file.name}`,
+      filename: `${profile?.id}-${Date.now()}-${file.name}`,
       contentType: file.type,
       uploadType: 'attachments',
     });
@@ -164,11 +169,11 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
   const onClickSaveChange = async () => {
     setLoading(true);
     const updates = {
-      companyName: profileUser.company?.name || '',
-      title: title || profileUser.title,
-      // department: department || profileUser.department,
-      bio: profileUser.bio || '',
-      lastLoginAt: profileUser.lastLoginAt || '',
+      companyName: profile?.company?.name || '',
+      title: title || profile?.title,
+      // department: department || profile?.department,
+      bio: profile?.bio || '',
+      lastLoginAt: profile?.lastLoginAt || '',
     };
     await ProfileApis.update(updates);
     setLoading(false);
@@ -176,7 +181,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
     setChangeData(false);
 
     const userProfile = await ProfileApis.get();
-    setProfileUser(userProfile);
+    mutateProfile(userProfile);
   };
 
   const renderLogoutOrSaveChanges = () => {

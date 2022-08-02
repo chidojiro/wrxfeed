@@ -110,8 +110,9 @@ export const TargetCard = ({
                 <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
                   <Avatar
                     size="sm"
-                    fullName={target?.updatedBy?.fullName ?? ''}
-                    src={target?.updatedBy?.avatar}
+                    fullName={target.updatedBy?.fullName ?? ''}
+                    src={target.updatedBy?.avatar}
+                    showTooltip
                   />
                   <span className="text-Gray-6 text-xs">
                     Last edited {distanceToNow(target?.updatedAt)}

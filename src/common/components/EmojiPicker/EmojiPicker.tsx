@@ -7,13 +7,13 @@ import EventEmitter, { EventName } from '@/main/EventEmitter';
 
 const PortalRoot = document.querySelector('#portal-root');
 
-export interface EmojiPickerProps {
+export type EmojiPickerProps = {
   onSelectEmoji?: (emoji: EmojiData) => void;
   anchorEl: Element | null;
   onHover?: (isHover: boolean) => void;
-}
+};
 
-const EmojiPicker = {
+export const EmojiPickerDispatcher = {
   open(props: EmojiPickerProps): void {
     EventEmitter.dispatch(EventName.OPEN_EMOJI_PICKER, props);
   },
@@ -22,7 +22,7 @@ const EmojiPicker = {
   },
 };
 
-export const EmojiPickerContainer: React.FC = () => {
+export const EmojiPicker = () => {
   const referenceElement = useRef<HTMLDivElement>(null);
   const callbackRef = useRef<(emoji: EmojiData) => void>();
   const onHoverRef = useRef<(isHover: boolean) => void>();
@@ -94,5 +94,3 @@ export const EmojiPickerContainer: React.FC = () => {
   );
   return ReactDOM.createPortal(renderPopover(), PortalRoot as Element);
 };
-
-export default EmojiPicker;
