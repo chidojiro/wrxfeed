@@ -13,7 +13,7 @@ export type AvatarProps = ClassName & {
   showTooltip?: boolean;
 };
 
-export const Avatar = ({ src, className, fullName, size = 'sm' }: AvatarProps) => {
+export const Avatar = ({ src, className, fullName, showTooltip, size = 'sm' }: AvatarProps) => {
   const renderAvatar = () => {
     return src ? (
       <img src={src} alt="" className="object-cover w-full h-full" />
