@@ -78,7 +78,7 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
   } = props;
   const isEdit = !!target;
 
-  const methods = useForm();
+  const methods = useForm({ mode: 'onChange' });
   const {
     watch,
     setValue,
@@ -315,7 +315,7 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
       periods,
     };
 
-    return updateTarget(target!.id, payload);
+    return updateTarget(target!.id, { ...target, ...payload });
   };
 
   const handleDelete = deleteTarget;
