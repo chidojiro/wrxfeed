@@ -44,7 +44,7 @@ export type DepartmentSummary = {
   name: string;
   target?: Target;
   spends: number;
-  commentCount: number;
+  comments: Comment[];
 };
 
 export type TargetSummaries = {
@@ -136,4 +136,18 @@ export type TargetMonth = {
 export interface TargetByTeam {
   department: Department;
   targets: Target[];
+}
+
+export interface Comment {
+  content: string;
+  attachment: string;
+  user: User;
+  item: FeedItem;
+}
+
+export interface FeedItem {
+  id: number;
+  category: string;
+  replyCount: number;
+  department: Department;
 }

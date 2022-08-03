@@ -29,7 +29,7 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
         </div>
         <div
           className={clsx(
-            'grid grid-cols-10',
+            'grid grid-cols-11',
             'text-center font-semibold text-2xs',
             'border-t border-b border-Gray-28',
             'py-2.5 px-1',
