@@ -27,7 +27,7 @@ export const UpdateDetailsLineItemInfoModal = withMountOnOpen(
     transLineItem,
     onConfirm,
   }: UpdateDetailsLineItemInfoModalProps) => {
-    const methods = useForm({ mode: 'onBlur' });
+    const methods = useForm({ mode: 'onChange' });
     const {
       formState: { isValid },
       reset,
