@@ -1,18 +1,21 @@
 import { ClassName } from '@/common/types';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import { getDisplayUsdAmount, getTargetPeriodsAmountTotal } from '@/main/utils';
-import { AddTargetModal } from '@/target/AddTargetModal';
 import { MiniChartView } from '@/target/MiniChartView';
 import { Target, TargetStatusConfig, TargetStatusType } from '@/target/types';
-import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';
 
 type TargetFeedOverviewProps = ClassName & {
   target: Target;
+  handleSetTarget: (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => void;
 };
 
-export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({ className, target }) => {
+export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({
+  className,
+  target,
+  handleSetTarget,
+}) => {
   const { overallTarget, currentSpend, targetToDate } = getTargetPeriodsAmountTotal(target);
 
   const renderTrackingStatusIndicator = (trackingStatus?: TargetStatusType) => {
@@ -25,13 +28,6 @@ export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({ classNam
         />
       </div>
     );
-  };
-
-  const addTargetModalDisclosure = useDisclosure();
-
-  const handleSetTarget = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
-    addTargetModalDisclosure.onOpen();
-    e.stopPropagation();
   };
 
   return (
@@ -81,12 +77,6 @@ export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({ classNam
           </div>
         </div>
       </div>
-      <AddTargetModal
-        open={addTargetModalDisclosure.isOpen}
-        onClose={addTargetModalDisclosure.onClose}
-        onCancel={addTargetModalDisclosure.onClose}
-        target={target}
-      />
     </>
   );
 };

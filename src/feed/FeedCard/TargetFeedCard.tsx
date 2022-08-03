@@ -62,6 +62,11 @@ export const TargetFeedCard = React.memo(
       );
     };
 
+    const handleSetTarget = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+      addTargetModalDisclosure.onOpen();
+      e.stopPropagation();
+    };
+
     return (
       <>
         <article
@@ -113,7 +118,7 @@ export const TargetFeedCard = React.memo(
               </div>
             </div>
           </div>
-          <TargetFeedOverview target={feed.target} />
+          <TargetFeedOverview target={feed.target} handleSetTarget={handleSetTarget} />
           {!!feed.transactions.length && <TransactionsSection feed={feed} />}
           <CommentsSection feed={feed} />
         </article>
