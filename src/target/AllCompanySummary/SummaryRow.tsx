@@ -4,7 +4,6 @@ import { useHandler } from '@/common/hooks';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
-import { comment } from 'postcss';
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { DepartmentSummary, TargetStatusType } from '../types';
@@ -58,20 +57,25 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
       </div>
       <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(spends)}</div>
       <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(targetSpends)}</div>
-      <div className="col-span-2">
+      <div className="col-span-2 relative">
         {comments.length !== 0 ? (
-          <div className="relative flex items-center justify-center">
+          <div className="flex items-center justify-center">
             {comments.map((comment, index) => (
               <Avatar
-                className={`z-${(comments.length - index) * 10} absolute right-3.5 mr-${
-                  index * 2.5
-                }`}
+                className={`z-${index * 10} absolute left-0 ml-${index * 3}`}
                 key={comment.user.id}
-                src={comment.user.avatar}
-                fullName={comment.user.fullName as string}
+                src={String(comment.user.avatar)}
+                fullName={String(comment.user.fullName)}
               />
             ))}
-            <Link className="z-50 right-0 absolute" to={`/feed/${target?.id}?route=TargetFeed`}>
+            <Link
+              className={clsx('z-50 absolute', {
+                'right-0': comments.length === 3,
+                'right-2.5': comments.length === 2,
+                'right-5': comments.length === 1,
+              })}
+              to={`/feed/${target?.id}?route=TargetFeed`}
+            >
               <CommentIcon className="text-Gray-7" />
               <div className="absolute top-0.5 left-1/2 transform -translate-x-1/2 text-Gray-3 text-xs">
                 {comments.length}
