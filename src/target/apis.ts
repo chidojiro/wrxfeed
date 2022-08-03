@@ -10,6 +10,7 @@ import {
 } from './types';
 import { getFullYearPeriods } from './utils';
 
+const getListEndpoint = () => '/target/targets';
 const getList = ({
   forYou = 0,
   year = new Date().getFullYear(),
@@ -17,25 +18,39 @@ const getList = ({
   type = 'normal',
   ...restParams
 }: GetTargetsParams) =>
-  RestApis.get<Target[]>('/target/targets', {
+  RestApis.get<Target[]>(getListEndpoint(), {
     params: { forYou, year, isPrimary, type, ...restParams },
   });
 
-const create = (payload: CreateTargetPayload) => RestApis.post<Target>('/target/targets', payload);
+const createEndpoint = () => '/target/targets';
+const create = (payload: CreateTargetPayload) => RestApis.post<Target>(createEndpoint(), payload);
 
+export const updateEndpoint = (id: number) => `/target/targets/${id}`;
 const update = (id: number, payload: UpdateTargetPayload) =>
-  RestApis.put<Target>(`/target/targets/${id}`, payload);
+  RestApis.put<Target>(updateEndpoint(id), payload);
 
-const _delete = (id: number) => RestApis.delete(`/target/targets/${id}`);
+const deleteEndpoint = (id: number) => `/target/targets/${id}`;
+const _delete = (id: number) => RestApis.delete(deleteEndpoint(id));
 
+const getSpendingEndpoint = () => '/target/spending';
 const getSpending = (params: GetTargetSpendingParams): Promise<TargetSpending[]> => {
-  return RestApis.patch<TargetSpending[]>('/target/spending', {
+  return RestApis.patch<TargetSpending[]>(getSpendingEndpoint(), {
     ...params,
     periods: getFullYearPeriods(params.periods),
   });
 };
 
-const getSummaries = () => RestApis.get<TargetSummaries>('/target/summaries');
+const getSummariesEndpoint = () => '/target/summaries';
+const getSummaries = () => RestApis.get<TargetSummaries>(getSummariesEndpoint());
+
+export const TargetApiEndpoints = {
+  getList: getListEndpoint,
+  create: createEndpoint,
+  update: updateEndpoint,
+  delete: deleteEndpoint,
+  getSpending: getSpendingEndpoint,
+  getSummaries: getSummariesEndpoint,
+};
 
 export const TargetApis = {
   getList,

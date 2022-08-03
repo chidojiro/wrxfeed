@@ -19,7 +19,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["./src/global", "./src/rest/global"]
+    "typeRoots": ["node_modules/@types", "./src/global", "./src/rest/global"]
   },
   "include": ["src/**/*"]
 }
