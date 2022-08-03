@@ -59,7 +59,10 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
       <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(targetSpends)}</div>
       <div className="col-span-2 relative">
         {comments.length !== 0 ? (
-          <div className="flex items-center justify-center">
+          <Link
+            className="flex items-center justify-center"
+            to={`/feed/${target?.id}?route=TargetFeed`}
+          >
             {comments.map((comment, index) => (
               <Avatar
                 className={`z-${index * 10} absolute left-0 ml-${index * 3}`}
@@ -68,20 +71,19 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
                 fullName={String(comment.user.fullName)}
               />
             ))}
-            <Link
+            <div
               className={clsx('z-50 absolute', {
                 'right-0': comments.length === 3,
                 'right-2.5': comments.length === 2,
                 'right-5': comments.length === 1,
               })}
-              to={`/feed/${target?.id}?route=TargetFeed`}
             >
               <CommentIcon className="text-Gray-7" />
               <div className="absolute top-0.5 left-1/2 transform -translate-x-1/2 text-Gray-3 text-xs">
                 {comments.length}
               </div>
-            </Link>
-          </div>
+            </div>
+          </Link>
         ) : (
           '--'
         )}
