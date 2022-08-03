@@ -1,5 +1,6 @@
 import { EyeHideIcon } from '@/assets';
 import { distanceToNow } from '@/common/utils';
+import { GRADIENT_DEFAULT } from '@/config';
 import UserAvatar from '@/main/atoms/UserAvatar';
 import { FeedItem, Visibility } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
@@ -25,8 +26,6 @@ export const TargetFeedCard = React.memo(
     const [isOpenFeedbackModal, openFeedbackModal] = React.useState(false);
     const addTargetModalDisclosure = useDisclosure();
     const isHidden = feed?.category !== null && feed?.category?.visibility === Visibility.HIDDEN;
-
-    const gradientBg = 'linear-gradient(125.45deg, #CA77B3 18.62%, #514EE7 74.47%)';
 
     const renderEditorAvatar = (target: Target) => {
       const updaterName = target?.updatedBy?.fullName ?? '';
@@ -74,7 +73,7 @@ export const TargetFeedCard = React.memo(
             <div
               className="h-4 w-full rounded-t-card"
               style={{
-                background: gradientBg,
+                background: GRADIENT_DEFAULT,
               }}
             />
             <div

@@ -99,7 +99,7 @@ export const TargetCard = ({
         onClick={goToTargetDetails}
         key={target.id}
         className={clsx(
-          'bg-white relative w-full rounded-card shadow-shadowCard hover:shadow-targetHover flex flex-col border border-transparent hover:border-Accent-4',
+          'bg-white relative w-full rounded-card shadow-card hover:shadow-target-hover flex flex-col border border-transparent hover:border-Accent-4',
           className,
         )}
       >

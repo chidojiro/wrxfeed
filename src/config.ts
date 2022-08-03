@@ -15,3 +15,4 @@ export const TEAM_SUGGEST_RANDOM_NUMBER = 4;
 export const REMOVE_LINE_ITEM_NEW_STATE_TIMEOUT = 30000;
 export const MIX_PANEL_PROJECT_TOKEN = process.env.REACT_APP_MIX_PANEL_PROJECT_TOKEN || '';
 export const GET_TARGETS_DASHBOARD_LIMIT = 20;
+export const GRADIENT_DEFAULT = 'linear-gradient(125.45deg, #CA77B3 18.62%, #514EE7 74.47%)';
