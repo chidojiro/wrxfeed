@@ -22,7 +22,7 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
 
   return (
     <OverlayLoader loading={isValidating} className={className}>
-      <div className={clsx('rounded-card shadow-shadowCard bg-white h-[450px] flex flex-col')}>
+      <div className={clsx('rounded-card shadow-card bg-white h-[450px] flex flex-col')}>
         <div className="p-5 flex items-center gap-2 font-semibold text-Gray-3">
           <TargetArrowFilled width={16} height={16} />
           <span>Summary</span>

@@ -21,7 +21,7 @@ export const TeamTargetSummary = ({ departmentId }: TeamTargetSummaryProps) => {
   return (
     <>
       <OverlayLoader loading={isValidating}>
-        <div className="shadow-shadowCard rounded-card bg-white flex p-6">
+        <div className="shadow-card rounded-card bg-white flex p-6">
           <div className="flex items-center">
             <Link to="/dashboard/all-company" className="border-r border-solid pr-5 flex gap-3">
               <div className={clsx('rounded-full bg-Gray-12 p-3 flex items-center justify-center')}>

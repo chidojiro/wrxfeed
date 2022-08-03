@@ -82,7 +82,7 @@ export const TransactionRow = ({ tran, onClick, onView }: TransactionRowProps) =
         ref={viewRef}
         aria-hidden="true"
         className={clsx(
-          'flex flex-row w-full items-center px-2 sm:px-6 py-2 bg-white hover:shadow-topCategoryHover z-10 relative border border-white hover:border-Accent-4',
+          'flex flex-row w-full items-center px-2 sm:px-6 py-2 bg-white hover:shadow-top-category-hover z-10 relative border border-white hover:border-Accent-4',
         )}
         onClick={onClickLineItem}
       >
