@@ -252,17 +252,21 @@ export const LineItemDetails = ({
         </div>
 
         <div className="flex flex-col mt-6 rounded-lg border border-gray-200 p-3 bg-gray-50 w-[524px]">
-          <div className="flex flex-row w-full text-sm text-gray-500 group mb-2">
+          <div className="flex flex-row w-full text-sm text-gray-500 group mb-2 relative">
             <p className="flex-auto text-base font-bold text-Gray-3 mr-2">{item?.description}</p>
-            {!!loading && <Loading className="mx-4" width={12} height={12} />}
-            <div className="hidden group-hover:block h-6">
-              {renderEditLineItemDescriptionButton()}
-            </div>
-            <div className="flex group-hover:hidden h-6">
-              {renderTransactionType()}
-              <p className="text-base text-Gray-3 font-bold text-right">
-                {`${decimalLogic(item?.amountUsd, DecimalType.DetailView, '$')}`}
-              </p>
+            {!!loading && (
+              <Loading className="mx-4 absolute inset-x-0 bottom-0" width={12} height={12} />
+            )}
+            <div className="w-auto 2xl:w-[154px] flex justify-end">
+              <div className="hidden group-hover:block h-6 justify-end">
+                {renderEditLineItemDescriptionButton()}
+              </div>
+              <div className="flex group-hover:hidden h-6">
+                {renderTransactionType()}
+                <p className="text-base text-Gray-3 font-bold text-right">
+                  {`${decimalLogic(item?.amountUsd, DecimalType.DetailView, '$')}`}
+                </p>
+              </div>
             </div>
           </div>
 
