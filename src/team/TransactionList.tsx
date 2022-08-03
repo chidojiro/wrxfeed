@@ -62,7 +62,6 @@ export const TransactionList = ({ className }: TransactionListProps) => {
     { label: 'Vendor', sortKey: 'vendorName' },
     { label: 'Description' },
     { label: 'Category', sortKey: 'categoryName' },
-    { label: 'Expense', sortKey: 'transRecordType' },
     { label: 'Amount', sortKey: 'amountUsd' },
     { label: 'Status', sortKey: 'transStatus' },
   ];
@@ -133,6 +132,12 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                         className="w-6 h-6 flex-shrink-0"
                       />
                       <span>{vendor?.name}</span>
+                      {transRecordType?.toLowerCase() === 'Expense Report'.toLowerCase() ? (
+                        <div className="flex flex-row items-center space-x-1">
+                          <p className="text-Gray-6 text-sm font-normal">·</p>
+                          <p className="text-Accent-2 text-xs font-normal">Expensed</p>
+                        </div>
+                      ) : null}
                     </div>
                   </Table.Cell>
                   <Table.Cell>
@@ -147,14 +152,6 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                     </Tooltip>
                   </Table.Cell>
                   <Table.Cell>{category?.name}</Table.Cell>
-                  <Table.Cell>
-                    {transRecordType?.toLowerCase() === 'Expense Report'.toLowerCase() ? (
-                      <div className="flex flex-row items-center space-x-1">
-                        <p className="text-Gray-6 text-sm font-normal">·</p>
-                        <p className="text-Accent-2 text-xs font-normal">Expensed</p>
-                      </div>
-                    ) : null}
-                  </Table.Cell>
                   <Table.Cell className="text-right">{decimalLogic(amountUsd, '$')}</Table.Cell>
                   <Table.Cell>
                     <StatusTag
