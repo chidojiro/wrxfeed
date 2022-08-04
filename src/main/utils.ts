@@ -522,7 +522,7 @@ export const getTargetPeriodsAmountTotal = (
 } => {
   const curMonth = new Date().getMonth() + 1;
   const curYear = new Date().getFullYear();
-  const { overallTarget, targetToDate } = target.periods.reduce(
+  const { overallTarget, targetToDate } = target?.periods.reduce(
     (sum, targetPeriod) => ({
       overallTarget: sum.overallTarget + (targetPeriod.amount ?? 0),
       targetToDate:

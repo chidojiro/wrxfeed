@@ -1,4 +1,3 @@
-import { RightSmallIcon } from '@/assets';
 import Loading from '@/common/atoms/Loading';
 import { Avatar, Button } from '@/common/components';
 import { useHandler } from '@/common/hooks';
@@ -8,13 +7,7 @@ import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import { FeedRouteType } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
-import {
-  getColorByText,
-  getDisplayUsdAmount,
-  getTargetPeriodsAmountTotal,
-  toMonthName,
-  toUSD,
-} from '@/main/utils';
+import { getColorByText, getDisplayUsdAmount, getTargetPeriodsAmountTotal } from '@/main/utils';
 import { Routes } from '@/routing/routes';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
@@ -46,7 +39,9 @@ export const TargetCard = ({
   chartContainerClass = 'flex-1',
 }: TargetCardProps) => {
   const history = useHistory();
-  const department = target.department;
+  const department = target?.department;
+  const addTargetModalDisclosure = useDisclosure();
+  const { overallTarget = 0, currentSpend = 0, targetToDate } = getTargetPeriodsAmountTotal(target);
 
   const { isLoading: isDeletingTarget, handle: deleteTarget } = useHandler((targetId: number) =>
     TargetApis.delete(targetId),
@@ -56,7 +51,7 @@ export const TargetCard = ({
     history.push(
       `${(Routes.Feed.path as string).replace(
         ':id',
-        `${target.id}?route=${FeedRouteType.TargetFeed}`,
+        `${target?.id}?route=${FeedRouteType.TargetFeed}`,
       )}`,
     );
   };
@@ -66,22 +61,15 @@ export const TargetCard = ({
     e.stopPropagation();
   };
 
-  const { overallTarget, currentSpend, targetToDate, exceeding } =
-    getTargetPeriodsAmountTotal(target);
-
-  const addTargetModalDisclosure = useDisclosure();
-
   const teamHeaderColor: string = React.useMemo(
     () => getColorByText(department?.name ?? '', department?.id, true),
     [department?.id, department?.name],
   );
 
   const handleDeleteClick = async () => {
-    await deleteTarget(target.id);
-    onDeleteSuccess(target.id);
+    await deleteTarget(target?.id);
+    onDeleteSuccess(target?.id);
   };
-
-  const currentMonth = Number(target.spendings && target.spendings[0]?.month);
 
   return (
     <>
@@ -97,7 +85,7 @@ export const TargetCard = ({
       />
       <Button
         onClick={goToTargetDetails}
-        key={target.id}
+        key={target?.id}
         className={clsx(
           'bg-white relative w-full rounded-card shadow-card hover:shadow-target-hover flex flex-col border border-transparent hover:border-Accent-4',
           className,
@@ -116,7 +104,7 @@ export const TargetCard = ({
                   <OptionsButton
                     onViewClick={goToTargetDetails}
                     onEditClick={addTargetModalDisclosure.onOpen}
-                    onDeleteClick={!target.isPrimary && deletable ? handleDeleteClick : undefined}
+                    onDeleteClick={!target?.isPrimary && deletable ? handleDeleteClick : undefined}
                   />
                 </div>
                 <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
@@ -162,32 +150,12 @@ export const TargetCard = ({
                   </p>
                 </div>
               </div>
-              {overallTarget !== 0 && target.trackingStatus ? (
-                <TargetStatus type={target.trackingStatus} exceeding={exceeding} />
-              ) : (
-                <div className="group relative">
-                  <Button
-                    className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex border border-Gray-11"
-                    onClick={(e) => handleSetTarget(e)}
-                  >
-                    <span className="font-medium text-xs">Set target</span>
-                    <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />
-                  </Button>
-                  <div className="invisible group-hover:visible absolute -top-16 right-0 w-56">
-                    <div className="bg-primary p-2 rounded-sm px-4 py-2 space-x-2 flex flex-col text-xs space-y-1">
-                      <p className="text-Gray-12 font-semibold text-left pl-4.5">
-                        {toMonthName(currentMonth)}
-                      </p>
-                      <div className="flex justify-between">
-                        <div className="flex justify-between items-center space-x-1">
-                          <div className="w-1.5 h-1.5 rounded-full bg-Green-400" />
-                          <p className="text-Gray-12">Spend</p>
-                        </div>
-                        <p className="text-Gray-12 font-semibold">{toUSD.format(currentSpend)}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              {!!target.trackingStatus && (
+                <TargetStatus
+                  type={target.trackingStatus}
+                  target={target}
+                  onTargetSet={handleSetTarget}
+                />
               )}
             </div>
           </div>

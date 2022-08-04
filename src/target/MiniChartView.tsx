@@ -32,10 +32,10 @@ export const MiniChartView = <
 }: MiniChartViewProps<T>) => {
   const targetMonths = (() => {
     const { periods = [] } = target;
-    if (!!periods?.length) {
+    if (periods?.length > 0) {
       const dataMonth = cloneDeep(defaultTargetMonths);
 
-      periods.forEach((period: TargetPeriod) => {
+      periods?.forEach((period: TargetPeriod) => {
         if (period?.amount !== undefined && dataMonth[period?.month - 1]) {
           dataMonth[period?.month - 1].amount = period?.amount;
         }
