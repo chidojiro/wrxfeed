@@ -60,7 +60,7 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
       <div className="col-span-3 relative">
         {Array.isArray(comments) && comments.length !== 0 ? (
           <Link
-            className="flex items-center justify-center"
+            className="flex items-center justify-start"
             to={`/feed/${target?.id}?route=TargetFeed`}
           >
             {comments.map((comment, index) => (
@@ -73,9 +73,9 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
             ))}
             <div
               className={clsx('z-50 absolute', {
-                'right-6': comments.length === 3,
-                'right-9': comments.length === 2,
-                'right-12': comments.length === 1,
+                'left-9 xl:right-6': comments.length === 3,
+                'left-6 xl:right-9': comments.length === 2,
+                'left-3 xl:right-12': comments.length === 1,
               })}
             >
               <CommentIcon className="text-Gray-7 h-5 w-5" />
