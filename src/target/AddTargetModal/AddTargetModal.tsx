@@ -185,8 +185,6 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
   );
   const { spendings: spendingsRaw = EMPTY_ARRAY, trackingStatus } = data ?? {};
 
-  console.log(data);
-
   const spendings = new Array(12)
     .fill(null)
     .map((_, index) => {
@@ -322,8 +320,6 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
   };
 
   const handleDelete = deleteTarget;
-
-  console.log(trackingStatus);
 
   return (
     <Modal open={open} onClose={onClose} center={false}>
