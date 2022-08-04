@@ -44,7 +44,7 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
   return (
     <Button
       onClick={handleClick}
-      className="grid grid-cols-11 items-center w-full py-0.5 px-2 border-b border-Gray-28 text-xs text-center list-row-hover"
+      className="grid grid-cols-12 items-center w-full py-0.5 px-2 border-b border-Gray-28 text-xs text-center list-row-hover"
     >
       <div className="col-span-5 flex items-center gap-2 text-Gray-3 text-left">
         <div
@@ -57,15 +57,15 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
       </div>
       <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(spends)}</div>
       <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(targetSpends)}</div>
-      <div className="col-span-2 relative">
-        {comments.length !== 0 ? (
+      <div className="col-span-3 relative">
+        {Array.isArray(comments) && comments.length !== 0 ? (
           <Link
             className="flex items-center justify-center"
             to={`/feed/${target?.id}?route=TargetFeed`}
           >
             {comments.map((comment, index) => (
               <Avatar
-                className={`z-${index * 10} absolute left-0 ml-${index * 3}`}
+                className={`z-${index * 10} absolute left-0 ml-${index * 3} border-2 border-white`}
                 key={comment.user.id}
                 src={String(comment.user.avatar)}
                 fullName={String(comment.user.fullName)}
@@ -73,13 +73,13 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
             ))}
             <div
               className={clsx('z-50 absolute', {
-                'right-0': comments.length === 3,
-                'right-2.5': comments.length === 2,
-                'right-5': comments.length === 1,
+                'right-6': comments.length === 3,
+                'right-9': comments.length === 2,
+                'right-12': comments.length === 1,
               })}
             >
-              <CommentIcon className="text-Gray-7" />
-              <div className="absolute top-0.5 left-1/2 transform -translate-x-1/2 text-Gray-3 text-xs">
+              <CommentIcon className="text-Gray-7 h-5 w-5" />
+              <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-Gray-3 text-2xs">
                 {comments.length}
               </div>
             </div>

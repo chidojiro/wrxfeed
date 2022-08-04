@@ -142,10 +142,10 @@ export interface Comment {
   content: string;
   attachment: string;
   user: User;
-  item: FeedItem;
+  item: SummaryFeedItem;
 }
 
-export interface FeedItem {
+export interface SummaryFeedItem {
   id: number;
   category: string;
   replyCount: number;
