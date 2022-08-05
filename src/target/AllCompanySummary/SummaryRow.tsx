@@ -1,12 +1,14 @@
 import { CommentIcon } from '@/assets';
-import { Avatar, Button } from '@/common/components';
+import { Button } from '@/common/components';
+import { AvatarProps } from '@/common/components/Avatar/Avatar';
+import { AvatarGroup } from '@/common/components/AvatarGroup/AvatarGroup';
 import { useHandler } from '@/common/hooks';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Comment, DepartmentSummary, TargetStatusType } from '../types';
+import { DepartmentSummary, TargetStatusType } from '../types';
 
 type SummaryRowProps = {
   data: DepartmentSummary;
@@ -25,25 +27,6 @@ const getStatusColor = (status?: TargetStatusType) => {
   }
 };
 
-const AvatarGroup = ({ comments }: { comments: Comment[] }) => {
-  return (
-    <>
-      {comments.map((comment, index) => (
-        <Avatar
-          className={clsx(` absolute left-0 border-2 border-white`, {
-            'z-10 ml-3': index === 1,
-            'z-20 ml-6': index === 2,
-            'z-30 ml-9': index === 3,
-          })}
-          key={comment.user.id}
-          src={comment.user.avatar as string}
-          fullName={comment.user.fullName as string}
-        />
-      ))}
-    </>
-  );
-};
-
 export const SummaryRow = ({ data: { comments, id, name, spends, target } }: SummaryRowProps) => {
   const history = useHistory();
 
@@ -59,6 +42,20 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
   };
 
   const targetSpends = target?.periods?.reduce((acc, cur) => acc + (cur.amount ?? 0), 0);
+
+  const avatars: AvatarProps[] = comments.map((comment) => ({
+    src: comment?.user?.avatar,
+    fullName: comment?.user?.fullName ?? '',
+  }));
+
+  const TrailingIcon = (
+    <div>
+      <CommentIcon className="text-Gray-7 h-5 w-5" />
+      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-Gray-3 text-2xs">
+        {comments.length}
+      </div>
+    </div>
+  );
 
   return (
     <Button
@@ -82,19 +79,7 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
             className="flex items-center justify-start"
             to={`/feed/${target?.id}?route=TargetFeed`}
           >
-            <AvatarGroup comments={comments} />
-            <div
-              className={clsx('z-50 absolute', {
-                'left-9 xl:right-6': comments.length === 3,
-                'left-6 xl:right-9': comments.length === 2,
-                'left-3 xl:right-12': comments.length === 1,
-              })}
-            >
-              <CommentIcon className="text-Gray-7 h-5 w-5" />
-              <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-Gray-3 text-2xs">
-                {comments.length}
-              </div>
-            </div>
+            <AvatarGroup trailingComponent={TrailingIcon} items={avatars} />
           </Link>
         ) : (
           '--'
