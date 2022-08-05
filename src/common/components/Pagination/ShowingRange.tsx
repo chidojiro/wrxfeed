@@ -1,12 +1,10 @@
-import { HTMLDivProps } from '../../../types';
+import { HTMLDivProps } from '@/common/types';
 import React from 'react';
-import { PaginationContext } from '../Pagination';
+import { PaginationContext } from './Pagination';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type Props = HTMLDivProps & {};
+type PaginationShowingRangeProps = HTMLDivProps;
 
-// eslint-disable-next-line no-empty-pattern
-export const ShowingRange = ({ ...restProps }: Props) => {
+export const ShowingRange = ({ ...restProps }: PaginationShowingRangeProps) => {
   const { showingRange } = React.useContext(PaginationContext);
 
   return (

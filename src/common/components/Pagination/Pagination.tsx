@@ -1,11 +1,10 @@
 import { HTMLDivProps } from '../../types';
 import { usePagination, UsePaginationProps, UsePaginationReturn } from '../../hooks';
 import React from 'react';
-import { Items } from './Items';
+import { PaginationItems } from './PaginationItems';
 import { ShowingRange } from './ShowingRange';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export type Props = UsePaginationProps & HTMLDivProps & {};
+export type PaginationProps = UsePaginationProps & HTMLDivProps;
 
 type PaginationProviderValue = UsePaginationReturn;
 
@@ -24,7 +23,7 @@ export const Pagination = ({
   perPage,
   sideItemsCount,
   ...restProps
-}: Props) => {
+}: PaginationProps) => {
   const usePaginationReturn = usePagination({
     totalRecord,
     centerItemsCount,
@@ -39,12 +38,12 @@ export const Pagination = ({
   if (!children)
     return (
       <PaginationContext.Provider value={providerValue}>
-        <Items {...restProps} />
+        <PaginationItems {...restProps} />
       </PaginationContext.Provider>
     );
 
   return <PaginationContext.Provider value={providerValue}>{children}</PaginationContext.Provider>;
 };
 
-Pagination.Items = Items;
+Pagination.Items = PaginationItems;
 Pagination.ShowingRange = ShowingRange;

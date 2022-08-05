@@ -170,12 +170,14 @@ export const TransactionList = ({ className }: TransactionListProps) => {
           </Table>
         </OverlayLoader>
       </Table.OverflowContainer>
-      <Pagination
-        className="mt-2 flex justify-end"
-        totalRecord={transactions.length}
-        sideItemsCount={2}
-        perPage={1}
-      />
+      {!!transactions.length && (
+        <Pagination totalRecord={transactions.length} sideItemsCount={2} perPage={10} page={1}>
+          <div className="flex items-center justify-between mt-4">
+            <Pagination.ShowingRange />
+            <Pagination.Items />
+          </div>
+        </Pagination>
+      )}
     </div>
   );
 };
