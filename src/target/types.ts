@@ -44,7 +44,7 @@ export type DepartmentSummary = {
   name: string;
   target?: Target;
   spends: number;
-  commentCount: number;
+  comments: Comment[];
 };
 
 export type TargetSummaries = {
@@ -84,6 +84,7 @@ export enum TargetStatusType {
   OnTrack = 'ON_TRACK',
   AtRisk = 'AT_RISK',
   Exceeded = 'EXCEEDED',
+  NotSet = 'NOT_SET',
 }
 
 export type TargetSpending = {
@@ -109,6 +110,12 @@ export const TargetStatusConfig = {
     label: '#991B1B',
     background: '#FFC6C6',
     dot: '#F87171',
+    name: 'Exceeded',
+  },
+  [TargetStatusType.NotSet]: {
+    label: '#7D8490',
+    background: '#D1FAE5',
+    dot: '#7D8490',
     name: 'Exceeded',
   },
 };
@@ -137,3 +144,17 @@ export interface TargetByTeam {
   department: Department;
   targets: Target[];
 }
+
+export type Comment = {
+  content: string;
+  attachment: string;
+  user: User;
+  item: SummaryFeedItem;
+};
+
+export type SummaryFeedItem = {
+  id: number;
+  category: string;
+  replyCount: number;
+  department: Department;
+};

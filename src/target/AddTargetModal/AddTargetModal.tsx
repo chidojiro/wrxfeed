@@ -179,10 +179,11 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
   const isValidPeriods = (periods: TargetPeriod[]) =>
     periods.some((v: TargetPeriod) => !AssertUtils.isNullOrUndefined(v.amount));
 
-  const { isValidating: isValidatingSpendings, data: spendingsRaw = EMPTY_ARRAY } = useFetcher(
-    !!targetProps.length && isValidPeriods(periods) && ['targetSpending', targetProps],
+  const { isValidating: isValidatingSpendings, data } = useFetcher(
+    !!targetProps.length && isValidPeriods(periods) && ['targetSpending', targetProps, periods],
     () => TargetApis.getSpending({ props: targetProps, periods }),
   );
+  const { spendings: spendingsRaw = EMPTY_ARRAY, trackingStatus } = data ?? {};
 
   const spendings = new Array(12)
     .fill(null)
@@ -401,7 +402,7 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
                       props: targetProps,
                       periods,
                       spendings,
-                      trackingStatus: target?.trackingStatus,
+                      trackingStatus: trackingStatus ?? target?.trackingStatus,
                     }}
                     overallTarget={isValidPeriods(periods) ? 1 : 0}
                   />

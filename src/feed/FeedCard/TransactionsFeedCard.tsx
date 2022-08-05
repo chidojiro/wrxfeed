@@ -195,7 +195,7 @@ export const TransactionsFeedCard = React.memo(
             </div>
           </div>
           {feed.transactions?.length > 0 && <TransactionsSection feed={feed} defaultExpand />}
-          <CommentsSection feed={feed} />
+          {!feed.isFallback && <CommentsSection feed={feed} />}
         </article>
         <ConfirmModal
           open={hideCategoryConfirmModalDisclosure.isOpen}

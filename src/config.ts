@@ -17,3 +17,4 @@ export const MIX_PANEL_PROJECT_TOKEN = process.env.REACT_APP_MIX_PANEL_PROJECT_T
 export const GET_TARGETS_DASHBOARD_LIMIT = 20;
 
 export const IS_TEST = process.env.NODE_ENV === 'test';
+export const GRADIENT_DEFAULT = 'linear-gradient(125.45deg, #CA77B3 18.62%, #514EE7 74.47%)';

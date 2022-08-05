@@ -8,7 +8,7 @@ import { GetNotificationsParams } from './types';
 const getList = (params?: GetNotificationsParams) =>
   RestApis.get<AxiosResponse<Notification[]>>('/noti/notifications', {
     params: withDefaultPaginationParams(params),
-    headers: { [BYPASS_INTERCEPTOR_HEADER]: 'true' },
+    headers: BYPASS_INTERCEPTOR_HEADER,
   }).then((res) => ({
     notifications: res.data,
     unreadCount: parseInt(res.headers['x-unread-count'], 10),

@@ -2,6 +2,7 @@ import { OverlayLoader } from '@/common/components';
 import { MainLayout } from '@/layout/MainLayout';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { TeamHeader } from './TeamHeader';
 import { TeamTargetSummary } from './TeamTargetSummary';
@@ -19,7 +20,7 @@ export const TeamPage = () => {
       rightSide={false}
     >
       <h1 className="sr-only">Department list</h1>
-      <TeamHeader departmentId={departmentId} teamName={target?.department?.name} />
+      <TeamHeader departmentId={departmentId} />
       <div className="grid grid-cols-9 gap-6 mt-6">
         <OverlayLoader loading={isValidatingTarget} className="col-span-9 lg:col-span-5">
           <TargetCard

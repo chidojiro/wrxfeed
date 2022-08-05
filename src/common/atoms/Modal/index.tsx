@@ -26,6 +26,8 @@ const Modal: React.FC<ModalProps> = ({
     setDelayableOpen(!!open, !open);
   }, [open, setDelayableOpen]);
 
+  useScrollDisable(delayableOpen);
+
   if (!delayableOpen) return null;
 
   return (

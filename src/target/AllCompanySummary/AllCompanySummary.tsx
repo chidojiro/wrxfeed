@@ -22,23 +22,24 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
 
   return (
     <OverlayLoader loading={isValidating} className={className}>
-      <div className={clsx('rounded-card shadow-shadowCard bg-white h-[450px] flex flex-col')}>
+      <div className={clsx('rounded-card shadow-card bg-white h-[450px] flex flex-col')}>
         <div className="p-5 flex items-center gap-2 font-semibold text-Gray-3">
           <TargetArrowFilled width={16} height={16} />
           <span>Summary</span>
         </div>
         <div
           className={clsx(
-            'grid grid-cols-10',
+            'grid grid-cols-12',
             'text-center font-semibold text-2xs',
             'border-t border-b border-Gray-28',
-            'py-2.5 px-1',
+            'py-2.5 px-1 shadow-md',
           )}
           style={{ paddingRight: summaryListScrollbarWidth }}
         >
           <div className="pl-2 col-span-5 text-left">Team</div>
           <div className="col-span-2">Spend</div>
           <div className="col-span-2">Target</div>
+          <div className="col-span-2">Comments</div>
         </div>
         <div className="overflow-auto flex-1 pb-5 p-px" ref={summaryListRef}>
           {summaries.map((summary) => (

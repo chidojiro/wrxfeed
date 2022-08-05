@@ -1,4 +1,6 @@
 import { RestApis } from '@/rest/apis';
+import { BYPASS_INTERCEPTOR_HEADER } from '@/rest/constants';
+import { AxiosResponse } from 'axios';
 import {
   CreateTargetPayload,
   GetTargetsParams,
@@ -33,11 +35,18 @@ const deleteEndpoint = (id: number) => `/target/targets/${id}`;
 const _delete = (id: number) => RestApis.delete(deleteEndpoint(id));
 
 const getSpendingEndpoint = () => '/target/spending';
-const getSpending = (params: GetTargetSpendingParams): Promise<TargetSpending[]> => {
-  return RestApis.patch<TargetSpending[]>(getSpendingEndpoint(), {
-    ...params,
-    periods: getFullYearPeriods(params.periods),
-  });
+const getSpending = (params: GetTargetSpendingParams) => {
+  return RestApis.patch<AxiosResponse<TargetSpending[]>>(
+    getSpendingEndpoint(),
+    {
+      ...params,
+      periods: getFullYearPeriods(params.periods),
+    },
+    { headers: BYPASS_INTERCEPTOR_HEADER },
+  ).then((res) => ({
+    spendings: res.data,
+    trackingStatus: res.headers['x-tracking-status'] as Target['trackingStatus'],
+  }));
 };
 
 const getSummariesEndpoint = () => '/target/summaries';

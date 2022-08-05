@@ -120,7 +120,7 @@ export const TagsSelect: TagsSelectComponent = React.forwardRef(
           <div
             className={clsx(
               StringUtils.withProjectClassNamePrefix('tags-select'),
-              'shadow-shadowCard border border-Gray-11 px-6 py-4 bg-white',
+              'shadow-card border border-Gray-11 px-6 py-4 bg-white',
               'w-[400px] max-h-[240px] overflow-hidden',
               'flex flex-col',
             )}
