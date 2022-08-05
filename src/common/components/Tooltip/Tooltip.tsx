@@ -1,3 +1,4 @@
+import { useOnMouseOverOutside } from '@/common/hooks';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';
@@ -18,20 +19,25 @@ export const Tooltip = ({
 }: TooltipProps) => {
   const disclosure = useDisclosure();
 
-  const clonedTrigger = React.useMemo(() => {
-    return React.cloneElement(trigger as any, {
-      onMouseEnter: disclosure.onOpen,
-      onMouseLeave: disclosure.onClose,
-    });
-  }, [disclosure.onOpen, disclosure.onClose, trigger]);
+  const triggerRef = React.useRef<HTMLDivElement>(null);
+
+  useOnMouseOverOutside(triggerRef, disclosure.onClose);
+
+  const wrappedTrigger = (
+    <div>
+      <div ref={triggerRef} onMouseEnter={disclosure.onOpen} onMouseLeave={disclosure.onClose}>
+        {trigger}
+      </div>
+    </div>
+  );
 
   // Do not show popover yet to avoid dom mutation
-  if (!disclosure.isOpen) return <>{clonedTrigger}</>;
+  if (!disclosure.isOpen) return wrappedTrigger;
 
   return (
     <Popover
       open={disclosure.isOpen}
-      trigger={clonedTrigger}
+      trigger={wrappedTrigger}
       placement={placement}
       offset={[0, 8]}
       {...restProps}
