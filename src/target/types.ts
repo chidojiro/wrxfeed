@@ -124,7 +124,7 @@ export type Target = {
   id: number;
   isPrimary?: boolean;
   name: string | null;
-  creator: User;
+  creator?: User;
   updatedBy: User;
   updatedAt?: string;
   lastInteraction?: string;

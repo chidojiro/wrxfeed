@@ -1,5 +1,5 @@
 import { AuthUtils } from '@/auth/utils';
-import { API_BASE_URL } from '@/config';
+import { API_BASE_URL, IS_TEST } from '@/config';
 import { ApiErrorCode } from '@/error';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { ApiError } from './../error/types';
@@ -8,6 +8,14 @@ import { BYPASS_INTERCEPTOR_HEADER_KEY } from './constants';
 const myAxios = axios.create({
   baseURL: API_BASE_URL ?? '/api',
   withCredentials: false,
+});
+
+myAxios.interceptors.request.use(function (config) {
+  if (IS_TEST) {
+    config.baseURL = '';
+  }
+
+  return config;
 });
 
 myAxios.interceptors.response.use(
