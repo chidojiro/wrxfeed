@@ -103,6 +103,8 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
     );
   };
 
+  const displayNewNotifyCount = newNotifyCount > 99 ? '99+' : newNotifyCount;
+
   const renderNotifyIconWithBell = () => {
     return (
       <div className="flex h-8 w-8 justify-center items-center rounded-full focus:outline-none hover:ring-2 ring-offset-2 ring-rose-500">
@@ -110,7 +112,13 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
         {newNotifyCount !== 0 && (
           <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
             {showNumberNotify && (
-              <div className="flex text-white font-semibold text-3xs">{newNotifyCount}</div>
+              <div
+                className={clsx('flex text-white font-semibold text-3xs', {
+                  'text-[9px]': newNotifyCount > 10,
+                })}
+              >
+                {displayNewNotifyCount}
+              </div>
             )}
           </div>
         )}
