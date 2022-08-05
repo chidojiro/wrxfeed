@@ -30,7 +30,7 @@ export const TargetFeedCard = React.memo(
     const renderEditorAvatar = (target: Target) => {
       const updaterName = target?.updatedBy?.fullName ?? '';
       return (
-        <div className="flex w-6 h-6 group relative">
+        <div className="flex w-6 h-6 group relative rounded-card">
           <UserAvatar user={target?.updatedBy} />
           {typeof updaterName === 'string' && updaterName?.length > 0 && (
             <div className="invisible group-hover:visible absolute -top-10 left-0">
@@ -120,7 +120,7 @@ export const TargetFeedCard = React.memo(
           </div>
           <TargetFeedOverview target={feed.target} handleSetTarget={handleSetTarget} />
           {!!feed.transactions.length && <TransactionsSection feed={feed} />}
-          <CommentsSection feed={feed} />
+          {!feed.isFallback && <CommentsSection feed={feed} />}
         </article>
         <FeedBackModal
           open={isOpenFeedbackModal}
