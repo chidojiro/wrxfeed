@@ -16,6 +16,7 @@ export type FeedItem = {
   lastInteraction: string;
   target: Target;
   hidden?: boolean;
+  isFallback?: boolean;
 };
 
 export enum FeedRouteType {

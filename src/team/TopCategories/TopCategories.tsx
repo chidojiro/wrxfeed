@@ -69,7 +69,7 @@ export const TopCategories = () => {
 
   return (
     <OverlayLoader loading={isValidating}>
-      <div className="shadow-shadowCard rounded-card bg-white">
+      <div className="shadow-card rounded-card bg-white">
         <div className="flex items-center justify-between p-5 border-b border-gray-28">
           <div className="flex gap-2 items-center font-semibold">
             <CategoryIcon />

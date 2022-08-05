@@ -52,7 +52,7 @@ const TargetBoardSummaries: React.FC<TargetBoardSummariesProps> = ({ className =
         return (
           <div
             key={item.id}
-            className="h-24 flex flex-row dashboard:my-0 items-center px-4 space-x-4.5 rounded-card bg-white shadow-shadowCard"
+            className="h-24 flex flex-row dashboard:my-0 items-center px-4 space-x-4.5 rounded-card bg-white shadow-card"
           >
             <div className="w-14 h-14 rounded-full bg-Gray-12 flex justify-center items-center">
               {IconInfo && (

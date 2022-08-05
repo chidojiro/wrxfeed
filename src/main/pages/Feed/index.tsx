@@ -1,8 +1,9 @@
-import Loading from '@/common/atoms/Loading';
+import { OverlayLoader } from '@/common/components';
 import { useHandler, useLegacyQuery, useNavUtils } from '@/common/hooks';
 import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
 import { FeedApis } from '@/feed/apis';
+import { fallbackFeed } from '@/feed/constants';
 import { FeedCard } from '@/feed/FeedCard';
 import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { MainLayout } from '@/layout/MainLayout';
@@ -23,6 +24,7 @@ export const FeedPage: React.FC = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const errorHandler = useErrorHandler();
   const route = query.get('route');
+  const [error, setError] = useState(false);
 
   const feedId = +params.id;
 
@@ -45,6 +47,7 @@ export const FeedPage: React.FC = () => {
         } else {
           toast.error(error.details?.message);
           errorHandler(error);
+          setError(true);
         }
       }
     } finally {
@@ -94,15 +97,7 @@ export const FeedPage: React.FC = () => {
   const { handle: deleteTarget } = useHandler(TargetApis.delete, { onSuccess: goBackToDashboard });
 
   const renderFeed = () => {
-    if (isLoading) {
-      return (
-        <div className="flex flex-1 w-full h-[300px] justify-center items-center">
-          <Loading width={60} height={60} />
-        </div>
-      );
-    }
-
-    if (!feedItem) {
+    if (error) {
       return (
         <div className="flex flex-1 w-full h-[300px] justify-center items-center px-16">
           <span className="flex text-2xl text-Gray-1 font-semibold text-center">
@@ -116,12 +111,14 @@ export const FeedPage: React.FC = () => {
 
     return (
       <div className="w-full h-full overflow-scroll hide-scrollbar">
-        <FeedCard
-          feed={feedItem}
-          categoryRedirectHref={(category) => `/categories/${category?.id.toString()}`}
-          onDeleteTarget={deleteTarget}
-          onUpdateTarget={updateTarget}
-        />
+        <OverlayLoader loading={isLoading}>
+          <FeedCard
+            feed={feedItem ?? fallbackFeed}
+            categoryRedirectHref={(category) => `/categories/${category?.id.toString()}`}
+            onDeleteTarget={deleteTarget}
+            onUpdateTarget={updateTarget}
+          />
+        </OverlayLoader>
         <LineItemDrawer
           open={isLineItemDrawerOpen}
           onClose={closeLineItemDrawer}

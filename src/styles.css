@@ -17,7 +17,7 @@
 
 @layer utilities {
   .list-row-hover {
-    @apply hover:ring-1 hover:ring-Accent-4 hover:shadow-targetHover
+    @apply hover:ring-1 hover:ring-Accent-4 hover:shadow-target-hover
   }
 
   .invisible-scrollbar {

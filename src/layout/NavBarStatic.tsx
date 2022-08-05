@@ -83,6 +83,7 @@ export const NavBarStatic = ({
   return (
     <Popover
       as="header"
+      id="app-header"
       className={({ open }) => {
         return clsx(
           open ? 'inset-0 overflow-y-auto' : '',

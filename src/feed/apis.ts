@@ -53,7 +53,7 @@ const getUnreadLineItemsCount = async (params?: Omit<GetFeedsParams, keyof Pagin
 
   const res = await RestApis.get<AxiosResponse<Category[]>>(`/feed/items`, {
     params: { dep, rootDep, cat, vend, limit: 1, offset: 0, ...restParams },
-    headers: { [BYPASS_INTERCEPTOR_HEADER]: 'true' },
+    headers: BYPASS_INTERCEPTOR_HEADER,
   });
 
   return parseInt(res.headers['x-unread-count'], 10);

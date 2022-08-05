@@ -1,5 +1,6 @@
 import { EyeHideIcon } from '@/assets';
 import { distanceToNow } from '@/common/utils';
+import { GRADIENT_DEFAULT } from '@/config';
 import UserAvatar from '@/main/atoms/UserAvatar';
 import { FeedItem, Visibility } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
@@ -26,12 +27,10 @@ export const TargetFeedCard = React.memo(
     const addTargetModalDisclosure = useDisclosure();
     const isHidden = feed?.category !== null && feed?.category?.visibility === Visibility.HIDDEN;
 
-    const gradientBg = 'linear-gradient(125.45deg, #CA77B3 18.62%, #514EE7 74.47%)';
-
     const renderEditorAvatar = (target: Target) => {
       const updaterName = target?.updatedBy?.fullName ?? '';
       return (
-        <div className="flex w-6 h-6 group relative">
+        <div className="flex w-6 h-6 group relative rounded-card">
           <UserAvatar user={target?.updatedBy} />
           {typeof updaterName === 'string' && updaterName?.length > 0 && (
             <div className="invisible group-hover:visible absolute -top-10 left-0">
@@ -63,6 +62,11 @@ export const TargetFeedCard = React.memo(
       );
     };
 
+    const handleSetTarget = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
+      addTargetModalDisclosure.onOpen();
+      e.stopPropagation();
+    };
+
     return (
       <>
         <article
@@ -74,7 +78,7 @@ export const TargetFeedCard = React.memo(
             <div
               className="h-4 w-full rounded-t-card"
               style={{
-                background: gradientBg,
+                background: GRADIENT_DEFAULT,
               }}
             />
             <div
@@ -114,9 +118,9 @@ export const TargetFeedCard = React.memo(
               </div>
             </div>
           </div>
-          <TargetFeedOverview target={feed.target} />
+          <TargetFeedOverview target={feed.target} handleSetTarget={handleSetTarget} />
           {!!feed.transactions.length && <TransactionsSection feed={feed} />}
-          <CommentsSection feed={feed} />
+          {!feed.isFallback && <CommentsSection feed={feed} />}
         </article>
         <FeedBackModal
           open={isOpenFeedbackModal}

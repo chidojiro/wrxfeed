@@ -35,7 +35,7 @@ const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
   return (
     <Button
       className={clsx(
-        'flex justify-center items-center space-x-3 px-20 h-16 bg-primary text-xl text-white rounded-sm disabled:opacity-50',
+        'flex justify-center items-center space-x-3 px-10 h-14 bg-primary text-base text-white rounded disabled:opacity-50',
         className,
       )}
       ref={ref as any}
