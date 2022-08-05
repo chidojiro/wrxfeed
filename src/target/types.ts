@@ -138,16 +138,16 @@ export interface TargetByTeam {
   targets: Target[];
 }
 
-export interface Comment {
+export type Comment = {
   content: string;
   attachment: string;
   user: User;
   item: SummaryFeedItem;
-}
+};
 
-export interface SummaryFeedItem {
+export type SummaryFeedItem = {
   id: number;
   category: string;
   replyCount: number;
   department: Department;
-}
+};

@@ -6,7 +6,7 @@ import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { DepartmentSummary, TargetStatusType } from '../types';
+import { Comment, DepartmentSummary, TargetStatusType } from '../types';
 
 type SummaryRowProps = {
   data: DepartmentSummary;
@@ -23,6 +23,25 @@ const getStatusColor = (status?: TargetStatusType) => {
     default:
       return 'bg-transparent';
   }
+};
+
+const AvatarGroup = ({ comments }: { comments: Comment[] }) => {
+  return (
+    <>
+      {comments.map((comment, index) => (
+        <Avatar
+          className={clsx(` absolute left-0 border-2 border-white`, {
+            'z-10 ml-3': index === 1,
+            'z-20 ml-6': index === 2,
+            'z-30 ml-9': index === 3,
+          })}
+          key={comment.user.id}
+          src={comment.user.avatar as string}
+          fullName={comment.user.fullName as string}
+        />
+      ))}
+    </>
+  );
 };
 
 export const SummaryRow = ({ data: { comments, id, name, spends, target } }: SummaryRowProps) => {
@@ -63,14 +82,7 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
             className="flex items-center justify-start"
             to={`/feed/${target?.id}?route=TargetFeed`}
           >
-            {comments.map((comment, index) => (
-              <Avatar
-                className={`z-${index * 10} absolute left-0 ml-${index * 3} border-2 border-white`}
-                key={comment.user.id}
-                src={String(comment.user.avatar)}
-                fullName={String(comment.user.fullName)}
-              />
-            ))}
+            <AvatarGroup comments={comments} />
             <div
               className={clsx('z-50 absolute', {
                 'left-9 xl:right-6': comments.length === 3,
