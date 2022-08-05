@@ -1,3 +1,4 @@
+import LoadingFallback from '@/common/atoms/LoadingFallback';
 import { MainLayout } from '@/layout/MainLayout';
 import { useProfile } from '@/profile/useProfile';
 import React from 'react';
@@ -13,14 +14,18 @@ export const ProtectedRoute = ({ path, component, permissions }: ProtectedRouteP
 
   const isAccessible = !permissions || profile?.roles?.some((role) => permissions?.includes(role));
 
-  if (isInitializingProfile) return <MainLayout />;
+  if (isInitializingProfile) {
+    if (path === '/onboarding') return <LoadingFallback />;
+
+    return <MainLayout />;
+  }
 
   if (!isAccessible) {
     return <NoPermission />;
   }
 
   return (
-    <React.Suspense fallback={<MainLayout />}>
+    <React.Suspense fallback={path === '/onboarding' ? <LoadingFallback /> : <MainLayout />}>
       <Route path={path} component={component} exact />
     </React.Suspense>
   );

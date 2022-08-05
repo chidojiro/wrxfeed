@@ -7,7 +7,6 @@ import { Department } from '@/main/entity';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import { useSubscription } from '@/subscription/useSubscription';
 import { useSubscribe } from '@/subscription/useSubscribe';
 import { useUnsubscribe } from '@/subscription/useUnsubscribe';
@@ -64,30 +63,11 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
   const textColor = isFollowed ? 'text-white' : 'text-Gray-3';
 
   const onClickFollowDepartment = async () => {
-    if (!enableAction) {
-      toast.warn('Please wait a minute!');
-      return;
-    }
-
-    // const deptChild: Department[] = await ApiClient.getDepartments({
-    //   parent: dept.id,
-    //   ...INIT_PAGINATION,
-    // });
-    // setChilds(deptChild);
-
     if (isFollowed) {
-      if (isUnsubscribing) {
-        toast.warn('Please wait a minute!');
-        return;
-      }
-      unsubscribe({ departments: [dept, ...childs] });
+      unsubscribe('departments', [dept, ...childs]);
       if (onUnfollow) onUnfollow(dept);
     } else {
-      if (isSubscribing) {
-        toast.warn('Please wait a minute!');
-        return;
-      }
-      subscribe({ departments: [dept, ...childs] });
+      subscribe('departments', [dept, ...childs]);
       if (onFollow) onFollow(dept);
     }
   };
@@ -117,6 +97,7 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
     if (!enableUnfollowUserDept && isUserDepartment) return null;
     return (
       <Button
+        disabled={isSubscribing || isUnsubscribing}
         onClick={onClickFollowDepartment}
         className={clsx(
           'flex flex-row items-center px-3 py-2 space-x-1.5 rounded-full border border-transparent',
