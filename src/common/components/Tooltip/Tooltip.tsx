@@ -1,3 +1,4 @@
+import { useOnMouseOverOutside } from '@/common/hooks';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';
@@ -18,30 +19,35 @@ export const Tooltip = ({
 }: TooltipProps) => {
   const disclosure = useDisclosure();
 
-  const clonedTrigger = React.useMemo(() => {
-    return React.cloneElement(trigger as any, {
-      onMouseEnter: disclosure.onOpen,
-      onMouseLeave: disclosure.onClose,
-    });
-  }, [disclosure.onOpen, disclosure.onClose, trigger]);
+  const triggerRef = React.useRef<HTMLDivElement>(null);
+
+  useOnMouseOverOutside(triggerRef, disclosure.onClose);
+
+  const wrappedTrigger = (
+    <div>
+      <div ref={triggerRef} onMouseEnter={disclosure.onOpen} onMouseLeave={disclosure.onClose}>
+        {trigger}
+      </div>
+    </div>
+  );
 
   // Do not show popover yet to avoid dom mutation
-  if (!disclosure.isOpen) return <>{clonedTrigger}</>;
+  if (!disclosure.isOpen) return wrappedTrigger;
 
   return (
     <Popover
       open={disclosure.isOpen}
-      trigger={clonedTrigger}
+      trigger={wrappedTrigger}
       placement={placement}
       offset={[0, 8]}
       {...restProps}
     >
       <div>
         <div className="flex flex-col items-center">
-          <span className="z-10 p-2 text-xs leading-none text-white whitespace-no-wrap bg-gray-600 shadow-lg rounded">
+          <span className="z-10 p-2 text-2xs leading-none text-white whitespace-no-wrap bg-primary shadow-lg rounded-sm">
             {children}
           </span>
-          <div className={clsx('w-3 h-3 -mt-2 rotate-45 bg-gray-600', arrowClassName)} />
+          <div className={clsx('w-3 h-3 -mt-2 rotate-45 bg-primary', arrowClassName)} />
         </div>
       </div>
     </Popover>

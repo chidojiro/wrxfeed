@@ -1,53 +1,50 @@
+import { AssertUtils } from '@/common/utils';
 import React from 'react';
-import { isFunction } from 'lodash-es';
 
-import { Fn } from '../types';
-
-export type UseControllableProps<T = any> = {
-  value?: T;
-  defaultValue?: T;
-  onChange?: (e: any) => void;
+type UseControllableProps<TValue, TOnChangeValue> = {
+  value?: TValue;
+  defaultValue: TValue;
+  onChange?: (valueOrEvent: TOnChangeValue) => void;
 };
 
-export const useControllable = <T>({
+export type SetControllableState<TInternalValue, TOnChangeValue> = (params: {
+  internal: TInternalValue | ((value: TInternalValue) => TInternalValue);
+  external: TOnChangeValue;
+}) => void;
+
+export const useControllable = <TValue, TOnChangeValue>({
   value: valueProp,
   onChange,
   defaultValue,
-}: UseControllableProps<T>): any => {
-  const isControlled = valueProp !== undefined && valueProp !== null;
-  const prevValueRef = React.useRef(valueProp);
+}: UseControllableProps<TValue, TOnChangeValue>) => {
+  const isControlled = !AssertUtils.isNullOrUndefined(valueProp);
+  const prevValueRef = React.useRef(defaultValue);
 
-  const [value, setValue] = React.useState(defaultValue);
+  const [internalState, setInternalState] = React.useState(defaultValue);
 
-  const _setValue = React.useCallback(
-    (event: T | React.ChangeEvent<any> | Fn) => {
-      const _value = (event as React.ChangeEvent<any>).target?.value ?? event;
-
-      if (isFunction(event)) {
-        setValue(event(value));
-      } else {
-        setValue(_value);
-      }
-
-      onChange?.(event);
-    },
-    [onChange, value],
+  const state = React.useMemo(
+    () => (isControlled ? valueProp : internalState),
+    [internalState, isControlled, valueProp],
   );
 
-  const UncontrolledState = React.useMemo(() => [value, _setValue], [_setValue, value]);
+  const setState: SetControllableState<TValue, TOnChangeValue> = React.useCallback(
+    ({ internal, external }) => {
+      const internalState = AssertUtils.isFunction(internal)
+        ? internal(prevValueRef.current)
+        : internal;
 
-  if (isControlled) {
-    const _setValue = (e: any) => {
-      let _newValue = e;
+      if (!isControlled) {
+        setInternalState(internalState);
+      }
+      onChange?.(external);
 
-      if (isFunction(e)) _newValue = e(prevValueRef.current);
+      prevValueRef.current = internalState;
+    },
+    [isControlled, onChange],
+  );
 
-      onChange?.(_newValue);
-      prevValueRef.current = _newValue;
-    };
-
-    return [valueProp, _setValue];
-  }
-
-  return UncontrolledState;
+  return React.useMemo(
+    () => [state, setState] as [typeof state, typeof setState],
+    [state, setState],
+  );
 };

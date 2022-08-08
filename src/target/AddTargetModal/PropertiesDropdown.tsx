@@ -1,6 +1,13 @@
 import { AlertRed } from '@/assets';
-import { Form, TagColorScheme, TagProps, TagsSelect, TagsSelectProps } from '@/common/components';
-import { TagsSelectOption } from '@/common/components';
+import {
+  Form,
+  TagColorScheme,
+  TagProps,
+  TagsSelectOption,
+  TagsSelectOptions,
+  TagsSelectProps,
+  TagsSelectSearch,
+} from '@/common/components';
 import { useDebounce } from '@/common/hooks';
 import clsx from 'clsx';
 import React from 'react';
@@ -69,7 +76,7 @@ export const PropertiesDropdown = React.forwardRef(
         placement={placement}
         onClose={() => setSearch('')}
       >
-        <TagsSelect.Search
+        <TagsSelectSearch
           placeholder={searchPlaceholder}
           onChange={(e) => setSearchDebounced(e.target.value)}
         />
@@ -85,7 +92,7 @@ export const PropertiesDropdown = React.forwardRef(
           })}
         >
           <div className={clsx({ hidden: !showOptionsOnEmptySearch && !search })}>
-            <TagsSelect.Options
+            <TagsSelectOptions
               options={options.map(({ value, icon, label, colorScheme, searchValue }) => ({
                 tagProps: {
                   colorScheme,

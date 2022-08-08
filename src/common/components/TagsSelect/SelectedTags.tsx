@@ -1,15 +1,6 @@
-import { ClassName } from '@/common/types';
 import clsx from 'clsx';
-import React from 'react';
 import { Tag } from './Tag';
-import { Option } from './types';
-
-type SelectedTagsProps<T = string> = ClassName & {
-  options: Option<T>[];
-  value?: T[];
-  onClick?: () => void;
-  onRemoveClick: (value: T) => void;
-};
+import { SelectedTagsProps } from './types';
 
 export const SelectedTags = <T,>({
   value,

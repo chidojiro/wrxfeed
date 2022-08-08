@@ -1,3 +1,4 @@
+import { AssertUtils } from '@/common/utils';
 import { groupBy } from 'lodash-es';
 import { TargetPeriod } from './types';
 
@@ -19,3 +20,9 @@ export const getFullYearPeriods = (periods: TargetPeriod[] = []) => {
     };
   });
 };
+
+export const isValidPeriods = (periods: TargetPeriod[]) =>
+  periods.some((v: TargetPeriod) => !AssertUtils.isNullOrUndefined(v.amount));
+
+export const isEmptyPeriods = (periods: TargetPeriod[]) =>
+  periods.every((v: TargetPeriod) => !v.amount);
