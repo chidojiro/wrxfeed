@@ -1,18 +1,9 @@
 import { useDelayableState } from '@/common/hooks';
-import { Children, ClassName } from '@/common/types';
 import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
 import React from 'react';
 import { Button } from '../Button';
-
-export type TagsSelectOptionProps<T = string> = Children &
-  ClassName & {
-    value: T;
-    icon?: React.ReactNode;
-    onClick?: React.MouseEventHandler<HTMLButtonElement>;
-    addTag: (value: T) => void;
-    selected?: boolean;
-  };
+import { TagsSelectOptionProps } from './types';
 
 export const TagsSelectOption = React.memo(
   ({ children, value, className, icon, onClick, addTag, selected }: TagsSelectOptionProps<any>) => {

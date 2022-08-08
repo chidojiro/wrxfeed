@@ -1,19 +1,9 @@
-import { ClassName } from '@/common/types';
 import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import React from 'react';
-import { TagProps } from './Tag';
-import { TagsSelectOption, TagsSelectOptionProps } from './TagsSelectOption';
+import { TagsSelectOption } from './TagsSelectOption';
 import { useTagsSelectContext } from './TagsSelectProvider';
-
-export type TagsSelectOption<T = string> = Omit<TagsSelectOptionProps<T>, 'addTag'> & {
-  tagProps: Omit<TagProps, 'onRemoveClick'>;
-  searchValue?: string;
-};
-
-type TagsSelectOptionsProps = ClassName & {
-  options: TagsSelectOption[];
-};
+import { TagsSelectOptionsProps } from './types';
 
 export const TagsSelectOptions = ({ className, options }: TagsSelectOptionsProps) => {
   const { value, addTag, search, registerOptions, isOpen } = useTagsSelectContext();

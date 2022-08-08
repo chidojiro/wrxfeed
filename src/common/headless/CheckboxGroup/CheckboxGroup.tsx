@@ -21,7 +21,7 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
         newValue = value.filter((value: any) => value !== targetValue);
       }
 
-      setValue(newValue);
+      setValue({ internal: newValue, external: newValue });
     },
     [setValue, value],
   );

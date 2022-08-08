@@ -1,12 +1,9 @@
 import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import React from 'react';
-import { Input, InputProps } from '../Input';
+import { Input } from '../Input';
 import { useTagsSelectContext } from './TagsSelectProvider';
-
-type TagsSelectSearchProps = Omit<InputProps, 'value' | 'ref'> & {
-  ref?: React.RefObject<HTMLInputElement>;
-};
+import { TagsSelectSearchProps } from './types';
 
 export const TagsSelectSearch = ({ className, onChange, ...restProps }: TagsSelectSearchProps) => {
   const { setSearch, search } = useTagsSelectContext();
