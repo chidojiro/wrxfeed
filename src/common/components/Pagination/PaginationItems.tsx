@@ -55,9 +55,6 @@ export const PaginationItems = ({ className, ...restProps }: PaginationItemsProp
               ...
             </PaginationItem>
           );
-
-        console.log(selected);
-
         return (
           <PaginationItem
             key={page}
