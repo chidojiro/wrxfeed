@@ -1,17 +1,6 @@
 import clsx from 'clsx';
-import React from 'react';
-import { Children, ClassName } from '../../types';
 import { Button } from '../Button';
-
-export type TagColorScheme = 'orange' | 'accent' | 'cyan';
-
-export type TagProps = Children &
-  ClassName & {
-    onClick?: () => void;
-    onRemoveClick?: () => void;
-    colorScheme: TagColorScheme;
-    icon?: React.ReactNode;
-  };
+import { TagColorScheme, TagProps } from './types';
 
 export const TagBackgroundByColorScheme: Record<TagColorScheme, string> = {
   cyan: 'bg-cyan-1',

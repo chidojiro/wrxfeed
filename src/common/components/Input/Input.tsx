@@ -36,11 +36,13 @@ const BaseInput = React.forwardRef(
 
 BaseInput.displayName = 'BaseInput';
 
-export type InputProps = Omit<BaseInputProps, 'min' | 'max'> & {
+export type InputProps = Omit<BaseInputProps, 'min' | 'max' | 'value' | 'defaultValue'> & {
   includeNumberSeparator?: boolean;
   min?: number;
   max?: number;
   allowNegative?: boolean;
+  value?: string;
+  defaultValue?: string;
 };
 
 const numberPatterns = [/^-?\d*$/, /^-?\d+(\.(\d)*)?$/];
@@ -97,7 +99,8 @@ export const Input = React.forwardRef(
           try {
             const targetValueWithoutSeparator = e.target.value.replace(/,/g, '');
             const validNumberValue = resolveValidNumberValue(targetValueWithoutSeparator);
-            setValue(validNumberValue);
+            e.target.value = validNumberValue;
+            setValue({ internal: validNumberValue, external: e });
           } catch {
             return;
           }
@@ -123,7 +126,7 @@ export const Input = React.forwardRef(
         try {
           const validNumberValue = resolveValidNumberValue(e.target.value);
           e.target.value = validNumberValue;
-          setValue(e);
+          setValue({ internal: validNumberValue, external: e });
         } catch {
           return;
         }
@@ -134,7 +137,15 @@ export const Input = React.forwardRef(
       );
     }
 
-    return <BaseInput {...restProps} ref={ref} type={type} value={value} onChange={setValue} />;
+    return (
+      <BaseInput
+        {...restProps}
+        ref={ref}
+        type={type}
+        value={value}
+        onChange={(e) => setValue({ internal: e.target.value, external: e })}
+      />
+    );
   },
 );
 

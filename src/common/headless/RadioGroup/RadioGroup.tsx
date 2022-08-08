@@ -18,7 +18,7 @@ export const RadioGroup = (props: RadioGroupProps) => {
       if (value === 'true') _value = true;
       if (value === 'false') _value = false;
 
-      setValue?.(_value);
+      setValue?.(_value as any);
     },
     [setValue],
   );
