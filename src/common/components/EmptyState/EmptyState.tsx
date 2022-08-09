@@ -15,7 +15,7 @@ export const EmptyState = ({ className, title, content }: EmptyStateProps) => {
       )}
     >
       <p className="text-sm font-bold text-primary">{title}</p>
-      <p className="text-2sm text-Gray-6">{content}</p>
+      <p className="text-[13px] text-Gray-6">{content}</p>
     </div>
   );
 };
