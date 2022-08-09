@@ -1,5 +1,6 @@
 import { CategoryIcon } from '@/assets';
 import { OverlayLoader } from '@/common/components';
+import { EmptyState } from '@/common/components/EmptyState';
 import { TopCategories as TTopCategories } from '@/main/entity';
 import { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -67,64 +68,6 @@ export const TopCategories = () => {
     });
   };
 
-  const renderChartOrEmptyState = () => {
-    // empty state
-    if (chartData.length === 0) {
-      return (
-        <div className="flex flex-1 p-6">
-          <div className="flex flex-1 flex-col space-y-1 h-[200px] bg-Gray-12 rounded-card justify-center items-center">
-            <p className="text-sm font-bold text-primary">No recent categories</p>
-            <p className="text-2sm text-Gray-6">This will change as more transactions come in.</p>
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div className="flex items-center gap-6 py-6 pr-6">
-        <PieChart width={200} height={200}>
-          <Tooltip content={(props) => <TopCategoriesChartTooltip {...props} />} />
-          <Pie
-            startAngle={90}
-            endAngle={450}
-            activeIndex={activeIndex}
-            activeShape={PieActiveShape}
-            data={chartData}
-            cx={100}
-            cy={100}
-            innerRadius={60}
-            outerRadius={80}
-            dataKey="spend"
-            labelLine={false}
-            onMouseEnter={handlePieEnter}
-            onMouseLeave={handlePieLeave}
-            onClick={(_: unknown, index: number) => handleClickCategoryCell(chartData[index])}
-          >
-            {chartData.map(({ color, name }) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Cell key={name} fill={color} />
-            ))}
-          </Pie>
-        </PieChart>
-        <ul className="flex flex-col gap-4 flex-1">
-          {chartData
-            .slice()
-            .reverse()
-            .map(({ name, color }) => {
-              return (
-                <li
-                  key={color}
-                  className="text-2xs text-gray-3 flex items-baseline leading-4 gap-1 w-full"
-                >
-                  <div className="rounded-full w-1.5 h-1.5" style={{ background: color }}></div>
-                  {name}
-                </li>
-              );
-            })}
-        </ul>
-      </div>
-    );
-  };
-
   return (
     <OverlayLoader loading={isValidating}>
       <div className="shadow-card rounded-card bg-white">
@@ -135,7 +78,57 @@ export const TopCategories = () => {
           </div>
           <p className="text-Gray-6 text-xs">Last 30 Days</p>
         </div>
-        {renderChartOrEmptyState()}
+        {chartData.length === 0 ? (
+          <div className="flex flex-1 p-6">
+            <EmptyState
+              title="No recent categories"
+              content="This will change as more transactions come in."
+            />
+          </div>
+        ) : (
+          <div className="flex items-center gap-6 py-6 pr-6">
+            <PieChart width={200} height={200}>
+              <Tooltip content={(props) => <TopCategoriesChartTooltip {...props} />} />
+              <Pie
+                startAngle={90}
+                endAngle={450}
+                activeIndex={activeIndex}
+                activeShape={PieActiveShape}
+                data={chartData}
+                cx={100}
+                cy={100}
+                innerRadius={60}
+                outerRadius={80}
+                dataKey="spend"
+                labelLine={false}
+                onMouseEnter={handlePieEnter}
+                onMouseLeave={handlePieLeave}
+                onClick={(_: unknown, index: number) => handleClickCategoryCell(chartData[index])}
+              >
+                {chartData.map(({ color, name }) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Cell key={name} fill={color} />
+                ))}
+              </Pie>
+            </PieChart>
+            <ul className="flex flex-col gap-4 flex-1">
+              {chartData
+                .slice()
+                .reverse()
+                .map(({ name, color }) => {
+                  return (
+                    <li
+                      key={color}
+                      className="text-2xs text-gray-3 flex items-baseline leading-4 gap-1 w-full"
+                    >
+                      <div className="rounded-full w-1.5 h-1.5" style={{ background: color }}></div>
+                      {name}
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        )}
       </div>
     </OverlayLoader>
   );
