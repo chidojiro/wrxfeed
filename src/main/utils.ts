@@ -549,12 +549,10 @@ export const getTargetPeriodsAmountTotal = (
       return sum;
     }, 0) ?? 0;
 
-  const exceeding: number =
-    targetToDate !== 0
-      ? currentSpend > targetToDate
-        ? ((currentSpend - targetToDate) / targetToDate) * 100
-        : 0
-      : 100;
+  let exceeding = 0;
+  if (targetToDate !== 0 && currentSpend > targetToDate) {
+    exceeding = ((currentSpend - targetToDate) / targetToDate) * 100;
+  }
   return { overallTarget, targetToDate, exceeding, currentSpend };
 };
 
