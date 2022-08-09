@@ -13,7 +13,6 @@ export const PaginationContext = React.createContext<PaginationProviderValue>({
   showingRange: { from: 0, to: 0, total: 0 },
 });
 
-// eslint-disable-next-line no-empty-pattern
 export const Pagination = ({
   children,
   totalRecord,
