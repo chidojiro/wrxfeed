@@ -73,10 +73,6 @@ export const TransactionList = ({ className }: TransactionListProps) => {
     history.push(`/feed/${feedItemId}`);
   };
 
-  const handleSetPage = (page: number) => {
-    setPage(page);
-  };
-
   return (
     <div className="flex flex-col">
       <Table.OverflowContainer className={className}>
@@ -182,7 +178,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
         <Pagination
           totalRecord={transactions.length}
           sideItemsCount={2}
-          onChange={(page) => handleSetPage(page as number)}
+          onChange={(page) => setPage(page as number)}
           perPage={10}
           page={page}
         >
