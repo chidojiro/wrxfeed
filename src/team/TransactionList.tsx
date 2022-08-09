@@ -178,7 +178,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
         <Pagination
           totalRecord={transactions.length}
           sideItemsCount={2}
-          onChange={(page) => setPage(page as number)}
+          onChange={setPage}
           perPage={10}
           page={page}
         >

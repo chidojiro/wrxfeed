@@ -4,7 +4,7 @@ import React from 'react';
 import { PaginationItems } from './PaginationItems';
 import { ShowingRange } from './ShowingRange';
 
-export type PaginationProps = UsePaginationProps & HTMLDivProps;
+export type PaginationProps = UsePaginationProps & Omit<HTMLDivProps, 'onChange'>;
 
 type PaginationProviderValue = UsePaginationReturn;
 
