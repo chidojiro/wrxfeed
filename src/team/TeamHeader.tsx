@@ -35,7 +35,7 @@ export const TeamHeader = ({ className, departmentId }: TeamHeaderProps) => {
             height={20}
           />
         </div>
-        <p className="text-white font-semibold">{department?.name}</p>
+        <p className="text-white font-semibold truncate">{department?.name}</p>
       </div>
       {!!department && <DepartmentItem item={department} hideName inHeader />}
     </div>
