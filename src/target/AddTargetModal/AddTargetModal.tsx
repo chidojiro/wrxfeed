@@ -374,20 +374,6 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
                   }}
                 />
               </div>
-              <div className="flex flex-row items-center space-x-2">
-                <div className="flex flex-row items-center space-x-2">
-                  <div className="w-4 h-1 bg-Accent-2" />
-                  <p className="text-xs text-Gray-6">Current Spend</p>
-                </div>
-                <div className="flex flex-row items-center space-x-2">
-                  <div className="w-4 h-1 dashed-line-target" />
-                  <p className="text-xs text-Gray-6">Target</p>
-                </div>
-                <div className="flex flex-row items-center space-x-2">
-                  <div className="w-4 h-1 bg-Gray-11" />
-                  <p className="text-xs text-Gray-6">Last Year's Spend</p>
-                </div>
-              </div>
             </div>
             {!!hasPeriodsError && renderNoMonthError()}
             <div className="h-[270px] px-6">
