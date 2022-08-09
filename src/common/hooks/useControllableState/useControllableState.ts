@@ -1,7 +1,7 @@
 import { AssertUtils } from '@/common/utils';
 import React from 'react';
 
-type UseControllableProps<TValue, TOnChangeValue> = {
+export type UseControllableProps<TValue, TOnChangeValue> = {
   value?: TValue;
   defaultValue: TValue;
   onChange?: (value: TOnChangeValue) => void;
