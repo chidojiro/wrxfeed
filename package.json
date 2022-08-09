@@ -140,7 +140,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://dev-api.gravitylabs.co",
+  "proxy": "https://staging-api.gravitylabs.co",
   "jest": {
     "moduleNameMapper": {
       "@/(.*)": "<rootDir>/src/$1",

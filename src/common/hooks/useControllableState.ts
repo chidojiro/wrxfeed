@@ -25,7 +25,7 @@ const isCustomParams = <TValue, TOnChangeValue>(
   Object.prototype.hasOwnProperty.call(params, 'internal') &&
   Object.prototype.hasOwnProperty.call(params, 'external');
 
-export const useControllable = <TValue, TOnChangeValue = TValue>({
+export const useControllableState = <TValue, TOnChangeValue = TValue>({
   value: valueProp,
   onChange,
   defaultValue,

@@ -20,7 +20,13 @@ export const Tag = ({ children, className, onRemoveClick, colorScheme, icon }: T
       {!!icon && <div className="flex-shrink-0">{icon}</div>}
       {children}
       {!!onRemoveClick && (
-        <Button className="text-xs font-bold" onClick={onRemoveClick}>
+        <Button
+          className="text-xs font-bold"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemoveClick();
+          }}
+        >
           &times;
         </Button>
       )}

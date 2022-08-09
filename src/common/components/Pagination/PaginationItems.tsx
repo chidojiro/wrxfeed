@@ -1,15 +1,13 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
 import clsx from 'clsx';
-import { HTMLDivProps } from '@/common/types';
+import { Children, ClassName, HTMLDivProps } from '@/common/types';
 import React from 'react';
 import { PaginationContext } from './Pagination';
 import { Button } from '../Button';
 
-const PaginationItem = ({
-  className,
-  as: As = Button,
-  ...restProps
-}: React.DetailedHTMLProps<React.HTMLAttributes<any>, any> & { as?: any }) => {
+type PaginationItemProps = ClassName & Children & { as?: any } & Record<string, any>;
+
+const PaginationItem = ({ className, as: As = Button, ...restProps }: PaginationItemProps) => {
   return (
     <As
       {...restProps}
@@ -32,10 +30,15 @@ export const PaginationItems = ({ className, ...restProps }: PaginationItemsProp
       aria-label="Pagination"
       {...restProps}
     >
-      {items.map(({ page, selected, type, onClick }, idx) => {
+      {items.map(({ page, selected, type, onClick, disabled }, idx) => {
         if (type === 'previous')
           return (
-            <PaginationItem className="px-2 rounded-l-md" key={type} onClick={onClick}>
+            <PaginationItem
+              disabled={disabled}
+              className="px-2 rounded-l-md"
+              key={type}
+              onClick={onClick}
+            >
               <span className="sr-only">Previous</span>
               <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
             </PaginationItem>
@@ -43,7 +46,12 @@ export const PaginationItems = ({ className, ...restProps }: PaginationItemsProp
 
         if (type === 'next')
           return (
-            <PaginationItem className="px-2 rounded-r-md" key={type} onClick={onClick}>
+            <PaginationItem
+              disabled={disabled}
+              className="px-2 rounded-r-md"
+              key={type}
+              onClick={onClick}
+            >
               <span className="sr-only">Next</span>
               <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
             </PaginationItem>
@@ -59,11 +67,10 @@ export const PaginationItems = ({ className, ...restProps }: PaginationItemsProp
         return (
           <PaginationItem
             key={page}
-            shadow-sm
             aria-current={selected && 'page'}
             onClick={onClick}
             className={clsx({
-              '!text-Accent-7 !border-Accent-2 z-10': selected,
+              '!text-white !bg-Accent-2 z-10': selected,
             })}
           >
             {page}

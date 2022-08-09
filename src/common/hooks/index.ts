@@ -1,4 +1,4 @@
-export * from './useControllable';
+export * from './useControllableState';
 export * from './useDebounce';
 export * from './useDelayableState';
 export * from './useEventListener';

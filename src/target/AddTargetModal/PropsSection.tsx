@@ -35,10 +35,17 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
     () =>
       vendors.map(({ id, name }) => ({
         value: `${TargetTypeProp.VENDOR}-${id}-${name}`,
-        label: name,
+        name,
+        label: (
+          <div className="flex items center w-full">
+            <span className="max-w-[220px] truncate">{name}</span>
+            <span className="invisible group-hover:visible text-Gray-6">&nbsp;- Vendor</span>
+          </div>
+        ),
         icon: <Bank width={14} height={14} />,
         colorScheme: 'orange',
         searchValue: name,
+        className: 'group',
       })),
     [vendors],
   );
@@ -47,10 +54,17 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
     () =>
       categories.map(({ id, name }) => ({
         value: `${TargetTypeProp.CATEGORY}-${id}-${name}`,
-        label: name,
+        name,
+        label: (
+          <div className="flex items center w-full">
+            <span className="max-w-[220px] truncate">{name}</span>
+            <span className="invisible group-hover:visible text-Gray-6">&nbsp;- Category</span>
+          </div>
+        ),
         icon: <CategoryIcon width={14} height={14} />,
         colorScheme: 'accent',
         searchValue: name,
+        className: 'group',
       })),
     [categories],
   );
@@ -59,10 +73,17 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
     () =>
       departments.map(({ id, name }) => ({
         value: `${TargetTypeProp.DEPARTMENT}-${id}-${name}`,
-        label: name,
+        name,
+        label: (
+          <div className="flex items center w-full">
+            <span className="max-w-[220px] truncate">{name}</span>
+            <span className="invisible group-hover:visible text-Gray-6">&nbsp;- Team</span>
+          </div>
+        ),
         icon: <TeamIcon width={14} height={14} />,
         colorScheme: 'cyan',
         searchValue: name,
+        className: 'group',
       })),
     [departments],
   );
@@ -132,6 +153,12 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
           }
           placement="bottom-end"
           showOptionsOnEmptySearch={false}
+          description={
+            <div className="flex items-center text-xs mb-2 text-Gray-6">
+              <p className="font-semibold text-Gray-1">Except</p> - Specify any properties not to
+              include
+            </div>
+          }
         />
       </div>
       <ExceptionList

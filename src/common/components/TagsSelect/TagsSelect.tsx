@@ -1,4 +1,4 @@
-import { useControllable } from '@/common/hooks';
+import { useControllableState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
@@ -23,7 +23,7 @@ export const TagsSelect = React.forwardRef(<TValue,>(props: TagsSelectProps<TVal
     onClose,
   } = props;
 
-  const [value, setValue] = useControllable({
+  const [value, setValue] = useControllableState({
     value: valueProp,
     onChange,
     defaultValue: defaultValue ?? [],

@@ -1,4 +1,4 @@
-import { useControllable } from '../useControllable';
+import { useControllableState } from '../useControllableState';
 import React from 'react';
 
 export type UsePaginationItem = {
@@ -45,7 +45,7 @@ export const usePagination = ({
 
   const totalPage = Math.ceil(totalRecord / perPage) || 1;
 
-  const [page, setPage] = useControllable({ value: pageProp, onChange, defaultValue: 1 });
+  const [page, setPage] = useControllableState({ value: pageProp, onChange, defaultValue: 1 });
 
   const validatePage = React.useCallback(() => {
     if (page < 0) setPage(0);

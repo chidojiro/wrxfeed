@@ -1,4 +1,4 @@
-import { useControllable } from '@/common/hooks';
+import { useControllableState } from '@/common/hooks';
 import { HTMLInputProps } from '@/common/types';
 import { AssertUtils, NumberUtils } from '@/common/utils';
 import clsx from 'clsx';
@@ -65,7 +65,7 @@ export const Input = React.forwardRef(
     }: InputProps,
     ref: any,
   ) => {
-    const [value, setValue] = useControllable({
+    const [value, setValue] = useControllableState({
       value: valueProp,
       onChange,
       defaultValue: defaultValue ?? '',
