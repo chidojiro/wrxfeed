@@ -1,5 +1,5 @@
 import React from 'react';
-import { useControllable } from '../../hooks';
+import { useControllableState } from '../../hooks';
 import { Children } from '../../types';
 import { TabContent } from './TabContent';
 import { Tab } from './Tab';
@@ -11,7 +11,11 @@ export type TabsProps<T extends Value = Value> = Children & {
 };
 
 export const Tabs = <T extends Value>({ value: valueProp, onChange, children }: TabsProps<T>) => {
-  const [value, setValue] = useControllable({ value: valueProp, onChange, defaultValue: 0 as T });
+  const [value, setValue] = useControllableState({
+    value: valueProp,
+    onChange,
+    defaultValue: 0 as T,
+  });
   const [content, setContent] = React.useState<React.ReactNode>();
   const tabsCountRef = React.useRef(-1);
 
