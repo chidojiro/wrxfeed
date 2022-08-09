@@ -4,7 +4,7 @@ import React from 'react';
 type UseControllableProps<TValue, TOnChangeValue> = {
   value?: TValue;
   defaultValue: TValue;
-  onChange?: (valueOrEvent: TOnChangeValue) => void;
+  onChange?: (value: TOnChangeValue) => void;
 };
 
 type SetControllableStateParams<TInternalValue, TOnChangeValue> = {
@@ -67,9 +67,9 @@ export const useControllableState = <TValue, TOnChangeValue = TValue>({
       }
       onChange?.(computedExternal);
 
-      prevValueRef.current = internalState;
+      prevValueRef.current = computedInternal;
     },
-    [internalState, isControlled, onChange],
+    [isControlled, onChange],
   );
 
   return React.useMemo(() => [state, setState], [state, setState]);
