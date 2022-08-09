@@ -14,6 +14,7 @@ export type Props = {
   totalRecord: number;
   perPage?: number;
   onChange?: (page: number) => void;
+  onSetPage?: (from: number, to: number) => void;
   centerItemsCount?: number;
   sideItemsCount?: number;
 };

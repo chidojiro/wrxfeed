@@ -15,7 +15,7 @@ import { DateUtils, StringUtils } from '@/common/utils';
 import { TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useTransactions } from './useTransactions';
 
@@ -52,6 +52,9 @@ export const TransactionList = ({ className }: TransactionListProps) => {
   const query = useQuery();
   const sortTransactionsByQuery = query.get('sortTransactionsBy');
 
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(10);
+
   const { data: transactions = EMPTY_ARRAY as TransLineItem[], isValidating } = useTransactions({
     depId: +departmentIdParam,
     ...StringUtils.toApiSortParam(sortTransactionsByQuery),
@@ -69,6 +72,11 @@ export const TransactionList = ({ className }: TransactionListProps) => {
 
   const goToLineItemPage = (feedItemId: number) => {
     history.push(`/feed/${feedItemId}`);
+  };
+
+  const handleSetPage = (from: number, to: number) => {
+    setFrom(from);
+    setTo(to);
   };
 
   return (
@@ -104,74 +112,81 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                   </Table.Header>
                 ))}
               </Table.Row>
-              {transactions.map(
-                ({
-                  amountUsd,
-                  category,
-                  description,
-                  transDate,
-                  vendor,
-                  id,
-                  transStatus,
-                  transRecordType,
-                  feedItemId,
-                }: TransLineItem) => (
-                  <Table.Row
-                    key={id}
-                    className={clsx('relative cursor-pointer', 'list-row-hover')}
-                    onClick={() => feedItemId && goToLineItemPage(feedItemId)}
-                  >
-                    <Table.Cell>
-                      <ChatIcon />
-                    </Table.Cell>
-                    <Table.Cell>{transDate && DateUtils.format(transDate)}</Table.Cell>
-                    <Table.Cell>
-                      <div className="flex items-center gap-2">
-                        <Avatar
-                          size="sm"
-                          src={vendor?.avatar}
-                          fullName={vendor?.name ?? ''}
-                          className="w-6 h-6 flex-shrink-0"
-                        />
-                        <span>{vendor?.name}</span>
-                        {transRecordType?.toLowerCase() === 'Expense Report'.toLowerCase() ? (
-                          <div className="flex flex-row items-center space-x-1">
-                            <p className="text-Gray-6 text-sm font-normal">·</p>
-                            <p className="text-Accent-2 text-xs font-normal">Expensed</p>
-                          </div>
-                        ) : null}
-                      </div>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Tooltip
-                        trigger={
-                          <div className="flex items-center max-w-[350px]">
-                            <p className="line-clamp-3">{description}</p>
-                          </div>
-                        }
-                      >
-                        {description}
-                      </Tooltip>
-                    </Table.Cell>
-                    <Table.Cell>{category?.name}</Table.Cell>
-                    <Table.Cell className="text-right">{decimalLogic(amountUsd, '$')}</Table.Cell>
-                    <Table.Cell>
-                      <StatusTag
-                        colorScheme={getTransactionColorScheme(transStatus)}
-                        className="font-semibold"
-                      >
-                        {getTransactionLabel(transStatus)}
-                      </StatusTag>
-                    </Table.Cell>
-                  </Table.Row>
-                ),
-              )}
+              {transactions
+                .slice(from - 1, to)
+                .map(
+                  ({
+                    amountUsd,
+                    category,
+                    description,
+                    transDate,
+                    vendor,
+                    id,
+                    transStatus,
+                    transRecordType,
+                    feedItemId,
+                  }: TransLineItem) => (
+                    <Table.Row
+                      key={id}
+                      className={clsx('relative cursor-pointer', 'list-row-hover')}
+                      onClick={() => feedItemId && goToLineItemPage(feedItemId)}
+                    >
+                      <Table.Cell>
+                        <ChatIcon />
+                      </Table.Cell>
+                      <Table.Cell>{transDate && DateUtils.format(transDate)}</Table.Cell>
+                      <Table.Cell>
+                        <div className="flex items-center gap-2">
+                          <Avatar
+                            size="sm"
+                            src={vendor?.avatar}
+                            fullName={vendor?.name ?? ''}
+                            className="w-6 h-6 flex-shrink-0"
+                          />
+                          <span>{vendor?.name}</span>
+                          {transRecordType?.toLowerCase() === 'Expense Report'.toLowerCase() ? (
+                            <div className="flex flex-row items-center space-x-1">
+                              <p className="text-Gray-6 text-sm font-normal">·</p>
+                              <p className="text-Accent-2 text-xs font-normal">Expensed</p>
+                            </div>
+                          ) : null}
+                        </div>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Tooltip
+                          trigger={
+                            <div className="flex items-center max-w-[350px]">
+                              <p className="line-clamp-3">{description}</p>
+                            </div>
+                          }
+                        >
+                          {description}
+                        </Tooltip>
+                      </Table.Cell>
+                      <Table.Cell>{category?.name}</Table.Cell>
+                      <Table.Cell className="text-right">{decimalLogic(amountUsd, '$')}</Table.Cell>
+                      <Table.Cell>
+                        <StatusTag
+                          colorScheme={getTransactionColorScheme(transStatus)}
+                          className="font-semibold"
+                        >
+                          {getTransactionLabel(transStatus)}
+                        </StatusTag>
+                      </Table.Cell>
+                    </Table.Row>
+                  ),
+                )}
             </Table.Body>
           </Table>
         </OverlayLoader>
       </Table.OverflowContainer>
       {!!transactions.length && (
-        <Pagination totalRecord={transactions.length} sideItemsCount={2} perPage={10} page={1}>
+        <Pagination
+          totalRecord={transactions.length}
+          sideItemsCount={2}
+          onSetPage={(from, to) => handleSetPage(from, to)}
+          perPage={10}
+        >
           <div className="flex items-center justify-between mt-4">
             <Pagination.ShowingRange />
             <Pagination.Items />
