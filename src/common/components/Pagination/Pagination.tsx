@@ -1,6 +1,6 @@
 import { HTMLDivProps } from '../../types';
 import { usePagination, UsePaginationProps, UsePaginationReturn } from '../../hooks';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { PaginationItems } from './PaginationItems';
 import { ShowingRange } from './ShowingRange';
 
@@ -19,7 +19,6 @@ export const Pagination = ({
   totalRecord,
   centerItemsCount,
   onChange,
-  onSetPage,
   page,
   perPage,
   sideItemsCount,
@@ -35,15 +34,6 @@ export const Pagination = ({
   });
 
   const providerValue = React.useMemo(() => usePaginationReturn, [usePaginationReturn]);
-
-  const from = providerValue.showingRange.from;
-  const to = providerValue.showingRange.to;
-
-  useEffect(() => {
-    if (onSetPage) {
-      onSetPage(from, to);
-    }
-  }, [from, to, onSetPage]);
 
   if (!children)
     return (

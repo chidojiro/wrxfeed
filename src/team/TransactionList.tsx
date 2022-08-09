@@ -52,8 +52,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
   const query = useQuery();
   const sortTransactionsByQuery = query.get('sortTransactionsBy');
 
-  const [from, setFrom] = useState(0);
-  const [to, setTo] = useState(10);
+  const [page, setPage] = useState(1);
 
   const { data: transactions = EMPTY_ARRAY as TransLineItem[], isValidating } = useTransactions({
     depId: +departmentIdParam,
@@ -74,9 +73,8 @@ export const TransactionList = ({ className }: TransactionListProps) => {
     history.push(`/feed/${feedItemId}`);
   };
 
-  const handleSetPage = (from: number, to: number) => {
-    setFrom(from);
-    setTo(to);
+  const handleSetPage = (page: number) => {
+    setPage(page);
   };
 
   return (
@@ -113,7 +111,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                 ))}
               </Table.Row>
               {transactions
-                .slice(from - 1, to)
+                .slice((page - 1) * 10, page * 10 - 1)
                 .map(
                   ({
                     amountUsd,
@@ -184,8 +182,9 @@ export const TransactionList = ({ className }: TransactionListProps) => {
         <Pagination
           totalRecord={transactions.length}
           sideItemsCount={2}
-          onSetPage={(from, to) => handleSetPage(from, to)}
+          onChange={(page) => handleSetPage(page as number)}
           perPage={10}
+          page={page}
         >
           <div className="flex items-center justify-between mt-4">
             <Pagination.ShowingRange />
