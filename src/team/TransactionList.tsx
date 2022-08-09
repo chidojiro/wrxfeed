@@ -15,7 +15,7 @@ import { DateUtils, StringUtils } from '@/common/utils';
 import { TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useTransactions } from './useTransactions';
 
@@ -52,7 +52,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
   const query = useQuery();
   const sortTransactionsByQuery = query.get('sortTransactionsBy');
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = React.useState(1);
 
   const { data: transactions = EMPTY_ARRAY as TransLineItem[], isValidating } = useTransactions({
     depId: +departmentIdParam,
