@@ -129,7 +129,7 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                       }: TransLineItem) => (
                         <Table.Row
                           key={id}
-                          className={clsx('relative cursor-pointer', 'list-row-hover')}
+                          className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
                           onClick={() => feedItemId && goToLineItemPage(feedItemId)}
                         >
                           <Table.Cell>
