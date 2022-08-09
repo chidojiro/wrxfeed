@@ -26,7 +26,7 @@ export const TeamHeader = ({ className, departmentId }: TeamHeaderProps) => {
       )}
       style={{ background: teamHeaderColor }}
     >
-      <div className="flex flex-row items-center space-x-4">
+      <div className="flex flex-row overflow-hidden items-center space-x-4">
         <div className="flex justify-center flex-shrink-0 items-center w-9 h-9 rounded-full border border-white">
           <TeamIcon
             className="w-5 h-5 fill-current path-no-filled text-white opacity-100"
@@ -37,7 +37,7 @@ export const TeamHeader = ({ className, departmentId }: TeamHeaderProps) => {
         </div>
         <p className="text-white font-semibold truncate">{department?.name}</p>
       </div>
-      {!!department && <DepartmentItem item={department} hideName inHeader />}
+      {!!department && <DepartmentItem item={department} hideName inHeader className="w-auto" />}
     </div>
   );
 };
