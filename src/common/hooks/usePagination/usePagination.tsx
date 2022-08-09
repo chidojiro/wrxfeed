@@ -81,7 +81,7 @@ export const usePagination = ({
   const next = React.useCallback(() => {
     if (isNextDisabled) return;
 
-    setPage((prev) => (console.log(prev) as any) || Math.min(prev + 1, totalPage));
+    setPage((prev) => Math.min(prev + 1, totalPage));
   }, [isNextDisabled, setPage, totalPage]);
 
   const isPrevDisabled = page === 1;
