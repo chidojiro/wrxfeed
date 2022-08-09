@@ -7,6 +7,7 @@ import {
   Table,
   Tooltip,
 } from '@/common/components';
+import { EmptyState } from '@/common/components/EmptyState';
 import { EMPTY_ARRAY } from '@/common/constants';
 import { useQuery, useUrlState } from '@/common/hooks';
 import { ClassName } from '@/common/types';
@@ -95,74 +96,89 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                 </div>
               </Table.Cell>
             </Table.Row>
-            <Table.Row>
-              {headers.map(({ label, sortKey }) => (
-                <Table.Header key={label} sortKey={sortKey}>
-                  {label}
-                </Table.Header>
-              ))}
-            </Table.Row>
-            {transactions.map(
-              ({
-                amountUsd,
-                category,
-                description,
-                transDate,
-                vendor,
-                id,
-                transStatus,
-                transRecordType,
-                feedItemId,
-              }: TransLineItem) => (
-                <Table.Row
-                  key={id}
-                  className={clsx('relative cursor-pointer', 'list-row-hover')}
-                  onClick={() => feedItemId && goToLineItemPage(feedItemId)}
-                >
-                  <Table.Cell>
-                    <ChatIcon />
-                  </Table.Cell>
-                  <Table.Cell>{transDate && DateUtils.format(transDate)}</Table.Cell>
-                  <Table.Cell>
-                    <div className="flex items-center gap-2">
-                      <Avatar
-                        size="sm"
-                        src={vendor?.avatar}
-                        fullName={vendor?.name ?? ''}
-                        className="w-6 h-6 flex-shrink-0"
-                      />
-                      <span>{vendor?.name}</span>
-                      {transRecordType?.toLowerCase() === 'Expense Report'.toLowerCase() ? (
-                        <div className="flex flex-row items-center space-x-1">
-                          <p className="text-Gray-6 text-sm font-normal">·</p>
-                          <p className="text-Accent-2 text-xs font-normal">Expensed</p>
-                        </div>
-                      ) : null}
-                    </div>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Tooltip
-                      trigger={
-                        <div className="flex items-center max-w-[350px]">
-                          <p className="line-clamp-3">{description}</p>
-                        </div>
-                      }
-                    >
-                      {description}
-                    </Tooltip>
-                  </Table.Cell>
-                  <Table.Cell>{category?.name}</Table.Cell>
-                  <Table.Cell className="text-right">{decimalLogic(amountUsd, '$')}</Table.Cell>
-                  <Table.Cell>
-                    <StatusTag
-                      colorScheme={getTransactionColorScheme(transStatus)}
-                      className="font-semibold"
-                    >
-                      {getTransactionLabel(transStatus)}
-                    </StatusTag>
-                  </Table.Cell>
+            {transactions?.length > 0 ? (
+              <>
+                <Table.Row>
+                  {headers.map(({ label, sortKey }) => (
+                    <Table.Header key={label} sortKey={sortKey}>
+                      {label}
+                    </Table.Header>
+                  ))}
                 </Table.Row>
-              ),
+                {transactions.map(
+                  ({
+                    amountUsd,
+                    category,
+                    description,
+                    transDate,
+                    vendor,
+                    id,
+                    transStatus,
+                    transRecordType,
+                    feedItemId,
+                  }: TransLineItem) => (
+                    <Table.Row
+                      key={id}
+                      className={clsx('relative cursor-pointer', 'list-row-hover')}
+                      onClick={() => feedItemId && goToLineItemPage(feedItemId)}
+                    >
+                      <Table.Cell>
+                        <ChatIcon />
+                      </Table.Cell>
+                      <Table.Cell>{transDate && DateUtils.format(transDate)}</Table.Cell>
+                      <Table.Cell>
+                        <div className="flex items-center gap-2">
+                          <Avatar
+                            size="sm"
+                            src={vendor?.avatar}
+                            fullName={vendor?.name ?? ''}
+                            className="w-6 h-6 flex-shrink-0"
+                          />
+                          <span>{vendor?.name}</span>
+                          {transRecordType?.toLowerCase() === 'Expense Report'.toLowerCase() ? (
+                            <div className="flex flex-row items-center space-x-1">
+                              <p className="text-Gray-6 text-sm font-normal">·</p>
+                              <p className="text-Accent-2 text-xs font-normal">Expensed</p>
+                            </div>
+                          ) : null}
+                        </div>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Tooltip
+                          trigger={
+                            <div className="flex items-center max-w-[350px]">
+                              <p className="line-clamp-3">{description}</p>
+                            </div>
+                          }
+                        >
+                          {description}
+                        </Tooltip>
+                      </Table.Cell>
+                      <Table.Cell>{category?.name}</Table.Cell>
+                      <Table.Cell className="text-right">{decimalLogic(amountUsd, '$')}</Table.Cell>
+                      <Table.Cell>
+                        <StatusTag
+                          colorScheme={getTransactionColorScheme(transStatus)}
+                          className="font-semibold"
+                        >
+                          {getTransactionLabel(transStatus)}
+                        </StatusTag>
+                      </Table.Cell>
+                    </Table.Row>
+                  ),
+                )}
+              </>
+            ) : (
+              <Table.Row>
+                <Table.Cell colSpan={7}>
+                  <div className="flex flex-1 py-4 px-2 w-full">
+                    <EmptyState
+                      title="No recent transactions"
+                      content="This will change as more transactions come in."
+                    />
+                  </div>
+                </Table.Cell>
+              </Table.Row>
             )}
           </Table.Body>
         </Table>
