@@ -12,11 +12,20 @@ type SetControllableStateParams<TInternalValue, TOnChangeValue> = {
   external: TOnChangeValue;
 };
 
-export type SetControllableState<TValue, TOnChangeValue = unknown> = (
-  value: TValue | SetControllableStateParams<TValue, TOnChangeValue>,
+export type SetControllableState<TValue, TOnChangeValue = TValue> = (
+  value:
+    | (TValue & TOnChangeValue)
+    | ((value: TValue) => TValue & TOnChangeValue)
+    | SetControllableStateParams<TValue, TOnChangeValue>,
 ) => void;
 
-export const useControllableState = <TValue, TOnChangeValue>({
+const isCustomParams = <TValue, TOnChangeValue>(
+  params: any,
+): params is SetControllableStateParams<TValue, TOnChangeValue> =>
+  Object.prototype.hasOwnProperty.call(params, 'internal') &&
+  Object.prototype.hasOwnProperty.call(params, 'external');
+
+export const useControllableState = <TValue, TOnChangeValue = TValue>({
   value: valueProp,
   onChange,
   defaultValue,
@@ -36,20 +45,21 @@ export const useControllableState = <TValue, TOnChangeValue>({
 
   const setState: SetControllableState<TValue, TOnChangeValue> = React.useCallback(
     (newState) => {
-      let computedInternal;
-      let computedExternal;
+      let computedInternal: TValue;
+      let computedExternal: TOnChangeValue;
 
-      if ('internal' in newState && 'external' in newState) {
+      if (isCustomParams<TValue, TOnChangeValue>(newState)) {
         const { external, internal } = newState;
         computedInternal = AssertUtils.isFunction(internal)
           ? internal(prevValueRef.current)
           : internal;
         computedExternal = external;
       } else {
-        computedInternal = newState;
-        computedExternal = AssertUtils.isFunction(newState)
+        const computedState = AssertUtils.isFunction(newState)
           ? newState(prevValueRef.current)
           : newState;
+        computedExternal = computedState;
+        computedInternal = computedState;
       }
 
       if (!isControlled) {

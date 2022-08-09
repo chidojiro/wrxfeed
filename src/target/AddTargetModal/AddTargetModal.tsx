@@ -7,7 +7,7 @@ import { Button, Form, OverlayLoader } from '@/common/components';
 import { defaultTargetMonths, EMPTY_ARRAY } from '@/common/constants';
 import { withMountOnOpen } from '@/common/hocs/withMountOnOpen';
 import { useFetcher, useHandler } from '@/common/hooks';
-import { AssertUtils, formatCurrency, round } from '@/common/utils';
+import { formatCurrency, round } from '@/common/utils';
 import { useCategories } from '@/feed/useCategories';
 import { genReviewSentenceFromProperties, getPeriodsFromTargetMonths } from '@/main/utils';
 import {

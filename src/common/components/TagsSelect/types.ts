@@ -38,10 +38,11 @@ export type TagsSelectOptionProps<T = string> = Children &
     selected?: boolean;
   };
 
-export type TagsSelectOption<T = string> = Omit<TagsSelectOptionProps<T>, 'addTag'> & {
-  tagProps: Omit<TagProps, 'onRemoveClick'>;
-  searchValue?: string;
-};
+export type TagsSelectOption<T = string> = Omit<TagsSelectOptionProps<T>, 'addTag'> &
+  ClassName & {
+    tagProps: Omit<TagProps, 'onRemoveClick'>;
+    searchValue?: string;
+  };
 
 export type TagColorScheme = 'orange' | 'accent' | 'cyan';
 

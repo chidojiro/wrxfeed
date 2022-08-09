@@ -15,10 +15,11 @@ import React from 'react';
 type PropertiesName = 'vendors' | 'categories' | 'departments' | 'exceptions';
 
 export type PropertiesDropdownOption = Pick<TagProps, 'colorScheme'> &
-  Pick<TagsSelectOption, 'searchValue'> & {
+  Pick<TagsSelectOption, 'searchValue' | 'className'> & {
     value: string;
     icon: React.ReactNode;
     label: React.ReactNode;
+    name: string;
   };
 
 type PropertiesDropdownProps = Pick<TagsSelectProps, 'placement'> & {
@@ -30,6 +31,7 @@ type PropertiesDropdownProps = Pick<TagsSelectProps, 'placement'> & {
   onChange?: (value: string[]) => void;
   showOptionsOnEmptySearch?: boolean;
   error?: boolean;
+  description?: React.ReactNode;
 };
 
 const ColorByColorScheme: Record<TagColorScheme, string> = {
@@ -50,6 +52,7 @@ export const PropertiesDropdown = React.forwardRef(
       placement,
       showOptionsOnEmptySearch = true,
       error,
+      description,
     }: PropertiesDropdownProps,
     ref: any,
   ) => {
@@ -76,6 +79,7 @@ export const PropertiesDropdown = React.forwardRef(
         placement={placement}
         onClose={() => setSearch('')}
       >
+        {description}
         <TagsSelectSearch
           placeholder={searchPlaceholder}
           onChange={(e) => setSearchDebounced(e.target.value)}
@@ -93,24 +97,25 @@ export const PropertiesDropdown = React.forwardRef(
         >
           <div className={clsx({ hidden: !showOptionsOnEmptySearch && !search })}>
             <TagsSelectOptions
-              options={options.map(({ value, icon, label, colorScheme, searchValue }) => ({
+              options={options.map(({ icon, label, colorScheme, name, ...restOptions }) => ({
                 tagProps: {
                   colorScheme,
                   icon,
                   children: (
                     <span className="whitespace-nowrap overflow-hidden overflow-ellipsis">
-                      {label}
+                      {name}
                     </span>
                   ),
                 },
-                value,
                 icon: (
                   <div className={clsx('w-5 h-5', ColorByColorScheme[colorScheme])}>{icon}</div>
                 ),
-                searchValue,
                 children: (
-                  <div className="whitespace-nowrap overflow-hidden overflow-ellipsis">{label}</div>
+                  <div className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full">
+                    {label}
+                  </div>
                 ),
+                ...restOptions,
               }))}
             />
           </div>
