@@ -1,12 +1,12 @@
 import React from 'react';
-import { useControllable } from '../../hooks';
+import { useControllableState } from '../../hooks';
 import { ChangeHandler, CheckboxGroupProvider } from './CheckboxGroupProvider';
 import { CheckboxGroupProps } from './types';
 
 export const CheckboxGroup = (props: CheckboxGroupProps) => {
   const { onChange: onChangeProp, defaultValue = [], value: valueProp, children } = props;
 
-  const [value, setValue] = useControllable({
+  const [value, setValue] = useControllableState({
     value: valueProp,
     defaultValue,
     onChange: onChangeProp,
