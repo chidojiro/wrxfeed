@@ -144,7 +144,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           onClick={!disabled ? restProps.onClick : undefined}
           type={type}
           ref={ref}
-          className={className}
+          className={clsx(className, { disabled })}
           disabled={disabled}
         >
           {children}
