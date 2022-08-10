@@ -18,26 +18,39 @@ export const Tooltip = ({
   ...restProps
 }: TooltipProps) => {
   const disclosure = useDisclosure();
+  const triggerElementRef = React.useRef<any>();
 
-  const triggerRef = React.useRef<HTMLDivElement>(null);
+  useOnMouseOverOutside(triggerElementRef, disclosure.onClose);
 
-  useOnMouseOverOutside(triggerRef, disclosure.onClose);
+  const clonedTrigger = React.useMemo(() => {
+    return React.Children.map(trigger, (child) =>
+      React.cloneElement(child as any, {
+        ref: (node: Element) => {
+          triggerElementRef.current = node;
 
-  const wrappedTrigger = (
-    <div>
-      <div ref={triggerRef} onMouseEnter={disclosure.onOpen} onMouseLeave={disclosure.onClose}>
-        {trigger}
-      </div>
-    </div>
-  );
+          if (node) {
+            node.addEventListener('mouseenter', disclosure.onOpen);
+          }
+
+          // Call the original ref, if any
+          const { ref } = child as any;
+          if (typeof ref === 'function') {
+            ref(node);
+          } else if (ref !== null) {
+            ref.current = node;
+          }
+        },
+      }),
+    );
+  }, [disclosure, trigger]);
 
   // Do not show popover yet to avoid dom mutation
-  if (!disclosure.isOpen) return wrappedTrigger;
+  if (!disclosure.isOpen) return <>{clonedTrigger}</>;
 
   return (
     <Popover
       open={disclosure.isOpen}
-      trigger={wrappedTrigger}
+      trigger={clonedTrigger as any}
       placement={placement}
       offset={[0, 8]}
       {...restProps}
