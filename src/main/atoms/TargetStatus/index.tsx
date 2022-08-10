@@ -26,34 +26,17 @@ const TargetStatus: React.FC<TargetStatusProps> = ({
   onTargetSet,
 }) => {
   const { label, background, dot } = TargetStatusConfig[type];
-  const { overallTarget = 0, currentSpend = 0, exceeding } = getTargetPeriodsAmountTotal(target);
+  const { overallTarget = 0, exceeding } = getTargetPeriodsAmountTotal(target);
 
   if (overallTarget === 0) {
-    const currentMonth = Number(target?.spendings && target?.spendings[0]?.month);
     return (
-      <div className="group relative">
-        <Button
-          className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex border border-Gray-11"
-          onClick={onTargetSet}
-        >
-          <span className="font-medium text-xs">Set target</span>
-          <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />
-        </Button>
-        <div className="invisible group-hover:visible absolute -top-16 right-0 w-56">
-          <div className="bg-primary p-2 rounded-sm px-4 py-2 space-x-2 flex flex-col text-xs space-y-1">
-            <p className="text-Gray-12 font-semibold text-left pl-4.5">
-              {toMonthName(currentMonth)}
-            </p>
-            <div className="flex justify-between">
-              <div className="flex justify-between items-center space-x-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-Green-400" />
-                <p className="text-Gray-12">Spend</p>
-              </div>
-              <p className="text-Gray-12 font-semibold">{toUSD.format(currentSpend)}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Button
+        className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex"
+        onClick={onTargetSet}
+      >
+        <span className="font-medium text-xs">Set target</span>
+        <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />
+      </Button>
     );
   }
   return (

@@ -1,4 +1,4 @@
-export * from './useControllable';
+export * from './useControllableState';
 export * from './useDebounce';
 export * from './useDelayableState';
 export * from './useEventListener';
@@ -16,4 +16,5 @@ export * from './useQuery';
 export * from './useScrollbarDetector';
 export * from './useScrollDisable';
 export * from './useUrlState';
+export * from './usePagination';
 export * from './useOnMouseOverOutside';

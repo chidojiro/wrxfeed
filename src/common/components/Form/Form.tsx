@@ -12,13 +12,26 @@ export type FormProps = HeadlessFormProps;
 
 export const Form = (props: FormProps) => <HeadlessFrom {...props} />;
 
-type FormField<T> = Omit<FieldProps, 'component'> & Omit<T, keyof FieldProps> & { name: string };
+type FormFieldProps<TComponentProps, TValue> = Omit<
+  FieldProps<TComponentProps, TValue>,
+  'component'
+>;
 
-const FormInput = (props: FormField<InputProps>) => <Field {...props} component={Input} />;
-
-const FormTagsSelect = React.forwardRef((props: FormField<TagsSelectProps>, ref: any) => (
-  <Field {...props} component={TagsSelect as any} emptyValue={[]} ref={ref} />
+const FormInput = React.forwardRef((props: FormFieldProps<InputProps, string>, ref) => (
+  <Field {...props} component={Input} ref={ref} />
 ));
+FormInput.displayName = 'FormInput';
+
+const FormTagsSelect = React.forwardRef(
+  <TValue,>(props: FormFieldProps<TagsSelectProps<TValue>, TValue[]>, ref: any) => (
+    <Field<TagsSelectProps<TValue>, TValue[]>
+      {...props}
+      component={TagsSelect as any}
+      emptyValue={[]}
+      ref={ref}
+    />
+  ),
+);
 FormTagsSelect.displayName = 'FormTagsSelect';
 
 Form.Input = FormInput;

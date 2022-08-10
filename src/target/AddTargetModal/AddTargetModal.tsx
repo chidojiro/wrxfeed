@@ -7,7 +7,7 @@ import { Button, Form, OverlayLoader } from '@/common/components';
 import { defaultTargetMonths, EMPTY_ARRAY } from '@/common/constants';
 import { withMountOnOpen } from '@/common/hocs/withMountOnOpen';
 import { useFetcher, useHandler } from '@/common/hooks';
-import { AssertUtils, formatCurrency, round } from '@/common/utils';
+import { formatCurrency, round } from '@/common/utils';
 import { useCategories } from '@/feed/useCategories';
 import { genReviewSentenceFromProperties, getPeriodsFromTargetMonths } from '@/main/utils';
 import {
@@ -25,6 +25,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { TargetApis } from '../apis';
 import { MiniChartView } from '../MiniChartView';
+import { isEmptyPeriods, isValidPeriods } from '../utils';
 import MultiMonthDropdown from './MultiMonthDropdown';
 import { PropsSection } from './PropsSection';
 
@@ -176,9 +177,6 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
     [categoryProps, departmentProps, exceptionProps, vendorProps],
   );
 
-  const isValidPeriods = (periods: TargetPeriod[]) =>
-    periods.some((v: TargetPeriod) => !AssertUtils.isNullOrUndefined(v.amount));
-
   const { isValidating: isValidatingSpendings, data } = useFetcher(
     !!targetProps.length && isValidPeriods(periods) && ['targetSpending', targetProps, periods],
     () => TargetApis.getSpending({ props: targetProps, periods }),
@@ -265,8 +263,9 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
   const totalTargetAmount = round(
     periods.reduce((total, target) => total + (target.amount ?? 0), 0),
   );
+  const displaySpendings = hidePropertyDropdowns && target ? target?.spendings : spendings;
   const totalCurrentSpend =
-    target?.spendings
+    displaySpendings
       ?.filter(({ year }) => year === THIS_YEAR)
       .reduce((total, target) => total + (target.total ?? 0), 0) ?? 0;
 
@@ -375,20 +374,6 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
                   }}
                 />
               </div>
-              <div className="flex flex-row items-center space-x-2">
-                <div className="flex flex-row items-center space-x-2">
-                  <div className="w-4 h-1 bg-Accent-2" />
-                  <p className="text-xs text-Gray-6">Current Spend</p>
-                </div>
-                <div className="flex flex-row items-center space-x-2">
-                  <div className="w-4 h-1 dashed-line-target" />
-                  <p className="text-xs text-Gray-6">Target</p>
-                </div>
-                <div className="flex flex-row items-center space-x-2">
-                  <div className="w-4 h-1 bg-Gray-11" />
-                  <p className="text-xs text-Gray-6">Last Year's Spend</p>
-                </div>
-              </div>
             </div>
             {!!hasPeriodsError && renderNoMonthError()}
             <div className="h-[270px] px-6">
@@ -401,10 +386,10 @@ export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
                     target={{
                       props: targetProps,
                       periods,
-                      spendings,
+                      spendings: displaySpendings,
                       trackingStatus: trackingStatus ?? target?.trackingStatus,
                     }}
-                    overallTarget={isValidPeriods(periods) ? 1 : 0}
+                    overallTarget={isEmptyPeriods(periods) ? 0 : 1}
                   />
                 </div>
               </OverlayLoader>
