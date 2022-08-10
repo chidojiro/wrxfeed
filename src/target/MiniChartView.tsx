@@ -8,7 +8,7 @@ import { cloneDeep, range } from 'lodash-es';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { TargetChart } from './TargetChart';
-import { Target, TargetPeriod } from './types';
+import { Target, TargetPeriod, TargetStatusConfig } from './types';
 
 interface MiniChartViewProps<T extends Pick<Target, 'props' | 'periods' | 'trackingStatus'>> {
   className?: string;
@@ -147,7 +147,7 @@ export const MiniChartView = <
               className="flex flex-row flex-grow justify-between items-center space-x-10"
             >
               <div className="flex flex-row items-center space-x-1">
-                <div className="w-1 h-1 rounded bg-system-alert" />
+                <div className="w-1 h-1 rounded bg-Gray-6" />
                 <p className="text-white text-2xs">Target</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">
@@ -159,7 +159,15 @@ export const MiniChartView = <
               className="flex flex-row flex-grow justify-between items-center space-x-10"
             >
               <div className="flex flex-row items-center space-x-1">
-                <div className="w-1 h-1 rounded bg-Accent-2" />
+                <div
+                  className="w-1 h-1 rounded"
+                  style={{
+                    background:
+                      !overallTarget || !target.trackingStatus
+                        ? '#818CF8'
+                        : TargetStatusConfig[target.trackingStatus].dot,
+                  }}
+                />
                 <p className="text-white text-2xs">Current</p>
               </div>
               <p className="text-white text-2xs text-right font-semibold">

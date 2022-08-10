@@ -89,9 +89,9 @@ export const getLineChartDataInMonth = (
       type: 'monotone',
       dataKey: 'lastYear',
       strokeWidth: 0,
-      stroke: '#F3F4F6',
+      stroke: 'rgba(194, 194, 250, 0.6)',
       dot: false,
-      fill: '#F3F4F6',
+      fill: 'rgba(194, 194, 250, 0.6)',
       opacity: 0.8,
     },
     {
@@ -269,9 +269,9 @@ export const getTargetMonthsLineChartData = (
       type: 'monotone',
       dataKey: 'lastYear',
       strokeWidth: 0,
-      stroke: '#F3F4F6',
+      stroke: 'rgba(194, 194, 250, 0.6)',
       dot: false,
-      fill: '#F3F4F6',
+      fill: 'rgba(194, 194, 250, 0.6)',
       opacity: 0.8,
     },
     {

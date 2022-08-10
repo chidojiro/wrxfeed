@@ -35,7 +35,7 @@ export const TagsSelect = React.forwardRef(<TValue,>(props: TagsSelectProps<TVal
   const addTag = React.useCallback(
     (newValue: TValue) => {
       setValue({
-        internal: (prev: TValue[]) => (console.log(prev) as any) || uniq([...prev, newValue]),
+        internal: (prev: TValue[]) => uniq([...prev, newValue]),
         external: [...value, newValue],
       });
     },

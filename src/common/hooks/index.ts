@@ -16,4 +16,5 @@ export * from './useQuery';
 export * from './useScrollbarDetector';
 export * from './useScrollDisable';
 export * from './useUrlState';
+export * from './usePagination';
 export * from './useOnMouseOverOutside';
