@@ -44,8 +44,13 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
   const targetSpends = target?.periods?.reduce((acc, cur) => acc + (cur.amount ?? 0), 0);
 
   const uniqueAvatars: AvatarProps[] = [
-    ...new Set(comments.map((comment) => comment.user.avatar)),
-  ].map((user) => ({ src: user, fullName: '' }));
+    ...new Set(
+      comments.map((comment) => ({
+        src: comment?.user?.avatar,
+        fullName: comment?.user?.fullName ?? '',
+      })),
+    ),
+  ].map((user) => ({ src: user.src, fullName: user.fullName }));
 
   const avatars = uniqueAvatars.length > 3 ? uniqueAvatars.slice(0, 2) : uniqueAvatars;
 
