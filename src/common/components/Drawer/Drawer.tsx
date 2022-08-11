@@ -13,10 +13,13 @@ export type DrawerProps = Omit<HeadlessDrawerProps, 'placement'> &
 
 export const Drawer = React.forwardRef<any, DrawerProps>(
   ({ children, open: openProp, onClose, closeOnClickOutside }, ref) => {
-    const [delayableOpen, setDelayableOpen] = useDelayableState(200, openProp);
+    const [delayableOpen, setDelayableOpen] = useDelayableState({
+      delayBy: 200,
+      defaultState: openProp,
+    });
 
     React.useEffect(() => {
-      setDelayableOpen(!!openProp, !openProp);
+      setDelayableOpen({ state: !!openProp, shouldDelay: !openProp });
     }, [openProp, setDelayableOpen]);
 
     const internalRef = React.useRef<HTMLDivElement>(null);
