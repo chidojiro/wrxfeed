@@ -106,7 +106,7 @@ const heightClassNames: Record<Size, string> = { sm: 'h-7', md: 'h-8', lg: 'h-9'
 
 export type ButtonProps = Children &
   ClassName &
-  HTMLButtonProps & {
+  Omit<HTMLButtonProps, 'ref'> & {
     variant?: Variant;
     colorScheme?: ColorScheme;
     size?: Size;
@@ -116,6 +116,7 @@ export type ButtonProps = Children &
     iconRight?: React.ReactNode;
     loading?: boolean;
     style?: React.CSSProperties;
+    ref?: React.RefObject<HTMLButtonElement>;
   };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

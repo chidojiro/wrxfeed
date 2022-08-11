@@ -1,11 +1,11 @@
-import React from 'react';
-
-import { ClassName } from '../../types';
-import { Tabs as HeadlessTabs, TabsProps as HeadlessTabsProps } from '../../headless';
 import clsx from 'clsx';
+import React from 'react';
+import { Link, LinkProps } from 'react-router-dom';
+import { Tabs as HeadlessTabs, TabsProps as HeadlessTabsProps } from '../../headless';
+import { ClassName } from '../../types';
 import { StringUtils } from '../../utils';
+import { Button, ButtonProps } from '../Button';
 import { ConditionalWrapper } from '../ConditionalWrapper';
-import { Link } from 'react-router-dom';
 
 export type Tab = {
   value?: string;
@@ -28,8 +28,15 @@ export const Tabs = ({ value, onChange, items, className }: TabsProps) => {
             <HeadlessTabs.Item key={tab.value ?? idx} content={tab.content} value={tab.value}>
               {({ isActive, onClick }) => (
                 <ConditionalWrapper
-                  if={{ condition: !!tab.href, component: Link as any, props: { to: tab.href } }}
-                  else={{ component: 'button' }}
+                  conditions={[
+                    {
+                      condition: !!tab.href,
+                      component: (props: Partial<LinkProps>) => <Link {...props} to={tab.href!} />,
+                    },
+                    {
+                      component: (props: Partial<ButtonProps>) => <Button {...props} />,
+                    },
+                  ]}
                   onClick={onClick}
                   className={clsx(
                     isActive && 'font-semibold border-b border-Gray-3',
