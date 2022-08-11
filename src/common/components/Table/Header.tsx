@@ -1,6 +1,7 @@
 import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import React from 'react';
+import { Button, ButtonProps } from '../Button';
 import { ConditionalWrapper } from '../ConditionalWrapper';
 import { SortIcon } from './SortIcon';
 import { TableContext } from './TableContext';
@@ -44,7 +45,12 @@ export const Header = ({ className, sortKey, children, ...restProps }: Props) =>
       )}
     >
       <ConditionalWrapper
-        if={{ condition: !!sortKey, component: 'button', props: { onClick: handleClick } }}
+        conditions={[
+          {
+            condition: !!sortKey,
+            component: (props: Partial<ButtonProps>) => <Button {...props} onClick={handleClick} />,
+          },
+        ]}
       >
         <div className="flex items-center gap-2">
           {children}
