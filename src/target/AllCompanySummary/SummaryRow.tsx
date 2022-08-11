@@ -50,7 +50,7 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
         fullName: comment?.user?.fullName ?? '',
       })),
     ),
-  ].map((user) => ({ src: user.src, fullName: user.fullName }));
+  ];
 
   const avatars = uniqueAvatars.length > 3 ? uniqueAvatars.slice(0, 2) : uniqueAvatars;
 
