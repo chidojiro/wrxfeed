@@ -1,6 +1,7 @@
-import { HTMLDivProps } from '../../types';
-import { usePagination, UsePaginationProps, UsePaginationReturn } from '../../hooks';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import React from 'react';
+import { usePagination, UsePaginationProps, UsePaginationReturn } from '../../hooks';
+import { HTMLDivProps } from '../../types';
 import { PaginationItems } from './PaginationItems';
 import { ShowingRange } from './ShowingRange';
 
@@ -19,7 +20,7 @@ export const Pagination = ({
   centerItemsCount,
   onChange,
   page,
-  perPage,
+  perPage = DEFAULT_ITEMS_PER_INFINITE_LOAD,
   sideItemsCount,
   ...restProps
 }: PaginationProps) => {
@@ -33,6 +34,8 @@ export const Pagination = ({
   });
 
   const providerValue = React.useMemo(() => usePaginationReturn, [usePaginationReturn]);
+
+  if (totalRecord <= perPage) return null;
 
   if (!children)
     return (

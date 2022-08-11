@@ -10,6 +10,7 @@ export const useFetcher = <T = unknown>(
   callback: (...args: unknown[]) => Promise<T>,
   configs?: UseFetcherConfiguration<T>,
 ) => {
+  const [prevData, setPrevData] = React.useState<T>();
   const { onError, ...restConfigs } = configs ?? {};
 
   const errorHandler = useErrorHandler();
@@ -26,16 +27,25 @@ export const useFetcher = <T = unknown>(
     }
   };
 
-  const swrReturn = useSwr<T>(key, callback, {
-    onError: handleError,
-    ...restConfigs,
-  });
+  const swrReturn = useSwr<T>(
+    key,
+    async () => {
+      const data = await callback();
+      setPrevData(data);
+      return data;
+    },
+    {
+      onError: handleError,
+      ...restConfigs,
+    },
+  );
 
   return React.useMemo(
     () => ({
       ...swrReturn,
+      data: swrReturn.data ?? prevData,
       isInitializing: !swrReturn.error && !swrReturn.data && swrReturn.isValidating,
     }),
-    [swrReturn],
+    [prevData, swrReturn],
   );
 };
