@@ -42,7 +42,7 @@ const renderDefault = (props?: Partial<UsePaginationProps>) =>
 
 it('should render only one page item', () => {
   const { result } = renderHook(() =>
-    usePagination({ totalRecord: 0, centerItemsCount: 10, sideItemsCount: 10 }),
+    usePagination({ totalRecord: 0, centerItemsCount: 10, sideItemsCount: 10, perPage: 10 }),
   );
 
   const items = result.current.items;
