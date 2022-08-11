@@ -7,10 +7,13 @@ import { TagsSelectOptionProps } from './types';
 
 export const TagsSelectOption = React.memo(
   ({ children, value, className, icon, onClick, addTag, selected }: TagsSelectOptionProps<any>) => {
-    const [delayableOpen, setDelayableOpen] = useDelayableState(0, false);
+    const [delayableOpen, setDelayableOpen] = useDelayableState({
+      delayBy: 0,
+      defaultState: false,
+    });
 
     React.useEffect(() => {
-      setDelayableOpen(!!selected, !selected);
+      setDelayableOpen({ state: !!selected, shouldDelay: !selected });
     }, [selected, setDelayableOpen]);
 
     if (!delayableOpen) return null;

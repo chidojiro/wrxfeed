@@ -9,10 +9,13 @@ export const withMountOnOpen =
   // eslint-disable-next-line react/display-name
   (props: T) => {
     const [cachedProps, setCachedProps] = React.useState<T>(props);
-    const [delayabeOpen, setDelayableOpen] = useDelayableState(500, props.open);
+    const [delayabeOpen, setDelayableOpen] = useDelayableState({
+      delayBy: 500,
+      defaultState: props.open,
+    });
 
     React.useEffect(() => {
-      setDelayableOpen(!!props.open, !props.open);
+      setDelayableOpen({ state: !!props.open, shouldDelay: !props.open });
     }, [props.open, setDelayableOpen]);
 
     React.useEffect(() => {
