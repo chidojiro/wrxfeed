@@ -1,4 +1,4 @@
-import { useDelayableState, useOnClickOutside } from '@/common/hooks';
+import { useDelayableState, useOnEventOutside } from '@/common/hooks';
 import { Children, OpenClose } from '@/common/types';
 import { AssertUtils } from '@/common/utils';
 import clsx from 'clsx';
@@ -76,7 +76,7 @@ export const Popover = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trigger, open, setActuallyOpen, (trigger as HTMLElement)?.innerHTML]);
 
-  useOnClickOutside(closeOnClickOutside && [popoverRef, triggerElement as any], onClose);
+  useOnEventOutside('click', closeOnClickOutside && [popoverRef, triggerElement as any], onClose);
 
   return (
     <>
