@@ -3,13 +3,12 @@ import { ReactComponent as BasicsXSmall } from '@/assets/icons/outline/basics-x-
 import { ReactComponent as QuestionCircle } from '@/assets/icons/solid/question-circle.svg';
 import Loading from '@/common/atoms/Loading';
 import { Button } from '@/common/components';
-import { useDebounce } from '@/common/hooks';
+import { useDebounce, useOnEventOutside } from '@/common/hooks';
 import SearchBarResultItem from '@/main/atoms/SearchBarResultItem';
 import useRoveFocus from '@/main/hooks/focus.hook';
 import { SearchResult } from '@/main/types';
 import { useSearch } from '@/misc/useSearch';
 import { TargetTypeProp } from '@/target/types';
-import { useOnClickOutside } from '@dwarvesf/react-hooks';
 import { Transition } from '@headlessui/react';
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -42,7 +41,7 @@ const SearchBar: React.FC = () => {
     clearSearchResults();
     setKeyword('');
   };
-  useOnClickOutside(useableViewRef, onCloseDropDownResultsView);
+  useOnEventOutside('click', useableViewRef, onCloseDropDownResultsView);
 
   const onSearchTeam = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
