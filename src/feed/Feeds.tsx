@@ -117,7 +117,7 @@ export const Feeds = ({
       <LineItemDrawer
         open={isLineItemDrawerOpen}
         onClose={closeLineItemDrawer}
-        lineItem={selectedLineItem}
+        lineItem={selectedLineItem!}
         feedId={feedId}
       />
       <ul className="space-y-4">
