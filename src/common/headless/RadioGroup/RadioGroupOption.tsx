@@ -1,12 +1,10 @@
 import React, { ChangeEvent } from 'react';
-
 import { useRadioGroupContext } from './RadioGroupProvider';
 
-export type RadioGroupOptionRenderPropState = {
+export type CheckboxGroupOptionRenderPropState = {
   value: string;
   isChecked: boolean;
   handleChange: React.ChangeEventHandler<HTMLInputElement>;
-  error: boolean;
 };
 
 export type RadioGroupOptionProps = {
@@ -15,7 +13,7 @@ export type RadioGroupOptionProps = {
     e: ChangeEvent<HTMLInputElement>,
     checkboxGroupValue?: string,
   ) => boolean | Promise<boolean>;
-  children?: (state: RadioGroupOptionRenderPropState) => React.ReactNode;
+  children?: (state: CheckboxGroupOptionRenderPropState) => React.ReactNode;
 };
 
 export const RadioGroupOption = ({
@@ -37,9 +35,5 @@ export const RadioGroupOption = ({
     }
   };
 
-  return (
-    <>
-      {children?.({ value, isChecked, handleChange, error: !!groupProviderValue.groupProps.error })}
-    </>
-  );
+  return <>{children?.({ value, isChecked, handleChange })}</>;
 };

@@ -117,7 +117,7 @@ export const Feeds = ({
       <LineItemDrawer
         open={isLineItemDrawerOpen}
         onClose={closeLineItemDrawer}
-        lineItem={selectedLineItem}
+        lineItem={selectedLineItem!}
         feedId={feedId}
       />
       <ul className="space-y-4">
@@ -146,7 +146,7 @@ export const Feeds = ({
         ))}
       </ul>
       <div className="mt-4">
-        <InfiniteLoader itemsPerLoad={5} onLoad={loadMore}>
+        <InfiniteLoader mode="ON_SIGHT" itemsPerLoad={5} onLoad={loadMore}>
           {renderInfiniteLoader}
         </InfiniteLoader>
       </div>

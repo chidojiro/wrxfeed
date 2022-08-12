@@ -20,10 +20,10 @@ const Modal: React.FC<ModalProps> = ({
   center = true,
   contentClass = '',
 }) => {
-  const [delayableOpen, setDelayableOpen] = useDelayableState(200, open);
+  const [delayableOpen, setDelayableOpen] = useDelayableState({ delayBy: 200, defaultState: open });
 
   React.useEffect(() => {
-    setDelayableOpen(!!open, !open);
+    setDelayableOpen({ state: !!open, shouldDelay: !open });
   }, [open, setDelayableOpen]);
 
   useScrollDisable(delayableOpen);

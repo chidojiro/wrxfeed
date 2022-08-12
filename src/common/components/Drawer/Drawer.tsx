@@ -1,5 +1,5 @@
 import { Drawer as HeadlessDrawer, DrawerProps as HeadlessDrawerProps } from '@/common/headless';
-import { useDelayableState, useOnClickOutside } from '@/common/hooks';
+import { useDelayableState, useOnEventOutside } from '@/common/hooks';
 import { OpenClose } from '@/common/types';
 import clsx from 'clsx';
 import React from 'react';
@@ -13,17 +13,20 @@ export type DrawerProps = Omit<HeadlessDrawerProps, 'placement'> &
 
 export const Drawer = React.forwardRef<any, DrawerProps>(
   ({ children, open: openProp, onClose, closeOnClickOutside }, ref) => {
-    const [delayableOpen, setDelayableOpen] = useDelayableState(200, openProp);
+    const [delayableOpen, setDelayableOpen] = useDelayableState({
+      delayBy: 200,
+      defaultState: openProp,
+    });
 
     React.useEffect(() => {
-      setDelayableOpen(!!openProp, !openProp);
+      setDelayableOpen({ state: !!openProp, shouldDelay: !openProp });
     }, [openProp, setDelayableOpen]);
 
     const internalRef = React.useRef<HTMLDivElement>(null);
 
     React.useImperativeHandle(ref, () => internalRef.current as HTMLDivElement);
 
-    useOnClickOutside(closeOnClickOutside && internalRef, onClose);
+    useOnEventOutside('click', closeOnClickOutside && internalRef, onClose);
 
     if (!delayableOpen) return null;
 

@@ -12,7 +12,7 @@ export type UsePaginationItem = {
 export type UsePaginationProps = {
   page?: number;
   totalRecord: number;
-  perPage?: number;
+  perPage: number;
   onChange?: (page: number) => void;
   centerItemsCount?: number;
   sideItemsCount?: number;
@@ -32,7 +32,7 @@ export type UsePaginationReturn = {
 export const usePagination = ({
   page: pageProp,
   totalRecord = 0,
-  perPage = 10,
+  perPage,
   onChange,
   centerItemsCount = 3,
   sideItemsCount: sideItemsCountProp = 5,

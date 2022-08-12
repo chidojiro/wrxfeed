@@ -1,4 +1,4 @@
-import { useOnMouseOverOutside } from '@/common/hooks';
+import { useOnEventOutside } from '@/common/hooks';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';
@@ -20,7 +20,7 @@ export const Tooltip = ({
   const disclosure = useDisclosure();
   const triggerElementRef = React.useRef<any>();
 
-  useOnMouseOverOutside(triggerElementRef, disclosure.onClose);
+  useOnEventOutside('mouseover', triggerElementRef, disclosure.onClose);
 
   const clonedTrigger = React.useMemo(() => {
     return React.Children.map(trigger, (child) =>

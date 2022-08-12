@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const useScrollDisable = (disable: boolean) => {
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const header = document.getElementById('app-header');
 
     if (disable) {
@@ -11,7 +11,7 @@ export const useScrollDisable = (disable: boolean) => {
     }
   }, [disable]);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const header = document.getElementById('app-header');
 
     return () => {

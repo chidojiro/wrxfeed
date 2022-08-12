@@ -85,9 +85,13 @@ const deleteComment = (id: number) => RestApis.delete(`/feed/comments/${id}`);
 const getLineItem = (id: number) => RestApis.get<TransLineItem>(`/feed/line-items/${id}`);
 
 const getLineItems = (params: GetLineItemsParams) =>
-  RestApis.get<TransLineItem[]>(`/feed/line-items`, {
+  RestApis.get<AxiosResponse<TransLineItem[]>>(`/feed/line-items`, {
     params: withDefaultPaginationParams(params),
-  });
+    headers: BYPASS_INTERCEPTOR_HEADER,
+  }).then(({ data, headers }) => ({
+    lineItems: data,
+    totalCount: isNaN(+headers['x-total-count']) ? 0 : +headers['x-total-count'],
+  }));
 
 const updateLineItem = (id: number, payload: Partial<TransLineItem>) =>
   RestApis.patch<TransLineItem>(`/feed/line-items/${id}`, payload);

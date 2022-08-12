@@ -1,4 +1,4 @@
-import { useDelayableState, useOnClickOutside } from '@/common/hooks';
+import { useDelayableState, useOnEventOutside } from '@/common/hooks';
 import { Children, OpenClose } from '@/common/types';
 import { AssertUtils } from '@/common/utils';
 import clsx from 'clsx';
@@ -32,7 +32,7 @@ export const Popover = ({
   const popoverRef = React.useRef(null);
 
   // Workaround to resolve misalignment on initial render
-  const [actuallyOpen, setActuallyOpen] = useDelayableState(0, false);
+  const [actuallyOpen, setActuallyOpen] = useDelayableState({ delayBy: 0, defaultState: false });
 
   const { styles, attributes, forceUpdate } = usePopper(
     AssertUtils.isHTMLElement(trigger) ? (trigger as any) : triggerElement,
@@ -71,17 +71,17 @@ export const Popover = ({
   }, [trigger]);
 
   React.useEffect(() => {
-    setActuallyOpen(!!open, true);
+    setActuallyOpen({ state: !!open, shouldDelay: true });
     forceUpdate?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trigger, open, setActuallyOpen, (trigger as HTMLElement)?.innerHTML]);
 
-  useOnClickOutside(closeOnClickOutside && [popoverRef, triggerElement as any], onClose);
+  useOnEventOutside('click', closeOnClickOutside && [popoverRef, triggerElement as any], onClose);
 
   return (
     <>
       {clonedTrigger}
-      <ConditionalWrapper if={{ condition: usePortal, component: Portal as any }}>
+      <ConditionalWrapper conditions={[{ condition: usePortal, component: Portal as any }]}>
         <div ref={popoverRef} style={styles.popper} {...attributes.popper} className="z-50">
           <div className={clsx({ hidden: !actuallyOpen })}>{children}</div>
         </div>

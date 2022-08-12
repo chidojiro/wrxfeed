@@ -23,7 +23,7 @@ export type LineItemDrawerProps = OpenClose & {
   feedId?: number;
 };
 
-export const LineItemDrawer = withMountOnOpen(
+export const LineItemDrawer = withMountOnOpen()(
   ({ className, onClose, feedId, lineItem, open }: LineItemDrawerProps) => {
     const { profile } = useProfile();
 

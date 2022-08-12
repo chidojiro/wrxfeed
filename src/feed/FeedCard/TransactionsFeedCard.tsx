@@ -1,6 +1,6 @@
 import { ExclamationCircle, EyeHideIcon, MoreVerticalIcon } from '@/assets';
 import { ProtectedFeatures } from '@/auth/constants';
-import { Button, ConditionalWrapper } from '@/common/components';
+import { Button, ButtonProps, ConditionalWrapper } from '@/common/components';
 import ConfirmModal from '@/main/atoms/ConfirmModal';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
@@ -19,7 +19,7 @@ import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { sumBy } from 'lodash-es';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, LinkProps } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { CommentsSection } from './CommentsSection';
 import { FeedBackModal } from './FeedBackModal';
@@ -121,18 +121,23 @@ export const TransactionsFeedCard = React.memo(
                 <div className="flex items-center min-w-0 flex-1 ">
                   <p className="text-base text-white">
                     <ConditionalWrapper
-                      if={{
-                        condition: !!categoryRedirectHref,
-                        component: Link,
-                        props: {
-                          to: categoryRedirectHref?.(feed.category) ?? '/',
-                          onClick: () => scrollToTop(),
+                      conditions={[
+                        {
+                          condition: !!categoryRedirectHref,
+                          component: (props: Partial<LinkProps>) => (
+                            <Link
+                              to={categoryRedirectHref?.(feed.category) ?? '/'}
+                              onClick={() => scrollToTop()}
+                              {...props}
+                            />
+                          ),
                         },
-                      }}
-                      else={{
-                        component: Button,
-                        props: { onClick: () => onCategoryClick?.(feed.category) },
-                      }}
+                        {
+                          component: (props: Partial<ButtonProps>) => (
+                            <Button onClick={() => onCategoryClick?.(feed.category)} {...props} />
+                          ),
+                        },
+                      ]}
                       className="hover:underline text-left font-bold"
                     >
                       {feed.category?.name}
