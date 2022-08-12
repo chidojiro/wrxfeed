@@ -1,7 +1,13 @@
+import { useControllableState } from '@/common/hooks';
 import React from 'react';
-import { useControllableState } from '../../hooks';
+import { Children } from '@/common/types';
 import { ChangeHandler, CheckboxGroupProvider } from './CheckboxGroupProvider';
-import { CheckboxGroupProps } from './types';
+
+export type CheckboxGroupProps = Children & {
+  onChange?: (value: string[]) => void;
+  value?: string[];
+  defaultValue?: string[];
+};
 
 export const CheckboxGroup = (props: CheckboxGroupProps) => {
   const { onChange: onChangeProp, defaultValue = [], value: valueProp, children } = props;
@@ -21,15 +27,13 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
         newValue = value.filter((value: any) => value !== targetValue);
       }
 
-      setValue({ internal: newValue, external: newValue });
+      onChangeProp?.(newValue);
+      setValue(newValue);
     },
-    [setValue, value],
+    [onChangeProp, setValue, value],
   );
 
-  const providerValue = React.useMemo(
-    () => ({ handleChange, value, groupProps: props }),
-    [props, handleChange, value],
-  );
+  const providerValue = React.useMemo(() => ({ handleChange, value }), [handleChange, value]);
 
   return <CheckboxGroupProvider value={providerValue}>{children}</CheckboxGroupProvider>;
 };

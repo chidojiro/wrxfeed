@@ -1,11 +1,10 @@
 import React, { ChangeEvent } from 'react';
 import { useCheckboxGroupContext } from './CheckboxGroupProvider';
 
-export type CheckboxGroupOptionRenderPropState = {
+type RenderPropState = {
   value: string;
   isChecked: boolean;
   handleChange: React.ChangeEventHandler<HTMLInputElement>;
-  error: boolean;
 };
 
 export type CheckboxGroupOptionProps = {
@@ -14,7 +13,7 @@ export type CheckboxGroupOptionProps = {
     e: ChangeEvent<HTMLInputElement>,
     checkboxGroupValue: string[],
   ) => boolean | Promise<boolean>;
-  children?: (state: CheckboxGroupOptionRenderPropState) => React.ReactNode;
+  children?: (state: RenderPropState) => React.ReactNode;
 };
 
 export const CheckboxGroupOption = ({
@@ -37,9 +36,5 @@ export const CheckboxGroupOption = ({
     }
   };
 
-  return (
-    <>
-      {children?.({ value, isChecked, handleChange, error: !!groupProviderValue.groupProps.error })}
-    </>
-  );
+  return <>{children?.({ value, isChecked, handleChange })}</>;
 };
