@@ -11,7 +11,6 @@ export * from './useLegacyQuery';
 export * from './useMountEffect';
 export { default as useNavUtils } from './useNavUtils';
 export * from './useOnEventOutside';
-export * from './useOverlay';
 export * from './usePagination';
 export * from './useQuery';
 export * from './useScrollbarDetector';

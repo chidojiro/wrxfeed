@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import { EmojiData, Picker } from 'emoji-mart';
 import { Transition } from '@headlessui/react';
 import { usePopper } from 'react-popper';
@@ -92,5 +92,5 @@ export const EmojiPicker = () => {
       </Transition>
     </div>
   );
-  return ReactDOM.createPortal(renderPopover(), PortalRoot as Element);
+  return createPortal(renderPopover(), PortalRoot as Element);
 };
