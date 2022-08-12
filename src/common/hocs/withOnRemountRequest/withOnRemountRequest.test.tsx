@@ -1,7 +1,7 @@
-import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { useMountEffect } from '../../hooks';
+import React from 'react';
+import { fireEvent, render } from '@testing-library/react';
 import { withOnRemountRequest, WithOnRemountRequestProps } from './withOnRemountRequest';
+import { useMountEffect } from '../../hooks';
 
 const mountEffect = jest.fn();
 
@@ -17,12 +17,12 @@ const renderComponent = () => {
   return render(<Component />);
 };
 
-it('should call remount effect after clicking on remount', () => {
+it('should call remount effect after clicking on remount', async () => {
   const { getByText } = renderComponent();
 
   expect(mountEffect).toBeCalledTimes(1);
 
-  userEvent.click(getByText('Remount'));
+  fireEvent.click(getByText('Remount'));
 
   expect(mountEffect).toBeCalledTimes(2);
 });

@@ -41,7 +41,6 @@ it('should set state after 500ms', () => {
 
 it('should set state without delay', () => {
   const { result } = renderHook(() => useDelayableState({ defaultState, delayBy: 500 }));
-  result.current[1]({ state: newState, shouldDelay: false });
 
   act(() => {
     result.current[1]({ state: newState, shouldDelay: false });

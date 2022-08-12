@@ -1,9 +1,9 @@
 import { act, render, waitFor } from '@testing-library/react';
-import React from 'react';
-import { useInfiniteLoader, UseInfiniteLoaderProps } from './useInfiniteLoader';
-import * as mockUseIntersection from '../useIntersection';
 import userEvent from '@testing-library/user-event';
-import { PromiseUtils } from '@/common/utils';
+import React from 'react';
+import { PromiseUtils } from '../../utils';
+import * as mockUseIntersection from '../useIntersection';
+import { useInfiniteLoader, UseInfiniteLoaderProps } from './useInfiniteLoader';
 
 const mockOnLoad = jest.fn().mockReturnValue([]);
 
