@@ -3,15 +3,18 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import useSwr, { SWRConfiguration } from 'swr';
 
-export type UseFetcherConfiguration<T = any> = SWRConfiguration<T>;
+export type UseFetcherConfiguration<T = any> = SWRConfiguration<T> & {
+  laggy?: boolean;
+};
 
 export const useFetcher = <T = unknown>(
   key: string | unknown[] | null | undefined | false,
   callback: (...args: unknown[]) => Promise<T>,
   configs?: UseFetcherConfiguration<T>,
 ) => {
-  const [prevData, setPrevData] = React.useState<T>();
-  const { onError, ...restConfigs } = configs ?? {};
+  const laggyDataRef = React.useRef<T>();
+
+  const { onError, laggy, ...restConfigs } = configs ?? {};
 
   const errorHandler = useErrorHandler();
 
@@ -31,7 +34,7 @@ export const useFetcher = <T = unknown>(
     key,
     async () => {
       const data = await callback();
-      setPrevData(data);
+      laggyDataRef.current = data;
       return data;
     },
     {
@@ -43,9 +46,10 @@ export const useFetcher = <T = unknown>(
   return React.useMemo(
     () => ({
       ...swrReturn,
-      data: swrReturn.data ?? prevData,
+      data: swrReturn.data ?? (laggy ? laggyDataRef.current : undefined),
+      isLagging: swrReturn.data === undefined && laggyDataRef.current !== undefined,
       isInitializing: !swrReturn.error && !swrReturn.data && swrReturn.isValidating,
     }),
-    [prevData, swrReturn],
+    [laggy, swrReturn],
   );
 };

@@ -5,8 +5,10 @@ import { GetLineItemsParams } from '@/feed/types';
 import React from 'react';
 
 export const useTransactions = (params: GetLineItemsParams) => {
-  const { data, isInitializing, isValidating, mutate } = useFetcher(['transactions', params], () =>
-    FeedApis.getLineItems(params),
+  const { data, isInitializing, isValidating, mutate } = useFetcher(
+    ['transactions', params],
+    () => FeedApis.getLineItems(params),
+    { laggy: true },
   );
 
   const { lineItems = EMPTY_ARRAY, totalCount = 0 } = data ?? {};
