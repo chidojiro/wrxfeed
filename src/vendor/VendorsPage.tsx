@@ -20,9 +20,13 @@ export const VendorsPage = () => {
     <MainLayout>
       <h1 className="sr-only">Vendors list</h1>
       <VendorList vendors={loadedVendors} onVendorClick={handleVendorClick} />
-      <InfiniteLoader<Vendor[]>
-        onLoad={(paginationParams) => VendorApis.getList(paginationParams)}
-        onSuccess={(data) => setLoadedVendors((prev) => [...prev, ...data])}
+      <InfiniteLoader
+        mode="ON_SIGHT"
+        onLoad={async (paginationParams) => {
+          const data = await VendorApis.getList(paginationParams);
+          setLoadedVendors((prev) => [...prev, ...data]);
+          return data;
+        }}
       />
     </MainLayout>
   );

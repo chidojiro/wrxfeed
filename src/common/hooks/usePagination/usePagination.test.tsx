@@ -1,26 +1,26 @@
 import { usePagination, UsePaginationProps } from './usePagination';
-import { act, renderHook, HookResult } from '@testing-library/react-hooks';
+import { act, renderHook, RenderResult } from '@testing-library/react-hooks';
 import { UsePaginationItem, UsePaginationReturn, UsePaginationShowingRange } from './usePagination';
 
-const getItemPrevious = (result: HookResult<UsePaginationReturn>) =>
+const getItemPrevious = (result: RenderResult<UsePaginationReturn>) =>
   result.current.items[0] as Required<UsePaginationItem>;
 
-const getItemNext = (result: HookResult<UsePaginationReturn>) =>
+const getItemNext = (result: RenderResult<UsePaginationReturn>) =>
   result.current.items[result.current.items.length - 1] as Required<UsePaginationItem>;
 
-const getItemPage = (result: HookResult<UsePaginationReturn>, page: number) =>
+const getItemPage = (result: RenderResult<UsePaginationReturn>, page: number) =>
   result.current.items.find((item) => page === item.page) as Required<UsePaginationItem>;
 
-const getSelectedPage = (result: HookResult<UsePaginationReturn>) =>
+const getSelectedPage = (result: RenderResult<UsePaginationReturn>) =>
   result.current.items.find(({ selected }) => selected) as Required<UsePaginationItem>;
 
-const getItemFirstPage = (result: HookResult<UsePaginationReturn>) =>
+const getItemFirstPage = (result: RenderResult<UsePaginationReturn>) =>
   result.current.items[1] as Required<UsePaginationItem>;
 
-const getItemLastPage = (result: HookResult<UsePaginationReturn>) =>
+const getItemLastPage = (result: RenderResult<UsePaginationReturn>) =>
   result.current.items[result.current.items.length - 2] as Required<UsePaginationItem>;
 
-const getEllipsisItem = (result: HookResult<UsePaginationReturn>) =>
+const getEllipsisItem = (result: RenderResult<UsePaginationReturn>) =>
   result.current.items.find(({ type }) => type === 'ellipsis') as Required<UsePaginationItem>;
 
 const defaultProps: UsePaginationProps = {

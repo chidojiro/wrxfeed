@@ -65,13 +65,17 @@ export const TransactionsSection = ({ feed, defaultExpand }: TransactionsSection
       <RestrictedWarning className="mb-1" show={feed.hidden && !!loadedTransactions.length} />
       <div className="relative flex items-center">
         <Divider className="my-2" />
-        <InfiniteLoader<Transaction[]>
+        <InfiniteLoader
           defaultPage={1}
           mode="ON_DEMAND"
-          onLoad={(paginationParams) =>
-            FeedApis.getTransactions({ feedItemId: feed.id, ...paginationParams })
-          }
-          onSuccess={(data) => setLoadedTransactions((prev) => [...prev, ...data])}
+          onLoad={async (paginationParams) => {
+            const data = await FeedApis.getTransactions({
+              feedItemId: feed.id,
+              ...paginationParams,
+            });
+            setLoadedTransactions((prev) => [...prev, ...data]);
+            return data;
+          }}
         >
           {renderLoadButton}
         </InfiniteLoader>
