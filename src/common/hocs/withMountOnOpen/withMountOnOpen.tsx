@@ -1,21 +1,22 @@
 import React from 'react';
-import { useDelayableState } from '../hooks';
-import { OpenClose } from '../types';
+import { useDelayableState } from '../../hooks';
+import { OpenClose } from '../../types';
 
 type OpenProps = OpenClose;
 
 export const withMountOnOpen =
+  (delayCloseBy = 0) =>
   <T extends OpenProps>(Component: (props: T) => JSX.Element | null) =>
   // eslint-disable-next-line react/display-name
   (props: T) => {
     const [cachedProps, setCachedProps] = React.useState<T>(props);
     const [delayabeOpen, setDelayableOpen] = useDelayableState({
-      delayBy: 500,
+      delayBy: delayCloseBy,
       defaultState: props.open,
     });
 
     React.useEffect(() => {
-      setDelayableOpen({ state: !!props.open, shouldDelay: !props.open });
+      setDelayableOpen({ state: !!props.open, shouldDelay: !!delayCloseBy && !props.open });
     }, [props.open, setDelayableOpen]);
 
     React.useEffect(() => {
