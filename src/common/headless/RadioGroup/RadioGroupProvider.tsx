@@ -1,13 +1,9 @@
-import { ReactUtils } from '../../utils';
-import { RadioGroupProps } from './types';
+import { ReactUtils } from '@/common/utils';
 
 export type RadioGroupProviderValue = {
   value?: string;
   handleChange: (value: string) => void;
-  groupProps: RadioGroupProps;
 };
 
-const [RadioGroupProvider, useRadioGroupContext] =
+export const [RadioGroupProvider, useRadioGroupContext] =
   ReactUtils.createContext<RadioGroupProviderValue>();
-
-export { RadioGroupProvider, useRadioGroupContext };
