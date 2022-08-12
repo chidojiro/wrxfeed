@@ -4,7 +4,7 @@ import { Integrations } from '@sentry/tracing';
 import mixpanel from 'mixpanel-browser';
 import App from './App';
 import { BUILD_ENV, MIX_PANEL_PROJECT_TOKEN } from '@/config';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import { SWRConfig } from 'swr';
 
 Sentry.init({
@@ -22,7 +22,7 @@ mixpanel.init(MIX_PANEL_PROJECT_TOKEN, {
   debug: !(BUILD_ENV === 'prod' || BUILD_ENV === 'production'),
 });
 
-ReactDOM.render(
+render(
   <React.StrictMode>
     <SWRConfig value={{ revalidateOnFocus: false, shouldRetryOnError: false }}>
       <App />
