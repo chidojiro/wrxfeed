@@ -43,15 +43,21 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
 
   const targetSpends = target?.periods?.reduce((acc, cur) => acc + (cur.amount ?? 0), 0);
 
-  const avatars: AvatarProps[] = comments.map((comment) => ({
-    src: comment?.user?.avatar,
-    fullName: comment?.user?.fullName ?? '',
-  }));
+  const uniqueAvatars: AvatarProps[] = [
+    ...new Set(
+      comments.map((comment) => ({
+        src: comment?.user?.avatar,
+        fullName: comment?.user?.fullName ?? '',
+      })),
+    ),
+  ];
+
+  const avatars = uniqueAvatars.length > 3 ? uniqueAvatars.slice(0, 2) : uniqueAvatars;
 
   const TrailingIcon = (
-    <div>
-      <CommentIcon className="text-Gray-7 h-5 w-5" />
-      <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-Gray-3 text-2xs">
+    <div className="relative">
+      <CommentIcon className="text-Gray-7 h-7 w-6" />
+      <div className="absolute bottom-2 left-3 transform -translate-x-1/2 text-Gray-3 text-2xs">
         {comments.length}
       </div>
     </div>
