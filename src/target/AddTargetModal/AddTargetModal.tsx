@@ -67,7 +67,7 @@ const getPropFromTagValue = (value: string) => {
   return { type, id: +id, name };
 };
 
-export const AddTargetModal = withMountOnOpen((props: AddTargetModalProps) => {
+export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => {
   const {
     open,
     onClose,

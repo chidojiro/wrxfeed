@@ -1,1 +1,1 @@
-export { withUmountAfter } from './withUmountAfter';
+export { withMountAfter } from './withMountAfter';

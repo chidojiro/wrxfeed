@@ -19,7 +19,7 @@ export type UpdateDetailsLineItemInfoModalProps = {
   onConfirm: typeof FeedApis.updateLineItem;
 };
 
-export const UpdateDetailsLineItemInfoModal = withMountOnOpen(
+export const UpdateDetailsLineItemInfoModal = withMountOnOpen()(
   ({
     open = false,
     onClose,

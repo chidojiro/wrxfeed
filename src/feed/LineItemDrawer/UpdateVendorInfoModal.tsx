@@ -17,7 +17,7 @@ export type UpdateVendorInfoModalProps = {
   vendor?: Vendor;
 };
 
-export const UpdateVendorInfoModal = withMountOnOpen(
+export const UpdateVendorInfoModal = withMountOnOpen()(
   ({ open = false, onClose, onCancel, onConfirm, vendor }: UpdateVendorInfoModalProps) => {
     const methods = useForm({ mode: 'onChange' });
     const {
