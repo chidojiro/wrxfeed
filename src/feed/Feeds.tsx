@@ -146,7 +146,7 @@ export const Feeds = ({
         ))}
       </ul>
       <div className="mt-4">
-        <InfiniteLoader itemsPerLoad={5} onLoad={loadMore}>
+        <InfiniteLoader mode="ON_SIGHT" itemsPerLoad={5} onLoad={loadMore}>
           {renderInfiniteLoader}
         </InfiniteLoader>
       </div>
