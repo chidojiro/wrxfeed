@@ -20,7 +20,6 @@ import '@draft-js-plugins/mention/lib/plugin.css';
 import 'draft-js/dist/Draft.css';
 import 'emoji-mart/css/emoji-mart.css';
 import 'react-toastify/dist/ReactToastify.css';
-import 'typeface-roboto';
 
 const RecoilRoot = _RecoilRoot as React.FC<RecoilRootProps & Children>;
 
