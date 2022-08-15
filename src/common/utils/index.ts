@@ -11,6 +11,8 @@ export { StringUtils } from './string';
 export { NumberUtils } from './number';
 export { CookiesUtils } from './cookies';
 export { PromiseUtils } from './promise';
+export { SessionStorageUtils } from './sessionStorage';
+export { LocalStorageUtils } from './localStorage';
 
 // Dayjs plugins
 dayjs.extend(isToday);
