@@ -604,25 +604,6 @@ export const decimalLogic = (
 export const getDisplayUsdAmount = (num?: number) =>
   num ? decimalLogic(num, DecimalType.SummedNumbers) : EMPTY_AMOUNT;
 
-export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
-  const targetByTeam: TargetByTeam[] = [];
-  data.forEach((item: Target) => {
-    const deptId = item.department?.id;
-    const indexOfTeam = targetByTeam.findIndex(
-      (team: TargetByTeam) => team.department.id === deptId,
-    );
-    if (item.department && indexOfTeam === -1) {
-      targetByTeam.push({
-        department: item.department,
-        targets: [item],
-      });
-    } else if (indexOfTeam !== -1) {
-      targetByTeam[indexOfTeam].targets.push(item);
-    }
-  });
-  return targetByTeam;
-};
-
 export const getTrackingStatusName = (type: TargetStatusType): string => {
   return TargetStatusConfig[type].name;
 };
@@ -633,17 +614,3 @@ export const getSummaryNumber = (value: number, total: number): string => {
   }
   return `${Math.round((value * 100) / total)}%`;
 };
-
-export const toMonthName = (value: number) => {
-  const date = new Date();
-  date.setMonth(value - 1);
-
-  return date.toLocaleString('en-US', {
-    month: 'short',
-  });
-};
-
-export const toUSD = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-});

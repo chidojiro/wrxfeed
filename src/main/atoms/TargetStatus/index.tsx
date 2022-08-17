@@ -1,11 +1,6 @@
 import { InfoCircleIcon } from '@/assets';
 import clsx from 'clsx';
-import {
-  getTargetPeriodsAmountTotal,
-  getTrackingStatusName,
-  toMonthName,
-  toUSD,
-} from '@/main/utils';
+import { getTargetPeriodsAmountTotal, getTrackingStatusName } from '@/main/utils';
 import { Target, TargetStatusConfig, TargetStatusType } from '@/target/types';
 import React from 'react';
 import TargetStatusMessage from '../TargetStatusMessage';

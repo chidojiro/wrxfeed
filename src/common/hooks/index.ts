@@ -1,6 +1,7 @@
 export * from './useControllableState';
 export * from './useDebounce';
 export * from './useDelayableState';
+export * from './useDisclosure';
 export * from './useEventBasedState';
 export * from './useEventListener';
 export * from './useFetcher';
