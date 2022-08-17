@@ -1,8 +1,9 @@
+import { useDisclosure, useMountEffect } from '@/common/hooks';
 import React from 'react';
-import { useDisclosure } from '../useDisclosure';
 import { useFetcher } from '../useFetcher';
 import { useIntersection } from '../useIntersection';
-import { useMountEffect } from '../useMountEffect';
+
+const WAIT_FOR_NEXT_LOAD = 300;
 
 export type UseOnSightInfiniteLoaderProps<T = unknown> = {
   onLoad: (page: number) => Promise<T>;
@@ -24,10 +25,15 @@ export const useOnSightInfiniteLoader = <T = unknown>({
   enabled,
 }: UseOnSightInfiniteLoaderProps<T>): UseOnSightInfiniteLoaderReturn => {
   const randomKey = React.useRef(Math.random());
+  const timeoutRef = React.useRef<NodeJS.Timeout>();
 
   const [page, setPage] = React.useState(defaultPage ?? 1);
 
+  const readyForNextLoadDisclosure = useDisclosure({ defaultOpen: true });
+
   const isIntersected = useIntersection(anchor);
+
+  useMountEffect(() => () => clearTimeout(timeoutRef.current));
 
   // Force rerender to make sure anchor is not null initially
   const disclosure = useDisclosure();
@@ -35,9 +41,19 @@ export const useOnSightInfiniteLoader = <T = unknown>({
     disclosure.toggle();
   });
 
+  const handleLoad: typeof onLoad = async (page) => {
+    readyForNextLoadDisclosure.close();
+
+    const data = await onLoad(page);
+
+    timeoutRef.current = setTimeout(readyForNextLoadDisclosure.open, WAIT_FOR_NEXT_LOAD);
+
+    return data;
+  };
+
   const { isInitializing } = useFetcher(
     isIntersected && enabled && !!page && ['useOnSightInfiniteLoader', page, randomKey.current],
-    () => onLoad(page),
+    () => handleLoad(page),
     {
       onError,
       revalidateIfStale: false,
@@ -47,8 +63,9 @@ export const useOnSightInfiniteLoader = <T = unknown>({
   );
 
   const increasePage = React.useCallback(() => {
+    if (!readyForNextLoadDisclosure.isOpen) return;
     setPage((prev) => prev + 1);
-  }, []);
+  }, [readyForNextLoadDisclosure.isOpen]);
 
   const increasePageOnIntersection = React.useCallback(() => {
     if (isIntersected && enabled && !isInitializing) {
