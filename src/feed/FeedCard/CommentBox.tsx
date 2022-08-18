@@ -143,7 +143,7 @@ export const CommentBox = ({
         />
         <div
           style={{ transform: focused || hovered || isEmojiHovering ? 'scaleX(1)' : 'scaleX(0)' }}
-          className="flex h-full space-x-2 items-end scale-x-0 group-hover:scale-x-100 origin-right transition-all"
+          className="flex h-full transform space-x-2 items-end scale-x-0 group-hover:scale-x-100 origin-right transition-all"
         >
           {showEmoji && (
             <>

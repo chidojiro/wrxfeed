@@ -209,7 +209,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
           <div
             className={clsx(
               'flex w-[348px] h-[528px] flex-col absolute z-50 left-0 shadow-property-dropdown border border-Gray-11 rounded-sm bg-white',
-              { '-translate-y-1/4': isHeightRestricted },
+              { 'transform -translate-y-1/4': isHeightRestricted },
               classPopover,
             )}
           >
