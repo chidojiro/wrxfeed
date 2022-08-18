@@ -1,3 +1,4 @@
+import { Button } from '@/common/components';
 import { getColorByPropertyType, getPropIconByType } from '@/main/utils';
 import clsx from 'clsx';
 import React from 'react';
@@ -22,9 +23,8 @@ const ExceptionList = ({ className, items = [], onTagRemoveClick }: ExceptionLis
           const IconByType = getPropIconByType(item?.type);
           const colorByType = getColorByPropertyType(item?.type);
           return (
-            <button
+            <Button
               key={`ExceptionList-${item?.id}`}
-              type="button"
               className="flex flex-row h-[30px] items-center m-0.5 space-x-1 px-2 py-1 rounded-sm"
               style={{ backgroundColor: colorByType }}
             >
@@ -37,16 +37,15 @@ const ExceptionList = ({ className, items = [], onTagRemoveClick }: ExceptionLis
               <p className="text-white text-left text-3xs font-semibold truncate max-w-[160px]">
                 {item?.name}
               </p>
-              <button
-                type="button"
+              <Button
                 className="text-xs text-white font-bold ml-2"
                 onClick={() => {
                   onTagRemoveClick?.(item);
                 }}
               >
                 &times;
-              </button>
-            </button>
+              </Button>
+            </Button>
           );
         })}
       </div>

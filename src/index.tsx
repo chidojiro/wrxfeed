@@ -4,7 +4,7 @@ import { Integrations } from '@sentry/tracing';
 import mixpanel from 'mixpanel-browser';
 import App from './App';
 import { BUILD_ENV, MIX_PANEL_PROJECT_TOKEN } from '@/config';
-import { createRoot } from 'react-dom/client';
+import { render } from 'react-dom';
 import { SWRConfig } from 'swr';
 
 Sentry.init({
@@ -22,12 +22,12 @@ mixpanel.init(MIX_PANEL_PROJECT_TOKEN, {
   debug: !(BUILD_ENV === 'prod' || BUILD_ENV === 'production'),
 });
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const root = createRoot(document.getElementById('root')!);
-root.render(
+render(
   <React.StrictMode>
     <SWRConfig value={{ revalidateOnFocus: false, shouldRetryOnError: false }}>
       <App />
     </SWRConfig>
   </React.StrictMode>,
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  document.getElementById('root')!,
 );

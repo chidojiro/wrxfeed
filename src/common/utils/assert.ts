@@ -26,6 +26,8 @@ const isChangeEvent = <T = any>(data: any): data is React.ChangeEvent<T> => {
   return Object.prototype.hasOwnProperty.call(data?.target, 'value');
 };
 
+const isHTMLElement = (data: any): data is HTMLElement => !!data?.tagName;
+
 export const AssertUtils = {
   isRef,
   isArray,
@@ -35,4 +37,5 @@ export const AssertUtils = {
   isUndefined,
   isNullOrUndefined,
   isChangeEvent,
+  isHTMLElement,
 };

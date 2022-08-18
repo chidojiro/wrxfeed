@@ -16,14 +16,18 @@ export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
 
   return (
     <OverlayLoader loading={isInitializing} className={className}>
-      <TargetCard
-        className="h-[450px]"
-        target={targets[0]}
-        hidePropertyDropdowns
-        onUpdateSuccess={(target) => mutate([target])}
-        onDeleteSuccess={() => mutate()}
-        deletable={false}
-      />
+      {Array.isArray(targets) && targets.length > 0 ? (
+        <TargetCard
+          className="h-[450px]"
+          target={targets[0]}
+          hidePropertyDropdowns
+          onUpdateSuccess={(target) => mutate([target])}
+          onDeleteSuccess={() => mutate()}
+          deletable={false}
+        />
+      ) : (
+        <div />
+      )}
     </OverlayLoader>
   );
 };

@@ -1,4 +1,4 @@
-import { useControllable } from '@/common/hooks';
+import { useControllableState } from '@/common/hooks';
 import { HTMLInputProps } from '@/common/types';
 import { AssertUtils, NumberUtils } from '@/common/utils';
 import clsx from 'clsx';
@@ -6,10 +6,11 @@ import React from 'react';
 
 type BaseInputProps = HTMLInputProps & {
   variant?: 'underline';
+  error?: boolean;
 };
 
 const BaseInput = React.forwardRef(
-  ({ type = 'text', variant, className, ...restProps }: BaseInputProps, ref: any) => {
+  ({ type = 'text', variant, className, error, ...restProps }: BaseInputProps, ref: any) => {
     return (
       <input
         {...restProps}
@@ -19,10 +20,12 @@ const BaseInput = React.forwardRef(
           'outline-none',
           'w-full h-9 px-2.5',
           'text-primary text-sm placeholder-Gray-6',
+          'border border-transparent',
           {
             'bg-Gray-12': !variant,
-            'border-b border-Gray-11 focus:bg-Gray-12 focus:border-transparent':
+            'border-0 border-b border-Gray-11 focus:bg-Gray-12 focus:border-transparent':
               variant === 'underline',
+            'border-danger': error,
           },
           className,
         )}
@@ -33,11 +36,13 @@ const BaseInput = React.forwardRef(
 
 BaseInput.displayName = 'BaseInput';
 
-export type InputProps = Omit<BaseInputProps, 'min' | 'max'> & {
+export type InputProps = Omit<BaseInputProps, 'min' | 'max' | 'value' | 'defaultValue'> & {
   includeNumberSeparator?: boolean;
   min?: number;
   max?: number;
   allowNegative?: boolean;
+  value?: string;
+  defaultValue?: string;
 };
 
 const numberPatterns = [/^-?\d*$/, /^-?\d+(\.(\d)*)?$/];
@@ -60,7 +65,7 @@ export const Input = React.forwardRef(
     }: InputProps,
     ref: any,
   ) => {
-    const [value, setValue] = useControllable({
+    const [value, setValue] = useControllableState({
       value: valueProp,
       onChange,
       defaultValue: defaultValue ?? '',
@@ -94,7 +99,8 @@ export const Input = React.forwardRef(
           try {
             const targetValueWithoutSeparator = e.target.value.replace(/,/g, '');
             const validNumberValue = resolveValidNumberValue(targetValueWithoutSeparator);
-            setValue(validNumberValue);
+            e.target.value = validNumberValue;
+            setValue({ internal: validNumberValue, external: e });
           } catch {
             return;
           }
@@ -120,7 +126,7 @@ export const Input = React.forwardRef(
         try {
           const validNumberValue = resolveValidNumberValue(e.target.value);
           e.target.value = validNumberValue;
-          setValue(e);
+          setValue({ internal: validNumberValue, external: e });
         } catch {
           return;
         }
@@ -131,7 +137,15 @@ export const Input = React.forwardRef(
       );
     }
 
-    return <BaseInput {...restProps} ref={ref} type={type} value={value} onChange={setValue} />;
+    return (
+      <BaseInput
+        {...restProps}
+        ref={ref}
+        type={type}
+        value={value}
+        onChange={(e) => setValue({ internal: e.target.value, external: e })}
+      />
+    );
   },
 );
 

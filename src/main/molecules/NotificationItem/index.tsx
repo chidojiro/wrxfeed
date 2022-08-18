@@ -1,12 +1,12 @@
-import { Notification, NotifyStatus } from '@/main/entity';
-import React from 'react';
+import { Avatar, Button } from '@/common/components';
 import { distanceToNow } from '@/common/utils';
-import clsx from 'clsx';
-import CommentText from '@/main/atoms/CommentText';
+import { CommentText } from '@/feed/CommentText';
+import { Notification, NotifyStatus } from '@/main/entity';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
-
+import { useProfile } from '@/profile/useProfile';
+import clsx from 'clsx';
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@/identity/hooks';
+import React from 'react';
 
 export interface NotificationItemProps {
   item: Notification;
@@ -18,7 +18,7 @@ export interface NotificationItemProps {
 const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) => {
   const avatarBgColor = React.useMemo(() => getColorByText(item?.content ?? ''), [item?.content]);
   const isNew = item.status === NotifyStatus.UNREAD;
-  const identity = useIdentity();
+  const { profile } = useProfile();
 
   const renderAvatarOrShortname = () => {
     const shortName = getNameAbbreviation(item?.causedByUser?.fullName);
@@ -29,11 +29,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
         style={{ backgroundColor: avatarBgColor }}
       >
         {isHaveAvatar && (
-          <img
-            className="flex w-10 h-10 rounded-full"
-            alt="avatar-who-mention"
-            src={isHaveAvatar}
-          />
+          <Avatar size="lg" fullName={item.causedByUser.fullName as string} src={isHaveAvatar} />
         )}
         {!isHaveAvatar && <p className="text-sm font-bold text-white">{shortName}</p>}
       </div>
@@ -41,15 +37,14 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
   };
 
   return (
-    <button
-      type="button"
+    <Button
       onClick={() => {
         onClick(item);
 
         mixpanel.track('Notification Click', {
-          user_id: identity?.id,
-          email: identity?.email,
-          company: identity?.company?.id,
+          user_id: profile?.id,
+          email: profile?.email,
+          company: profile?.company?.id,
         });
       }}
       className={clsx(
@@ -68,15 +63,14 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
       </div>
       <CommentText
         content={item.content}
-        className="text-left leading-6 break-words ml-4"
-        style={{ whiteSpace: 'normal' }}
+        className="text-left leading-6 break-words ml-4 !whitespace-normal"
       />
       <div className="flex w-40 ml-auto">
         <div className="flex text-Gray-6 font-regular ml-auto text-right text-xs">
           {distanceToNow(item?.createdAt)}
         </div>
       </div>
-    </button>
+    </Button>
   );
 };
 

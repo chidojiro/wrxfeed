@@ -1,45 +1,55 @@
 import React from 'react';
-import { Children } from '@/common/types';
+import { Children } from '../../types';
 
-type Component<T> = ((props: T) => JSX.Element) | string;
+type Component = (props: any) => JSX.Element | null;
 
-type BaseConfigOptions<TProps> = {
-  component: Component<TProps>;
-  props?: TProps;
+type BaseConfigOptions = {
+  component: Component;
 };
 
-type IfConfig<TProps> = BaseConfigOptions<TProps> & {
+type IfConfig = BaseConfigOptions & {
   condition: boolean;
 };
 
-type ElseConfig<TProps> = BaseConfigOptions<TProps>;
+type ElseConfig = BaseConfigOptions;
 
-export type ConditionalWrapperProps<TIf, TElse> = Children & {
-  if: IfConfig<TIf>;
-  else?: ElseConfig<TElse>;
+type Configs = IfConfig[] | [...ifConfigs: IfConfig[], elseConfig: ElseConfig];
+
+const FallbackComponent = ({ children }: Children) => <>{children}</>;
+
+export type ConditionalWrapperProps = Children & {
+  conditions: Configs;
 } & Record<string, any>;
 
-export const ConditionalWrapper = <TIf, TElse>({
-  if: If,
-  else: Else,
-  children,
-  ...restProps
-}: ConditionalWrapperProps<TIf, TElse>) => {
-  if (If.condition) {
-    return (
-      <If.component {...(If.props as any)} {...restProps}>
-        {children}
-      </If.component>
-    );
+const getTruthyConfig = (configs: Configs) => {
+  if (!configs.length) return FallbackComponent;
+
+  const lastConfig = configs[configs.length - 1];
+
+  // If the last config is an "if" config, use its condition
+  // If it's an "else" make the condition always true
+  // So that "else" can always be found as the last option
+  const lastConfigAsIfConfig = {
+    ...lastConfig,
+    condition: (lastConfig as IfConfig).condition ?? true,
+  };
+
+  const unifiedConfigs = [
+    ...(configs.slice(0, configs.length - 1) as IfConfig[]),
+    lastConfigAsIfConfig,
+  ];
+
+  for (const config of unifiedConfigs) {
+    const { component, condition } = config;
+
+    if (condition) return component;
   }
 
-  if (Else) {
-    return (
-      <Else.component {...(Else.props as any)} {...restProps}>
-        {children}
-      </Else.component>
-    );
-  }
+  return FallbackComponent;
+};
 
-  return <>{children}</>;
+export const ConditionalWrapper = ({ conditions, ...restProps }: ConditionalWrapperProps) => {
+  const Component = getTruthyConfig(conditions);
+
+  return <Component {...restProps} />;
 };

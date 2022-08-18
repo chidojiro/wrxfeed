@@ -2,7 +2,7 @@
 import { BasicsDownSmall, LeftSmallIcon } from '@/assets';
 import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
 import Loading from '@/common/atoms/Loading';
-import { Popover } from '@/common/components';
+import { Button, Popover } from '@/common/components';
 import { defaultTargetMonths, monthsInYear } from '@/common/constants';
 import { formatCurrency, round } from '@/common/utils';
 import MonthTargetInput from '@/main/atoms/MonthTargetInput';
@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { cloneDeep } from 'lodash-es';
 import React, { forwardRef, ForwardRefRenderFunction, useEffect, useRef, useState } from 'react';
+import { useWindowSize } from '@react-hook/window-size';
 
 interface MultiMonthDropdownProps {
   className?: string;
@@ -69,7 +70,9 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
   const totalAmount = round(
     targetMonthValues.reduce((total, target) => total + (target?.amount ?? 0), 0),
   );
-  const applyEnableState = selectedMonths.length > 0 && !isLoadingData ? 'bg-primary' : 'bg-Gray-6';
+  const isValidData = selectedMonths.length > 0 && !isLoadingData;
+
+  const [, height] = useWindowSize();
 
   const popoverDisclosure = useDisclosure();
 
@@ -180,123 +183,137 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
     popoverDisclosure.onOpen();
   };
 
+  // Popover will be partially cropped
+  const HEIGHT_LIMIT = 950;
+  const isHeightRestricted = height < HEIGHT_LIMIT;
+
   return (
     <div className={clsx('flex-shrink-0 relative', className)} ref={useableViewRef}>
       <Popover
         open={popoverDisclosure.isOpen}
         onClose={popoverDisclosure.onClose}
-        placement="bottom-start"
+        placement={isHeightRestricted ? 'right-start' : 'bottom-start'}
         trigger={
-          <button
+          <Button
+            size="sm"
+            variant="outline"
+            colorScheme="gray"
             onClick={onClickOpenModal}
-            type="button"
-            className="rounded-sm border border-Gray-11 space-x-1 px-2 flex h-[30px] flex-row items-center"
+            iconRight={<BasicsDownSmall width={20} height={20} />}
           >
-            <p className="text-Gray-3 text-xs">{getButtonTitle(minMonth, maxMonth)}</p>
-            <BasicsDownSmall className="w-5 h-5" width={20} height={20} viewBox="0 0 20 20" />
-          </button>
+            {getButtonTitle(minMonth, maxMonth)}
+          </Button>
         }
       >
-        <div
-          className={clsx(
-            'flex w-[348px] h-[528px] flex-col absolute z-50 left-0 shadow-propertyDropdown border border-Gray-11 rounded-sm bg-white',
-            classPopover,
-          )}
-        >
-          <div className="flex flex-row items-center px-4 border-b border-Gray-11 h-8">
-            <LeftSmallIcon className="w-4 h-4" width={16} height={16} viewBox="0 0 16 16" />
-            <div className="flex flex-1 flex-row justify-center items-center">
-              <p className="text-primary text-xs font-semibold ml-4">{curYear}</p>
-              {/* <div className="w-4 h-4 flex justify-center items-center">
-                    {isLoadingData && <Loading width={8} height={8} />}
-                  </div> */}
-            </div>
-            <LeftSmallIcon
-              className="w-4 h-4 rotate-180"
-              width={16}
-              height={16}
-              viewBox="0 0 16 16"
-            />
-          </div>
-          <div className="flex flex-row items-center justify-between text-xs text-Gray-6 px-7 pt-2 h-8">
-            <p>Month</p>
-            <p>Last Year's Spend</p>
-            <p>Target</p>
-          </div>
+        {!!popoverDisclosure.isOpen && (
           <div
             className={clsx(
-              'flex flex-row space-x-2 py-2 px-[22px] relative',
-              isLoadingData ? 'opacity-50' : '',
+              'flex w-[348px] h-[528px] flex-col absolute z-50 left-0 shadow-property-dropdown border border-Gray-11 rounded-sm bg-white',
+              { 'transform -translate-y-1/4': isHeightRestricted },
+              classPopover,
             )}
           >
-            {renderMonthName()}
-            {renderLastYearSpend()}
-            <div className="flex flex-1 flex-col space-y-1">
-              {monthsInYear.map((month: number) => {
-                const isInRange = month >= minMonth && month <= maxMonth;
-                const amountSaved = targetMonthValues.find(
-                  (item: TargetMonth) => item.month === month,
-                )?.amount;
-                return (
-                  <MonthTargetInput
-                    key={`month-amount-${month}`}
-                    month={month}
-                    defaultAmount={amountSaved}
-                    isInRange={isInRange}
-                    onChange={(amount) => onChangeMonthInput(month, amount)}
-                    onSelect={() => {
-                      const isIncluded = selectedMonths.includes(month);
-                      if (!isIncluded) {
-                        setSelectedMonths((pre) => [...pre, month]);
-                      }
-                    }}
-                    onUnselect={() => {
-                      const isIncluded = selectedMonths.includes(month);
-                      if (isIncluded) {
-                        setSelectedMonths((pre) => pre.filter((item) => item !== month));
-                      }
-                    }}
-                  />
-                );
-              })}
+            <div className="flex flex-row items-center px-4 border-b border-Gray-11 h-8">
+              <LeftSmallIcon className="w-4 h-4" width={16} height={16} viewBox="0 0 16 16" />
+              <div className="flex flex-1 flex-row justify-center items-center">
+                <p className="text-primary text-xs font-semibold ml-4">{curYear}</p>
+                {/* <div className="w-4 h-4 flex justify-center items-center">
+                    {isLoadingData && <Loading width={8} height={8} />}
+                  </div> */}
+              </div>
+              <LeftSmallIcon
+                className="w-4 h-4 rotate-180"
+                width={16}
+                height={16}
+                viewBox="0 0 16 16"
+              />
+            </div>
+            <div className="flex flex-row items-center justify-between text-xs text-Gray-6 px-7 pt-2 h-8">
+              <p>Month</p>
+              <p>Last Year's Spend</p>
+              <p>Target</p>
             </div>
             <div
               className={clsx(
-                'absolute z-10 flex w-full h-full justify-center items-center',
-                isLoadingData ? '' : 'pointer-events-none',
+                'flex flex-row space-x-2 py-2 px-[22px] relative',
+                isLoadingData ? 'opacity-50' : '',
               )}
             >
-              {isLoadingData && <Loading width={36} height={36} className="mr-12" />}
+              {renderMonthName()}
+              {renderLastYearSpend()}
+              <div className="flex flex-1 flex-col space-y-1">
+                {monthsInYear.map((month: number) => {
+                  const isInRange = month >= minMonth && month <= maxMonth;
+                  const amountSaved = targetMonthValues.find(
+                    (item: TargetMonth) => item.month === month,
+                  )?.amount;
+                  return (
+                    <MonthTargetInput
+                      key={`month-amount-${month}`}
+                      month={month}
+                      defaultAmount={amountSaved}
+                      isInRange={isInRange}
+                      onChange={(amount) => onChangeMonthInput(month, amount)}
+                      onSelect={() => {
+                        const isIncluded = selectedMonths.includes(month);
+                        if (!isIncluded) {
+                          setSelectedMonths((pre) => [...pre, month]);
+                        }
+                      }}
+                      onUnselect={() => {
+                        const isIncluded = selectedMonths.includes(month);
+                        if (isIncluded) {
+                          setSelectedMonths((pre) => pre.filter((item) => item !== month));
+                        }
+                      }}
+                    />
+                  );
+                })}
+              </div>
+              <div
+                className={clsx(
+                  'absolute z-10 flex w-full h-full justify-center items-center',
+                  isLoadingData ? '' : 'pointer-events-none',
+                )}
+              >
+                {isLoadingData && <Loading width={36} height={36} className="mr-12" />}
+              </div>
+            </div>
+            <div className="flex flex-col items-end justify-between text-xs text-primary px-6 pt-2 h-8">
+              <p className="text-primary font-semibold">
+                Total Target Amount:
+                <span className="font-normal text-Gray-3 ml-1">
+                  {`$${formatCurrency({ value: totalAmount, format: '0,0' })}`}
+                </span>
+              </p>
+            </div>
+            <hr className="divider divider-horizontal w-full" />
+            <div className="flex flex-row w-full px-4 items-center h-11 justify-end gap-3">
+              <Button
+                variant="ghost"
+                colorScheme="gray"
+                size="sm"
+                onClick={popoverDisclosure.onClose}
+                className="px-4"
+              >
+                <p className="text-Gray-6 text-xs font-semibold">Cancel</p>
+              </Button>
+              <Button
+                variant="solid"
+                colorScheme={isValidData ? 'primary' : 'gray'}
+                size="sm"
+                disabled={isLoadingData}
+                onClick={onClickApply}
+                iconRight={
+                  <ArrowRight className="w-4 h-4 ml-2 fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />
+                }
+                className="px-4"
+              >
+                Apply
+              </Button>
             </div>
           </div>
-          <div className="flex flex-col items-end justify-between text-xs text-primary px-6 pt-2 h-8">
-            <p className="text-primary font-semibold">
-              Total Target Amount:
-              <span className="font-normal text-Gray-3 ml-1">
-                {`$${formatCurrency({ value: totalAmount, format: '0,0' })}`}
-              </span>
-            </p>
-          </div>
-          <hr className="divider divider-horizontal w-full" />
-          <div className="flex flex-row w-full px-4 items-center h-11">
-            <button
-              type="button"
-              onClick={popoverDisclosure.onClose}
-              className="flex px-4 h-7 items-center rounded-sm hover:bg-Gray-12 mr-3 ml-auto"
-            >
-              <p className="text-Gray-6 text-xs font-semibold">Cancel</p>
-            </button>
-            <button
-              type="button"
-              disabled={isLoadingData}
-              onClick={onClickApply}
-              className={clsx('flex flex-row items-center px-4 h-7 rounded-sm', applyEnableState)}
-            >
-              <p className="text-white text-xs font-semibold">Apply</p>
-              <ArrowRight className="w-4 h-4 ml-2 fill-current path-no-filled stroke-current path-no-stroke object-fill text-white" />
-            </button>
-          </div>
-        </div>
+        )}
       </Popover>
     </div>
   );

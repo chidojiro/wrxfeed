@@ -1,6 +1,5 @@
 export { CheckboxGroup } from './CheckboxGroup';
-export type { CheckboxGroupProps } from './types';
-export type {
-  CheckboxGroupOptionProps,
-  CheckboxGroupOptionRenderPropState,
-} from './CheckboxGroupOption';
+export type { CheckboxGroupProps } from './CheckboxGroup';
+
+export { CheckboxGroupOption } from './CheckboxGroupOption';
+export type { CheckboxGroupOptionProps } from './CheckboxGroupOption';

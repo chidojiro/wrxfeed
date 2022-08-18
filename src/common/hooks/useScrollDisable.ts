@@ -1,25 +1,21 @@
 import React from 'react';
 
 export const useScrollDisable = (disable: boolean) => {
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
+    const header = document.getElementById('app-header');
+
     if (disable) {
-      const currentWidth = document.documentElement.offsetWidth;
-
-      document.documentElement.style.setProperty('overflow', 'hidden', 'important');
-
-      const fullWidth = document.documentElement.offsetWidth;
-
-      document.documentElement.style.setProperty('padding-right', fullWidth - currentWidth + 'px');
+      header?.style.setProperty('padding-right', '15px');
     } else {
-      document.documentElement.style.removeProperty('overflow');
-      document.documentElement.style.removeProperty('padding-right');
+      header?.style.removeProperty('padding-right');
     }
   }, [disable]);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
+    const header = document.getElementById('app-header');
+
     return () => {
-      document.documentElement.style.removeProperty('overflow');
-      document.documentElement.style.removeProperty('padding-right');
+      header?.style.removeProperty('padding-right');
     };
   }, []);
 };

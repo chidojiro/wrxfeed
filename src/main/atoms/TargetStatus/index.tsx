@@ -1,18 +1,39 @@
 import { InfoCircleIcon } from '@/assets';
 import clsx from 'clsx';
-import { getTrackingStatusName } from '@/main/utils';
-import { TargetStatusConfig, TargetStatusType } from '@/target/types';
+import { getTargetPeriodsAmountTotal, getTrackingStatusName } from '@/main/utils';
+import { Target, TargetStatusConfig, TargetStatusType } from '@/target/types';
 import React from 'react';
 import TargetStatusMessage from '../TargetStatusMessage';
+import { Button } from '@/common/components';
+import { RightSmallIcon } from '@/assets';
 
 interface TargetStatusProps {
   className?: string;
   type: TargetStatusType;
-  exceeding: number;
+  target: Target;
+  onTargetSet: (event: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => void;
 }
 
-const TargetStatus: React.FC<TargetStatusProps> = ({ className = '', type, exceeding }) => {
+const TargetStatus: React.FC<TargetStatusProps> = ({
+  className = '',
+  type,
+  target,
+  onTargetSet,
+}) => {
   const { label, background, dot } = TargetStatusConfig[type];
+  const { overallTarget = 0, exceeding } = getTargetPeriodsAmountTotal(target);
+
+  if (overallTarget === 0) {
+    return (
+      <Button
+        className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex"
+        onClick={onTargetSet}
+      >
+        <span className="font-medium text-xs">Set target</span>
+        <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />
+      </Button>
+    );
+  }
   return (
     <div
       className={clsx(

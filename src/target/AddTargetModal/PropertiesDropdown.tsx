@@ -1,6 +1,13 @@
 import { AlertRed } from '@/assets';
-import { Form, TagColorScheme, TagProps, TagsSelect, TagsSelectProps } from '@/common/components';
-import { TagsSelectOption } from '@/common/components';
+import {
+  Form,
+  TagColorScheme,
+  TagProps,
+  TagsSelectOption,
+  TagsSelectOptions,
+  TagsSelectProps,
+  TagsSelectSearch,
+} from '@/common/components';
 import { useDebounce } from '@/common/hooks';
 import clsx from 'clsx';
 import React from 'react';
@@ -8,10 +15,11 @@ import React from 'react';
 type PropertiesName = 'vendors' | 'categories' | 'departments' | 'exceptions';
 
 export type PropertiesDropdownOption = Pick<TagProps, 'colorScheme'> &
-  Pick<TagsSelectOption, 'searchValue'> & {
+  Pick<TagsSelectOption, 'searchValue' | 'className'> & {
     value: string;
     icon: React.ReactNode;
     label: React.ReactNode;
+    name: string;
   };
 
 type PropertiesDropdownProps = Pick<TagsSelectProps, 'placement'> & {
@@ -23,6 +31,7 @@ type PropertiesDropdownProps = Pick<TagsSelectProps, 'placement'> & {
   onChange?: (value: string[]) => void;
   showOptionsOnEmptySearch?: boolean;
   error?: boolean;
+  description?: React.ReactNode;
 };
 
 const ColorByColorScheme: Record<TagColorScheme, string> = {
@@ -43,6 +52,7 @@ export const PropertiesDropdown = React.forwardRef(
       placement,
       showOptionsOnEmptySearch = true,
       error,
+      description,
     }: PropertiesDropdownProps,
     ref: any,
   ) => {
@@ -67,8 +77,10 @@ export const PropertiesDropdown = React.forwardRef(
         placeholder={placeholder}
         onChange={onChange}
         placement={placement}
+        onClose={() => setSearch('')}
       >
-        <TagsSelect.Search
+        {description}
+        <TagsSelectSearch
           placeholder={searchPlaceholder}
           onChange={(e) => setSearchDebounced(e.target.value)}
         />
@@ -80,29 +92,30 @@ export const PropertiesDropdown = React.forwardRef(
         )}
         <div
           className={clsx('invisible-scrollbar flex-1 overflow-auto', {
-            'min-h-[200px]': !showOptionsOnEmptySearch,
+            'min-h-[150px]': !showOptionsOnEmptySearch,
           })}
         >
           <div className={clsx({ hidden: !showOptionsOnEmptySearch && !search })}>
-            <TagsSelect.Options
-              options={options.map(({ value, icon, label, colorScheme, searchValue }) => ({
+            <TagsSelectOptions
+              options={options.map(({ icon, label, colorScheme, name, ...restOptions }) => ({
                 tagProps: {
                   colorScheme,
                   icon,
                   children: (
                     <span className="whitespace-nowrap overflow-hidden overflow-ellipsis">
-                      {label}
+                      {name}
                     </span>
                   ),
                 },
-                value,
                 icon: (
                   <div className={clsx('w-5 h-5', ColorByColorScheme[colorScheme])}>{icon}</div>
                 ),
-                searchValue,
                 children: (
-                  <div className="whitespace-nowrap overflow-hidden overflow-ellipsis">{label}</div>
+                  <div className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full">
+                    {label}
+                  </div>
                 ),
+                ...restOptions,
               }))}
             />
           </div>

@@ -1,29 +1,32 @@
 import { Drawer as HeadlessDrawer, DrawerProps as HeadlessDrawerProps } from '@/common/headless';
-import { useDelayableState, useOnClickOutside } from '@/common/hooks';
+import { useDelayableState, useOnEventOutside } from '@/common/hooks';
 import { OpenClose } from '@/common/types';
 import clsx from 'clsx';
 import React from 'react';
 
 // Only support right placement to save effort
 // Please adjust the code if it's time to have more placements
-export type DrawerProps = Omit<HeadlessDrawerProps, 'placement'> & OpenClose;
+export type DrawerProps = Omit<HeadlessDrawerProps, 'placement'> &
+  OpenClose & {
+    closeOnClickOutside?: boolean;
+  };
 
-export const Drawer = React.forwardRef(
-  (
-    { children, open: openProp, onClose }: DrawerProps,
-    ref: React.ForwardedRef<HTMLDivElement | null>,
-  ) => {
-    const [delayableOpen, setDelayableOpen] = useDelayableState(200, openProp);
+export const Drawer = React.forwardRef<any, DrawerProps>(
+  ({ children, open: openProp, onClose, closeOnClickOutside }, ref) => {
+    const [delayableOpen, setDelayableOpen] = useDelayableState({
+      delayBy: 200,
+      defaultState: openProp,
+    });
 
     React.useEffect(() => {
-      setDelayableOpen(!!openProp, !openProp);
+      setDelayableOpen({ state: !!openProp, shouldDelay: !openProp });
     }, [openProp, setDelayableOpen]);
 
     const internalRef = React.useRef<HTMLDivElement>(null);
 
     React.useImperativeHandle(ref, () => internalRef.current as HTMLDivElement);
 
-    useOnClickOutside(internalRef, onClose);
+    useOnEventOutside('click', closeOnClickOutside && internalRef, onClose);
 
     if (!delayableOpen) return null;
 

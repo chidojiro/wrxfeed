@@ -8,16 +8,18 @@
   ::after {
     box-sizing: inherit;
     color: inherit;
+    font-weight: inherit;
+    font-family: inherit;
   }
 
-  html {
+  html body {
     @apply box-border;
   }
 }
 
 @layer utilities {
   .list-row-hover {
-    @apply hover:ring-1 hover:ring-Accent-4 hover:shadow-targetHover
+    @apply hover:ring-1 hover:ring-Accent-4 hover:shadow-target-hover
   }
 
   .invisible-scrollbar {
@@ -26,11 +28,15 @@
   }
 
   .invisible-scrollbar::-webkit-scrollbar {
-      display: none;  /* Safari and Chrome */
+    display: none;  /* Safari and Chrome */
   }
 
   .disabled {
     @apply cursor-default pointer-events-none opacity-50 !important;
+  }
+
+  .aspect-square {
+    aspect-ratio: 1 / 1;
   }
 }
 

@@ -1,12 +1,12 @@
-import { useApi } from '@/api';
-import { useErrorHandler } from '@/error/hooks';
+import { useHandler } from '@/common/hooks';
 import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
+import { InvitationApis } from '@/invitation/apis';
 import { Contact } from '@/main/entity';
-import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
-import { useIdentity } from '@/identity/hooks';
+import React from 'react';
+import { toast } from 'react-toastify';
 
 interface InviteHookValues {
   isSent: boolean;
@@ -15,36 +15,31 @@ interface InviteHookValues {
 }
 
 export function useInvite(): InviteHookValues {
-  const ApiClient = useApi();
-  const errorHandler = useErrorHandler();
-  const [isLoading, setLoading] = useState(false);
-  const [isSent, setSent] = useState(false);
+  const [isSent, setSent] = React.useState(false);
+  const { profile } = useProfile();
 
-  const identity = useIdentity();
-
-  const sendInvitation = async (contact: Partial<Contact>) => {
-    try {
-      setLoading(true);
-      await ApiClient.sendInvitation({ email: contact?.email ?? '' });
-      setSent(true);
-
-      mixpanel.track('Invite Sent', {
-        user_id: identity?.id,
-        email: identity?.email,
-        company: identity?.company?.id,
-      });
-    } catch (error: unknown) {
+  const { handle: sendInvitation, isLoading } = useHandler(
+    async (contact: Partial<Contact>) => {
       setSent(false);
-      if (isApiError(error)) {
-        if (error.code === ApiErrorCode.BadRequest) {
-          toast.error(error.details?.message);
-        } else {
-          errorHandler(error);
+      await InvitationApis.send({ email: contact?.email ?? '' });
+      mixpanel.track('Invite Sent', {
+        user_id: profile?.id,
+        email: profile?.email,
+        company: profile?.company?.id,
+      });
+      setSent(true);
+    },
+    {
+      onError: (error: unknown) => {
+        if (isApiError(error)) {
+          if (error.code === ApiErrorCode.BadRequest) {
+            toast.error(error.details?.message);
+            return false;
+          }
         }
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+      },
+    },
+  );
+
   return { isSent, isLoading, sendInvitation };
 }

@@ -14,6 +14,7 @@ import { Routes } from '@/routing/routes';
 import { Popover, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Button } from '@/common/components';
 
 export interface NotifyPopoverProps {
   style?: React.CSSProperties;
@@ -93,15 +94,16 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
       markAllAsRead();
     };
     return (
-      <button
+      <Button
         onClick={onClickMarkAllAsRead}
-        type="button"
         className="flex text-gray-1 mb-4 mr-4 mt-auto ml-auto text-3xs font-semibold"
       >
         Mark all as read
-      </button>
+      </Button>
     );
   };
+
+  const displayNewNotifyCount = newNotifyCount > 99 ? '99+' : newNotifyCount;
 
   const renderNotifyIconWithBell = () => {
     return (
@@ -110,7 +112,13 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
         {newNotifyCount !== 0 && (
           <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
             {showNumberNotify && (
-              <div className="flex text-white font-semibold text-3xs">{newNotifyCount}</div>
+              <div
+                className={clsx('flex text-white font-semibold text-3xs', {
+                  'text-[9px]': newNotifyCount > 10,
+                })}
+              >
+                {displayNewNotifyCount}
+              </div>
             )}
           </div>
         )}
@@ -128,13 +136,12 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
 
   if (!useDropDown) {
     return (
-      <button
+      <Button
         onClick={onClickNotifications}
-        type="button"
         className={clsx('flex-shrink-0 flex relative w-10 h-10 justify-center items-center')}
       >
         {renderNotifyIconWithBell()}
-      </button>
+      </Button>
     );
   }
 

@@ -1,5 +1,6 @@
 import { Bank, CategoryIcon, IntersectIcon, TeamIcon } from '@/assets';
-import { Tag } from '@/common/components';
+import { Button, Tag } from '@/common/components';
+import { EMPTY_ARRAY } from '@/common/constants';
 import { useCategories } from '@/feed/useCategories';
 import { useDepartments } from '@/team/useDepartments';
 import { useVendors } from '@/vendor/useVendors';
@@ -17,22 +18,34 @@ type PropsSectionProps = {
 export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: PropsSectionProps) => {
   const exceptionsDropdownRef = React.useRef<any>();
 
-  const { data: departments = [] } = useDepartments({
+  const { data: departments = EMPTY_ARRAY } = useDepartments({
+    limit: 0,
     includeSub: 1,
   });
 
-  const { data: vendors = [] } = useVendors();
+  const { data: vendors = EMPTY_ARRAY } = useVendors({
+    limit: 0,
+  });
 
-  const { data: categories = [] } = useCategories();
+  const { data: categories = EMPTY_ARRAY } = useCategories({
+    limit: 0,
+  });
 
   const vendorOptions = React.useMemo<PropertiesDropdownOption[]>(
     () =>
       vendors.map(({ id, name }) => ({
         value: `${TargetTypeProp.VENDOR}-${id}-${name}`,
-        label: name,
+        name,
+        label: (
+          <div className="flex items center w-full">
+            <span className="max-w-[220px] truncate">{name}</span>
+            <span className="invisible group-hover:visible text-Gray-6">&nbsp;- Vendor</span>
+          </div>
+        ),
         icon: <Bank width={14} height={14} />,
         colorScheme: 'orange',
         searchValue: name,
+        className: 'group',
       })),
     [vendors],
   );
@@ -41,10 +54,17 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
     () =>
       categories.map(({ id, name }) => ({
         value: `${TargetTypeProp.CATEGORY}-${id}-${name}`,
-        label: name,
+        name,
+        label: (
+          <div className="flex items center w-full">
+            <span className="max-w-[220px] truncate">{name}</span>
+            <span className="invisible group-hover:visible text-Gray-6">&nbsp;- Category</span>
+          </div>
+        ),
         icon: <CategoryIcon width={14} height={14} />,
         colorScheme: 'accent',
         searchValue: name,
+        className: 'group',
       })),
     [categories],
   );
@@ -53,10 +73,17 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
     () =>
       departments.map(({ id, name }) => ({
         value: `${TargetTypeProp.DEPARTMENT}-${id}-${name}`,
-        label: name,
+        name,
+        label: (
+          <div className="flex items center w-full">
+            <span className="max-w-[220px] truncate">{name}</span>
+            <span className="invisible group-hover:visible text-Gray-6">&nbsp;- Team</span>
+          </div>
+        ),
         icon: <TeamIcon width={14} height={14} />,
         colorScheme: 'cyan',
         searchValue: name,
+        className: 'group',
       })),
     [departments],
   );
@@ -120,15 +147,18 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
           searchPlaceholder="Enter a team, category, or vendor"
           options={exceptionOptions}
           trigger={
-            <button
-              type="button"
-              className="w-[30px] h-[30px] hover:bg-Gray-12 flex justify-center items-center rounded-sm border border-Gray-11"
-            >
+            <Button size="sm" variant="outline" square colorScheme="gray">
               <IntersectIcon className="w-4 h-4" width={16} height={16} />
-            </button>
+            </Button>
           }
           placement="bottom-end"
           showOptionsOnEmptySearch={false}
+          description={
+            <div className="flex items-center text-xs mb-2 text-Gray-6">
+              <p className="font-semibold text-Gray-1">Except</p> - Specify any properties not to
+              include
+            </div>
+          }
         />
       </div>
       <ExceptionList

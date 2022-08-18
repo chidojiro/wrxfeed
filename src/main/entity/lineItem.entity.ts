@@ -47,6 +47,7 @@ export type TransLineItem = {
   vendorName?: string;
   transDate?: string;
   transStatus: TranStatus;
+  transRecordType?: string;
   feedItemId?: number;
 };
 

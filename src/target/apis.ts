@@ -1,14 +1,18 @@
 import { RestApis } from '@/rest/apis';
+import { BYPASS_INTERCEPTOR_HEADER } from '@/rest/constants';
+import { AxiosResponse } from 'axios';
 import {
   CreateTargetPayload,
   GetTargetsParams,
   GetTargetSpendingParams,
   Target,
-  TargetPeriod,
+  TargetSpending,
   TargetSummaries,
   UpdateTargetPayload,
 } from './types';
+import { getFullYearPeriods } from './utils';
 
+const getListEndpoint = () => '/target/targets';
 const getList = ({
   forYou = 0,
   year = new Date().getFullYear(),
@@ -16,23 +20,46 @@ const getList = ({
   type = 'normal',
   ...restParams
 }: GetTargetsParams) =>
-  RestApis.get<Target[]>('/target/targets', {
+  RestApis.get<Target[]>(getListEndpoint(), {
     params: { forYou, year, isPrimary, type, ...restParams },
-  }).then((res) => res.data);
+  });
 
-const create = (payload: CreateTargetPayload) =>
-  RestApis.post<Target>('/target/targets', payload).then((res) => res.data);
+const createEndpoint = () => '/target/targets';
+const create = (payload: CreateTargetPayload) => RestApis.post<Target>(createEndpoint(), payload);
 
+export const updateEndpoint = (id: number) => `/target/targets/${id}`;
 const update = (id: number, payload: UpdateTargetPayload) =>
-  RestApis.put<Target>(`/target/targets/${id}`, payload).then((res) => res.data);
+  RestApis.put<Target>(updateEndpoint(id), payload);
 
-const _delete = (id: number) => RestApis.delete(`/target/targets/${id}`).then(({ data }) => data);
+const deleteEndpoint = (id: number) => `/target/targets/${id}`;
+const _delete = (id: number) => RestApis.delete(deleteEndpoint(id));
 
-const getSpending = (params: GetTargetSpendingParams): Promise<TargetPeriod[]> =>
-  RestApis.patch<TargetPeriod[]>('/target/spending', params).then(({ data }) => data);
+const getSpendingEndpoint = () => '/target/spending';
+const getSpending = (params: GetTargetSpendingParams) => {
+  return RestApis.patch<AxiosResponse<TargetSpending[]>>(
+    getSpendingEndpoint(),
+    {
+      ...params,
+      periods: getFullYearPeriods(params.periods),
+    },
+    { headers: BYPASS_INTERCEPTOR_HEADER },
+  ).then((res) => ({
+    spendings: res.data,
+    trackingStatus: res.headers['x-tracking-status'] as Target['trackingStatus'],
+  }));
+};
 
-const getSummaries = () =>
-  RestApis.get<TargetSummaries>('/target/summaries').then(({ data }) => data);
+const getSummariesEndpoint = () => '/target/summaries';
+const getSummaries = () => RestApis.get<TargetSummaries>(getSummariesEndpoint());
+
+export const TargetApiEndpoints = {
+  getList: getListEndpoint,
+  create: createEndpoint,
+  update: updateEndpoint,
+  delete: deleteEndpoint,
+  getSpending: getSpendingEndpoint,
+  getSummaries: getSummariesEndpoint,
+};
 
 export const TargetApis = {
   getList,

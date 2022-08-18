@@ -1,3 +1,4 @@
+import { useOnEventOutside } from '@/common/hooks';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';
@@ -17,28 +18,49 @@ export const Tooltip = ({
   ...restProps
 }: TooltipProps) => {
   const disclosure = useDisclosure();
+  const triggerElementRef = React.useRef<any>();
+
+  useOnEventOutside('mouseover', triggerElementRef, disclosure.onClose);
 
   const clonedTrigger = React.useMemo(() => {
-    return React.cloneElement(trigger as any, {
-      onMouseEnter: disclosure.onOpen,
-      onMouseLeave: disclosure.onClose,
-    });
-  }, [disclosure.onOpen, disclosure.onClose, trigger]);
+    return React.Children.map(trigger, (child) =>
+      React.cloneElement(child as any, {
+        ref: (node: Element) => {
+          triggerElementRef.current = node;
+
+          if (node) {
+            node.addEventListener('mouseenter', disclosure.onOpen);
+          }
+
+          // Call the original ref, if any
+          const { ref } = child as any;
+          if (typeof ref === 'function') {
+            ref(node);
+          } else if (ref !== null) {
+            ref.current = node;
+          }
+        },
+      }),
+    );
+  }, [disclosure, trigger]);
+
+  // Do not show popover yet to avoid dom mutation
+  if (!disclosure.isOpen) return <>{clonedTrigger}</>;
 
   return (
     <Popover
       open={disclosure.isOpen}
-      trigger={clonedTrigger}
+      trigger={clonedTrigger as any}
       placement={placement}
       offset={[0, 8]}
       {...restProps}
     >
       <div>
         <div className="flex flex-col items-center">
-          <span className="z-10 p-2 text-xs leading-none text-white whitespace-no-wrap bg-gray-600 shadow-lg rounded-md">
+          <span className="z-10 p-2 text-2xs leading-none text-white whitespace-no-wrap bg-primary shadow-lg rounded-sm">
             {children}
           </span>
-          <div className={clsx('w-3 h-3 -mt-2 rotate-45 bg-gray-600', arrowClassName)} />
+          <div className={clsx('w-3 h-3 -mt-2 rotate-45 bg-primary', arrowClassName)} />
         </div>
       </div>
     </Popover>

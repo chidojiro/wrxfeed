@@ -1,28 +1,22 @@
-import React from 'react';
 import clsx from 'clsx';
+import React from 'react';
 
-import { getColorByText } from '@/main/utils';
 import { TeamIcon } from '@/assets';
 import { ClassName } from '@/common/types';
 import DepartmentItem from '@/main/molecules/DepartmentItem';
-import { useSubscription } from '@/main/hooks/subscription.hook';
+import { getColorByText } from '@/main/utils';
+import { useDepartment } from './useDepartment';
 
 export type TeamHeaderProps = ClassName & {
   departmentId: number;
-  teamName?: string;
 };
 
-export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeaderProps) => {
+export const TeamHeader = ({ className, departmentId }: TeamHeaderProps) => {
   const teamHeaderColor = React.useMemo(
     () => getColorByText('', departmentId, true),
     [departmentId],
   );
-  const { subscribe, unsubscribe, isFollowing } = useSubscription();
-
-  const department = {
-    id: departmentId,
-    name: teamName,
-  };
+  const { data: department } = useDepartment(departmentId);
 
   return (
     <div
@@ -32,7 +26,7 @@ export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeade
       )}
       style={{ background: teamHeaderColor }}
     >
-      <div className="flex flex-row items-center space-x-4">
+      <div className="flex flex-row overflow-hidden items-center space-x-4">
         <div className="flex justify-center flex-shrink-0 items-center w-9 h-9 rounded-full border border-white">
           <TeamIcon
             className="w-5 h-5 fill-current path-no-filled text-white opacity-100"
@@ -41,17 +35,9 @@ export const TeamHeader = ({ className, departmentId, teamName = '' }: TeamHeade
             height={20}
           />
         </div>
-        <p className="text-white font-semibold">{teamName}</p>
+        <p className="text-white font-semibold truncate">{department?.name}</p>
       </div>
-      <DepartmentItem
-        item={department}
-        isFollowing={isFollowing('departments', department)}
-        onFollow={() => subscribe('departments', department)}
-        onUnfollow={() => unsubscribe('departments', department)}
-        btnClassName="!border-white"
-        textClassName="!text-white"
-        hideName
-      />
+      {!!department && <DepartmentItem item={department} hideName inHeader className="w-auto" />}
     </div>
   );
 };

@@ -37,8 +37,8 @@ import {
 import { Match } from 'linkify-it';
 import { cloneDeep } from 'lodash-es';
 import numeral from 'numeral';
-import { SearchResult } from './types';
 import React from 'react';
+import { Fn } from '@/common/types';
 
 const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -339,7 +339,24 @@ export const nFormatter = (num: number, withCurrency = '$', format = '0.0'): str
   return `${isNegative}${withCurrency}${numeral(num).format(format)}`;
 };
 
-export const scrollToTop = (): void => {
+export const scrollToTop = (cb?: Fn): void => {
+  if (cb) {
+    // https://stackoverflow.com/questions/4620906/how-do-i-know-when-ive-stopped-scrolling
+    let timer: NodeJS.Timeout;
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (timer !== null) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+          cb();
+        }, 150);
+      },
+      false,
+    );
+  }
+
   if (window.scrollY > 0) {
     window.scrollTo({
       top: 0,
@@ -505,19 +522,25 @@ export const getTargetPeriodsAmountTotal = (
 } => {
   const curMonth = new Date().getMonth() + 1;
   const curYear = new Date().getFullYear();
-  const { overallTarget, targetToDate } = target.periods.reduce(
-    (sum, targetPeriod) => ({
-      overallTarget: sum.overallTarget + (targetPeriod.amount ?? 0),
-      targetToDate:
-        targetPeriod.month <= curMonth
-          ? sum.targetToDate + (targetPeriod.amount ?? 0)
-          : sum.targetToDate,
-    }),
+  const { overallTarget, targetToDate } = target?.periods.reduce(
+    (sum, targetPeriod) => {
+      if (targetPeriod.year === curYear) {
+        return {
+          overallTarget: sum.overallTarget + (targetPeriod.amount ?? 0),
+          targetToDate:
+            targetPeriod.month <= curMonth
+              ? sum.targetToDate + (targetPeriod.amount ?? 0)
+              : sum.targetToDate,
+        };
+      }
+      return sum;
+    },
     {
       overallTarget: 0,
       targetToDate: 0,
     },
   );
+
   const currentSpend =
     target?.spendings?.reduce((sum, spending) => {
       if (spending.year === curYear) {
@@ -525,22 +548,12 @@ export const getTargetPeriodsAmountTotal = (
       }
       return sum;
     }, 0) ?? 0;
-  const exceeding: number =
-    overallTarget !== 0
-      ? currentSpend > overallTarget
-        ? ((currentSpend - overallTarget) / overallTarget) * 100
-        : 0
-      : 100;
-  return { overallTarget, targetToDate, exceeding, currentSpend };
-};
 
-export const getTotalFeedItem = (feed: FeedItem): { total: number } => {
-  const { transactions } = feed;
-  let total = 0;
-  transactions.forEach((tran: Transaction) => {
-    total += tran.amountUsd;
-  });
-  return { total };
+  let exceeding = 0;
+  if (targetToDate !== 0 && currentSpend > targetToDate) {
+    exceeding = ((currentSpend - targetToDate) / targetToDate) * 100;
+  }
+  return { overallTarget, targetToDate, exceeding, currentSpend };
 };
 
 export const DecimalType = {
@@ -573,7 +586,7 @@ export const decimalLogic = (
 
   if (type === DecimalType.SummedNumbers) {
     format = '0,0';
-    defaultValue = '0';
+    defaultValue = 'N/A';
     result = n ? numeral(n).format(format) : defaultValue;
     if (parseFloat(`${n}`) >= 1000000) {
       result = nFormatter(parseFloat(`${n}`), '', '0,0.00');
@@ -585,30 +598,11 @@ export const decimalLogic = (
   if (toNumber) {
     return result + 0;
   }
-  return withCurrency + result;
+  return result !== 'N/A' ? withCurrency + result : defaultValue;
 };
 
 export const getDisplayUsdAmount = (num?: number) =>
   num ? decimalLogic(num, DecimalType.SummedNumbers) : EMPTY_AMOUNT;
-
-export const filterTargetsToTargetByTeam = (data: Target[]): TargetByTeam[] => {
-  const targetByTeam: TargetByTeam[] = [];
-  data.forEach((item: Target) => {
-    const deptId = item.department?.id;
-    const indexOfTeam = targetByTeam.findIndex(
-      (team: TargetByTeam) => team.department.id === deptId,
-    );
-    if (item.department && indexOfTeam === -1) {
-      targetByTeam.push({
-        department: item.department,
-        targets: [item],
-      });
-    } else if (indexOfTeam !== -1) {
-      targetByTeam[indexOfTeam].targets.push(item);
-    }
-  });
-  return targetByTeam;
-};
 
 export const getTrackingStatusName = (type: TargetStatusType): string => {
   return TargetStatusConfig[type].name;
@@ -620,17 +614,3 @@ export const getSummaryNumber = (value: number, total: number): string => {
   }
   return `${Math.round((value * 100) / total)}%`;
 };
-
-export const toMonthName = (value: number) => {
-  const date = new Date();
-  date.setMonth(value - 1);
-
-  return date.toLocaleString('en-US', {
-    month: 'short',
-  });
-};
-
-export const toUSD = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-});

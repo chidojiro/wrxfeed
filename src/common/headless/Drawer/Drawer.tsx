@@ -31,11 +31,8 @@ const styleMap: Record<DrawerPlacement, React.CSSProperties> = {
   },
 };
 
-export const Drawer = React.forwardRef(
-  (
-    { placement = 'right', children }: DrawerProps,
-    ref: React.ForwardedRef<HTMLDivElement | null>,
-  ) => {
+export const Drawer = React.forwardRef<any, DrawerProps>(
+  ({ placement = 'right', children }, ref) => {
     return (
       <Portal>
         <div

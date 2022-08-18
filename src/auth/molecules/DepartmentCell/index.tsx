@@ -1,13 +1,15 @@
 import { ReactComponent as BasicsAddSmall } from '@/assets/icons/solid/basics-add-small.svg';
 import { ReactComponent as BasicsTickSmall } from '@/assets/icons/solid/basics-tick-small.svg';
 import Loading from '@/common/atoms/Loading';
-import { useIdentity } from '@/identity/hooks';
+import { Button } from '@/common/components';
+import { useProfile } from '@/profile/useProfile';
 import { Department } from '@/main/entity';
-import { useSubscription } from '@/main/hooks/subscription.hook';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+import { useSubscription } from '@/subscription/useSubscription';
+import { useSubscribe } from '@/subscription/useSubscribe';
+import { useUnsubscribe } from '@/subscription/useUnsubscribe';
 
 const LIMIT = 9999;
 const INIT_PAGINATION = Object.freeze({
@@ -31,32 +33,17 @@ interface DepartmentCellProps {
 const DepartmentCell: React.FC<DepartmentCellProps> = ({
   className = '',
   dept,
-  onFollowedTeam = () => undefined,
-  onFollowTeamFail = () => undefined,
-  onUnfollowedTeam = () => undefined,
-  onUnfollowTeamFail = () => undefined,
   onFollow = () => undefined,
   onUnfollow = () => undefined,
   enableAction,
   enableUnfollowUserDept = true,
 }) => {
-  const identity = useIdentity();
+  const { profile } = useProfile();
   const [childs, setChilds] = useState<Department[]>([]);
 
-  const onFollowSuccess = async () => {
-    onFollowedTeam([dept, ...childs]);
-  };
-  const onUnfollowSuccess = async () => {
-    onUnfollowedTeam([dept, ...childs]);
-  };
-
-  const { isFollowLoading, isUnfollowLoading, isFollowing, batchSubscribe, batchUnsubscribe } =
-    useSubscription({
-      onFollowSuccess,
-      onFollowError: (error: unknown) => onFollowTeamFail(error),
-      onUnfollowSuccess,
-      onUnfollowError: (error: unknown) => onUnfollowTeamFail(error),
-    });
+  const { isSubscribed } = useSubscription();
+  const { subscribe, isSubscribing } = useSubscribe();
+  const { unsubscribe, isUnsubscribing } = useUnsubscribe();
 
   const getChilds = useCallback(async () => {
     const deptChild: Department[] = await DepartmentApis.getList({
@@ -70,41 +57,22 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
     getChilds();
   }, [getChilds]);
 
-  const isFollowed = isFollowing('departments', dept);
+  const isFollowed = isSubscribed('departments', dept.id);
 
   const bgColor = isFollowed ? 'bg-Accent-2' : 'bg-white';
   const textColor = isFollowed ? 'text-white' : 'text-Gray-3';
 
   const onClickFollowDepartment = async () => {
-    if (!enableAction) {
-      toast.warn('Please wait a minute!');
-      return;
-    }
-
-    // const deptChild: Department[] = await ApiClient.getDepartments({
-    //   parent: dept.id,
-    //   ...INIT_PAGINATION,
-    // });
-    // setChilds(deptChild);
-
     if (isFollowed) {
-      if (isUnfollowLoading) {
-        toast.warn('Please wait a minute!');
-        return;
-      }
-      batchUnsubscribe({ departments: [dept, ...childs] });
+      unsubscribe('departments', [dept, ...childs]);
       if (onUnfollow) onUnfollow(dept);
     } else {
-      if (isFollowLoading) {
-        toast.warn('Please wait a minute!');
-        return;
-      }
-      batchSubscribe({ departments: [dept, ...childs] });
+      subscribe('departments', [dept, ...childs]);
       if (onFollow) onFollow(dept);
     }
   };
   const renderIcon = () => {
-    if (isFollowLoading || isUnfollowLoading) {
+    if (isUnsubscribing || isSubscribing) {
       return (
         <div className="w-5 h-5 flex justify-center items-center">
           <Loading width={12} height={12} color={isFollowed ? 'white' : 'primary'} />
@@ -123,13 +91,13 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
     return <BasicsAddSmall width={20} height={20} className="w-5 h-5 stroke-current" />;
   };
 
-  const isUserDepartment = identity?.depId === dept?.id;
+  const isUserDepartment = profile?.depId === dept?.id;
   const hoverStyle = isFollowed ? 'hover:bg-Gray-2' : 'hover:bg-Accent-3';
   const renderFollowButton = () => {
     if (!enableUnfollowUserDept && isUserDepartment) return null;
     return (
-      <button
-        type="button"
+      <Button
+        disabled={isSubscribing || isUnsubscribing}
         onClick={onClickFollowDepartment}
         className={clsx(
           'flex flex-row items-center px-3 py-2 space-x-1.5 rounded-full border border-transparent',
@@ -139,7 +107,7 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
       >
         {renderIcon()}
         <p className={clsx('text-sm', textColor)}>{isFollowed ? 'Following' : 'Follow'}</p>
-      </button>
+      </Button>
     );
   };
 

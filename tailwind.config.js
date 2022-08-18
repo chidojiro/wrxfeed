@@ -108,6 +108,7 @@ module.exports = {
         'system-success': '#5DC258',
         'system-alert': '#FF5F68',
         'blue-upload': 'rgba(67, 36, 158, 0.44)',
+        danger: '#FF5F68',
       },
       spacing: {
         navbar: '56px',
@@ -115,13 +116,19 @@ module.exports = {
         18: '72px',
       },
       boxShadow: {
-        shadowCard: '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
-        dropdown: '0 1px 1px 0 rgba(9, 30, 66, 0.31), 0 3px 5px 0 rgba(9, 30, 66, 0.2)',
-        topCategoryHover:
+        'card': '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
+        'dropdown': '0 1px 1px 0 rgba(9, 30, 66, 0.31), 0 3px 5px 0 rgba(9, 30, 66, 0.2)',
+        'top-category-hover':
           '-4px 10px 8px 0 rgba(101, 101, 251, 0.03), 0 3px 10px 0 rgba(101, 101, 251, 0.1);',
-        propertyDropdown: '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
-        targetHover:
+        'property-dropdown': '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
+        'target-hover':
           '0px 3px 10px rgba(101, 101, 251, 0.1), -4px 10px 8px rgba(101, 101, 251, 0.03)',
+      },
+      dropShadow: {
+        'login-card': [
+          '0px 3px 5px rgba(9, 30, 66, 0.05)',
+          '-1px 6px 8px rgba(6, 25, 56, 0.03)',
+        ],
       },
       keyframes: {
         'drawer-enter': {

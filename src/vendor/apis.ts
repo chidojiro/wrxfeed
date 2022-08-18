@@ -1,15 +1,15 @@
-import { VendorDescription } from '@/main/entity';
 import { RestApis } from '@/rest/apis';
-import { GetVendorsParams, Vendor } from './types';
+import { withDefaultPaginationParams } from '@/rest/utils';
+import { GetVendorsParams, UpdateVendorPayload, Vendor } from './types';
 
-const get = (id: number) => RestApis.get(`/feed/vendors/${id}`).then(({ data }) => data);
+const get = (id: number) => RestApis.get<Vendor>(`/feed/vendors/${id}`);
 
 const getList = (params?: GetVendorsParams) =>
   RestApis.get<Vendor[]>(`/feed/vendors`, {
-    params,
-  }).then(({ data }) => data);
+    params: withDefaultPaginationParams(params),
+  });
 
-const update = (id: number, payload: VendorDescription) =>
-  RestApis.patch(`/feed/vendors/${id}`, payload).then(({ data }) => data);
+const update = (id: number, payload: UpdateVendorPayload) =>
+  RestApis.patch<Vendor>(`/feed/vendors/${id}`, payload);
 
 export const VendorApis = { get, getList, update };
