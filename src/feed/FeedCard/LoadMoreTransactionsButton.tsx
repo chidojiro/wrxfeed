@@ -10,7 +10,7 @@ type LoadMoreButtonProps = Children & {
 
 export const LoadMoreButton = ({ onClick, children, disabled }: LoadMoreButtonProps) => {
   return (
-    <div className="bg-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <div className="bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
       <Button variant="text" size="sm" disabled={disabled} onClick={onClick}>
         {children}
       </Button>

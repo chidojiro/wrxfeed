@@ -107,7 +107,7 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
 
   const renderNotifyIconWithBell = () => {
     return (
-      <div className="flex h-8 w-8 justify-center items-center rounded-full focus:outline-none hover:ring-2 ring-offset-2 ring-rose-500">
+      <div className="flex h-8 w-8 justify-center items-center rounded-full">
         <NotifyIcon aria-hidden="true" />
         {newNotifyCount !== 0 && (
           <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
@@ -152,10 +152,7 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
           <>
             <Popover.Button
               onBlur={onBlurIconButton}
-              className={clsx(
-                'mr-2 rounded-full flex focus:outline-none',
-                open ? 'ring-2 ring-offset-2 ring-rose-500' : '',
-              )}
+              className={clsx('mr-2 rounded-full flex focus:outline-none')}
             >
               {renderNotifyIconWithBell()}
             </Popover.Button>
@@ -163,11 +160,11 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
               <Transition
                 as={Fragment}
                 enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
                 leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
               >
                 <div
                   style={{ width: '450px', ...style }}
