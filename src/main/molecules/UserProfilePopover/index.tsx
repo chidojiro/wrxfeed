@@ -212,23 +212,18 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
     <Popover as="div" className="flex-shrink-0 relative" style={style}>
       {({ open }) => (
         <>
-          <Popover.Button
-            className={clsx(
-              'bg-white rounded-full flex focus:outline-none',
-              open ? 'ring-2 ring-offset-2 ring-rose-500' : '',
-            )}
-          >
+          <Popover.Button className={clsx('bg-white rounded-full flex focus:outline-none')}>
             {renderAvatarIcon()}
           </Popover.Button>
           <Popover.Panel className="absolute z-50">
             <Transition
               as={React.Fragment}
               enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
               leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
             >
               <div
                 style={{ width: '332px' }}

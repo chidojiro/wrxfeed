@@ -10,6 +10,7 @@ import { SearchResult } from '@/main/types';
 import { useSearch } from '@/misc/useSearch';
 import { TargetTypeProp } from '@/target/types';
 import { Transition } from '@headlessui/react';
+import clsx from 'clsx';
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -135,7 +136,11 @@ const SearchBar: React.FC = () => {
                 ref={searchInputRef}
                 id="search"
                 name="search"
-                className="block w-full text-white bg-Gray-3 focus:border focus:border-gray-300 rounded-sm py-0 h-7 pl-8 pr-8 sm:pr-16 sm:pl-9 text-sm placeholder-Gray-6 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm truncate"
+                className={clsx(
+                  'block w-full border rounded-sm py-0 h-7 pl-8 pr-8 sm:pr-16 sm:pl-9 text-sm sm:text-sm truncate',
+                  'placeholder-Gray-6 bg-Gray-3 border-transparent text-white outline-none',
+                  'focus:placeholder-gray-400 focus:border-gray-300',
+                )}
                 placeholder="Search for teams, categories, or vendors"
                 autoComplete="off"
                 autoCorrect="off"
