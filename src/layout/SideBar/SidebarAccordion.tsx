@@ -32,7 +32,7 @@ export const SidebarAccordion = ({
           <div className="relative flex items-center flex-1 pr-3 gap-4">
             <DownSmall
               className={clsx(
-                'w-4 h-4 absolute top-1/2 left-0 -translate-x-5 -translate-y-1/2',
+                'w-4 h-4 absolute top-1/2 left-0 transform -translate-x-5 -translate-y-1/2',
                 isOpen && 'rotate-180',
               )}
             />

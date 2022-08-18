@@ -57,7 +57,7 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
   const trailingCommentIcon = (
     <div className="relative">
       <CommentIcon className="text-Gray-7 h-7 w-6" />
-      <div className="absolute bottom-2 left-3 -translate-x-1/2 text-Gray-3 text-2xs font-semibold">
+      <div className="absolute bottom-2 left-3 transform -translate-x-1/2 text-Gray-3 text-2xs font-semibold">
         {comments.length}
       </div>
     </div>

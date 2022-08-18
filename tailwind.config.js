@@ -1,7 +1,8 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
-  content: ['./public/**/*.html', './src/**/*.{js,jsx,ts,tsx,react}'],
+  mode: 'jit',
+  purge: ['./public/**/*.html', './src/**/*.{js,jsx,ts,tsx,react}'],
   experimental: {
     applyComplexClasses: true,
   },
@@ -155,5 +156,6 @@ module.exports = {
       },
     },
   },
+  variants: {},
   plugins: [require('@tailwindcss/line-clamp'), require('tailwindcss-nested-groups')],
 };
