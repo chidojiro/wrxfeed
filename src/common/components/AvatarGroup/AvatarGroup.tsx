@@ -1,17 +1,19 @@
+import { ClassName } from '@/common/types';
+import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
 import { Avatar, AvatarProps } from '../Avatar/Avatar';
 
-export interface AvatarGroupProps {
+export type AvatarGroupProps = ClassName & {
   items: AvatarProps[];
   trailingComponent?: React.ReactNode;
-}
+};
 
 export const AvatarGroup = ({ items, trailingComponent }: AvatarGroupProps) => {
   return (
-    <>
+    <div className={clsx(StringUtils.withProjectClassNamePrefix('avatar-group'), 'relative h-7')}>
       {items.map((item, index) => (
         <Avatar
-          className={clsx(` absolute left-0 border-2 border-white h-7 w-7`, {
+          className={clsx(`absolute left-0 border-2 border-white h-7 w-7`, {
             'z-10 ml-3': index === 1,
             'z-20 ml-6': index === 2,
             'z-30 ml-9': index === 3,
@@ -32,6 +34,6 @@ export const AvatarGroup = ({ items, trailingComponent }: AvatarGroupProps) => {
           {trailingComponent}
         </div>
       )}
-    </>
+    </div>
   );
 };

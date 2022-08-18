@@ -41,7 +41,7 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
           <div className="col-span-2">Target</div>
           <div className="col-span-2">Comments</div>
         </div>
-        <div className="overflow-auto flex-1 pb-5 p-px" ref={summaryListRef}>
+        <div className="overflow-auto hide-scrollbar flex-1 pb-5 p-px" ref={summaryListRef}>
           {summaries.map((summary) => (
             <SummaryRow data={summary} key={summary.id} />
           ))}
