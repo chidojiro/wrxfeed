@@ -54,10 +54,10 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
 
   const avatars = uniqueAvatars.length > 3 ? uniqueAvatars.slice(0, 2) : uniqueAvatars;
 
-  const TrailingIcon = (
+  const trailingCommentIcon = (
     <div className="relative">
       <CommentIcon className="text-Gray-7 h-7 w-6" />
-      <div className="absolute bottom-2 left-3 transform -translate-x-1/2 text-Gray-3 text-2xs">
+      <div className="absolute bottom-2 left-3 transform -translate-x-1/2 text-Gray-3 text-2xs font-semibold">
         {comments.length}
       </div>
     </div>
@@ -80,12 +80,9 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
       <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(spends)}</div>
       <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(targetSpends)}</div>
       <div className="col-span-3 relative">
-        {Array.isArray(comments) && comments.length !== 0 ? (
-          <Link
-            className="flex items-center justify-start"
-            to={`/feed/${target?.id}?route=TargetFeed`}
-          >
-            <AvatarGroup trailingComponent={TrailingIcon} items={avatars} />
+        {comments?.length ? (
+          <Link className="pl-2 flex items-center" to={`/feed/${target?.id}?route=TargetFeed`}>
+            <AvatarGroup trailingComponent={trailingCommentIcon} items={avatars} />
           </Link>
         ) : (
           '--'

@@ -1,15 +1,16 @@
 import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
+import { LocalStorageUtils } from '@/common/utils';
 import { getUseEventBasedStateEventKey } from '../useEventBasedState';
-import { NAME, useWindowState } from './useWindowState';
+import { NAME, useLocalStorageState } from './useLocalStorageState';
 
 const key = 'key';
 const eventKey = getUseEventBasedStateEventKey(NAME, key);
 const defaultState = 'defaultState';
-const windowState = 'windowState';
+const localStorageState = 'localStorageState';
 const newState = 'newState';
 
-const getWindowState = () => (window as any)[key];
+const getLocalStorageState = () => LocalStorageUtils.get(key);
 
 const originalDispatchEvent = window.dispatchEvent;
 
@@ -18,37 +19,37 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  (window as any)[key] = undefined;
+  LocalStorageUtils.set(key, undefined);
 });
 
 it('should accept default state', () => {
-  const { result } = renderHook(() => useWindowState(key, defaultState));
+  const { result } = renderHook(() => useLocalStorageState(key, defaultState));
 
   expect(result.current[0]).toBe(defaultState);
 });
 
 it('should take corresponding window value as default state', () => {
-  (window as any)[key] = windowState;
+  LocalStorageUtils.set(key, localStorageState);
 
-  const { result } = renderHook(() => useWindowState(key, defaultState));
+  const { result } = renderHook(() => useLocalStorageState(key, defaultState));
 
-  expect(result.current[0]).toBe(windowState);
+  expect(result.current[0]).toBe(localStorageState);
 });
 
 it('should set internal state, save to window and dispatch new state when call setState with newState', () => {
-  const { result } = renderHook(() => useWindowState(key, defaultState));
+  const { result } = renderHook(() => useLocalStorageState(key, defaultState));
 
   act(() => {
     result.current[1](newState);
   });
 
   expect(result.current[0]).toBe(newState);
-  expect(getWindowState()).toBe(newState);
+  expect(getLocalStorageState()).toBe(newState);
   expect(window.dispatchEvent).toBeCalledWith(expect.objectContaining({ type: eventKey }));
 });
 
 it('should set internal state, save to window and dispatch new state when call setState with a callback returning newState', () => {
-  const { result } = renderHook(() => useWindowState(key, defaultState));
+  const { result } = renderHook(() => useLocalStorageState(key, defaultState));
 
   act(() => {
     result.current[1]((prev) => {
@@ -59,12 +60,12 @@ it('should set internal state, save to window and dispatch new state when call s
   });
 
   expect(result.current[0]).toBe(newState);
-  expect(getWindowState()).toBe(newState);
+  expect(getLocalStorageState()).toBe(newState);
   expect(window.dispatchEvent).toBeCalledWith(expect.objectContaining({ type: eventKey }));
 });
 
 it('should update state when receive event', () => {
-  const { result } = renderHook(() => useWindowState(key, defaultState));
+  const { result } = renderHook(() => useLocalStorageState(key, defaultState));
 
   act(() => {
     originalDispatchEvent(new CustomEvent(eventKey, { detail: { state: newState, source: 123 } }));
@@ -74,7 +75,7 @@ it('should update state when receive event', () => {
 });
 
 it('should unregister event listener after unmount', () => {
-  const { result, unmount } = renderHook(() => useWindowState(key, defaultState));
+  const { result, unmount } = renderHook(() => useLocalStorageState(key, defaultState));
 
   unmount();
 
