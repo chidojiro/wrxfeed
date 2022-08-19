@@ -1,6 +1,5 @@
 import { ReactComponent as BasicsAddSmall } from '@/assets/icons/solid/basics-add-small.svg';
 import { ReactComponent as BasicsTickSmall } from '@/assets/icons/solid/basics-tick-small.svg';
-import Loading from '@/common/atoms/Loading';
 import { Button } from '@/common/components';
 import { useProfile } from '@/profile/useProfile';
 import { Department } from '@/main/entity';
@@ -35,15 +34,14 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
   dept,
   onFollow = () => undefined,
   onUnfollow = () => undefined,
-  enableAction,
   enableUnfollowUserDept = true,
 }) => {
   const { profile } = useProfile();
   const [childs, setChilds] = useState<Department[]>([]);
 
   const { isSubscribed } = useSubscription();
-  const { subscribe, isSubscribing } = useSubscribe();
-  const { unsubscribe, isUnsubscribing } = useUnsubscribe();
+  const { subscribe } = useSubscribe();
+  const { unsubscribe } = useUnsubscribe();
 
   const getChilds = useCallback(async () => {
     const deptChild: Department[] = await DepartmentApis.getList({
@@ -72,13 +70,6 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
     }
   };
   const renderIcon = () => {
-    if (isUnsubscribing || isSubscribing) {
-      return (
-        <div className="w-5 h-5 flex justify-center items-center">
-          <Loading width={12} height={12} color={isFollowed ? 'white' : 'primary'} />
-        </div>
-      );
-    }
     if (isFollowed) {
       return (
         <BasicsTickSmall
@@ -97,7 +88,6 @@ const DepartmentCell: React.FC<DepartmentCellProps> = ({
     if (!enableUnfollowUserDept && isUserDepartment) return null;
     return (
       <Button
-        disabled={isSubscribing || isUnsubscribing}
         onClick={onClickFollowDepartment}
         className={clsx(
           'flex flex-row items-center px-3 py-2 space-x-1.5 rounded-full border border-transparent',

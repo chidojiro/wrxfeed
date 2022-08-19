@@ -27,9 +27,9 @@ export const ToggleFollowButton = <T extends { id: number; name: string }>({
     loading,
   };
 
-  const { subscription, isSubscribed } = useSubscription();
-  const { subscribe, isSubscribing } = useSubscribe();
-  const { unsubscribe, isUnsubscribing } = useUnsubscribe();
+  const { isSubscribed } = useSubscription();
+  const { subscribe } = useSubscribe();
+  const { unsubscribe } = useUnsubscribe();
 
   const subscribed = [item].flat().some(({ id }) => isSubscribed(type, id));
 
@@ -40,7 +40,6 @@ export const ToggleFollowButton = <T extends { id: number; name: string }>({
         e.stopPropagation();
         unsubscribe(type, item);
       }}
-      loading={!!subscription && isUnsubscribing}
       iconLeft={
         <TickIcon
           width={16}
@@ -59,7 +58,6 @@ export const ToggleFollowButton = <T extends { id: number; name: string }>({
         e.stopPropagation();
         subscribe(type, item);
       }}
-      loading={!!subscription && isSubscribing}
       iconLeft={
         <AddIcon
           width={16}
