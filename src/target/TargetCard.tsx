@@ -9,6 +9,7 @@ import { FeedRouteType } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
 import { getColorByText, getDisplayUsdAmount, getTargetPeriodsAmountTotal } from '@/main/utils';
 import { Routes } from '@/routing/routes';
+import { SpendingChart } from '@/spending/SpendingChart';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';
@@ -16,7 +17,6 @@ import { useHistory } from 'react-router-dom';
 import { AddTargetModal, AddTargetModalProps } from './AddTargetModal';
 import { AddTargetModalWithDefaultApisProps } from './AddTargetModal/AddTargetModal';
 import { TargetApis } from './apis';
-import { MiniChartView } from './MiniChartView';
 import { Target } from './types';
 
 export type TargetCardProps = ClassName &
@@ -160,11 +160,13 @@ export const TargetCard = ({
             </div>
           </div>
           <div className={clsx('flex w-full flex-col px-5', chartContainerClass)}>
-            <MiniChartView
-              target={target}
-              overallTarget={overallTarget}
+            <SpendingChart
+              data={{
+                periods: target.periods,
+                spendings: target.spendings ?? [],
+                trackingStatus: target.trackingStatus,
+              }}
               className="overflow-hidden"
-              xAxisClass="font-normal text-2xs"
             />
           </div>
         </div>

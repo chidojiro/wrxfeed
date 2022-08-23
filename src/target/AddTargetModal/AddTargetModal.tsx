@@ -10,6 +10,7 @@ import { useFetcher, useHandler } from '@/common/hooks';
 import { formatCurrency, round } from '@/common/utils';
 import { useCategories } from '@/feed/useCategories';
 import { genReviewSentenceFromProperties, getPeriodsFromTargetMonths } from '@/main/utils';
+import { SpendingChart } from '@/spending/SpendingChart';
 import {
   CreateTargetPayload,
   Target,
@@ -24,8 +25,7 @@ import { useVendors } from '@/vendor/useVendors';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { TargetApis } from '../apis';
-import { MiniChartView } from '../MiniChartView';
-import { isEmptyPeriods, isValidPeriods } from '../utils';
+import { isValidPeriods } from '../utils';
 import MultiMonthDropdown from './MultiMonthDropdown';
 import { PropsSection } from './PropsSection';
 
@@ -382,14 +382,12 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
                 className="h-full"
               >
                 <div className="h-full w-full rounded-lg">
-                  <MiniChartView
-                    target={{
-                      props: targetProps,
+                  <SpendingChart
+                    data={{
                       periods,
                       spendings: displaySpendings,
                       trackingStatus: trackingStatus ?? target?.trackingStatus,
                     }}
-                    overallTarget={isEmptyPeriods(periods) ? 0 : 1}
                   />
                 </div>
               </OverlayLoader>
