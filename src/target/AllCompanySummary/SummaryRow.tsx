@@ -6,6 +6,7 @@ import { useHandler } from '@/common/hooks';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
+import { uniqBy } from 'lodash-es';
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { DepartmentSummary, TargetStatusType } from '../types';
@@ -43,14 +44,10 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
 
   const targetSpends = target?.periods?.reduce((acc, cur) => acc + (cur.amount ?? 0), 0);
 
-  const uniqueAvatars: AvatarProps[] = [
-    ...new Set(
-      comments.map((comment) => ({
-        src: comment?.user?.avatar,
-        fullName: comment?.user?.fullName ?? '',
-      })),
-    ),
-  ];
+  const uniqueAvatars: AvatarProps[] = uniqBy(comments, 'user.id').map((comment) => ({
+    src: comment?.user?.avatar,
+    fullName: comment?.user?.fullName ?? '',
+  }));
 
   const avatars = uniqueAvatars.length > 3 ? uniqueAvatars.slice(0, 2) : uniqueAvatars;
 
