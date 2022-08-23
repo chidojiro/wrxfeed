@@ -99,9 +99,9 @@ export const getLineChartDataInMonth = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: overallTarget ? dotStatusColor : Accent6,
+      stroke: overallTarget ? Accent6 : dotStatusColor,
       dot: false,
-      fill: overallTarget ? backgroundStatusColor : Accent6,
+      fill: overallTarget ? Accent6 : backgroundStatusColor,
     },
   ];
 
