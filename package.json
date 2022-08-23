@@ -9,7 +9,7 @@
     "dev": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "preversion": "git-branch-is -r \"^(feature|fix|hotfix)/[\\w\\-\\d\\.]+$\" && echo Preversion checks passed. Your branch name is correct format.",
+    "preversion": "git-branch-is -r \"^(feat|refactor|chore|fix|hotfix)/[\\w\\-\\d\\.]+$\" && echo Preversion checks passed. Your branch name is correct format.",
     "testw": "jest --watch",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet  --fix",
     "storybook": "start-storybook -p 6006",

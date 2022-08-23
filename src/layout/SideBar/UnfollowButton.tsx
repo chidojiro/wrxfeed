@@ -8,7 +8,7 @@ export type UnfollowButtonProps = {
 };
 
 export const UnfollowButton = ({ department }: UnfollowButtonProps) => {
-  const { unsubscribe, isUnsubscribing } = useUnsubscribe();
+  const { unsubscribe } = useUnsubscribe();
 
   return (
     <Tooltip
@@ -21,7 +21,7 @@ export const UnfollowButton = ({ department }: UnfollowButtonProps) => {
           }}
           className="w-4 h-4"
         >
-          {isUnsubscribing ? <Spinner /> : <BasicsXSmall className="group-hover:block hidden" />}
+          <BasicsXSmall className="group-hover:block hidden" />
         </Button>
       }
     >

@@ -1,7 +1,7 @@
 import { ClassName } from '@/common/types';
 import TargetStatus from '@/main/atoms/TargetStatus';
 import { getDisplayUsdAmount, getTargetPeriodsAmountTotal } from '@/main/utils';
-import { MiniChartView } from '@/target/MiniChartView';
+import { SpendingChart } from '@/spending/SpendingChart';
 import { Target, TargetStatusConfig, TargetStatusType } from '@/target/types';
 import clsx from 'clsx';
 import React from 'react';
@@ -73,7 +73,13 @@ export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({
             </div>
           </div>
           <div className="py-2 rounded-card h-[240px]">
-            <MiniChartView target={target} overallTarget={overallTarget} />
+            <SpendingChart
+              data={{
+                periods: target.periods,
+                spendings: target.spendings,
+                trackingStatus: target.trackingStatus,
+              }}
+            />
           </div>
         </div>
       </div>

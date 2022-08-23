@@ -10,7 +10,7 @@ import { INITIAL_CHART_DATA } from '@/common/constants';
 
 const MIN_Y_VALUE = 100;
 
-interface TargetChartProps<T> {
+type TargetChartProps<T> = {
   className?: string;
   containerStyle?: CSSProperties;
   containerClass?: string;
@@ -20,7 +20,7 @@ interface TargetChartProps<T> {
   renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element | null;
   loading?: boolean;
   levelLabelClass?: string;
-}
+};
 
 export const TargetChart: <T>(
   p: TargetChartProps<T>,

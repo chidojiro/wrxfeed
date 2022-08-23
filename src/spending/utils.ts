@@ -1,18 +1,12 @@
-/* eslint-disable no-param-reassign */
 import { INITIAL_CHART_DATA } from '@/common/constants';
 import { round } from '@/common/utils';
 import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/main/types';
-import {
-  Target,
-  TargetMonth,
-  TargetPeriod,
-  TargetSpending,
-  TargetStatusConfig,
-  TargetStatusType,
-} from '@/target/types';
+import { decimalLogic, DecimalType } from '@/main/utils';
+import { TargetMonth, TargetPeriod, TargetSpending, TargetStatusConfig } from '@/target/types';
 import dayjs from 'dayjs';
 import { range } from 'lodash-es';
-import { decimalLogic, DecimalType } from './utils';
+import { SpendingChartData } from './SpendingChart';
+import { MonthData, TrackingStatus } from './types';
 
 const Accent6 = '#818CF8';
 
@@ -31,17 +25,20 @@ export const getLastYearSpending = (spendings: TargetSpending[]) =>
   getYearSpending(spendings, new Date().getFullYear() - 1);
 
 export const getLineChartDataInMonth = (
-  target: Partial<Target>,
+  data: SpendingChartData,
   targetMonth: TargetMonth,
-  trackingStatus?: TargetStatusType,
-  overallTarget?: number,
+  trackingStatus?: TrackingStatus,
 ): LineChartData => {
+  const { spendings, periods = [] } = data;
+
+  const overallTarget = !trackingStatus || isEmptyPeriods(periods);
+
   const targetDate = dayjs().set('month', targetMonth.month - 1);
   const isThisMonth = dayjs().month() === targetMonth.month - 1;
 
-  const totalThisYear = getThisYearSpending(target.spendings ?? []);
-  const totalLastYear = getLastYearSpending(target.spendings ?? []);
-  const data: ChartDataPoint[] = Array(targetDate.daysInMonth())
+  const totalThisYear = getThisYearSpending(spendings ?? []);
+  const totalLastYear = getLastYearSpending(spendings ?? []);
+  const chartData: ChartDataPoint[] = Array(targetDate.daysInMonth())
     .fill({
       name: '',
       thisYear: 0,
@@ -102,9 +99,9 @@ export const getLineChartDataInMonth = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: overallTarget !== 0 ? dotStatusColor : Accent6,
+      stroke: overallTarget ? Accent6 : dotStatusColor,
       dot: false,
-      fill: overallTarget !== 0 ? backgroundStatusColor : Accent6,
+      fill: overallTarget ? Accent6 : backgroundStatusColor,
     },
   ];
 
@@ -121,20 +118,12 @@ export const getLineChartDataInMonth = (
     maxValue = Math.ceil(positiveMax / THOUSAND); // Thousands
     maxValue = Math.ceil(maxValue / 5) * 5 * remember;
   }
-  return { data, legends: [], lines, maxValue };
+  return { data: chartData, legends: [], lines, maxValue };
 };
 
 export const getChartLevels = (maxValue: number): ChartLevel[] => {
-  // const maxAndTarget = maxValue - targetAmount;
-  const numberLevel = 5; // Math.floor(maxValue / maxAndTarget);
-  // if (numberLevel > 5) {
-  //   numberLevel = 5;
-  // }
-  // if (numberLevel < 4) {
-  //   numberLevel *= 2;
-  // }
+  const numberLevel = 5;
   const levelValue = maxValue / numberLevel;
-
   const levels: ChartLevel[] = [];
   for (let index = 0; index < numberLevel + 1; index += 1) {
     const valueForThisLevel = Math.ceil(levelValue * index);
@@ -148,13 +137,16 @@ export const getChartLevels = (maxValue: number): ChartLevel[] => {
   return levels;
 };
 
-export const getTargetMonthsLineChartData = (
-  target: Partial<Target>,
-  targetMonths: TargetMonth[],
-  trackingStatus?: TargetStatusType,
-  overallTarget?: number,
+export const getMonthsLineChartData = (
+  data: SpendingChartData,
+  months: MonthData[],
+  trackingStatus?: TrackingStatus,
 ): LineChartData => {
-  if (!target) return INITIAL_CHART_DATA;
+  if (!data) return INITIAL_CHART_DATA;
+
+  const { periods = [], spendings } = data;
+
+  const overallTarget = !trackingStatus || isEmptyPeriods(periods);
 
   const monthFormat = 'MMM';
   const thisMonth = dayjs().month();
@@ -163,9 +155,9 @@ export const getTargetMonthsLineChartData = (
   let cumulativeTarget = 0;
 
   const thisYearSpendings =
-    target.spendings?.filter((item) => item.year === new Date().getFullYear()) ?? [];
+    spendings?.filter((item) => item.year === new Date().getFullYear()) ?? [];
   const lastYearSpendings =
-    target.spendings?.filter((item) => item.year === new Date().getFullYear() - 1) ?? [];
+    spendings?.filter((item) => item.year === new Date().getFullYear() - 1) ?? [];
 
   const thisYearSorted = thisYearSpendings?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
   const lastYearSorted = range(0, 12).map((monthIdx) => {
@@ -180,26 +172,26 @@ export const getTargetMonthsLineChartData = (
   });
 
   // Find start / end month
-  const availableTargets = targetMonths.filter((item) => item?.amount !== undefined);
+  const availableTargets = months.filter((item) => item?.amount !== undefined);
   const startMonth = availableTargets[0]?.month ?? 1;
   const endMonth = availableTargets[availableTargets.length - 1]?.month ?? 12;
 
-  let data: ChartDataPoint[] = targetMonths.reduce<ChartDataPoint[]>((preVal, target, index) => {
+  let chartData: ChartDataPoint[] = months.reduce<ChartDataPoint[]>((preVal, monthData, index) => {
     // Out of month range
-    if (target.month < startMonth || target.month > endMonth) {
+    if (monthData.month < startMonth || monthData.month > endMonth) {
       return preVal;
     }
     const month = dayjs().month(index).format(monthFormat);
     // Calculate cumulative values
     cumulativeThisYear += round(
-      thisYearSorted.find(({ month }) => month === target.month)?.total ?? 0,
+      thisYearSorted.find(({ month }) => month === monthData.month)?.total ?? 0,
       2,
     );
     cumulativeLastYear += round(
-      lastYearSorted.find(({ month }) => month === target.month)?.total ?? 0,
+      lastYearSorted.find(({ month }) => month === monthData.month)?.total ?? 0,
       2,
     );
-    cumulativeTarget += round(target?.amount ?? 0, 2);
+    cumulativeTarget += round(monthData?.amount ?? 0, 2);
 
     // Generate data point
     const dataPoint =
@@ -219,13 +211,13 @@ export const getTargetMonthsLineChartData = (
   }, []);
 
   // Duplicate data point to draw a line if there is one data point
-  if (data.length === 1) {
-    data = [data[0], data[0]];
+  if (chartData.length === 1) {
+    chartData = [chartData[0], chartData[0]];
   }
 
   // Data points is 0 (target wasn't set) => show previous year and current year spending data
-  if (data.length === 0) {
-    data = lastYearSorted.map((lastYearData, index) => {
+  if (chartData.length === 0) {
+    chartData = lastYearSorted.map((lastYearData, index) => {
       const month = dayjs().month(index).format(monthFormat);
       // Calculate cumulative values
       cumulativeThisYear += round(thisYearSorted[index]?.total ?? 0, 2);
@@ -282,13 +274,19 @@ export const getTargetMonthsLineChartData = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: overallTarget !== 0 ? dotStatusColor : Accent6,
+      stroke: overallTarget ? Accent6 : dotStatusColor,
       dot: false,
-      fill: overallTarget !== 0 ? backgroundStatusColor : Accent6,
+      fill: overallTarget ? Accent6 : backgroundStatusColor,
     },
   ];
 
-  return { data, legends: [], lines, maxValue, metadata: { currentSpend: cumulativeThisYear } };
+  return {
+    data: chartData,
+    legends: [],
+    lines,
+    maxValue,
+    metadata: { currentSpend: cumulativeThisYear },
+  };
 };
 
 export const getSpendingByYear = (
@@ -326,3 +324,6 @@ export const getSpendingByYear = (
     lastYear: lastYear ?? [],
   };
 };
+
+export const isEmptyPeriods = (periods: TargetPeriod[]) =>
+  periods.every((v: TargetPeriod) => !v.amount);
