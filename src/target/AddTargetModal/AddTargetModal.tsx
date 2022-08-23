@@ -326,7 +326,11 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
         <Form methods={methods} onSubmit={isEdit ? handleSave : handleCreate}>
           <Form.Input
             name="props"
-            rules={{ validate: { required: (value: TargetProps[]) => !!value.length } }}
+            rules={{
+              validate: {
+                required: (value: TargetProps[]) => (hidePropertyDropdowns ? true : !!value.length),
+              },
+            }}
             readOnly
             className="w-0 h-0 overflow-hidden"
           />
