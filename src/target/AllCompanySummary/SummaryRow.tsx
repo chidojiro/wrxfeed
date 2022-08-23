@@ -74,11 +74,11 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
         ></div>
         <p className="line-clamp-2">{name}</p>
       </div>
-      <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(spends)}</div>
-      <div className="col-span-2 text-Gray-6">{getDisplayUsdAmount(targetSpends)}</div>
-      <div className="col-span-3 relative">
+      <div className="col-span-2 text-Gray-6 px-1">{getDisplayUsdAmount(spends)}</div>
+      <div className="col-span-2 text-Gray-6 px-1">{getDisplayUsdAmount(targetSpends)}</div>
+      <div className="col-span-3 relative px-1">
         {comments?.length ? (
-          <Link className="pl-2 flex items-center" to={`/feed/${target?.id}?route=TargetFeed`}>
+          <Link className="flex items-center" to={`/feed/${target?.id}?route=TargetFeed`}>
             <AvatarGroup trailingComponent={trailingCommentIcon} items={avatars} />
           </Link>
         ) : (
