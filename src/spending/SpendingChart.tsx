@@ -20,11 +20,10 @@ export type SpendingChartData = {
 
 export type SpendingChartProps = ClassName & {
   data: SpendingChartData;
-  onEdit?: () => void;
-  showLegends?: boolean;
+  prevYearColor?: string;
 };
 
-export const SpendingChart = ({ className, data }: SpendingChartProps) => {
+export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartProps) => {
   const { periods = [], trackingStatus } = data;
   const overallTarget = !trackingStatus || isEmptyPeriods(periods);
 
@@ -98,6 +97,8 @@ export const SpendingChart = ({ className, data }: SpendingChartProps) => {
     );
   };
 
+  const showTarget = !!periods.length;
+
   const renderTooltipContent = (props: TooltipProps<ValueType, NameType>) => {
     const { active, payload } = props;
     if (active && payload) {
@@ -108,18 +109,20 @@ export const SpendingChart = ({ className, data }: SpendingChartProps) => {
             <div className="flex flex-row items-center">
               <p className="text-white text-3xs font-semibold">{dataPoints?.name ?? 'unknown'}</p>
             </div>
-            <div
-              key="target"
-              className="flex flex-row flex-grow justify-between items-center space-x-10"
-            >
-              <div className="flex flex-row items-center space-x-1">
-                <div className="w-1 h-1 rounded bg-Gray-6" />
-                <p className="text-white text-2xs">Target</p>
+            {showTarget && (
+              <div
+                key="target"
+                className="flex flex-row flex-grow justify-between items-center space-x-10"
+              >
+                <div className="flex flex-row items-center space-x-1">
+                  <div className="w-1 h-1 rounded bg-Gray-6" />
+                  <p className="text-white text-2xs">Target</p>
+                </div>
+                <p className="text-white text-2xs text-right font-semibold">
+                  {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers, '$')}
+                </p>
               </div>
-              <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers, '$')}
-              </p>
-            </div>
+            )}
             <div
               key="this-year"
               className="flex flex-row flex-grow justify-between items-center space-x-10"
@@ -169,6 +172,8 @@ export const SpendingChart = ({ className, data }: SpendingChartProps) => {
               renderXAxis={renderXAxis}
               renderTooltip={renderTooltipContent}
               levelLabelClass="text-Gray-6 text-2xs font-normal"
+              prevYearColor={prevYearColor}
+              showTarget={showTarget}
             />
           </div>
         </>

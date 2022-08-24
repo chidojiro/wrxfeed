@@ -15,10 +15,7 @@ export const TeamPage = () => {
   const { data: target, isValidating: isValidatingTarget, mutate } = usePrimaryTarget(departmentId);
 
   return (
-    <MainLayout
-      mainClass="px-2 col-span-12 md:!col-span-9 !g:!col-span-9 xl:!col-span-9 !max-w-full"
-      rightSide={false}
-    >
+    <MainLayout>
       <h1 className="sr-only">Department list</h1>
       <TeamHeader departmentId={departmentId} />
       <div className="grid grid-cols-9 gap-6 mt-6">
