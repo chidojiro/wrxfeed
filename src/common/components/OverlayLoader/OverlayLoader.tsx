@@ -23,7 +23,8 @@ export const OverlayLoader = ({ loading, children, className }: OverlayLoaderPro
     <div
       className={clsx(
         StringUtils.withProjectClassNamePrefix('overlay-loader-container'),
-        'relative overflow-hidden',
+        'relative',
+        { 'overflow-hidden': loading },
         className,
       )}
       style={{ borderRadius: childrenStyles?.borderRadius }}

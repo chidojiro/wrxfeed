@@ -12,7 +12,7 @@ export const SideBar = () => {
   const { departments } = subscription ?? {};
 
   return (
-    <nav aria-label="Sidebar" className="divide-y divide-gray-300 flex flex-1 overflow-hidden">
+    <nav aria-label="Sidebar" className="divide-y divide-gray-300 flex overflow-hidden w-[360px]">
       <div className="flex w-full flex-1 flex-col py-8 pb-40 space-y-6 h-auto overflow-scroll hide-scrollbar">
         <div>
           <SidebarNavGroup>Boards</SidebarNavGroup>
