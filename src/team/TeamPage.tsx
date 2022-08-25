@@ -1,5 +1,5 @@
 import { OverlayLoader } from '@/common/components';
-import { useQuery, useUrlState } from '@/common/hooks';
+import { useQuery } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { MainLayout } from '@/layout/MainLayout';
 import { TargetCard } from '@/target/TargetCard';
@@ -14,7 +14,6 @@ import { useTransactions } from './useTransactions';
 import dayjs from 'dayjs';
 
 const TRANSACTIONS_PER_PAGE = 10;
-
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const TeamPage = () => {
@@ -29,8 +28,6 @@ export const TeamPage = () => {
   const _page = query.get('page');
   const page = _page ? +_page : 1;
 
-  console.log(timeRange);
-
   const getFromDate = () => {
     if (!timeRange || timeRange === 'last-30-days') {
       debugger;
@@ -43,7 +40,6 @@ export const TeamPage = () => {
   };
 
   const getToDate = () => dayjs().format(DATE_FORMAT);
-  console.log(getFromDate(), getToDate());
 
   const { transactions, totalCount, isValidatingTransactions } = useTransactions({
     depId: +departmentIdParam,
@@ -78,6 +74,7 @@ export const TeamPage = () => {
         loading={isValidatingTransactions}
         perPage={TRANSACTIONS_PER_PAGE}
         totalCount={totalCount}
+        hiddenColumns={['depName']}
         className="mt-6"
       />
     </MainLayout>
