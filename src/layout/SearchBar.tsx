@@ -24,7 +24,7 @@ const SearchBar: React.FC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const isSearching = keyword?.length > 0;
 
-  const { results, isLoading, clearSearchResults } = useSearch({ keyword, searchVend: false });
+  const { results, isLoading, clearSearchResults } = useSearch({ keyword });
 
   const [focus, setRoveFocus] = useRoveFocus(results?.length + 1);
 
