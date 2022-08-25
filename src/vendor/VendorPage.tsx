@@ -1,4 +1,5 @@
 import { OverlayLoader } from '@/common/components';
+import { useQuery } from '@/common/hooks';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { SpendingChart } from '@/spending/SpendingChart';
@@ -6,6 +7,13 @@ import { sumBy } from 'lodash-es';
 import { useParams } from 'react-router-dom';
 import { useVendor } from './useVendor';
 import { useVendorSpendings } from './useVendorSpendings';
+import dayjs from 'dayjs';
+import { useTransactions } from '@/team/useTransactions';
+import { StringUtils } from '@/common/utils';
+import { TransactionList } from '@/team/TransactionList';
+
+const TRANSACTIONS_PER_PAGE = 10;
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const VendorPage = () => {
   const { vendorId: vendorIdParam } = useParams() as Record<string, string>;
@@ -20,12 +28,41 @@ export const VendorPage = () => {
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
+  const query = useQuery();
+
+  const sortTransactionsBy = query.get('sortTransactionsBy');
+  const timeRange = query.get('timeRange');
+  const _page = query.get('page');
+  const page = _page ? +_page : 1;
+
+  const getFromDate = () => {
+    if (!timeRange || timeRange === 'last-30-days') {
+      debugger;
+      return dayjs().subtract(30, 'days').format(DATE_FORMAT);
+    }
+
+    if (timeRange === 'last-90-days') return dayjs().subtract(90, 'days').format(DATE_FORMAT);
+
+    return dayjs().date(1).month(1).format(DATE_FORMAT);
+  };
+
+  const getToDate = () => dayjs().format(DATE_FORMAT);
+
+  const { transactions, totalCount, isValidatingTransactions } = useTransactions({
+    vendId: vendorId,
+    ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
+    offset: (page - 1) * TRANSACTIONS_PER_PAGE,
+    limit: TRANSACTIONS_PER_PAGE,
+    from: getFromDate(),
+    to: getToDate(),
+  });
+
   if (!vendorSpendings) return null;
   return (
     <MainLayout mainClass="xl:col-span-9">
       <OverlayLoader loading={isValidatingVendor || isValidatingVendorSpendings}>
         <div className="rounded-card shadow-card px-6 py-4 bg-white">
-          <h3 className="text-primary font-bold">{vendor!.name}</h3>
+          <h3 className="text-primary font-bold">{vendor?.name}</h3>
           <div className="flex gap-4 mt-2">
             <div>
               <div className="flex gap-1 items-center text-xs text-Gray-6">
@@ -52,6 +89,14 @@ export const VendorPage = () => {
           </div>
         </div>
       </OverlayLoader>
+      <TransactionList
+        className="mt-6"
+        transactions={transactions}
+        totalCount={totalCount}
+        perPage={TRANSACTIONS_PER_PAGE}
+        loading={isValidatingTransactions}
+        hiddenColumns={['vendorName']}
+      />
     </MainLayout>
   );
 };

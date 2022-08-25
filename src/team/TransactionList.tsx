@@ -18,7 +18,7 @@ import { TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
 import clsx from 'clsx';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
@@ -47,7 +47,10 @@ type TransactionListProps = ClassName & {
   totalCount: number;
   loading: boolean;
   perPage: number;
+  hiddenColumns?: ('vendorName' | 'depName' | 'categoryName')[];
 };
+
+type HeaderItem = { label: string; sortKey?: string; align?: string };
 
 export const TransactionList = ({
   className,
@@ -55,6 +58,7 @@ export const TransactionList = ({
   totalCount,
   perPage,
   loading,
+  hiddenColumns,
 }: TransactionListProps) => {
   const history = useHistory();
   const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
@@ -62,15 +66,20 @@ export const TransactionList = ({
   const [_page, setPage] = useUrlState('page');
   const page = _page ? +_page : 1;
 
-  const headers: { label: string; sortKey?: string }[] = [
+  const showCategory = !hiddenColumns?.includes('categoryName');
+  const showDepartment = !hiddenColumns?.includes('depName');
+  const showVendor = !hiddenColumns?.includes('vendorName');
+
+  const headers: HeaderItem[] = [
     { label: 'Date', sortKey: 'transDate' },
-    { label: 'Category', sortKey: 'categoryName' },
-    { label: 'Vendor', sortKey: 'vendorName' },
+    showDepartment && { label: 'Team', sortKey: 'depName' },
+    showCategory && { label: 'Category', sortKey: 'categoryName' },
+    showVendor && { label: 'Vendor', sortKey: 'vendorName' },
     { label: 'Description' },
-    { label: 'Amount', sortKey: 'amountUsd' },
-    { label: 'Status', sortKey: 'transStatus' },
-    { label: 'Comments' },
-  ];
+    { label: 'Amount', sortKey: 'amountUsd', align: 'text-right' },
+    { label: 'Status', sortKey: 'transStatus', align: 'text-right' },
+    { label: 'Comments', align: 'text-center flex justify-center' },
+  ].filter((item): item is HeaderItem => !!item);
 
   const goToLineItemPage = (feedItemId: number) => {
     history.push(`/feed/${feedItemId}`);
@@ -121,8 +130,8 @@ export const TransactionList = ({
               {hasTransactions ? (
                 <>
                   <Table.Row>
-                    {headers.map(({ label, sortKey }) => (
-                      <Table.Header key={label} sortKey={sortKey}>
+                    {headers.map(({ label, sortKey, align }) => (
+                      <Table.Header key={label} sortKey={sortKey} className={align}>
                         {label}
                       </Table.Header>
                     ))}
@@ -139,6 +148,7 @@ export const TransactionList = ({
                       transRecordType,
                       feedItemId,
                       feedItem,
+                      department,
                     }: TransLineItem) => (
                       <Table.Row
                         key={id}
@@ -146,26 +156,50 @@ export const TransactionList = ({
                         onClick={() => feedItemId && goToLineItemPage(feedItemId)}
                       >
                         <Table.Cell>{transDate && DateUtils.format(transDate)}</Table.Cell>
-                        <Table.Cell>{category?.name}</Table.Cell>
-                        <Table.Cell>
-                          <div className="flex items-center gap-2">
-                            <Avatar
-                              size="sm"
-                              src={vendor?.avatar}
-                              fullName={vendor?.name ?? ''}
-                              className="w-6 h-6 flex-shrink-0"
-                            />
-                            <div>
-                              <p>{vendor?.name}</p>
-                              {transRecordType?.toLowerCase() ===
-                                'Expense Report'.toLowerCase() && (
-                                <div className="flex flex-row items-center space-x-1">
-                                  <p className="text-Accent-2 text-xs font-normal">Expensed</p>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </Table.Cell>
+                        {showDepartment && (
+                          <Table.Cell className="hover:bg-Gray-12 !p-0">
+                            <Link
+                              className="flex items-center gap-2 py-2 px-4"
+                              to={`/departments/${department?.id}`}
+                            >
+                              {department?.name}
+                            </Link>
+                          </Table.Cell>
+                        )}
+                        {showCategory && (
+                          <Table.Cell className="hover:bg-Gray-12 !p-0">
+                            <Link
+                              className="flex items-center gap-2 py-2 px-4"
+                              to={`/categories/${category?.id}`}
+                            >
+                              {category?.name}
+                            </Link>
+                          </Table.Cell>
+                        )}
+                        {showVendor && (
+                          <Table.Cell className="hover:bg-Gray-12 !p-0">
+                            <Link
+                              to={`/vendors/${vendor?.id}`}
+                              className="flex items-center gap-2 py-2 px-4"
+                            >
+                              <Avatar
+                                size="sm"
+                                src={vendor?.avatar}
+                                fullName={vendor?.name ?? ''}
+                                className="w-6 h-6 flex-shrink-0"
+                              />
+                              <div>
+                                <p>{vendor?.name}</p>
+                                {transRecordType?.toLowerCase() ===
+                                  'Expense Report'.toLowerCase() && (
+                                  <div className="flex flex-row items-center space-x-1">
+                                    <p className="text-Accent-2 text-xs font-normal">Expensed</p>
+                                  </div>
+                                )}
+                              </div>
+                            </Link>
+                          </Table.Cell>
+                        )}
                         <Table.Cell>
                           <Tooltip
                             trigger={
@@ -181,12 +215,14 @@ export const TransactionList = ({
                           {decimalLogic(amountUsd, '$')}
                         </Table.Cell>
                         <Table.Cell>
-                          <StatusTag
-                            colorScheme={getTransactionColorScheme(transStatus)}
-                            className="font-semibold"
-                          >
-                            {getTransactionLabel(transStatus)}
-                          </StatusTag>
+                          <div className="flex justify-end">
+                            <StatusTag
+                              colorScheme={getTransactionColorScheme(transStatus)}
+                              className="font-semibold"
+                            >
+                              {getTransactionLabel(transStatus)}
+                            </StatusTag>
+                          </div>
                         </Table.Cell>
                         <Table.Cell>
                           {feedItem?.comments.length ? (
