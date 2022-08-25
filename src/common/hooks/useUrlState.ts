@@ -2,7 +2,10 @@ import React from 'react';
 import { Fn } from '../types';
 import { useQuery } from './useQuery';
 
-export const useUrlState = <T>(paramKey: string, defaultValue?: T) => {
+export const useUrlState = (
+  paramKey: string,
+  defaultValue?: string,
+): [string, React.Dispatch<string>] => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const [param, _setParam] = React.useState(defaultValue);
 
@@ -36,5 +39,5 @@ export const useUrlState = <T>(paramKey: string, defaultValue?: T) => {
     [paramKey, query],
   );
 
-  return React.useMemo(() => [param, setParam], [param, setParam]);
+  return React.useMemo(() => [param ?? '', setParam], [param, setParam]);
 };

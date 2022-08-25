@@ -37,6 +37,8 @@ export type CreateFeedbackPayload = {
 export type GetLineItemsParams = PaginationParams &
   SortByParams & {
     depId: number;
+    from: string;
+    to: string;
   };
 
 export type FeedType = 'target' | 'transaction';

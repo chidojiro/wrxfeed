@@ -3,6 +3,7 @@ import { Department } from '@/main/entity/transaction.entity';
 import { BitBoolean } from '@/common/types';
 import { PaginationParams } from '@/rest/types';
 import { Period, Spending } from '@/spending/types';
+import { Comment } from '@/main/entity';
 
 export type GetTargetsParams = PaginationParams & {
   dep?: number;
@@ -135,13 +136,6 @@ export interface TargetByTeam {
   department: Department;
   targets: Target[];
 }
-
-export type Comment = {
-  content: string;
-  attachment: string;
-  user: User;
-  item: SummaryFeedItem;
-};
 
 export type SummaryFeedItem = {
   id: number;

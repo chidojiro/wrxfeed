@@ -1,4 +1,6 @@
 import { OverlayLoader } from '@/common/components';
+import { useQuery, useUrlState } from '@/common/hooks';
+import { StringUtils } from '@/common/utils';
 import { MainLayout } from '@/layout/MainLayout';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
@@ -8,11 +10,49 @@ import { TeamHeader } from './TeamHeader';
 import { TeamTargetSummary } from './TeamTargetSummary';
 import { TopCategories } from './TopCategories';
 import { TransactionList } from './TransactionList';
+import { useTransactions } from './useTransactions';
+import dayjs from 'dayjs';
+
+const TRANSACTIONS_PER_PAGE = 10;
+
+const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const TeamPage = () => {
   const { id: departmentIdParam } = useParams() as Record<string, string>;
   const departmentId = +departmentIdParam;
   const { data: target, isValidating: isValidatingTarget, mutate } = usePrimaryTarget(departmentId);
+
+  const query = useQuery();
+
+  const sortTransactionsBy = query.get('sortTransactionsBy');
+  const timeRange = query.get('timeRange');
+  const _page = query.get('page');
+  const page = _page ? +_page : 1;
+
+  console.log(timeRange);
+
+  const getFromDate = () => {
+    if (!timeRange || timeRange === 'last-30-days') {
+      debugger;
+      return dayjs().subtract(30, 'days').format(DATE_FORMAT);
+    }
+
+    if (timeRange === 'last-90-days') return dayjs().subtract(90, 'days').format(DATE_FORMAT);
+
+    return dayjs().date(1).month(1).format(DATE_FORMAT);
+  };
+
+  const getToDate = () => dayjs().format(DATE_FORMAT);
+  console.log(getFromDate(), getToDate());
+
+  const { transactions, totalCount, isValidatingTransactions } = useTransactions({
+    depId: +departmentIdParam,
+    ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
+    offset: (page - 1) * TRANSACTIONS_PER_PAGE,
+    limit: TRANSACTIONS_PER_PAGE,
+    from: getFromDate(),
+    to: getToDate(),
+  });
 
   return (
     <MainLayout>
@@ -33,7 +73,13 @@ export const TeamPage = () => {
           <TopCategories />
         </div>
       </div>
-      <TransactionList className="mt-6" />
+      <TransactionList
+        transactions={transactions}
+        loading={isValidatingTransactions}
+        perPage={TRANSACTIONS_PER_PAGE}
+        totalCount={totalCount}
+        className="mt-6"
+      />
     </MainLayout>
   );
 };

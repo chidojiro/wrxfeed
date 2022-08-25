@@ -1,5 +1,5 @@
 import { FeedType } from '@/feed/types';
-import { Category, Department, Transaction } from '@/main/entity';
+import { Category, Department, Transaction, Comment } from '@/main/entity';
 import { Target } from '@/target/types';
 
 export type FeedItem = {
@@ -17,6 +17,7 @@ export type FeedItem = {
   target: Target;
   hidden?: boolean;
   isFallback?: boolean;
+  comments: Comment[];
 };
 
 export enum FeedRouteType {
