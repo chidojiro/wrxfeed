@@ -1,4 +1,5 @@
 export * from './Avatar';
+export * from './AvatarGroup';
 export * from './Button';
 export * from './ConditionalWrapper';
 export * from './Divider';
@@ -12,6 +13,7 @@ export * from './OverlayLoader';
 export * from './Popover';
 export * from './Portal';
 export * from './SanitizedHtmlContent';
+export * from './Select';
 export * from './Spinner';
 export * from './StatusTag';
 export * from './Table';

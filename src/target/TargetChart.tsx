@@ -98,7 +98,6 @@ export const TargetChart: <T>(
                 fill = prevYearColor;
               }
 
-              console.log(showTarget);
               if (line.dataKey === 'target' && !showTarget) return null;
 
               return (
