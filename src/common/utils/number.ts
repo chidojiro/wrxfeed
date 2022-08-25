@@ -9,7 +9,7 @@ const pad = (num: string | number | undefined, size = 2) => {
 const trimZeroes = (number: string | number) => {
   if (typeof number === 'number') return +number;
 
-  return number.replace(/^0+/g, '').replace(/(?<=^-)0+/g, '');
+  return number.replace(/^0+/g, '').replace(/^-0+/g, '-');
 };
 
 export const NumberUtils = {
