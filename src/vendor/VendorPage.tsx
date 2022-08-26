@@ -58,7 +58,6 @@ export const VendorPage = () => {
     to: getToDate(),
   });
 
-  if (!vendorSpendings) return null;
   return (
     <MainLayout mainClass="xl:col-span-9">
       <VendorHeader vendorId={vendorId} />
