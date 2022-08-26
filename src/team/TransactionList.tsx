@@ -225,11 +225,13 @@ export const TransactionList = ({
                           </div>
                         </Table.Cell>
                         <Table.Cell>
-                          {feedItem?.comments.length ? (
-                            <CommentGroup comments={feedItem.comments} />
-                          ) : (
-                            <p className="text-center">--</p>
-                          )}
+                          <Link to={`/feed/${feedItem?.id}`}>
+                            {feedItem?.comments.length ? (
+                              <CommentGroup comments={feedItem.comments} />
+                            ) : (
+                              <p className="text-center">--</p>
+                            )}
+                          </Link>
                         </Table.Cell>
                       </Table.Row>
                     ),
