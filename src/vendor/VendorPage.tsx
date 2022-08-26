@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import { useTransactions } from '@/team/useTransactions';
 import { StringUtils } from '@/common/utils';
 import { TransactionList } from '@/team/TransactionList';
+import { VendorHeader } from './VendorHeader';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -60,7 +61,8 @@ export const VendorPage = () => {
   if (!vendorSpendings) return null;
   return (
     <MainLayout mainClass="xl:col-span-9">
-      <OverlayLoader loading={isValidatingVendor || isValidatingVendorSpendings}>
+      <VendorHeader vendorId={vendorId} />
+      <OverlayLoader loading={isValidatingVendor || isValidatingVendorSpendings} className="mt-6">
         <div className="rounded-card shadow-card px-6 py-4 bg-white">
           <h3 className="text-primary font-bold">{vendor?.name}</h3>
           <div className="flex gap-4 mt-2">
