@@ -20,6 +20,8 @@ type TargetChartProps<T> = {
   renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element | null;
   loading?: boolean;
   levelLabelClass?: string;
+  prevYearColor?: string;
+  showTarget?: boolean;
 };
 
 export const TargetChart: <T>(
@@ -34,6 +36,8 @@ export const TargetChart: <T>(
   renderTooltip,
   loading = false,
   levelLabelClass = '',
+  prevYearColor,
+  showTarget,
 }) => {
   const { data, lines, maxValue } = chartData || INITIAL_CHART_DATA;
   const maxValueWithSurplus = Math.ceil(maxValue * 1.1);
@@ -89,6 +93,13 @@ export const TargetChart: <T>(
             {data.length && <Tooltip cursor position={{ y: 5 }} content={renderTooltip} />}
             {renderReferenceLines && renderReferenceLines()}
             {lines.map((line: ChartLineProps) => {
+              let fill = line.fill;
+              if (line.dataKey === 'lastYear' && prevYearColor) {
+                fill = prevYearColor;
+              }
+
+              if (line.dataKey === 'target' && !showTarget) return null;
+
               return (
                 <Area
                   key={`ChartLine-${line.name}`}
@@ -99,7 +110,7 @@ export const TargetChart: <T>(
                   stroke={line.stroke}
                   strokeDasharray={line.strokeDasharray}
                   dot={line.dot}
-                  fill={line.fill}
+                  fill={fill}
                   opacity={line.opacity}
                 />
               );

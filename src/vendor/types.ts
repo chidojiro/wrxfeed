@@ -1,5 +1,6 @@
 import { Category } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
+import { Spending } from '@/spending/types';
 
 export type GetVendorsParams = PaginationParams;
 
@@ -19,4 +20,13 @@ export type UpdateVendorPayload = {
   contactEmail?: string;
   contactNumber?: string;
   description?: string;
+};
+
+export type GetVendorSpendingsParams = {
+  year?: number;
+};
+
+export type VendorSpendings = {
+  curYearSpends: Spending[];
+  prevYearSpends: Spending[];
 };

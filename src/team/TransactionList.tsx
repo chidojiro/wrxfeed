@@ -1,26 +1,24 @@
-import { ChatIcon, LoopBoldIcon } from '@/assets';
+import { LoopBoldIcon } from '@/assets';
 import {
   Avatar,
   OverlayLoader,
+  Select,
   StatusTag,
   StatusTagColorScheme,
   Table,
   Tooltip,
 } from '@/common/components';
-import { Pagination } from '@/common/components/Pagination';
 import { EmptyState } from '@/common/components/EmptyState';
-import { EMPTY_ARRAY } from '@/common/constants';
-import { useQuery, useUrlState } from '@/common/hooks';
+import { Pagination } from '@/common/components/Pagination';
+import { useUrlState } from '@/common/hooks';
 import { ClassName } from '@/common/types';
-import { DateUtils, StringUtils } from '@/common/utils';
+import { DateUtils } from '@/common/utils';
+import { CommentGroup } from '@/feed/CommentGroup';
 import { TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
 import clsx from 'clsx';
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import { useTransactions } from './useTransactions';
-
-const TRANSACTIONS_PER_PAGE = 10;
+import { Link, useHistory } from 'react-router-dom';
 
 const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
@@ -44,35 +42,44 @@ const getTransactionLabel = (status: TranStatus) => {
   }
 };
 
-type TransactionListProps = ClassName;
+type TransactionListProps = ClassName & {
+  transactions: TransLineItem[];
+  totalCount: number;
+  loading: boolean;
+  perPage: number;
+  hiddenColumns?: ('vendorName' | 'depName' | 'categoryName')[];
+};
 
-export const TransactionList = ({ className }: TransactionListProps) => {
+type HeaderItem = { label: string; sortKey?: string; align?: string };
+
+export const TransactionList = ({
+  className,
+  transactions,
+  totalCount,
+  perPage,
+  loading,
+  hiddenColumns,
+}: TransactionListProps) => {
   const history = useHistory();
   const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
+  const [timeRange, setTimeRange] = useUrlState('timeRange');
+  const [_page, setPage] = useUrlState('page');
+  const page = _page ? +_page : 1;
 
-  const { id: departmentIdParam } = useParams() as Record<string, string>;
+  const showCategory = !hiddenColumns?.includes('categoryName');
+  const showDepartment = !hiddenColumns?.includes('depName');
+  const showVendor = !hiddenColumns?.includes('vendorName');
 
-  const query = useQuery();
-  const sortTransactionsByQuery = query.get('sortTransactionsBy');
-
-  const [page, setPage] = React.useState(1);
-
-  const { transactions, totalCount, isValidatingTransactions } = useTransactions({
-    depId: +departmentIdParam,
-    ...StringUtils.toApiSortParam(sortTransactionsByQuery),
-    offset: (page - 1) * TRANSACTIONS_PER_PAGE,
-    limit: TRANSACTIONS_PER_PAGE,
-  });
-
-  const headers: { label: string; sortKey?: string }[] = [
-    { label: '' },
+  const headers: HeaderItem[] = [
     { label: 'Date', sortKey: 'transDate' },
-    { label: 'Vendor', sortKey: 'vendorName' },
+    showDepartment && { label: 'Team', sortKey: 'depName' },
+    showCategory && { label: 'Category', sortKey: 'categoryName' },
+    showVendor && { label: 'Vendor', sortKey: 'vendorName' },
     { label: 'Description' },
-    { label: 'Category', sortKey: 'categoryName' },
-    { label: 'Amount', sortKey: 'amountUsd' },
-    { label: 'Status', sortKey: 'transStatus' },
-  ];
+    { label: 'Amount', sortKey: 'amountUsd', align: 'text-right' },
+    { label: 'Status', sortKey: 'transStatus', align: 'text-right' },
+    { label: 'Comments', align: 'text-center flex justify-center' },
+  ].filter((item): item is HeaderItem => !!item);
 
   const goToLineItemPage = (feedItemId: number) => {
     history.push(`/feed/${feedItemId}`);
@@ -80,10 +87,16 @@ export const TransactionList = ({ className }: TransactionListProps) => {
 
   const hasTransactions = transactions?.length > 0;
 
+  React.useEffect(() => {
+    if (!sortTransactionsBy) {
+      setSortTransactionsBy('-amountUsd');
+    }
+  }, [setSortTransactionsBy, sortTransactionsBy]);
+
   return (
     <div>
       <Table.OverflowContainer className={className}>
-        <OverlayLoader loading={isValidatingTransactions}>
+        <OverlayLoader loading={loading}>
           <Table
             className="rounded-card"
             sort={sortTransactionsBy}
@@ -102,15 +115,23 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                       <LoopBoldIcon />
                       <span>Transactions</span>
                     </div>
-                    <p className="text-Gray-6 text-xs">Last 30 Days</p>
+                    <Select
+                      value={timeRange}
+                      onChange={(e) => setTimeRange(e.target.value)}
+                      options={[
+                        { label: 'Last 30 Days', value: 'last-30-days' },
+                        { label: 'Last 90 Days', value: 'last-90-days' },
+                        { label: 'Year To Date', value: 'year-to-date' },
+                      ]}
+                    />
                   </div>
                 </Table.Cell>
               </Table.Row>
               {hasTransactions ? (
                 <>
                   <Table.Row>
-                    {headers.map(({ label, sortKey }) => (
-                      <Table.Header key={label} sortKey={sortKey}>
+                    {headers.map(({ label, sortKey, align }) => (
+                      <Table.Header key={label} sortKey={sortKey} className={align}>
                         {label}
                       </Table.Header>
                     ))}
@@ -126,33 +147,59 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                       transStatus,
                       transRecordType,
                       feedItemId,
+                      feedItem,
+                      department,
                     }: TransLineItem) => (
                       <Table.Row
                         key={id}
                         className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
                         onClick={() => feedItemId && goToLineItemPage(feedItemId)}
                       >
-                        <Table.Cell>
-                          <ChatIcon />
-                        </Table.Cell>
                         <Table.Cell>{transDate && DateUtils.format(transDate)}</Table.Cell>
-                        <Table.Cell>
-                          <div className="flex items-center gap-2">
-                            <Avatar
-                              size="sm"
-                              src={vendor?.avatar}
-                              fullName={vendor?.name ?? ''}
-                              className="w-6 h-6 flex-shrink-0"
-                            />
-                            <span>{vendor?.name}</span>
-                            {transRecordType?.toLowerCase() === 'Expense Report'.toLowerCase() ? (
-                              <div className="flex flex-row items-center space-x-1">
-                                <p className="text-Gray-6 text-sm font-normal">·</p>
-                                <p className="text-Accent-2 text-xs font-normal">Expensed</p>
+                        {showDepartment && (
+                          <Table.Cell className="hover:bg-Gray-12 !p-0">
+                            <Link
+                              className="flex items-center gap-2 py-2 px-4"
+                              to={`/departments/${department?.id}`}
+                            >
+                              {department?.name}
+                            </Link>
+                          </Table.Cell>
+                        )}
+                        {showCategory && (
+                          <Table.Cell className="hover:bg-Gray-12 !p-0">
+                            <Link
+                              className="flex items-center gap-2 py-2 px-4"
+                              to={`/categories/${category?.id}`}
+                            >
+                              {category?.name}
+                            </Link>
+                          </Table.Cell>
+                        )}
+                        {showVendor && (
+                          <Table.Cell className="hover:bg-Gray-12 !p-0">
+                            <Link
+                              to={`/vendors/${vendor?.id}`}
+                              className="flex items-center gap-2 py-2 px-4"
+                            >
+                              <Avatar
+                                size="sm"
+                                src={vendor?.avatar}
+                                fullName={vendor?.name ?? ''}
+                                className="w-6 h-6 flex-shrink-0"
+                              />
+                              <div>
+                                <p>{vendor?.name}</p>
+                                {transRecordType?.toLowerCase() ===
+                                  'Expense Report'.toLowerCase() && (
+                                  <div className="flex flex-row items-center space-x-1">
+                                    <p className="text-Accent-2 text-xs font-normal">Expensed</p>
+                                  </div>
+                                )}
                               </div>
-                            ) : null}
-                          </div>
-                        </Table.Cell>
+                            </Link>
+                          </Table.Cell>
+                        )}
                         <Table.Cell>
                           <Tooltip
                             trigger={
@@ -164,17 +211,25 @@ export const TransactionList = ({ className }: TransactionListProps) => {
                             {description}
                           </Tooltip>
                         </Table.Cell>
-                        <Table.Cell>{category?.name}</Table.Cell>
                         <Table.Cell className="text-right">
                           {decimalLogic(amountUsd, '$')}
                         </Table.Cell>
                         <Table.Cell>
-                          <StatusTag
-                            colorScheme={getTransactionColorScheme(transStatus)}
-                            className="font-semibold"
-                          >
-                            {getTransactionLabel(transStatus)}
-                          </StatusTag>
+                          <div className="flex justify-end">
+                            <StatusTag
+                              colorScheme={getTransactionColorScheme(transStatus)}
+                              className="font-semibold"
+                            >
+                              {getTransactionLabel(transStatus)}
+                            </StatusTag>
+                          </div>
+                        </Table.Cell>
+                        <Table.Cell>
+                          {feedItem?.comments.length ? (
+                            <CommentGroup comments={feedItem.comments} />
+                          ) : (
+                            <p className="text-center">--</p>
+                          )}
                         </Table.Cell>
                       </Table.Row>
                     ),
@@ -200,8 +255,8 @@ export const TransactionList = ({ className }: TransactionListProps) => {
         <Pagination
           totalRecord={totalCount}
           sideItemsCount={2}
-          onChange={setPage}
-          perPage={TRANSACTIONS_PER_PAGE}
+          onChange={(page) => setPage(page.toString())}
+          perPage={perPage}
           page={page}
         >
           <div className="flex items-center justify-between mt-4">
