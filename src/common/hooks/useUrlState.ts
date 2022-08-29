@@ -39,5 +39,5 @@ export const useUrlState = (
     [paramKey, query],
   );
 
-  return React.useMemo(() => [param ?? '', setParam], [param, setParam]);
+  return React.useMemo(() => [query.get(paramKey) ?? '', setParam], [paramKey, query, setParam]);
 };
