@@ -17,12 +17,13 @@ import { TransactionsSection } from './TransactionsSection';
 
 export interface TargetFeedCardProps {
   feed: FeedItem;
+  defaultExpand?: boolean;
   onUpdateTarget: (id: number, payload: UpdateTargetPayload) => Promise<Target>;
   onDeleteTarget: (id: number) => Promise<unknown>;
 }
 
 export const TargetFeedCard = React.memo(
-  ({ feed, onDeleteTarget, onUpdateTarget }: TargetFeedCardProps) => {
+  ({ feed, defaultExpand, onDeleteTarget, onUpdateTarget }: TargetFeedCardProps) => {
     const [isOpenFeedbackModal, openFeedbackModal] = React.useState(false);
     const addTargetModalDisclosure = useDisclosure();
     const isHidden = feed?.category !== null && feed?.category?.visibility === Visibility.HIDDEN;
@@ -119,7 +120,9 @@ export const TargetFeedCard = React.memo(
             </div>
           </div>
           <TargetFeedOverview target={feed.target} handleSetTarget={handleSetTarget} />
-          {!!feed.transactions.length && <TransactionsSection feed={feed} />}
+          {!!feed.transactions.length && (
+            <TransactionsSection feed={feed} defaultExpand={defaultExpand} />
+          )}
           {!feed.isFallback && <CommentsSection feed={feed} />}
         </article>
         <FeedBackModal

@@ -116,6 +116,7 @@ export const FeedPage: React.FC = () => {
         <OverlayLoader loading={isLoading}>
           <FeedCard
             feed={feedItem ?? fallbackFeed}
+            defaultExpand
             categoryRedirectHref={(category) => `/categories/${category?.id.toString()}`}
             onDeleteTarget={deleteTarget}
             onUpdateTarget={updateTarget}
