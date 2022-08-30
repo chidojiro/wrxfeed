@@ -38,7 +38,6 @@ export const VendorPage = () => {
 
   const getFromDate = () => {
     if (!timeRange || timeRange === 'last-30-days') {
-      debugger;
       return dayjs().subtract(30, 'days').format(DATE_FORMAT);
     }
 
