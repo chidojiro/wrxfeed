@@ -1,3 +1,4 @@
+import { useBreakpoint } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType } from '@/main/utils';
@@ -54,12 +55,14 @@ export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartP
     return getMonthsLineChartData(data, months, trackingStatus);
   })();
 
+  const monthFormat = useBreakpoint({ '768': 'MMM' }) ?? 'M';
+
   const renderXAxis = () => {
     const targetDate = dayjs().set('month', startMonth - 1);
     return startMonth === endMonth ? (
       <div
         className={clsx(
-          'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[90px]',
+          'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[48px]',
         )}
       >
         <div className="w-20 h-7 flex justify-center items-center">
@@ -78,7 +81,7 @@ export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartP
     ) : (
       <div
         className={clsx(
-          'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]',
+          'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[48px]',
         )}
       >
         {range(startMonth, endMonth + 1).map((month: number) => (
@@ -89,7 +92,7 @@ export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartP
             <p>
               {dayjs()
                 .month(month - 1)
-                .format('MMM')}
+                .format(monthFormat)}
             </p>
           </div>
         ))}
