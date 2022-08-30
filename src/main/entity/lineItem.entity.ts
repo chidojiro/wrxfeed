@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import { Vendor } from '@/vendor/types';
 import { Company } from './company.entity';
+import { FeedItem } from './feedItem.entity';
 import { Category, Department, Transaction, TranStatus } from './transaction.entity';
 
 export type UserLineItem = {
@@ -49,6 +50,7 @@ export type TransLineItem = {
   transStatus: TranStatus;
   transRecordType?: string;
   feedItemId?: number;
+  feedItem?: FeedItem;
 };
 
 export type LineItem = {

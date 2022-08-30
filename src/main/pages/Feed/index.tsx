@@ -93,7 +93,9 @@ export const FeedPage: React.FC = () => {
     redirect(Routes.Dashboard.path as string);
   };
 
-  const { handle: updateTarget } = useHandler(TargetApis.update);
+  const { handle: updateTarget } = useHandler(TargetApis.update, {
+    onSuccess: (data) => setFeedItem({ ...feedItem!, target: data }),
+  });
   const { handle: deleteTarget } = useHandler(TargetApis.delete, { onSuccess: goBackToDashboard });
 
   const renderFeed = () => {
@@ -114,6 +116,7 @@ export const FeedPage: React.FC = () => {
         <OverlayLoader loading={isLoading}>
           <FeedCard
             feed={feedItem ?? fallbackFeed}
+            defaultExpand
             categoryRedirectHref={(category) => `/categories/${category?.id.toString()}`}
             onDeleteTarget={deleteTarget}
             onUpdateTarget={updateTarget}

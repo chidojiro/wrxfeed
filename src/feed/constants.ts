@@ -18,4 +18,5 @@ export const fallbackFeed: FeedItem = {
   target: fallbackTarget,
   hidden: false,
   isFallback: true,
+  comments: [],
 };

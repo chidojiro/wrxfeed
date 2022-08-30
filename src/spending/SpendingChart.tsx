@@ -1,41 +1,37 @@
-import { defaultTargetMonths } from '@/common/constants';
-import { getLineChartDataInMonth, getTargetMonthsLineChartData } from '@/main/chart.utils';
+import { ClassName } from '@/common/types';
 import { LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType } from '@/main/utils';
+import { TargetChart } from '@/target/TargetChart';
+import { TargetStatusConfig } from '@/target/types';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { cloneDeep, range } from 'lodash-es';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import { TargetChart } from './TargetChart';
-import { Target, TargetPeriod, TargetStatusConfig } from './types';
+import { defaultMonths } from './constants';
+import { Period, Spending, TrackingStatus } from './types';
+import { getLineChartDataInMonth, getMonthsLineChartData, isEmptyPeriods } from './utils';
 
-interface MiniChartViewProps<T extends Pick<Target, 'props' | 'periods' | 'trackingStatus'>> {
-  className?: string;
-  target: T;
-  onEdit?: () => void;
-  legendLabelClass?: string;
-  xAxisClass?: string;
-  showLegends?: boolean;
-  overallTarget?: number;
-}
+export type SpendingChartData = {
+  periods?: Period[];
+  trackingStatus?: TrackingStatus;
+  spendings: Spending[];
+};
 
-export const MiniChartView = <
-  T extends Pick<Target, 'props' | 'periods' | 'trackingStatus' | 'spendings'>,
->({
-  className = '',
-  target,
-  legendLabelClass = '',
-  xAxisClass = '',
-  showLegends = false,
-  overallTarget = 0,
-}: MiniChartViewProps<T>) => {
-  const targetMonths = (() => {
-    const { periods = [] } = target;
+export type SpendingChartProps = ClassName & {
+  data: SpendingChartData;
+  prevYearColor?: string;
+};
+
+export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartProps) => {
+  const { periods = [], trackingStatus } = data;
+  const overallTarget = !trackingStatus || isEmptyPeriods(periods);
+
+  const months = (() => {
     if (periods?.length > 0) {
-      const dataMonth = cloneDeep(defaultTargetMonths);
+      const dataMonth = cloneDeep(defaultMonths);
 
-      periods?.forEach((period: TargetPeriod) => {
+      periods?.forEach((period) => {
         if (period?.amount !== undefined && dataMonth[period?.month - 1]) {
           dataMonth[period?.month - 1].amount = period?.amount;
         }
@@ -44,48 +40,19 @@ export const MiniChartView = <
       return dataMonth;
     }
 
-    return defaultTargetMonths;
+    return defaultMonths;
   })();
 
-  const updatedTargetMonths = targetMonths.filter((item) => item?.amount !== undefined);
-  const startMonth = updatedTargetMonths[0]?.month ?? 1;
-  const endMonth = updatedTargetMonths[updatedTargetMonths.length - 1]?.month ?? 12;
+  const updatedMonths = months.filter((item) => item?.amount !== undefined);
+  const startMonth = updatedMonths[0]?.month ?? 1;
+  const endMonth = updatedMonths[updatedMonths.length - 1]?.month ?? 12;
 
   const chartData: LineChartData = (() => {
     if (startMonth === endMonth) {
-      return getLineChartDataInMonth(
-        target,
-        targetMonths[startMonth - 1],
-        target?.trackingStatus,
-        overallTarget,
-      );
+      return getLineChartDataInMonth(data, months[startMonth - 1], trackingStatus);
     }
-    return getTargetMonthsLineChartData(
-      target,
-      targetMonths,
-      target?.trackingStatus,
-      overallTarget,
-    );
+    return getMonthsLineChartData(data, months, trackingStatus);
   })();
-
-  const renderChartLegends = () => {
-    return (
-      <div className="flex flex-row justify-center mt-2 py-2 px-[50px] h-full space-x-8">
-        <div className="flex flex-row items-center space-x-2">
-          <div className="w-4 h-1 dashed-line-target" />
-          <p className={clsx('text-xs text-Gray-6', legendLabelClass)}>Target</p>
-        </div>
-        <div className="flex flex-row items-center space-x-2">
-          <div className="w-4 h-1 bg-Accent-2" />
-          <p className={clsx('text-xs text-Gray-6', legendLabelClass)}>Current</p>
-        </div>
-        <div className="flex flex-row items-center space-x-2">
-          <div className="w-4 h-1 bg-Gray-11" />
-          <p className={clsx('text-xs text-Gray-6', legendLabelClass)}>Last Year</p>
-        </div>
-      </div>
-    );
-  };
 
   const renderXAxis = () => {
     const targetDate = dayjs().set('month', startMonth - 1);
@@ -93,7 +60,6 @@ export const MiniChartView = <
       <div
         className={clsx(
           'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[90px]',
-          xAxisClass,
         )}
       >
         <div className="w-20 h-7 flex justify-center items-center">
@@ -113,7 +79,6 @@ export const MiniChartView = <
       <div
         className={clsx(
           'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]',
-          xAxisClass,
         )}
       >
         {range(startMonth, endMonth + 1).map((month: number) => (
@@ -132,6 +97,8 @@ export const MiniChartView = <
     );
   };
 
+  const showTarget = !!periods.length;
+
   const renderTooltipContent = (props: TooltipProps<ValueType, NameType>) => {
     const { active, payload } = props;
     if (active && payload) {
@@ -142,18 +109,20 @@ export const MiniChartView = <
             <div className="flex flex-row items-center">
               <p className="text-white text-3xs font-semibold">{dataPoints?.name ?? 'unknown'}</p>
             </div>
-            <div
-              key="target"
-              className="flex flex-row flex-grow justify-between items-center space-x-10"
-            >
-              <div className="flex flex-row items-center space-x-1">
-                <div className="w-1 h-1 rounded bg-Gray-6" />
-                <p className="text-white text-2xs">Target</p>
+            {showTarget && (
+              <div
+                key="target"
+                className="flex flex-row flex-grow justify-between items-center space-x-10"
+              >
+                <div className="flex flex-row items-center space-x-1">
+                  <div className="w-1 h-1 rounded bg-Gray-6" />
+                  <p className="text-white text-2xs">Target</p>
+                </div>
+                <p className="text-white text-2xs text-right font-semibold">
+                  {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers, '$')}
+                </p>
               </div>
-              <p className="text-white text-2xs text-right font-semibold">
-                {decimalLogic(dataPoints?.target ?? 0, DecimalType.SummedNumbers, '$')}
-              </p>
-            </div>
+            )}
             <div
               key="this-year"
               className="flex flex-row flex-grow justify-between items-center space-x-10"
@@ -162,10 +131,9 @@ export const MiniChartView = <
                 <div
                   className="w-1 h-1 rounded"
                   style={{
-                    background:
-                      !overallTarget || !target.trackingStatus
-                        ? '#818CF8'
-                        : TargetStatusConfig[target.trackingStatus].dot,
+                    background: overallTarget
+                      ? '#818CF8'
+                      : TargetStatusConfig[data.trackingStatus!].dot,
                   }}
                 />
                 <p className="text-white text-2xs">Current</p>
@@ -204,9 +172,10 @@ export const MiniChartView = <
               renderXAxis={renderXAxis}
               renderTooltip={renderTooltipContent}
               levelLabelClass="text-Gray-6 text-2xs font-normal"
+              prevYearColor={prevYearColor}
+              showTarget={showTarget}
             />
           </div>
-          {showLegends && renderChartLegends()}
         </>
       )}
     </div>

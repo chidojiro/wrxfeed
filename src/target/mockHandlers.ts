@@ -37,6 +37,7 @@ export const defaultMockTarget: Target = {
     amount: 0,
     threshold: 0,
   })),
+  spendings: [],
 };
 
 const getList = () =>

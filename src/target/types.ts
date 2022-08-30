@@ -2,6 +2,8 @@ import { User } from '@/main/entity/user.entity';
 import { Department } from '@/main/entity/transaction.entity';
 import { BitBoolean } from '@/common/types';
 import { PaginationParams } from '@/rest/types';
+import { Period, Spending } from '@/spending/types';
+import { Comment } from '@/main/entity';
 
 export type GetTargetsParams = PaginationParams & {
   dep?: number;
@@ -72,13 +74,7 @@ export type TargetProps = {
   exclude?: boolean;
 };
 
-export type TargetPeriod = {
-  month: number;
-  year: number;
-  amount?: number;
-  threshold?: number;
-  total?: number;
-};
+export type TargetPeriod = Period;
 
 export enum TargetStatusType {
   OnTrack = 'ON_TRACK',
@@ -87,11 +83,7 @@ export enum TargetStatusType {
   NotSet = 'NOT_SET',
 }
 
-export type TargetSpending = {
-  year: number;
-  month: number;
-  total: number;
-};
+export type TargetSpending = Spending;
 
 export const TargetStatusConfig = {
   [TargetStatusType.OnTrack]: {
@@ -132,7 +124,7 @@ export type Target = {
   trackingStatus?: TargetStatusType;
   props: TargetProps[];
   periods: TargetPeriod[];
-  spendings?: TargetSpending[];
+  spendings: TargetSpending[];
 };
 
 export type TargetMonth = {
@@ -144,13 +136,6 @@ export interface TargetByTeam {
   department: Department;
   targets: Target[];
 }
-
-export type Comment = {
-  content: string;
-  attachment: string;
-  user: User;
-  item: SummaryFeedItem;
-};
 
 export type SummaryFeedItem = {
   id: number;
