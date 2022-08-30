@@ -76,7 +76,11 @@ export const Popover = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trigger, open, setActuallyOpen, (trigger as HTMLElement)?.innerHTML]);
 
-  useOnEventOutside('click', closeOnClickOutside && [popoverRef, triggerElement as any], onClose);
+  useOnEventOutside(
+    'mousedown',
+    closeOnClickOutside && [popoverRef, triggerElement as any],
+    onClose,
+  );
 
   return (
     <>
