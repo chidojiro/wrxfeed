@@ -44,7 +44,7 @@ export const TargetFeedOverview: React.FC<TargetFeedOverviewProps> = ({
                 {getDisplayUsdAmount(currentSpend)}
               </p>
             </div>
-            <div className="flex flex-col">
+            <div className={clsx('flex-col hidden', 'md:flex')}>
               <div className="flex items-center">
                 {renderTrackingStatusIndicator()}
                 <p className="text-xs text-Gray-2 ml-1">Target To Date</p>
