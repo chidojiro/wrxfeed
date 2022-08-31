@@ -117,7 +117,10 @@ export const TransactionRow = ({ tran, onClick, onView }: TransactionRowProps) =
         </p>
         <p
           onClick={onClickDetails}
-          className="text-Gray-6 hover:text-Gray-3 text-xs font-normal underline ml-2.5 mr-4 w-8"
+          className={clsx(
+            'hidden text-Gray-6 hover:text-Gray-3 text-xs font-normal underline ml-2.5 mr-4 w-8',
+            'md: block',
+          )}
         >
           Details
         </p>

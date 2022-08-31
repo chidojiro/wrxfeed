@@ -55,7 +55,7 @@ export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartP
     return getMonthsLineChartData(data, months, trackingStatus);
   })();
 
-  const monthFormat = useBreakpoint({ '768': 'MMM' }) ?? 'M';
+  const isMobile = useBreakpoint({ '768': false }) ?? true;
 
   const renderXAxis = () => {
     const targetDate = dayjs().set('month', startMonth - 1);
@@ -90,9 +90,14 @@ export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartP
             className="w-[25px] h-7 flex justify-center items-center first:justify-start last:justify-end"
           >
             <p>
-              {dayjs()
-                .month(month - 1)
-                .format(monthFormat)}
+              {isMobile
+                ? dayjs()
+                    .month(month - 1)
+                    .format('MMM')
+                    .slice(0, 1)
+                : dayjs()
+                    .month(month - 1)
+                    .format('MMM')}
             </p>
           </div>
         ))}
