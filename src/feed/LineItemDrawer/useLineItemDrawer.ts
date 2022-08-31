@@ -1,4 +1,4 @@
-import { useWindowState } from '@/common/hooks';
+import { useBreakpoint, useWindowState } from '@/common/hooks';
 import { TransLineItem } from '@/main/entity';
 import React from 'react';
 
@@ -25,10 +25,12 @@ export const useLineItemDrawer = () => {
     [setSelectedLineItem],
   );
 
+  const isMobile = useBreakpoint({ '768': false }) ?? true;
+
   return React.useMemo(
     () => ({
       openLineItemDrawer,
-      isLineItemDrawerOpen: !!selectedLineItem,
+      isLineItemDrawerOpen: !isMobile && !!selectedLineItem,
       closeLineItemDrawer,
       selectedLineItem,
       feedId,
