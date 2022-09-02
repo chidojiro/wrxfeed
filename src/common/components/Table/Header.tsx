@@ -21,6 +21,8 @@ export const Header = ({ className, sortKey, children, ...restProps }: Props) =>
   const order = ((): 'asc' | 'desc' | 'none' => {
     if (sort?.startsWith('-') && sort.slice(1) === sortKey) return 'desc';
 
+    if (sort?.startsWith('-') && sort === sortKey) return 'desc';
+
     if (!sort?.startsWith('-') && sort === sortKey) return 'asc';
 
     return 'none';
@@ -30,6 +32,8 @@ export const Header = ({ className, sortKey, children, ...restProps }: Props) =>
     if (!sortKey) return;
 
     if (order === 'asc') return onSortChange?.('-' + sortKey);
+
+    if (order === 'desc') return onSortChange?.(sortKey.slice(1));
 
     return onSortChange?.(sortKey);
   };
