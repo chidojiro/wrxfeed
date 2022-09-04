@@ -9,6 +9,7 @@ export type SidebarAccordionProps = Children &
     iconLeft: React.ReactNode;
     iconRight?: React.ReactNode;
     label: React.ReactNode;
+    defaultOpen?: boolean;
   };
 
 export const SidebarAccordion = ({
@@ -17,9 +18,10 @@ export const SidebarAccordion = ({
   label,
   children,
   className,
+  defaultOpen = true,
 }: SidebarAccordionProps) => {
   return (
-    <Accordion defaultOpen>
+    <Accordion defaultOpen={defaultOpen}>
       <Accordion.Button
         className={clsx(
           'pl-[42px] pr-4 h-9 w-full',
