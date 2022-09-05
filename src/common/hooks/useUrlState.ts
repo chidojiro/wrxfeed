@@ -1,43 +1,15 @@
 import React from 'react';
-import { Fn } from '../types';
 import { useQuery } from './useQuery';
 
-export const useUrlState = (
-  paramKey: string,
-  defaultValue?: string,
-): [string, React.Dispatch<string>] => {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const [param, _setParam] = React.useState(defaultValue);
-
+export const useUrlState = <T extends string>(paramKey: string): [T, (value: T) => void] => {
   const query = useQuery();
 
-  React.useEffect(() => {
-    const paramValue = query.get(paramKey);
-
-    if (paramKey?.length) {
-      _setParam(paramValue);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const setParam: typeof _setParam = React.useCallback(
-    (valueOrCallback) => {
-      if (typeof valueOrCallback === 'function') {
-        return _setParam((prev) => {
-          const newValue = (valueOrCallback as Fn)(prev);
-
-          query.set(paramKey, newValue);
-
-          return (valueOrCallback as Fn)(prev);
-        });
-      }
-
-      query.set(paramKey, (valueOrCallback as any).toString());
-
-      return _setParam(valueOrCallback);
+  const setQuery = React.useCallback(
+    (value: T) => {
+      query.set(paramKey, value);
     },
     [paramKey, query],
   );
 
-  return React.useMemo(() => [query.get(paramKey) ?? '', setParam], [paramKey, query, setParam]);
+  return React.useMemo(() => [query.get(paramKey) ?? '', setQuery], [paramKey, query, setQuery]);
 };

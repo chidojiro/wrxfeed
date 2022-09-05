@@ -1,11 +1,11 @@
 import { CategoryIcon } from '@/assets';
-import { OverlayLoader } from '@/common/components';
 import { EmptyState } from '@/common/components/EmptyState';
 import { TopCategories as TTopCategories } from '@/main/entity';
 import { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Cell, Pie, PieChart, Tooltip } from 'recharts';
-import { useTopCategories } from '../useTopCategories';
+import { TimeRangeSelect } from '../TimeRangeSelect';
+import { TimeRange } from '../types';
 import PieActiveShape from './PieActiveShape';
 import TopCategoriesChartTooltip from './TopCategoriesChartTooltip';
 
@@ -19,10 +19,19 @@ export type CategoryPieCell = {
   spend: number;
 };
 
-export const TopCategories = () => {
+type TopCategoriesProps = {
+  timeRange: TimeRange;
+  onTimeRangeChange: (value: TimeRange) => void;
+  topCategories: TTopCategories[];
+};
+
+export const TopCategories = ({
+  timeRange,
+  onTimeRangeChange,
+  topCategories,
+}: TopCategoriesProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
-  const { data = [], isValidating } = useTopCategories();
   const history = useHistory();
 
   const handlePieEnter = useCallback(
@@ -36,7 +45,7 @@ export const TopCategories = () => {
     setActiveIndex(-1);
   }, [setActiveIndex]);
 
-  const sortedData = data.sort((a, b) => b.spend - a.spend);
+  const sortedData = topCategories.sort((a, b) => b.spend - a.spend);
 
   const spendSum = sortedData.reduce((acc, cur) => acc + cur.spend, 0);
 
@@ -69,70 +78,68 @@ export const TopCategories = () => {
   };
 
   return (
-    <OverlayLoader loading={isValidating}>
-      <div className="shadow-card rounded-card bg-white">
-        <div className="flex items-center justify-between p-5 border-b border-gray-28">
-          <div className="flex gap-2 items-center font-semibold">
-            <CategoryIcon />
-            Top Categories
-          </div>
-          <p className="text-Gray-6 text-xs">Last 30 Days</p>
+    <div className="shadow-card rounded-card bg-white">
+      <div className="flex items-center justify-between p-5 border-b border-gray-28">
+        <div className="flex gap-2 items-center font-semibold">
+          <CategoryIcon />
+          Top Categories
         </div>
-        {chartData.length === 0 ? (
-          <div className="flex flex-1 p-6">
-            <EmptyState
-              title="No recent categories"
-              content="This will change as more transactions come in."
-            />
-          </div>
-        ) : (
-          <div className="flex items-center justify-center gap-6 py-6 pr-6">
-            <PieChart width={200} height={200}>
-              <Tooltip content={(props) => <TopCategoriesChartTooltip {...props} />} />
-              <Pie
-                startAngle={90}
-                endAngle={450}
-                activeIndex={activeIndex}
-                activeShape={PieActiveShape}
-                data={chartData}
-                cx={100}
-                cy={100}
-                innerRadius={60}
-                outerRadius={80}
-                dataKey="spend"
-                labelLine={false}
-                onMouseEnter={handlePieEnter}
-                onMouseLeave={handlePieLeave}
-                onClick={(_: unknown, index: number) => handleClickCategoryCell(chartData[index])}
-              >
-                {chartData.map(({ color, name }) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Cell key={name} fill={color} />
-                ))}
-              </Pie>
-            </PieChart>
-            <ul className="flex flex-col gap-4">
-              {chartData
-                .slice()
-                .reverse()
-                .map(({ name, color }) => {
-                  return (
-                    <li
-                      key={color}
-                      className="text-2xs text-gray-3 flex items-baseline leading-4 gap-1 w-[fit-content]"
-                    >
-                      <div
-                        className="rounded-full w-1.5 h-1.5 flex-shrink-0"
-                        style={{ background: color }}
-                      ></div>
-                      {name}
-                    </li>
-                  );
-                })}
-            </ul>
-          </div>
-        )}
+        <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
       </div>
-    </OverlayLoader>
+      {chartData.length === 0 ? (
+        <div className="flex flex-1 p-6">
+          <EmptyState
+            title="No recent categories"
+            content="This will change as more transactions come in."
+          />
+        </div>
+      ) : (
+        <div className="flex items-center justify-center gap-6 py-6 pr-6">
+          <PieChart width={200} height={200}>
+            <Tooltip content={(props) => <TopCategoriesChartTooltip {...props} />} />
+            <Pie
+              startAngle={90}
+              endAngle={450}
+              activeIndex={activeIndex}
+              activeShape={PieActiveShape}
+              data={chartData}
+              cx={100}
+              cy={100}
+              innerRadius={60}
+              outerRadius={80}
+              dataKey="spend"
+              labelLine={false}
+              onMouseEnter={handlePieEnter}
+              onMouseLeave={handlePieLeave}
+              onClick={(_: unknown, index: number) => handleClickCategoryCell(chartData[index])}
+            >
+              {chartData.map(({ color, name }) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Cell key={name} fill={color} />
+              ))}
+            </Pie>
+          </PieChart>
+          <ul className="flex flex-col gap-4">
+            {chartData
+              .slice()
+              .reverse()
+              .map(({ name, color }) => {
+                return (
+                  <li
+                    key={color}
+                    className="text-2xs text-gray-3 flex items-baseline leading-4 gap-1 w-[fit-content]"
+                  >
+                    <div
+                      className="rounded-full w-1.5 h-1.5 flex-shrink-0"
+                      style={{ background: color }}
+                    ></div>
+                    {name}
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 };

@@ -1,4 +1,8 @@
-import { GetDepartmentsParams, GetRecentlyViewedDepartmentSummariesParams } from './types';
+import {
+  GetDepartmentsParams,
+  GetRecentlyViewedDepartmentSummariesParams,
+  GetTopCategoriesParams,
+} from './types';
 import { RestApis } from '@/rest/apis';
 import { DepartmentSummary, Target } from '@/target/types';
 import { Department, TopCategories } from '@/main/entity';
@@ -22,8 +26,8 @@ const getRecentlyViewedSummaries = ({
 
 const getSummaries = () => RestApis.get<DepartmentSummary[]>('/target/departments');
 
-const getTopCategories = async (departmentId: number) =>
-  RestApis.get<TopCategories[]>(`/feed/departments/${departmentId}/categories`);
+const getTopCategories = async (departmentId: number, params?: GetTopCategoriesParams) =>
+  RestApis.get<TopCategories[]>(`/feed/departments/${departmentId}/categories`, { params });
 
 export const DepartmentApis = {
   get,
