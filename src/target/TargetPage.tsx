@@ -8,10 +8,7 @@ export const TargetPage = () => {
   const { slug } = useParams() as Record<string, string>;
 
   return (
-    <MainLayout
-      mainClass="px-2 col-span-12 md:!col-span-9 !g:!col-span-9 xl:!col-span-9 !max-w-full"
-      rightSide={false}
-    >
+    <MainLayout>
       <Tabs
         value={slug}
         items={[

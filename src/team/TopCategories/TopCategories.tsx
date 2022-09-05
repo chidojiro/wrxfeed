@@ -86,7 +86,7 @@ export const TopCategories = () => {
             />
           </div>
         ) : (
-          <div className="flex items-center gap-6 py-6 pr-6">
+          <div className="flex items-center justify-center gap-6 py-6 pr-6">
             <PieChart width={200} height={200}>
               <Tooltip content={(props) => <TopCategoriesChartTooltip {...props} />} />
               <Pie
@@ -111,7 +111,7 @@ export const TopCategories = () => {
                 ))}
               </Pie>
             </PieChart>
-            <ul className="flex flex-col gap-4 flex-1">
+            <ul className="flex flex-col gap-4">
               {chartData
                 .slice()
                 .reverse()
@@ -119,9 +119,12 @@ export const TopCategories = () => {
                   return (
                     <li
                       key={color}
-                      className="text-2xs text-gray-3 flex items-baseline leading-4 gap-1 w-full"
+                      className="text-2xs text-gray-3 flex items-baseline leading-4 gap-1 w-[fit-content]"
                     >
-                      <div className="rounded-full w-1.5 h-1.5" style={{ background: color }}></div>
+                      <div
+                        className="rounded-full w-1.5 h-1.5 flex-shrink-0"
+                        style={{ background: color }}
+                      ></div>
                       {name}
                     </li>
                   );

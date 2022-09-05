@@ -58,7 +58,7 @@ export const VendorPage = () => {
   });
 
   return (
-    <MainLayout mainClass="xl:col-span-9">
+    <MainLayout>
       <VendorHeader vendorId={vendorId} />
       <OverlayLoader loading={isValidatingVendor || isValidatingVendorSpendings} className="mt-6">
         <div className="rounded-card shadow-card px-6 py-4 bg-white">

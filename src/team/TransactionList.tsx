@@ -262,8 +262,8 @@ export const TransactionList = ({
           page={page}
         >
           <div className="flex items-center justify-between mt-4">
-            <Pagination.ShowingRange />
-            <Pagination.Items />
+            <Pagination.ShowingRange className="hidden md:block" />
+            <Pagination.Items className="mx-auto md:mx-0" />
           </div>
         </Pagination>
       )}

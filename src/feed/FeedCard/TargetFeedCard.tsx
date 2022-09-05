@@ -106,6 +106,7 @@ export const TargetFeedCard = React.memo(
                   onDeleteClick={
                     !feed.target?.isPrimary ? () => onDeleteTarget(feed.target.id) : undefined
                   }
+                  className="hidden md:block"
                 />
               </div>
               <div className="flex flex-row space-x-2 items-center h-6">
