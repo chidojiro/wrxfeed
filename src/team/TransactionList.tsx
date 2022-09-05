@@ -76,7 +76,7 @@ export const TransactionList = ({
     showCategory && { label: 'Category', sortKey: 'categoryName' },
     showVendor && { label: 'Vendor', sortKey: 'vendorName' },
     { label: 'Description' },
-    { label: 'Amount', sortKey: '-amountUsd', align: 'text-right' },
+    { label: 'Amount', sortKey: 'amountUsd', align: 'text-right' },
     { label: 'Status', sortKey: 'transStatus', align: 'text-right' },
     { label: 'Comments', align: 'text-center flex justify-center' },
   ].filter((item): item is HeaderItem => !!item);
