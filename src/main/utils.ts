@@ -5,16 +5,10 @@ import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basi
 import { ReactComponent as Files } from '@/assets/icons/outline/files.svg';
 import { ReactComponent as GroupUsers } from '@/assets/icons/outline/group-users.svg';
 import { ReactComponent as VendorIcon } from '@/assets/icons/outline/vendor.svg';
-import {
-  FeedItem,
-  Transaction,
-  TransLineItem,
-  TranStatusNameColor,
-  TranStatusType,
-} from '@/main/entity';
+import { Fn } from '@/common/types';
+import { TransLineItem, TranStatusNameColor, TranStatusType } from '@/main/entity';
 import {
   Target,
-  TargetByTeam,
   TargetMonth,
   TargetPeriod,
   TargetProps,
@@ -24,7 +18,6 @@ import {
 } from '@/target/types';
 import { extractLinks } from '@draft-js-plugins/linkify';
 import { MentionData } from '@draft-js-plugins/mention';
-import dayjs from 'dayjs';
 import { convertFromHTML, convertToHTML } from 'draft-convert';
 import {
   ContentState,
@@ -38,12 +31,11 @@ import { Match } from 'linkify-it';
 import { cloneDeep } from 'lodash-es';
 import numeral from 'numeral';
 import React from 'react';
-import { Fn } from '@/common/types';
 
-const UserIdRegex = /userid="([a-zA-Z0-9]+)"/gi;
+const UserIdRegex = /(userid|depid)="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
 const MentionRegex =
-  /<mention userid=['"][a-zA-Z0-9]+['"] tagname=['"][\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+['"]\/>/gi;
+  /<mention (userid|depid)=['"][a-zA-Z0-9]+['"] tagname=['"][\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+['"]\/>/gi;
 
 /**
  * Replace mention tag (<mention />) with HTML <span />
@@ -119,7 +111,11 @@ export function tokenizeComment(text: string): string {
 /**
  * Create a mention tag from id and name
  */
-export function mentionTagCreator(id: number, name: string): string {
+export function mentionTagCreator(id: number, name: string, type: 'USER' | 'DEPARTMENT'): string {
+  if (type === 'DEPARTMENT') {
+    return `<mention depid="${id}" tagname="${name}"/>`;
+  }
+
   return `<mention userid="${id}" tagname="${name}"/>`;
 }
 
@@ -136,7 +132,7 @@ export function contentBlockParser(
     // Parse mention
     if (entity.type !== 'mention') return text;
     const entityData = entityMap[entityRange.key].data.mention as MentionData;
-    const mention = mentionTagCreator(entityData.id as number, entityData.name);
+    const mention = mentionTagCreator(entityData.id as number, entityData.name, entityData.type);
     return text.replace(entityData.name, mention);
   }, block.text);
 }
@@ -167,7 +163,11 @@ export function commentEditorHtmlParser(contentState: ContentState): string {
         if (entity.type === 'mention') {
           // Create mention tag and replace
           const entityData = entityMap[entityRange.key].data.mention as MentionData;
-          const mention = mentionTagCreator(entityData.id as number, entityData.name);
+          const mention = mentionTagCreator(
+            entityData.id as number,
+            entityData.name,
+            entityData.type,
+          );
           htmlContent = htmlContent.replace(entityData.name, mention);
         }
       });

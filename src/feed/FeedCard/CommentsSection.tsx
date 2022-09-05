@@ -2,10 +2,10 @@ import { InfiniteLoader } from '@/common/components';
 import { useInfiniteData } from '@/common/hooks';
 import { isBadRequest } from '@/error';
 import { FeedItem, Visibility } from '@/main/entity';
-import { useMention } from '@/main/hooks';
 import { CommentFormModel } from '@/main/types';
 import { commentEditorHtmlParser } from '@/main/utils';
 import { GetUploadFileTokenPayload } from '@/media/types';
+import { useMentions } from '@/misc/useMentions';
 import { useProfile } from '@/profile/useProfile';
 import { PaginationParams } from '@/rest/types';
 import { EditorState } from 'draft-js';
@@ -31,7 +31,7 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
   const [uploadFileOptions, setUploadFileOptions] = React.useState<GetUploadFileTokenPayload>();
 
   const { profile } = useProfile();
-  const { mentions } = useMention();
+  const { mentions } = useMentions();
 
   const {
     initialData: initialComments,
