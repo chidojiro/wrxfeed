@@ -105,6 +105,7 @@ export const TargetCard = ({
                     onViewClick={goToTargetDetails}
                     onEditClick={addTargetModalDisclosure.onOpen}
                     onDeleteClick={!target?.isPrimary && deletable ? handleDeleteClick : undefined}
+                    className="hidden md:block"
                   />
                 </div>
                 <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
@@ -131,7 +132,7 @@ export const TargetCard = ({
                     {getDisplayUsdAmount(currentSpend)}
                   </p>
                 </div>
-                <div className="flex flex-col items-start min-w-[70px] pr-1.5">
+                <div className={clsx('flex-col items-start min-w-[70px] pr-1.5 hidden', 'md:flex')}>
                   <div className="flex items-center space-x-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-Gray-6" />
                     <p className="text-2xs">Target To Date</p>

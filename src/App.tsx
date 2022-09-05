@@ -3,7 +3,6 @@ import { ProtectedRoute } from '@/auth/ProtectedRoute';
 import { EmojiPicker } from '@/common/components';
 import { Children } from '@/common/types';
 import { UploadCSVModal } from '@/main/organisms';
-import ContactSupportButton from '@/main/organisms/ContactSupportButton';
 import { PusherProvider } from '@/push-notification/PusherProvider';
 import { Routes } from '@/routing/routes';
 import React from 'react';
@@ -76,7 +75,6 @@ const App = () => {
         <StyledToastContainer />
         <EmojiPicker />
         <NotifyBannerContainer topOffset={56} />
-        <ContactSupportButton />
       </PusherProvider>
     </RecoilRoot>
   );
