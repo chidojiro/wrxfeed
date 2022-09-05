@@ -19,7 +19,7 @@ const getGoogleProfile = () => RestApis.get<GoogleProfile>('/auth/me');
 
 const update = (payload: UpdateProfilePayload) => RestApis.patch<Profile>('/user/me', payload);
 
-const getUsers = (params: GetUsersParams) =>
+const getUsers = (params?: GetUsersParams) =>
   RestApis.get<User[]>('/user/users', { params: withDefaultPaginationParams(params) });
 
 const changePassword = (payload: ChangePasswordPayload) =>
