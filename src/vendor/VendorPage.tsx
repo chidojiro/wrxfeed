@@ -1,22 +1,26 @@
 import { OverlayLoader } from '@/common/components';
-import { useQuery } from '@/common/hooks';
+import { useQuery, useUrlState } from '@/common/hooks';
+import { StringUtils } from '@/common/utils';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { SpendingChart } from '@/spending/SpendingChart';
+import { TransactionList } from '@/team/TransactionList';
+import { TimeRange } from '@/team/types';
+import { useTransactions } from '@/team/useTransactions';
+import dayjs from 'dayjs';
 import { sumBy } from 'lodash-es';
 import { useParams } from 'react-router-dom';
 import { useVendor } from './useVendor';
 import { useVendorSpendings } from './useVendorSpendings';
-import dayjs from 'dayjs';
-import { useTransactions } from '@/team/useTransactions';
-import { StringUtils } from '@/common/utils';
-import { TransactionList } from '@/team/TransactionList';
 import { VendorHeader } from './VendorHeader';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const VendorPage = () => {
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
+  const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
+
   const { vendorId: vendorIdParam } = useParams() as Record<string, string>;
   const vendorId = +vendorIdParam;
 
@@ -31,8 +35,6 @@ export const VendorPage = () => {
 
   const query = useQuery();
 
-  const sortTransactionsBy = query.get('sortTransactionsBy');
-  const timeRange = query.get('timeRange');
   const _page = query.get('page');
   const page = _page ? +_page : 1;
 
@@ -96,6 +98,10 @@ export const VendorPage = () => {
         perPage={TRANSACTIONS_PER_PAGE}
         loading={isValidatingTransactions}
         hiddenColumns={['vendorName']}
+        timeRange={timeRange}
+        onTimeRangeChange={setTimeRange}
+        sort={sortTransactionsBy}
+        onSortChange={setSortTransactionsBy}
       />
     </MainLayout>
   );
