@@ -1,3 +1,9 @@
+import { RolesDrawer } from './RolesDrawer';
+
 export const RolesTabContent = () => {
-  return <div>Roles Tab Content</div>;
+  return (
+    <div>
+      <RolesDrawer open />
+    </div>
+  );
 };
