@@ -64,7 +64,7 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
           onClick={addTargetModalDisclosure.onOpen}
           variant="text"
           colorScheme="white"
-          className="text-sm"
+          className="text-sm hidden sm:block"
           iconLeft={
             <AddSmallSolid
               width={16}
