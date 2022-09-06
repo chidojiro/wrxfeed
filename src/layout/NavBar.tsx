@@ -2,7 +2,11 @@ import { UserRole } from '@/auth/constants';
 import { useProfile } from '@/profile/useProfile';
 import { NavBarStatic } from './NavBarStatic';
 
-export const NavBar = () => {
+type NavBarProps = {
+  mainLayout?: boolean;
+};
+
+export const NavBar = ({ mainLayout = true }: NavBarProps) => {
   const { profile } = useProfile();
   const isAdmin = profile?.roles?.includes(UserRole.ADMIN);
 
@@ -12,10 +16,10 @@ export const NavBar = () => {
       userAva={profile?.avatar}
       userName={profile?.fullName}
       userEmail={profile?.email}
-      showAva
-      showNoti
+      showAva={mainLayout}
+      showNoti={mainLayout}
       showInvite={isAdmin}
-      searchBar
+      searchBar={mainLayout}
     />
   );
 };
