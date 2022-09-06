@@ -29,7 +29,7 @@ export const Header = ({ className, sortKey, children, ...restProps }: Props) =>
   const handleClick = () => {
     if (!sortKey) return;
 
-    if (order === 'asc') return onSortChange?.('-' + sortKey);
+    if (order === 'asc' || order === 'none') return onSortChange?.('-' + sortKey);
 
     return onSortChange?.(sortKey);
   };
