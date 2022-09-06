@@ -1,12 +1,11 @@
 import { useFetcher } from '@/common/hooks';
-import { useParams } from 'react-router-dom';
 import { DepartmentApis } from './apis';
+import { GetTopCategoriesParams } from './types';
 
-export const useTopCategories = (id?: number) => {
-  const { id: departmentIdParam } = useParams() as Record<string, string>;
-  const departmentId = id ?? +departmentIdParam;
-
-  return useFetcher(['topCategories', departmentId], () =>
-    DepartmentApis.getTopCategories(departmentId),
+export const useTopCategories = (departmentId: number, params?: GetTopCategoriesParams) => {
+  return useFetcher(
+    ['topCategories', departmentId, params],
+    () => DepartmentApis.getTopCategories(departmentId, params),
+    { laggy: true },
   );
 };
