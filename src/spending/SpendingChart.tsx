@@ -170,7 +170,7 @@ export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartP
   };
 
   return (
-    <div className={clsx('flex flex-1 flex-col w-full h-full', className)}>
+    <div className={clsx('flex flex-1 flex-col w-full h-full min-h-[185px]', className)}>
       {chartData && (
         <>
           <div className="relative flex flex-1 flex-col justify-center items-center w-auto p-4 h-[184px] border border-Gray-12 rounded-2.5xl">
