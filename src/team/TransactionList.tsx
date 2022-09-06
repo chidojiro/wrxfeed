@@ -2,7 +2,6 @@ import { LoopBoldIcon } from '@/assets';
 import {
   Avatar,
   OverlayLoader,
-  Select,
   StatusTag,
   StatusTagColorScheme,
   Table,
@@ -19,6 +18,8 @@ import { decimalLogic } from '@/main/utils';
 import clsx from 'clsx';
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { TimeRangeSelect } from './TimeRangeSelect';
+import { TimeRange } from './types';
 
 const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
@@ -48,6 +49,10 @@ type TransactionListProps = ClassName & {
   loading: boolean;
   perPage: number;
   hiddenColumns?: ('vendorName' | 'depName' | 'categoryName')[];
+  timeRange: TimeRange;
+  onTimeRangeChange: (timeRange: TimeRange) => void;
+  sort: string;
+  onSortChange: (sort: string) => void;
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
@@ -59,10 +64,12 @@ export const TransactionList = ({
   perPage,
   loading,
   hiddenColumns,
+  timeRange,
+  onTimeRangeChange,
+  sort,
+  onSortChange,
 }: TransactionListProps) => {
   const history = useHistory();
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
-  const [timeRange, setTimeRange] = useUrlState('timeRange');
   const [_page, setPage] = useUrlState('page');
   const page = _page ? +_page : 1;
 
@@ -88,20 +95,16 @@ export const TransactionList = ({
   const hasTransactions = transactions?.length > 0;
 
   React.useEffect(() => {
-    if (!sortTransactionsBy) {
-      setSortTransactionsBy('-amountUsd');
+    if (!sort) {
+      onSortChange('-transDate');
     }
-  }, [setSortTransactionsBy, sortTransactionsBy]);
+  }, [onSortChange, sort]);
 
   return (
     <div>
       <Table.OverflowContainer className={className}>
         <OverlayLoader loading={loading}>
-          <Table
-            className="rounded-card"
-            sort={sortTransactionsBy}
-            onSortChange={setSortTransactionsBy}
-          >
+          <Table className="rounded-card" sort={sort} onSortChange={onSortChange}>
             <Table.Body>
               <Table.Row>
                 <Table.Cell colSpan={7}>
@@ -115,15 +118,7 @@ export const TransactionList = ({
                       <LoopBoldIcon />
                       <span>Transactions</span>
                     </div>
-                    <Select
-                      value={timeRange}
-                      onChange={(e) => setTimeRange(e.target.value)}
-                      options={[
-                        { label: 'Last 30 Days', value: 'last-30-days' },
-                        { label: 'Last 90 Days', value: 'last-90-days' },
-                        { label: 'Year To Date', value: 'year-to-date' },
-                      ]}
-                    />
+                    <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
                   </div>
                 </Table.Cell>
               </Table.Row>
