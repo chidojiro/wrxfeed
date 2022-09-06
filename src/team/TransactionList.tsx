@@ -96,7 +96,7 @@ export const TransactionList = ({
 
   React.useEffect(() => {
     if (!sort) {
-      onSortChange('-amountUsd');
+      onSortChange('-transDate');
     }
   }, [onSortChange, sort]);
 

@@ -1,3 +1,4 @@
+import { AdminRoutes } from '@/admin/routes';
 import { UserRole } from '@/auth/constants';
 import { FeedRoutes } from '@/feed/routes';
 import { TargetRoutes } from '@/target/routes';
@@ -78,4 +79,5 @@ export const Routes: Route = {
   ...FeedRoutes,
   ...VendorRoutes,
   ...TeamRoutes,
+  ...AdminRoutes,
 };
