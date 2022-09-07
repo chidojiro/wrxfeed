@@ -7,7 +7,6 @@ export const TeamMembersTabContent = () => {
           Manage all team members and their account roles.
         </p>
       </div>
-      Team Members Tab Content
     </div>
   );
 };
