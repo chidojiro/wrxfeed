@@ -7,7 +7,6 @@ export const RolesTabContent = () => {
           Manage account roles and view access.
         </p>
       </div>
-      <div>Roles Tab Content</div>
     </div>
   );
 };
