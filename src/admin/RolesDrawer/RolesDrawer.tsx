@@ -1,6 +1,7 @@
 import { Button, Drawer, Input } from '@/common/components';
 import { withMountOnOpen } from '@/common/hocs';
 import { OpenClose } from '@/common/types';
+import { AccessControlTabs } from './AccessControlTabs';
 
 export type RolesDrawerProps = OpenClose;
 
@@ -15,13 +16,14 @@ export const RolesDrawer = withMountOnOpen()(({ onClose, open }: RolesDrawerProp
             all team members. Changes to the Base User will affect all team members.
           </p>
         </div>
-        <div className="flex-1 px-6 py-4">
+        <div className="flex flex-col flex-1 px-6 pt-4 overflow-hidden">
           <label className="font-bold text-xs">Role Name</label>
           <Input placeholder="" className="mt-2" />
-          <div className="mt-8">
+          <div className="mt-4">
             <label className="font-bold text-xs">Description</label>
             <Input placeholder="" className="mt-2" />
           </div>
+          <AccessControlTabs />
         </div>
         <div className="py-5 px-6 flex justify-end border-t border-solid border-Gray-28">
           <Button variant="ghost" colorScheme="gray">

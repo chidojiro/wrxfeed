@@ -12,12 +12,25 @@
     font-family: inherit;
   }
 
+  * {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  *::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
+  }
+
   html body {
     @apply box-border;
   }
 }
 
 @layer utilities {
+  .minimized {
+    @apply h-0 w-0 border-none outline-none m-0 p-0 absolute opacity-0 !important;
+  }
+
   .list-row-hover {
     @apply hover:ring-1 hover:ring-Accent-4 hover:shadow-target-hover
   }

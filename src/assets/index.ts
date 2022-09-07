@@ -1,4 +1,6 @@
 export { ReactComponent as InviteIcon } from '@/assets/icons/outline/invite.svg';
+export { ReactComponent as TickIcon } from '@/assets/icons/outline/tick.svg';
+export { ReactComponent as MinusIcon } from '@/assets/icons/outline/minus.svg';
 export { ReactComponent as SearchIcon } from '@/assets/icons/outline/search.svg';
 export { ReactComponent as ArrowUpIcon } from '@/assets/icons/outline/arrow-up.svg';
 export { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';

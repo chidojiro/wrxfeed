@@ -112,7 +112,7 @@ export const FeedPage: React.FC = () => {
     }
 
     return (
-      <div className="w-full h-full overflow-scroll hide-scrollbar">
+      <div className="w-full h-full overflow-auto hide-scrollbar invisible-scrollbar">
         <OverlayLoader loading={isLoading}>
           <FeedCard
             feed={feedItem ?? fallbackFeed}
