@@ -18,7 +18,7 @@ type PropsSectionProps = {
 export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: PropsSectionProps) => {
   const exceptionsDropdownRef = React.useRef<any>();
 
-  const { data: departments = EMPTY_ARRAY } = useDepartments({
+  const { departments } = useDepartments({
     limit: 0,
     includeSub: 1,
   });

@@ -88,11 +88,9 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     clearErrors,
   } = methods;
 
-  const { isValidating: isValidatingDepartments, data: departments = EMPTY_ARRAY } = useDepartments(
-    {
-      includeSub: 1,
-    },
-  );
+  const { isValidatingDepartments, departments } = useDepartments({
+    includeSub: 1,
+  });
 
   const { isValidating: isValidatingVendors } = useVendors();
 
