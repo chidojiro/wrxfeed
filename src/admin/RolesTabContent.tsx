@@ -4,8 +4,14 @@ import { RolesDrawer } from './RolesDrawer';
 
 export const RolesTabContent = () => {
   return (
-    <div>
+    <div className="flex flex-col">
       <RolesDrawer open />
+      <div className="space-y-2 mb-8">
+        <h1 className="text-2xl leading-7 font-semibold text-primary">Roles</h1>
+        <p className="text-sm leading-4 font-normal text-Gray-6">
+          Manage account roles and view access.
+        </p>
+      </div>
       <div className="flex flex-col space-y-4 w-full sm:min-w-[491px]">
         <RoleCard title="Base User" description="Default permissions for all team members" />
         <RoleCard title="Admin" description="Access to Admin Portal and role creation" />
