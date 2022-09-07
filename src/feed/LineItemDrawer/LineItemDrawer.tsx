@@ -68,8 +68,9 @@ export const LineItemDrawer = withMountOnOpen()(
         open={open}
         onClose={onClose}
         closeOnClickOutside={closeOnClickOutsideDisclosure.isOpen}
+        showCloseButton={false}
       >
-        <div className={clsx('relative z-20 flex flex-1 flex-col pt-navbar h-full', className)}>
+        <div className={clsx('relative z-20 flex flex-1 flex-col h-full', className)}>
           <LineItemDetails
             onCloseClick={onClose}
             loading={isValidating}

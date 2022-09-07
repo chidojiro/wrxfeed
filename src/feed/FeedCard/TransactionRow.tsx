@@ -8,6 +8,7 @@ import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export type TransactionRowProps = {
   tran: Transaction;
@@ -91,7 +92,12 @@ export const TransactionRow = ({ tran, onClick, onView }: TransactionRowProps) =
         </div>
         {renderUnreadIndicator()}
         <div className="flex flex-1 h-5 overflow-hidden flex-row items-center mx-1.5 space-x-1">
-          <p className="text-Gray-3 text-xs font-semibold text-left truncate">{tran?.vendorName}</p>
+          <Link
+            to={`/vendors/${tran?.vendor.id}`}
+            className="text-Gray-3 text-xs font-semibold text-left truncate hover:underline"
+          >
+            {tran?.vendorName}
+          </Link>
           {renderExpensedTag()}
           {renderDateTag()}
         </div>
