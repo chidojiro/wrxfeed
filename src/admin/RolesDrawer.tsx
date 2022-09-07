@@ -8,7 +8,7 @@ export const RolesDrawer = withMountOnOpen()(({ onClose, open }: RolesDrawerProp
   return (
     <Drawer open={open} onClose={onClose}>
       <div className="flex flex-col h-full">
-        <div className="bg-Gray-12 p-6 border border-solid border-Gray-11">
+        <div className="bg-Gray-12 p-6 border-b border-solid border-Gray-11">
           <h2 className="text-lg font-medium">Roles</h2>
           <p className="text-sm text-[#6B7280] mt-1">
             By default Base Users can see all transactions. Deselect any property to hide them from
