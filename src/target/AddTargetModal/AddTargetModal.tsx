@@ -94,7 +94,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
 
   const { isValidating: isValidatingVendors } = useVendors();
 
-  const { isValidating: isValidatingCategories } = useCategories();
+  const { isValidatingCategories } = useCategories();
 
   React.useEffect(() => {
     const getTagValueFromProps = ({ id, name, type }: TargetProps) => `${type}-${id}-${name}`;

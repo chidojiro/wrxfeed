@@ -3,6 +3,7 @@ import { Tabs, Tab, TabContent } from '@/common/headless';
 import { TeamsTab } from './TeamsTab';
 import { Button } from '@/common/components';
 import clsx from 'clsx';
+import { CategoriesTab } from './CategoriesTab';
 
 export type AccessControlTabsProps = {
   //
@@ -10,7 +11,7 @@ export type AccessControlTabsProps = {
 
 const tabs: { content: React.ReactNode; value: string; label: string }[] = [
   { content: <TeamsTab />, value: 'teams', label: 'Teams' },
-  { content: null, value: 'categories', label: 'Categories' },
+  { content: <CategoriesTab />, value: 'categories', label: 'Categories' },
   { content: null, value: 'vendors', label: 'Vendors' },
   { content: null, value: 'members', label: 'Members' },
 ];

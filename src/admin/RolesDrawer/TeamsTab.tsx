@@ -11,7 +11,7 @@ export const TeamsTab = ({}: TeamsTabProps) => {
   const { departmentsHierarchy } = useDepartmentsHierarchy();
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 text-Gray-3">
       {departmentsHierarchy.map(({ id, name, children }) => (
         <CheckboxGroup key={id}>
           {({ selection, toggleSelectAll }) => (
