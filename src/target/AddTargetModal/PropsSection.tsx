@@ -27,7 +27,7 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
     limit: 0,
   });
 
-  const { data: categories = EMPTY_ARRAY } = useCategories({
+  const { categories } = useCategories({
     limit: 0,
   });
 
