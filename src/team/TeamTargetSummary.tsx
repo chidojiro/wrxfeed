@@ -24,7 +24,11 @@ export const TeamTargetSummary = ({ departmentId }: TeamTargetSummaryProps) => {
         <div className="shadow-card rounded-card bg-white flex p-6">
           <div className="flex items-center">
             <Link to="/dashboard/all-company" className="border-r border-solid pr-5 flex gap-3">
-              <div className={clsx('rounded-full bg-Gray-12 p-3 flex items-center justify-center')}>
+              <div
+                className={clsx(
+                  'rounded-full bg-Gray-12 w-14 h-14 flex items-center justify-center',
+                )}
+              >
                 <TargetArrowFilled />
               </div>
               <div>
@@ -33,7 +37,10 @@ export const TeamTargetSummary = ({ departmentId }: TeamTargetSummaryProps) => {
               </div>
             </Link>
 
-            <Button className="pl-4 text-center" onClick={addTargetModalDisclosure.onOpen}>
+            <Button
+              className="pl-4 text-center hidden md:block"
+              onClick={addTargetModalDisclosure.onOpen}
+            >
               <div className="text-center justify-center flex items-center gap-2 mx-auto">
                 <p className="text-md font-semibold">Create a target</p>
                 <div className="rounded bg-Accent-2 !m-0 text-white">
