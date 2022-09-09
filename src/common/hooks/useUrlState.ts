@@ -1,12 +1,14 @@
 import React from 'react';
-import { useQuery } from './useQuery';
+import { RedirectMethod, useQuery } from './useQuery';
 
-export const useUrlState = <T extends string>(paramKey: string): [T, (value: T) => void] => {
+export const useUrlState = <T extends string>(
+  paramKey: string,
+): [T, (value: T, method?: RedirectMethod) => void] => {
   const query = useQuery();
 
   const setQuery = React.useCallback(
-    (value: T) => {
-      query.set(paramKey, value);
+    (value: T, method: RedirectMethod = 'PUSH') => {
+      query.set(paramKey, value, method);
     },
     [paramKey, query],
   );

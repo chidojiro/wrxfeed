@@ -85,7 +85,8 @@ export const VendorPage = () => {
           </div>
           <div className="h-[400px] mt-4">
             <SpendingChart
-              prevYearColor="#d1d5db"
+              bar
+              prevYearColor="#EFF0F2"
               data={{ spendings: [...(prevYearSpends as any), ...(curYearSpends as any)] }}
             />
           </div>
