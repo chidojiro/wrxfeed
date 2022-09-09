@@ -92,7 +92,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     includeSub: 1,
   });
 
-  const { isValidating: isValidatingVendors } = useVendors();
+  const { isValidatingVendors } = useVendors();
 
   const { isValidatingCategories } = useCategories();
 
