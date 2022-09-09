@@ -1,12 +1,13 @@
 import { OverlayLoader } from '@/common/components';
 import { EMPTY_ARRAY } from '@/common/constants';
-import { useQuery, useUrlState } from '@/common/hooks';
+import { useHandler, useMountEffect, useQuery, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { MainLayout } from '@/layout/MainLayout';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import dayjs from 'dayjs';
 import { useParams } from 'react-router-dom';
+import { DepartmentApis } from './apis';
 import { TeamHeader } from './TeamHeader';
 import { TeamTargetSummary } from './TeamTargetSummary';
 import { TopCategories } from './TopCategories';
@@ -25,9 +26,17 @@ export const TeamPage = () => {
   const [topCategoriesTimeRange, setTopCategoriesTimeRange] =
     useUrlState<TimeRange>('topCategoriesTimeRange');
 
+  const { handle: viewDepartmentSummary } = useHandler((departmentId: number) =>
+    DepartmentApis.viewSummary(departmentId),
+  );
+
   const { id: departmentIdParam } = useParams() as Record<string, string>;
   const departmentId = +departmentIdParam;
   const { data: target, isValidating: isValidatingTarget, mutate } = usePrimaryTarget(departmentId);
+
+  useMountEffect(() => {
+    viewDepartmentSummary(departmentId);
+  });
 
   const query = useQuery();
 
