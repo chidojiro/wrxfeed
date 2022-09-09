@@ -23,7 +23,7 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
     includeSub: 1,
   });
 
-  const { data: vendors = EMPTY_ARRAY } = useVendors({
+  const { vendors } = useVendors({
     limit: 0,
   });
 
