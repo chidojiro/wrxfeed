@@ -13,7 +13,8 @@
     "testw": "jest --watch",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet  --fix",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "increase-version": "node scripts/version"
   },
   "husky": {
     "hooks": {
