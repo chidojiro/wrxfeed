@@ -6,9 +6,7 @@ type RoleCardProps = {
   onClick?: () => void;
 };
 
-export const RoleCard = (props: RoleCardProps) => {
-  const { title, description, onClick } = props;
-
+export const RoleCard = ({ title, description, onClick }: RoleCardProps) => {
   return (
     <Button
       onClick={onClick}
