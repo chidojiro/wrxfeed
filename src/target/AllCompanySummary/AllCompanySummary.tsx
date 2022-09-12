@@ -1,6 +1,6 @@
 import { TargetArrowFilled } from '@/assets';
 import { OverlayLoader } from '@/common/components';
-import { useFetcher, useScrollbarDetector } from '@/common/hooks';
+import { useDisclosure, useFetcher, useScrollbarDetector } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
@@ -11,7 +11,7 @@ type AllCompanySummaryProps = ClassName;
 
 export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
   const summaryListRef = React.useRef<HTMLDivElement>(null);
-  const [isOnTop, setIsOnTop] = React.useState<boolean>(true);
+  const isOnTopDisclosure = useDisclosure();
 
   const { data: summaries = [], isValidating } = useFetcher(['allCompanySummaries'], () =>
     DepartmentApis.getSummaries(),
@@ -24,9 +24,9 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
     const top = (e.target as HTMLInputElement).scrollTop === 0;
     if (top) {
-      setIsOnTop(true);
+      isOnTopDisclosure.set(false);
     } else {
-      setIsOnTop(false);
+      isOnTopDisclosure.set(true);
     }
   };
 
@@ -43,7 +43,7 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
             'text-center font-semibold text-2xs',
             'border-t border-b border-Gray-28',
             'py-2.5 px-1',
-            { 'shadow-md': !isOnTop },
+            { 'shadow-md': isOnTopDisclosure.isOpen },
           )}
           style={{ paddingRight: summaryListScrollbarWidth }}
         >
@@ -53,7 +53,7 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
           <div className="col-span-2">Comments</div>
         </div>
         <div
-          onScroll={(e) => handleScroll(e)}
+          onScroll={handleScroll}
           className="overflow-auto hide-scrollbar flex-1 pb-5 p-px"
           ref={summaryListRef}
         >
