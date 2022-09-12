@@ -11,6 +11,7 @@ type AllCompanySummaryProps = ClassName;
 
 export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
   const summaryListRef = React.useRef<HTMLDivElement>(null);
+  const [isOnTop, setIsOnTop] = React.useState<boolean>(true);
 
   const { data: summaries = [], isValidating } = useFetcher(['allCompanySummaries'], () =>
     DepartmentApis.getSummaries(),
@@ -19,6 +20,15 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
   const { scrollbarWidth: summaryListScrollbarWidth } = useScrollbarDetector(summaryListRef, [
     summaries,
   ]);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const top = (e.target as HTMLInputElement).scrollTop === 0;
+    if (top) {
+      setIsOnTop(true);
+    } else {
+      setIsOnTop(false);
+    }
+  };
 
   return (
     <OverlayLoader loading={isValidating} className={className}>
@@ -32,7 +42,8 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
             'grid grid-cols-12',
             'text-center font-semibold text-2xs',
             'border-t border-b border-Gray-28',
-            'py-2.5 px-1 shadow-md',
+            'py-2.5 px-1',
+            { 'shadow-md': !isOnTop },
           )}
           style={{ paddingRight: summaryListScrollbarWidth }}
         >
@@ -41,7 +52,11 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
           <div className="col-span-2">Target</div>
           <div className="col-span-2">Comments</div>
         </div>
-        <div className="overflow-auto hide-scrollbar flex-1 pb-5 p-px" ref={summaryListRef}>
+        <div
+          onScroll={(e) => handleScroll(e)}
+          className="overflow-auto hide-scrollbar flex-1 pb-5 p-px"
+          ref={summaryListRef}
+        >
           {summaries.map((summary) => (
             <SummaryRow data={summary} key={summary.id} />
           ))}
