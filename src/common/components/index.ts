@@ -3,6 +3,7 @@ export * from './AvatarGroup';
 export * from './Button';
 export * from './Checkbox';
 export * from './ConditionalWrapper';
+export * from './ConfirmModal';
 export * from './Divider';
 export * from './Drawer';
 export * from './EmojiPicker';
