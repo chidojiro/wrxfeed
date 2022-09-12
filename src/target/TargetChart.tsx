@@ -1,5 +1,14 @@
 import React, { CSSProperties } from 'react';
-import { AreaChart, ResponsiveContainer, Tooltip, YAxis, TooltipProps, Area } from 'recharts';
+import {
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip,
+  YAxis,
+  TooltipProps,
+  Area,
+  Bar,
+  BarChart,
+} from 'recharts';
 
 import { ChartLineProps, LineChartData } from '@/main/types';
 import { getChartLevels } from '@/main/chart.utils';
@@ -7,6 +16,7 @@ import clsx from 'clsx';
 import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import Loading from '@/common/atoms/Loading';
 import { INITIAL_CHART_DATA } from '@/common/constants';
+import { ConditionalWrapper } from '@/common/components';
 
 const MIN_Y_VALUE = 100;
 
@@ -22,6 +32,7 @@ type TargetChartProps<T> = {
   levelLabelClass?: string;
   prevYearColor?: string;
   showTarget?: boolean;
+  bar?: boolean;
 };
 
 export const TargetChart: <T>(
@@ -38,6 +49,7 @@ export const TargetChart: <T>(
   levelLabelClass = '',
   prevYearColor,
   showTarget,
+  bar,
 }) => {
   const { data, lines, maxValue } = chartData || INITIAL_CHART_DATA;
   const maxValueWithSurplus = Math.ceil(maxValue * 1.1);
@@ -78,7 +90,11 @@ export const TargetChart: <T>(
           })}
         </div>
         <ResponsiveContainer width="100%" height="100%" className={className}>
-          <AreaChart
+          <ConditionalWrapper
+            conditions={[
+              { condition: !!bar, component: (props: any) => <BarChart {...props} /> },
+              { component: (props: any) => <AreaChart {...props} /> },
+            ]}
             width={500}
             height={300}
             data={data}
@@ -92,30 +108,45 @@ export const TargetChart: <T>(
             <YAxis domain={[0, maxValueForChart]} width={0} height={0} className="opacity-0" />
             {data.length && <Tooltip cursor position={{ y: 5 }} content={renderTooltip} />}
             {renderReferenceLines && renderReferenceLines()}
-            {lines.map((line: ChartLineProps) => {
-              let fill = line.fill;
-              if (line.dataKey === 'lastYear' && prevYearColor) {
-                fill = prevYearColor;
-              }
+            {lines
+              .slice()
+              .reverse()
+              .map((line: ChartLineProps) => {
+                let fill = line.fill;
+                if (line.dataKey === 'lastYear' && prevYearColor) {
+                  fill = prevYearColor;
+                }
 
-              if (line.dataKey === 'target' && !showTarget) return null;
+                if (line.dataKey === 'target' && !showTarget) return null;
 
-              return (
-                <Area
-                  key={`ChartLine-${line.name}`}
-                  name={line.name}
-                  type={line.type}
-                  dataKey={line.dataKey}
-                  strokeWidth={line.strokeWidth}
-                  stroke={line.stroke}
-                  strokeDasharray={line.strokeDasharray}
-                  dot={line.dot}
-                  fill={fill}
-                  opacity={line.opacity}
-                />
-              );
-            })}
-          </AreaChart>
+                if (bar)
+                  return (
+                    <Bar
+                      key={line.name}
+                      name={line.name}
+                      type={line.type}
+                      dataKey={line.dataKey}
+                      fill={fill}
+                      opacity={line.opacity}
+                    />
+                  );
+
+                return (
+                  <Area
+                    key={line.name}
+                    name={line.name}
+                    type={line.type}
+                    dataKey={line.dataKey}
+                    strokeWidth={line.strokeWidth}
+                    stroke={line.stroke}
+                    strokeDasharray={line.strokeDasharray}
+                    dot={line.dot}
+                    fill={fill}
+                    opacity={line.opacity}
+                  />
+                );
+              })}
+          </ConditionalWrapper>
         </ResponsiveContainer>
         <div className="absolute z-10 w-full h-full flex justify-center items-center pointer-events-none">
           {loading && <Loading width={36} height={36} />}

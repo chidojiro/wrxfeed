@@ -4,6 +4,8 @@ import URI from 'urijs';
 
 type QueryValue = string | string[];
 
+export type RedirectMethod = 'PUSH' | 'REPLACE';
+
 export const useQuery = () => {
   const history = useHistory();
   const { search, pathname } = useLocation();
@@ -28,12 +30,14 @@ export const useQuery = () => {
   );
 
   const set = React.useCallback(
-    (key: string, value: QueryValue) => {
+    (key: string, value: QueryValue, method: RedirectMethod = 'PUSH') => {
       const uri = new URI(search);
 
       const newSearch = uri.setQuery(key, value).href();
 
-      history.push({ pathname, search: newSearch });
+      const redirect = method === 'PUSH' ? history.push : history.replace;
+
+      redirect({ pathname, search: newSearch });
     },
     [history, pathname, search],
   );

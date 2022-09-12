@@ -9,6 +9,7 @@ import {
 type CheckboxGroupRenderPropState = {
   selection: 'none' | 'partial' | 'all';
   toggleSelectAll: () => void;
+  toggleValue: (value: string) => void;
 };
 
 export type CheckboxGroupProps = {
@@ -28,20 +29,14 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
     onChange: onChangeProp,
   });
 
-  const availableValueRef = React.useRef<string[]>([]);
+  const [valueOptions, setValueOptions] = React.useState<string[]>([]);
 
   const registerValue = React.useCallback((value: string) => {
-    availableValueRef.current = [...availableValueRef.current, value];
-
-    return availableValueRef.current;
+    setValueOptions((prev) => [...prev, value]);
   }, []);
 
   const unregisterValue = React.useCallback((toBeUnregisteredValue: string) => {
-    availableValueRef.current = availableValueRef.current.filter(
-      (value) => value !== toBeUnregisteredValue,
-    );
-
-    return availableValueRef.current;
+    setValueOptions((prev) => prev.filter((value) => value !== toBeUnregisteredValue));
   }, []);
 
   const handleChange: CheckboxGroupChangeHandler = React.useCallback(
@@ -65,22 +60,33 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
   );
 
   const selection = (() => {
-    if (value.length === availableValueRef.current.length) return 'all';
+    if (value.length === valueOptions.length) return 'all';
     if (value.length > 0) return 'partial';
     return 'none';
   })();
 
   const toggleSelectAll = React.useCallback(() => {
     if (selection === 'none') {
-      setValue(availableValueRef.current);
+      setValue(valueOptions);
     } else {
       setValue([]);
     }
-  }, [selection, setValue]);
+  }, [selection, setValue, valueOptions]);
+
+  const toggleValue = React.useCallback(
+    (value: string) => {
+      setValue((prev) =>
+        prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+      );
+    },
+    [setValue],
+  );
 
   return (
     <CheckboxGroupProvider value={providerValue}>
-      {typeof children === 'function' ? children({ selection, toggleSelectAll }) : children}
+      {typeof children === 'function'
+        ? children({ selection, toggleSelectAll, toggleValue })
+        : children}
     </CheckboxGroupProvider>
   );
 };

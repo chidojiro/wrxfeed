@@ -9,7 +9,7 @@ import {
 } from '@/common/components';
 import { EmptyState } from '@/common/components/EmptyState';
 import { Pagination } from '@/common/components/Pagination';
-import { useUrlState } from '@/common/hooks';
+import { RedirectMethod, useUrlState } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { DateUtils } from '@/common/utils';
 import { CommentGroup } from '@/feed/CommentGroup';
@@ -52,11 +52,10 @@ type TransactionListProps = ClassName & {
   timeRange: TimeRange;
   onTimeRangeChange: (timeRange: TimeRange) => void;
   sort: string;
-  onSortChange: (sort: string) => void;
+  onSortChange: (sort: string, method?: RedirectMethod) => void;
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
-
 export const TransactionList = ({
   className,
   transactions,
@@ -96,7 +95,7 @@ export const TransactionList = ({
 
   React.useEffect(() => {
     if (!sort) {
-      onSortChange('-transDate');
+      onSortChange('-transDate', 'REPLACE');
     }
   }, [onSortChange, sort]);
 
@@ -104,7 +103,7 @@ export const TransactionList = ({
     <div>
       <Table.OverflowContainer className={className}>
         <OverlayLoader loading={loading}>
-          <Table className="rounded-card" sort={sort} onSortChange={onSortChange}>
+          <Table className="rounded-card" sort={sort} onSortChange={(sort) => onSortChange(sort)}>
             <Table.Body>
               <Table.Row>
                 <Table.Cell colSpan={7}>

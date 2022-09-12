@@ -44,9 +44,23 @@ export const SidebarNavItem = ({
     >
       <div className="flex items-center flex-1">
         <div className="flex items-center flex-1 pr-3 gap-4">
-          <div className="w-5 h-5 flex items-center justify-center">{iconLeft}</div>
+          <div
+            className={clsx('w-5 h-5 flex items-center justify-center', {
+              'text-Accent-2': isActive,
+              'text-Gray-3': !isActive,
+            })}
+          >
+            {iconLeft}
+          </div>
           {children}
-          <div className="w-5 h-5 ml-auto flex items-center justify-center">{iconRight}</div>
+          <div
+            className={clsx('w-5 h-5 ml-auto flex items-center justify-center', {
+              'text-Accent-2': isActive,
+              'text-Gray-3': !isActive,
+            })}
+          >
+            {iconRight}
+          </div>
         </div>
         {!!activatable && !!isActive && <div className="w-1 h-6 rounded-full bg-Accent-2" />}
       </div>

@@ -41,10 +41,9 @@ export const useSearch = ({
 
   const { departments, isInitializingDepartments } = useDepartments({ includeSub: 1 });
 
-  const { data: categories = EMPTY_ARRAY, isInitializing: isInitializingCategories } =
-    useCategories();
+  const { categories, isInitializingCategories } = useCategories();
 
-  const { data: vendors = EMPTY_ARRAY, isInitializing: isInitializingVendors } = useVendors();
+  const { vendors, isInitializingVendors } = useVendors();
 
   const clearSearchResults = React.useCallback(() => setResults([]), []);
 

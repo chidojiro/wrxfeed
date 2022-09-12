@@ -7,13 +7,16 @@
   "license": "UNLICENSED",
   "scripts": {
     "dev": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "prebuild": "sh scripts/prebuild.sh",
+    "commit-build": "sh scripts/generate-prebuild.sh",
+    "build": "yarn prebuild && react-app-rewired build",
     "test": "react-app-rewired test",
     "preversion": "git-branch-is -r \"^(feat|refactor|chore|fix|hotfix)/[\\w\\-\\d\\.]+$\" && echo Preversion checks passed. Your branch name is correct format.",
     "testw": "jest --watch",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet  --fix",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "increase-version": "sh scripts/version.sh"
   },
   "husky": {
     "hooks": {
