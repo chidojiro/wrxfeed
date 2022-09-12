@@ -3,6 +3,7 @@ import { Tab, TabContent, Tabs } from '@/common/headless';
 import clsx from 'clsx';
 import React from 'react';
 import { CategoriesTab } from './CategoriesTab';
+import { MembersTab } from './MembersTab';
 import { TeamsTab } from './TeamsTab';
 import { VendorsTab } from './VendorsTab';
 
@@ -14,7 +15,7 @@ const tabs: { content: React.ReactNode; value: string; label: string }[] = [
   { content: <TeamsTab />, value: 'teams', label: 'Teams' },
   { content: <CategoriesTab />, value: 'categories', label: 'Categories' },
   { content: <VendorsTab />, value: 'vendors', label: 'Vendors' },
-  { content: null, value: 'members', label: 'Members' },
+  { content: <MembersTab />, value: 'members', label: 'Members' },
 ];
 
 export const AccessControlTabs = ({}: AccessControlTabsProps) => {
@@ -22,7 +23,7 @@ export const AccessControlTabs = ({}: AccessControlTabsProps) => {
 
   return (
     <Tabs value={tab} onChange={setTab}>
-      <div className="flex gap-8 mt-4">
+      <div className="flex gap-8 mt- border-b border-Gray-11">
         {tabs.map(({ content, label, value }) => (
           <Tab
             key={value}

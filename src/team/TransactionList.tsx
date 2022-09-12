@@ -56,7 +56,6 @@ type TransactionListProps = ClassName & {
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
-
 export const TransactionList = ({
   className,
   transactions,

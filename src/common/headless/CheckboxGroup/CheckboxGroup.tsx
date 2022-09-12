@@ -9,6 +9,7 @@ import {
 type CheckboxGroupRenderPropState = {
   selection: 'none' | 'partial' | 'all';
   toggleSelectAll: () => void;
+  toggleValue: (value: string) => void;
 };
 
 export type CheckboxGroupProps = {
@@ -72,9 +73,20 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
     }
   }, [selection, setValue, valueOptions]);
 
+  const toggleValue = React.useCallback(
+    (value: string) => {
+      setValue((prev) =>
+        prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+      );
+    },
+    [setValue],
+  );
+
   return (
     <CheckboxGroupProvider value={providerValue}>
-      {typeof children === 'function' ? children({ selection, toggleSelectAll }) : children}
+      {typeof children === 'function'
+        ? children({ selection, toggleSelectAll, toggleValue })
+        : children}
     </CheckboxGroupProvider>
   );
 };
