@@ -1,20 +1,14 @@
 import { useDisclosure } from '@/common/hooks';
-import { wait } from '@testing-library/user-event/dist/utils';
 import { RemoveRoleModal } from './RemoveRoleModal';
 
 export const TeamMembersTabContent = () => {
   const removeRoleDisclosure = useDisclosure();
 
-  const handleRemoveRole = () => {
-    wait(2000);
-  };
-
   return (
     <div className="flex flex-col">
       <RemoveRoleModal
-        open={true}
-        onRemove={handleRemoveRole}
-        onCancel={removeRoleDisclosure.close}
+        open={removeRoleDisclosure.isOpen}
+        role={{ name: 'Admin' }}
         onClose={removeRoleDisclosure.close}
       />
       <div className="space-y-2">

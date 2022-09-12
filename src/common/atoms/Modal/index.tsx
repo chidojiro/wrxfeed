@@ -3,14 +3,16 @@ import clsx from 'clsx';
 import { Dialog } from '@headlessui/react';
 import React, { MutableRefObject } from 'react';
 import { noop } from 'lodash-es';
+import { XIcon } from '@/assets';
 
 export interface ModalProps {
   children?: React.ReactNode;
   initialFocus?: MutableRefObject<HTMLElement | null>;
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   center?: boolean;
   contentClass?: string;
+  showCloseButton?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -19,7 +21,8 @@ const Modal: React.FC<ModalProps> = ({
   open,
   onClose,
   center = true,
-  contentClass = '',
+  contentClass,
+  showCloseButton,
 }) => {
   const [delayableOpen, setDelayableOpen] = useDelayableState({ delayBy: 200, defaultState: open });
 
@@ -55,6 +58,12 @@ const Modal: React.FC<ModalProps> = ({
             contentClass,
           )}
         >
+          {showCloseButton && (
+            <XIcon
+              onClick={onClose}
+              className="w-4 h-4 hover:cursor-pointer absolute top-6 right-4"
+            />
+          )}
           {children}
         </div>
       </div>

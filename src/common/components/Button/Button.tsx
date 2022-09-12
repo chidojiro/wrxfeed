@@ -77,10 +77,10 @@ const whiteTextColorClassNames: ClassNameByVariant = {
   text: 'text-white',
 };
 const purpleTextColorClassNames: ClassNameByVariant = {
-  ghost: 'text-purple-6',
-  outline: 'text-purple-6',
+  ghost: 'text-Accent-2',
+  outline: 'text-Accent-2',
   solid: 'text-white',
-  text: 'text-purple-6',
+  text: 'text-Accent-2',
 };
 const grayTextColorClassNames: ClassNameByVariant = {
   ghost: 'text-Gray-6',
