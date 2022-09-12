@@ -9,7 +9,6 @@ export type RolesDrawerProps = OpenClose;
 
 export const RolesDrawer = withMountOnOpen()(({ onClose, open }: RolesDrawerProps) => {
   const history = useHistory();
-
   const confirmSaveDisclosure = useDisclosure();
   const saveSuccessDisclosure = useDisclosure();
 
