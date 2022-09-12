@@ -47,7 +47,7 @@ export const Checkbox = ({
       <div className="w-4 h-4 flex-shrink-0 rounded-sm bg-Gray-12 border border-solid border-Gray-6 text-Gray-6 flex items-center justify-center">
         {renderInnerIcon()}
       </div>
-      <span className="text-sm">{label}</span>
+      {!!label && <span className="text-sm">{label}</span>}
       <input
         type="checkbox"
         {...restProps}

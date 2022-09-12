@@ -8,7 +8,7 @@ import { Footer } from './Footer';
 import { Head } from './Head';
 import { Header } from './Header';
 import { Row } from './Row';
-import { TableContext, TableProviderValue } from './TableContext';
+import { TableProvider, TableProviderValue } from './TableContext';
 import { TableProps } from './types';
 
 export const Table = (props: TableProps) => {
@@ -17,20 +17,26 @@ export const Table = (props: TableProps) => {
   const providerValue = React.useMemo<TableProviderValue>(() => ({ tableProps: props }), [props]);
 
   return (
-    <TableContext.Provider value={providerValue}>
+    <TableProvider value={providerValue}>
       <table
         {...restProps}
         className={clsx(
           StringUtils.withProjectClassNamePrefix('table'),
+          props.variant === 'noBorder' &&
+            StringUtils.withProjectClassNamePrefix('table--no-border'),
           'w-full border-collapse table-auto bg-white',
           className,
         )}
       ></table>
-    </TableContext.Provider>
+    </TableProvider>
   );
 };
 
-const OverflowContainer = ({ children, className }: Children & ClassName) => (
+const OverflowContainer = ({
+  children,
+  className,
+  ...restProps
+}: Children & ClassName & JSX.IntrinsicElements['div']) => (
   <div
     className={clsx(
       StringUtils.withProjectClassNamePrefix('table-overflow-container'),
@@ -40,9 +46,11 @@ const OverflowContainer = ({ children, className }: Children & ClassName) => (
       'p-px',
       className,
     )}
+    {...restProps}
     style={{
       filter:
         'drop-shadow(0px 3px 5px rgba(9, 30, 66, 0.05)) drop-shadow(-1px 6px 8px rgba(6, 25, 56, 0.03))',
+      ...restProps.style,
     }}
   >
     {children}

@@ -4,7 +4,7 @@ import React from 'react';
 import { Button, ButtonProps } from '../Button';
 import { ConditionalWrapper } from '../ConditionalWrapper';
 import { SortIcon } from './SortIcon';
-import { TableContext } from './TableContext';
+import { useTableContext } from './TableContext';
 
 export type Props = React.DetailedHTMLProps<
   React.ThHTMLAttributes<HTMLTableHeaderCellElement>,
@@ -16,7 +16,7 @@ export type Props = React.DetailedHTMLProps<
 export const Header = ({ className, sortKey, children, ...restProps }: Props) => {
   const {
     tableProps: { sort, onSortChange },
-  } = React.useContext(TableContext);
+  } = useTableContext();
 
   const order = ((): 'asc' | 'desc' | 'none' => {
     if (sort?.startsWith('-') && sort.slice(1) === sortKey) return 'desc';
