@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 const DEBOUNCE_WAIT = 0;
 
-const MembersSearchBar: React.FC = () => {
+const RolesSearchBar: React.FC = () => {
   const useableViewRef = useRef(null);
 
   const [keyword, setKeyword] = useState<string>('');
@@ -71,4 +71,4 @@ const MembersSearchBar: React.FC = () => {
   );
 };
 
-export default MembersSearchBar;
+export default RolesSearchBar;
