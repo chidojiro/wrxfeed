@@ -22,12 +22,8 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
   ]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-    const top = (e.target as HTMLInputElement).scrollTop === 0;
-    if (top) {
-      isOnTopDisclosure.set(false);
-    } else {
-      isOnTopDisclosure.set(true);
-    }
+    const isOnTop = (e.target as HTMLInputElement).scrollTop === 0;
+    isOnTopDisclosure.set(!isOnTop);
   };
 
   return (
