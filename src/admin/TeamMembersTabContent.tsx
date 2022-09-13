@@ -1,11 +1,12 @@
 import { useDisclosure } from '@/common/hooks';
 import { RemoveRoleModal } from './RemoveRoleModal';
+import { TeamMembersTable } from './TeamMembersTable';
 
 export const TeamMembersTabContent = () => {
   const removeRoleDisclosure = useDisclosure();
 
   return (
-    <div className="flex flex-col">
+    <div className="flex-1">
       <RemoveRoleModal
         open={removeRoleDisclosure.isOpen}
         role={{ name: 'Admin' }}
@@ -17,6 +18,7 @@ export const TeamMembersTabContent = () => {
           Manage all team members and their account roles.
         </p>
       </div>
+      <TeamMembersTable className="w-full" />
     </div>
   );
 };
