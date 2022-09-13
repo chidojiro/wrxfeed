@@ -8,7 +8,7 @@ import { range } from 'lodash-es';
 import { SpendingChartData } from './SpendingChart';
 import { MonthData, Spending, TrackingStatus } from './types';
 
-const Accent6 = '#818CF8';
+const Accent9 = '#C2C2FA';
 
 const DATA_DATE_FORMAT = 'MMM DD';
 const BILLION = Math.pow(10, 9);
@@ -73,25 +73,40 @@ export const getLineChartDataInMonth = (
     dotStatusColor = dot;
     backgroundStatusColor = background;
   }
+
+  const targetLine =
+    trackingStatus !== 'NOT_SET'
+      ? {
+          name: 'target',
+          type: 'monotone',
+          dataKey: 'target',
+          strokeWidth: 2,
+          strokeDasharray: '8 8',
+          stroke: '#7D8490',
+          fill: 'none',
+          dot: false,
+        }
+      : {
+          name: '',
+          type: '',
+          dataKey: '',
+          strokeWidth: 0,
+          strokeDasharray: '',
+          stroke: '',
+          fill: '',
+          dot: false,
+        };
+
   const lines: ChartLineProps[] = [
-    {
-      name: 'target',
-      type: 'monotone',
-      dataKey: 'target',
-      strokeWidth: 2,
-      strokeDasharray: '8 8',
-      stroke: '#7D8490',
-      fill: '#FFFFFF',
-      dot: false,
-    },
+    targetLine,
     {
       name: 'lastYear',
       type: 'monotone',
       dataKey: 'lastYear',
       strokeWidth: 0,
-      stroke: 'rgba(194, 194, 250, 0.6)',
+      stroke: '#F3F4F6',
       dot: false,
-      fill: 'rgba(194, 194, 250, 0.6)',
+      fill: '#F3F4F6',
       opacity: 0.8,
     },
     {
@@ -99,9 +114,9 @@ export const getLineChartDataInMonth = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: overallTarget ? Accent6 : dotStatusColor,
+      stroke: overallTarget ? Accent9 : dotStatusColor,
       dot: false,
-      fill: overallTarget ? Accent6 : backgroundStatusColor,
+      fill: overallTarget ? Accent9 : backgroundStatusColor,
     },
   ];
 
@@ -248,25 +263,39 @@ export const getMonthsLineChartData = (
     backgroundStatusColor = background;
   }
 
+  const targetLine =
+    trackingStatus !== 'NOT_SET'
+      ? {
+          name: 'target',
+          type: 'monotone',
+          dataKey: 'target',
+          strokeWidth: 2,
+          strokeDasharray: '8 8',
+          stroke: '#7D8490',
+          fill: 'none',
+          dot: false,
+        }
+      : {
+          name: '',
+          type: '',
+          dataKey: '',
+          strokeWidth: 0,
+          strokeDasharray: '',
+          stroke: '',
+          fill: '',
+          dot: false,
+        };
+
   const lines: ChartLineProps[] = [
-    {
-      name: 'target',
-      type: 'monotone',
-      dataKey: 'target',
-      strokeWidth: 2,
-      strokeDasharray: '8 8',
-      stroke: '#7D8490',
-      fill: '#FFFFFF',
-      dot: false,
-    },
+    targetLine,
     {
       name: 'lastYear',
       type: 'monotone',
       dataKey: 'lastYear',
       strokeWidth: 0,
-      stroke: 'rgba(194, 194, 250, 0.6)',
+      stroke: '#F3F4F6',
       dot: false,
-      fill: 'rgba(194, 194, 250, 0.6)',
+      fill: '#F3F4F6',
       opacity: 0.8,
     },
     {
@@ -274,9 +303,9 @@ export const getMonthsLineChartData = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: overallTarget ? Accent6 : dotStatusColor,
+      stroke: overallTarget ? Accent9 : dotStatusColor,
       dot: false,
-      fill: overallTarget ? Accent6 : backgroundStatusColor,
+      fill: overallTarget ? Accent9 : backgroundStatusColor,
     },
   ];
 
