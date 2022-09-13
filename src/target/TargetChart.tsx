@@ -1,22 +1,20 @@
+import { ConditionalWrapper } from '@/common/components';
+import { INITIAL_CHART_DATA } from '@/common/constants';
+import { getChartLevels } from '@/main/chart.utils';
+import { ChartLineProps, LineChartData } from '@/main/types';
+import clsx from 'clsx';
 import React, { CSSProperties } from 'react';
 import {
-  AreaChart,
-  ResponsiveContainer,
-  Tooltip,
-  YAxis,
-  TooltipProps,
   Area,
+  AreaChart,
   Bar,
   BarChart,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
+  YAxis,
 } from 'recharts';
-
-import { ChartLineProps, LineChartData } from '@/main/types';
-import { getChartLevels } from '@/main/chart.utils';
-import clsx from 'clsx';
-import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
-import Loading from '@/common/atoms/Loading';
-import { INITIAL_CHART_DATA } from '@/common/constants';
-import { ConditionalWrapper } from '@/common/components';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 const MIN_Y_VALUE = 100;
 
@@ -28,7 +26,6 @@ type TargetChartProps<T> = {
   renderXAxis?: () => JSX.Element;
   renderReferenceLines?: () => JSX.Element | null;
   renderTooltip?: (props: TooltipProps<ValueType, NameType>) => JSX.Element | null;
-  loading?: boolean;
   levelLabelClass?: string;
   prevYearColor?: string;
   showTarget?: boolean;
@@ -45,7 +42,6 @@ export const TargetChart: <T>(
   renderXAxis,
   renderReferenceLines,
   renderTooltip,
-  loading = false,
   levelLabelClass = '',
   prevYearColor,
   showTarget,
@@ -106,7 +102,13 @@ export const TargetChart: <T>(
             }}
           >
             <YAxis domain={[0, maxValueForChart]} width={0} height={0} className="opacity-0" />
-            {data.length && <Tooltip cursor position={{ y: 5 }} content={renderTooltip} />}
+            {data.length && (
+              <Tooltip
+                cursor={bar ? { fill: 'transparent' } : true}
+                position={{ y: 5 }}
+                content={renderTooltip}
+              />
+            )}
             {renderReferenceLines && renderReferenceLines()}
             {lines
               .slice()
@@ -148,9 +150,6 @@ export const TargetChart: <T>(
               })}
           </ConditionalWrapper>
         </ResponsiveContainer>
-        <div className="absolute z-10 w-full h-full flex justify-center items-center pointer-events-none">
-          {loading && <Loading width={36} height={36} />}
-        </div>
       </div>
       {renderXAxis && renderXAxis()}
     </div>
