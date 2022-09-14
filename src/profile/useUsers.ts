@@ -1,12 +1,17 @@
+import { EMPTY_ARRAY } from '@/common/constants';
 import { useFetcher } from '@/common/hooks';
 import React from 'react';
 import { ProfileApis } from './apis';
 import { GetUsersParams } from './types';
 
 export const useUsers = (params?: GetUsersParams) => {
-  const { data, isInitializing, isLagging, isValidating, mutate } = useFetcher(['users'], () =>
-    ProfileApis.getUsers(params),
-  );
+  const {
+    data = EMPTY_ARRAY,
+    isInitializing,
+    isLagging,
+    isValidating,
+    mutate,
+  } = useFetcher(['users'], () => ProfileApis.getUsers(params));
 
   return React.useMemo(
     () => ({

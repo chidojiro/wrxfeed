@@ -11,6 +11,7 @@ import { formatCurrency, round } from '@/common/utils';
 import { useCategories } from '@/feed/useCategories';
 import { genReviewSentenceFromProperties, getPeriodsFromTargetMonths } from '@/main/utils';
 import { SpendingChart } from '@/spending/SpendingChart';
+import { getCurrentSpendings } from '@/spending/utils';
 import {
   CreateTargetPayload,
   Target,
@@ -88,15 +89,13 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     clearErrors,
   } = methods;
 
-  const { isValidating: isValidatingDepartments, data: departments = EMPTY_ARRAY } = useDepartments(
-    {
-      includeSub: 1,
-    },
-  );
+  const { isValidatingDepartments, departments } = useDepartments({
+    includeSub: 1,
+  });
 
-  const { isValidating: isValidatingVendors } = useVendors();
+  const { isValidatingVendors } = useVendors();
 
-  const { isValidating: isValidatingCategories } = useCategories();
+  const { isValidatingCategories } = useCategories();
 
   React.useEffect(() => {
     const getTagValueFromProps = ({ id, name, type }: TargetProps) => `${type}-${id}-${name}`;
@@ -264,10 +263,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     periods.reduce((total, target) => total + (target.amount ?? 0), 0),
   );
   const displaySpendings = hidePropertyDropdowns && target ? target?.spendings : spendings;
-  const totalCurrentSpend =
-    displaySpendings
-      ?.filter(({ year }) => year === THIS_YEAR)
-      .reduce((total, target) => total + (target.total ?? 0), 0) ?? 0;
+  const totalCurrentSpend = getCurrentSpendings(displaySpendings, periods);
 
   const isReadyToCreate = isValidPeriods(periods) && !!targetProps.length && !!name?.length;
 

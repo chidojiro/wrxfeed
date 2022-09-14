@@ -1,14 +1,17 @@
 import React, { ChangeEvent } from 'react';
+import { useMountEffect } from '../../hooks';
 import { useCheckboxGroupContext } from './CheckboxGroupProvider';
 
 type RenderPropState = {
   value: string;
   isChecked: boolean;
+  error?: boolean;
   handleChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 export type CheckboxGroupOptionProps = {
   value: string;
+  error?: boolean;
   shouldChange?: (
     e: ChangeEvent<HTMLInputElement>,
     checkboxGroupValue: string[],
@@ -36,5 +39,15 @@ export const CheckboxGroupOption = ({
     }
   };
 
-  return <>{children?.({ value, isChecked, handleChange })}</>;
+  useMountEffect(() => {
+    groupProviderValue.registerValue(value);
+
+    return () => groupProviderValue.unregisterValue(value);
+  });
+
+  return (
+    <>
+      {children?.({ value, isChecked, handleChange, error: groupProviderValue.groupProps.error })}
+    </>
+  );
 };

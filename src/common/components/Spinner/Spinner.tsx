@@ -11,11 +11,11 @@ export const Spinner = ({ className }: SpinnerProps) => {
   const spinnerRef = React.useRef<HTMLDivElement>(null);
 
   React.useLayoutEffect(() => {
-    const color = wrapperRef.current
-      ? window.getComputedStyle(wrapperRef.current).color
-      : '#374151';
+    if (!wrapperRef.current) return;
 
-    spinnerRef.current?.style.setProperty('border-color', color);
+    const color = window.getComputedStyle(wrapperRef.current).color;
+
+    spinnerRef.current?.style.setProperty('border-color', color || '#374151');
   }, []);
 
   return (

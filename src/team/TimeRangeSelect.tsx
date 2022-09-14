@@ -12,7 +12,7 @@ export const TimeRangeSelect = ({ value, onChange }: TimeRangeSelectProps) => {
   return (
     <Select
       value={value}
-      onChange={(e) => onChange(e.target.value as TimeRange)}
+      onChange={(value: string) => onChange(value as TimeRange)}
       className="text-Gray-6"
       options={
         [

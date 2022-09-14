@@ -1,10 +1,14 @@
-import { ReactUtils } from '@/common/utils';
+import { ReactUtils } from '../../utils';
+import { CheckboxGroupProps } from './CheckboxGroup';
 
-export type ChangeHandler = (value: string, isChecked: boolean) => void;
+export type CheckboxGroupChangeHandler = (value: string, isChecked: boolean) => void;
 
 export type CheckboxGroupProviderValue = {
   value: string[];
-  handleChange: ChangeHandler;
+  handleChange: CheckboxGroupChangeHandler;
+  groupProps: CheckboxGroupProps;
+  registerValue: (value: string) => void;
+  unregisterValue: (value: string) => void;
 };
 
 export const [CheckboxGroupProvider, useCheckboxGroupContext] =

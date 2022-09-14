@@ -39,7 +39,7 @@ export const CommentAttachmentModal = ({
       attachment: url,
       content: commentContent.current || EditorState.createEmpty(),
     });
-    onClose();
+    onClose?.();
   };
   const { isUploading, uploadFile } = useFileUploader({
     onSuccess: onUploadSuccess,
