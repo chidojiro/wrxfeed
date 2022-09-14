@@ -3,9 +3,8 @@ import { Tab, TabContent, Tabs } from '@/common/headless';
 import clsx from 'clsx';
 import React from 'react';
 import { CategoriesTab } from './CategoriesTab';
-import MembersSearchBar from './MembersSearchbar';
 import { MembersTab } from './MembersTab';
-import RolesSearchBar from './RolesSearchBar';
+import { SearchInput } from './SearchInput';
 import { TeamsTab } from './TeamsTab';
 import { VendorsTab } from './VendorsTab';
 
@@ -23,11 +22,9 @@ const tabs: { content: React.ReactNode; value: string; label: string }[] = [
 export const AccessControlTabs = ({}: AccessControlTabsProps) => {
   const [tab, setTab] = React.useState(tabs[0].value);
 
-  console.log(tab);
-
   return (
     <Tabs value={tab} onChange={setTab}>
-      <div className="flex justify-between items-center border-b border-Gray-11 space-x-10">
+      <div className="flex justify-between items-center border-b border-Gray-11 gap-10">
         <div className="flex gap-8">
           {tabs.map(({ content, label, value }) => (
             <Tab
@@ -48,7 +45,11 @@ export const AccessControlTabs = ({}: AccessControlTabsProps) => {
             </Tab>
           ))}
         </div>
-        {tab !== 'members' ? <RolesSearchBar /> : <MembersSearchBar />}
+        {tab !== 'members' ? (
+          <SearchInput placeholder="Search list here" />
+        ) : (
+          <SearchInput placeholder="Search by name or team" />
+        )}
       </div>
       <TabContent />
     </Tabs>
