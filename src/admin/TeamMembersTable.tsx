@@ -1,5 +1,4 @@
-import { Checkbox, OverlayLoader, Table } from '@/common/components';
-import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
+import { OverlayLoader, Table } from '@/common/components';
 import { ClassName } from '@/common/types';
 import { useUsers } from '@/profile/useUsers';
 import clsx from 'clsx';
