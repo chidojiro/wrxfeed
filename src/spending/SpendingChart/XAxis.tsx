@@ -7,9 +7,10 @@ import React from 'react';
 export type XAxisProps = {
   startMonth: number;
   endMonth: number;
+  bar?: boolean;
 };
 
-export const XAxis = ({ startMonth, endMonth }: XAxisProps) => {
+export const XAxis = ({ startMonth, endMonth, bar }: XAxisProps) => {
   const isMobile = useBreakpoint({ '768': false }) ?? true;
 
   const targetDate = dayjs().set('month', startMonth - 1);
@@ -37,6 +38,7 @@ export const XAxis = ({ startMonth, endMonth }: XAxisProps) => {
     <div
       className={clsx(
         'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[48px]',
+        { 'justify-around': bar },
       )}
     >
       {range(startMonth, endMonth + 1).map((month: number) => (

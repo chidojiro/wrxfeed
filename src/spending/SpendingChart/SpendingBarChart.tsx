@@ -78,7 +78,7 @@ export const SpendingBarChart = ({ thisYearData, lastYearData }: SpendingBarChar
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <XAxis startMonth={1} endMonth={12} />
+      <XAxis startMonth={1} endMonth={12} bar />
     </div>
   );
 };
