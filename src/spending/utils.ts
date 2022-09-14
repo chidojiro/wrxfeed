@@ -4,7 +4,7 @@ import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/mai
 import { decimalLogic, DecimalType } from '@/main/utils';
 import { TargetMonth, TargetPeriod, TargetSpending, TargetStatusConfig } from '@/target/types';
 import dayjs from 'dayjs';
-import { range } from 'lodash-es';
+import { groupBy, range } from 'lodash-es';
 import { SpendingChartData } from './SpendingChart';
 import { MonthData, Spending, TrackingStatus } from './types';
 
@@ -333,22 +333,33 @@ export const getCurrentSpendings = (
   periods: TargetPeriod[],
   year = new Date().getFullYear(),
 ) => {
-  const spendingsSortedByMonth = spendings
-    .filter((spending) => spending.year === year)
-    .sort((a, b) => a.month - b.month);
+  const yearSpendingsGroupedByMonth = groupBy(
+    spendings.filter((spending) => spending.year === year),
+    'month',
+  );
+  const spendingsSortedByMonth = new Array(12)
+    .fill(null)
+    .map((_, idx) => ({ ...yearSpendingsGroupedByMonth[idx + 1]?.[0], month: idx + 1 }));
 
-  const periodsSortedByMonth = periods
-    .filter((spending) => spending.year === year)
-    .sort((a, b) => a.month - b.month);
+  const periodsGroupedByMonth = groupBy(
+    periods.filter((spending) => spending.year === year),
+    'month',
+  );
+  const periodsSortedByMonth = new Array(12)
+    .fill(null)
+    .map((_, idx) => ({ ...periodsGroupedByMonth[idx + 1]?.[0], month: idx + 1 }));
 
   const firstMeaningfulPeriodMonth = periodsSortedByMonth.findIndex(
     ({ amount }) => !AssertUtils.isNullOrUndefined(amount),
   );
 
-  const lastMeaningfulPeriodMonth = periodsSortedByMonth
-    .slice()
-    .reverse()
-    .findIndex(({ amount }) => !AssertUtils.isNullOrUndefined(amount));
+  const lastMeaningfulPeriodMonth =
+    periodsSortedByMonth.length -
+    1 -
+    periodsSortedByMonth
+      .slice()
+      .reverse()
+      .findIndex(({ amount }) => !AssertUtils.isNullOrUndefined(amount));
 
   return (
     spendingsSortedByMonth
