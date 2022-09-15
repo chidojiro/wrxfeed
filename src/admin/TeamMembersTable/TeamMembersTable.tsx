@@ -2,6 +2,7 @@ import { OverlayLoader, Table } from '@/common/components';
 import { ClassName } from '@/common/types';
 import { useUsers } from '@/profile/useUsers';
 import clsx from 'clsx';
+import { RolesSelect } from './RolesSelect';
 
 type HeaderItem = { label: string; sortKey?: string };
 
@@ -33,17 +34,21 @@ export const TeamMembersTable = ({ className }: TeamMembersTableProps) => {
                 ))}
               </Table.Row>
               {users.map(({ id, fullName, email, title, department }) => (
-                <Table.Row
-                  key={id}
-                  className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
-                >
+                <Table.Row key={id} className={clsx('relative h-14')}>
                   <Table.Cell>
                     <p className="text-Gray-3 font-medium">{fullName}</p>
                     <p>{email}</p>
                   </Table.Cell>
                   <Table.Cell>{title}</Table.Cell>
                   <Table.Cell>{department}</Table.Cell>
-                  <Table.Cell>--</Table.Cell>
+                  <Table.Cell>
+                    <RolesSelect
+                      roles={[
+                        { label: 'Role 1', value: Math.random().toString() },
+                        { label: 'Role 2', value: Math.random().toString() },
+                      ]}
+                    />
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
