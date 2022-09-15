@@ -31,9 +31,6 @@ export const Popover = ({
   const [triggerElement, setTriggerElement] = useState<React.ReactElement>();
   const popoverRef = React.useRef(null);
 
-  // Workaround to resolve misalignment on initial render
-  const [actuallyOpen, setActuallyOpen] = useDelayableState({ delayBy: 0, defaultState: false });
-
   const { styles, attributes, forceUpdate } = usePopper(
     AssertUtils.isHTMLElement(trigger) ? (trigger as any) : triggerElement,
     popoverRef.current,
@@ -71,10 +68,9 @@ export const Popover = ({
   }, [trigger]);
 
   React.useEffect(() => {
-    setActuallyOpen({ state: !!open, shouldDelay: true });
     forceUpdate?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trigger, open, setActuallyOpen, (trigger as HTMLElement)?.innerHTML]);
+  }, [trigger, open, (trigger as HTMLElement)?.innerHTML]);
 
   useOnEventOutside(
     'mousedown',
@@ -87,7 +83,7 @@ export const Popover = ({
       {clonedTrigger}
       <ConditionalWrapper conditions={[{ condition: usePortal, component: Portal as any }]}>
         <div ref={popoverRef} style={styles.popper} {...attributes.popper} className="z-50">
-          <div className={clsx({ hidden: !actuallyOpen })}>{children}</div>
+          <div className={clsx({ hidden: !open })}>{children}</div>
         </div>
       </ConditionalWrapper>
     </>
