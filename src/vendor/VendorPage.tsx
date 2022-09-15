@@ -3,7 +3,7 @@ import { useQuery, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
-import { SpendingChart } from '@/spending/SpendingChart';
+import { SpendingBarChart } from '@/spending/SpendingChart/SpendingBarChart';
 import { TransactionList } from '@/team/TransactionList';
 import { TimeRange } from '@/team/types';
 import { useTransactions } from '@/team/useTransactions';
@@ -84,10 +84,7 @@ export const VendorPage = () => {
             </div>
           </div>
           <div className="h-[400px] mt-4">
-            <SpendingChart
-              prevYearColor="#d1d5db"
-              data={{ spendings: [...(prevYearSpends as any), ...(curYearSpends as any)] }}
-            />
+            <SpendingBarChart thisYearData={curYearSpends} lastYearData={prevYearSpends} />
           </div>
         </div>
       </OverlayLoader>

@@ -5,8 +5,7 @@ import React from 'react';
 
 export const useMentions = () => {
   const { users = EMPTY_ARRAY, isValidatingUsers } = useUsers();
-  const { data: departments = EMPTY_ARRAY, isValidating: isValidatingDepartments } =
-    useDepartments();
+  const { departments, isValidatingDepartments } = useDepartments();
 
   const mentions = React.useMemo(
     () =>

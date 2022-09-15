@@ -27,7 +27,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const handleOk = () => {
     onOk?.();
-    onClose();
+    onClose?.();
   };
 
   return (

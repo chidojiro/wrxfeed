@@ -37,3 +37,5 @@ package-lock.json
 
 # WebStorm
 .idea
+
+*.generated.*

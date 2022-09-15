@@ -1,4 +1,6 @@
 export { ReactComponent as InviteIcon } from '@/assets/icons/outline/invite.svg';
+export { ReactComponent as TickIcon } from '@/assets/icons/outline/tick.svg';
+export { ReactComponent as MinusIcon } from '@/assets/icons/outline/minus.svg';
 export { ReactComponent as SearchIcon } from '@/assets/icons/outline/search.svg';
 export { ReactComponent as ArrowUpIcon } from '@/assets/icons/outline/arrow-up.svg';
 export { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';
@@ -57,4 +59,7 @@ export { ReactComponent as TableSortDescIcon } from '@/assets/icons/outline/tabl
 export { ReactComponent as EyeHideIcon } from '@/assets/icons/outline/eye-hide.svg';
 export { ReactComponent as CommentIcon } from '@/assets/icons/solid/comment.svg';
 export { ReactComponent as XCircleIcon } from '@/assets/icons/outline/x-circle.svg';
+export { ReactComponent as XIcon } from '@/assets/icons/solid/x.svg';
+export { ReactComponent as AlertTriangleYellow } from '@/assets/icons/solid/alert-triangle-yellow.svg';
+export { ReactComponent as CheckCircleIcon } from '@/assets/icons/solid/check-circle.svg';
 export { ReactComponent as GravityLogoImage } from '@/assets/images/gravity-logo.svg';

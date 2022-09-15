@@ -1,12 +1,23 @@
-import { useControllableState } from '@/common/hooks';
 import React from 'react';
-import { Children } from '@/common/types';
-import { ChangeHandler, CheckboxGroupProvider } from './CheckboxGroupProvider';
+import { useControllableState } from '../../hooks';
+import {
+  CheckboxGroupChangeHandler,
+  CheckboxGroupProvider,
+  CheckboxGroupProviderValue,
+} from './CheckboxGroupProvider';
 
-export type CheckboxGroupProps = Children & {
+type CheckboxGroupRenderPropState = {
+  selection: 'none' | 'partial' | 'all';
+  toggleSelectAll: () => void;
+  toggleValue: (value: string) => void;
+};
+
+export type CheckboxGroupProps = {
   onChange?: (value: string[]) => void;
   value?: string[];
   defaultValue?: string[];
+  error?: boolean;
+  children?: React.ReactNode | ((state: CheckboxGroupRenderPropState) => void);
 };
 
 export const CheckboxGroup = (props: CheckboxGroupProps) => {
@@ -18,13 +29,23 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
     onChange: onChangeProp,
   });
 
-  const handleChange: ChangeHandler = React.useCallback(
+  const [valueOptions, setValueOptions] = React.useState<string[]>([]);
+
+  const registerValue = React.useCallback((value: string) => {
+    setValueOptions((prev) => [...prev, value]);
+  }, []);
+
+  const unregisterValue = React.useCallback((toBeUnregisteredValue: string) => {
+    setValueOptions((prev) => prev.filter((value) => value !== toBeUnregisteredValue));
+  }, []);
+
+  const handleChange: CheckboxGroupChangeHandler = React.useCallback(
     (targetValue, isChecked) => {
-      let newValue;
+      let newValue: string[];
       if (isChecked) {
         newValue = [...value, targetValue];
       } else {
-        newValue = value.filter((value: any) => value !== targetValue);
+        newValue = value.filter((value) => value !== targetValue);
       }
 
       onChangeProp?.(newValue);
@@ -33,7 +54,39 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
     [onChangeProp, setValue, value],
   );
 
-  const providerValue = React.useMemo(() => ({ handleChange, value }), [handleChange, value]);
+  const providerValue = React.useMemo<CheckboxGroupProviderValue>(
+    () => ({ handleChange, value, groupProps: props, registerValue, unregisterValue }),
+    [handleChange, value, props, registerValue, unregisterValue],
+  );
 
-  return <CheckboxGroupProvider value={providerValue}>{children}</CheckboxGroupProvider>;
+  const selection = (() => {
+    if (value.length === valueOptions.length) return 'all';
+    if (value.length > 0) return 'partial';
+    return 'none';
+  })();
+
+  const toggleSelectAll = React.useCallback(() => {
+    if (selection === 'none') {
+      setValue(valueOptions);
+    } else {
+      setValue([]);
+    }
+  }, [selection, setValue, valueOptions]);
+
+  const toggleValue = React.useCallback(
+    (value: string) => {
+      setValue((prev) =>
+        prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+      );
+    },
+    [setValue],
+  );
+
+  return (
+    <CheckboxGroupProvider value={providerValue}>
+      {typeof children === 'function'
+        ? children({ selection, toggleSelectAll, toggleValue })
+        : children}
+    </CheckboxGroupProvider>
+  );
 };

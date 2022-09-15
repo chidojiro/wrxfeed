@@ -42,7 +42,11 @@ export const AdminPage = () => {
         <HeadlessTabs value={tab}>
           <div className="flex flex-col gap-1 w-[250px]">
             {navigatorItems.map(({ to, label, value, content }) => (
-              <HeadlessTab key={to} value={value} content={content}>
+              <HeadlessTab
+                key={to}
+                value={value}
+                content={<div className="pb-10 w-full">{content}</div>}
+              >
                 {({ isActive }) => (
                   <Link
                     to={to}
