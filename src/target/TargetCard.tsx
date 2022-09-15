@@ -125,7 +125,14 @@ export const TargetCard = ({
               <div className="flex flex-row space-x-2.5 text-Gray-6 min-h-9">
                 <div className="flex flex-col items-start min-w-[70px] pr-1.5">
                   <div className="flex items-center space-x-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-Green-400" />
+                    <div
+                      className={clsx('w-1.5 h-1.5 rounded-full', {
+                        'bg-Accent-2': target.trackingStatus === 'NOT_SET',
+                        'bg-red-1': target.trackingStatus === 'EXCEEDED',
+                        'bg-yellow-2': target.trackingStatus === 'AT_RISK',
+                        'bg-green-400': target.trackingStatus === 'ON_TRACK',
+                      })}
+                    />
                     <p className="text-2xs">Spend</p>
                   </div>
                   <p className="text-sm text-primary font-semibold mt-1">

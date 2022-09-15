@@ -56,7 +56,7 @@ export const TargetChart: <T>(
               >
                 <p
                   className={clsx(
-                    'text-xs font-semibold text-right w-8',
+                    'text-xs font-semibold text-right w-8 flex justify-end',
                     textColor,
                     levelLabelClass,
                   )}
