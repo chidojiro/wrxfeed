@@ -18,10 +18,9 @@ export type SpendingChartData = {
 export type SpendingChartProps = ClassName & {
   data: SpendingChartData;
   prevYearColor?: string;
-  bar?: boolean;
 };
 
-export const SpendingChart = ({ className, data, prevYearColor, bar }: SpendingChartProps) => {
+export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartProps) => {
   const { periods = [], trackingStatus } = data;
   const overallTarget = !trackingStatus || isEmptyPeriods(periods);
 
@@ -74,7 +73,6 @@ export const SpendingChart = ({ className, data, prevYearColor, bar }: SpendingC
               levelLabelClass="text-Gray-6 text-2xs font-normal"
               prevYearColor={prevYearColor}
               showTarget={showTarget}
-              bar={bar}
             />
           </div>
         </>
