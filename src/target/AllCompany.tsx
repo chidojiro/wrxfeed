@@ -15,9 +15,9 @@ export const AllCompany = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-3 gap-6">
-        <AllCompanyTarget className="col-span-3 lg:col-span-2" />
-        <AllCompanySummary className="col-span-3 lg:col-span-1" />
+      <div className="flex flex-col lg:flex-row justify-between space-y-6 lg:space-y-0 lg:space-x-6">
+        <AllCompanyTarget className="w-full lg:w-[636px]" />
+        <AllCompanySummary className="w-full lg:w-[378px]" />
       </div>
       <Divider className="mt-8 mb-4" />
       <p className="text-sm text-Gray-3 font-semibold">Recently Viewed</p>

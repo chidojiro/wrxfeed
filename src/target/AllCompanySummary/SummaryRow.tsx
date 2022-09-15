@@ -16,6 +16,8 @@ const getStatusColor = (status?: TargetStatusType) => {
       return 'bg-yellow-2';
     case TargetStatusType.Exceeded:
       return 'bg-red-1';
+    case TargetStatusType.NotSet:
+      return 'bg-Accent-8';
     default:
       return 'bg-transparent';
   }
