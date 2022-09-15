@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { CategoriesTab } from './CategoriesTab';
 import { MembersTab } from './MembersTab';
+import { SearchInput } from './SearchInput';
 import { TeamsTab } from './TeamsTab';
 import { VendorsTab } from './VendorsTab';
 
@@ -23,25 +24,32 @@ export const AccessControlTabs = ({}: AccessControlTabsProps) => {
 
   return (
     <Tabs value={tab} onChange={setTab}>
-      <div className="flex gap-8 mt- border-b border-Gray-11">
-        {tabs.map(({ content, label, value }) => (
-          <Tab
-            key={value}
-            content={<div className="flex-1 overflow-auto py-4">{content}</div>}
-            value={value}
-          >
-            {({ isActive, onClick }) => (
-              <Button
-                onClick={onClick}
-                className={clsx('text-sm py-4 border-b-4 border-transparent', {
-                  'font-semibold border-solid border-Gray-3': isActive,
-                })}
-              >
-                {label}
-              </Button>
-            )}
-          </Tab>
-        ))}
+      <div className="flex justify-between items-center border-b border-Gray-11 gap-10">
+        <div className="flex gap-8">
+          {tabs.map(({ content, label, value }) => (
+            <Tab
+              key={value}
+              content={<div className="flex-1 overflow-auto py-4">{content}</div>}
+              value={value}
+            >
+              {({ isActive, onClick }) => (
+                <Button
+                  onClick={onClick}
+                  className={clsx('text-sm py-4 border-b-4 border-transparent', {
+                    'font-semibold border-solid border-Gray-3': isActive,
+                  })}
+                >
+                  {label}
+                </Button>
+              )}
+            </Tab>
+          ))}
+        </div>
+        {tab !== 'members' ? (
+          <SearchInput placeholder="Search list here" />
+        ) : (
+          <SearchInput placeholder="Search by name or team" />
+        )}
       </div>
       <TabContent />
     </Tabs>
