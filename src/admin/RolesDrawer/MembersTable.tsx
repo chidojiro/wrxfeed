@@ -3,6 +3,7 @@ import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
 import { ClassName } from '@/common/types';
 import { useUsers } from '@/profile/useUsers';
 import clsx from 'clsx';
+import { useEffect } from 'react';
 
 type HeaderItem = { label: string };
 
@@ -15,11 +16,15 @@ const headers: HeaderItem[] = [
 ].filter((item): item is HeaderItem => !!item);
 
 export type MembersTableProps = ClassName & {
-  //
+  searchInput?: string;
 };
 
-export const MembersTable = ({ className }: MembersTableProps) => {
-  const { users, isValidatingUsers } = useUsers();
+export const MembersTable = ({ className, searchInput }: MembersTableProps) => {
+  const { users, isValidatingUsers, mutateUsers } = useUsers({ text: searchInput });
+
+  useEffect(() => {
+    mutateUsers();
+  }, [mutateUsers, searchInput]);
 
   return (
     <div>
