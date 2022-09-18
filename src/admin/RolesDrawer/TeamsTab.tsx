@@ -4,44 +4,46 @@ import { useDepartmentsHierarchy } from '@/team/useDepartmentsHierarchy';
 import React from 'react';
 
 export type TeamsTabProps = {
-  //
+  searchInput: string;
 };
 
-export const TeamsTab = ({}: TeamsTabProps) => {
+export const TeamsTab = ({ searchInput }: TeamsTabProps) => {
   const { departmentsHierarchy } = useDepartmentsHierarchy();
 
   return (
     <div className="flex flex-col gap-8 text-Gray-3">
-      {departmentsHierarchy.map(({ id, name, children }) => (
-        <CheckboxGroup key={id}>
-          {({ selection, toggleSelectAll }) => (
-            <div>
-              <Checkbox
-                label={name}
-                className="font-semibold"
-                checked={selection === 'all'}
-                partial={selection === 'partial'}
-                onClick={toggleSelectAll}
-              />
-              <Divider className="my-2" />
-              <div className="flex flex-col gap-2 pl-7">
-                {children?.map(({ id, name }) => (
-                  <CheckboxGroupOption key={id} value={id.toString()}>
-                    {({ handleChange, isChecked, value }) => (
-                      <Checkbox
-                        label={name}
-                        onChange={handleChange}
-                        checked={isChecked}
-                        value={value}
-                      />
-                    )}
-                  </CheckboxGroupOption>
-                ))}
+      {departmentsHierarchy
+        .filter((department) => department.name.toLowerCase().includes(searchInput?.toLowerCase()))
+        .map(({ id, name, children }) => (
+          <CheckboxGroup key={id}>
+            {({ selection, toggleSelectAll }) => (
+              <div>
+                <Checkbox
+                  label={name}
+                  className="font-semibold"
+                  checked={selection === 'all'}
+                  partial={selection === 'partial'}
+                  onClick={toggleSelectAll}
+                />
+                <Divider className="my-2" />
+                <div className="flex flex-col gap-2 pl-7">
+                  {children?.map(({ id, name }) => (
+                    <CheckboxGroupOption key={id} value={id.toString()}>
+                      {({ handleChange, isChecked, value }) => (
+                        <Checkbox
+                          label={name}
+                          onChange={handleChange}
+                          checked={isChecked}
+                          value={value}
+                        />
+                      )}
+                    </CheckboxGroupOption>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-        </CheckboxGroup>
-      ))}
+            )}
+          </CheckboxGroup>
+        ))}
     </div>
   );
 };

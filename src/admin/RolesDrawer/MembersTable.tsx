@@ -16,15 +16,11 @@ const headers: HeaderItem[] = [
 ].filter((item): item is HeaderItem => !!item);
 
 export type MembersTableProps = ClassName & {
-  searchInput?: string;
+  searchInput: string;
 };
 
 export const MembersTable = ({ className, searchInput }: MembersTableProps) => {
-  const { users, isValidatingUsers, mutateUsers } = useUsers({ text: searchInput });
-
-  useEffect(() => {
-    mutateUsers();
-  }, [mutateUsers, searchInput]);
+  const { users, isValidatingUsers } = useUsers();
 
   return (
     <div>
@@ -39,28 +35,34 @@ export const MembersTable = ({ className, searchInput }: MembersTableProps) => {
               </Table.Row>
               <CheckboxGroup>
                 {({ toggleValue }) =>
-                  users.map(({ id, fullName, email, title, department }) => (
-                    <CheckboxGroupOption key={id} value={id!.toString()}>
-                      {({ isChecked, value }) => (
-                        <Table.Row
-                          className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
-                          onClick={() => toggleValue(value)}
-                          variant="noBorder"
-                        >
-                          <Table.Cell>
-                            <Checkbox value={value} checked={isChecked} />
-                          </Table.Cell>
-                          <Table.Cell>
-                            <p className="text-Gray-3 font-medium">{fullName}</p>
-                            <p>{email}</p>
-                          </Table.Cell>
-                          <Table.Cell>{title}</Table.Cell>
-                          <Table.Cell>{department}</Table.Cell>
-                          <Table.Cell>--</Table.Cell>
-                        </Table.Row>
-                      )}
-                    </CheckboxGroupOption>
-                  ))
+                  users
+                    .filter(
+                      (user) =>
+                        user.fullName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+                        user.department?.toLowerCase().includes(searchInput?.toLowerCase()),
+                    )
+                    .map(({ id, fullName, email, title, department }) => (
+                      <CheckboxGroupOption key={id} value={id!.toString()}>
+                        {({ isChecked, value }) => (
+                          <Table.Row
+                            className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
+                            onClick={() => toggleValue(value)}
+                            variant="noBorder"
+                          >
+                            <Table.Cell>
+                              <Checkbox value={value} checked={isChecked} />
+                            </Table.Cell>
+                            <Table.Cell>
+                              <p className="text-Gray-3 font-medium">{fullName}</p>
+                              <p>{email}</p>
+                            </Table.Cell>
+                            <Table.Cell>{title}</Table.Cell>
+                            <Table.Cell>{department}</Table.Cell>
+                            <Table.Cell>--</Table.Cell>
+                          </Table.Row>
+                        )}
+                      </CheckboxGroupOption>
+                    ))
                 }
               </CheckboxGroup>
             </Table.Body>

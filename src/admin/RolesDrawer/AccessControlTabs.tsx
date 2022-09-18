@@ -13,17 +13,17 @@ export type AccessControlTabsProps = {
 };
 
 export const AccessControlTabs = ({}: AccessControlTabsProps) => {
-  const [memberSearch, setMemberSearch] = React.useState<string>('');
+  const [keyWord, setKeyWord] = React.useState<string>('');
   const tabs: { content: React.ReactNode; value: string; label: string }[] = [
-    { content: <TeamsTab />, value: 'teams', label: 'Teams' },
+    { content: <TeamsTab searchInput={keyWord} />, value: 'teams', label: 'Teams' },
     {
-      content: <CategoriesTab />,
+      content: <CategoriesTab searchInput={keyWord} />,
       value: 'categories',
       label: 'Categories',
     },
-    { content: <VendorsTab />, value: 'vendors', label: 'Vendors' },
+    { content: <VendorsTab searchInput={keyWord} />, value: 'vendors', label: 'Vendors' },
     {
-      content: <MembersTab searchInput={memberSearch} />,
+      content: <MembersTab searchInput={keyWord} />,
       value: 'members',
       label: 'Members',
     },
@@ -54,10 +54,13 @@ export const AccessControlTabs = ({}: AccessControlTabsProps) => {
           ))}
         </div>
         {tab !== 'members' ? (
-          <SearchInput placeholder="Search list here" />
+          <SearchInput
+            onChange={(e) => setKeyWord(e.target.value)}
+            placeholder="Search list here"
+          />
         ) : (
           <SearchInput
-            onChange={(e) => setMemberSearch(e.target.value)}
+            onChange={(e) => setKeyWord(e.target.value)}
             placeholder="Search by name or team"
           />
         )}
