@@ -15,15 +15,15 @@ export type AccessControlTabsProps = {
 export const AccessControlTabs = ({}: AccessControlTabsProps) => {
   const [keyWord, setKeyWord] = React.useState<string>('');
   const tabs: { content: React.ReactNode; value: string; label: string }[] = [
-    { content: <TeamsTab searchInput={keyWord} />, value: 'teams', label: 'Teams' },
+    { content: <TeamsTab keyWord={keyWord} />, value: 'teams', label: 'Teams' },
     {
-      content: <CategoriesTab searchInput={keyWord} />,
+      content: <CategoriesTab keyWord={keyWord} />,
       value: 'categories',
       label: 'Categories',
     },
-    { content: <VendorsTab searchInput={keyWord} />, value: 'vendors', label: 'Vendors' },
+    { content: <VendorsTab keyWord={keyWord} />, value: 'vendors', label: 'Vendors' },
     {
-      content: <MembersTab searchInput={keyWord} />,
+      content: <MembersTab keyWord={keyWord} />,
       value: 'members',
       label: 'Members',
     },

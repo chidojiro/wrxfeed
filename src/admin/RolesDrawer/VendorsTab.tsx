@@ -4,10 +4,10 @@ import { useVendors } from '@/vendor/useVendors';
 import { groupBy } from 'lodash-es';
 
 export type VendorsTabProps = {
-  searchInput: string;
+  keyWord: string;
 };
 
-export const VendorsTab = ({ searchInput }: VendorsTabProps) => {
+export const VendorsTab = ({ keyWord }: VendorsTabProps) => {
   const { vendors } = useVendors();
 
   const vendorsGroupedByAlphabet = groupBy(vendors, ({ name }) =>
@@ -23,7 +23,7 @@ export const VendorsTab = ({ searchInput }: VendorsTabProps) => {
           <CheckboxGroup>
             <div className="grid grid-cols-2 gap-2 text-Gray-3">
               {category
-                .filter((item) => item.name.toLowerCase().includes(searchInput?.toLowerCase()))
+                .filter((item) => item.name.toLowerCase().includes(keyWord?.toLowerCase()))
                 .map(({ id, name }) => (
                   <CheckboxGroupOption value={id.toString()} key={id}>
                     {({ handleChange, isChecked, value }) => (

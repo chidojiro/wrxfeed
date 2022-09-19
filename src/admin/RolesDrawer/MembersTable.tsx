@@ -15,10 +15,10 @@ const headers: HeaderItem[] = [
 ].filter((item): item is HeaderItem => !!item);
 
 export type MembersTableProps = ClassName & {
-  searchInput: string;
+  keyWord: string;
 };
 
-export const MembersTable = ({ className, searchInput }: MembersTableProps) => {
+export const MembersTable = ({ className, keyWord }: MembersTableProps) => {
   const { users, isValidatingUsers } = useUsers();
 
   return (
@@ -37,8 +37,8 @@ export const MembersTable = ({ className, searchInput }: MembersTableProps) => {
                   users
                     .filter(
                       (user) =>
-                        user.fullName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
-                        user.department?.toLowerCase().includes(searchInput?.toLowerCase()),
+                        user.fullName?.toLowerCase().includes(keyWord?.toLowerCase()) ||
+                        user.department?.toLowerCase().includes(keyWord?.toLowerCase()),
                     )
                     .map(({ id, fullName, email, title, department }) => (
                       <CheckboxGroupOption key={id} value={id!.toString()}>

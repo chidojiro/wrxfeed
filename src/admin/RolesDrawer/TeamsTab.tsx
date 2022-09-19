@@ -3,16 +3,16 @@ import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
 import { useDepartmentsHierarchy } from '@/team/useDepartmentsHierarchy';
 
 export type TeamsTabProps = {
-  searchInput: string;
+  keyWord: string;
 };
 
-export const TeamsTab = ({ searchInput }: TeamsTabProps) => {
+export const TeamsTab = ({ keyWord }: TeamsTabProps) => {
   const { departmentsHierarchy } = useDepartmentsHierarchy();
 
   return (
     <div className="flex flex-col gap-8 text-Gray-3">
       {departmentsHierarchy
-        .filter((department) => department.name.toLowerCase().includes(searchInput?.toLowerCase()))
+        .filter((department) => department.name.toLowerCase().includes(keyWord?.toLowerCase()))
         .map(({ id, name, children }) => (
           <CheckboxGroup key={id}>
             {({ selection, toggleSelectAll }) => (

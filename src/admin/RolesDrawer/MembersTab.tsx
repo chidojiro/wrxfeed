@@ -1,9 +1,9 @@
 import { MembersTable } from './MembersTable';
 
 export type MembersTabProps = {
-  searchInput: string;
+  keyWord: string;
 };
 
-export const MembersTab = ({ searchInput }: MembersTabProps) => {
-  return <MembersTable searchInput={searchInput} />;
+export const MembersTab = ({ keyWord }: MembersTabProps) => {
+  return <MembersTable keyWord={keyWord} />;
 };

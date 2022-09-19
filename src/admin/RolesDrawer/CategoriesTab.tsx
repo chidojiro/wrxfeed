@@ -4,10 +4,10 @@ import { useCategories } from '@/feed/useCategories';
 import { groupBy } from 'lodash-es';
 
 export type CategoriesTabProps = {
-  searchInput: string;
+  keyWord: string;
 };
 
-export const CategoriesTab = ({ searchInput }: CategoriesTabProps) => {
+export const CategoriesTab = ({ keyWord }: CategoriesTabProps) => {
   const { categories } = useCategories();
 
   const categoriesGroupedByAlphabet = groupBy(categories, ({ name }) =>
@@ -23,7 +23,7 @@ export const CategoriesTab = ({ searchInput }: CategoriesTabProps) => {
           <CheckboxGroup>
             <div className="grid grid-cols-2 gap-2 text-Gray-3">
               {category
-                .filter((item) => item.name.toLowerCase().includes(searchInput.toLowerCase()))
+                .filter((item) => item.name.toLowerCase().includes(keyWord.toLowerCase()))
                 .map(({ id, name }) => (
                   <CheckboxGroupOption value={id.toString()} key={id}>
                     {({ handleChange, isChecked, value }) => (
