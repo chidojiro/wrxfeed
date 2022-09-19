@@ -4,10 +4,10 @@ import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
 import { groupBy } from 'lodash-es';
 
 export type CategoriesTabProps = {
-  //
+  keyWord: string;
 };
 
-export const CategoriesTab = ({}: CategoriesTabProps) => {
+export const CategoriesTab = ({ keyWord }: CategoriesTabProps) => {
   const { categories } = useCategories();
 
   const categoriesGroupedByAlphabet = groupBy(categories, ({ name }) =>
@@ -22,18 +22,20 @@ export const CategoriesTab = ({}: CategoriesTabProps) => {
           <Divider className="my-2" />
           <CheckboxGroup>
             <div className="grid grid-cols-2 gap-2 text-Gray-3">
-              {category.map(({ id, name }) => (
-                <CheckboxGroupOption value={id.toString()} key={id}>
-                  {({ handleChange, isChecked, value }) => (
-                    <Checkbox
-                      onChange={handleChange}
-                      checked={isChecked}
-                      value={value}
-                      label={name}
-                    />
-                  )}
-                </CheckboxGroupOption>
-              ))}
+              {category
+                .filter((item) => item.name.toLowerCase().includes(keyWord.toLowerCase()))
+                .map(({ id, name }) => (
+                  <CheckboxGroupOption value={id.toString()} key={id}>
+                    {({ handleChange, isChecked, value }) => (
+                      <Checkbox
+                        onChange={handleChange}
+                        checked={isChecked}
+                        value={value}
+                        label={name}
+                      />
+                    )}
+                  </CheckboxGroupOption>
+                ))}
             </div>
           </CheckboxGroup>
         </div>

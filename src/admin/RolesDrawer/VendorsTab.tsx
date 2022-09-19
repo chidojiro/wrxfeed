@@ -2,13 +2,12 @@ import { Checkbox, Divider } from '@/common/components';
 import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
 import { useVendors } from '@/vendor/useVendors';
 import { groupBy } from 'lodash-es';
-import React from 'react';
 
 export type VendorsTabProps = {
-  //
+  keyWord: string;
 };
 
-export const VendorsTab = ({}: VendorsTabProps) => {
+export const VendorsTab = ({ keyWord }: VendorsTabProps) => {
   const { vendors } = useVendors();
 
   const vendorsGroupedByAlphabet = groupBy(vendors, ({ name }) =>
@@ -23,18 +22,20 @@ export const VendorsTab = ({}: VendorsTabProps) => {
           <Divider className="my-2" />
           <CheckboxGroup>
             <div className="grid grid-cols-2 gap-2 text-Gray-3">
-              {category.map(({ id, name }) => (
-                <CheckboxGroupOption value={id.toString()} key={id}>
-                  {({ handleChange, isChecked, value }) => (
-                    <Checkbox
-                      onChange={handleChange}
-                      checked={isChecked}
-                      value={value}
-                      label={name}
-                    />
-                  )}
-                </CheckboxGroupOption>
-              ))}
+              {category
+                .filter((item) => item.name.toLowerCase().includes(keyWord?.toLowerCase()))
+                .map(({ id, name }) => (
+                  <CheckboxGroupOption value={id.toString()} key={id}>
+                    {({ handleChange, isChecked, value }) => (
+                      <Checkbox
+                        onChange={handleChange}
+                        checked={isChecked}
+                        value={value}
+                        label={name}
+                      />
+                    )}
+                  </CheckboxGroupOption>
+                ))}
             </div>
           </CheckboxGroup>
         </div>

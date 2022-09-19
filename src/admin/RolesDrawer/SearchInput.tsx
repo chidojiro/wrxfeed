@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 
 export type SearchInputProps = {
   placeholder?: string;
-  onChange?: () => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export const SearchInput = ({ placeholder, onChange }: SearchInputProps) => {
