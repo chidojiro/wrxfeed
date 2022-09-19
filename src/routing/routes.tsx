@@ -1,5 +1,6 @@
 import { AdminRoutes } from '@/admin/routes';
 import { UserRole } from '@/auth/constants';
+import { CategoryRoutes } from '@/category/routes';
 import { FeedRoutes } from '@/feed/routes';
 import { TargetRoutes } from '@/target/routes';
 import { TeamRoutes } from '@/team/routes';
@@ -71,7 +72,7 @@ export const Routes: Route = {
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
   Categories: {
-    path: ['/categories', '/categories/:id'],
+    path: ['/categories'],
     component: Sentry.withProfiler(CategoriesPage, { name: 'CategoriesPage' }),
     permissions: [UserRole.ADMIN, UserRole.USER],
   },
@@ -80,4 +81,5 @@ export const Routes: Route = {
   ...VendorRoutes,
   ...TeamRoutes,
   ...AdminRoutes,
+  ...CategoryRoutes,
 };

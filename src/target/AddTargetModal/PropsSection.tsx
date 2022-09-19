@@ -1,7 +1,6 @@
 import { Bank, CategoryIcon, IntersectIcon, TeamIcon } from '@/assets';
+import { useCategories } from '@/category/useCategories';
 import { Button, Tag } from '@/common/components';
-import { EMPTY_ARRAY } from '@/common/constants';
-import { useCategories } from '@/feed/useCategories';
 import { useDepartments } from '@/team/useDepartments';
 import { useVendors } from '@/vendor/useVendors';
 import React from 'react';

@@ -1,11 +1,11 @@
 import { ChevronLeftIcon } from '@/assets';
+import { useCategory } from '@/category/useCategory';
 import { MainLayout } from '@/layout/MainLayout';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Feeds } from './Feeds';
-import { useCategory } from './useCategory';
 
 export const ForYouFeedsByCategoryPage = () => {
   const params = useParams() as Record<string, string>;
