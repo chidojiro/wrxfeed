@@ -2,7 +2,6 @@ import { Checkbox, Divider } from '@/common/components';
 import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
 import { useVendors } from '@/vendor/useVendors';
 import { groupBy } from 'lodash-es';
-import React from 'react';
 
 export type VendorsTabProps = {
   searchInput: string;

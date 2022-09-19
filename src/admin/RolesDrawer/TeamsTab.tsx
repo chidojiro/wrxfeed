@@ -1,7 +1,6 @@
 import { Checkbox, Divider } from '@/common/components';
 import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
 import { useDepartmentsHierarchy } from '@/team/useDepartmentsHierarchy';
-import React from 'react';
 
 export type TeamsTabProps = {
   searchInput: string;

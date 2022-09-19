@@ -1,4 +1,3 @@
-import React from 'react';
 import { MembersTable } from './MembersTable';
 
 export type MembersTabProps = {

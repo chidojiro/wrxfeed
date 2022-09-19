@@ -3,7 +3,6 @@ import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
 import { ClassName } from '@/common/types';
 import { useUsers } from '@/profile/useUsers';
 import clsx from 'clsx';
-import { useEffect } from 'react';
 
 type HeaderItem = { label: string };
 
