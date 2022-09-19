@@ -32,12 +32,21 @@ export const AccessControlTabs = ({}: AccessControlTabsProps) => {
 
   return (
     <Tabs value={tab} onChange={setTab}>
-      <div className="flex justify-between items-center border-b border-Gray-11 gap-10">
+      <div className="flex justify-between items-center border-b border-Gray-11 gap-10 mt-4">
         <div className="flex gap-8">
           {tabs.map(({ content, label, value }) => (
             <Tab
               key={value}
-              content={<div className="flex-1 overflow-auto py-4">{content}</div>}
+              content={
+                <div
+                  className={clsx('flex-1 py-4', {
+                    'overflow-auto': value !== 'members',
+                    'overflow-hidden': value === 'members',
+                  })}
+                >
+                  {content}
+                </div>
+              }
               value={value}
             >
               {({ isActive, onClick }) => (

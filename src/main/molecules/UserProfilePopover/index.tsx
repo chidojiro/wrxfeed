@@ -81,7 +81,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
     const updates = {
       companyName: profile?.company?.name || '',
       title: profile?.title || '',
-      department: profile?.department || '',
+      department: profile?.department?.name || '',
       bio: profile?.bio || '',
       lastLoginAt: profile?.lastLoginAt || '',
       avatar: avatarUri,

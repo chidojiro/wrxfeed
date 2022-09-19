@@ -5,9 +5,9 @@ import { OpenClose } from '@/common/types';
 import { useHistory } from 'react-router-dom';
 import { AccessControlTabs } from './AccessControlTabs';
 
-export type RolesDrawerProps = OpenClose;
+export type RoleDrawerProps = OpenClose;
 
-export const RolesDrawer = withMountOnOpen()(({ onClose, open }: RolesDrawerProps) => {
+export const RoleDrawer = withMountOnOpen()(({ onClose, open }: RoleDrawerProps) => {
   const history = useHistory();
   const confirmSaveDisclosure = useDisclosure();
   const saveSuccessDisclosure = useDisclosure();
