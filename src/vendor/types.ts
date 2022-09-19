@@ -25,8 +25,3 @@ export type UpdateVendorPayload = {
 export type GetVendorSpendingsParams = {
   year?: number;
 };
-
-export type VendorSpendings = {
-  curYearSpends: Spending[];
-  prevYearSpends: Spending[];
-};

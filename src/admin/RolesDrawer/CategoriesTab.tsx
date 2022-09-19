@@ -1,8 +1,7 @@
+import { useCategories } from '@/category/useCategories';
 import { Checkbox, Divider } from '@/common/components';
 import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
-import { useCategories } from '@/feed/useCategories';
 import { groupBy } from 'lodash-es';
-import React from 'react';
 
 export type CategoriesTabProps = {
   //

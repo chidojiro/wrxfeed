@@ -1,7 +1,7 @@
 import { EMPTY_ARRAY } from '@/common/constants';
 import { useFetcher } from '@/common/hooks';
 import React from 'react';
-import { FeedApis } from './apis';
+import { CategoryApis } from './apis';
 import { GetCategoriesParams } from './types';
 
 export const useCategories = (params?: GetCategoriesParams) => {
@@ -11,7 +11,7 @@ export const useCategories = (params?: GetCategoriesParams) => {
     isLagging,
     isValidating,
     mutate,
-  } = useFetcher(['/categories', params], () => FeedApis.getCategories(params));
+  } = useFetcher(['/categories', params], () => CategoryApis.getList(params));
 
   return React.useMemo(
     () => ({

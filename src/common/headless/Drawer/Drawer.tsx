@@ -50,4 +50,4 @@ export const Drawer = React.forwardRef<any, DrawerProps>(
   },
 );
 
-Drawer.displayName = 'HeadlessDrawer';
+Drawer.displayName = 'Drawer';

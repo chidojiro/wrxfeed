@@ -1,8 +1,8 @@
+import { GetCategoriesParams } from '@/category/types';
 import { useFetcher } from '@/common/hooks';
-import { FeedApis } from '@/feed/apis';
-import { GetCategoriesParams } from '@/feed/types';
 import { Category } from '@/main/entity';
 import React from 'react';
+import { CategoryApis } from './../../category/apis';
 
 export interface UseCategoryParams {
   params?: GetCategoriesParams;
@@ -26,7 +26,7 @@ export function useCategory({
   const cleanData = () => setCategories([]);
 
   const { isInitializing: isLoading } = useFetcher(['category.hook', params], async () => {
-    const res = await FeedApis.getCategories(params);
+    const res = await CategoryApis.getList(params);
     if (concatNewData && params?.limit) {
       setCategories((prevTrans) => [...prevTrans, ...res]);
     } else {
