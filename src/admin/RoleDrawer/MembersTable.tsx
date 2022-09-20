@@ -1,5 +1,5 @@
-import { Checkbox, OverlayLoader } from '@/common/components';
-import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
+import { Checkbox, Form, ListLoader } from '@/common/components';
+import { CheckboxGroupOption } from '@/common/headless';
 import { ClassName } from '@/common/types';
 import { useUsers } from '@/profile/useUsers';
 import clsx from 'clsx';
@@ -17,20 +17,24 @@ const headers: HeaderItem[] = [
 
 export type MembersTableProps = ClassName & {
   keyWord: string;
+  isBase?: boolean;
 };
 
-export const MembersTable = ({ className, keyWord }: MembersTableProps) => {
+export const MembersTable = ({ className, keyWord, isBase }: MembersTableProps) => {
   const { users, isInitializingUsers } = useUsers();
 
   return (
-    <OverlayLoader loading={isInitializingUsers} className={clsx('h-full', className)}>
-      <div className={clsx('text-xs text-[#6B7280] h-full flex flex-col')}>
+    <ListLoader loading={isInitializingUsers}>
+      <div className={clsx('text-xs text-[#6B7280] h-full flex flex-col', className)}>
         <MembersTableRow
           data={headers.map(({ label }) => label)}
           className="border-b border-Gray-11"
         />
         <div className="overflow-auto flex-1 py-[1px]">
-          <CheckboxGroup>
+          <Form.HeadlessCheckboxGroup
+            name="memberIds"
+            valueAs={(value) => (isBase ? users.map(({ id }) => id?.toString()) : value)}
+          >
             {({ toggleValue }) =>
               users
                 .filter(
@@ -59,9 +63,9 @@ export const MembersTable = ({ className, keyWord }: MembersTableProps) => {
                   </CheckboxGroupOption>
                 ))
             }
-          </CheckboxGroup>
+          </Form.HeadlessCheckboxGroup>
         </div>
       </div>
-    </OverlayLoader>
+    </ListLoader>
   );
 };

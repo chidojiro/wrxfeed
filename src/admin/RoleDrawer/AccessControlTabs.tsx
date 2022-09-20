@@ -5,17 +5,17 @@ import React from 'react';
 import { CategoriesTab } from './CategoriesTab';
 import { MembersTab } from './MembersTab';
 import { SearchInput } from './SearchInput';
-import { TeamsTab } from './TeamsTab';
+import { DepartmentsTab } from './DepartmentsTab';
 import { VendorsTab } from './VendorsTab';
 
 export type AccessControlTabsProps = {
-  //
+  isBase?: boolean;
 };
 
-export const AccessControlTabs = ({}: AccessControlTabsProps) => {
+export const AccessControlTabs = ({ isBase }: AccessControlTabsProps) => {
   const [keyword, setKeyWord] = React.useState<string>('');
   const tabs: { content: React.ReactNode; value: string; label: string }[] = [
-    { content: <TeamsTab keyWord={keyword} />, value: 'teams', label: 'Teams' },
+    { content: <DepartmentsTab keyWord={keyword} />, value: 'teams', label: 'Teams' },
     {
       content: <CategoriesTab keyWord={keyword} />,
       value: 'categories',
@@ -23,7 +23,7 @@ export const AccessControlTabs = ({}: AccessControlTabsProps) => {
     },
     { content: <VendorsTab keyWord={keyword} />, value: 'vendors', label: 'Vendors' },
     {
-      content: <MembersTab keyWord={keyword} />,
+      content: <MembersTab keyWord={keyword} isBase={isBase} />,
       value: 'members',
       label: 'Members',
     },
