@@ -1,12 +1,15 @@
 import { AddSmallSolid } from '@/assets';
 import { Button, Divider } from '@/common/components';
+import { useDisclosure } from '@/common/hooks';
 import { RoleCard } from './RoleCard';
-import { RolesDrawer } from './RolesDrawer';
+import { RoleDrawer } from './RoleDrawer';
 
 export const RolesTabContent = () => {
+  const roleDrawerDisclosure = useDisclosure();
+
   return (
     <div className="flex flex-col">
-      <RolesDrawer open />
+      <RoleDrawer open={roleDrawerDisclosure.isOpen} onClose={roleDrawerDisclosure.close} />
       <div className="flex justify-between items-center">
         <div className="space-y-2 mb-8">
           <h1 className="text-2xl leading-7 font-semibold text-primary">Roles</h1>
@@ -20,6 +23,7 @@ export const RolesTabContent = () => {
           colorScheme="gray"
           className="text-xs font-semibold"
           iconLeft={<AddSmallSolid className="h-3.5 w-3.5" />}
+          onClick={roleDrawerDisclosure.open}
         >
           Add row
         </Button>

@@ -1,5 +1,6 @@
 export { ReactComponent as EditOutlineIcon } from '@/assets/icons/outline/edit.svg';
 export { ReactComponent as InviteIcon } from '@/assets/icons/outline/invite.svg';
+export { ReactComponent as AntiClockwiseIcon } from '@/assets/icons/outline/anti-clockwise.svg';
 export { ReactComponent as TickIcon } from '@/assets/icons/outline/tick.svg';
 export { ReactComponent as MinusIcon } from '@/assets/icons/outline/minus.svg';
 export { ReactComponent as SearchIcon } from '@/assets/icons/outline/search.svg';

@@ -28,16 +28,19 @@ export const CheckboxGroupOption = ({
 
   const isChecked = groupProviderValue.value.includes(value);
 
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
-    const isChecked = e.target.checked;
-    const value = e.target.value;
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = React.useCallback(
+    async (e) => {
+      const isChecked = e.target.checked;
+      const value = e.target.value;
 
-    const shouldChange = (await shouldChangeProp?.(e, groupProviderValue.value)) ?? true;
+      const shouldChange = (await shouldChangeProp?.(e, groupProviderValue.value)) ?? true;
 
-    if (shouldChange) {
-      groupProviderValue?.handleChange(value, isChecked);
-    }
-  };
+      if (shouldChange) {
+        groupProviderValue?.handleChange(value, isChecked);
+      }
+    },
+    [groupProviderValue, shouldChangeProp],
+  );
 
   useMountEffect(() => {
     groupProviderValue.registerValue(value);

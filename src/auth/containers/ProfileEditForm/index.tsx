@@ -8,7 +8,12 @@ const ProfileEditForm = ({ onSubmit }: ProfileEditFormProps) => {
 
   if (!profile) return null;
 
-  return <ProfileForm defaultValues={profile} onSubmit={onSubmit} />;
+  return (
+    <ProfileForm
+      defaultValues={{ ...profile, department: profile.department?.name }}
+      onSubmit={onSubmit}
+    />
+  );
 };
 
 export default ProfileEditForm;

@@ -1,12 +1,13 @@
 import { Account, Company, Provider, UserStatus } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
+import { Department } from './../main/entity/transaction.entity';
 
 export type UpdateProfilePayload = {
   firstName?: string;
   lastName?: string;
   companyName?: string;
   title?: string;
-  department?: string;
+  depId?: number;
   bio: string;
   lastLoginAt: string;
   avatar?: string;
@@ -24,7 +25,7 @@ export type Profile = {
   bio?: string;
   avatar?: string;
   company?: Company;
-  department?: string;
+  department?: Department;
   depId?: number;
   refererId?: number;
   signupDate?: string;
