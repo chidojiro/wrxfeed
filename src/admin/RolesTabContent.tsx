@@ -34,7 +34,7 @@ export const RolesTabContent = () => {
         <>
           <div className="flex flex-col space-y-4">
             {roles
-              .filter((i) => i.id === 0 || i.id === 5)
+              .filter((item) => item.id === 0 || item.name === 'Admin')
               .map((role) => (
                 <RoleCard
                   key={role.id}
@@ -48,7 +48,7 @@ export const RolesTabContent = () => {
           <p className="font-semibold text-sm leading-4 tracking-tight mt-3 mb-8">Custom Roles</p>
           <div className="flex flex-col space-y-6">
             {roles
-              .filter((i) => i.id !== 0 && i.id !== 5)
+              .filter((item) => item.id !== 0 && item.name !== 'Admin')
               .map((role) => (
                 <RoleCard
                   key={role.id}
