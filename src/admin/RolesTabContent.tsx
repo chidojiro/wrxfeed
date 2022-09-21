@@ -1,11 +1,13 @@
 import { AddSmallSolid } from '@/assets';
-import { Button, Divider } from '@/common/components';
+import { Button, Divider, OverlayLoader } from '@/common/components';
 import { useDisclosure } from '@/common/hooks';
 import { RoleCard } from './RoleCard';
 import { RoleDrawer } from './RoleDrawer';
+import { useRoles } from './useRoles';
 
 export const RolesTabContent = () => {
   const roleDrawerDisclosure = useDisclosure();
+  const { roles, isInitializingRoles } = useRoles();
 
   return (
     <div className="flex flex-col">
@@ -25,19 +27,39 @@ export const RolesTabContent = () => {
           iconLeft={<AddSmallSolid className="h-3.5 w-3.5" />}
           onClick={roleDrawerDisclosure.open}
         >
-          Add row
+          Add role
         </Button>
       </div>
-      <div className="flex flex-col space-y-4 w-full sm:min-w-[491px]">
-        <RoleCard title="Base User" description="Default permissions for all team members" />
-        <RoleCard title="Admin" description="Access to Admin Portal and role creation" />
-      </div>
-      <Divider className="mt-8" direction="horizontal" />
-      <p className="font-semibold text-sm leading-4 tracking-tight mt-3 mb-8">Custom Roles</p>
-      <div className="flex flex-col space-y-6">
-        <RoleCard title="Legal" description="View access for Legal" />
-        <RoleCard title="Intern" description="View access for Intern" />
-      </div>
+      <OverlayLoader loading={isInitializingRoles}>
+        <>
+          <div className="flex flex-col space-y-4">
+            {roles
+              .filter((i) => i.id === 0 || i.id === 5)
+              .map((role) => (
+                <RoleCard
+                  key={role.id}
+                  title={role.name}
+                  description={role.description}
+                  onClick={roleDrawerDisclosure.open}
+                />
+              ))}
+          </div>
+          <Divider className="mt-8" direction="horizontal" />
+          <p className="font-semibold text-sm leading-4 tracking-tight mt-3 mb-8">Custom Roles</p>
+          <div className="flex flex-col space-y-6">
+            {roles
+              .filter((i) => i.id !== 0 && i.id !== 5)
+              .map((role) => (
+                <RoleCard
+                  key={role.id}
+                  title={role.name}
+                  description={role.description}
+                  onClick={roleDrawerDisclosure.open}
+                />
+              ))}
+          </div>
+        </>
+      </OverlayLoader>
     </div>
   );
 };
