@@ -1,6 +1,5 @@
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
+  ADMIN = 'Admin',
 }
 
 export enum ProtectedFeatures {
