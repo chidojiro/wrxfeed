@@ -1,18 +1,20 @@
 import { ReactComponent as BasicsSearchSmall } from '@/assets/icons/outline/basics-search-small.svg';
+import { ClassName } from '@/common/types';
+import clsx from 'clsx';
 import React, { useRef } from 'react';
 
-export type SearchInputProps = {
+export type SearchInputProps = ClassName & {
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export const SearchInput = ({ placeholder, onChange }: SearchInputProps) => {
+export const SearchInput = ({ placeholder, onChange, className }: SearchInputProps) => {
   const useableViewRef = useRef(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <>
-      <div className="flex items-center w-full lg:max-w-none">
+      <div className={clsx('flex items-center w-full lg:max-w-none', className)}>
         <>
           <div className="w-full relative" ref={useableViewRef}>
             <div className="sr-only">{placeholder}</div>

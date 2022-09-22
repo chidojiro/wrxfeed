@@ -1,36 +1,47 @@
 import { ArrowRightIcon, EditOutlineIcon } from '@/assets';
 import { Button, Checkbox, Popover } from '@/common/components';
 import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
-import { useControllableState, useDisclosure } from '@/common/hooks';
-import { Option } from '@/common/types';
+import { useControllableState, useDisclosure, useHandler } from '@/common/hooks';
+import { ClassName } from '@/common/types';
+import { useRoles } from '@/role/useRoles';
 import clsx from 'clsx';
 import { groupBy } from 'lodash-es';
+import { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 
-export type RolesSelectProps = {
-  roles: Option[];
+export type RolesSelectProps = ClassName & {
   value?: string[];
   onChange?: (value: string[]) => void;
+  defaultValue?: string[];
 };
 
-export const RolesSelect = ({ roles, value: valueProp, onChange }: RolesSelectProps) => {
-  const [value, setValue] = useControllableState({ value: valueProp, onChange, defaultValue: [] });
+export const RolesSelect = ({
+  value: valueProp,
+  onChange,
+  defaultValue = [],
+  className,
+}: RolesSelectProps) => {
+  const [value, setValue] = useControllableState({ value: valueProp, onChange, defaultValue });
 
-  const rolesGroupedByValue = groupBy(roles, 'value');
+  const { roles } = useRoles();
+  const selectableRoles = roles.filter((role) => !!role.id);
+  const rolesGroupedById = groupBy(selectableRoles, 'id');
 
   const isOpenDisclosure = useDisclosure();
 
   return (
     <CheckboxGroup value={value} onChange={setValue}>
-      <div className="flex items-center gap-1">
-        {value.map((v) => (
-          <div
-            key={v}
-            className="rounded-full px-4 py-1 text-xs text-Gray-3 bg-Accent-5 font-semibold"
-          >
-            {rolesGroupedByValue[v][0]?.label}
-          </div>
-        ))}
+      <div className={clsx('flex items-center gap-1', className)}>
+        <div className="flex flex-wrap gap-1">
+          {value.map((v) => (
+            <div
+              key={v}
+              className="rounded-full px-4 py-1 text-xs text-Gray-3 bg-Accent-5 font-semibold"
+            >
+              {rolesGroupedById[v]?.[0]?.name}
+            </div>
+          ))}
+        </div>
         <Popover
           open={isOpenDisclosure.isOpen}
           onClose={isOpenDisclosure.close}
@@ -48,15 +59,15 @@ export const RolesSelect = ({ roles, value: valueProp, onChange }: RolesSelectPr
           }
         >
           <div className="py-1 rounded shadow-popover bg-white">
-            {roles.map(({ label, value }) => (
-              <label key={value} className="px-4 py-1.5 hover:bg-Gray-7 cursor-pointer block">
-                <CheckboxGroupOption value={value}>
+            {selectableRoles.map(({ id, name }) => (
+              <label key={id} className="px-4 py-1.5 hover:bg-Gray-7 cursor-pointer block">
+                <CheckboxGroupOption value={id.toString()}>
                   {({ handleChange, isChecked, value }) => (
                     <Checkbox
                       onChange={handleChange}
                       checked={isChecked}
                       value={value}
-                      label={label}
+                      label={name}
                     />
                   )}
                 </CheckboxGroupOption>

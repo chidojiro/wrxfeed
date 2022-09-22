@@ -1,7 +1,7 @@
 import { Category, Department } from '@/main/entity';
 import { RestApis } from '@/rest/apis';
 import { Vendor } from '@/vendor/types';
-import { CreateRolePayload, UpdateRolePayload, Role } from './types';
+import { CreateRolePayload, UpdateRolePayload, Role, UpdateAssignedRolesPayload } from './types';
 import { transformRoleResponse } from './utils';
 
 const get = (id: number) => RestApis.get(`/rbac/roles/${id}`).then(transformRoleResponse);
@@ -14,7 +14,8 @@ const create = (payload: CreateRolePayload) => RestApis.post(`/rbac/roles`, payl
 const update = (id: number, payload: UpdateRolePayload) =>
   RestApis.put(`/rbac/roles/${id}`, payload);
 
-const updateAssigned = () => null;
+const updateAssigned = (id: number, payload: UpdateAssignedRolesPayload) =>
+  RestApis.put(`/rbac/accounts/${id}/roles`, payload);
 
 const getCategories = () => RestApis.get<Category[]>('/rbac/categories');
 
