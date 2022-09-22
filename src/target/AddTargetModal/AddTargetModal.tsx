@@ -2,13 +2,13 @@
 import { AlertRed } from '@/assets';
 import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
 import { ReactComponent as CarbonTrashCan } from '@/assets/icons/outline/carbon-trash-can.svg';
+import { useCategories } from '@/category/useCategories';
 import Modal from '@/common/atoms/Modal';
 import { Button, Form, OverlayLoader } from '@/common/components';
 import { defaultTargetMonths, EMPTY_ARRAY } from '@/common/constants';
 import { withMountOnOpen } from '@/common/hocs';
 import { useFetcher, useHandler } from '@/common/hooks';
 import { formatCurrency, round } from '@/common/utils';
-import { useCategories } from '@/feed/useCategories';
 import { genReviewSentenceFromProperties, getPeriodsFromTargetMonths } from '@/main/utils';
 import { SpendingChart } from '@/spending/SpendingChart';
 import { getCurrentSpendings } from '@/spending/utils';

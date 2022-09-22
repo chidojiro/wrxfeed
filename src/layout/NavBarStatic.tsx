@@ -1,4 +1,5 @@
 import { AddSmallIcon, FeedIcon, TargetIcon, TeamIcon, UserPlusIcon } from '@/assets';
+import { ProtectedFeatures } from '@/auth/constants';
 import { Avatar, Button } from '@/common/components';
 import { NotifyPopover, UserProfilePopover } from '@/main/molecules';
 import { InviteModal } from '@/main/organisms';
@@ -27,7 +28,6 @@ type NavBarStaticProps = {
   userEmail?: string;
   showAva?: boolean;
   showNoti?: boolean;
-  showInvite?: boolean;
 };
 
 export const NavBarStatic = ({
@@ -40,7 +40,6 @@ export const NavBarStatic = ({
   userEmail,
   showAva = false,
   showNoti = false,
-  showInvite = false,
 }: NavBarStaticProps) => {
   const history = useHistory();
   const [isOpenInviteModal, openInviteModal] = useState(false);
@@ -49,7 +48,9 @@ export const NavBarStatic = ({
 
   const { departments } = subscription ?? {};
 
-  const { profile } = useProfile();
+  const { profile, isPermittedToFeature } = useProfile();
+
+  const showInvite = isPermittedToFeature(ProtectedFeatures.Invite);
 
   const onClickNotification = () => {
     history.push(Routes?.Notifications?.path as string);

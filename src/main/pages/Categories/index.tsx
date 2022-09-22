@@ -1,8 +1,8 @@
 import { ChevronLeftIcon } from '@/assets';
+import { CategoryApis } from '@/category/apis';
+import { GetCategoriesParams } from '@/category/types';
 import { useFetcher } from '@/common/hooks';
-import { FeedApis } from '@/feed/apis';
 import { Feeds } from '@/feed/Feeds';
-import { GetCategoriesParams } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
 import { Category } from '@/main/entity';
 import { useCategory } from '@/main/hooks/category.hook';
@@ -32,7 +32,7 @@ export const CategoriesPage = () => {
   }, [hasMore, isLoading]);
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  useFetcher(catId && !isNaN(+catId) && ['category', catId], () => FeedApis.getCategory(+catId!), {
+  useFetcher(catId && !isNaN(+catId) && ['category', catId], () => CategoryApis.get(+catId!), {
     onSuccess: setCategory,
   });
 

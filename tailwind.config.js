@@ -116,19 +116,18 @@ module.exports = {
         18: '72px',
       },
       boxShadow: {
-        'card': '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
-        'dropdown': '0 1px 1px 0 rgba(9, 30, 66, 0.31), 0 3px 5px 0 rgba(9, 30, 66, 0.2)',
+        card: '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
+        dropdown: '0 1px 1px 0 rgba(9, 30, 66, 0.31), 0 3px 5px 0 rgba(9, 30, 66, 0.2)',
         'top-category-hover':
           '-4px 10px 8px 0 rgba(101, 101, 251, 0.03), 0 3px 10px 0 rgba(101, 101, 251, 0.1);',
-        'property-dropdown': '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
+        'property-dropdown':
+          '0px 3px 5px rgba(9, 30, 66, 0.05), -1px 6px 8px rgba(6, 25, 56, 0.03)',
         'target-hover':
           '0px 3px 10px rgba(101, 101, 251, 0.1), -4px 10px 8px rgba(101, 101, 251, 0.03)',
+        popover: '0px 3px 5px rgba(9, 30, 66, 0.2), 0px 0px 1px #F3F4F6',
       },
       dropShadow: {
-        'login-card': [
-          '0px 3px 5px rgba(9, 30, 66, 0.05)',
-          '-1px 6px 8px rgba(6, 25, 56, 0.03)',
-        ],
+        'login-card': ['0px 3px 5px rgba(9, 30, 66, 0.05)', '-1px 6px 8px rgba(6, 25, 56, 0.03)'],
       },
       keyframes: {
         'drawer-enter': {

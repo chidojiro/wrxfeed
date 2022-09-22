@@ -1,3 +1,4 @@
+import { CategoryApis } from '@/category/apis';
 import { InfiniteLoader, InfiniteLoaderRenderProps } from '@/common/components';
 import { useHandler, useInfiniteData } from '@/common/hooks';
 import { BitBoolean } from '@/common/types';
@@ -40,7 +41,7 @@ export const Feeds = ({
     FeedApis.getList({ ...paginationParams, forYou, departmentId, categoryId, vendorId }),
   );
 
-  const { handle: updateCategory } = useHandler(FeedApis.updateCategory);
+  const { handle: updateCategory } = useHandler(CategoryApis.update);
   const { handle: updateTarget } = useHandler(TargetApis.update);
   const { handle: deleteTarget } = useHandler(TargetApis.delete);
 

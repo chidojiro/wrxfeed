@@ -1,12 +1,14 @@
 import { Account, Company, Provider, UserStatus } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
+import { Role } from '@/role/types';
+import { Department } from './../main/entity/transaction.entity';
 
 export type UpdateProfilePayload = {
   firstName?: string;
   lastName?: string;
   companyName?: string;
   title?: string;
-  department?: string;
+  depId?: number;
   bio: string;
   lastLoginAt: string;
   avatar?: string;
@@ -24,7 +26,7 @@ export type Profile = {
   bio?: string;
   avatar?: string;
   company?: Company;
-  department?: string;
+  department?: Department;
   depId?: number;
   refererId?: number;
   signupDate?: string;
@@ -41,6 +43,7 @@ export type User = Profile & {
   createdAt?: string;
   updatedAt?: string;
   deletedAt?: string;
+  roles: Role[];
 };
 
 export type ChangePasswordPayload = {
@@ -61,7 +64,7 @@ export type GetMentionsParams = PaginationParams;
 
 export type GoogleProfile = {
   googleLoginId: string;
-  roles: string[];
   id: number;
   status: 'ACTIVE';
+  roles: Role[];
 };

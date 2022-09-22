@@ -44,7 +44,7 @@ export const Drawer = React.forwardRef<any, DrawerProps>(
           style={{ animationFillMode: 'forwards' }}
           className={clsx(
             'relative',
-            'h-full w-[600px] pt-[56px] bg-white shadow-lg',
+            'h-full w-[672px] pt-[56px] bg-white shadow-lg',
             openProp ? 'animate-drawer-enter' : 'animate-drawer-leave',
           )}
         >

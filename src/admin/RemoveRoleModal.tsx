@@ -1,13 +1,19 @@
 import { ConfirmModal } from '@/common/components';
-import { Role } from './types';
+import { useRole } from '@/role/useRole';
 
 export type RemoveRoleModalProps = {
   open: boolean;
   onClose: () => void;
-  role: Role;
+  roleId: number;
 };
 
-export const RemoveRoleModal = ({ open, onClose, role: { name } }: RemoveRoleModalProps) => {
+export const RemoveRoleModal = ({ open, onClose, roleId }: RemoveRoleModalProps) => {
+  const { role } = useRole(roleId);
+
+  if (!role) return null;
+
+  const { name } = role;
+
   return (
     <ConfirmModal
       open={open}

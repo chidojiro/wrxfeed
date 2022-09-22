@@ -17,7 +17,7 @@ const getStatusColor = (status?: TargetStatusType) => {
     case TargetStatusType.Exceeded:
       return 'bg-red-1';
     default:
-      return 'bg-transparent';
+      return 'bg-Accent-8';
   }
 };
 
@@ -33,7 +33,7 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
         <div
           className={clsx(
             'rounded-full h-9 w-1 flex-shrink-0',
-            targetSpends ? getStatusColor(target?.trackingStatus) : 'bg-transparent',
+            targetSpends ? getStatusColor(target?.trackingStatus) : 'bg-Accent-8',
           )}
         ></div>
         <p className="line-clamp-2">{name}</p>

@@ -1,19 +1,9 @@
-import { ConditionalWrapper } from '@/common/components';
 import { INITIAL_CHART_DATA } from '@/common/constants';
 import { getChartLevels } from '@/main/chart.utils';
 import { ChartLineProps, LineChartData } from '@/main/types';
 import clsx from 'clsx';
 import React, { CSSProperties } from 'react';
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip,
-  TooltipProps,
-  YAxis,
-} from 'recharts';
+import { Area, AreaChart, ResponsiveContainer, Tooltip, TooltipProps, YAxis } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 const MIN_Y_VALUE = 100;
@@ -29,7 +19,6 @@ type TargetChartProps<T> = {
   levelLabelClass?: string;
   prevYearColor?: string;
   showTarget?: boolean;
-  bar?: boolean;
 };
 
 export const TargetChart: <T>(
@@ -45,7 +34,6 @@ export const TargetChart: <T>(
   levelLabelClass = '',
   prevYearColor,
   showTarget,
-  bar,
 }) => {
   const { data, lines, maxValue } = chartData || INITIAL_CHART_DATA;
   const maxValueWithSurplus = Math.ceil(maxValue * 1.1);
@@ -68,7 +56,7 @@ export const TargetChart: <T>(
               >
                 <p
                   className={clsx(
-                    'text-xs font-semibold text-right w-8',
+                    'text-xs font-semibold text-right w-8 flex justify-end',
                     textColor,
                     levelLabelClass,
                   )}
@@ -86,11 +74,7 @@ export const TargetChart: <T>(
           })}
         </div>
         <ResponsiveContainer width="100%" height="100%" className={className}>
-          <ConditionalWrapper
-            conditions={[
-              { condition: !!bar, component: (props: any) => <BarChart {...props} /> },
-              { component: (props: any) => <AreaChart {...props} /> },
-            ]}
+          <AreaChart
             width={500}
             height={300}
             data={data}
@@ -102,13 +86,7 @@ export const TargetChart: <T>(
             }}
           >
             <YAxis domain={[0, maxValueForChart]} width={0} height={0} className="opacity-0" />
-            {data.length && (
-              <Tooltip
-                cursor={bar ? { fill: 'transparent' } : true}
-                position={{ y: 5 }}
-                content={renderTooltip}
-              />
-            )}
+            {data.length && <Tooltip cursor position={{ y: 5 }} content={renderTooltip} />}
             {renderReferenceLines && renderReferenceLines()}
             {lines
               .slice()
@@ -120,18 +98,6 @@ export const TargetChart: <T>(
                 }
 
                 if (line.dataKey === 'target' && !showTarget) return null;
-
-                if (bar)
-                  return (
-                    <Bar
-                      key={line.name}
-                      name={line.name}
-                      type={line.type}
-                      dataKey={line.dataKey}
-                      fill={fill}
-                      opacity={line.opacity}
-                    />
-                  );
 
                 return (
                   <Area
@@ -148,7 +114,7 @@ export const TargetChart: <T>(
                   />
                 );
               })}
-          </ConditionalWrapper>
+          </AreaChart>
         </ResponsiveContainer>
       </div>
       {renderXAxis && renderXAxis()}

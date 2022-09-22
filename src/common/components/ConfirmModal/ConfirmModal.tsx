@@ -1,6 +1,7 @@
 import { AlertTriangleYellow, CheckCircleIcon } from '@/assets';
 import Modal from '@/common/atoms/Modal';
 import { Button } from '@/common/components';
+import { useHandler } from '@/common/hooks';
 import { OpenClose } from '@/common/types';
 import React from 'react';
 
@@ -35,6 +36,9 @@ export const ConfirmModal = ({
 }: ConfirmModalProps) => {
   const shouldShowCancelButton = !!onCancel;
   const shouldShowConfirmButton = !!onConfirm;
+
+  const { handle: handleConfirm, isLoading: isConfirming } = useHandler(async () => onConfirm?.());
+
   return (
     <Modal contentClass="px-4 py-5" open={!!open} onClose={onClose} showCloseButton>
       <div className="flex justify-between space-x-4">
@@ -61,7 +65,8 @@ export const ConfirmModal = ({
             )}
             {shouldShowConfirmButton && (
               <Button
-                onClick={onConfirm}
+                onClick={handleConfirm}
+                loading={isConfirming}
                 variant="ghost"
                 colorScheme="purple"
                 size="sm"
