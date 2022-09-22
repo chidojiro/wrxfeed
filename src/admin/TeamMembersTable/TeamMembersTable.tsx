@@ -33,24 +33,27 @@ export const TeamMembersTable = ({ className }: TeamMembersTableProps) => {
                   </Table.Header>
                 ))}
               </Table.Row>
-              {users.map(({ id, fullName, email, title, department }) => (
-                <Table.Row key={id} className={clsx('relative h-14')}>
-                  <Table.Cell>
-                    <p className="text-Gray-3 font-medium">{fullName}</p>
-                    <p>{email}</p>
-                  </Table.Cell>
-                  <Table.Cell>{title}</Table.Cell>
-                  <Table.Cell>{department}</Table.Cell>
-                  <Table.Cell>
-                    <RolesSelect
-                      roles={[
-                        { label: 'Role 1', value: Math.random().toString() },
-                        { label: 'Role 2', value: Math.random().toString() },
-                      ]}
-                    />
-                  </Table.Cell>
-                </Table.Row>
-              ))}
+              {users.map(({ id, fullName, email, title, department, roles }) => {
+                const selectRoles = roles.map((role) => {
+                  return {
+                    label: role.name,
+                    value: role.id.toString(),
+                  };
+                });
+                return (
+                  <Table.Row key={id} className={clsx('relative h-14')}>
+                    <Table.Cell>
+                      <p className="text-Gray-3 font-medium">{fullName}</p>
+                      <p>{email}</p>
+                    </Table.Cell>
+                    <Table.Cell>{title}</Table.Cell>
+                    <Table.Cell>{department?.name}</Table.Cell>
+                    <Table.Cell>
+                      <RolesSelect roles={selectRoles} />
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              })}
             </Table.Body>
           </Table>
         </OverlayLoader>
