@@ -1,5 +1,6 @@
 import { OverlayLoader, Table } from '@/common/components';
 import { ClassName } from '@/common/types';
+import { User } from '@/profile/types';
 import { useUsers } from '@/profile/useUsers';
 import clsx from 'clsx';
 import { RolesSelect } from './RolesSelect';
@@ -14,16 +15,15 @@ const headers: HeaderItem[] = [
 ].filter((item): item is HeaderItem => !!item);
 
 export type TeamMembersTableProps = ClassName & {
-  //
+  users: User[];
+  isLoading: boolean;
 };
 
-export const TeamMembersTable = ({ className }: TeamMembersTableProps) => {
-  const { users, isValidatingUsers } = useUsers();
-
+export const TeamMembersTable = ({ className, users, isLoading }: TeamMembersTableProps) => {
   return (
     <div className="border border-b-0 border-solid border-Gray-28 rounded-2xl overflow-hidden mt-4">
       <Table.OverflowContainer className={className} style={{ filter: 'none' }}>
-        <OverlayLoader loading={isValidatingUsers}>
+        <OverlayLoader loading={isLoading}>
           <Table>
             <Table.Body>
               <Table.Row>
