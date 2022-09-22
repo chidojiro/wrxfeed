@@ -11,6 +11,7 @@ import { useAssignableDepartments } from '@/role/useAssignableDepartments';
 import { useAssignableVendors } from '@/role/useAssignableVendors';
 import { useRole } from '@/role/useRole';
 import { useRoles } from '@/role/useRoles';
+import { isAdmin } from '@/role/utils';
 import { groupBy } from 'lodash-es';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -110,7 +111,7 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
     try {
       await RoleApis.update(role!.id, transformFormDataToRequestPayload(data));
       mutateRoles();
-      confirmUpdateDisclosure.close();
+      closeConfirmUpdateModal();
     } catch (e: any) {
       toast.error(e.details.message);
       throw e;
@@ -128,6 +129,16 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
     }
   };
 
+  const closeConfirmUpdateModal = () => {
+    saveSuccessDisclosure.close();
+    onClose?.();
+  };
+
+  const closeConfirmSuccessModal = () => {
+    saveSuccessDisclosure.close();
+    onClose?.();
+  };
+
   const handleSuccessConfirm = () => {
     saveSuccessDisclosure.close();
     history.push('/admin/team-members');
@@ -137,8 +148,8 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
     <Drawer open={open} onClose={onClose}>
       <ConfirmModal
         open={confirmUpdateDisclosure.isOpen}
-        onClose={confirmUpdateDisclosure.close}
-        onCancel={confirmUpdateDisclosure.close}
+        onClose={closeConfirmUpdateModal}
+        onCancel={closeConfirmUpdateModal}
         onConfirm={handleUpdateConfirm}
         variant="alert"
         title="Update the settings for this role?"
@@ -146,7 +157,7 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
       />
       <ConfirmModal
         open={saveSuccessDisclosure.isOpen}
-        onClose={saveSuccessDisclosure.close}
+        onClose={closeConfirmSuccessModal}
         onConfirm={handleSuccessConfirm}
         variant="success"
         confirmButtonLabel="Manage"
@@ -167,7 +178,13 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
         </div>
         <div className="flex flex-col flex-1 px-6 pt-4 overflow-hidden">
           <label className="font-bold text-xs">Role Name</label>
-          <Form.Input name="name" placeholder="" className="mt-2" rules={{ required: true }} />
+          <Form.Input
+            name="name"
+            placeholder=""
+            className="mt-2"
+            rules={{ required: true }}
+            disabled={role && isAdmin(role)}
+          />
           <div className="mt-4">
             <label className="font-bold text-xs">Description</label>
             <Form.Input

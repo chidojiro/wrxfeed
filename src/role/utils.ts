@@ -1,3 +1,4 @@
+import { UserRole } from '@/auth/constants';
 import { Role, VisibilityConfig } from './types';
 
 const transformVisibilityConfig = (config: any) => {
@@ -17,3 +18,5 @@ export const transformRoleResponse = (data: any) => {
     vendors: vendors?.map(transformVisibilityConfig),
   } as Role;
 };
+
+export const isAdmin = (role: Role) => role.name === UserRole.ADMIN;
