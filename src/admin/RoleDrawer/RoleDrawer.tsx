@@ -11,7 +11,7 @@ import { useAssignableDepartments } from '@/role/useAssignableDepartments';
 import { useAssignableVendors } from '@/role/useAssignableVendors';
 import { useRole } from '@/role/useRole';
 import { useRoles } from '@/role/useRoles';
-import { isAdmin } from '@/role/utils';
+import { isAdmin, isBase } from '@/role/utils';
 import { groupBy } from 'lodash-es';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -183,7 +183,7 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
             placeholder=""
             className="mt-2"
             rules={{ required: true }}
-            disabled={role && isAdmin(role)}
+            disabled={(role && isAdmin(role)) || (role && isBase(role))}
           />
           <div className="mt-4">
             <label className="font-bold text-xs">Description</label>
@@ -192,6 +192,7 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
               placeholder=""
               className="mt-2"
               rules={{ required: true }}
+              disabled={role && isBase(role)}
             />
           </div>
           <AccessControlTabs isBase={role?.id === 0} isUpdate={isUpdate} />

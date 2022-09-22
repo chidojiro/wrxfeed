@@ -47,6 +47,7 @@ export const TeamMembersTable = ({ className, users }: TeamMembersTableProps) =>
                   <Table.Cell>{department?.name}</Table.Cell>
                   <Table.Cell>
                     <RolesSelect
+                      className="w-[180px]"
                       defaultValue={roles.map(({ id }) => id.toString())}
                       onChange={(value) => handleUpdateAssignedRoles(id, value.map(Number))}
                     />
