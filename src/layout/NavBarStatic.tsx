@@ -52,8 +52,6 @@ export const NavBarStatic = ({
 
   const showInvite = isPermittedToFeature(ProtectedFeatures.Invite);
 
-  console.log(showInvite);
-
   const onClickNotification = () => {
     history.push(Routes?.Notifications?.path as string);
   };

@@ -1,9 +1,10 @@
-import { Checkbox, Form, ListLoader } from '@/common/components';
+import { Checkbox, Divider, Form, ListLoader } from '@/common/components';
 import { CheckboxGroupOption } from '@/common/headless';
 import { ClassName } from '@/common/types';
 import { User } from '@/profile/types';
 import { useUsers } from '@/profile/useUsers';
 import { Role } from '@/role/types';
+import { useRole } from '@/role/useRole';
 import clsx from 'clsx';
 import { useFormContext } from 'react-hook-form';
 import { MembersTableRow } from './MembersTableRow';
@@ -31,20 +32,24 @@ export const MembersTable = ({ className, keyWord, isBase, isUpdate }: MembersTa
 
   const role = getValues();
 
-  if (!role) return null;
+  const { role: originalRole } = useRole(role.id);
 
-  const { memberIds } = role;
+  if (!originalRole) return null;
+
+  const { memberIds } = originalRole;
 
   const renderDataRow = (
     { id, fullName, email, title, department, roles }: User,
-    onClick: (value: string) => void,
+    onClick?: (value: string) => void,
   ) => (
     <CheckboxGroupOption key={id} value={id!.toString()}>
       {({ isChecked, value }) => (
         <MembersTableRow
           key={value}
           data={[
-            <Checkbox key={value} value={value} checked={isChecked} disabled={isBase} />,
+            !!onClick ? (
+              <Checkbox key={value} value={value} checked={isChecked} disabled={isBase} />
+            ) : null,
             <>
               <p className="text-Gray-3 font-semibold truncate">{fullName}</p>
               <p className="truncate">{email}</p>
@@ -53,7 +58,7 @@ export const MembersTable = ({ className, keyWord, isBase, isUpdate }: MembersTa
             department?.name,
             roles.length ? roles.map(({ name }) => name).join(', ') : '--',
           ]}
-          onClick={() => onClick(value)}
+          onClick={() => onClick?.(value)}
         />
       )}
     </CheckboxGroupOption>
@@ -81,17 +86,37 @@ export const MembersTable = ({ className, keyWord, isBase, isUpdate }: MembersTa
             changeAs={(value) => value.map(Number)}
           >
             {({ toggleValue }) => {
-              // if (isUpdate) {
-              //   const alreadyInThisRoleMembers = filteredUsers.filter((user) =>
-              //     memberIds.includes(user.id!),
-              //   );
+              if (isUpdate && !isBase) {
+                const alreadyInThisRoleMembers = filteredUsers.filter((user) =>
+                  memberIds.includes(user.id!),
+                );
 
-              //   const notInThisRoleMembers = filteredUsers.filter(
-              //     (user) => !memberIds.includes(user.id!),
-              //   );
+                const notInThisRoleMembers = filteredUsers.filter(
+                  (user) => !memberIds.includes(user.id!),
+                );
 
-              //   return;
-              // }
+                return (
+                  <div>
+                    {!!alreadyInThisRoleMembers.length && (
+                      <div className="py-3">
+                        <p className="mb-5">Already in this role</p>
+                        <div>{alreadyInThisRoleMembers.map((user) => renderDataRow(user))}</div>
+                      </div>
+                    )}
+                    {!!alreadyInThisRoleMembers.length && !!notInThisRoleMembers.length && (
+                      <Divider />
+                    )}
+                    {!!notInThisRoleMembers.length && (
+                      <div className="py-3">
+                        <p className="mb-5">Invite other team members</p>
+                        <div>
+                          {notInThisRoleMembers.map((user) => renderDataRow(user, toggleValue))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
 
               return filteredUsers.map((user) => renderDataRow(user, toggleValue));
             }}
