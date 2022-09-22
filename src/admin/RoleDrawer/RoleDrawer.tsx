@@ -196,8 +196,8 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
           </div>
           <AccessControlTabs isBase={role?.id === 0} isUpdate={isUpdate} />
         </div>
-        <div className="py-5 px-6 flex justify-end border-t border-solid border-Gray-28">
-          <Button variant="ghost" colorScheme="gray">
+        <div className="py-5 px-6 flex justify-end gap-2 border-t border-solid border-Gray-28">
+          <Button variant="ghost" colorScheme="gray" onClick={onClose}>
             Cancel
           </Button>
           <Button variant="solid" type="submit" loading={isSubmitting}>
