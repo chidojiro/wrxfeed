@@ -1,16 +1,18 @@
 import { Category, Department } from '@/main/entity';
 import { RestApis } from '@/rest/apis';
 import { Vendor } from '@/vendor/types';
-import { CreateRolePayload } from './types';
+import { CreateRolePayload, UpdateRolePayload, Role } from './types';
 import { transformRoleResponse } from './utils';
 
 const get = (id: number) => RestApis.get(`/rbac/roles/${id}`).then(transformRoleResponse);
 
-const getList = () => null;
+const getList = (): Promise<Role[]> =>
+  RestApis.get(`/rbac/roles`).then((roles: any) => roles.map(transformRoleResponse));
 
 const create = (payload: CreateRolePayload) => RestApis.post(`/rbac/roles`, payload);
 
-const update = () => null;
+const update = (id: number, payload: UpdateRolePayload) =>
+  RestApis.put(`/rbac/roles/${id}`, payload);
 
 const updateAssigned = () => null;
 

@@ -1,11 +1,13 @@
+import { AssertUtils } from './../common/utils/assert';
 import { useFetcher } from '@/common/hooks';
 import { AssertUtils } from '@/common/utils';
 import React from 'react';
 import { RoleApis } from './apis';
 
 export const useRole = (id: number) => {
-  const { data, isInitializing, isLagging, isValidating, mutate } = useFetcher(['useRole'], () =>
-    RoleApis.get(id),
+  const { data, isInitializing, isLagging, isValidating, mutate } = useFetcher(
+    !AssertUtils.isNullOrUndefined(id) && ['useRole', id],
+    () => RoleApis.get(id),
   );
 
   return React.useMemo(

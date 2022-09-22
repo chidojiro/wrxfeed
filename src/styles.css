@@ -31,6 +31,10 @@
     @apply h-0 w-0 border-none outline-none m-0 p-0 absolute opacity-0 !important;
   }
 
+  .disabled {
+    @apply cursor-default pointer-events-none opacity-40 !important;
+  }
+
   .list-row-hover {
     @apply hover:ring-1 hover:ring-Accent-4 hover:shadow-target-hover
   }

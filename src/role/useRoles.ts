@@ -1,7 +1,7 @@
 import { EMPTY_ARRAY } from '@/common/constants';
 import { useFetcher } from '@/common/hooks';
 import React from 'react';
-import { AdminApis } from './apis';
+import { RoleApis } from './apis';
 
 export const useRoles = () => {
   const {
@@ -10,7 +10,7 @@ export const useRoles = () => {
     isLagging,
     isValidating,
     mutate,
-  } = useFetcher(['roles'], () => AdminApis.getRoles());
+  } = useFetcher(['useRoles'], () => RoleApis.getList());
 
   return React.useMemo(
     () => ({

@@ -7,9 +7,7 @@ export type CreateRolePayload = {
   memberIds: string[];
 };
 
-export type UpdateRolePayload = {
-  //
-};
+export type UpdateRolePayload = CreateRolePayload;
 
 export type GetRolesParams = {
   //

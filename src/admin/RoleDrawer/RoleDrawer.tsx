@@ -2,6 +2,7 @@ import { Button, ConfirmModal, Drawer, Form } from '@/common/components';
 import { withMountOnOpen } from '@/common/hocs';
 import { useDisclosure } from '@/common/hooks';
 import { OpenClose } from '@/common/types';
+import { AssertUtils } from '@/common/utils';
 import { Department } from '@/main/entity';
 import { RoleApis } from '@/role/apis';
 import { VisibilityConfig } from '@/role/types';
@@ -9,6 +10,7 @@ import { useAssignableCategories } from '@/role/useAssignableCategories';
 import { useAssignableDepartments } from '@/role/useAssignableDepartments';
 import { useAssignableVendors } from '@/role/useAssignableVendors';
 import { useRole } from '@/role/useRole';
+import { useRoles } from '@/role/useRoles';
 import { groupBy } from 'lodash-es';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -16,18 +18,25 @@ import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AccessControlTabs } from './AccessControlTabs';
 
-export type RoleDrawerProps = OpenClose;
+export type RoleDrawerProps = OpenClose & {
+  roleId?: number;
+};
 
-export const RoleDrawer = withMountOnOpen()(({ onClose, open }: RoleDrawerProps) => {
+export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDrawerProps) => {
   const history = useHistory();
-  const confirmSaveDisclosure = useDisclosure();
+  const confirmUpdateDisclosure = useDisclosure();
   const saveSuccessDisclosure = useDisclosure();
 
-  const { role } = useRole(0);
+  const isUpdate = !AssertUtils.isNullOrUndefined(roleId);
+
+  const { role, isValidatingRole } = useRole(roleId ?? 0);
+
+  const { mutateRoles } = useRoles();
 
   const methods = useForm();
   const {
     reset,
+    getValues,
     formState: { isSubmitting },
   } = methods;
 
@@ -36,7 +45,7 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open }: RoleDrawerProps)
   const { assignableDepartments } = useAssignableDepartments();
 
   React.useEffect(() => {
-    if (role && assignableCategories.length) {
+    if (role && !isValidatingRole) {
       const { categories, departments, vendors } = role;
 
       const categoriesGroupedById = groupBy(categories, 'id');
@@ -45,8 +54,8 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open }: RoleDrawerProps)
 
       reset({
         ...role,
-        name: '',
-        description: '',
+        name: isUpdate ? role.name : '',
+        description: isUpdate ? role.description : '',
         departments: assignableDepartments
           .reduce((acc, cur) => [...acc, cur, ...(cur.children ?? [])], [] as Department[])
           .map((department) => ({
@@ -66,35 +75,52 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open }: RoleDrawerProps)
         })),
       });
     }
-  }, [assignableCategories, assignableDepartments, assignableVendors, reset, role]);
+  }, [
+    assignableCategories,
+    assignableDepartments,
+    assignableVendors,
+    isUpdate,
+    isValidatingRole,
+    reset,
+    role,
+  ]);
 
-  const handleUpdateConfirm = () => {
-    confirmSaveDisclosure.close();
-    saveSuccessDisclosure.open();
+  const transformFormDataToRequestPayload = (data: any) => ({
+    ...data,
+    departments: data.departments.map(({ id, visible, default: _default }: VisibilityConfig) => ({
+      id,
+      visible,
+      useDefault: _default === visible,
+    })),
+    categories: data.categories.map(({ id, visible, default: _default }: VisibilityConfig) => ({
+      id,
+      visible,
+      useDefault: _default === visible,
+    })),
+    vendors: data.vendors.map(({ id, visible, default: _default }: VisibilityConfig) => ({
+      id,
+      visible,
+      useDefault: _default === visible,
+    })),
+  });
+
+  const handleUpdateConfirm = async () => {
+    const data = getValues() as any;
+
+    try {
+      await RoleApis.update(role!.id, transformFormDataToRequestPayload(data));
+      mutateRoles();
+      confirmUpdateDisclosure.close();
+    } catch (e: any) {
+      toast.error(e.details.message);
+      throw e;
+    }
   };
 
   const handleCreate = async (data: any) => {
     try {
-      await RoleApis.create({
-        ...data,
-        departments: data.departments.map(
-          ({ id, visible, default: _default }: VisibilityConfig) => ({
-            id,
-            visible,
-            useDefault: _default === visible,
-          }),
-        ),
-        categories: data.categories.map(({ id, visible, default: _default }: VisibilityConfig) => ({
-          id,
-          visible,
-          useDefault: _default === visible,
-        })),
-        vendors: data.vendors.map(({ id, visible, default: _default }: VisibilityConfig) => ({
-          id,
-          visible,
-          useDefault: _default === visible,
-        })),
-      });
+      await RoleApis.create(transformFormDataToRequestPayload(data));
+      mutateRoles();
       saveSuccessDisclosure.open();
     } catch (e: any) {
       toast.error(e.details.message);
@@ -110,9 +136,9 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open }: RoleDrawerProps)
   return (
     <Drawer open={open} onClose={onClose}>
       <ConfirmModal
-        open={confirmSaveDisclosure.isOpen}
-        onClose={confirmSaveDisclosure.close}
-        onCancel={confirmSaveDisclosure.close}
+        open={confirmUpdateDisclosure.isOpen}
+        onClose={confirmUpdateDisclosure.close}
+        onCancel={confirmUpdateDisclosure.close}
         onConfirm={handleUpdateConfirm}
         variant="alert"
         title="Update the settings for this role?"
@@ -127,7 +153,11 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open }: RoleDrawerProps)
         title="New role created!"
         content="You can also manage team members and their access from the team members tab."
       />
-      <Form methods={methods} onSubmit={handleCreate} className="flex flex-col h-full">
+      <Form
+        methods={methods}
+        onSubmit={isUpdate ? confirmUpdateDisclosure.open : handleCreate}
+        className="flex flex-col h-full"
+      >
         <div className="bg-Gray-12 p-6 border-b border-solid border-Gray-11">
           <h2 className="text-lg font-medium">Roles</h2>
           <p className="text-sm text-[#6B7280] mt-1">
@@ -147,7 +177,7 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open }: RoleDrawerProps)
               rules={{ required: true }}
             />
           </div>
-          <AccessControlTabs isBase={role?.id === 0} />
+          <AccessControlTabs isBase={role?.id === 0} isUpdate={isUpdate} />
         </div>
         <div className="py-5 px-6 flex justify-end border-t border-solid border-Gray-28">
           <Button variant="ghost" colorScheme="gray">

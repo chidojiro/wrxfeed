@@ -1,8 +1,11 @@
 import { Checkbox, Form, ListLoader } from '@/common/components';
 import { CheckboxGroupOption } from '@/common/headless';
 import { ClassName } from '@/common/types';
+import { User } from '@/profile/types';
 import { useUsers } from '@/profile/useUsers';
+import { Role } from '@/role/types';
 import clsx from 'clsx';
+import { useFormContext } from 'react-hook-form';
 import { MembersTableRow } from './MembersTableRow';
 
 type HeaderItem = { label: string };
@@ -18,10 +21,49 @@ const headers: HeaderItem[] = [
 export type MembersTableProps = ClassName & {
   keyWord: string;
   isBase?: boolean;
+  isUpdate?: boolean;
 };
 
-export const MembersTable = ({ className, keyWord, isBase }: MembersTableProps) => {
+export const MembersTable = ({ className, keyWord, isBase, isUpdate }: MembersTableProps) => {
   const { users, isInitializingUsers } = useUsers();
+
+  const { getValues } = useFormContext<Role>();
+
+  const role = getValues();
+
+  if (!role) return null;
+
+  const { memberIds } = role;
+
+  const renderDataRow = (
+    { id, fullName, email, title, department, roles }: User,
+    onClick: (value: string) => void,
+  ) => (
+    <CheckboxGroupOption key={id} value={id!.toString()}>
+      {({ isChecked, value }) => (
+        <MembersTableRow
+          key={value}
+          data={[
+            <Checkbox key={value} value={value} checked={isChecked} disabled={isBase} />,
+            <>
+              <p className="text-Gray-3 font-semibold truncate">{fullName}</p>
+              <p className="truncate">{email}</p>
+            </>,
+            title,
+            department?.name,
+            roles.length ? roles.map(({ name }) => name).join(', ') : '--',
+          ]}
+          onClick={() => onClick(value)}
+        />
+      )}
+    </CheckboxGroupOption>
+  );
+
+  const filteredUsers = users.filter(
+    (user) =>
+      user.fullName?.toLowerCase().includes(keyWord?.toLowerCase()) ||
+      user.department?.name.toLowerCase().includes(keyWord?.toLowerCase()),
+  );
 
   return (
     <ListLoader loading={isInitializingUsers}>
@@ -33,36 +75,26 @@ export const MembersTable = ({ className, keyWord, isBase }: MembersTableProps) 
         <div className="overflow-auto flex-1 py-[1px]">
           <Form.HeadlessCheckboxGroup
             name="memberIds"
-            valueAs={(value) => (isBase ? users.map(({ id }) => id?.toString()) : value)}
-          >
-            {({ toggleValue }) =>
-              users
-                .filter(
-                  (user) =>
-                    user.fullName?.toLowerCase().includes(keyWord?.toLowerCase()) ||
-                    user.department?.name.toLowerCase().includes(keyWord?.toLowerCase()),
-                )
-                .map(({ id, fullName, email, title, department }) => (
-                  <CheckboxGroupOption key={id} value={id!.toString()}>
-                    {({ isChecked, value }) => (
-                      <MembersTableRow
-                        key={value}
-                        data={[
-                          <Checkbox key={value} value={value} checked={isChecked} />,
-                          <>
-                            <p className="text-Gray-3 font-semibold truncate">{fullName}</p>
-                            <p className="truncate">{email}</p>
-                          </>,
-                          title,
-                          department?.name,
-                          '--',
-                        ]}
-                        onClick={() => toggleValue(value)}
-                      />
-                    )}
-                  </CheckboxGroupOption>
-                ))
+            valueAs={(value) =>
+              isBase ? users.map(({ id }) => id?.toString()) : value.map(String)
             }
+            changeAs={(value) => value.map(Number)}
+          >
+            {({ toggleValue }) => {
+              // if (isUpdate) {
+              //   const alreadyInThisRoleMembers = filteredUsers.filter((user) =>
+              //     memberIds.includes(user.id!),
+              //   );
+
+              //   const notInThisRoleMembers = filteredUsers.filter(
+              //     (user) => !memberIds.includes(user.id!),
+              //   );
+
+              //   return;
+              // }
+
+              return filteredUsers.map((user) => renderDataRow(user, toggleValue));
+            }}
           </Form.HeadlessCheckboxGroup>
         </div>
       </div>

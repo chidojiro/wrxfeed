@@ -12,7 +12,7 @@ export type DepartmentsTabProps = {
 };
 
 export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
-  const { assignableDepartments, isInitializingAssignableDepartments } = useAssignableDepartments();
+  const { assignableDepartments, isValidatingAssignableDepartments } = useAssignableDepartments();
 
   const { watch, setValue } = useFormContext();
 
@@ -36,7 +36,7 @@ export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
     ]);
 
   return (
-    <ListLoader loading={isInitializingAssignableDepartments}>
+    <ListLoader loading={isValidatingAssignableDepartments}>
       <div className="flex flex-col gap-8 text-Gray-3">
         {assignableDepartments
           .filter((department) => department.name!.toLowerCase().includes(keyWord?.toLowerCase()))
