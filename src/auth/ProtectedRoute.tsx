@@ -12,7 +12,8 @@ export type ProtectedRouteProps = RouteProps & {
 export const ProtectedRoute = ({ path, component, permissions }: ProtectedRouteProps) => {
   const { profile, isInitializingProfile } = useProfile();
 
-  const isAccessible = !permissions || profile?.roles?.some((role) => permissions?.includes(role));
+  const isAccessible =
+    !permissions || profile?.roles?.some((role) => permissions?.includes(role.name));
 
   if (isInitializingProfile) {
     if (path === '/onboarding') return <LoadingFallback />;
