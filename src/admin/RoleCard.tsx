@@ -1,8 +1,8 @@
 import { Button } from '@/common/components';
 
 type RoleCardProps = {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   onClick?: () => void;
 };
 
