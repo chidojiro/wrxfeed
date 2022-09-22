@@ -35,10 +35,10 @@ export const useProfile = () => {
   const isPermittedToFeature = React.useCallback(
     (feature: ProtectedFeatures): boolean => {
       return !!UserPermissions[feature]?.some((permissionRole) =>
-        googleProfile?.roles?.includes(permissionRole),
+        googleProfile?.roles?.some(({ name }) => name === permissionRole),
       );
     },
-    [googleProfile?.roles],
+    [googleProfile],
   );
 
   const combinedProfile = React.useMemo<(Profile & GoogleProfile) | undefined>(
