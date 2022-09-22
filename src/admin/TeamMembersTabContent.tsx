@@ -1,3 +1,4 @@
+import { ListLoader } from '@/common/components';
 import { useDisclosure } from '@/common/hooks';
 import { AssertUtils } from '@/common/utils';
 import { useUsers } from '@/profile/useUsers';
@@ -31,20 +32,21 @@ export const TeamMembersTabContent = () => {
           Manage all team members and their account roles.
         </p>
       </div>
-      <SearchInput
-        className="w-56 lg:w-72 ml-auto mt-6 mb-4"
-        placeholder="Search by team or name"
-        onChange={(e) => handleSearchUsers(e.target.value)}
-      />
-      <TeamMembersTable
-        className="w-full"
-        users={users.filter(
-          (user) =>
-            user.fullName?.toLowerCase().includes(keyword.toLowerCase()) ||
-            user.department?.name.toLowerCase().includes(keyword.toLowerCase()),
-        )}
-        isLoading={isValidatingUsers}
-      />
+      <ListLoader loading={isValidatingUsers}>
+        <SearchInput
+          className="w-56 lg:w-72 ml-auto mt-6 mb-4"
+          placeholder="Search by team or name"
+          onChange={(e) => handleSearchUsers(e.target.value)}
+        />
+        <TeamMembersTable
+          className="w-full"
+          users={users.filter(
+            (user) =>
+              user.fullName?.toLowerCase().includes(keyword.toLowerCase()) ||
+              user.department?.name.toLowerCase().includes(keyword.toLowerCase()),
+          )}
+        />
+      </ListLoader>
     </div>
   );
 };

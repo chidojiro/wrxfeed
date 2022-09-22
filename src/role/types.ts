@@ -13,6 +13,10 @@ export type GetRolesParams = {
   //
 };
 
+export type UpdateAssignedRolesPayload = {
+  roleIds: number[];
+};
+
 export type VisibilityConfig = {
   id: number;
   visible: boolean;
