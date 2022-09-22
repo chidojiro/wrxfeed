@@ -1,5 +1,6 @@
 import { Account, Company, Provider, UserStatus } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
+import { Role } from '@/role/types';
 import { Department } from './../main/entity/transaction.entity';
 
 export type UpdateProfilePayload = {
@@ -42,6 +43,7 @@ export type User = Profile & {
   createdAt?: string;
   updatedAt?: string;
   deletedAt?: string;
+  roles: Role[];
 };
 
 export type ChangePasswordPayload = {

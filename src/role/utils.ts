@@ -12,8 +12,8 @@ export const transformRoleResponse = (data: any) => {
 
   return {
     ...data,
-    categories: categories.map(transformVisibilityConfig),
-    departments: departments.map(transformVisibilityConfig),
-    vendors: vendors.map(transformVisibilityConfig),
+    categories: categories?.map(transformVisibilityConfig),
+    departments: departments?.map(transformVisibilityConfig),
+    vendors: vendors?.map(transformVisibilityConfig),
   } as Role;
 };

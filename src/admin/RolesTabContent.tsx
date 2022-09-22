@@ -1,17 +1,28 @@
 import { AddSmallSolid } from '@/assets';
 import { Button, Divider, OverlayLoader } from '@/common/components';
 import { useDisclosure } from '@/common/hooks';
+import { useRoles } from '@/role/useRoles';
+import React from 'react';
 import { RoleCard } from './RoleCard';
 import { RoleDrawer } from './RoleDrawer';
-import { useRoles } from './useRoles';
 
 export const RolesTabContent = () => {
+  const [editingRoleId, setEditingRoleId] = React.useState<number>();
   const roleDrawerDisclosure = useDisclosure();
   const { roles, isInitializingRoles } = useRoles();
 
+  const startEditingRole = (id: number) => {
+    setEditingRoleId(id);
+    roleDrawerDisclosure.open();
+  };
+
   return (
     <div className="flex flex-col">
-      <RoleDrawer open={roleDrawerDisclosure.isOpen} onClose={roleDrawerDisclosure.close} />
+      <RoleDrawer
+        roleId={editingRoleId}
+        open={roleDrawerDisclosure.isOpen}
+        onClose={roleDrawerDisclosure.close}
+      />
       <div className="flex justify-between items-center">
         <div className="space-y-2 mb-8">
           <h1 className="text-2xl leading-7 font-semibold text-primary">Roles</h1>
@@ -40,7 +51,7 @@ export const RolesTabContent = () => {
                   key={role.id}
                   title={role.name}
                   description={role.description}
-                  onClick={roleDrawerDisclosure.open}
+                  onClick={() => startEditingRole(role.id)}
                 />
               ))}
           </div>
@@ -54,7 +65,7 @@ export const RolesTabContent = () => {
                   key={role.id}
                   title={role.name}
                   description={role.description}
-                  onClick={roleDrawerDisclosure.open}
+                  onClick={() => startEditingRole(role.id)}
                 />
               ))}
           </div>
