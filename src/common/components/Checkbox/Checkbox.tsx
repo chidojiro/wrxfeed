@@ -26,6 +26,7 @@ export const Checkbox = ({
   partial,
   checked,
   colorScheme,
+  disabled,
   ...restProps
 }: CheckboxProps) => {
   const checkedDisclosure = useDisclosure();
@@ -62,6 +63,7 @@ export const Checkbox = ({
         className={clsx(
           'w-4 h-4 flex-shrink-0 rounded-sm bg-Gray-12 border border-soli flex items-center justify-center',
           borderColor,
+          { disabled },
         )}
       >
         {renderInnerIcon()}
