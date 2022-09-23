@@ -184,7 +184,9 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
             className="mt-2"
             rules={{ required: true }}
             disabled={
-              isValidatingRole || (role && isAdmin(role)) || (!!roleId && role && isBaseUser(role))
+              isValidatingRole ||
+              (role && isAdmin(role)) ||
+              (!AssertUtils.isNullOrUndefined(roleId) && role && isBaseUser(role))
             }
           />
           <div className="mt-4">
@@ -194,7 +196,10 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
               placeholder=""
               className="mt-2"
               rules={{ required: true }}
-              disabled={isValidatingRole || (!!roleId && role && isBaseUser(role))}
+              disabled={
+                isValidatingRole ||
+                (!AssertUtils.isNullOrUndefined(roleId) && role && isBaseUser(role))
+              }
             />
           </div>
           <AccessControlTabs isBase={role?.id === 0} isUpdate={isUpdate} />
