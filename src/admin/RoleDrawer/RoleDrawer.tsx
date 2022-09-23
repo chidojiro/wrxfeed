@@ -61,18 +61,21 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
           .reduce((acc, cur) => [...acc, cur, ...(cur.children ?? [])], [] as Department[])
           .map((department) => ({
             ...department,
+            ...departmentsGroupedById[department.id]?.[0],
+            default: departmentsGroupedById[department.id]?.[0].default ?? true,
             visible: departmentsGroupedById[department.id]?.[0].visible ?? true,
-            default: true,
           })),
         categories: assignableCategories.map((category) => ({
           ...category,
+          ...categoriesGroupedById[category.id]?.[0],
+          default: categoriesGroupedById[category.id]?.[0].default ?? true,
           visible: categoriesGroupedById[category.id]?.[0].visible ?? true,
-          default: true,
         })),
         vendors: assignableVendors.map((vendor) => ({
           ...vendor,
+          ...vendorsGroupedById[vendor.id]?.[0],
+          default: vendorsGroupedById[vendor.id]?.[0].default ?? true,
           visible: vendorsGroupedById[vendor.id]?.[0].visible ?? true,
-          default: true,
         })),
       });
     }
