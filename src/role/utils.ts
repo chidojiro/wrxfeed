@@ -20,4 +20,4 @@ export const transformRoleResponse = (data: any) => {
 };
 
 export const isAdmin = (role: Role) => role.name === UserRole.ADMIN;
-export const isBase = (role: Role) => role.name === UserRole.Base;
+export const isBaseUser = (role: Role) => role.id === 0;
