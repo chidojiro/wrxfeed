@@ -175,8 +175,9 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
         <div className="bg-Gray-12 p-6 border-b border-solid border-Gray-11">
           <h2 className="text-lg font-medium">Roles</h2>
           <p className="text-sm text-[#6B7280] mt-1">
-            By default Base Users can see all transactions. Deselect any property to hide them from
-            all team members. Changes to the Base User will affect all team members.
+            All roles initially inherit the default Base User properties. Deselect any property to
+            hide them from team members within this role. Changed properties will stay{' '}
+            <span className="text-Accent-2">highlighted.</span>
           </p>
         </div>
         <div className="flex flex-col flex-1 px-6 pt-4 overflow-hidden">
