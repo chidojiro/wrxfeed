@@ -183,7 +183,9 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
             placeholder=""
             className="mt-2"
             rules={{ required: true }}
-            disabled={isValidatingRole || (role && isAdmin(role)) || (role && isBaseUser(role))}
+            disabled={
+              isValidatingRole || (role && isAdmin(role)) || (!!roleId && role && isBaseUser(role))
+            }
           />
           <div className="mt-4">
             <label className="font-bold text-xs">Description</label>
@@ -192,7 +194,7 @@ export const RoleDrawer = withMountOnOpen()(({ onClose, open, roleId }: RoleDraw
               placeholder=""
               className="mt-2"
               rules={{ required: true }}
-              disabled={isValidatingRole || (role && isBaseUser(role))}
+              disabled={isValidatingRole || (!!roleId && role && isBaseUser(role))}
             />
           </div>
           <AccessControlTabs isBase={role?.id === 0} isUpdate={isUpdate} />
