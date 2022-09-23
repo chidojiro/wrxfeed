@@ -16,6 +16,11 @@ export const RolesTabContent = () => {
     roleDrawerDisclosure.open();
   };
 
+  const stopEditingRole = () => {
+    setEditingRoleId(undefined);
+    roleDrawerDisclosure.close();
+  };
+
   const customRoles = roles.filter((item) => item.id !== 0 && item.name !== 'Admin');
 
   return (
@@ -24,7 +29,7 @@ export const RolesTabContent = () => {
         <RoleDrawer
           roleId={editingRoleId}
           open={roleDrawerDisclosure.isOpen}
-          onClose={roleDrawerDisclosure.close}
+          onClose={stopEditingRole}
         />
         <div className="flex justify-between items-center">
           <div className="space-y-2 mb-8">
