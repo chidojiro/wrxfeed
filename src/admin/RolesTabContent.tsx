@@ -21,6 +21,11 @@ export const RolesTabContent = () => {
     roleDrawerDisclosure.close();
   };
 
+  const startAddingRole = () => {
+    setEditingRoleId(undefined);
+    roleDrawerDisclosure.open();
+  };
+
   const customRoles = roles.filter((item) => item.id !== 0 && item.name !== 'Admin');
 
   return (
@@ -44,7 +49,7 @@ export const RolesTabContent = () => {
             colorScheme="gray"
             className="text-xs font-semibold"
             iconLeft={<AddSmallSolid className="h-3.5 w-3.5" />}
-            onClick={roleDrawerDisclosure.open}
+            onClick={startAddingRole}
           >
             Add role
           </Button>
