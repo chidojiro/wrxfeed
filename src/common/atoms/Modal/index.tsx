@@ -13,6 +13,7 @@ export interface ModalProps {
   center?: boolean;
   contentClass?: string;
   showCloseButton?: boolean;
+  closeOnClickOutside?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -23,6 +24,7 @@ const Modal: React.FC<ModalProps> = ({
   center = true,
   contentClass,
   showCloseButton,
+  closeOnClickOutside,
 }) => {
   const [delayableOpen, setDelayableOpen] = useDelayableState({ delayBy: 200, defaultState: open });
 
@@ -43,7 +45,10 @@ const Modal: React.FC<ModalProps> = ({
       onClose={noop}
     >
       <div className="relative flex items-center justify-center h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
+        <Dialog.Overlay
+          className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+          onClick={closeOnClickOutside ? onClose : undefined}
+        />
         {/* This element is to trick the browser into centering the modal contents. */}
         {center && (
           <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">

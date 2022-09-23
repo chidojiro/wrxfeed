@@ -64,7 +64,7 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} closeOnClickOutside>
       <div className="flex flex-col w-[523px] h-[524px] outline-none">
         <div className="flex flex-col px-12 pt-8">
           <h3 className="text-base text-Gray-1 font-semibold">Add Co-Workers</h3>
