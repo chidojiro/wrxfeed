@@ -34,13 +34,13 @@ export const TeamMembersTable = ({ className, users, mutate }: TeamMembersTableP
   const removeRoleDisclosure = useDisclosure();
 
   const handleChecking = (id: number, value: string[], roles: string[]) => {
+    setDisabled(true);
     const arr = roles.map(Number).filter((val) => !value.map(Number).includes(val));
     setRoleId(arr[0]);
-    if (roles.length <= value.length) handleUpdateAssignedRoles(id, value.map(Number));
-    else {
-      setDisabled(true);
-      removeRoleDisclosure.open();
-    }
+    if (roles.length <= value.length) {
+      handleUpdateAssignedRoles(id, value.map(Number));
+      setDisabled(false);
+    } else removeRoleDisclosure.open();
   };
 
   const sortedUsers = users.sort((a, b) => {
@@ -100,11 +100,11 @@ export const TeamMembersTable = ({ className, users, mutate }: TeamMembersTableP
       </Table.OverflowContainer>
       <RemoveRoleModal
         open={removeRoleDisclosure.isOpen}
-        onClose={() => [removeRoleDisclosure.close, setDisabled(false), mutate()]}
+        onClose={() => [removeRoleDisclosure.close, mutate()]}
         onConfirm={() => [
           removeRoleDisclosure.close(),
-          setDisabled(false),
           handleUpdateAssignedRoles(id, currentValue && currentValue.map(Number)),
+          setDisabled(false),
         ]}
         roleId={roleId as number}
       />
