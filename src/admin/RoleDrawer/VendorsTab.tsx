@@ -1,9 +1,8 @@
 import { Divider, Form, ListLoader } from '@/common/components';
 import { ResettableCheckbox } from '@/common/components/ResettableCheckbox';
-import { CheckboxGroupOption } from '@/common/headless';
 import { Role, VisibilityConfig } from '@/role/types';
 import { useAssignableVendors } from '@/role/useAssignableVendors';
-import { groupBy, isObject } from 'lodash-es';
+import { groupBy } from 'lodash-es';
 import { useFormContext } from 'react-hook-form';
 
 export type VendorsTabProps = {
@@ -11,7 +10,6 @@ export type VendorsTabProps = {
 };
 
 export const VendorsTab = ({ keyWord }: VendorsTabProps) => {
-  console.log('render');
   const { isInitializingAssignableVendors } = useAssignableVendors();
 
   const { getValues } = useFormContext<Role>();
