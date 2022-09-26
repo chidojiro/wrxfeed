@@ -1,12 +1,11 @@
 import { ArrowRightIcon, EditOutlineIcon } from '@/assets';
 import { Button, Checkbox, Popover } from '@/common/components';
 import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
-import { useControllableState, useDisclosure, useHandler } from '@/common/hooks';
+import { useControllableState, useDisclosure } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { useRoles } from '@/role/useRoles';
 import clsx from 'clsx';
 import { groupBy } from 'lodash-es';
-import { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 
 export type RolesSelectProps = ClassName & {
@@ -22,11 +21,9 @@ export const RolesSelect = ({
   className,
 }: RolesSelectProps) => {
   const [value, setValue] = useControllableState({ value: valueProp, onChange, defaultValue });
-
   const { roles } = useRoles();
   const selectableRoles = roles.filter((role) => !!role.id);
   const rolesGroupedById = groupBy(selectableRoles, 'id');
-
   const isOpenDisclosure = useDisclosure();
 
   return (
@@ -64,9 +61,9 @@ export const RolesSelect = ({
                 <CheckboxGroupOption value={id.toString()}>
                   {({ handleChange, isChecked, value }) => (
                     <Checkbox
-                      onChange={handleChange}
                       checked={isChecked}
                       value={value}
+                      onChange={handleChange}
                       label={name}
                     />
                   )}
