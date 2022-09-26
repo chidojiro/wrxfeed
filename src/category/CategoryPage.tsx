@@ -52,7 +52,7 @@ export const CategoryPage = () => {
   const getToDate = () => dayjs().format(DATE_FORMAT);
 
   const { transactions, totalCount, isValidatingTransactions } = useTransactions({
-    vendId: categoryId,
+    catId: categoryId,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
     offset: (page - 1) * TRANSACTIONS_PER_PAGE,
     limit: TRANSACTIONS_PER_PAGE,

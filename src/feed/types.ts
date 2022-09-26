@@ -31,6 +31,7 @@ export type CreateFeedbackPayload = {
 export type GetLineItemsParams = PaginationParams &
   SortByParams & {
     depId?: number;
+    catId?: number;
     vendId?: number;
     from: string;
     to: string;
