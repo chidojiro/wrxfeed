@@ -1,10 +1,11 @@
 import { Table } from '@/common/components';
-import { useHandler } from '@/common/hooks';
+import { useDisclosure, useHandler } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { User } from '@/profile/types';
 import { RoleApis } from '@/role/apis';
 import clsx from 'clsx';
 import React from 'react';
+import { RemoveRoleModal } from '../RemoveRoleModal';
 import { RolesSelect } from './RolesSelect';
 
 type HeaderItem = { label: string; sortKey?: string };
@@ -18,13 +19,29 @@ const headers: HeaderItem[] = [
 
 export type TeamMembersTableProps = ClassName & {
   users: User[];
+  mutate: () => void;
 };
 
-export const TeamMembersTable = ({ className, users }: TeamMembersTableProps) => {
-  const [sort, setSort] = React.useState<string>();
+export const TeamMembersTable = ({ className, users, mutate }: TeamMembersTableProps) => {
+  const [sort, setSort] = React.useState<string>('');
+  const [currentValue, setCurrentValue] = React.useState<string[]>();
+  const [roleId, setRoleId] = React.useState<number>();
+  const [disabled, setDisabled] = React.useState<boolean>(false);
+  const [id, setId] = React.useState<number>();
   const { handle: handleUpdateAssignedRoles } = useHandler((userId: number, roleIds: number[]) =>
     RoleApis.updateAssigned(userId, { roleIds }),
   );
+  const removeRoleDisclosure = useDisclosure();
+
+  const handleChecking = (id: number, value: string[], roles: string[]) => {
+    setDisabled(true);
+    const arr = roles.map(Number).filter((val) => !value.map(Number).includes(val));
+    setRoleId(arr[0]);
+    if (roles.length <= value.length) {
+      handleUpdateAssignedRoles(id, value.map(Number));
+      setDisabled(false);
+    } else removeRoleDisclosure.open();
+  };
 
   const sortedUsers = users.sort((a, b) => {
     if (!sort) return 0;
@@ -62,8 +79,17 @@ export const TeamMembersTable = ({ className, users }: TeamMembersTableProps) =>
                   <Table.Cell>
                     <RolesSelect
                       className="w-[180px]"
+                      disabled={disabled}
                       defaultValue={roles.map(({ id }) => id.toString())}
-                      onChange={(value) => handleUpdateAssignedRoles(id, value.map(Number))}
+                      onChange={(value) => [
+                        handleChecking(
+                          id as number,
+                          value as string[],
+                          roles.map(({ id }) => id.toString()),
+                        ),
+                        setCurrentValue(value as string[]),
+                        setId(id),
+                      ]}
                     />
                   </Table.Cell>
                 </Table.Row>
@@ -72,6 +98,16 @@ export const TeamMembersTable = ({ className, users }: TeamMembersTableProps) =>
           </Table.Body>
         </Table>
       </Table.OverflowContainer>
+      <RemoveRoleModal
+        open={removeRoleDisclosure.isOpen}
+        onClose={() => [removeRoleDisclosure.close, mutate()]}
+        onConfirm={() => [
+          removeRoleDisclosure.close(),
+          handleUpdateAssignedRoles(id, currentValue && currentValue.map(Number)),
+          setDisabled(false),
+        ]}
+        roleId={roleId as number}
+      />
     </div>
   );
 };

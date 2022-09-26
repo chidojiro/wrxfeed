@@ -75,6 +75,7 @@ export const Checkbox = ({
         className="minimized"
         onChange={handleChange}
         checked={isChecked}
+        disabled={disabled}
       />
     </label>
   );
