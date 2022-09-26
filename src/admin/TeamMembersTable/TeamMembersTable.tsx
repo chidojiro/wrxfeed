@@ -26,6 +26,7 @@ export const TeamMembersTable = ({ className, users, mutate }: TeamMembersTableP
   const [sort, setSort] = React.useState<string>('');
   const [currentValue, setCurrentValue] = React.useState<string[]>();
   const [roleId, setRoleId] = React.useState<number>();
+  const [disabled, setDisabled] = React.useState<boolean>(false);
   const [id, setId] = React.useState<number>();
   const { handle: handleUpdateAssignedRoles } = useHandler((userId: number, roleIds: number[]) =>
     RoleApis.updateAssigned(userId, { roleIds }),
@@ -36,7 +37,10 @@ export const TeamMembersTable = ({ className, users, mutate }: TeamMembersTableP
     const arr = roles.map(Number).filter((val) => !value.map(Number).includes(val));
     setRoleId(arr[0]);
     if (roles.length <= value.length) handleUpdateAssignedRoles(id, value.map(Number));
-    else removeRoleDisclosure.open();
+    else {
+      setDisabled(true);
+      removeRoleDisclosure.open();
+    }
   };
 
   const sortedUsers = users.sort((a, b) => {
@@ -75,6 +79,7 @@ export const TeamMembersTable = ({ className, users, mutate }: TeamMembersTableP
                   <Table.Cell>
                     <RolesSelect
                       className="w-[180px]"
+                      disabled={disabled}
                       defaultValue={roles.map(({ id }) => id.toString())}
                       onChange={(value) => [
                         handleChecking(
@@ -95,9 +100,10 @@ export const TeamMembersTable = ({ className, users, mutate }: TeamMembersTableP
       </Table.OverflowContainer>
       <RemoveRoleModal
         open={removeRoleDisclosure.isOpen}
-        onClose={() => [removeRoleDisclosure.close, mutate()]}
+        onClose={() => [removeRoleDisclosure.close, setDisabled(false), mutate()]}
         onConfirm={() => [
           removeRoleDisclosure.close(),
+          setDisabled(false),
           handleUpdateAssignedRoles(id, currentValue && currentValue.map(Number)),
         ]}
         roleId={roleId as number}

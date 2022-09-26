@@ -12,6 +12,7 @@ export type RolesSelectProps = ClassName & {
   value?: string[];
   onChange?: (value: string[]) => void;
   defaultValue?: string[];
+  disabled?: boolean;
 };
 
 export const RolesSelect = ({
@@ -19,6 +20,7 @@ export const RolesSelect = ({
   onChange,
   defaultValue = [],
   className,
+  disabled,
 }: RolesSelectProps) => {
   const [value, setValue] = useControllableState({ value: valueProp, onChange, defaultValue });
   const { roles } = useRoles();
@@ -62,6 +64,7 @@ export const RolesSelect = ({
                   {({ handleChange, isChecked, value }) => (
                     <Checkbox
                       checked={isChecked}
+                      disabled={disabled}
                       value={value}
                       onChange={handleChange}
                       label={name}
