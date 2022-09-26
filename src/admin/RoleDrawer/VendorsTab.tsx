@@ -3,7 +3,7 @@ import { ResettableCheckbox } from '@/common/components/ResettableCheckbox';
 import { CheckboxGroupOption } from '@/common/headless';
 import { Role, VisibilityConfig } from '@/role/types';
 import { useAssignableVendors } from '@/role/useAssignableVendors';
-import { groupBy } from 'lodash-es';
+import { groupBy, isObject } from 'lodash-es';
 import { useFormContext } from 'react-hook-form';
 
 export type VendorsTabProps = {
@@ -11,6 +11,7 @@ export type VendorsTabProps = {
 };
 
 export const VendorsTab = ({ keyWord }: VendorsTabProps) => {
+  console.log('render');
   const { isInitializingAssignableVendors } = useAssignableVendors();
 
   const { getValues } = useFormContext<Role>();
@@ -45,21 +46,22 @@ export const VendorsTab = ({ keyWord }: VendorsTabProps) => {
                 }))
               }
             >
-              <div className="grid grid-cols-2 gap-2 text-Gray-3">
-                {vendorsByCurrentCharacter.map(({ id, name }) => (
-                  <CheckboxGroupOption value={id.toString()} key={id}>
-                    {({ handleChange, isChecked, value }) => (
-                      <ResettableCheckbox
-                        onChange={handleChange}
-                        checked={isChecked}
-                        value={value}
-                        label={name}
-                        resettable={isChecked !== vendorsGroupedById[id]?.[0].default}
-                      />
-                    )}
-                  </CheckboxGroupOption>
-                ))}
-              </div>
+              {({ value, toggleValue }) => (
+                <div className="grid grid-cols-2 gap-2 text-Gray-3">
+                  {vendorsByCurrentCharacter.map(({ id, name }) => (
+                    <ResettableCheckbox
+                      key={id}
+                      value={id.toString()}
+                      onToggle={toggleValue}
+                      checked={value.includes(id.toString())}
+                      label={name}
+                      resettable={
+                        value.includes(id.toString()) !== vendorsGroupedById[id]?.[0].default
+                      }
+                    />
+                  ))}
+                </div>
+              )}
             </Form.HeadlessCheckboxGroup>
           </div>
         ))}

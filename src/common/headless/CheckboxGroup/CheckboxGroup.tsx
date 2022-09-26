@@ -10,6 +10,7 @@ type Selection = 'none' | 'partial' | 'all';
 
 type CheckboxGroupRenderPropState = {
   selection: 'none' | 'partial' | 'all';
+  value: string[];
   toggleSelectAll: () => void;
   toggleValue: (value: string) => void;
 };
@@ -100,7 +101,7 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
   return (
     <CheckboxGroupProvider value={providerValue}>
       {typeof children === 'function'
-        ? children({ selection, toggleSelectAll, toggleValue })
+        ? children({ selection, toggleSelectAll, value, toggleValue })
         : children}
     </CheckboxGroupProvider>
   );
