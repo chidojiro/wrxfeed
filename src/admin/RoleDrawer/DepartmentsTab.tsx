@@ -14,10 +14,10 @@ export type DepartmentsTabProps = {
 export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
   const { assignableDepartments, isValidatingAssignableDepartments } = useAssignableDepartments();
 
-  const { watch, setValue } = useFormContext();
+  const { getValues, setValue } = useFormContext();
 
   const departments =
-    (watch().departments as (VisibilityConfig & { children: Department[] })[]) ?? [];
+    (getValues('departments') as (VisibilityConfig & { children: Department[] })[]) ?? [];
 
   const departmentsGroupedById = groupBy(departments, 'id');
 
@@ -30,10 +30,17 @@ export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
       .map(({ id }) => id.toString());
 
   const setRootDepartmentVisible = (id: number, checked: boolean) =>
-    setValue('departments', [
-      ...departments.filter((department) => department.id !== id),
-      { ...departmentsGroupedById[id]?.[0], visible: checked },
-    ]);
+    setTimeout(() => {
+      const departments =
+        (getValues('departments') as (VisibilityConfig & { children: Department[] })[]) ?? [];
+
+      const departmentsGroupedById = groupBy(departments, 'id');
+
+      setValue('departments', [
+        ...departments.filter((department) => department.id !== id),
+        { ...departmentsGroupedById[id]?.[0], visible: checked },
+      ]);
+    }, 0);
 
   return (
     <ListLoader loading={isValidatingAssignableDepartments}>
