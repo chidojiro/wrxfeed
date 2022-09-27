@@ -43,13 +43,11 @@ export const MembersTable = ({ className, keyWord, isBase, isUpdate }: MembersTa
     onClick?: (value: string) => void,
   ) => (
     <CheckboxGroupOption key={id} value={id!.toString()}>
-      {({ isChecked, value }) => (
+      {({ value }) => (
         <MembersTableRow
           key={value}
           data={[
-            !!onClick ? (
-              <Checkbox key={value} value={value} checked={isChecked} disabled={isBase} />
-            ) : null,
+            !!onClick ? <Checkbox key={value} value={value} /> : null,
             <>
               <p className="text-Gray-3 font-semibold truncate">{fullName}</p>
               <p className="truncate">{email}</p>
