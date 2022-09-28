@@ -60,6 +60,7 @@ export const MembersTable = ({
                 value={value}
                 checked={isChecked}
                 disabled={isBase && !isCreate}
+                onClick={(e) => e.stopPropagation()}
               />
             ) : null,
             <>
