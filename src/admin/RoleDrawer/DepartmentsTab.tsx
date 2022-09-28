@@ -69,13 +69,11 @@ export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
               ]}
             >
               <div>
-                <Checkbox
+                <ResettableCheckbox
                   className="font-semibold"
-                  colorScheme={
+                  resettable={
                     departmentsGroupedById[id]?.[0].visible !==
                     departmentsGroupedById[id]?.[0].default
-                      ? 'accent'
-                      : undefined
                   }
                   label={name}
                   onChange={(e) => setRootDepartmentVisible(id, e.target.checked)}
