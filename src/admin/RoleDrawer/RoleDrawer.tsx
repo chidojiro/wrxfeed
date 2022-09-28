@@ -32,7 +32,7 @@ export const RoleDrawer = withMountOnOpen()(
 
     const isUpdate = !AssertUtils.isNullOrUndefined(roleId);
 
-    const { role, isValidatingRole } = useRole(roleId ?? 0);
+    const { role, isInitializingRole } = useRole(roleId ?? 0);
 
     const { mutateRoles } = useRoles();
 
@@ -48,7 +48,7 @@ export const RoleDrawer = withMountOnOpen()(
     const { assignableDepartments } = useAssignableDepartments();
 
     React.useEffect(() => {
-      if (role && !isValidatingRole) {
+      if (role) {
         const { categories, departments, vendors } = role;
 
         const categoriesGroupedById = groupBy(categories, 'id');
@@ -85,8 +85,8 @@ export const RoleDrawer = withMountOnOpen()(
       assignableCategories,
       assignableDepartments,
       assignableVendors,
+      isCreate,
       isUpdate,
-      isValidatingRole,
       reset,
       role,
     ]);
@@ -190,7 +190,7 @@ export const RoleDrawer = withMountOnOpen()(
               className="mt-2"
               rules={{ required: true }}
               disabled={
-                isValidatingRole ||
+                isInitializingRole ||
                 (role && isAdmin(role)) ||
                 (!AssertUtils.isNullOrUndefined(roleId) && role && isBaseUser(role))
               }
@@ -203,7 +203,7 @@ export const RoleDrawer = withMountOnOpen()(
                 className="mt-2"
                 rules={{ required: true }}
                 disabled={
-                  isValidatingRole ||
+                  isInitializingRole ||
                   (!AssertUtils.isNullOrUndefined(roleId) && role && isBaseUser(role))
                 }
               />
