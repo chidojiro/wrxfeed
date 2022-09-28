@@ -58,8 +58,8 @@ export const MembersTable = ({
               <Checkbox
                 key={value}
                 value={value}
-                checked={isChecked}
                 disabled={isBase && !isCreate}
+                checked={isChecked}
               />
             ) : null,
             <>

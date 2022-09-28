@@ -8,7 +8,7 @@ import { RoleDrawer } from './RoleDrawer';
 
 export const RolesTabContent = () => {
   const [editingRoleId, setEditingRoleId] = React.useState<number>();
-  const [isCreate, setIsCreate] = React.useState<boolean>();
+  const [isCreate, setIsCreate] = React.useState<boolean>(false);
   const roleDrawerDisclosure = useDisclosure();
   const { roles, isInitializingRoles } = useRoles();
 
