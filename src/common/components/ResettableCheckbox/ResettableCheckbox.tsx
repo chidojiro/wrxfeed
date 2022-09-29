@@ -6,15 +6,25 @@ import React from 'react';
 export type ResettableCheckboxProps = CheckboxProps & {
   resettable?: boolean;
   onReset?: () => void;
+  onToggle?: (value: string) => void;
 };
 
 export const ResettableCheckbox = React.memo(
-  ({ resettable, onChange, label, checked, value, ...restProps }: ResettableCheckboxProps) => {
+  ({
+    resettable,
+    onChange,
+    label,
+    checked,
+    value,
+    onToggle,
+    ...restProps
+  }: ResettableCheckboxProps) => {
     const checkedDisclosure = useDisclosure();
     const isChecked = checked ?? checkedDisclosure.isOpen;
 
     const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
       onChange?.(e);
+      onToggle?.(e.target.value);
       checkedDisclosure.set(e.target.checked);
     };
 

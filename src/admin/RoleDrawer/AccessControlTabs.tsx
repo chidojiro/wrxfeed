@@ -11,9 +11,10 @@ import { VendorsTab } from './VendorsTab';
 export type AccessControlTabsProps = {
   isBase?: boolean;
   isUpdate?: boolean;
+  isCreate?: boolean;
 };
 
-export const AccessControlTabs = ({ isBase, isUpdate }: AccessControlTabsProps) => {
+export const AccessControlTabs = ({ isBase, isUpdate, isCreate }: AccessControlTabsProps) => {
   const [keyword, setKeyWord] = React.useState<string>('');
   const tabs: { content: React.ReactNode; value: string; label: string }[] = [
     { content: <DepartmentsTab keyWord={keyword} />, value: 'teams', label: 'Teams' },
@@ -24,7 +25,9 @@ export const AccessControlTabs = ({ isBase, isUpdate }: AccessControlTabsProps) 
     },
     { content: <VendorsTab keyWord={keyword} />, value: 'vendors', label: 'Vendors' },
     {
-      content: <MembersTab keyWord={keyword} isBase={isBase} isUpdate={isUpdate} />,
+      content: (
+        <MembersTab keyWord={keyword} isBase={isBase} isUpdate={isUpdate} isCreate={isCreate} />
+      ),
       value: 'members',
       label: 'Members',
     },

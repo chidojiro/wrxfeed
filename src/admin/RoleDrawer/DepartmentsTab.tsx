@@ -14,10 +14,10 @@ export type DepartmentsTabProps = {
 export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
   const { assignableDepartments, isValidatingAssignableDepartments } = useAssignableDepartments();
 
-  const { watch, setValue } = useFormContext();
+  const { getValues, setValue, watch } = useFormContext();
 
   const departments =
-    (watch().departments as (VisibilityConfig & { children: Department[] })[]) ?? [];
+    (watch('departments') as (VisibilityConfig & { children: Department[] })[]) ?? [];
 
   const departmentsGroupedById = groupBy(departments, 'id');
 
@@ -29,11 +29,26 @@ export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
       .filter((item) => item.visible && getChildrenIds(id).includes(item.id))
       .map(({ id }) => id.toString());
 
-  const setRootDepartmentVisible = (id: number, checked: boolean) =>
+  const setRootDepartmentVisible = (id: number, checked: boolean) => {
+    const departments =
+      (getValues('departments') as (VisibilityConfig & { children: Department[] })[]) ?? [];
+
+    const departmentsGroupedById = groupBy(departments, 'id');
+
+    const departmentAndChildren = [
+      departmentsGroupedById[id][0],
+      departmentsGroupedById[id][0].children ?? [],
+    ].flat();
+    const departmentAndChildrenIds = departmentAndChildren.map(({ id }) => id);
+
     setValue('departments', [
-      ...departments.filter((department) => department.id !== id),
-      { ...departmentsGroupedById[id]?.[0], visible: checked },
+      ...departments.filter((department) => !departmentAndChildrenIds.includes(department.id)),
+      ...departmentAndChildrenIds.map((id) => ({
+        ...departmentsGroupedById[id][0],
+        visible: checked,
+      })),
     ]);
+  };
 
   return (
     <ListLoader loading={isValidatingAssignableDepartments}>
@@ -44,11 +59,6 @@ export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
             <Form.HeadlessCheckboxGroup
               key={id}
               name="departments"
-              onSelectionChange={
-                children?.length
-                  ? (selection) => setRootDepartmentVisible(id, selection === 'all')
-                  : undefined
-              }
               valueAs={(value: VisibilityConfig[]) => getValueByRootDepartment(id, value)}
               changeAs={(value: string[]) => [
                 ...departments.filter((department) => !getChildrenIds(id).includes(department.id)),
@@ -58,59 +68,35 @@ export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
                 })),
               ]}
             >
-              {({ selection, toggleSelectAll }) => {
-                const isSelectAll = selection === 'all';
-                const isSelectPartial = selection === 'partial';
-
-                return (
-                  <div>
-                    {children?.length ? (
-                      <Checkbox
-                        label={name}
-                        className="font-semibold"
-                        colorScheme={
-                          isSelectAll !== departmentsGroupedById[id]?.[0].default
-                            ? 'accent'
-                            : undefined
-                        }
-                        checked={!!children?.length ? isSelectAll : undefined}
-                        partial={isSelectPartial}
-                        onClick={!!children?.length ? toggleSelectAll : undefined}
-                      />
-                    ) : (
-                      <Checkbox
-                        className="font-semibold"
-                        colorScheme={
-                          departmentsGroupedById[id]?.[0].visible !==
-                          departmentsGroupedById[id]?.[0].default
-                            ? 'accent'
-                            : undefined
-                        }
-                        label={name}
-                        onChange={(e) => setRootDepartmentVisible(id, e.target.checked)}
-                        checked={departmentsGroupedById[id]?.[0].visible}
-                        value={id.toString()}
-                      />
-                    )}
-                    <Divider className="my-2" />
-                    <div className="flex flex-col gap-2 pl-7">
-                      {children?.map(({ id, name }) => (
-                        <CheckboxGroupOption key={id} value={id.toString()}>
-                          {({ handleChange, isChecked, value }) => (
-                            <ResettableCheckbox
-                              resettable={isChecked !== departmentsGroupedById[id]?.[0].default}
-                              label={name}
-                              onChange={handleChange}
-                              checked={isChecked}
-                              value={value}
-                            />
-                          )}
-                        </CheckboxGroupOption>
-                      ))}
-                    </div>
-                  </div>
-                );
-              }}
+              <div>
+                <ResettableCheckbox
+                  className="font-semibold"
+                  resettable={
+                    departmentsGroupedById[id]?.[0].visible !==
+                    departmentsGroupedById[id]?.[0].default
+                  }
+                  label={name}
+                  onChange={(e) => setRootDepartmentVisible(id, e.target.checked)}
+                  checked={departmentsGroupedById[id]?.[0].visible}
+                  value={id.toString()}
+                />
+                <Divider className="my-2" />
+                <div className="flex flex-col gap-2 pl-7">
+                  {children?.map(({ id, name }) => (
+                    <CheckboxGroupOption key={id} value={id.toString()}>
+                      {({ handleChange, isChecked, value }) => (
+                        <ResettableCheckbox
+                          resettable={isChecked !== departmentsGroupedById[id]?.[0].default}
+                          label={name}
+                          onChange={handleChange}
+                          checked={isChecked}
+                          value={value}
+                        />
+                      )}
+                    </CheckboxGroupOption>
+                  ))}
+                </div>
+              </div>
             </Form.HeadlessCheckboxGroup>
           ))}
       </div>

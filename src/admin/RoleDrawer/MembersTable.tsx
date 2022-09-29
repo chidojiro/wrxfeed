@@ -23,9 +23,16 @@ export type MembersTableProps = ClassName & {
   keyWord: string;
   isBase?: boolean;
   isUpdate?: boolean;
+  isCreate?: boolean;
 };
 
-export const MembersTable = ({ className, keyWord, isBase, isUpdate }: MembersTableProps) => {
+export const MembersTable = ({
+  className,
+  keyWord,
+  isBase,
+  isUpdate,
+  isCreate,
+}: MembersTableProps) => {
   const { users, isInitializingUsers } = useUsers();
 
   const { getValues } = useFormContext<Role>();
@@ -43,12 +50,18 @@ export const MembersTable = ({ className, keyWord, isBase, isUpdate }: MembersTa
     onClick?: (value: string) => void,
   ) => (
     <CheckboxGroupOption key={id} value={id!.toString()}>
-      {({ isChecked, value }) => (
+      {({ value, isChecked }) => (
         <MembersTableRow
           key={value}
           data={[
             !!onClick ? (
-              <Checkbox key={value} value={value} checked={isChecked} disabled={isBase} />
+              <Checkbox
+                key={value}
+                value={value}
+                checked={isChecked}
+                disabled={isBase && !isCreate}
+                onClick={(e) => e.stopPropagation()}
+              />
             ) : null,
             <>
               <p className="text-Gray-3 font-semibold truncate">{fullName}</p>
@@ -81,7 +94,7 @@ export const MembersTable = ({ className, keyWord, isBase, isUpdate }: MembersTa
           <Form.HeadlessCheckboxGroup
             name="memberIds"
             valueAs={(value) =>
-              isBase ? users.map(({ id }) => id?.toString()) : value.map(String)
+              isBase && !isCreate ? users.map(({ id }) => id?.toString()) : value.map(String)
             }
             changeAs={(value) => value.map(Number)}
           >

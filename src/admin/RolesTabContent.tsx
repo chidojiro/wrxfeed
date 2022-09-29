@@ -8,6 +8,7 @@ import { RoleDrawer } from './RoleDrawer';
 
 export const RolesTabContent = () => {
   const [editingRoleId, setEditingRoleId] = React.useState<number>();
+  const [isCreate, setIsCreate] = React.useState<boolean>(false);
   const roleDrawerDisclosure = useDisclosure();
   const { roles, isInitializingRoles } = useRoles();
 
@@ -22,6 +23,7 @@ export const RolesTabContent = () => {
   };
 
   const startAddingRole = () => {
+    setIsCreate(true);
     setEditingRoleId(undefined);
     roleDrawerDisclosure.open();
   };
@@ -32,6 +34,7 @@ export const RolesTabContent = () => {
     <ListLoader loading={isInitializingRoles}>
       <div className="flex flex-col max-w-[500px]">
         <RoleDrawer
+          isCreate={isCreate}
           roleId={editingRoleId}
           open={roleDrawerDisclosure.isOpen}
           onClose={stopEditingRole}
