@@ -66,3 +66,4 @@ export { ReactComponent as XIcon } from '@/assets/icons/solid/x.svg';
 export { ReactComponent as AlertTriangleYellow } from '@/assets/icons/solid/alert-triangle-yellow.svg';
 export { ReactComponent as CheckCircleIcon } from '@/assets/icons/solid/check-circle.svg';
 export { ReactComponent as GravityLogoImage } from '@/assets/images/gravity-logo.svg';
+export { ReactComponent as LockDBIcon } from '@/assets/icons/solid/lock-db.svg';
