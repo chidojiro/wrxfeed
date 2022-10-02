@@ -1,6 +1,6 @@
 import { LockDBIcon } from '@/assets';
 
-export const RestrictedPage = () => {
+export const RestrictedAccessPage = () => {
   return (
     <div className="min-h-screen px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8">
       <div className="max-w-[360px] mx-auto space-y-16 text-center flex flex-col justify-center items-center">
