@@ -1,7 +1,6 @@
 import { RouteItem } from '@/routing/types';
 import React from 'react';
 import * as Sentry from '@sentry/react';
-import { UserRole } from '@/auth/constants';
 
 const ForYouFeedsPage = React.lazy(() =>
   import('./ForYouFeedsPage').then(({ ForYouFeedsPage }) => ({
@@ -33,23 +32,19 @@ export const FeedRoutes: Record<string, RouteItem> = {
     component: Sentry.withProfiler(ForYouFeedsByCategoryPage, {
       name: 'ForYouFeedsByCategoryPage',
     }),
-    permissions: [UserRole.ADMIN, UserRole.USER],
   },
   ForYouFeeds: {
     path: '/feeds/for-you',
     component: Sentry.withProfiler(ForYouFeedsPage, { name: 'ForYouFeedsPage' }),
-    permissions: [UserRole.ADMIN, UserRole.USER],
   },
   CompanyFeedsByCategory: {
     path: '/feeds/company/category/:categoryId',
     component: Sentry.withProfiler(CompanyFeedsByCategoryPage, {
       name: 'CompanyFeedsByCategoryPage',
     }),
-    permissions: [UserRole.ADMIN, UserRole.USER],
   },
   CompanyFeeds: {
     path: '/feeds/company',
     component: Sentry.withProfiler(CompanyFeedsPage, { name: 'CompanyFeedsPage' }),
-    permissions: [UserRole.ADMIN, UserRole.USER],
   },
 };

@@ -32,7 +32,7 @@ export const AdminPage = () => {
   const tab = params.tab;
 
   return (
-    <div className={clsx(StringUtils.withProjectClassNamePrefix('admin-layout'))}>
+    <div className={clsx(StringUtils.withProjectClassNamePrefix('admin-layout'), 'bg-white')}>
       <NavBar mainLayout={false} />
       <div
         className={clsx(
@@ -50,8 +50,8 @@ export const AdminPage = () => {
                 {({ isActive }) => (
                   <Link
                     to={to}
-                    className={clsx('font-medium hover:bg-Gray-7 py-1 px-5', {
-                      'bg-Gray-7 font-bold': isActive,
+                    className={clsx('font-medium hover:bg-Gray-12 py-1 px-5 rounded-sm', {
+                      'bg-Gray-12 font-bold': isActive,
                     })}
                   >
                     {label}

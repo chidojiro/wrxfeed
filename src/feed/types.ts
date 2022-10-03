@@ -2,12 +2,6 @@ import { SortByParams } from '@/rest/types';
 import { BitBoolean } from '@/common/types';
 import { PaginationParams, SortOrderParams } from '@/rest/types';
 
-export type GetCategoriesParams = PaginationParams &
-  SortOrderParams & {
-    term?: string;
-    dep?: number;
-  };
-
 export type GetTransactionsParams = PaginationParams & { feedItemId: number };
 
 export type GetFeedCommentsParams = PaginationParams & SortOrderParams;
@@ -37,6 +31,7 @@ export type CreateFeedbackPayload = {
 export type GetLineItemsParams = PaginationParams &
   SortByParams & {
     depId?: number;
+    catId?: number;
     vendId?: number;
     from: string;
     to: string;

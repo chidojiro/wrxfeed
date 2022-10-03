@@ -50,7 +50,7 @@ const getTruthyConfig = (configs: Configs) => {
 
 export const ConditionalWrapper = ({ conditions, ...restProps }: ConditionalWrapperProps) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const Component = React.useMemo(() => getTruthyConfig(conditions), [JSON.stringify(conditions)]);
+  const Component = getTruthyConfig(conditions);
 
   return <Component {...restProps} />;
 };

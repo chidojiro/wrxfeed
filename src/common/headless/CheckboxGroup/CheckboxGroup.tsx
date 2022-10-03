@@ -6,13 +6,17 @@ import {
   CheckboxGroupProviderValue,
 } from './CheckboxGroupProvider';
 
+type Selection = 'none' | 'partial' | 'all';
+
 type CheckboxGroupRenderPropState = {
   selection: 'none' | 'partial' | 'all';
+  value: string[];
   toggleSelectAll: () => void;
   toggleValue: (value: string) => void;
 };
 
 export type CheckboxGroupProps = {
+  onSelectionChange?: (selection: Selection) => void;
   onChange?: (value: string[]) => void;
   value?: string[];
   defaultValue?: string[];
@@ -21,7 +25,13 @@ export type CheckboxGroupProps = {
 };
 
 export const CheckboxGroup = (props: CheckboxGroupProps) => {
-  const { onChange: onChangeProp, defaultValue = [], value: valueProp, children } = props;
+  const {
+    onChange: onChangeProp,
+    onSelectionChange,
+    defaultValue = [],
+    value: valueProp,
+    children,
+  } = props;
 
   const [value, setValue] = useControllableState({
     value: valueProp,
@@ -39,6 +49,15 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
     setValueOptions((prev) => prev.filter((value) => value !== toBeUnregisteredValue));
   }, []);
 
+  const getSelection = React.useCallback(
+    (value: string[]): Selection => {
+      if (value.length === valueOptions.length) return 'all';
+      if (value.length > 0) return 'partial';
+      return 'none';
+    },
+    [valueOptions.length],
+  );
+
   const handleChange: CheckboxGroupChangeHandler = React.useCallback(
     (targetValue, isChecked) => {
       let newValue: string[];
@@ -49,9 +68,10 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
       }
 
       onChangeProp?.(newValue);
+      onSelectionChange?.(getSelection(newValue));
       setValue(newValue);
     },
-    [onChangeProp, setValue, value],
+    [getSelection, onChangeProp, onSelectionChange, setValue, value],
   );
 
   const providerValue = React.useMemo<CheckboxGroupProviderValue>(
@@ -59,11 +79,7 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
     [handleChange, value, props, registerValue, unregisterValue],
   );
 
-  const selection = (() => {
-    if (value.length === valueOptions.length) return 'all';
-    if (value.length > 0) return 'partial';
-    return 'none';
-  })();
+  const selection = getSelection(value);
 
   const toggleSelectAll = React.useCallback(() => {
     if (selection === 'none') {
@@ -85,7 +101,7 @@ export const CheckboxGroup = (props: CheckboxGroupProps) => {
   return (
     <CheckboxGroupProvider value={providerValue}>
       {typeof children === 'function'
-        ? children({ selection, toggleSelectAll, toggleValue })
+        ? children({ selection, toggleSelectAll, value, toggleValue })
         : children}
     </CheckboxGroupProvider>
   );

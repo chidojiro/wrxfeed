@@ -7,9 +7,7 @@ import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES, GRADIENT_DEFAULT } from '@/config';
 import { NotifyBanner } from '@/layout/NotifyBanner';
 import mixpanel from 'mixpanel-browser';
 import { useEffect, useState } from 'react';
-import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import { useHistory, useLocation } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 export interface LocationState {
   fromInvite?: boolean;
@@ -35,12 +33,11 @@ export const LoginPage = () => {
     }
   }, [message]);
 
-  const handleResponseSuccess = async (
-    response: GoogleLoginResponse | GoogleLoginResponseOffline,
-  ) => {
-    if ('accessToken' in response) {
-      const { accessToken } = response;
-      const userToken = await AuthApis.signInWithGoogle(accessToken);
+  const handleResponseSuccess = async (response: any) => {
+    if ('access_token' in response) {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { access_token } = response;
+      const userToken = await AuthApis.signInWithGoogle(access_token);
       const googleProfile = 'profileObj' in response ? response.profileObj : null;
 
       AuthUtils.setToken(userToken.token);
@@ -54,13 +51,11 @@ export const LoginPage = () => {
     }
   };
 
-  const handleResponseFailure = (error: any) => {
-    if ('details' in error) {
-      toast.error(error.details);
-    } else {
-      toast.error('Fail to connect your Google Account');
-    }
-  };
+  const client = (window as any).google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: GOOGLE_SCOPES,
+    callback: handleResponseSuccess,
+  });
 
   return notInvited ? (
     <NotInvited onBack={() => setNotInvited(false)} />
@@ -90,21 +85,9 @@ export const LoginPage = () => {
                   track and target more efficient spending.
                 </p>
               </div>
-              <GoogleLogin
-                clientId={GOOGLE_CLIENT_ID}
-                scope={GOOGLE_SCOPES}
-                onSuccess={handleResponseSuccess}
-                onFailure={handleResponseFailure}
-                render={(renderProps) => (
-                  <SocialAuthButton
-                    provider={AuthProvider.GOOGLE}
-                    disabled={renderProps.disabled}
-                    onClick={renderProps.onClick}
-                  >
-                    Sign in with Google
-                  </SocialAuthButton>
-                )}
-              />
+              <SocialAuthButton provider={AuthProvider.GOOGLE} onClick={client.requestAccessToken}>
+                Sign in with Google
+              </SocialAuthButton>
             </div>
           </div>
         </div>
@@ -113,21 +96,12 @@ export const LoginPage = () => {
           <h2 className="text-4xl text-primary text-center font-bold mb-3">
             Join your team on Gravity.
           </h2>
-          <GoogleLogin
-            clientId={GOOGLE_CLIENT_ID}
-            scope={GOOGLE_SCOPES}
-            onSuccess={handleResponseSuccess}
-            onFailure={handleResponseFailure}
-            render={(renderProps) => (
-              <SocialAuthButton
-                provider={AuthProvider.GOOGLE}
-                disabled={renderProps.disabled}
-                onClick={renderProps.onClick}
-              >
-                Sign up with Google
-              </SocialAuthButton>
-            )}
-          />
+          <SocialAuthButton
+            provider={AuthProvider.GOOGLE}
+            onClick={() => client.requestAccessToken()}
+          >
+            Sign up with Google
+          </SocialAuthButton>
         </>
       )}
     </div>

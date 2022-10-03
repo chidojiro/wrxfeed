@@ -1,12 +1,7 @@
 import { RestApis } from '@/rest/apis';
 import { withDefaultPaginationParams } from '@/rest/utils';
-import {
-  GetVendorsParams,
-  GetVendorSpendingsParams,
-  UpdateVendorPayload,
-  Vendor,
-  VendorSpendings,
-} from './types';
+import { SpendingsReport } from '@/spending/types';
+import { GetVendorsParams, GetVendorSpendingsParams, UpdateVendorPayload, Vendor } from './types';
 
 const get = (id: number) => RestApis.get<Vendor>(`/feed/vendors/${id}`);
 
@@ -19,7 +14,7 @@ const update = (id: number, payload: UpdateVendorPayload) =>
   RestApis.patch<Vendor>(`/feed/vendors/${id}`, payload);
 
 const getSpendings = (id: number, params?: GetVendorSpendingsParams) =>
-  RestApis.get<VendorSpendings>(`feed/vendors/${id}/spends`, {
+  RestApis.get<SpendingsReport>(`feed/vendors/${id}/spends`, {
     params: { year: params?.year ?? new Date().getFullYear() },
   });
 

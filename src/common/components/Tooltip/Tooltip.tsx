@@ -44,9 +44,6 @@ export const Tooltip = ({
     );
   }, [disclosure, trigger]);
 
-  // Do not show popover yet to avoid dom mutation
-  if (!disclosure.isOpen) return <>{clonedTrigger}</>;
-
   return (
     <Popover
       open={disclosure.isOpen}

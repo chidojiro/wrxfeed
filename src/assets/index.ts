@@ -1,8 +1,11 @@
+export { ReactComponent as EditOutlineIcon } from '@/assets/icons/outline/edit.svg';
 export { ReactComponent as InviteIcon } from '@/assets/icons/outline/invite.svg';
+export { ReactComponent as AntiClockwiseIcon } from '@/assets/icons/outline/anti-clockwise.svg';
 export { ReactComponent as TickIcon } from '@/assets/icons/outline/tick.svg';
 export { ReactComponent as MinusIcon } from '@/assets/icons/outline/minus.svg';
 export { ReactComponent as SearchIcon } from '@/assets/icons/outline/search.svg';
 export { ReactComponent as ArrowUpIcon } from '@/assets/icons/outline/arrow-up.svg';
+export { ReactComponent as ArrowRightIcon } from '@/assets/icons/outline/arrow-right.svg';
 export { ReactComponent as MoreVerticalIcon } from '@/assets/icons/outline/more-vertical.svg';
 export { ReactComponent as EssentialsSendIcon } from '@/assets/icons/outline/essentials-send.svg';
 export { ReactComponent as EssentialsSendEnableIcon } from '@/assets/icons/solid/essentials-send-enable.svg';

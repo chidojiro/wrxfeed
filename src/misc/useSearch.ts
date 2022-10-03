@@ -1,5 +1,4 @@
-import { EMPTY_ARRAY } from '@/common/constants';
-import { useCategories } from '@/feed/useCategories';
+import { useCategories } from '@/category/useCategories';
 import { SearchResult } from '@/main/types';
 import { TargetTypeProp } from '@/target/types';
 import { useDepartments } from '@/team/useDepartments';

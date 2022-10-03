@@ -10,13 +10,13 @@ export type AvatarGroupProps = ClassName & {
 
 export const AvatarGroup = ({ items, trailingComponent }: AvatarGroupProps) => {
   return (
-    <div className={clsx(StringUtils.withProjectClassNamePrefix('avatar-group'), 'relative h-7')}>
+    <div className={clsx(StringUtils.withProjectClassNamePrefix('avatar-group'), 'relative h-6')}>
       {items.map((item, index) => (
         <Avatar
-          className={clsx(`absolute left-0 border-2 border-white h-7 w-7`, {
-            'z-10 ml-3': index === 1,
-            'z-20 ml-6': index === 2,
-            'z-30 ml-9': index === 3,
+          className={clsx(`absolute left-0 border-2 border-white h-6 w-6`, {
+            'z-10 ml-4': index === 1,
+            'z-20 ml-8': index === 2,
+            'z-30 ml-12': index === 3,
           })}
           key={item.fullName ?? item.src ?? index}
           src={item.src as string}
@@ -26,9 +26,9 @@ export const AvatarGroup = ({ items, trailingComponent }: AvatarGroupProps) => {
       {!!trailingComponent && (
         <div
           className={clsx('z-50 absolute', {
-            'left-9 xl:right-6': items.length === 3,
-            'left-6 xl:right-9': items.length === 2,
-            'left-3 xl:right-12': items.length === 1,
+            'left-[46px] xl:right-6': items.length === 3,
+            'left-[30px] xl:right-9': items.length === 2,
+            'left-3.5 xl:right-12': items.length === 1,
           })}
         >
           {trailingComponent}

@@ -8,7 +8,6 @@ import { AxiosResponse } from 'axios';
 import {
   CreateCommentPayload,
   CreateFeedbackPayload,
-  GetCategoriesParams,
   GetFeedCommentsParams,
   GetFeedsParams,
   GetLineItemsParams,
@@ -31,16 +30,6 @@ const getList = (params?: GetFeedsParams) => {
     params: withDefaultPaginationParams({ dep, rootDep, cat, vend, ...restParams }),
   });
 };
-
-const getCategory = (id: number) => RestApis.get<Category>(`/feed/categories/${id}`);
-
-const getCategories = async (params?: GetCategoriesParams) =>
-  RestApis.get<Category[]>('/feed/categories', {
-    params: withDefaultPaginationParams(params),
-  });
-
-const updateCategory = async (id: number, payload: Partial<Category>) =>
-  RestApis.patch<Category>(`/feed/categories/${id}`, payload);
 
 const getUnreadLineItemsCount = async (params?: Omit<GetFeedsParams, keyof PaginationParams>) => {
   const {
@@ -104,9 +93,6 @@ const createLineItemFeedback = (id: number, payload: CreateFeedbackPayload) =>
 export const FeedApis = {
   get,
   getList,
-  getCategory,
-  getCategories,
-  updateCategory,
   getComments,
   createComment,
   updateComment,
