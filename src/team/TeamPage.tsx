@@ -1,7 +1,9 @@
+import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader } from '@/common/components';
 import { EMPTY_ARRAY } from '@/common/constants';
 import { useHandler, useMountEffect, useQuery, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
+import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
@@ -13,6 +15,7 @@ import { TeamTargetSummary } from './TeamTargetSummary';
 import { TopCategories } from './TopCategories';
 import { TransactionList } from './TransactionList';
 import { TimeRange } from './types';
+import { useDepartment } from './useDepartment';
 import { useTopCategories } from './useTopCategories';
 import { useTransactions } from './useTransactions';
 
@@ -25,13 +28,13 @@ export const TeamPage = () => {
     useUrlState<TimeRange>('transactionTimeRange');
   const [topCategoriesTimeRange, setTopCategoriesTimeRange] =
     useUrlState<TimeRange>('topCategoriesTimeRange');
-
   const { handle: viewDepartmentSummary } = useHandler((departmentId: number) =>
     DepartmentApis.viewSummary(departmentId),
   );
 
   const { id: departmentIdParam } = useParams() as Record<string, string>;
   const departmentId = +departmentIdParam;
+
   const { data: target, isValidating: isValidatingTarget, mutate } = usePrimaryTarget(departmentId);
 
   useMountEffect(() => {
@@ -67,43 +70,53 @@ export const TeamPage = () => {
   const { data: topCategories = EMPTY_ARRAY, isValidating: isValidatingTopCategories } =
     useTopCategories(departmentId, { from: getFromDate(topCategoriesTimeRange), to: getToDate() });
 
+  const { data: department, error } = useDepartment(departmentId);
+
+  const isForbidden = error?.code === ApiErrorCode.Forbidden;
+
   return (
     <MainLayout>
-      <h1 className="sr-only">Department list</h1>
-      <TeamHeader departmentId={departmentId} />
-      <div className="grid grid-cols-9 gap-6 mt-6">
-        <OverlayLoader loading={isValidatingTarget} className="col-span-9 lg:col-span-5">
-          <TargetCard
-            className="h-full"
-            target={target}
-            showColorfulHeading={false}
-            onUpdateSuccess={(target) => mutate([target])}
-            onDeleteSuccess={() => mutate()}
+      {isForbidden ? (
+        <RestrictedAccessPage />
+      ) : (
+        <>
+          <h1 className="sr-only">Department list</h1>
+          <TeamHeader department={department} />
+          <div className="grid grid-cols-9 gap-6 mt-6">
+            <OverlayLoader loading={isValidatingTarget} className="col-span-9 lg:col-span-5">
+              <TargetCard
+                className="h-full"
+                target={target}
+                showColorfulHeading={false}
+                onUpdateSuccess={(target) => mutate([target])}
+                onDeleteSuccess={() => mutate()}
+              />
+            </OverlayLoader>
+            <div className="col-span-9 lg:col-span-4 flex flex-col gap-6">
+              <TeamTargetSummary departmentId={departmentId} />
+              <OverlayLoader loading={isValidatingTopCategories}>
+                <TopCategories
+                  timeRange={topCategoriesTimeRange}
+                  onTimeRangeChange={setTopCategoriesTimeRange}
+                  topCategories={topCategories}
+                />
+              </OverlayLoader>
+            </div>
+          </div>
+          <TransactionList
+            transactions={transactions}
+            loading={isValidatingTransactions}
+            perPage={TRANSACTIONS_PER_PAGE}
+            totalCount={totalCount}
+            hiddenColumns={['depName']}
+            className="mt-6"
+            sort={sortTransactionsBy}
+            onSortChange={setSortTransactionsBy}
+            timeRange={transactionTimeRange}
+            onTimeRangeChange={setTransactionTimeRange}
           />
-        </OverlayLoader>
-        <div className="col-span-9 lg:col-span-4 flex flex-col gap-6">
-          <TeamTargetSummary departmentId={departmentId} />
-          <OverlayLoader loading={isValidatingTopCategories}>
-            <TopCategories
-              timeRange={topCategoriesTimeRange}
-              onTimeRangeChange={setTopCategoriesTimeRange}
-              topCategories={topCategories}
-            />
-          </OverlayLoader>
-        </div>
-      </div>
-      <TransactionList
-        transactions={transactions}
-        loading={isValidatingTransactions}
-        perPage={TRANSACTIONS_PER_PAGE}
-        totalCount={totalCount}
-        hiddenColumns={['depName']}
-        className="mt-6"
-        sort={sortTransactionsBy}
-        onSortChange={setSortTransactionsBy}
-        timeRange={transactionTimeRange}
-        onTimeRangeChange={setTransactionTimeRange}
-      />
+        </>
+      )}
     </MainLayout>
   );
 };
