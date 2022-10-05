@@ -5,18 +5,17 @@ import { TeamIcon } from '@/assets';
 import { ClassName } from '@/common/types';
 import DepartmentItem from '@/main/molecules/DepartmentItem';
 import { getColorByText } from '@/main/utils';
-import { useDepartment } from './useDepartment';
+import { Department } from '@/main/entity';
 
 export type TeamHeaderProps = ClassName & {
-  departmentId: number;
+  department?: Department;
 };
 
-export const TeamHeader = ({ className, departmentId }: TeamHeaderProps) => {
+export const TeamHeader = ({ className, department }: TeamHeaderProps) => {
   const teamHeaderColor = React.useMemo(
-    () => getColorByText('', departmentId, true),
-    [departmentId],
+    () => getColorByText('', department?.id, true),
+    [department?.id],
   );
-  const { data: department } = useDepartment(departmentId);
 
   return (
     <div
