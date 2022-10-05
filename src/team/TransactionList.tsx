@@ -195,15 +195,17 @@ export const TransactionList = ({
                           </Table.Cell>
                         )}
                         <Table.Cell>
-                          <Tooltip
-                            trigger={
-                              <div className="flex items-center max-w-[350px]">
-                                <p className="line-clamp-3">{description}</p>
-                              </div>
-                            }
-                          >
-                            {description}
-                          </Tooltip>
+                          <Link to={`/feed/${feedItem?.id}`}>
+                            <Tooltip
+                              trigger={
+                                <div className="flex items-center max-w-[350px]">
+                                  <p className="line-clamp-3">{description}</p>
+                                </div>
+                              }
+                            >
+                              {description}
+                            </Tooltip>
+                          </Link>
                         </Table.Cell>
                         <Table.Cell className="text-right">
                           {decimalLogic(amountUsd, '$')}
@@ -219,13 +221,11 @@ export const TransactionList = ({
                           </div>
                         </Table.Cell>
                         <Table.Cell>
-                          <Link to={`/feed/${feedItem?.id}`}>
-                            {feedItem?.comments.length ? (
-                              <CommentGroup comments={feedItem.comments} />
-                            ) : (
-                              <p className="text-center">--</p>
-                            )}
-                          </Link>
+                          {feedItem?.comments.length ? (
+                            <CommentGroup comments={feedItem.comments} />
+                          ) : (
+                            <p className="text-center">--</p>
+                          )}
                         </Table.Cell>
                       </Table.Row>
                     ),
