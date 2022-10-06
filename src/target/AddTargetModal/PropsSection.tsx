@@ -19,7 +19,7 @@ export const PropsSection = ({ reviewSentence, exceptionProps = [], error }: Pro
 
   const { departments } = useDepartments({
     limit: 0,
-    includeSub: 1,
+    includeSub: true,
   });
 
   const { vendors } = useVendors({
