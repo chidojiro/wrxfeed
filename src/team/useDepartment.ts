@@ -1,7 +1,6 @@
 import { DepartmentApis } from '@/team/apis';
 import { useFetcher } from '@/common/hooks';
 import { ApiErrorCode, isApiError } from '@/error';
-import { toast } from 'react-toastify';
 
 export const useDepartment = (id: number) => {
   return useFetcher(
