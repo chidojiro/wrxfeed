@@ -1,6 +1,8 @@
+import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader } from '@/common/components';
 import { useQuery, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
+import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { SpendingBarChart } from '@/spending/SpendingChart/SpendingBarChart';
@@ -24,7 +26,7 @@ export const CategoryPage = () => {
   const { categoryId: categoryIdParam } = useParams() as Record<string, string>;
   const categoryId = +categoryIdParam;
 
-  const { data: vendor, isValidating: isValidatingVendor } = useCategory(categoryId);
+  const { data: vendor, isValidating: isValidatingVendor, error } = useCategory(categoryId);
 
   const { categorySpendingsReport, isValidatingCategorySpendingsReport } =
     useCategorySpendingsReport(categoryId);
@@ -59,6 +61,15 @@ export const CategoryPage = () => {
     from: getFromDate(),
     to: getToDate(),
   });
+
+  const isForbidden = error?.code === ApiErrorCode.Forbidden;
+
+  if (isForbidden)
+    return (
+      <MainLayout>
+        <RestrictedAccessPage />
+      </MainLayout>
+    );
 
   return (
     <MainLayout>
