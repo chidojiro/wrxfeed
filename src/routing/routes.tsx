@@ -26,6 +26,10 @@ const FeedPage = React.lazy(() =>
   import('@/main/pages/Feed').then(({ FeedPage }) => ({ default: FeedPage })),
 );
 
+const LineItemPage = React.lazy(() =>
+  import('@/main/pages/Feed/LineItem').then(({ LineItemPage }) => ({ default: LineItemPage })),
+);
+
 const LoginPage = React.lazy(() =>
   import('@/auth/pages/LoginPage').then(({ LoginPage }) => ({ default: LoginPage })),
 );
@@ -58,6 +62,10 @@ export const Routes: Route = {
   Feed: {
     path: '/feed/:id',
     component: Sentry.withProfiler(FeedPage, { name: 'FeedPage' }),
+  },
+  LineItem: {
+    path: '/feed/item/:id',
+    component: Sentry.withProfiler(LineItemPage, { name: 'LineItemPage' }),
   },
   Onboard: {
     path: '/onboarding',
