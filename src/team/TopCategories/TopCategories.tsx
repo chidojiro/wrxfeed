@@ -1,6 +1,9 @@
 import { CategoryIcon } from '@/assets';
+import { HiddenItem } from '@/auth/HiddenItem';
 import { EmptyState } from '@/common/components/EmptyState';
 import { TopCategories as TTopCategories } from '@/main/entity';
+import { useRestrictedItems } from '@/role/useRestrictedItems';
+import clsx from 'clsx';
 import { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Cell, Pie, PieChart, Tooltip } from 'recharts';
@@ -33,6 +36,14 @@ export const TopCategories = ({
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const history = useHistory();
+
+  const { restrictedItems } = useRestrictedItems();
+
+  const restrictedCategoryIds = restrictedItems
+    .filter(({ type }) => type === 'CATEGORY')
+    .map(({ id }) => id);
+
+  console.log(restrictedCategoryIds);
 
   const handlePieEnter = useCallback(
     (_: unknown, index: number) => {
@@ -123,17 +134,21 @@ export const TopCategories = ({
             {chartData
               .slice()
               .reverse()
-              .map(({ name, color }) => {
+              .map(({ name, color, id }) => {
+                console.log(id);
                 return (
                   <li
                     key={color}
-                    className="text-2xs text-gray-3 flex items-baseline leading-4 gap-1 w-[fit-content]"
+                    className={clsx(
+                      'text-2xs text-gray-3 flex items-baseline leading-4 gap-1 w-[fit-content]',
+                      { '!items-center': restrictedCategoryIds.includes(id) },
+                    )}
                   >
                     <div
                       className="rounded-full w-1.5 h-1.5 flex-shrink-0"
                       style={{ background: color }}
                     ></div>
-                    {name}
+                    {restrictedCategoryIds.includes(id) ? <HiddenItem /> : name}
                   </li>
                 );
               })}

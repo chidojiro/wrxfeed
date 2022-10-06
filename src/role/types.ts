@@ -34,3 +34,8 @@ export type Role = {
   vendors: VisibilityConfig[];
   memberIds: number[];
 };
+
+export type RestrictedItem = {
+  id: number;
+  type: 'DEPARTMENT' | 'CATEGORY' | 'VENDOR';
+};

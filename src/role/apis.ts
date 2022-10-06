@@ -1,7 +1,13 @@
 import { Category, Department } from '@/main/entity';
 import { RestApis } from '@/rest/apis';
 import { Vendor } from '@/vendor/types';
-import { CreateRolePayload, UpdateRolePayload, Role, UpdateAssignedRolesPayload } from './types';
+import {
+  CreateRolePayload,
+  UpdateRolePayload,
+  Role,
+  UpdateAssignedRolesPayload,
+  RestrictedItem,
+} from './types';
 import { transformRoleResponse } from './utils';
 
 const get = (id: number) => RestApis.get(`/rbac/roles/${id}`).then(transformRoleResponse);
@@ -24,6 +30,8 @@ const getDepartments = () =>
 
 const getVendors = () => RestApis.get<Vendor[]>('/rbac/vendors');
 
+const getRestrictedItems = () => RestApis.get<RestrictedItem[]>('/rbac/items?type=restricted');
+
 export const RoleApis = {
   get,
   getList,
@@ -33,4 +41,5 @@ export const RoleApis = {
   getCategories,
   getDepartments,
   getVendors,
+  getRestrictedItems,
 };
