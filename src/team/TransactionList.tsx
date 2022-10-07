@@ -280,15 +280,17 @@ export const TransactionList = ({
                           {isSomeRestricted(department, vendor, category) ? (
                             <RestrictedItem />
                           ) : (
-                            <Tooltip
-                              trigger={
-                                <div className="flex items-center max-w-[350px]">
-                                  <p className="line-clamp-3">{description}</p>
-                                </div>
-                              }
-                            >
-                              {description}
-                            </Tooltip>
+                            <Link to={`/feed/${feedItem?.id}`}>
+                              <Tooltip
+                                trigger={
+                                  <div className="flex items-center max-w-[350px]">
+                                    <p className="line-clamp-3">{description}</p>
+                                  </div>
+                                }
+                              >
+                                {description}
+                              </Tooltip>
+                            </Link>
                           )}
                         </Table.Cell>
                         <Table.Cell className="text-right">
@@ -313,7 +315,7 @@ export const TransactionList = ({
                               </div>
                             </div>
                           ) : (
-                            <Link to={`/feed/${feedItem?.id}`}>
+                            <Link to={`/feed/item/${feedItem?.id}`}>
                               {feedItem?.comments.length ? (
                                 <CommentGroup comments={feedItem.comments} />
                               ) : (
