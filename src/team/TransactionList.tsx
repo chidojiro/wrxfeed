@@ -1,4 +1,5 @@
-import { LoopBoldIcon } from '@/assets';
+import { CommentIcon, EyeHideIcon, LoopBoldIcon } from '@/assets';
+import { RestrictedItem } from '@/auth/RestrictedItem';
 import {
   Avatar,
   OverlayLoader,
@@ -13,9 +14,13 @@ import { RedirectMethod, useUrlState } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { DateUtils } from '@/common/utils';
 import { CommentGroup } from '@/feed/CommentGroup';
-import { TransLineItem, TranStatus } from '@/main/entity';
+import { Category, Department, TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
+import { RestrictedItem as TRestrictedItem } from '@/role/types';
+import { useRestrictedItems } from '@/role/useRestrictedItems';
+import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
+import { isEqual } from 'lodash-es';
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { TimeRangeSelect } from './TimeRangeSelect';
@@ -76,6 +81,8 @@ export const TransactionList = ({
   const showDepartment = !hiddenColumns?.includes('depName');
   const showVendor = !hiddenColumns?.includes('vendorName');
 
+  const { restrictedItems } = useRestrictedItems();
+
   const headers: HeaderItem[] = [
     { label: 'Date', sortKey: 'transDate' },
     showDepartment && { label: 'Team', sortKey: 'depName' },
@@ -98,6 +105,61 @@ export const TransactionList = ({
       onSortChange('-transDate', 'REPLACE');
     }
   }, [onSortChange, sort]);
+
+  const isRestricted = (id: number, type: TRestrictedItem['type']) => {
+    return !!restrictedItems.find((item) => isEqual({ id, type }, item));
+  };
+
+  const isAllRestricted = (department?: Department, vendor?: Vendor, category?: Category) => {
+    if (!department || !vendor || !category) return false;
+
+    if (
+      !showDepartment &&
+      isRestricted(vendor.id, 'VENDOR') &&
+      isRestricted(category.id, 'CATEGORY')
+    )
+      return true;
+
+    if (
+      !showVendor &&
+      isRestricted(department.id, 'DEPARTMENT') &&
+      isRestricted(category.id, 'CATEGORY')
+    )
+      return true;
+
+    if (
+      !showCategory &&
+      isRestricted(vendor.id, 'VENDOR') &&
+      isRestricted(department.id, 'DEPARTMENT')
+    )
+      return true;
+
+    return false;
+  };
+
+  const isSomeRestricted = (department?: Department, vendor?: Vendor, category?: Category) => {
+    if (!department || !vendor || !category) return false;
+
+    if (
+      !showDepartment &&
+      (isRestricted(vendor.id, 'VENDOR') || isRestricted(category.id, 'CATEGORY'))
+    )
+      return true;
+
+    if (
+      !showVendor &&
+      (isRestricted(department.id, 'DEPARTMENT') || isRestricted(category.id, 'CATEGORY'))
+    )
+      return true;
+
+    if (
+      !showCategory &&
+      (isRestricted(vendor.id, 'VENDOR') || isRestricted(department.id, 'DEPARTMENT'))
+    )
+      return true;
+
+    return false;
+  };
 
   return (
     <div>
@@ -152,50 +214,72 @@ export const TransactionList = ({
                         <Table.Cell>{transDate && DateUtils.format(transDate)}</Table.Cell>
                         {showDepartment && (
                           <Table.Cell className="hover:bg-Gray-12 !p-0">
-                            <Link
-                              className="flex items-center gap-2 py-2 px-4"
-                              to={`/departments/${department?.id}`}
-                            >
-                              {department?.name}
-                            </Link>
+                            <div className="py-2 px-4">
+                              {isRestricted(department?.id ?? 0, 'DEPARTMENT') ? (
+                                <RestrictedItem />
+                              ) : (
+                                <Link
+                                  className="flex items-center gap-2"
+                                  to={`/departments/${department?.id}`}
+                                >
+                                  {department?.name}
+                                </Link>
+                              )}
+                            </div>
                           </Table.Cell>
                         )}
                         {showCategory && (
                           <Table.Cell className="hover:bg-Gray-12 !p-0">
-                            <Link
-                              className="flex items-center gap-2 py-2 px-4"
-                              to={`/categories/${category?.id}`}
-                            >
-                              {category?.name}
-                            </Link>
+                            <div className="py-2 px-4">
+                              {isRestricted(category?.id ?? 0, 'CATEGORY') ? (
+                                <RestrictedItem />
+                              ) : (
+                                <Link
+                                  className="flex items-center gap-2"
+                                  to={`/categories/${category?.id}`}
+                                >
+                                  {category?.name}
+                                </Link>
+                              )}
+                            </div>
                           </Table.Cell>
                         )}
                         {showVendor && (
                           <Table.Cell className="hover:bg-Gray-12 !p-0">
-                            <Link
-                              to={`/vendors/${vendor?.id}`}
-                              className="flex items-center gap-2 py-2 px-4"
-                            >
-                              <Avatar
-                                size="sm"
-                                src={vendor?.avatar}
-                                fullName={vendor?.name ?? ''}
-                                className="w-6 h-6 flex-shrink-0"
-                              />
-                              <div>
-                                <p>{vendor?.name}</p>
-                                {transRecordType?.toLowerCase() ===
-                                  'Expense Report'.toLowerCase() && (
-                                  <div className="flex flex-row items-center space-x-1">
-                                    <p className="text-Accent-2 text-xs font-normal">Expensed</p>
+                            <div className="py-2 px-4">
+                              {isRestricted(vendor?.id ?? 0, 'VENDOR') ? (
+                                <RestrictedItem />
+                              ) : (
+                                <Link
+                                  to={`/vendors/${vendor?.id}`}
+                                  className="flex items-center gap-2"
+                                >
+                                  <Avatar
+                                    size="sm"
+                                    src={vendor?.avatar}
+                                    fullName={vendor?.name ?? ''}
+                                    className="w-6 h-6 flex-shrink-0"
+                                  />
+                                  <div>
+                                    <p>{vendor?.name}</p>
+                                    {transRecordType?.toLowerCase() ===
+                                      'Expense Report'.toLowerCase() && (
+                                      <div className="flex flex-row items-center space-x-1">
+                                        <p className="text-Accent-2 text-xs font-normal">
+                                          Expensed
+                                        </p>
+                                      </div>
+                                    )}
                                   </div>
-                                )}
-                              </div>
-                            </Link>
+                                </Link>
+                              )}
+                            </div>
                           </Table.Cell>
                         )}
                         <Table.Cell>
-                          <Link to={`/feed/${feedItem?.id}`}>
+                          {isSomeRestricted(department, vendor, category) ? (
+                            <RestrictedItem />
+                          ) : (
                             <Tooltip
                               trigger={
                                 <div className="flex items-center max-w-[350px]">
@@ -205,7 +289,7 @@ export const TransactionList = ({
                             >
                               {description}
                             </Tooltip>
-                          </Link>
+                          )}
                         </Table.Cell>
                         <Table.Cell className="text-right">
                           {decimalLogic(amountUsd, '$')}
@@ -221,13 +305,22 @@ export const TransactionList = ({
                           </div>
                         </Table.Cell>
                         <Table.Cell>
-                          <Link to={`/feed/item/${feedItem?.id}`}>
-                            {feedItem?.comments.length ? (
-                              <CommentGroup comments={feedItem.comments} />
-                            ) : (
-                              <p className="text-center">--</p>
-                            )}
-                          </Link>
+                          {isAllRestricted(department, vendor, category) ? (
+                            <div className="relative">
+                              <CommentIcon className="text-Gray-7 h-7 w-6" />
+                              <div className="absolute top-0 left-0 w-6 h-full">
+                                <EyeHideIcon className="absolute top-3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xs font-semibold text-red-1" />
+                              </div>
+                            </div>
+                          ) : (
+                            <Link to={`/feed/${feedItem?.id}`}>
+                              {feedItem?.comments.length ? (
+                                <CommentGroup comments={feedItem.comments} />
+                              ) : (
+                                <p className="text-center">--</p>
+                              )}
+                            </Link>
+                          )}
                         </Table.Cell>
                       </Table.Row>
                     ),
