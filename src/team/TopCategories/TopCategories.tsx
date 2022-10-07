@@ -43,8 +43,6 @@ export const TopCategories = ({
     .filter(({ type }) => type === 'CATEGORY')
     .map(({ id }) => id);
 
-  console.log(restrictedCategoryIds);
-
   const handlePieEnter = useCallback(
     (_: unknown, index: number) => {
       setActiveIndex(index);
@@ -135,7 +133,6 @@ export const TopCategories = ({
               .slice()
               .reverse()
               .map(({ name, color, id }) => {
-                console.log(id);
                 return (
                   <li
                     key={color}

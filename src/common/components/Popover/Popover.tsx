@@ -1,4 +1,4 @@
-import { useDelayableState, useOnEventOutside } from '@/common/hooks';
+import { useOnEventOutside } from '@/common/hooks';
 import { Children, OpenClose } from '@/common/types';
 import { AssertUtils } from '@/common/utils';
 import clsx from 'clsx';
@@ -8,6 +8,8 @@ import { ConditionalWrapper } from '../ConditionalWrapper';
 import { Portal } from '../Portal';
 
 export type PopoverPlacement = PopperProps<any>['placement'];
+
+const originalError = console.error;
 
 export type PopoverProps = Children &
   OpenClose & {
@@ -66,6 +68,18 @@ export const Popover = ({
       }),
     );
   }, [trigger]);
+
+  React.useLayoutEffect(() => {
+    console.error = (e) => {
+      if (e.toString().includes('flushSync')) return '';
+
+      return e;
+    };
+
+    return () => {
+      console.error = originalError;
+    };
+  }, []);
 
   React.useEffect(() => {
     forceUpdate?.();
