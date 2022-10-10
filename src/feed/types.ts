@@ -37,6 +37,6 @@ export type GetLineItemsParams = PaginationParams &
     to: string;
   };
 
-export type FeedType = 'target' | 'transaction';
+export type FeedType = 'target' | 'rollup';
 
 export type GetUnreadLineItemCountParams = Omit<GetFeedsParams, keyof PaginationParams>;
