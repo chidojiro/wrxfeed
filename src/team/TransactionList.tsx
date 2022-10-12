@@ -39,7 +39,7 @@ export const getTransactionColorScheme = (status: TranStatus): StatusTagColorSch
   }
 };
 
-const getTransactionLabel = (status: TranStatus) => {
+export const getTransactionLabel = (status: TranStatus) => {
   switch (status) {
     case TranStatus.PaidInFull:
       return 'Paid';
