@@ -3,18 +3,25 @@ import { OverlayLoader, StatusTag } from '@/common/components';
 import { ApiErrorCode, isApiError, useErrorHandler } from '@/error';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
-import { FeedItem, TranStatus } from '@/main/entity';
-import { decimalLogic } from '@/main/utils';
+import { Comment, FeedItem, TranStatus, Visibility } from '@/main/entity';
+import { commentEditorRawParser, decimalLogic } from '@/main/utils';
+import { useMentions } from '@/misc/useMentions';
+import { useProfile } from '@/profile/useProfile';
 import { getTransactionColorScheme } from '@/team/TransactionList';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
+import { EditorState } from 'draft-js';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FeedApis } from '../apis';
+import { CreateFeedbackPayload } from '../types';
 import { CommentBox } from './CommentBox';
+import { CommentItem } from './CommentItem';
 import { FeedBackModal } from './FeedBackModal';
+
+const INITIAL_COMMENTS = 2;
 
 export const TransactionFeedItemCard = () => {
   const params = useParams<{ id: string }>();
@@ -23,6 +30,10 @@ export const TransactionFeedItemCard = () => {
   const id = Number(params.id);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [lineItem, setLineItem] = useState<FeedItem>();
+  const [feedback, setFeedback] = useState<string>('');
+  const [comments, setComments] = useState<Comment[]>();
+  const { mentions } = useMentions();
+  const { profile } = useProfile();
 
   const feedbackModalDisclosure = useDisclosure();
 
@@ -56,6 +67,12 @@ export const TransactionFeedItemCard = () => {
       const res = await FeedApis.getTransactionFeedItem(id);
       if (res.length > 0) {
         setLineItem(res[0]);
+        const resCmt = await FeedApis.getComments(res[0].id, {
+          order: 'DESC',
+          offset: 0,
+          limit: INITIAL_COMMENTS,
+        });
+        setComments(resCmt);
       }
     } catch (error: unknown) {
       if (isApiError(error)) {
@@ -70,6 +87,20 @@ export const TransactionFeedItemCard = () => {
       setLoading(false);
     }
   }, [errorHandler, history, id]);
+
+  const onChangeTextContent = (content?: EditorState): void => {
+    if (!content) return;
+    const rawText = commentEditorRawParser(content.getCurrentContent());
+    setFeedback(rawText);
+  };
+
+  const handleSubmitComment = async (id: number, payload: CreateFeedbackPayload) => {
+    await FeedApis.createComment(id, payload);
+    getFeedLineItem();
+  };
+
+  const isHidden =
+    lineItem?.category !== null && lineItem?.category?.visibility === Visibility.HIDDEN;
 
   useEffect(() => {
     getFeedLineItem();
@@ -142,8 +173,29 @@ export const TransactionFeedItemCard = () => {
               </StatusTag>
             </div>
           </div>
-          <div className="py-6 px-12">
-            <CommentBox showAttach={false} showSend={false} showEmoji={false} />
+          <ul className="flex flex-col px-9 py-4">
+            {comments?.map((comment) => (
+              <li key={comment.id}>
+                <CommentItem
+                  className={isHidden ? 'bg-purple-11' : 'bg-Gray-24'}
+                  comment={comment}
+                  mentionData={mentions}
+                  editable={profile?.id === comment.user.id}
+                  isShowUserAva
+                />
+              </li>
+            ))}
+          </ul>
+          <div className="pb-3 px-9">
+            <CommentBox
+              style={{ backgroundColor: 'white' }}
+              showAttach={false}
+              showEmoji={false}
+              showSend={false}
+              alwaysFocus
+              onChange={onChangeTextContent}
+              onSubmit={() => handleSubmitComment(lineItem?.id as number, { content: feedback })}
+            />
           </div>
         </article>
       </OverlayLoader>
