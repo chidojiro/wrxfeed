@@ -35,6 +35,6 @@ export const useLineItemDrawer = () => {
       selectedLineItem,
       feedId,
     }),
-    [closeLineItemDrawer, openLineItemDrawer, selectedLineItem, feedId],
+    [openLineItemDrawer, isMobile, selectedLineItem, closeLineItemDrawer, feedId],
   );
 };

@@ -90,6 +90,9 @@ const markLineItemAsRead = (id: number) => updateLineItem(id, null as any);
 const createLineItemFeedback = (id: number, payload: CreateFeedbackPayload) =>
   RestApis.post(`/feedback/line-items/${id}/feedback`, payload);
 
+const getTransactionFeedItem = (id: number) =>
+  RestApis.get<FeedItem[]>(`/feed/items?forYou=1&lineItemId=${id}`);
+
 export const FeedApis = {
   get,
   getList,
@@ -106,4 +109,5 @@ export const FeedApis = {
   updateLineItem,
   markLineItemAsRead,
   createLineItemFeedback,
+  getTransactionFeedItem,
 };
