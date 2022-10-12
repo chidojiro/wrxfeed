@@ -7,7 +7,7 @@ import { Comment, FeedItem, TranStatus, Visibility } from '@/main/entity';
 import { commentEditorRawParser, decimalLogic } from '@/main/utils';
 import { useMentions } from '@/misc/useMentions';
 import { useProfile } from '@/profile/useProfile';
-import { getTransactionColorScheme } from '@/team/TransactionList';
+import { getTransactionColorScheme, getTransactionLabel } from '@/team/TransactionList';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
@@ -169,7 +169,7 @@ export const TransactionFeedItemCard = () => {
                 )}
                 className="h-5 text-xs font-medium"
               >
-                {lineItem?.lineItem.transStatus}
+                {getTransactionLabel(lineItem?.lineItem.transStatus as TranStatus)}
               </StatusTag>
             </div>
           </div>
