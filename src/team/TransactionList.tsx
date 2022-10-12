@@ -2,6 +2,7 @@ import { CommentIcon, EyeHideIcon, LoopBoldIcon } from '@/assets';
 import { RestrictedItem } from '@/auth/RestrictedItem';
 import {
   Avatar,
+  Button,
   OverlayLoader,
   StatusTag,
   StatusTagColorScheme,
@@ -14,6 +15,7 @@ import { RedirectMethod, useUrlState } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { DateUtils } from '@/common/utils';
 import { CommentGroup } from '@/feed/CommentGroup';
+import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { Category, Department, TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
 import { RestrictedItem as TRestrictedItem } from '@/role/types';
@@ -37,7 +39,7 @@ export const getTransactionColorScheme = (status: TranStatus): StatusTagColorSch
   }
 };
 
-const getTransactionLabel = (status: TranStatus) => {
+export const getTransactionLabel = (status: TranStatus) => {
   switch (status) {
     case TranStatus.PaidInFull:
       return 'Paid';
@@ -73,9 +75,16 @@ export const TransactionList = ({
   sort,
   onSortChange,
 }: TransactionListProps) => {
-  const history = useHistory();
   const [_page, setPage] = useUrlState('page');
   const page = _page ? +_page : 1;
+
+  const {
+    isLineItemDrawerOpen,
+    selectedLineItem,
+    closeLineItemDrawer,
+    feedId,
+    openLineItemDrawer,
+  } = useLineItemDrawer();
 
   const showCategory = !hiddenColumns?.includes('categoryName');
   const showDepartment = !hiddenColumns?.includes('depName');
@@ -159,6 +168,12 @@ export const TransactionList = ({
 
   return (
     <div>
+      <LineItemDrawer
+        open={isLineItemDrawerOpen}
+        onClose={closeLineItemDrawer}
+        lineItem={selectedLineItem!}
+        feedId={feedId}
+      />
       <Table.OverflowContainer className={className}>
         <OverlayLoader loading={loading}>
           <Table className="rounded-card" sort={sort} onSortChange={(sort) => onSortChange(sort)}>
@@ -188,137 +203,139 @@ export const TransactionList = ({
                       </Table.Header>
                     ))}
                   </Table.Row>
-                  {transactions.map(
-                    ({
-                      amountUsd,
-                      category,
-                      description,
-                      transDate,
-                      vendor,
-                      id,
-                      transStatus,
-                      transRecordType,
-                      department,
-                    }: TransLineItem) => (
-                      <Table.Row
-                        key={id}
-                        className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
-                      >
-                        <Table.Cell>{transDate && DateUtils.format(transDate)}</Table.Cell>
-                        {showDepartment && (
-                          <Table.Cell className="hover:bg-Gray-12 !p-0">
-                            <div className="py-2 px-4">
-                              {isRestricted(department?.id ?? 0, 'DEPARTMENT') ? (
-                                <RestrictedItem />
-                              ) : (
-                                <Link
-                                  className="flex items-center gap-2"
-                                  to={`/departments/${department?.id}`}
-                                >
-                                  {department?.name}
-                                </Link>
-                              )}
-                            </div>
-                          </Table.Cell>
-                        )}
-                        {showCategory && (
-                          <Table.Cell className="hover:bg-Gray-12 !p-0">
-                            <div className="py-2 px-4">
-                              {isRestricted(category?.id ?? 0, 'CATEGORY') ? (
-                                <RestrictedItem />
-                              ) : (
-                                <Link
-                                  className="flex items-center gap-2"
-                                  to={`/categories/${category?.id}`}
-                                >
-                                  {category?.name}
-                                </Link>
-                              )}
-                            </div>
-                          </Table.Cell>
-                        )}
-                        {showVendor && (
-                          <Table.Cell className="hover:bg-Gray-12 !p-0">
-                            <div className="py-2 px-4">
-                              {isRestricted(vendor?.id ?? 0, 'VENDOR') ? (
-                                <RestrictedItem />
-                              ) : (
-                                <Link
-                                  to={`/vendors/${vendor?.id}`}
-                                  className="flex items-center gap-2"
-                                >
-                                  <Avatar
-                                    size="sm"
-                                    src={vendor?.avatar}
-                                    fullName={vendor?.name ?? ''}
-                                    className="w-6 h-6 flex-shrink-0"
-                                  />
-                                  <div>
-                                    <p>{vendor?.name}</p>
-                                    {transRecordType?.toLowerCase() ===
-                                      'Expense Report'.toLowerCase() && (
-                                      <div className="flex flex-row items-center space-x-1">
-                                        <p className="text-Accent-2 text-xs font-normal">
-                                          Expensed
-                                        </p>
-                                      </div>
-                                    )}
-                                  </div>
-                                </Link>
-                              )}
-                            </div>
-                          </Table.Cell>
-                        )}
-                        <Table.Cell>
-                          {isSomeRestricted(department, vendor, category) ? (
-                            <RestrictedItem />
-                          ) : (
+                  {transactions.map((transaction: TransLineItem) => (
+                    <Table.Row
+                      key={transaction.id}
+                      className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
+                    >
+                      <Table.Cell>
+                        {transaction.transDate && DateUtils.format(transaction.transDate)}
+                      </Table.Cell>
+                      {showDepartment && (
+                        <Table.Cell className="hover:bg-Gray-12 !p-0">
+                          <div className="py-2 px-4">
+                            {isRestricted(transaction.department?.id ?? 0, 'DEPARTMENT') ? (
+                              <RestrictedItem />
+                            ) : (
+                              <Link
+                                className="flex items-center gap-2"
+                                to={`/departments/${transaction.department?.id}`}
+                              >
+                                {transaction.department?.name}
+                              </Link>
+                            )}
+                          </div>
+                        </Table.Cell>
+                      )}
+                      {showCategory && (
+                        <Table.Cell className="hover:bg-Gray-12 !p-0">
+                          <div className="py-2 px-4">
+                            {isRestricted(transaction.category?.id ?? 0, 'CATEGORY') ? (
+                              <RestrictedItem />
+                            ) : (
+                              <Link
+                                className="flex items-center gap-2"
+                                to={`/categories/${transaction.category?.id}`}
+                              >
+                                {transaction.category?.name}
+                              </Link>
+                            )}
+                          </div>
+                        </Table.Cell>
+                      )}
+                      {showVendor && (
+                        <Table.Cell className="hover:bg-Gray-12 !p-0">
+                          <div className="py-2 px-4">
+                            {isRestricted(transaction.vendor?.id ?? 0, 'VENDOR') ? (
+                              <RestrictedItem />
+                            ) : (
+                              <Link
+                                to={`/vendors/${transaction.vendor?.id}`}
+                                className="flex items-center gap-2"
+                              >
+                                <Avatar
+                                  size="sm"
+                                  src={transaction.vendor?.avatar}
+                                  fullName={transaction.vendor?.name ?? ''}
+                                  className="w-6 h-6 flex-shrink-0"
+                                />
+                                <div>
+                                  <p>{transaction.vendor?.name}</p>
+                                  {transaction.transRecordType?.toLowerCase() ===
+                                    'Expense Report'.toLowerCase() && (
+                                    <div className="flex flex-row items-center space-x-1">
+                                      <p className="text-Accent-2 text-xs font-normal">Expensed</p>
+                                    </div>
+                                  )}
+                                </div>
+                              </Link>
+                            )}
+                          </div>
+                        </Table.Cell>
+                      )}
+                      <Table.Cell>
+                        {isSomeRestricted(
+                          transaction.department,
+                          transaction.vendor,
+                          transaction.category,
+                        ) ? (
+                          <RestrictedItem />
+                        ) : (
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openLineItemDrawer(transaction, transaction?.feedItem?.id);
+                            }}
+                          >
                             <Tooltip
                               trigger={
                                 <div className="flex items-center max-w-[350px]">
-                                  <p className="line-clamp-3">{description}</p>
+                                  <p className="line-clamp-3">{transaction.description}</p>
                                 </div>
                               }
                             >
-                              {description}
+                              {transaction.description}
                             </Tooltip>
-                          )}
-                        </Table.Cell>
-                        <Table.Cell className="text-right">
-                          {decimalLogic(amountUsd, '$')}
-                        </Table.Cell>
-                        <Table.Cell>
-                          <div className="flex justify-end">
-                            <StatusTag
-                              colorScheme={getTransactionColorScheme(transStatus)}
-                              className="font-semibold"
-                            >
-                              {getTransactionLabel(transStatus)}
-                            </StatusTag>
-                          </div>
-                        </Table.Cell>
-                        <Table.Cell>
-                          {isAllRestricted(department, vendor, category) ? (
-                            <div className="relative">
-                              <CommentIcon className="text-Gray-7 h-7 w-6" />
-                              <div className="absolute top-0 left-0 w-6 h-full">
-                                <EyeHideIcon className="absolute top-3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xs font-semibold text-red-1" />
-                              </div>
+                          </Button>
+                        )}
+                      </Table.Cell>
+                      <Table.Cell className="text-right">
+                        {decimalLogic(transaction.amountUsd, '$')}
+                      </Table.Cell>
+                      <Table.Cell>
+                        <div className="flex justify-end">
+                          <StatusTag
+                            colorScheme={getTransactionColorScheme(transaction.transStatus)}
+                            className="font-semibold"
+                          >
+                            {getTransactionLabel(transaction.transStatus)}
+                          </StatusTag>
+                        </div>
+                      </Table.Cell>
+                      <Table.Cell>
+                        {isAllRestricted(
+                          transaction.department,
+                          transaction.vendor,
+                          transaction.category,
+                        ) ? (
+                          <div className="relative">
+                            <CommentIcon className="text-Gray-7 h-7 w-6" />
+                            <div className="absolute top-0 left-0 w-6 h-full">
+                              <EyeHideIcon className="absolute top-3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xs font-semibold text-red-1" />
                             </div>
-                          ) : (
-                            <Link to={`/feed/item/${id}`}>
-                              {/* {feedItem?.comments.length ? (
-                                <CommentGroup comments={feedItem.comments} />
-                              ) : (
-                                <p className="text-center">--</p>
-                              )} */}
+                          </div>
+                        ) : (
+                          <Link to={`/feed/item/${transaction.id}`}>
+                            {transaction.feedItem?.comments.length ? (
+                              <CommentGroup comments={transaction.feedItem.comments} />
+                            ) : (
                               <p className="text-center">--</p>
-                            </Link>
-                          )}
-                        </Table.Cell>
-                      </Table.Row>
-                    ),
-                  )}
+                            )}
+                          </Link>
+                        )}
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
                 </>
               ) : (
                 <Table.Row>
