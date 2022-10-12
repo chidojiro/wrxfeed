@@ -26,7 +26,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { TimeRangeSelect } from './TimeRangeSelect';
 import { TimeRange } from './types';
 
-const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
+export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
     case TranStatus.PaidInFull:
       return 'green';
@@ -93,10 +93,6 @@ export const TransactionList = ({
     { label: 'Status', sortKey: 'transStatus', align: 'text-right' },
     { label: 'Comments', align: 'text-center flex justify-center' },
   ].filter((item): item is HeaderItem => !!item);
-
-  const goToLineItemPage = (feedItemId: number) => {
-    history.push(`/feed/${feedItemId}`);
-  };
 
   const hasTransactions = transactions?.length > 0;
 
@@ -202,14 +198,11 @@ export const TransactionList = ({
                       id,
                       transStatus,
                       transRecordType,
-                      feedItemId,
-                      feedItem,
                       department,
                     }: TransLineItem) => (
                       <Table.Row
                         key={id}
                         className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
-                        onClick={() => feedItemId && goToLineItemPage(feedItemId)}
                       >
                         <Table.Cell>{transDate && DateUtils.format(transDate)}</Table.Cell>
                         {showDepartment && (
@@ -280,17 +273,15 @@ export const TransactionList = ({
                           {isSomeRestricted(department, vendor, category) ? (
                             <RestrictedItem />
                           ) : (
-                            <Link to={`/feed/${feedItem?.id}`}>
-                              <Tooltip
-                                trigger={
-                                  <div className="flex items-center max-w-[350px]">
-                                    <p className="line-clamp-3">{description}</p>
-                                  </div>
-                                }
-                              >
-                                {description}
-                              </Tooltip>
-                            </Link>
+                            <Tooltip
+                              trigger={
+                                <div className="flex items-center max-w-[350px]">
+                                  <p className="line-clamp-3">{description}</p>
+                                </div>
+                              }
+                            >
+                              {description}
+                            </Tooltip>
                           )}
                         </Table.Cell>
                         <Table.Cell className="text-right">
@@ -315,12 +306,13 @@ export const TransactionList = ({
                               </div>
                             </div>
                           ) : (
-                            <Link to={`/feed/item/${feedItem?.id}`}>
-                              {feedItem?.comments.length ? (
+                            <Link to={`/feed/item/${id}`}>
+                              {/* {feedItem?.comments.length ? (
                                 <CommentGroup comments={feedItem.comments} />
                               ) : (
                                 <p className="text-center">--</p>
-                              )}
+                              )} */}
+                              <p className="text-center">--</p>
                             </Link>
                           )}
                         </Table.Cell>
