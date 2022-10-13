@@ -24,7 +24,7 @@ import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { TimeRangeSelect } from './TimeRangeSelect';
 import { TimeRange } from './types';
 
@@ -282,20 +282,25 @@ export const TransactionList = ({
                           <RestrictedItem />
                         ) : (
                           <Button
+                            className="text-left"
                             onClick={(e) => {
                               e.stopPropagation();
                               openLineItemDrawer(transaction, transaction?.feedItem?.id);
                             }}
                           >
-                            <Tooltip
-                              trigger={
-                                <div className="flex items-center max-w-[350px]">
-                                  <p className="line-clamp-3">{transaction.description}</p>
-                                </div>
-                              }
-                            >
-                              {transaction.description}
-                            </Tooltip>
+                            {(transaction.description ?? '').length >= 93 ? (
+                              <Tooltip
+                                trigger={
+                                  <div className="flex flex-col items-center max-w-[350px]">
+                                    <p className="line-clamp-3">{transaction.description}</p>
+                                  </div>
+                                }
+                              >
+                                {transaction.description}
+                              </Tooltip>
+                            ) : (
+                              <p>{transaction.description}</p>
+                            )}
                           </Button>
                         )}
                       </Table.Cell>
