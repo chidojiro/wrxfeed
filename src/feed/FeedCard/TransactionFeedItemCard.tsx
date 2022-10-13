@@ -13,7 +13,7 @@ import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
 import { EditorState } from 'draft-js';
 import { useCallback, useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FeedApis } from '../apis';
 import { CreateFeedbackPayload } from '../types';
@@ -122,12 +122,29 @@ export const TransactionFeedItemCard = () => {
           <div className="px-8 pt-3 pb-6">
             <div className="flex justify-between">
               <div className="space-y-1">
-                <p className="text-base font-bold text-primary">
-                  {lineItem?.lineItem.vendor?.name}
-                </p>
-                <p className="text-xs font-normal text-Gray-6">
-                  {lineItem?.lineItem.department?.name} · {lineItem?.lineItem.category?.name} ·{' '}
-                  {dayjs(lineItem?.lineItem.transDate).format('DD/MM/YY')}
+                <Link
+                  className="flex items-center hover:underline"
+                  to={`/vendors/${lineItem?.lineItem.vendor?.id}`}
+                >
+                  <p className="text-base font-bold text-primary">
+                    {lineItem?.lineItem.vendor?.name}
+                  </p>
+                </Link>
+                <p className="flex space-x-0.5 text-xs font-normal text-Gray-6">
+                  <Link
+                    className="flex items-center hover:underline"
+                    to={`/departments/${lineItem?.lineItem.department?.id}`}
+                  >
+                    {lineItem?.lineItem.department?.name} ·
+                  </Link>
+                  <Link
+                    className="flex items-center hover:underline"
+                    to={`/categories/${lineItem?.lineItem.category?.id}`}
+                  >
+                    {' '}
+                    {lineItem?.lineItem.category?.name} ·
+                  </Link>
+                  <span> {dayjs(lineItem?.lineItem.transDate).format('DD/MM/YY')}</span>
                 </p>
               </div>
               <div className="flex space-x-3.5">
