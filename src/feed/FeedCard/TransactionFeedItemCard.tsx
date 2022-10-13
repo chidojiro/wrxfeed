@@ -209,6 +209,7 @@ export const TransactionFeedItemCard = () => {
               showAttach={false}
               showEmoji={false}
               showSend={false}
+              mentionData={mentions}
               alwaysFocus
               onChange={onChangeTextContent}
               onSubmit={() => handleSubmitComment(lineItem?.id as number, { content: feedback })}
