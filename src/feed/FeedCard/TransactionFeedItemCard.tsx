@@ -1,12 +1,9 @@
 import { MoreVerticalIcon } from '@/assets';
 import { OverlayLoader, StatusTag } from '@/common/components';
-import { ApiErrorCode, isApiError, useErrorHandler } from '@/error';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
-import { Comment, FeedItem, TranStatus, Visibility } from '@/main/entity';
-import { commentEditorRawParser, decimalLogic } from '@/main/utils';
-import { useMentions } from '@/misc/useMentions';
-import { useProfile } from '@/profile/useProfile';
+import { FeedItem, TranStatus } from '@/main/entity';
+import { decimalLogic } from '@/main/utils';
 import { getTransactionColorScheme, getTransactionLabel } from '@/team/TransactionList';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
