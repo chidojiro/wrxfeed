@@ -14,6 +14,7 @@ export type Spending = {
   year: number;
   month: number;
   total: number;
+  item?: { id: number; name: string; type: 'DEPARTMENT' };
 };
 
 export type MonthData = {

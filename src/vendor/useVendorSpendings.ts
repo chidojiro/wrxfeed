@@ -1,11 +1,13 @@
 import { useFetcher } from '@/common/hooks';
 import React from 'react';
 import { VendorApis } from './apis';
+import { GetVendorSpendingsParams } from './types';
 
-export const useVendorSpendings = (id: number) => {
+export const useVendorSpendings = (id: number, params?: GetVendorSpendingsParams) => {
   const { data, isInitializing, isValidating, mutate } = useFetcher(
-    ['useVendorSpendings', id],
-    () => VendorApis.getSpendings(id),
+    ['useVendorSpendings', id, params],
+    () => VendorApis.getSpendings(id, params),
+    { laggy: true },
   );
 
   return React.useMemo(

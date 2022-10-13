@@ -1,6 +1,5 @@
 import { Category } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
-import { Spending } from '@/spending/types';
 
 export type GetVendorsParams = PaginationParams;
 
@@ -24,4 +23,5 @@ export type UpdateVendorPayload = {
 
 export type GetVendorSpendingsParams = {
   year?: number;
+  groupBy?: 'CATEGORY' | 'DEPARTMENT';
 };
