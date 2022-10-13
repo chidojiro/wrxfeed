@@ -4,7 +4,7 @@ import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/mai
 import { decimalLogic, DecimalType } from '@/main/utils';
 import { TargetMonth, TargetPeriod, TargetSpending, TargetStatusConfig } from '@/target/types';
 import dayjs from 'dayjs';
-import { groupBy, range } from 'lodash-es';
+import { groupBy, range, sumBy, uniqBy } from 'lodash-es';
 import { SpendingChartData } from './SpendingChart';
 import { MonthData, Spending, TrackingStatus } from './types';
 
@@ -395,4 +395,36 @@ export const getCurrentSpendings = (
       .slice(firstMeaningfulPeriodMonth, lastMeaningfulPeriodMonth + 1)
       .reduce((total, target) => total + (target.total ?? 0), 0) ?? 0
   );
+};
+
+const COLORS = [
+  '#2C0594',
+  '#6565FB',
+  '#BD86F3',
+  '#BF43A4',
+  '#801BAF',
+  '#EF8482',
+  '#FCCD25',
+  '#FFA31D',
+  '#319DB0',
+  '#225959',
+];
+
+export const getThisYearTotalsGroupedByItem = (curYearSpends: Spending[]) => {
+  const curYearSpendsGroupedByItemId = groupBy(curYearSpends, 'item.id');
+
+  const uniqueItems = uniqBy(
+    curYearSpends.map(({ item }) => item),
+    'id',
+  ).filter(Boolean);
+
+  const thisYearTotals = uniqueItems
+    .map((item) => ({
+      ...item!,
+      total: sumBy(curYearSpendsGroupedByItemId[item!.id], 'total'),
+    }))
+    .sort((a, b) => b.total - a.total)
+    .map((item, idx) => ({ ...item, color: COLORS[idx] }));
+
+  return thisYearTotals;
 };

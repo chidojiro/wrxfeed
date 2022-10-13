@@ -8,9 +8,10 @@ export type XAxisProps = {
   startMonth: number;
   endMonth: number;
   bar?: boolean;
+  hoveredIndex?: number;
 };
 
-export const XAxis = ({ startMonth, endMonth, bar }: XAxisProps) => {
+export const XAxis = ({ startMonth, endMonth, bar, hoveredIndex }: XAxisProps) => {
   const isMobile = useBreakpoint({ '768': false }) ?? true;
 
   const targetDate = dayjs().set('month', startMonth - 1);
@@ -41,10 +42,13 @@ export const XAxis = ({ startMonth, endMonth, bar }: XAxisProps) => {
         { 'justify-around': bar },
       )}
     >
-      {range(startMonth, endMonth + 1).map((month: number) => (
+      {range(startMonth, endMonth + 1).map((month: number, idx) => (
         <div
-          key={`x-${month}`}
-          className="w-[25px] h-7 flex justify-center items-center first:justify-start last:justify-end"
+          key={month}
+          className={clsx(
+            'w-[25px] h-7 flex justify-center items-center first:justify-start last:justify-end',
+            { 'opacity-50': hoveredIndex !== undefined && hoveredIndex !== idx },
+          )}
         >
           <p>
             {isMobile
