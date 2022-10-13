@@ -1,4 +1,4 @@
-import { CommentIcon, EyeHideIcon, LoopBoldIcon } from '@/assets';
+import { AddSmallSlimIcon, CommentIcon, EyeHideIcon, LoopBoldIcon } from '@/assets';
 import { RestrictedItem } from '@/auth/RestrictedItem';
 import {
   Avatar,
@@ -334,7 +334,12 @@ export const TransactionList = ({
                             {transaction.feedItem?.comments.length ? (
                               <CommentGroup comments={transaction.feedItem.comments} />
                             ) : (
-                              <p className="text-center">--</p>
+                              <div className="relative m-2">
+                                <CommentIcon className="text-Gray-7 h-7 w-6" />
+                                <div className="absolute bottom-[43%] left-3 transform -translate-x-1/2 text-Gray-2">
+                                  <AddSmallSlimIcon />
+                                </div>
+                              </div>
                             )}
                           </Link>
                         )}
