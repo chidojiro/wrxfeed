@@ -1,40 +1,25 @@
 import { MoreVerticalIcon } from '@/assets';
 import { OverlayLoader, StatusTag } from '@/common/components';
-import { ApiErrorCode, isApiError, useErrorHandler } from '@/error';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
-import { Comment, FeedItem, TranStatus, Visibility } from '@/main/entity';
-import { commentEditorRawParser, decimalLogic } from '@/main/utils';
-import { useMentions } from '@/misc/useMentions';
-import { useProfile } from '@/profile/useProfile';
+import { FeedItem, TranStatus } from '@/main/entity';
+import { decimalLogic } from '@/main/utils';
 import { getTransactionColorScheme, getTransactionLabel } from '@/team/TransactionList';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
-import { EditorState } from 'draft-js';
-import { useCallback, useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FeedApis } from '../apis';
-import { CreateFeedbackPayload } from '../types';
-import { CommentBox } from './CommentBox';
-import { CommentItem } from './CommentItem';
+import { CommentsSection } from './CommentsSection';
 import { FeedBackModal } from './FeedBackModal';
 
-const INITIAL_COMMENTS = 2;
+export type TransactionFeedItemCardProps = {
+  id: number;
+  feed: FeedItem;
+  loading: boolean;
+};
 
-export const TransactionFeedItemCard = () => {
-  const params = useParams<{ id: string }>();
-  const history = useHistory();
-  const errorHandler = useErrorHandler();
-  const id = Number(params.id);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [lineItem, setLineItem] = useState<FeedItem>();
-  const [feedback, setFeedback] = useState<string>('');
-  const [comments, setComments] = useState<Comment[]>();
-  const { mentions } = useMentions();
-  const { profile } = useProfile();
-
+export const TransactionFeedItemCard = ({ id, feed, loading }: TransactionFeedItemCardProps) => {
   const feedbackModalDisclosure = useDisclosure();
 
   const handleCopyFeedLink = () => {
@@ -61,54 +46,9 @@ export const TransactionFeedItemCard = () => {
     return items;
   };
 
-  const getFeedLineItem = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await FeedApis.getTransactionFeedItem(id);
-      if (res.length > 0) {
-        setLineItem(res[0]);
-        const resCmt = await FeedApis.getComments(res[0].id, {
-          order: 'DESC',
-          offset: 0,
-          limit: INITIAL_COMMENTS,
-        });
-        setComments(resCmt);
-      }
-    } catch (error: unknown) {
-      if (isApiError(error)) {
-        if (error.code === ApiErrorCode.Notfound) {
-          history.push('/404');
-        } else {
-          toast.error(error.details?.message);
-          errorHandler(error);
-        }
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [errorHandler, history, id]);
-
-  const onChangeTextContent = (content?: EditorState): void => {
-    if (!content) return;
-    const rawText = commentEditorRawParser(content.getCurrentContent());
-    setFeedback(rawText);
-  };
-
-  const handleSubmitComment = async (id: number, payload: CreateFeedbackPayload) => {
-    await FeedApis.createComment(id, payload);
-    getFeedLineItem();
-  };
-
-  const isHidden =
-    lineItem?.category !== null && lineItem?.category?.visibility === Visibility.HIDDEN;
-
-  useEffect(() => {
-    getFeedLineItem();
-  }, [getFeedLineItem]);
-
   return (
     <>
-      <OverlayLoader loading={isLoading}>
+      <OverlayLoader loading={loading}>
         <article className="bg-white flex flex-col filter shadow-md rounded-card overflow-hidden">
           <div className="flex flex-row">
             <div
@@ -124,32 +64,30 @@ export const TransactionFeedItemCard = () => {
               <div className="space-y-1">
                 <Link
                   className="flex items-center hover:underline"
-                  to={`/vendors/${lineItem?.lineItem.vendor?.id}`}
+                  to={`/vendors/${feed?.lineItem.vendor?.id}`}
                 >
-                  <p className="text-base font-bold text-primary">
-                    {lineItem?.lineItem.vendor?.name}
-                  </p>
+                  <p className="text-base font-bold text-primary">{feed?.lineItem.vendor?.name}</p>
                 </Link>
                 <p className="flex space-x-0.5 text-xs font-normal text-Gray-6">
                   <Link
                     className="flex items-center hover:underline"
-                    to={`/departments/${lineItem?.lineItem.department?.id}`}
+                    to={`/departments/${feed?.lineItem.department?.id}`}
                   >
-                    {lineItem?.lineItem.department?.name} ·
+                    {feed?.lineItem.department?.name} ·
                   </Link>
                   <Link
                     className="flex items-center hover:underline"
-                    to={`/categories/${lineItem?.lineItem.category?.id}`}
+                    to={`/categories/${feed?.lineItem.category?.id}`}
                   >
                     {' '}
-                    {lineItem?.lineItem.category?.name} ·
+                    {feed?.lineItem.category?.name} ·
                   </Link>
-                  <span> {dayjs(lineItem?.lineItem.transDate).format('DD/MM/YY')}</span>
+                  <span> {dayjs(feed?.lineItem.transDate).format('DD/MM/YY')}</span>
                 </p>
               </div>
               <div className="flex space-x-3.5">
                 <p className="text-lg leading-5 font-semibold text-primary">
-                  {decimalLogic(lineItem?.lineItem.amountUsd, '$')}
+                  {decimalLogic(feed?.lineItem.amountUsd, '$')}
                 </p>
                 <Menu as="div" className="relative inline-block z-20 text-left mt-0.5">
                   <div>
@@ -170,51 +108,25 @@ export const TransactionFeedItemCard = () => {
           <div className="px-9 py-6 border-t border-b border-Gray-11">
             <div className="flex justify-between">
               <p className=" font-normal text-xs text-Gray-6">
-                {lineItem?.lineItem.description}{' '}
+                {feed?.lineItem.description}{' '}
                 <span>
                   {` - ${
-                    lineItem?.month &&
+                    feed?.month &&
                     dayjs()
-                      .month(lineItem?.month - 1)
+                      .month(feed?.month - 1)
                       .format('MMMM')
                   }`}
                 </span>
               </p>
               <StatusTag
-                colorScheme={getTransactionColorScheme(
-                  lineItem?.lineItem.transStatus as TranStatus,
-                )}
+                colorScheme={getTransactionColorScheme(feed?.lineItem.transStatus as TranStatus)}
                 className="h-5 text-xs font-medium"
               >
-                {getTransactionLabel(lineItem?.lineItem.transStatus as TranStatus)}
+                {getTransactionLabel(feed?.lineItem.transStatus as TranStatus)}
               </StatusTag>
             </div>
           </div>
-          <ul className="flex flex-col px-9 py-4">
-            {comments?.map((comment) => (
-              <li key={comment.id}>
-                <CommentItem
-                  className={isHidden ? 'bg-purple-11' : 'bg-Gray-24'}
-                  comment={comment}
-                  mentionData={mentions}
-                  editable={profile?.id === comment.user.id}
-                  isShowUserAva
-                />
-              </li>
-            ))}
-          </ul>
-          <div className="pb-3 px-9">
-            <CommentBox
-              style={{ backgroundColor: 'white' }}
-              showAttach={false}
-              showEmoji={false}
-              showSend={false}
-              mentionData={mentions}
-              alwaysFocus
-              onChange={onChangeTextContent}
-              onSubmit={() => handleSubmitComment(lineItem?.id as number, { content: feedback })}
-            />
-          </div>
+          {feed && <CommentsSection feed={feed} />}
         </article>
       </OverlayLoader>
       <FeedBackModal
