@@ -1,9 +1,10 @@
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
-import { EMPTY_ARRAY } from '@/common/constants';
 import { useFetcher } from '@/common/hooks';
 import { FeedApis } from '@/feed/apis';
+import { fallbackFeed } from '@/feed/constants';
 import { TransactionFeedItemCard } from '@/feed/FeedCard/TransactionFeedItemCard';
 import { MainLayout } from '@/layout/MainLayout';
+import ListLoading from '@/main/atoms/ListLoading';
 import { useParams } from 'react-router-dom';
 
 export const LineItemPage = () => {
@@ -11,14 +12,22 @@ export const LineItemPage = () => {
   const id = Number(params.id);
 
   const {
-    data: feed = EMPTY_ARRAY,
+    data: feed = fallbackFeed,
     isInitializing,
     isValidating,
-  } = useFetcher(['feedLineItems', params], () => FeedApis.getTransactionFeedItem(id));
+    isLagging,
+  } = useFetcher(['feedLineItems', params], () => FeedApis.get(id));
 
   const innerRender = () => {
-    if (isInitializing) return <RestrictedAccessPage />;
-    return <TransactionFeedItemCard feed={feed?.[0]} loading={isValidating} />;
+    if (isInitializing) {
+      return (
+        <div className="flex h-32 w-full justify-center items-center">
+          <ListLoading />
+        </div>
+      );
+    }
+    if (isLagging) return <RestrictedAccessPage />;
+    return <TransactionFeedItemCard feed={feed} loading={isValidating} />;
   };
 
   return <MainLayout>{innerRender()}</MainLayout>;

@@ -1,5 +1,4 @@
 import { MoreVerticalIcon } from '@/assets';
-import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, StatusTag } from '@/common/components';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';

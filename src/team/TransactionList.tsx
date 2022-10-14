@@ -166,6 +166,8 @@ export const TransactionList = ({
     return false;
   };
 
+  console.log(transactions);
+
   return (
     <div>
       <LineItemDrawer
@@ -330,7 +332,7 @@ export const TransactionList = ({
                             </div>
                           </div>
                         ) : (
-                          <Link to={`/feed/item/${transaction.id}`}>
+                          <Link to={`/feed/item/${transaction.feedItem?.id}`}>
                             {transaction.feedItem?.comments.length ? (
                               <CommentGroup comments={transaction.feedItem.comments} />
                             ) : (
