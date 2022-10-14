@@ -166,8 +166,6 @@ export const TransactionList = ({
     return false;
   };
 
-  console.log(transactions);
-
   return (
     <div>
       <LineItemDrawer
