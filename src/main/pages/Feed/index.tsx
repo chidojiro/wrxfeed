@@ -1,5 +1,6 @@
 import { OverlayLoader } from '@/common/components';
 import { useFetcher, useHandler, useNavUtils } from '@/common/hooks';
+import { ApiErrorCode } from '@/error';
 import { FeedApis } from '@/feed/apis';
 import { fallbackFeed } from '@/feed/constants';
 import { FeedCard } from '@/feed/FeedCard';
@@ -27,7 +28,7 @@ export const FeedPage: React.FC = () => {
     data: feedItem,
     mutate,
     isValidating,
-    isLagging,
+    error,
   } = useFetcher(['feed'], () => FeedApis.get(feedId));
 
   const goBackToDashboard = () => {
@@ -40,7 +41,7 @@ export const FeedPage: React.FC = () => {
   const { handle: deleteTarget } = useHandler(TargetApis.delete, { onSuccess: goBackToDashboard });
 
   const renderFeed = () => {
-    if (isLagging) {
+    if (error) {
       return (
         <div className="flex flex-1 w-full h-[300px] justify-center items-center px-16">
           <span className="flex text-2xl text-Gray-1 font-semibold text-center">
