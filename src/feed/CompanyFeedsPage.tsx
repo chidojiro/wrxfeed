@@ -21,7 +21,10 @@ export const CompanyFeedsPage = () => {
 
   return (
     <MainLayout>
-      <Feeds categoryRedirectHref={(category) => `${pathname}/category/${category.id}`} />
+      <Feeds
+        categoryRedirectHref={(category) => `${pathname}/category/${category.id}`}
+        mode="company"
+      />
     </MainLayout>
   );
 };

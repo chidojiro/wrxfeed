@@ -6,7 +6,7 @@ import { TeamTargetSection } from '@/target/TeamTargetSection';
 
 export const TargetsByDepartment = () => {
   const { data: targets, loadMore } = useInfiniteData((paginationParams: PaginationParams) =>
-    TargetApis.getList({ ...paginationParams, forYou: 1 }),
+    TargetApis.getList({ ...paginationParams, mode: 'for-you' }),
   );
 
   return (

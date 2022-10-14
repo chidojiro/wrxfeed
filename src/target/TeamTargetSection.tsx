@@ -27,7 +27,7 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
 
   const { data: targets = EMPTY_ARRAY, mutate: mutateTargets } = useTargets({
     dep: departmentId,
-    forYou: 1,
+    mode: 'for-you',
   });
 
   const teamHeaderColor: string = React.useMemo(

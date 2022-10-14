@@ -4,10 +4,11 @@ import { BitBoolean } from '@/common/types';
 import { PaginationParams } from '@/rest/types';
 import { Period, Spending } from '@/spending/types';
 import { Comment } from '@/main/entity';
+import { FeedMode } from '@/feed/types';
 
 export type GetTargetsParams = PaginationParams & {
   dep?: number;
-  forYou?: BitBoolean;
+  mode?: FeedMode;
   month?: number;
   year?: number;
   isPrimary?: BitBoolean;
@@ -35,7 +36,7 @@ export type TargetFilter = PaginationParams & {
   month?: number;
   timestamp?: number;
   dep?: number;
-  forYou?: BitBoolean;
+  mode?: FeedMode;
   isPrimary?: BitBoolean;
   type?: 'normal' | 'company';
 };
