@@ -1,3 +1,4 @@
+import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { EMPTY_ARRAY } from '@/common/constants';
 import { useFetcher } from '@/common/hooks';
 import { FeedApis } from '@/feed/apis';
@@ -9,13 +10,16 @@ export const LineItemPage = () => {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
 
-  const { data: feed = EMPTY_ARRAY, isInitializing } = useFetcher(['feedLineItems', params], () =>
-    FeedApis.getTransactionFeedItem(id),
-  );
+  const {
+    data: feed = EMPTY_ARRAY,
+    isInitializing,
+    isValidating,
+  } = useFetcher(['feedLineItems', params], () => FeedApis.getTransactionFeedItem(id));
 
-  return (
-    <MainLayout>
-      <TransactionFeedItemCard id={id} feed={feed?.[0]} loading={isInitializing} />
-    </MainLayout>
-  );
+  const innerRender = () => {
+    if (isInitializing) return <RestrictedAccessPage />;
+    return <TransactionFeedItemCard id={id} feed={feed?.[0]} loading={isValidating} />;
+  };
+
+  return <MainLayout>{innerRender()}</MainLayout>;
 };
