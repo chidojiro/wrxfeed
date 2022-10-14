@@ -17,6 +17,7 @@ export type FeedItem = {
   target: Target;
   hidden?: boolean;
   isFallback?: boolean;
+  lineItemId?: number;
   comments: Comment[];
   lineItem: TransLineItem;
 };

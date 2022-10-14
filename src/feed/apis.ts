@@ -27,7 +27,13 @@ const getList = (params?: GetFeedsParams) => {
   } = params ?? {};
 
   return RestApis.get<FeedItem[]>(`/feed/items`, {
-    params: withDefaultPaginationParams({ dep, rootDep, cat, vend, ...restParams }),
+    params: withDefaultPaginationParams({
+      dep,
+      rootDep,
+      cat,
+      vend,
+      ...restParams,
+    }),
   });
 };
 
@@ -41,7 +47,7 @@ const getUnreadLineItemsCount = async (params?: Omit<GetFeedsParams, keyof Pagin
   } = params ?? {};
 
   const res = await RestApis.get<AxiosResponse<Category[]>>(`/feed/items`, {
-    params: { dep, rootDep, cat, vend, limit: 1, offset: 0, ...restParams },
+    params: { mode: 'company', dep, rootDep, cat, vend, limit: 1, offset: 0, ...restParams },
     headers: BYPASS_INTERCEPTOR_HEADER,
   });
 
@@ -91,7 +97,7 @@ const createLineItemFeedback = (id: number, payload: CreateFeedbackPayload) =>
   RestApis.post(`/feedback/line-items/${id}/feedback`, payload);
 
 const getTransactionFeedItem = (id: number) =>
-  RestApis.get<FeedItem[]>(`/feed/items?forYou=1&lineItemId=${id}`);
+  RestApis.get<FeedItem[]>(`/feed/items?mode=for-you&lineItemId=${id}`);
 
 export const FeedApis = {
   get,

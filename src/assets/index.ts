@@ -37,6 +37,7 @@ export { ReactComponent as IntersectIcon } from '@/assets/icons/outline/intersec
 export { ReactComponent as LeftSmallIcon } from '@/assets/icons/outline/left-small.svg';
 export { ReactComponent as RightSmallIcon } from '@/assets/icons/outline/right-small.svg';
 export { ReactComponent as AddSmallIcon } from '@/assets/icons/outline/add-small.svg';
+export { ReactComponent as AddSmallSlimIcon } from '@/assets/icons/solid/add-small-slim.svg';
 export { ReactComponent as TargetIcon } from '@/assets/icons/outline/target.svg';
 export { ReactComponent as DetailLogoDefault } from '@/assets/icons/solid/details-logo-default.svg';
 export { ReactComponent as ChainLinkIcon } from '@/assets/icons/outline/chain-link.svg';

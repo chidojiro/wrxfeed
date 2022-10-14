@@ -1,4 +1,4 @@
-import { CommentIcon, EyeHideIcon, LoopBoldIcon } from '@/assets';
+import { AddSmallSlimIcon, CommentIcon, EyeHideIcon, LoopBoldIcon } from '@/assets';
 import { RestrictedItem } from '@/auth/RestrictedItem';
 import {
   Avatar,
@@ -24,7 +24,7 @@ import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { TimeRangeSelect } from './TimeRangeSelect';
 import { TimeRange } from './types';
 
@@ -282,20 +282,25 @@ export const TransactionList = ({
                           <RestrictedItem />
                         ) : (
                           <Button
+                            className="text-left"
                             onClick={(e) => {
                               e.stopPropagation();
                               openLineItemDrawer(transaction, transaction?.feedItem?.id);
                             }}
                           >
-                            <Tooltip
-                              trigger={
-                                <div className="flex items-center max-w-[350px]">
-                                  <p className="line-clamp-3">{transaction.description}</p>
-                                </div>
-                              }
-                            >
-                              {transaction.description}
-                            </Tooltip>
+                            {(transaction.description ?? '').length >= 93 ? (
+                              <Tooltip
+                                trigger={
+                                  <div className="flex flex-col items-center max-w-[350px]">
+                                    <p className="line-clamp-3">{transaction.description}</p>
+                                  </div>
+                                }
+                              >
+                                {transaction.description}
+                              </Tooltip>
+                            ) : (
+                              <p>{transaction.description}</p>
+                            )}
                           </Button>
                         )}
                       </Table.Cell>
@@ -325,11 +330,16 @@ export const TransactionList = ({
                             </div>
                           </div>
                         ) : (
-                          <Link to={`/feed/item/${transaction.id}`}>
+                          <Link to={`/feed/item/${transaction.feedItem?.id}`}>
                             {transaction.feedItem?.comments.length ? (
                               <CommentGroup comments={transaction.feedItem.comments} />
                             ) : (
-                              <p className="text-center">--</p>
+                              <div className="relative m-2">
+                                <CommentIcon className="text-Gray-7 h-7 w-6" />
+                                <div className="absolute bottom-[43%] left-3 transform -translate-x-1/2 text-Gray-2">
+                                  <AddSmallSlimIcon />
+                                </div>
+                              </div>
                             )}
                           </Link>
                         )}

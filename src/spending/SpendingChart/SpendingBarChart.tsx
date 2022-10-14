@@ -1,8 +1,7 @@
 import { getChartLevels } from '@/main/chart.utils';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
-import React from 'react';
-import { Bar, BarChart, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
+import { Bar, ComposedChart, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
 import { Spending } from '../types';
 import { TooltipContent } from './TooltipContent';
 import { XAxis } from './XAxis';
@@ -56,7 +55,7 @@ export const SpendingBarChart = ({ thisYearData, lastYearData }: SpendingBarChar
           })}
         </div>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart
+          <ComposedChart
             width={500}
             height={300}
             data={data}
@@ -66,16 +65,17 @@ export const SpendingBarChart = ({ thisYearData, lastYearData }: SpendingBarChar
               left: 50,
               bottom: 10,
             }}
+            barGap={-36}
           >
+            <Bar name="lastYear" dataKey="lastYear" fill="#EFF0F2" barSize={24} />
+            <Bar name="thisYear" dataKey="thisYear" fill="#6565FB" barSize={24} />
             <YAxis domain={[0, maxValueForChart]} width={0} height={0} className="opacity-0" />
             <Tooltip
               cursor={{ fill: 'transparent' }}
               position={{ y: 5 }}
               content={(props) => <TooltipContent {...props} showTarget={false} overallTarget />}
             />
-            <Bar name="thisYear" dataKey="thisYear" fill="#6565FB" />
-            <Bar name="lastYear" dataKey="lastYear" fill="#EFF0F2" />
-          </BarChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
       <XAxis startMonth={1} endMonth={12} bar />

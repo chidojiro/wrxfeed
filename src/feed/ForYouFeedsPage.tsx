@@ -22,7 +22,7 @@ export const ForYouFeedsPage = () => {
     <MainLayout>
       <h1 className="sr-only">For you feed</h1>
       <Feeds
-        forYou={1}
+        mode="for-you"
         categoryRedirectHref={(category) => `${pathname}/category/${category.id}`}
       />
     </MainLayout>

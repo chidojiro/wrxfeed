@@ -15,7 +15,7 @@ const update = (id: number, payload: UpdateVendorPayload) =>
 
 const getSpendings = (id: number, params?: GetVendorSpendingsParams) =>
   RestApis.get<SpendingsReport>(`feed/vendors/${id}/spends`, {
-    params: { year: params?.year ?? new Date().getFullYear() },
+    params: { ...params, year: params?.year ?? new Date().getFullYear() },
   });
 
 export const VendorApis = { get, getList, update, getSpendings };
