@@ -23,7 +23,7 @@ export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCa
   const feedbackModalDisclosure = useDisclosure();
 
   const handleCopyFeedLink = () => {
-    navigator.clipboard.writeText(`${window.location.host}/feed/item/${feed.lineItemId}`);
+    navigator.clipboard.writeText(`${window.location.host}/feed/item/${feed.id}`);
     toast.success('Feed line item link has been copied');
   };
 
