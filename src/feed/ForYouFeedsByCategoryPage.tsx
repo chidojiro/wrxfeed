@@ -34,7 +34,7 @@ export const ForYouFeedsByCategoryPage = () => {
           <h1 className="text-Gray-1 text-xl font-bold">{category.name}</h1>
         </div>
       )}
-      <Feeds categoryId={categoryId} forYou={1} />
+      <Feeds categoryId={categoryId} mode="for-you" />
     </MainLayout>
   );
 };

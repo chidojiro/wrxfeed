@@ -1,5 +1,4 @@
 import { SortByParams } from '@/rest/types';
-import { BitBoolean } from '@/common/types';
 import { PaginationParams, SortOrderParams } from '@/rest/types';
 
 export type GetTransactionsParams = PaginationParams & { feedItemId: number };
@@ -14,7 +13,7 @@ export type CreateCommentPayload = {
 export type UpdateCommentPayload = CreateCommentPayload;
 
 export type GetFeedsParams = PaginationParams & {
-  forYou?: BitBoolean;
+  mode?: FeedMode;
   departmentId?: number;
   targetId?: number;
   vendorId?: number;
@@ -38,5 +37,7 @@ export type GetLineItemsParams = PaginationParams &
   };
 
 export type FeedType = 'target' | 'rollup' | 'transaction';
+
+export type FeedMode = 'company' | 'for-you';
 
 export type GetUnreadLineItemCountParams = Omit<GetFeedsParams, keyof PaginationParams>;

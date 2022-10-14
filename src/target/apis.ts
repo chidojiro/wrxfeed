@@ -14,14 +14,14 @@ import { getFullYearPeriods } from './utils';
 
 const getListEndpoint = () => '/target/targets';
 const getList = ({
-  forYou = 0,
+  mode = 'company',
   year = new Date().getFullYear(),
   isPrimary = 0,
   type = 'normal',
   ...restParams
 }: GetTargetsParams) =>
   RestApis.get<Target[]>(getListEndpoint(), {
-    params: { forYou, year, isPrimary, type, ...restParams },
+    params: { mode, year, isPrimary, type, ...restParams },
   });
 
 const createEndpoint = () => '/target/targets';
