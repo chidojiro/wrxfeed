@@ -18,7 +18,7 @@ export const LineItemPage = () => {
 
   const innerRender = () => {
     if (isInitializing) return <RestrictedAccessPage />;
-    return <TransactionFeedItemCard id={id} feed={feed?.[0]} loading={isValidating} />;
+    return <TransactionFeedItemCard feed={feed?.[0]} loading={isValidating} />;
   };
 
   return <MainLayout>{innerRender()}</MainLayout>;
