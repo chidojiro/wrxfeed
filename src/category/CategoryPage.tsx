@@ -109,7 +109,7 @@ export const CategoryPage = () => {
         totalCount={totalCount}
         perPage={TRANSACTIONS_PER_PAGE}
         loading={isValidatingTransactions}
-        hiddenColumns={['vendorName']}
+        hiddenColumns={['categoryName']}
         timeRange={timeRange}
         onTimeRangeChange={setTimeRange}
         sort={sortTransactionsBy}
