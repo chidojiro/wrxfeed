@@ -27,7 +27,10 @@ export const GroupedSpendingChartLegends = ({
         {thisYearTotals.flat().map(({ color, id, name, total }) => (
           <div key={id} className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full" style={{ background: color }}></div>
+              <div
+                className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                style={{ background: color }}
+              ></div>
               <span className="break-words">{name}</span>
             </div>
             <span className="text-Gray-3">{getDisplayUsdAmount(total)}</span>
