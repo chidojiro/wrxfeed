@@ -3,11 +3,12 @@ import { OverlayLoader, StatusTag } from '@/common/components';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import { FeedItem, TranStatus } from '@/main/entity';
-import { decimalLogic } from '@/main/utils';
+import { decimalLogic, getColorByText } from '@/main/utils';
 import { getTransactionColorScheme, getTransactionLabel } from '@/team/TransactionList';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { CommentsSection } from './CommentsSection';
@@ -22,7 +23,7 @@ export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCa
   const feedbackModalDisclosure = useDisclosure();
 
   const handleCopyFeedLink = () => {
-    navigator.clipboard.writeText(`${window.location.host}/feed/item/${feed.lineItemId}`);
+    navigator.clipboard.writeText(`${window.location.host}/feed/item/${feed.id}`);
     toast.success('Feed line item link has been copied');
   };
 
@@ -45,6 +46,11 @@ export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCa
     return items;
   };
 
+  const itemGradientBg = React.useMemo(
+    () => getColorByText(feed.lineItem.category?.name ?? '', undefined, true),
+    [feed.lineItem.category?.name],
+  );
+
   return (
     <>
       <OverlayLoader loading={loading}>
@@ -53,8 +59,7 @@ export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCa
             <div
               className="flex-grow h-3 border-b border-Gray-11"
               style={{
-                background:
-                  'linear-gradient(90.64deg, #60B6C1 0.34%, #61BFC2 20.62%, #60BBC2 40.08%, #4E88A3 65.42%, #5387AA 80.26%, #6C9AB8 98.34%, #7CB1E3 105.67%)',
+                background: itemGradientBg,
               }}
             />
           </div>
