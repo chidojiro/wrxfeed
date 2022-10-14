@@ -3,8 +3,8 @@ import { Department } from '@/main/entity/transaction.entity';
 import { BitBoolean } from '@/common/types';
 import { PaginationParams } from '@/rest/types';
 import { Period, Spending } from '@/spending/types';
-import { Comment } from '@/main/entity';
 import { FeedMode } from '@/feed/types';
+import { Comment, FeedItem } from '@/main/entity';
 
 export type GetTargetsParams = PaginationParams & {
   dep?: number;
@@ -116,6 +116,7 @@ export const TargetStatusConfig = {
 export type Target = {
   id: number;
   isPrimary?: boolean;
+  feedItem?: FeedItem;
   name: string | null;
   creator?: User;
   updatedBy: User;

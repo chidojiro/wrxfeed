@@ -5,7 +5,6 @@ import { ClassName } from '@/common/types';
 import { distanceToNow } from '@/common/utils';
 import TargetFeedName from '@/main/atoms/TargetFeedName';
 import TargetStatus from '@/main/atoms/TargetStatus';
-import { FeedRouteType } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
 import { getColorByText, getDisplayUsdAmount, getTargetPeriodsAmountTotal } from '@/main/utils';
 import { Routes } from '@/routing/routes';
@@ -48,12 +47,7 @@ export const TargetCard = ({
   );
 
   const goToTargetDetails = () => {
-    history.push(
-      `${(Routes.Feed.path as string).replace(
-        ':id',
-        `${target?.id}?route=${FeedRouteType.TargetFeed}`,
-      )}`,
-    );
+    history.push(`${(Routes.Feed.path as string).replace(':id', `${target?.feedItem?.id}`)}`);
   };
 
   const handleSetTarget = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
