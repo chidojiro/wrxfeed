@@ -64,7 +64,7 @@ export const TooltipContent = ({ active, payload }: TooltipContentProps) => {
                   <div key={data.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       <div
-                        className="w-1 h-1 rounded-full"
+                        className="w-1 h-1 rounded-full flex-shrink-0"
                         style={{ background: data.color }}
                       ></div>
                       <span className="break-words">

@@ -17,27 +17,31 @@ export const GroupedSpendingChart = ({ data }: GroupedSpendingChartProps) => {
 
   const thisYearTotals = getThisYearTotalsGroupedByItem(curYearSpends);
 
-  const chartData = new Array(12).fill(null).map((_, idx) => ({
-    month: idx,
-    thisYearTotal: sumBy(
-      curYearSpends.filter(({ month }) => month === idx),
-      'total',
-    ),
-    lastYearTotal: sumBy(
-      prevYearSpends.filter(({ month }) => month === idx),
-      'total',
-    ),
-    ...uniqueItems.reduce(
-      (acc, cur) => ({
-        ...acc,
-        [cur!.id]:
-          curYearSpends.find((spend) => spend.month === idx && spend.item?.id === cur?.id)?.total ??
-          0,
-      }),
-      {},
-    ),
-    items: uniqueItems,
-  }));
+  const chartData = new Array(12).fill(null).map((_, idx) => {
+    const month = idx + 1;
+
+    return {
+      month,
+      thisYearTotal: sumBy(
+        curYearSpends.filter((spend) => spend.month === month),
+        'total',
+      ),
+      lastYearTotal: sumBy(
+        prevYearSpends.filter((spend) => spend.month === month),
+        'total',
+      ),
+      ...uniqueItems.reduce(
+        (acc, cur) => ({
+          ...acc,
+          [cur!.id]:
+            curYearSpends.find((spend) => spend.month === month && spend.item?.id === cur?.id)
+              ?.total ?? 0,
+        }),
+        {},
+      ),
+      items: uniqueItems,
+    };
+  });
 
   return (
     <SpendingChartV2
