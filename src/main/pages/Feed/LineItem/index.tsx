@@ -1,5 +1,6 @@
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { useFetcher } from '@/common/hooks';
+import { ApiErrorCode } from '@/error';
 import { FeedApis } from '@/feed/apis';
 import { fallbackFeed } from '@/feed/constants';
 import { TransactionFeedItemCard } from '@/feed/FeedCard/TransactionFeedItemCard';
@@ -15,8 +16,10 @@ export const LineItemPage = () => {
     data: feed = fallbackFeed,
     isInitializing,
     isValidating,
-    isLagging,
+    error,
   } = useFetcher(['feedLineItems', params], () => FeedApis.get(id));
+
+  const isForbidden = error?.code === ApiErrorCode.Forbidden;
 
   const innerRender = () => {
     if (isInitializing) {
@@ -26,7 +29,7 @@ export const LineItemPage = () => {
         </div>
       );
     }
-    if (isLagging) return <RestrictedAccessPage />;
+    if (isForbidden) return <RestrictedAccessPage />;
     return <TransactionFeedItemCard feed={feed} loading={isValidating} />;
   };
 
