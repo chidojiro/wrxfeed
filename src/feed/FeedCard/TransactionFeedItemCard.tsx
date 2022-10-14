@@ -14,16 +14,15 @@ import { CommentsSection } from './CommentsSection';
 import { FeedBackModal } from './FeedBackModal';
 
 export type TransactionFeedItemCardProps = {
-  id: number;
   feed: FeedItem;
   loading: boolean;
 };
 
-export const TransactionFeedItemCard = ({ id, feed, loading }: TransactionFeedItemCardProps) => {
+export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCardProps) => {
   const feedbackModalDisclosure = useDisclosure();
 
   const handleCopyFeedLink = () => {
-    navigator.clipboard.writeText(`${window.location.host}/feed/item/${id}`);
+    navigator.clipboard.writeText(`${window.location.host}/feed/item/${feed.lineItemId}`);
     toast.success('Feed line item link has been copied');
   };
 
@@ -132,7 +131,7 @@ export const TransactionFeedItemCard = ({ id, feed, loading }: TransactionFeedIt
       <FeedBackModal
         open={feedbackModalDisclosure.isOpen}
         onClose={feedbackModalDisclosure.onClose}
-        itemId={id}
+        itemId={feed.lineItemId as number}
       />
     </>
   );
