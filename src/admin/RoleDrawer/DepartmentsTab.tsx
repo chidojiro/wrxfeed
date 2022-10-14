@@ -50,11 +50,14 @@ export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
     ]);
   };
 
+  const hasKeyword = (department: Department) =>
+    department.name.toLowerCase().includes(keyWord?.toLowerCase());
+
   return (
     <ListLoader loading={isValidatingAssignableDepartments}>
       <div className="flex flex-col gap-8 text-Gray-3">
         {assignableDepartments
-          .filter((department) => department.name!.toLowerCase().includes(keyWord?.toLowerCase()))
+          .filter((department) => hasKeyword(department) || department.children?.find(hasKeyword))
           .map(({ id, name, children }) => (
             <Form.HeadlessCheckboxGroup
               key={id}
@@ -82,7 +85,7 @@ export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
                 />
                 <Divider className="my-2" />
                 <div className="flex flex-col gap-2 pl-7">
-                  {children?.map(({ id, name }) => (
+                  {children?.filter(hasKeyword).map(({ id, name }) => (
                     <CheckboxGroupOption key={id} value={id.toString()}>
                       {({ handleChange, isChecked, value }) => (
                         <ResettableCheckbox
