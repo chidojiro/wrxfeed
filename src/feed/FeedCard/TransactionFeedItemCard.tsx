@@ -68,20 +68,20 @@ export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCa
               <div className="space-y-1">
                 <Link
                   className="flex items-center hover:underline"
-                  to={`/vendors/${feed?.lineItem.vendor?.id}`}
+                  to={`/vendors/${feed?.lineItem.vendor?.id}?sortTransactionsBy=-transDate`}
                 >
                   <p className="text-base font-bold text-primary">{feed?.lineItem.vendor?.name}</p>
                 </Link>
                 <p className="flex space-x-0.5 text-xs font-normal text-Gray-6">
                   <Link
                     className="flex items-center hover:underline"
-                    to={`/departments/${feed?.lineItem.department?.id}`}
+                    to={`/departments/${feed?.lineItem.department?.id}?sortTransactionsBy=-transDate`}
                   >
                     {feed?.lineItem.department?.name} ·
                   </Link>
                   <Link
                     className="flex items-center hover:underline"
-                    to={`/categories/${feed?.lineItem.category?.id}`}
+                    to={`/categories/${feed?.lineItem.category?.id}?sortTransactionsBy=-transDate`}
                   >
                     {' '}
                     {feed?.lineItem.category?.name} ·

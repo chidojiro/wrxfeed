@@ -1,9 +1,7 @@
 import { CategoryIcon, TeamIcon } from '@/assets';
-import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, Select } from '@/common/components';
 import { useQuery, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
-import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
@@ -32,17 +30,7 @@ export const VendorPage = () => {
   const { vendorId: vendorIdParam } = useParams() as Record<string, string>;
   const vendorId = +vendorIdParam;
 
-  const {
-    data: vendor,
-    isValidating: isValidatingVendor,
-    error,
-  } = useVendor(vendorId, {
-    onError: (error) => {
-      if (error.code === ApiErrorCode.Forbidden) {
-        return false;
-      }
-    },
-  });
+  const { data: vendor, isValidating: isValidatingVendor } = useVendor(vendorId);
 
   const { vendorSpendings, isValidatingVendorSpendings } = useVendorSpendings(vendorId, {
     groupBy,
@@ -80,16 +68,6 @@ export const VendorPage = () => {
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
   if (!vendorSpendings) return null;
-
-  const isForbidden = error?.code === ApiErrorCode.Forbidden;
-
-  if (isForbidden) {
-    return (
-      <MainLayout>
-        <RestrictedAccessPage />
-      </MainLayout>
-    );
-  }
 
   return (
     <MainLayout>
