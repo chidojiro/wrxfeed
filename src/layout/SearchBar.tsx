@@ -11,12 +11,10 @@ import { useSearch } from '@/misc/useSearch';
 import { TargetTypeProp } from '@/target/types';
 import { Transition } from '@headlessui/react';
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 const DEBOUNCE_WAIT = 0;
 
 const SearchBar: React.FC = () => {
-  const history = useHistory();
   const useableViewRef = useRef(null);
 
   const [keyword, setKeyword] = useState<string>('');
@@ -98,7 +96,7 @@ const SearchBar: React.FC = () => {
         key={`renderSearchResult-${result?.id}`}
         result={result}
         focus={focus === index + 1}
-        url={`${checkType(result)}/${result.directoryId}?sortTransactionsBy=-transDate`}
+        href={`${checkType(result)}/${result.directoryId}?sortTransactionsBy=-transDate`}
         onClickHandler={() => clearSearchResults()}
       />
     ));

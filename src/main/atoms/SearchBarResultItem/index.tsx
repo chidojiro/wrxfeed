@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 interface SearchBarResultItemProps {
   result: SearchResult;
   focus: boolean;
-  url: string;
+  href: string;
   onClickHandler: () => void;
 }
 
@@ -16,7 +16,7 @@ const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({
   result,
   focus,
   onClickHandler,
-  url,
+  href,
 }) => {
   const ref = useRef<HTMLButtonElement>(null);
 
@@ -33,7 +33,7 @@ const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({
 
   return (
     <Link
-      to={url}
+      to={href}
       key={result?.id}
       className={clsx(
         'relative group py-2 px-6 w-full flex flex-row items-center hover:bg-Gray-12',
