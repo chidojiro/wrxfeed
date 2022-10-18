@@ -4,11 +4,11 @@ import React, { useEffect, useRef } from 'react';
 import { ReactComponent as ArrowRight2 } from '@/assets/icons/outline/arrow-right-2.svg';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
-import { TargetTypeProp } from '@/target/types';
 
 interface SearchBarResultItemProps {
   result: SearchResult;
   focus: boolean;
+  url: string;
   onClickHandler: () => void;
 }
 
@@ -16,6 +16,7 @@ const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({
   result,
   focus,
   onClickHandler,
+  url,
 }) => {
   const ref = useRef<HTMLButtonElement>(null);
 
@@ -30,21 +31,9 @@ const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({
 
   const IconByType = getIconByResultType(result?.type);
 
-  const checkType = (result: SearchResult) => {
-    if (result.type === TargetTypeProp.DEPARTMENT) {
-      return '/departments';
-    }
-    if (result.type === TargetTypeProp.VENDOR) {
-      return '/vendors';
-    }
-    if (result.type === TargetTypeProp.CATEGORY) {
-      return '/categories';
-    }
-  };
-
   return (
     <Link
-      to={`${checkType(result)}/${result.directoryId}?sortTransactionsBy=-transDate`}
+      to={url}
       key={result?.id}
       className={clsx(
         'relative group py-2 px-6 w-full flex flex-row items-center hover:bg-Gray-12',

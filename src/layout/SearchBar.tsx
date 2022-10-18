@@ -59,6 +59,18 @@ const SearchBar: React.FC = () => {
     setKeyword('');
   };
 
+  const checkType = (result: SearchResult) => {
+    if (result.type === TargetTypeProp.DEPARTMENT) {
+      return '/departments';
+    }
+    if (result.type === TargetTypeProp.VENDOR) {
+      return '/vendors';
+    }
+    if (result.type === TargetTypeProp.CATEGORY) {
+      return '/categories';
+    }
+  };
+
   const isEmptyResult = isFocus && isSearching && results.length === 0;
   const renderResultsOrEmpty = () => {
     if (isEmptyResult) {
@@ -86,6 +98,7 @@ const SearchBar: React.FC = () => {
         key={`renderSearchResult-${result?.id}`}
         result={result}
         focus={focus === index + 1}
+        url={`${checkType(result)}/${result.directoryId}?sortTransactionsBy=-transDate`}
         onClickHandler={() => clearSearchResults()}
       />
     ));
