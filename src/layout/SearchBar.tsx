@@ -59,29 +59,6 @@ const SearchBar: React.FC = () => {
     setKeyword('');
   };
 
-  const onPressResultRow = (result: SearchResult) => {
-    clearSearchResults();
-    switch (result.type) {
-      case TargetTypeProp.DEPARTMENT:
-        history.push({
-          pathname: `/departments/${result?.directoryId}`,
-        });
-        break;
-      case TargetTypeProp.CATEGORY:
-        history.push({
-          pathname: `/categories/${result?.directoryId}`,
-        });
-        break;
-      case TargetTypeProp.VENDOR:
-        history.push({
-          pathname: `/vendors/${result?.directoryId}`,
-        });
-        break;
-      default:
-        break;
-    }
-  };
-
   const isEmptyResult = isFocus && isSearching && results.length === 0;
   const renderResultsOrEmpty = () => {
     if (isEmptyResult) {
@@ -109,9 +86,7 @@ const SearchBar: React.FC = () => {
         key={`renderSearchResult-${result?.id}`}
         result={result}
         focus={focus === index + 1}
-        onClickHandler={() => {
-          onPressResultRow(result);
-        }}
+        onClickHandler={() => clearSearchResults()}
       />
     ));
   };

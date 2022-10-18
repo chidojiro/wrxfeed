@@ -3,7 +3,8 @@ import { getIconByResultType, getPropTypeDisplayName } from '@/main/utils';
 import React, { useEffect, useRef } from 'react';
 import { ReactComponent as ArrowRight2 } from '@/assets/icons/outline/arrow-right-2.svg';
 import clsx from 'clsx';
-import { Button } from '@/common/components';
+import { Link } from 'react-router-dom';
+import { TargetTypeProp } from '@/target/types';
 
 interface SearchBarResultItemProps {
   result: SearchResult;
@@ -28,15 +29,28 @@ const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({
   }, [focus]);
 
   const IconByType = getIconByResultType(result?.type);
+
+  const checkType = (result: SearchResult) => {
+    if (result.type === TargetTypeProp.DEPARTMENT) {
+      return '/departments';
+    }
+    if (result.type === TargetTypeProp.VENDOR) {
+      return '/vendors';
+    }
+    if (result.type === TargetTypeProp.CATEGORY) {
+      return '/categories';
+    }
+  };
+
   return (
-    <Button
-      ref={ref}
-      onClick={onClickHandler}
+    <Link
+      to={`${checkType(result)}/${result.directoryId}?sortTransactionsBy=-transDate`}
       key={result?.id}
       className={clsx(
         'relative group py-2 px-6 w-full flex flex-row items-center hover:bg-Gray-12',
       )}
       tabIndex={focus ? 0 : -1}
+      onClick={onClickHandler}
     >
       <IconByType className="w-6 h-6" />
       <div className="flex flex-1 items-center ml-2">
@@ -48,7 +62,7 @@ const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({
       <div className="flex ml-auto">
         <ArrowRight2 className="h-4 w-4 text-Accent-1 invisible group-hover:visible" />
       </div>
-    </Button>
+    </Link>
   );
 };
 
