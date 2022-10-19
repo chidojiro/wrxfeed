@@ -23,7 +23,10 @@ const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const TeamPage = () => {
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
+    'sortTransactionsBy',
+    '-transDate',
+  );
   const [transactionTimeRange, setTransactionTimeRange] =
     useUrlState<TimeRange>('transactionTimeRange');
   const [topCategoriesTimeRange, setTopCategoriesTimeRange] =

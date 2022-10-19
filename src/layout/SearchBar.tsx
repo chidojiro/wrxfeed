@@ -57,7 +57,7 @@ const SearchBar: React.FC = () => {
     setKeyword('');
   };
 
-  const checkType = (result: SearchResult) => {
+  const getResultHref = (result: SearchResult) => {
     if (result.type === TargetTypeProp.DEPARTMENT) {
       return '/departments';
     }
@@ -96,7 +96,7 @@ const SearchBar: React.FC = () => {
         key={`renderSearchResult-${result?.id}`}
         result={result}
         focus={focus === index + 1}
-        href={`${checkType(result)}/${result.directoryId}?sortTransactionsBy=-transDate`}
+        href={`${getResultHref(result)}/${result.directoryId}`}
         onClickHandler={() => clearSearchResults()}
       />
     ));

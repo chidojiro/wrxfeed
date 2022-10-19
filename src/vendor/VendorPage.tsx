@@ -25,7 +25,10 @@ const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const VendorPage = () => {
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
+    'sortTransactionsBy',
+    '-transDate',
+  );
   const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
   const [groupBy, setGroupBy] = React.useState<GetVendorSpendingsParams['groupBy']>(undefined);
 
