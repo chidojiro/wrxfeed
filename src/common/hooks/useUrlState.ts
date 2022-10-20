@@ -3,6 +3,7 @@ import { RedirectMethod, useQuery } from './useQuery';
 
 export const useUrlState = <T extends string>(
   paramKey: string,
+  fallbackParam?: string,
 ): [T, (value: T, method?: RedirectMethod) => void] => {
   const query = useQuery();
 
@@ -13,5 +14,8 @@ export const useUrlState = <T extends string>(
     [paramKey, query],
   );
 
-  return React.useMemo(() => [query.get(paramKey) ?? '', setQuery], [paramKey, query, setQuery]);
+  return React.useMemo(
+    () => [query.get(paramKey) ?? fallbackParam ?? '', setQuery],
+    [fallbackParam, paramKey, query, setQuery],
+  );
 };

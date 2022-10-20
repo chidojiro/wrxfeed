@@ -10,6 +10,7 @@ import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import dayjs from 'dayjs';
 import { useParams } from 'react-router-dom';
 import { DepartmentApis } from './apis';
+import { DEFAULT_SORT } from './constants';
 import { TeamHeader } from './TeamHeader';
 import { TeamTargetSummary } from './TeamTargetSummary';
 import { TopCategories } from './TopCategories';
@@ -23,7 +24,10 @@ const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const TeamPage = () => {
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
+    'sortTransactionsBy',
+    DEFAULT_SORT,
+  );
   const [transactionTimeRange, setTransactionTimeRange] =
     useUrlState<TimeRange>('transactionTimeRange');
   const [topCategoriesTimeRange, setTopCategoriesTimeRange] =

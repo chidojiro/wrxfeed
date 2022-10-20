@@ -105,12 +105,6 @@ export const TransactionList = ({
 
   const hasTransactions = transactions?.length > 0;
 
-  React.useEffect(() => {
-    if (!sort) {
-      onSortChange('-transDate', 'REPLACE');
-    }
-  }, [onSortChange, sort]);
-
   const isRestricted = (id: number, type: TRestrictedItem['type']) => {
     return !!restrictedItems.find((item) => isEqual({ id, type }, item));
   };

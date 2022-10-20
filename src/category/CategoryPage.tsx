@@ -6,6 +6,7 @@ import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { SpendingBarChart } from '@/spending/SpendingChart/SpendingBarChart';
+import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/team/TransactionList';
 import { TimeRange } from '@/team/types';
 import { useTransactions } from '@/team/useTransactions';
@@ -20,7 +21,10 @@ const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const CategoryPage = () => {
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
+    'sortTransactionsBy',
+    DEFAULT_SORT,
+  );
   const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
 
   const { categoryId: categoryIdParam } = useParams() as Record<string, string>;
