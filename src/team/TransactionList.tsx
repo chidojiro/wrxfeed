@@ -60,7 +60,6 @@ type TransactionListProps = ClassName & {
   onTimeRangeChange: (timeRange: TimeRange) => void;
   sort: string;
   onSortChange: (sort: string, method?: RedirectMethod) => void;
-  isInsight?: boolean;
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
@@ -75,7 +74,6 @@ export const TransactionList = ({
   onTimeRangeChange,
   sort,
   onSortChange,
-  isInsight = false,
 }: TransactionListProps) => {
   const [_page, setPage] = useUrlState('page');
   const page = _page ? +_page : 1;
@@ -106,12 +104,6 @@ export const TransactionList = ({
   ].filter((item): item is HeaderItem => !!item);
 
   const hasTransactions = transactions?.length > 0;
-
-  React.useEffect(() => {
-    if (!sort) {
-      onSortChange('-transDate', 'REPLACE');
-    }
-  }, [onSortChange, sort]);
 
   const isRestricted = (id: number, type: TRestrictedItem['type']) => {
     return !!restrictedItems.find((item) => isEqual({ id, type }, item));
@@ -190,7 +182,7 @@ export const TransactionList = ({
                   >
                     <div className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3')}>
                       <LoopBoldIcon />
-                      <span>{isInsight ? 'Hide Transactions' : 'Transactions'}</span>
+                      <span>Transactions</span>
                     </div>
                     <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
                   </div>
@@ -365,6 +357,20 @@ export const TransactionList = ({
           </Table>
         </OverlayLoader>
       </Table.OverflowContainer>
+      {hasTransactions && (
+        <Pagination
+          totalRecord={totalCount}
+          sideItemsCount={2}
+          onChange={(page) => setPage(page.toString())}
+          perPage={perPage}
+          page={page}
+        >
+          <div className="flex items-center justify-between mt-4">
+            <Pagination.ShowingRange className="hidden md:block" />
+            <Pagination.Items className="mx-auto md:mx-0" />
+          </div>
+        </Pagination>
+      )}
     </div>
   );
 };

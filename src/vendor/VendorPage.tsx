@@ -9,6 +9,7 @@ import { getDisplayUsdAmount } from '@/main/utils';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingChart/SpendingBarChart';
+import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/team/TransactionList';
 import { TimeRange } from '@/team/types';
 import { useTransactions } from '@/team/useTransactions';
@@ -27,7 +28,7 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 export const VendorPage = () => {
   const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
     'sortTransactionsBy',
-    '-transDate',
+    DEFAULT_SORT,
   );
   const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
   const [groupBy, setGroupBy] = React.useState<GetVendorSpendingsParams['groupBy']>(undefined);
