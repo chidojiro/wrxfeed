@@ -1,4 +1,4 @@
-import { VendorIcon } from '@/assets';
+import { CategoryIcon } from '@/assets';
 import { ClassName } from '@/common/types';
 import { getColorByText } from '@/main/utils';
 import clsx from 'clsx';
@@ -22,7 +22,7 @@ export const CategoryHeader = ({ className, categoryId }: CategoryHeaderProps) =
     >
       <div className="flex flex-row overflow-hidden items-center space-x-4">
         <div className="flex justify-center flex-shrink-0 items-center w-9 h-9 rounded-full border border-white">
-          <VendorIcon
+          <CategoryIcon
             className="w-5 h-5 fill-current path-no-filled text-white opacity-100"
             aria-hidden="true"
           />

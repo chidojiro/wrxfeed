@@ -156,7 +156,6 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
   const selectedVendors = (watch('vendors') ?? []) as string[];
   const selectedCategories = (watch('categories') ?? []) as string[];
   const selectedDepartments = (watch('departments') ?? []) as string[];
-  const selectedExceptions = (watch('exceptions') ?? []) as string[];
   const periods = (watch('periods') ?? []) as TargetPeriod[];
 
   const vendorProps = selectedVendors.map(
@@ -168,6 +167,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
   const departmentProps = selectedDepartments.map(
     (value) => ({ ...getPropFromTagValue(value), exclude: false } as TargetProps),
   );
+  const selectedExceptions = (watch('exceptions') ?? []) as string[];
   const exceptionProps = selectedExceptions.map(
     (value) => ({ ...getPropFromTagValue(value), exclude: true } as TargetProps),
   );
