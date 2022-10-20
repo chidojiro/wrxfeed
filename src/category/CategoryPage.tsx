@@ -20,10 +20,7 @@ const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const CategoryPage = () => {
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
-    'sortTransactionsBy',
-    '-transDate',
-  );
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
   const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
 
   const { categoryId: categoryIdParam } = useParams() as Record<string, string>;
@@ -58,7 +55,7 @@ export const CategoryPage = () => {
 
   const { transactions, totalCount, isValidatingTransactions } = useTransactions({
     catId: categoryId,
-    ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
+    ...StringUtils.toApiSortParam(!sortTransactionsBy ? '-transDate' : sortTransactionsBy),
     offset: (page - 1) * TRANSACTIONS_PER_PAGE,
     limit: TRANSACTIONS_PER_PAGE,
     from: getFromDate(),

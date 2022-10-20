@@ -25,10 +25,7 @@ const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const VendorPage = () => {
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
-    'sortTransactionsBy',
-    '-transDate',
-  );
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
   const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
   const [groupBy, setGroupBy] = React.useState<GetVendorSpendingsParams['groupBy']>(undefined);
 
@@ -70,7 +67,7 @@ export const VendorPage = () => {
 
   const { transactions, totalCount, isValidatingTransactions } = useTransactions({
     vendId: vendorId,
-    ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
+    ...StringUtils.toApiSortParam(!sortTransactionsBy ? '-transDate' : sortTransactionsBy),
     offset: (page - 1) * TRANSACTIONS_PER_PAGE,
     limit: TRANSACTIONS_PER_PAGE,
     from: getFromDate(),

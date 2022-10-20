@@ -8,6 +8,7 @@ import { MainLayout } from '@/layout/MainLayout';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import dayjs from 'dayjs';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { DepartmentApis } from './apis';
 import { TeamHeader } from './TeamHeader';
@@ -23,10 +24,7 @@ const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const TeamPage = () => {
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
-    'sortTransactionsBy',
-    '-transDate',
-  );
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
   const [transactionTimeRange, setTransactionTimeRange] =
     useUrlState<TimeRange>('transactionTimeRange');
   const [topCategoriesTimeRange, setTopCategoriesTimeRange] =
@@ -63,7 +61,7 @@ export const TeamPage = () => {
 
   const { transactions, totalCount, isValidatingTransactions } = useTransactions({
     depId: +departmentIdParam,
-    ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
+    ...StringUtils.toApiSortParam(!sortTransactionsBy ? '-transDate' : sortTransactionsBy),
     offset: (page - 1) * TRANSACTIONS_PER_PAGE,
     limit: TRANSACTIONS_PER_PAGE,
     from: getFromDate(transactionTimeRange),
