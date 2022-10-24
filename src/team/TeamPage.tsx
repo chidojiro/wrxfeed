@@ -14,11 +14,11 @@ import { DEFAULT_SORT } from './constants';
 import { TeamHeader } from './TeamHeader';
 import { TeamTargetSummary } from './TeamTargetSummary';
 import { TopCategories } from './TopCategories';
-import { TransactionList } from './TransactionList';
+import { TransactionList } from '../main/organisms/TransactionList';
 import { TimeRange } from './types';
 import { useDepartment } from './useDepartment';
 import { useTopCategories } from './useTopCategories';
-import { useTransactions } from './useTransactions';
+import { useTransactions } from '../main/hooks/useTransactions';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';

@@ -25,8 +25,8 @@ import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { TimeRangeSelect } from './TimeRangeSelect';
-import { TimeRange } from './types';
+import { TimeRangeSelect } from '../../../team/TimeRangeSelect';
+import { TimeRange } from '../../../team/types';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
@@ -51,6 +51,7 @@ export const getTransactionLabel = (status: TranStatus) => {
 };
 
 type TransactionListProps = ClassName & {
+  title?: string;
   transactions: TransLineItem[];
   totalCount: number;
   loading: boolean;
@@ -64,6 +65,7 @@ type TransactionListProps = ClassName & {
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
 export const TransactionList = ({
+  title = 'Transactions',
   className,
   transactions,
   totalCount,
@@ -182,7 +184,7 @@ export const TransactionList = ({
                   >
                     <div className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3')}>
                       <LoopBoldIcon />
-                      <span>Transactions</span>
+                      <span>{title}</span>
                     </div>
                     <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
                   </div>
