@@ -27,6 +27,17 @@ export type CreateFeedbackPayload = {
   content: string;
 };
 
+export type GetTransactionTableItems = {
+  props: [
+    {
+      id: number;
+      exclude: boolean;
+      type: string;
+      name: string;
+    },
+  ];
+};
+
 export type GetLineItemsParams = PaginationParams &
   SortByParams & {
     depId?: number;
