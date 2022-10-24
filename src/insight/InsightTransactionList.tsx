@@ -3,7 +3,6 @@ import { RestrictedItem } from '@/auth/RestrictedItem';
 import {
   Avatar,
   Button,
-  Divider,
   InfiniteLoader,
   InfiniteLoaderRenderProps,
   OverlayLoader,
@@ -383,12 +382,13 @@ export const TransactionList = ({
           </Table>
         </OverlayLoader>
       </Table.OverflowContainer>
-      <div className="relative flex items-center">
-        <Divider className="my-2" />
-        <InfiniteLoader defaultPage={2} mode="ON_DEMAND" onLoad={onLoad}>
-          {renderLoadButton}
-        </InfiniteLoader>
-      </div>
+      {hasTransactions && (
+        <div className="relative flex items-center my-3">
+          <InfiniteLoader defaultPage={2} mode="ON_DEMAND" onLoad={onLoad}>
+            {renderLoadButton}
+          </InfiniteLoader>
+        </div>
+      )}
     </div>
   );
 };
