@@ -4,12 +4,14 @@ import { RestApis } from '@/rest/apis';
 import { BYPASS_INTERCEPTOR_HEADER } from '@/rest/constants';
 import { PaginationParams } from '@/rest/types';
 import { withDefaultPaginationParams } from '@/rest/utils';
+import { SpendingsReport } from '@/spending/types';
 import { AxiosResponse } from 'axios';
 import {
   CreateCommentPayload,
   CreateFeedbackPayload,
   GetFeedCommentsParams,
   GetFeedsParams,
+  GetFeedSpendingParams,
   GetLineItemsParams,
   GetTransactionsParams,
   UpdateCommentPayload,
@@ -99,6 +101,9 @@ const createLineItemFeedback = (id: number, payload: CreateFeedbackPayload) =>
 const getTransactionFeedItem = (id: number) =>
   RestApis.get<FeedItem[]>(`/feed/items?mode=for-you&lineItemId=${id}`);
 
+const getSpending = (params: GetFeedSpendingParams) =>
+  RestApis.patch<SpendingsReport>('feed/spending', params);
+
 export const FeedApis = {
   get,
   getList,
@@ -116,4 +121,5 @@ export const FeedApis = {
   markLineItemAsRead,
   createLineItemFeedback,
   getTransactionFeedItem,
+  getSpending,
 };

@@ -5,7 +5,7 @@ import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
-import { SpendingBarChart } from '@/spending/SpendingChart/SpendingBarChart';
+import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { TimeRange } from '@/team/types';
