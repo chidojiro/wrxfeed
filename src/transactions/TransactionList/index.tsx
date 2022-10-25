@@ -3,6 +3,9 @@ import { RestrictedItem } from '@/auth/RestrictedItem';
 import {
   Avatar,
   Button,
+  Divider,
+  InfiniteLoader,
+  InfiniteLoaderRenderProps,
   OverlayLoader,
   StatusTag,
   StatusTagColorScheme,
@@ -10,23 +13,26 @@ import {
   Tooltip,
 } from '@/common/components';
 import { EmptyState } from '@/common/components/EmptyState';
-import { Pagination } from '@/common/components/Pagination';
-import { RedirectMethod, useUrlState } from '@/common/hooks';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
+import { RedirectMethod } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { DateUtils } from '@/common/utils';
 import { CommentGroup } from '@/feed/CommentGroup';
+import { LoadMoreButton } from '@/feed/FeedCard/LoadMoreTransactionsButton';
 import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { Category, Department, TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
+import { PaginationParams } from '@/rest/types';
 import { RestrictedItem as TRestrictedItem } from '@/role/types';
 import { useRestrictedItems } from '@/role/useRestrictedItems';
 import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
 import React from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { TimeRangeSelect } from '../../../team/TimeRangeSelect';
-import { TimeRange } from '../../../team/types';
+import { TimeRangeSelect } from '../../team/TimeRangeSelect';
+import { TimeRange } from '../../team/types';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
@@ -52,9 +58,9 @@ export const getTransactionLabel = (status: TranStatus) => {
 
 type TransactionListProps = ClassName & {
   transactions: TransLineItem[];
-  totalCount: number;
+  onLoad: (params: PaginationParams) => Promise<TransLineItem[]>;
+  defaultExpand?: boolean;
   loading: boolean;
-  perPage: number;
   hiddenColumns?: ('vendorName' | 'depName' | 'categoryName')[];
   timeRange: TimeRange;
   onTimeRangeChange: (timeRange: TimeRange) => void;
@@ -66,18 +72,15 @@ type HeaderItem = { label: string; sortKey?: string; align?: string };
 export const TransactionList = ({
   className,
   transactions,
-  totalCount,
-  perPage,
   loading,
   hiddenColumns,
   timeRange,
   onTimeRangeChange,
   sort,
   onSortChange,
+  defaultExpand = false,
+  onLoad,
 }: TransactionListProps) => {
-  const [_page, setPage] = useUrlState('page');
-  const page = _page ? +_page : 1;
-
   const {
     isLineItemDrawerOpen,
     selectedLineItem,
@@ -358,18 +361,11 @@ export const TransactionList = ({
         </OverlayLoader>
       </Table.OverflowContainer>
       {hasTransactions && (
-        <Pagination
-          totalRecord={totalCount}
-          sideItemsCount={2}
-          onChange={(page) => setPage(page.toString())}
-          perPage={perPage}
-          page={page}
-        >
-          <div className="flex items-center justify-between mt-4">
-            <Pagination.ShowingRange className="hidden md:block" />
-            <Pagination.Items className="mx-auto md:mx-0" />
-          </div>
-        </Pagination>
+        <div className="relative flex justify-between items-center my-3">
+          <Divider className="w-[45%]" />
+          <InfiniteLoader defaultPage={2} mode="ON_DEMAND" onLoad={onLoad} />
+          <Divider className="w-[45%]" />
+        </div>
       )}
     </div>
   );

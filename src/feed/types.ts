@@ -27,16 +27,19 @@ export type CreateFeedbackPayload = {
   content: string;
 };
 
-export type GetTransactionTableItems = {
-  props: [
-    {
-      id: number;
-      exclude: boolean;
-      type: string;
-      name: string;
-    },
-  ];
+export type GetLineItemsProps = {
+  id: number;
+  exclude: boolean;
+  type: string;
+  name: string;
 };
+
+export type GetTransactionTableItemsParams = PaginationParams &
+  SortByParams & {
+    props: GetLineItemsProps[];
+    dateRange: string;
+    groupBy: string;
+  };
 
 export type GetLineItemsParams = PaginationParams &
   SortByParams & {

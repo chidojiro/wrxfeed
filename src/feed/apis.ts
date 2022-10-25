@@ -12,7 +12,7 @@ import {
   GetFeedsParams,
   GetLineItemsParams,
   GetTransactionsParams,
-  GetTransactionTableItems,
+  GetTransactionTableItemsParams,
   UpdateCommentPayload,
 } from './types';
 
@@ -89,9 +89,9 @@ const getLineItems = (params: GetLineItemsParams) =>
     totalCount: isNaN(+headers['x-total-count']) ? 0 : +headers['x-total-count'],
   }));
 
-const getTransactionTableLineItems = (body: GetTransactionTableItems) =>
+const getTransactionTableLineItems = (body: GetTransactionTableItemsParams) =>
   RestApis.post(`/feedback/line-items`, {
-    body: body,
+    body: withDefaultPaginationParams(body),
   });
 
 const updateLineItem = (id: number, payload: Partial<TransLineItem>) =>
