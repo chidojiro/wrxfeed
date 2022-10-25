@@ -1,13 +1,16 @@
-import { sumBy, uniqBy } from 'lodash-es';
+import { sum, sumBy, uniqBy } from 'lodash-es';
 import { SpendingChartV2 } from './SpendingChartV2/SpendingChartV2';
 import { SpendingsReport } from './types';
 import { getThisYearTotalsGroupedByItem } from './utils';
 
 export type GroupedSpendingChartProps = {
   data: SpendingsReport;
+  highlightedItemId?: number;
 };
 
-export const GroupedSpendingChart = ({ data }: GroupedSpendingChartProps) => {
+const OTHER_COLOR = '#029B80';
+
+export const GroupedSpendingChart = ({ data, highlightedItemId }: GroupedSpendingChartProps) => {
   const { curYearSpends, prevYearSpends } = data;
 
   const uniqueItems = uniqBy(
@@ -39,7 +42,17 @@ export const GroupedSpendingChart = ({ data }: GroupedSpendingChartProps) => {
         }),
         {},
       ),
-      items: uniqueItems,
+      // Others
+      '-1': sum(
+        uniqueItems
+          .slice(10)
+          .map(
+            (item) =>
+              curYearSpends.find((spend) => spend.month === month && spend.item?.id === item?.id)
+                ?.total ?? 0,
+          ),
+      ),
+      items: [uniqueItems, { id: -1, name: 'Other' }].flat(),
     };
   });
 
@@ -56,10 +69,13 @@ export const GroupedSpendingChart = ({ data }: GroupedSpendingChartProps) => {
         {
           type: 'BAR',
           color: '',
-          stackedBars: thisYearTotals.map(({ id, color }) => ({
-            dataKey: id.toString(),
-            color,
-          })),
+          stackedBars: [
+            thisYearTotals.slice(0, 10).map(({ id, color }) => ({
+              dataKey: id.toString(),
+              color,
+            })),
+            { dataKey: '-1', color: OTHER_COLOR },
+          ].flat(),
         },
       ]}
     />

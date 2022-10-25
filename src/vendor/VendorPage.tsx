@@ -8,7 +8,7 @@ import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
-import { SpendingBarChart } from '@/spending/SpendingChart/SpendingBarChart';
+import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/team/TransactionList';
 import { TimeRange } from '@/team/types';
@@ -26,6 +26,7 @@ const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const VendorPage = () => {
+  const [hoveredItemId, setHoveredItemId] = React.useState<number>();
   const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
     'sortTransactionsBy',
     DEFAULT_SORT,
@@ -152,11 +153,17 @@ export const VendorPage = () => {
               {!groupBy ? (
                 <SpendingBarChart thisYearData={curYearSpends} lastYearData={prevYearSpends} />
               ) : (
-                <GroupedSpendingChart data={vendorSpendings} />
+                <GroupedSpendingChart data={vendorSpendings} highlightedItemId={hoveredItemId} />
               )}
             </div>
             {!!groupBy && (
-              <GroupedSpendingChartLegends spendings={curYearSpends} groupBy={groupBy} />
+              <GroupedSpendingChartLegends
+                spendings={curYearSpends}
+                groupBy={groupBy}
+                highlightedItemId={hoveredItemId}
+                onItemMouseEnter={setHoveredItemId}
+                onItemMouseLeave={() => setHoveredItemId(undefined)}
+              />
             )}
           </div>
         </div>

@@ -8,6 +8,7 @@ import {
   FormProps as HeadlessFormProps,
 } from '../../headless';
 import { Input, InputProps } from '../Input';
+import { Select, SelectProps } from '../Select';
 import { TagsSelect, TagsSelectProps } from '../TagsSelect';
 
 export type FormProps = HeadlessFormProps;
@@ -43,6 +44,14 @@ const FormTagsSelect = React.forwardRef(
 );
 FormTagsSelect.displayName = 'FormTagsSelect';
 
+const FormSelect = React.forwardRef(
+  <TValue,>(props: FormFieldProps<SelectProps, TValue[]>, ref: any) => (
+    <Field<SelectProps, TValue[]> {...props} component={Select} />
+  ),
+);
+FormSelect.displayName = 'FormSelect';
+
 Form.Input = FormInput;
 Form.TagsSelect = FormTagsSelect;
 Form.HeadlessCheckboxGroup = FormHeadlessCheckboxGroup;
+Form.Select = FormSelect;
