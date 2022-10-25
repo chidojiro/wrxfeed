@@ -153,23 +153,39 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
   }, [departmentId, departments, isEdit, reset, target]);
 
   const name = watch('name');
-  const selectedVendors = (watch('vendors') ?? []) as string[];
-  const selectedCategories = (watch('categories') ?? []) as string[];
-  const selectedDepartments = (watch('departments') ?? []) as string[];
-  const periods = (watch('periods') ?? []) as TargetPeriod[];
+  const selectedVendors = (watch('vendors') ?? EMPTY_ARRAY) as string[];
+  const selectedCategories = (watch('categories') ?? EMPTY_ARRAY) as string[];
+  const selectedDepartments = (watch('departments') ?? EMPTY_ARRAY) as string[];
+  const periods = (watch('periods') ?? EMPTY_ARRAY) as TargetPeriod[];
 
-  const vendorProps = selectedVendors.map(
-    (value) => ({ ...getPropFromTagValue(value), exclude: false } as TargetProps),
+  const vendorProps = React.useMemo(
+    () =>
+      selectedVendors.map(
+        (value) => ({ ...getPropFromTagValue(value), exclude: false } as TargetProps),
+      ),
+    [selectedVendors],
   );
-  const categoryProps = selectedCategories.map(
-    (value) => ({ ...getPropFromTagValue(value), exclude: false } as TargetProps),
+  const categoryProps = React.useMemo(
+    () =>
+      selectedCategories.map(
+        (value) => ({ ...getPropFromTagValue(value), exclude: false } as TargetProps),
+      ),
+    [selectedCategories],
   );
-  const departmentProps = selectedDepartments.map(
-    (value) => ({ ...getPropFromTagValue(value), exclude: false } as TargetProps),
+  const departmentProps = React.useMemo(
+    () =>
+      selectedDepartments.map(
+        (value) => ({ ...getPropFromTagValue(value), exclude: false } as TargetProps),
+      ),
+    [selectedDepartments],
   );
-  const selectedExceptions = (watch('exceptions') ?? []) as string[];
-  const exceptionProps = selectedExceptions.map(
-    (value) => ({ ...getPropFromTagValue(value), exclude: true } as TargetProps),
+  const selectedExceptions = (watch('exceptions') ?? EMPTY_ARRAY) as string[];
+  const exceptionProps = React.useMemo(
+    () =>
+      selectedExceptions.map(
+        (value) => ({ ...getPropFromTagValue(value), exclude: true } as TargetProps),
+      ),
+    [selectedExceptions],
   );
   const targetProps = React.useMemo(
     () => [vendorProps, categoryProps, departmentProps, exceptionProps].flat(),
@@ -203,7 +219,8 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
 
   React.useEffect(() => {
     setValue('props', targetProps);
-  }, [targetProps, setValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(targetProps), setValue]);
 
   const {
     onCreateSuccess,

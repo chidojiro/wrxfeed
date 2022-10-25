@@ -1,10 +1,11 @@
 import { CategoryIcon, ChartIcon, TeamIcon, VendorIcon } from '@/assets';
-import { Form, Select } from '@/common/components';
+import { Form } from '@/common/components';
+import { EMPTY_ARRAY } from '@/common/constants';
 import { genReviewSentenceFromProperties } from '@/main/utils';
 import { PropertiesSection } from '@/property/PropertiesSection';
 import clsx from 'clsx';
-import { noop } from 'lodash-es';
-import { useForm } from 'react-hook-form';
+import React from 'react';
+import { useFormContext } from 'react-hook-form';
 
 const getPropFromTagValue = (value: string) => {
   const [type, id, name] = value.split('-');
@@ -13,27 +14,44 @@ const getPropFromTagValue = (value: string) => {
 };
 
 export const InsightHeader = () => {
-  const methods = useForm();
-  const { watch } = methods;
+  const { watch, setValue } = useFormContext();
 
-  const selectedVendors = (watch('vendors') ?? []) as string[];
-  const selectedCategories = (watch('categories') ?? []) as string[];
-  const selectedDepartments = (watch('departments') ?? []) as string[];
+  const selectedVendors = (watch('vendors') ?? EMPTY_ARRAY) as string[];
+  const selectedCategories = (watch('categories') ?? EMPTY_ARRAY) as string[];
+  const selectedDepartments = (watch('departments') ?? EMPTY_ARRAY) as string[];
 
-  const vendorProps = selectedVendors.map(
-    (value) => ({ ...getPropFromTagValue(value), exclude: false } as any),
+  const vendorProps = React.useMemo(
+    () =>
+      selectedVendors.map((value) => ({ ...getPropFromTagValue(value), exclude: false } as any)),
+    [selectedVendors],
   );
-  const categoryProps = selectedCategories.map(
-    (value) => ({ ...getPropFromTagValue(value), exclude: false } as any),
+  const categoryProps = React.useMemo(
+    () =>
+      selectedCategories.map((value) => ({ ...getPropFromTagValue(value), exclude: false } as any)),
+    [selectedCategories],
   );
-  const departmentProps = selectedDepartments.map(
-    (value) => ({ ...getPropFromTagValue(value), exclude: false } as any),
+  const departmentProps = React.useMemo(
+    () =>
+      selectedDepartments.map(
+        (value) => ({ ...getPropFromTagValue(value), exclude: false } as any),
+      ),
+    [selectedDepartments],
   );
-  const selectedExceptions = (watch('exceptions') ?? []) as string[];
-  const exceptionProps = selectedExceptions.map((value) => ({
-    ...getPropFromTagValue(value),
-    exclude: true,
-  })) as any[];
+  const selectedExceptions = (watch('exceptions') ?? EMPTY_ARRAY) as string[];
+  const exceptionProps = React.useMemo(
+    () =>
+      selectedExceptions.map((value) => ({ ...getPropFromTagValue(value), exclude: true } as any)),
+    [selectedExceptions],
+  );
+  const targetProps = React.useMemo(
+    () => [vendorProps, categoryProps, departmentProps, exceptionProps].flat(),
+    [categoryProps, departmentProps, exceptionProps, vendorProps],
+  );
+
+  React.useEffect(() => {
+    setValue('props', targetProps);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(targetProps), setValue]);
 
   const reviewSentence = genReviewSentenceFromProperties(
     vendorProps,
@@ -45,9 +63,7 @@ export const InsightHeader = () => {
   );
 
   return (
-    <Form
-      methods={methods}
-      onSubmit={noop}
+    <div
       className={clsx('rounded-lg', 'relative', 'pt-[84px]', 'bg-white')}
       style={{ boxShadow: 'linear-gradient(138.74deg, #2B45A1 -12.96%, #82B2B3 100%)' }}
     >
@@ -77,17 +93,19 @@ export const InsightHeader = () => {
         <div className="flex gap-4 flex-shrink-0">
           <div className="flex flex-col gap-2">
             <label className="font-bold text-sm">Date Range</label>
-            <Select
+            <Form.Select
+              name="dateRange"
               options={[
-                { label: 'Last 30 Days', value: 'last-30-days' },
-                { label: 'Last 90 Days', value: 'last-90-days' },
+                { label: 'Last 30 Days', value: '30-days' },
+                { label: 'Last 90 Days', value: '90-days' },
                 { label: 'Year To Date', value: 'year-to-date' },
               ]}
-            ></Select>
+            ></Form.Select>
           </div>
           <div className="flex flex-col gap-2">
             <label className="block font-bold text-sm">Group By</label>
-            <Select
+            <Form.Select
+              name="groupBy"
               options={[
                 { label: 'None', value: '' },
                 {
@@ -118,10 +136,10 @@ export const InsightHeader = () => {
                   value: 'VENDOR',
                 },
               ]}
-            ></Select>
+            ></Form.Select>
           </div>
         </div>
       </div>
-    </Form>
+    </div>
   );
 };
