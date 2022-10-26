@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 import { FeedApis } from '../apis';
 import { CreateCommentPayload } from '../types';
 import { CommentAttachmentModal } from './CommentAttachmentModal';
-import { CommentBox } from './CommentBox';
+import { CommentBox } from '../CommentBox';
 import { CommentItem } from './CommentItem';
 import { ViewAllCommentsButton } from './ViewAllCommentsButton';
 

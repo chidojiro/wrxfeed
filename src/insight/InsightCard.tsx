@@ -1,6 +1,9 @@
-import { Input } from '@/common/components';
+import { EssentialsSendEnableIcon } from '@/assets';
+import { Button, Divider, Input } from '@/common/components';
+import { CommentBox } from '@/feed/CommentBox';
 import { DateRangeFilter, Property } from '@/feed/types';
 import { getDisplayUsdAmount } from '@/main/utils';
+import { useMentions } from '@/misc/useMentions';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
@@ -8,6 +11,8 @@ import { Entities } from '@/types';
 import clsx from 'clsx';
 import { sumBy } from 'lodash-es';
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
+import { InsightApis } from './apis';
 import { useInsightSpendings } from './useInsightSpendings';
 
 export type InsightCardProps = {
@@ -16,21 +21,25 @@ export type InsightCardProps = {
   props: Property[];
 };
 
+const fallbackData = { curYearSpends: [], prevYearSpends: [] };
+
 export const InsightCard = ({ groupBy, dateRange, props }: InsightCardProps) => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
-  const { insightSpendings } = useInsightSpendings({
+  const { insightSpendings = fallbackData } = useInsightSpendings({
     props,
     periods: [],
     dateRange,
     groupBy,
   });
 
-  if (!insightSpendings) return null;
+  const { handleSubmit } = useFormContext();
 
   const { curYearSpends, prevYearSpends } = insightSpendings;
 
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
+
+  const { mentions } = useMentions();
 
   return (
     <div className={clsx('rounded-card border-card shadow-card overflow-hidden', 'bg-white')}>
@@ -80,6 +89,29 @@ export const InsightCard = ({ groupBy, dateRange, props }: InsightCardProps) => 
             />
           )}
         </div>
+      </div>
+      <Divider />
+      <div className="py-4 px-18">
+        <CommentBox
+          alwaysShowTools
+          mentionData={mentions}
+          onSubmit={() => handleSubmit((data: any) => InsightApis.create(data))()}
+          className="!rounded-lg"
+          placeholder="@mention people or teams to your share insights"
+          renderSubmitButton={({ disabled, onClick }) => (
+            <Button
+              variant="solid"
+              colorScheme="accent"
+              size="sm"
+              disabled={disabled}
+              onClick={onClick}
+              iconRight={<EssentialsSendEnableIcon />}
+              className="px-6"
+            >
+              Post
+            </Button>
+          )}
+        />
       </div>
     </div>
   );
