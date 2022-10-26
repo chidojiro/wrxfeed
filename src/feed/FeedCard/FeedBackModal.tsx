@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import { EditorState } from 'draft-js';
 import React from 'react';
 import { toast } from 'react-toastify';
-import { CommentBox } from './CommentBox';
+import { CommentBox } from '../CommentBox';
 
 type FeedBackModalProps = {
   open: boolean;
