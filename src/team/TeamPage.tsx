@@ -1,24 +1,26 @@
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader } from '@/common/components';
 import { EMPTY_ARRAY } from '@/common/constants';
-import { useHandler, useMountEffect, useQuery, useUrlState } from '@/common/hooks';
+import { useHandler, useMountEffect, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
+import { TransactionList } from '@/transactions/TransactionList';
+import { useTransactions } from '@/transactions/useTransactions';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { TransLineItem } from '../main/entity';
 import { DepartmentApis } from './apis';
 import { DEFAULT_SORT } from './constants';
 import { TeamHeader } from './TeamHeader';
 import { TeamTargetSummary } from './TeamTargetSummary';
 import { TopCategories } from './TopCategories';
-import { TransactionList } from './TransactionList';
 import { TimeRange } from './types';
 import { useDepartment } from './useDepartment';
 import { useTopCategories } from './useTopCategories';
-import { useTransactions } from './useTransactions';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -40,15 +42,7 @@ export const TeamPage = () => {
   const departmentId = +departmentIdParam;
 
   const { data: target, isValidating: isValidatingTarget, mutate } = usePrimaryTarget(departmentId);
-
-  useMountEffect(() => {
-    viewDepartmentSummary(departmentId);
-  });
-
-  const query = useQuery();
-
-  const _page = query.get('page');
-  const page = _page ? +_page : 1;
+  const [page, setPage] = useState<number>(1);
 
   const getFromDate = (timeRange: TimeRange) => {
     if (!timeRange || timeRange === 'last-30-days') {
@@ -62,7 +56,12 @@ export const TeamPage = () => {
 
   const getToDate = () => dayjs().format(DATE_FORMAT);
 
-  const { transactions, totalCount, isValidatingTransactions } = useTransactions({
+  useMountEffect(() => {
+    setLoadedTransactions(transactions);
+    viewDepartmentSummary(departmentId);
+  });
+
+  const { transactions, isValidatingTransactions } = useTransactions({
     depId: +departmentIdParam,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
     offset: (page - 1) * TRANSACTIONS_PER_PAGE,
@@ -71,6 +70,14 @@ export const TeamPage = () => {
     to: getToDate(),
   });
 
+  const [loadedTransactions, setLoadedTransactions] = useState<TransLineItem[]>(transactions);
+
+  useEffect(() => {
+    if (loadedTransactions?.length === 0) {
+      setLoadedTransactions(transactions);
+    }
+  }, [loadedTransactions, transactions]);
+
   const { data: topCategories = EMPTY_ARRAY, isValidating: isValidatingTopCategories } =
     useTopCategories(departmentId, { from: getFromDate(topCategoriesTimeRange), to: getToDate() });
 
@@ -78,49 +85,55 @@ export const TeamPage = () => {
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
 
+  if (isForbidden)
+    return (
+      <MainLayout>
+        <RestrictedAccessPage />
+      </MainLayout>
+    );
+
+  const handleLoad = async () => {
+    setPage(page + 1);
+    setLoadedTransactions(loadedTransactions.concat(transactions));
+    return loadedTransactions;
+  };
+
   return (
     <MainLayout>
-      {isForbidden ? (
-        <RestrictedAccessPage />
-      ) : (
-        <>
-          <h1 className="sr-only">Department list</h1>
-          <TeamHeader department={department} />
-          <div className="grid grid-cols-9 gap-6 mt-6">
-            <OverlayLoader loading={isValidatingTarget} className="col-span-9 lg:col-span-5">
-              <TargetCard
-                className="h-full"
-                target={target}
-                showColorfulHeading={false}
-                onUpdateSuccess={(target) => mutate([target])}
-                onDeleteSuccess={() => mutate()}
-              />
-            </OverlayLoader>
-            <div className="col-span-9 lg:col-span-4 flex flex-col gap-6">
-              <TeamTargetSummary departmentId={departmentId} />
-              <OverlayLoader loading={isValidatingTopCategories}>
-                <TopCategories
-                  timeRange={topCategoriesTimeRange}
-                  onTimeRangeChange={setTopCategoriesTimeRange}
-                  topCategories={topCategories}
-                />
-              </OverlayLoader>
-            </div>
-          </div>
-          <TransactionList
-            transactions={transactions}
-            loading={isValidatingTransactions}
-            perPage={TRANSACTIONS_PER_PAGE}
-            totalCount={totalCount}
-            hiddenColumns={['depName']}
-            className="mt-6"
-            sort={sortTransactionsBy}
-            onSortChange={setSortTransactionsBy}
-            timeRange={transactionTimeRange}
-            onTimeRangeChange={setTransactionTimeRange}
+      <h1 className="sr-only">Department list</h1>
+      <TeamHeader department={department} />
+      <div className="grid grid-cols-9 gap-6 mt-6">
+        <OverlayLoader loading={isValidatingTarget} className="col-span-9 lg:col-span-5">
+          <TargetCard
+            className="h-full"
+            target={target}
+            showColorfulHeading={false}
+            onUpdateSuccess={(target) => mutate([target])}
+            onDeleteSuccess={() => mutate()}
           />
-        </>
-      )}
+        </OverlayLoader>
+        <div className="col-span-9 lg:col-span-4 flex flex-col gap-6">
+          <TeamTargetSummary departmentId={departmentId} />
+          <OverlayLoader loading={isValidatingTopCategories}>
+            <TopCategories
+              timeRange={topCategoriesTimeRange}
+              onTimeRangeChange={setTopCategoriesTimeRange}
+              topCategories={topCategories}
+            />
+          </OverlayLoader>
+        </div>
+      </div>
+      <TransactionList
+        onLoad={() => handleLoad() as Promise<TransLineItem[]>}
+        transactions={loadedTransactions}
+        loading={isValidatingTransactions}
+        hiddenColumns={['depName']}
+        className="mt-6"
+        sort={sortTransactionsBy}
+        onSortChange={setSortTransactionsBy}
+        timeRange={transactionTimeRange}
+        onTimeRangeChange={setTransactionTimeRange}
+      />
     </MainLayout>
   );
 };

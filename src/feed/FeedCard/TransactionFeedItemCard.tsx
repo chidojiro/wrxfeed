@@ -4,7 +4,7 @@ import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import { FeedItem, TranStatus } from '@/main/entity';
 import { decimalLogic, getColorByText } from '@/main/utils';
-import { getTransactionColorScheme, getTransactionLabel } from '@/team/TransactionList';
+import { getTransactionColorScheme, getTransactionLabel } from '@/transactions/TransactionList';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
