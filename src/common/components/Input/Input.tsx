@@ -11,7 +11,7 @@ type BaseInputProps = HTMLInputProps & {
 
 const BaseInput = React.forwardRef(
   (
-    { type = 'text', variant, className, error, disabled, ...restProps }: BaseInputProps,
+    { type = 'text', variant, className, error, disabled, readOnly, ...restProps }: BaseInputProps,
     ref: any,
   ) => {
     return (
@@ -29,6 +29,7 @@ const BaseInput = React.forwardRef(
             'border-0 border-b border-Gray-11 focus:bg-Gray-12 focus:border-transparent':
               variant === 'underline',
             'border-danger': error,
+            'cursor-default pointer-events-none': readOnly,
             disabled,
           },
           className,

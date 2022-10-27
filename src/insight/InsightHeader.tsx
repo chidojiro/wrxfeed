@@ -107,7 +107,6 @@ export const InsightHeader = () => {
             <Form.Select
               name="groupBy"
               options={[
-                { label: 'None', value: '' },
                 {
                   label: (
                     <div className="flex items-center gap-2">

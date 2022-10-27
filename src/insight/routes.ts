@@ -8,7 +8,11 @@ const InsightPage = React.lazy(() =>
 
 export const InsightRoutes: Record<string, RouteItem> = {
   Insight: {
-    path: '/insight',
+    path: '/insights',
+    component: Sentry.withProfiler(InsightPage, { name: 'InsightPage' }),
+  },
+  UpdateInsight: {
+    path: '/insights/:insightId',
     component: Sentry.withProfiler(InsightPage, { name: 'InsightPage' }),
   },
 };

@@ -23,7 +23,7 @@ export const SideBar = () => {
           >
             Targets
           </SidebarNavItem>
-          <SidebarNavItem href="/insight" iconLeft={<ChartIcon />} matches={['/insight']}>
+          <SidebarNavItem href="/insights" iconLeft={<ChartIcon />} matches={['/insights']}>
             Insights
           </SidebarNavItem>
         </div>
