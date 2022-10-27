@@ -97,24 +97,24 @@ export const InsightPage = ({}: InsightPageProps) => {
     const contentState = data?.content as EditorState;
     const isDirty = contentState.getCurrentContent().hasText() || !!data?.attachment;
 
-    if (!isDirty) return;
-
     const parsedContent = commentEditorHtmlParser(contentState.getCurrentContent());
 
     handleSubmit(async (formData: any) => {
       if (isEdit) {
         await InsightApis.update(insight.id, formData);
+        if (isDirty) return;
         await FeedApis.createComment(insight.feedItem.id, {
           content: parsedContent,
           attachment: data?.attachment,
         });
       } else {
         const insight = await InsightApis.create(formData);
-        history.push(`/insights/${insight.id}`);
+        if (isDirty) return;
         await FeedApis.createComment(insight.feedItem.id, {
           content: parsedContent,
           attachment: data?.attachment,
         });
+        history.push(`/insights/${insight.id}`);
       }
     })();
   };
