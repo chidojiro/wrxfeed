@@ -1,10 +1,13 @@
 import { Form } from '@/common/components';
+import { FeedApis } from '@/feed/apis';
 import { DateRangeFilter, Property } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
+import { commentEditorHtmlParser } from '@/main/utils';
 import { Entities } from '@/types';
+import { EditorState } from 'draft-js';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { InsightApis } from './apis';
 import { InsightCard } from './InsightCard';
 import { InsightHeader } from './InsightHeader';
@@ -32,7 +35,14 @@ export const InsightPage = ({}: InsightPageProps) => {
       categories: [] as string[],
     },
   });
-  const { watch, handleSubmit, reset } = methods;
+  const {
+    watch,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = methods;
+
+  const history = useHistory();
 
   React.useEffect(() => {
     if (isEdit) {
@@ -83,15 +93,42 @@ export const InsightPage = ({}: InsightPageProps) => {
   const groupBy = watch('groupBy') as Entities;
   const props = watch('props') as Property[];
 
+  const handlePost = (data: any) => {
+    const contentState = data?.content as EditorState;
+    const isDirty = contentState.getCurrentContent().hasText() || !!data?.attachment;
+
+    if (!isDirty) return;
+
+    const parsedContent = commentEditorHtmlParser(contentState.getCurrentContent());
+
+    handleSubmit(async (formData: any) => {
+      if (isEdit) {
+        await InsightApis.update(insight.id, formData);
+        await FeedApis.createComment(insight.feedItem.id, {
+          content: parsedContent,
+          attachment: data?.attachment,
+        });
+      } else {
+        const insight = await InsightApis.create(formData);
+        history.push(`/insights/${insight.id}`);
+        await FeedApis.createComment(insight.feedItem.id, {
+          content: parsedContent,
+          attachment: data?.attachment,
+        });
+      }
+    })();
+  };
+
   return (
     <MainLayout>
       <Form methods={methods} className="flex flex-col gap-6">
         <InsightHeader />
         <InsightCard
-          onPost={() => handleSubmit((data: any) => InsightApis.create(data))()}
+          onPost={handlePost}
           groupBy={groupBy}
           dateRange={dateRange}
           props={props}
+          posting={isSubmitting}
         />
       </Form>
     </MainLayout>
