@@ -73,6 +73,10 @@ export const Feeds = ({
     return res;
   };
 
+  const handleInsightDeleteSuccess = (id: number) => {
+    deleteFeed(id);
+  };
+
   const renderInfiniteLoader = ({ isExhausted, anchorRef }: InfiniteLoaderRenderProps) => {
     if (isExhausted && !feeds.length)
       return (
@@ -143,6 +147,7 @@ export const Feeds = ({
             }}
             onDeleteTarget={(id) => handleDeleteTarget(feed, id)}
             onUpdateTarget={(targetId, target) => handleUpdateTarget(feed, targetId, target)}
+            onInsightDeleteSuccess={() => handleInsightDeleteSuccess(feed.id)}
           />
         ))}
       </ul>

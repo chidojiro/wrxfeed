@@ -1,6 +1,7 @@
 import { InfiniteLoader } from '@/common/components';
 import { useInfiniteData } from '@/common/hooks';
 import { isBadRequest } from '@/error';
+import { InsightFeedItem } from '@/insight/types';
 import { FeedItem, Visibility } from '@/main/entity';
 import { CommentFormModel } from '@/main/types';
 import { commentEditorHtmlParser } from '@/main/utils';
@@ -13,9 +14,9 @@ import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { FeedApis } from '../apis';
+import { CommentBox } from '../CommentBox';
 import { CreateCommentPayload } from '../types';
 import { CommentAttachmentModal } from './CommentAttachmentModal';
-import { CommentBox } from '../CommentBox';
 import { CommentItem } from './CommentItem';
 import { ViewAllCommentsButton } from './ViewAllCommentsButton';
 
@@ -23,7 +24,7 @@ const INITIAL_COMMENTS = 2;
 const COMMENTS_PER_INFINITE_LOAD = 20;
 
 export type CommentsSectionProps = {
-  feed: FeedItem;
+  feed: FeedItem | InsightFeedItem;
 };
 
 export const CommentsSection = ({ feed }: CommentsSectionProps) => {
@@ -95,7 +96,8 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
     setAttachFileComment(file);
   };
 
-  const isHidden = feed.category !== null && feed.category?.visibility === Visibility.HIDDEN;
+  const isHidden =
+    (feed as any).category !== null && (feed as any).category?.visibility === Visibility.HIDDEN;
 
   return (
     <div>
@@ -139,8 +141,8 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
         />
       </div>
       <CommentAttachmentModal
-        depName={feed.department?.name}
-        catName={feed.category?.name}
+        depName={(feed as any).department?.name}
+        catName={(feed as any).category?.name}
         open={!!attachFileComment}
         file={attachFileComment}
         mentionData={mentions}

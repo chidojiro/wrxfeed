@@ -1,5 +1,4 @@
-import { SortByParams } from '@/rest/types';
-import { PaginationParams, SortOrderParams } from '@/rest/types';
+import { PaginationParams, SortByParams, SortOrderParams } from '@/rest/types';
 import { Period } from '@/spending/types';
 import { Entities } from '@/types';
 

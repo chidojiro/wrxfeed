@@ -1,11 +1,12 @@
 import { Button } from '@/common/components';
+import { ClassName } from '@/common/types';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { Entities } from '@/types';
 import clsx from 'clsx';
 import { Spending } from './types';
 import { getThisYearTotalsGroupedByItem } from './utils';
 
-export type GroupedSpendingChartLegendsProps = {
+export type GroupedSpendingChartLegendsProps = ClassName & {
   spendings: Spending[];
   groupBy: Entities;
   highlightedItemId?: number;
@@ -23,15 +24,16 @@ export const GroupedSpendingChartLegends = ({
   spendings,
   groupBy,
   highlightedItemId,
+  className,
   onItemMouseEnter,
   onItemMouseLeave,
 }: GroupedSpendingChartLegendsProps) => {
   const thisYearTotals = getThisYearTotalsGroupedByItem(spendings);
 
   return (
-    <div className="flex flex-col">
-      <h3 className="font-semibold">{LabelsByGroupBy[groupBy]}</h3>
-      <div className="border border-Gray-12 rounded-lg p-2 w-[180px] mt-2 text-[10px] flex flex-col flex-1 overflow-auto max-h-[400px]">
+    <div className={clsx('flex flex-col', className)}>
+      <h3 className="font-semibold h-10 flex items-end">{LabelsByGroupBy[groupBy]}</h3>
+      <div className="border border-Gray-12 rounded-lg p-2 min-w-[180px] mt-3 text-[10px] flex flex-col flex-1 overflow-auto max-h-[400px]">
         {thisYearTotals.flat().map(({ color, id, name, total }) => (
           <Button
             key={id}
