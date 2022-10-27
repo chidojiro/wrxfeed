@@ -28,14 +28,6 @@ export const InsightCardActionMenu = ({
   },
   onDeleteSuccess,
 }: InsightCardActionMenuProps) => {
-  const { departments } = useDepartments();
-  const { vendors } = useVendors();
-  const { categories } = useCategories();
-
-  const departmentsGroupedById = groupBy(departments, 'id');
-  const vendorsGroupedById = groupBy(vendors, 'id');
-  const categoriesGroupedById = groupBy(categories, 'id');
-
   const vendorProps = props.filter(({ type }) => type === 'VENDOR');
   const departmentProps = props.filter(({ type }) => type === 'DEPARTMENT');
   const categoryProps = props.filter(({ type }) => type === 'CATEGORY');
@@ -50,7 +42,7 @@ export const InsightCardActionMenu = ({
     <Menu placement="bottom-end" onClose={viewDetailsDisclosure.close}>
       {viewDetailsDisclosure.isOpen ? (
         <div className="py-5 px-4 shadow-card w-[300px] bg-white max-h-[300px] overflow-auto">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Avatar src={avatar} fullName="fullName" size="md" />
             <div>
               <h4 className="font-bold text-xs">{fullName}</h4>
@@ -60,20 +52,20 @@ export const InsightCardActionMenu = ({
           {!!props.length && (
             <div className="mt-4">
               <h5 className="font-bold text-xs">Properties</h5>
-              <div className="flex gap-2 mt-2">
-                {vendorProps.map(({ id }) => (
+              <div className="flex gap-2 mt-2 flex-wrap">
+                {vendorProps.map(({ id, name }) => (
                   <Tag icon={<VendorIcon />} key={id} colorScheme="orange">
-                    {vendorsGroupedById[id][0].name}
+                    {name}
                   </Tag>
                 ))}
-                {categoryProps.map(({ id }) => (
+                {categoryProps.map(({ id, name }) => (
                   <Tag icon={<CategoryIcon />} key={id} colorScheme="accent">
-                    {categoriesGroupedById[id][0].name}
+                    {name}
                   </Tag>
                 ))}
-                {departmentProps.map(({ id }) => (
-                  <Tag icon={<TeamIcon />} key={id} colorScheme="accent">
-                    {departmentsGroupedById[id][0].name}
+                {departmentProps.map(({ id, name }) => (
+                  <Tag icon={<TeamIcon />} key={id} colorScheme="cyan">
+                    {name}
                   </Tag>
                 ))}
               </div>
@@ -84,6 +76,7 @@ export const InsightCardActionMenu = ({
         <>
           <Menu.Item
             onClick={viewDetailsDisclosure.open}
+            closeOnClick={false}
             className="w-[145px]"
             leftIcon={<EyeIcon width={16} height={16} />}
           >

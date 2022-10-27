@@ -23,6 +23,7 @@ export type InsightCardProps = {
   onPost?: (data: any) => void;
   feed?: InsightFeedItem;
   onDeleteSuccess?: () => void;
+  posting?: boolean;
 };
 
 const fallbackData = { curYearSpends: [], prevYearSpends: [] };
@@ -34,6 +35,7 @@ export const InsightCard = ({
   onPost,
   onDeleteSuccess,
   feed,
+  posting,
 }: InsightCardProps) => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
 
@@ -135,6 +137,7 @@ export const InsightCard = ({
       ) : (
         <div className="py-4 px-18">
           <CommentBox
+            allowEmpty
             alwaysShowTools
             mentionData={mentions}
             onSubmit={onPost}
@@ -142,6 +145,7 @@ export const InsightCard = ({
             placeholder="@mention people or teams to your share insights"
             renderSubmitButton={({ disabled, onClick }) => (
               <Button
+                loading={posting}
                 variant="solid"
                 colorScheme="accent"
                 size="sm"

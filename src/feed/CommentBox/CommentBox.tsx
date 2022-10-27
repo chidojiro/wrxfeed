@@ -33,6 +33,7 @@ export type CommentBoxProps = {
   mentionData?: MentionData[];
   renderSubmitButton?: (state: { disabled: boolean; onClick: () => void }) => React.ReactNode;
   alwaysShowTools?: boolean;
+  allowEmpty?: boolean;
 };
 
 export const CommentBox = ({
@@ -50,6 +51,7 @@ export const CommentBox = ({
   mentionData,
   renderSubmitButton: renderSubmitButtonProp,
   alwaysShowTools,
+  allowEmpty,
 }: CommentBoxProps) => {
   const [editorState, setEditorState] = React.useState(defaultContent ?? EditorState.createEmpty());
 
@@ -123,7 +125,7 @@ export const CommentBox = ({
     }
   };
 
-  const isDisabled = !editorState.getCurrentContent().hasText();
+  const isDisabled = allowEmpty ? false : !editorState.getCurrentContent().hasText();
 
   const renderSubmitButton = () => {
     if (!showSend) return null;
