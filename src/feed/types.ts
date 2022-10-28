@@ -70,5 +70,6 @@ export type GetFeedSpendingParams = {
   props: Property[];
   periods: Period[];
   dateRange: DateRangeFilter;
-  groupBy: Entities;
+  groupByItem: Entities;
+  groupByTime: 'year' | 'month' | 'day' | 'week';
 };

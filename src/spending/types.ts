@@ -14,7 +14,8 @@ export type TrackingStatus = TargetStatusType;
 export type Spending = {
   year: number;
   month: number;
-  dat?: number;
+  week?: number;
+  day?: number;
   total: number;
   item?: { id: number; name: string; type: Entities };
 };

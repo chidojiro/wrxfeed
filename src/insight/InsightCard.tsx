@@ -50,11 +50,23 @@ export const InsightCard = ({
     } = {},
   } = feed ?? {};
 
+  const groupByTime = React.useMemo(() => {
+    switch (dateRange) {
+      case '30-days':
+        return 'day';
+      case '90-days':
+        return 'week';
+      default:
+        return 'month';
+    }
+  }, [dateRange]);
+
   const { insightSpendings = fallbackData } = useInsightSpendings({
     props: props!,
     periods: [],
     dateRange: dateRange!,
-    groupBy: groupBy!,
+    groupByItem: groupBy!,
+    groupByTime,
   });
 
   const { curYearSpends, prevYearSpends } = insightSpendings;
@@ -133,7 +145,11 @@ export const InsightCard = ({
               {!groupBy ? (
                 <SpendingBarChart thisYearData={curYearSpends} lastYearData={prevYearSpends} />
               ) : (
-                <GroupedSpendingChart data={insightSpendings} highlightedItemId={hoveredItemId} />
+                <GroupedSpendingChart
+                  data={insightSpendings}
+                  highlightedItemId={hoveredItemId}
+                  dateRange={dateRange}
+                />
               )}
             </div>
           </div>
