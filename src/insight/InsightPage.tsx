@@ -28,7 +28,7 @@ export const InsightPage = ({}: InsightPageProps) => {
     defaultValues: {
       name: '',
       groupBy: 'DEPARTMENT',
-      dateRange: '30-days',
+      dateRange: 'year-to-date',
       props: [] as Property[],
       vendors: [] as string[],
       departments: [] as string[],
