@@ -102,18 +102,20 @@ export const InsightPage = ({}: InsightPageProps) => {
     handleSubmit(async (formData: any) => {
       if (isEdit) {
         await InsightApis.update(insight.id, formData);
-        if (isDirty) return;
-        await FeedApis.createComment(insight.feedItem.id, {
-          content: parsedContent,
-          attachment: data?.attachment,
-        });
+        if (isDirty) {
+          await FeedApis.createComment(insight.feedItem.id, {
+            content: parsedContent,
+            attachment: data?.attachment,
+          });
+        }
       } else {
         const insight = await InsightApis.create(formData);
-        if (isDirty) return;
-        await FeedApis.createComment(insight.feedItem.id, {
-          content: parsedContent,
-          attachment: data?.attachment,
-        });
+        if (isDirty) {
+          await FeedApis.createComment(insight.feedItem.id, {
+            content: parsedContent,
+            attachment: data?.attachment,
+          });
+        }
         history.push(`/insights/${insight.id}`);
       }
     })();
