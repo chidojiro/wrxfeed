@@ -26,7 +26,7 @@ const TRANSACTIONS_PER_PAGE = 10;
 
 export type InsightCardProps = {
   groupBy?: Entities;
-  errors?: any;
+  errors?: Record<string, any>;
   dateRange?: DateRangeFilter;
   props?: Property[];
   onPost?: (data: any) => void;
@@ -91,7 +91,7 @@ export const InsightCard = ({
 
   const { mentions } = useMentions();
 
-  const hasNameError = !!errors.name;
+  const hasNameError = !!errors?.name;
 
   const renderErrorName = () => {
     return (
