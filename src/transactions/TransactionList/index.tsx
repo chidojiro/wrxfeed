@@ -5,7 +5,6 @@ import {
   Button,
   Divider,
   InfiniteLoader,
-  InfiniteLoaderRenderProps,
   OverlayLoader,
   StatusTag,
   StatusTagColorScheme,
@@ -13,12 +12,10 @@ import {
   Tooltip,
 } from '@/common/components';
 import { EmptyState } from '@/common/components/EmptyState';
-import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import { RedirectMethod } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { DateUtils } from '@/common/utils';
 import { CommentGroup } from '@/feed/CommentGroup';
-import { LoadMoreButton } from '@/feed/FeedCard/LoadMoreTransactionsButton';
 import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { Category, Department, TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
@@ -28,10 +25,8 @@ import { useRestrictedItems } from '@/role/useRestrictedItems';
 import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TimeRangeSelect } from '../../team/TimeRangeSelect';
 import { TimeRange } from '../../team/types';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
@@ -198,7 +193,6 @@ export const TransactionList = ({
                           <LoopBoldIcon />
                           <span>Hide Transactions</span>
                         </Button>
-                        <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
                       </div>
                     </Table.Cell>
                   </Table.Row>
