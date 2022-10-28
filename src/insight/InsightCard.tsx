@@ -99,7 +99,6 @@ export const InsightCard = ({
             <Form.Input
               name="name"
               rules={{
-                required: true,
                 validate: {
                   required: (value) => !!value.length,
                 },
