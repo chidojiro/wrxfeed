@@ -28,7 +28,7 @@ import { useRestrictedItems } from '@/role/useRestrictedItems';
 import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
-import React from 'react';
+import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { TimeRangeSelect } from '../../team/TimeRangeSelect';
@@ -78,7 +78,7 @@ export const TransactionList = ({
   onTimeRangeChange,
   sort,
   onSortChange,
-  defaultExpand = false,
+  defaultExpand = true,
   onLoad,
 }: TransactionListProps) => {
   const {
@@ -92,6 +92,8 @@ export const TransactionList = ({
   const showCategory = !hiddenColumns?.includes('categoryName');
   const showDepartment = !hiddenColumns?.includes('depName');
   const showVendor = !hiddenColumns?.includes('vendorName');
+
+  const [listOpen, setListOpen] = useState<boolean>(true);
 
   const { restrictedItems } = useRestrictedItems();
 
@@ -164,209 +166,233 @@ export const TransactionList = ({
   };
 
   return (
-    <div>
-      <LineItemDrawer
-        open={isLineItemDrawerOpen}
-        onClose={closeLineItemDrawer}
-        lineItem={selectedLineItem!}
-        feedId={feedId}
-      />
-      <Table.OverflowContainer className={className}>
-        <OverlayLoader loading={loading}>
-          <Table className="rounded-card" sort={sort} onSortChange={(sort) => onSortChange(sort)}>
-            <Table.Body>
-              <Table.Row>
-                <Table.Cell colSpan={7}>
-                  <div
-                    className={clsx(
-                      'bg-white py-2 px-4 text-base',
-                      'flex items-center justify-between',
-                    )}
-                  >
-                    <div className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3')}>
-                      <LoopBoldIcon />
-                      <span>Transactions</span>
-                    </div>
-                    <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-              {hasTransactions ? (
-                <>
+    <>
+      {defaultExpand || listOpen ? (
+        <div>
+          <LineItemDrawer
+            open={isLineItemDrawerOpen}
+            onClose={closeLineItemDrawer}
+            lineItem={selectedLineItem!}
+            feedId={feedId}
+          />
+          <Table.OverflowContainer className={className}>
+            <OverlayLoader loading={loading}>
+              <Table
+                className="rounded-card"
+                sort={sort}
+                onSortChange={(sort) => onSortChange(sort)}
+              >
+                <Table.Body>
                   <Table.Row>
-                    {headers.map(({ label, sortKey, align }) => (
-                      <Table.Header key={label} sortKey={sortKey} className={align}>
-                        {label}
-                      </Table.Header>
-                    ))}
-                  </Table.Row>
-                  {transactions.map((transaction: TransLineItem) => (
-                    <Table.Row
-                      key={transaction.id}
-                      className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
-                    >
-                      <Table.Cell>
-                        {transaction.transDate && DateUtils.format(transaction.transDate)}
-                      </Table.Cell>
-                      {showDepartment && (
-                        <Table.Cell className="hover:bg-Gray-12 !p-0">
-                          <div className="py-2 px-4">
-                            {isRestricted(transaction.department?.id ?? 0, 'DEPARTMENT') ? (
-                              <RestrictedItem />
-                            ) : (
-                              <Link
-                                className="flex items-center gap-2"
-                                to={`/departments/${transaction.department?.id}`}
-                              >
-                                {transaction.department?.name}
-                              </Link>
-                            )}
-                          </div>
-                        </Table.Cell>
-                      )}
-                      {showCategory && (
-                        <Table.Cell className="hover:bg-Gray-12 !p-0">
-                          <div className="py-2 px-4">
-                            {isRestricted(transaction.category?.id ?? 0, 'CATEGORY') ? (
-                              <RestrictedItem />
-                            ) : (
-                              <Link
-                                className="flex items-center gap-2"
-                                to={`/categories/${transaction.category?.id}`}
-                              >
-                                {transaction.category?.name}
-                              </Link>
-                            )}
-                          </div>
-                        </Table.Cell>
-                      )}
-                      {showVendor && (
-                        <Table.Cell className="hover:bg-Gray-12 !p-0">
-                          <div className="py-2 px-4">
-                            {isRestricted(transaction.vendor?.id ?? 0, 'VENDOR') ? (
-                              <RestrictedItem />
-                            ) : (
-                              <Link
-                                to={`/vendors/${transaction.vendor?.id}`}
-                                className="flex items-center gap-2"
-                              >
-                                <Avatar
-                                  size="sm"
-                                  src={transaction.vendor?.avatar}
-                                  fullName={transaction.vendor?.name ?? ''}
-                                  className="w-6 h-6 flex-shrink-0"
-                                />
-                                <div>
-                                  <p>{transaction.vendor?.name}</p>
-                                  {transaction.transRecordType?.toLowerCase() ===
-                                    'Expense Report'.toLowerCase() && (
-                                    <div className="flex flex-row items-center space-x-1">
-                                      <p className="text-Accent-2 text-xs font-normal">Expensed</p>
-                                    </div>
-                                  )}
-                                </div>
-                              </Link>
-                            )}
-                          </div>
-                        </Table.Cell>
-                      )}
-                      <Table.Cell>
-                        {isSomeRestricted(
-                          transaction.department,
-                          transaction.vendor,
-                          transaction.category,
-                        ) ? (
-                          <RestrictedItem />
-                        ) : (
-                          <Button
-                            className="text-left"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openLineItemDrawer(transaction, transaction?.feedItem?.id);
-                            }}
-                          >
-                            {(transaction.description ?? '').length >= 93 ? (
-                              <Tooltip
-                                trigger={
-                                  <div className="flex flex-col items-center max-w-[350px]">
-                                    <p className="line-clamp-3">{transaction.description}</p>
-                                  </div>
-                                }
-                              >
-                                {transaction.description}
-                              </Tooltip>
-                            ) : (
-                              <p>{transaction.description}</p>
-                            )}
-                          </Button>
+                    <Table.Cell colSpan={7}>
+                      <div
+                        className={clsx(
+                          'bg-white py-2 px-4 text-base',
+                          'flex items-center justify-between',
                         )}
-                      </Table.Cell>
-                      <Table.Cell className="text-right">
-                        {decimalLogic(transaction.amountUsd, '$')}
-                      </Table.Cell>
-                      <Table.Cell>
-                        <div className="flex justify-end">
-                          <StatusTag
-                            colorScheme={getTransactionColorScheme(transaction.transStatus)}
-                            className="font-semibold"
-                          >
-                            {getTransactionLabel(transaction.transStatus)}
-                          </StatusTag>
-                        </div>
-                      </Table.Cell>
-                      <Table.Cell>
-                        {isAllRestricted(
-                          transaction.department,
-                          transaction.vendor,
-                          transaction.category,
-                        ) ? (
-                          <div className="relative">
-                            <CommentIcon className="text-Gray-7 h-7 w-6" />
-                            <div className="absolute top-0 left-0 w-6 h-full">
-                              <EyeHideIcon className="absolute top-3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xs font-semibold text-red-1" />
-                            </div>
-                          </div>
-                        ) : (
-                          <Link to={`/feed/item/${transaction.feedItem?.id}`}>
-                            {transaction.feedItem?.comments.length ? (
-                              <CommentGroup comments={transaction.feedItem.comments} />
+                      >
+                        <Button
+                          className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3')}
+                          onClick={() => setListOpen(false)}
+                        >
+                          <LoopBoldIcon />
+                          <span>Hide Transactions</span>
+                        </Button>
+                        <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
+                      </div>
+                    </Table.Cell>
+                  </Table.Row>
+                  {hasTransactions ? (
+                    <>
+                      <Table.Row>
+                        {headers.map(({ label, sortKey, align }) => (
+                          <Table.Header key={label} sortKey={sortKey} className={align}>
+                            {label}
+                          </Table.Header>
+                        ))}
+                      </Table.Row>
+                      {transactions.map((transaction: TransLineItem) => (
+                        <Table.Row
+                          key={transaction.id}
+                          className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
+                        >
+                          <Table.Cell>
+                            {transaction.transDate && DateUtils.format(transaction.transDate)}
+                          </Table.Cell>
+                          {showDepartment && (
+                            <Table.Cell className="hover:bg-Gray-12 !p-0">
+                              <div className="py-2 px-4">
+                                {isRestricted(transaction.department?.id ?? 0, 'DEPARTMENT') ? (
+                                  <RestrictedItem />
+                                ) : (
+                                  <Link
+                                    className="flex items-center gap-2"
+                                    to={`/departments/${transaction.department?.id}`}
+                                  >
+                                    {transaction.department?.name}
+                                  </Link>
+                                )}
+                              </div>
+                            </Table.Cell>
+                          )}
+                          {showCategory && (
+                            <Table.Cell className="hover:bg-Gray-12 !p-0">
+                              <div className="py-2 px-4">
+                                {isRestricted(transaction.category?.id ?? 0, 'CATEGORY') ? (
+                                  <RestrictedItem />
+                                ) : (
+                                  <Link
+                                    className="flex items-center gap-2"
+                                    to={`/categories/${transaction.category?.id}`}
+                                  >
+                                    {transaction.category?.name}
+                                  </Link>
+                                )}
+                              </div>
+                            </Table.Cell>
+                          )}
+                          {showVendor && (
+                            <Table.Cell className="hover:bg-Gray-12 !p-0">
+                              <div className="py-2 px-4">
+                                {isRestricted(transaction.vendor?.id ?? 0, 'VENDOR') ? (
+                                  <RestrictedItem />
+                                ) : (
+                                  <Link
+                                    to={`/vendors/${transaction.vendor?.id}`}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <Avatar
+                                      size="sm"
+                                      src={transaction.vendor?.avatar}
+                                      fullName={transaction.vendor?.name ?? ''}
+                                      className="w-6 h-6 flex-shrink-0"
+                                    />
+                                    <div>
+                                      <p>{transaction.vendor?.name}</p>
+                                      {transaction.transRecordType?.toLowerCase() ===
+                                        'Expense Report'.toLowerCase() && (
+                                        <div className="flex flex-row items-center space-x-1">
+                                          <p className="text-Accent-2 text-xs font-normal">
+                                            Expensed
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </Link>
+                                )}
+                              </div>
+                            </Table.Cell>
+                          )}
+                          <Table.Cell>
+                            {isSomeRestricted(
+                              transaction.department,
+                              transaction.vendor,
+                              transaction.category,
+                            ) ? (
+                              <RestrictedItem />
                             ) : (
-                              <div className="relative m-2">
+                              <Button
+                                className="text-left"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openLineItemDrawer(transaction, transaction?.feedItem?.id);
+                                }}
+                              >
+                                {(transaction.description ?? '').length >= 93 ? (
+                                  <Tooltip
+                                    trigger={
+                                      <div className="flex flex-col items-center max-w-[350px]">
+                                        <p className="line-clamp-3">{transaction.description}</p>
+                                      </div>
+                                    }
+                                  >
+                                    {transaction.description}
+                                  </Tooltip>
+                                ) : (
+                                  <p>{transaction.description}</p>
+                                )}
+                              </Button>
+                            )}
+                          </Table.Cell>
+                          <Table.Cell className="text-right">
+                            {decimalLogic(transaction.amountUsd, '$')}
+                          </Table.Cell>
+                          <Table.Cell>
+                            <div className="flex justify-end">
+                              <StatusTag
+                                colorScheme={getTransactionColorScheme(transaction.transStatus)}
+                                className="font-semibold"
+                              >
+                                {getTransactionLabel(transaction.transStatus)}
+                              </StatusTag>
+                            </div>
+                          </Table.Cell>
+                          <Table.Cell>
+                            {isAllRestricted(
+                              transaction.department,
+                              transaction.vendor,
+                              transaction.category,
+                            ) ? (
+                              <div className="relative">
                                 <CommentIcon className="text-Gray-7 h-7 w-6" />
-                                <div className="absolute bottom-[43%] left-3 transform -translate-x-1/2 text-Gray-2">
-                                  <AddSmallSlimIcon />
+                                <div className="absolute top-0 left-0 w-6 h-full">
+                                  <EyeHideIcon className="absolute top-3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xs font-semibold text-red-1" />
                                 </div>
                               </div>
+                            ) : (
+                              <Link to={`/feed/item/${transaction.feedItem?.id}`}>
+                                {transaction.feedItem?.comments.length ? (
+                                  <CommentGroup comments={transaction.feedItem.comments} />
+                                ) : (
+                                  <div className="relative m-2">
+                                    <CommentIcon className="text-Gray-7 h-7 w-6" />
+                                    <div className="absolute bottom-[43%] left-3 transform -translate-x-1/2 text-Gray-2">
+                                      <AddSmallSlimIcon />
+                                    </div>
+                                  </div>
+                                )}
+                              </Link>
                             )}
-                          </Link>
-                        )}
+                          </Table.Cell>
+                        </Table.Row>
+                      ))}
+                    </>
+                  ) : (
+                    <Table.Row>
+                      <Table.Cell colSpan={7}>
+                        <div className="flex flex-1 py-4 px-2 w-full">
+                          <EmptyState
+                            title="No recent transactions"
+                            content="This will change as more transactions come in."
+                          />
+                        </div>
                       </Table.Cell>
                     </Table.Row>
-                  ))}
-                </>
-              ) : (
-                <Table.Row>
-                  <Table.Cell colSpan={7}>
-                    <div className="flex flex-1 py-4 px-2 w-full">
-                      <EmptyState
-                        title="No recent transactions"
-                        content="This will change as more transactions come in."
-                      />
-                    </div>
-                  </Table.Cell>
-                </Table.Row>
-              )}
-            </Table.Body>
-          </Table>
-        </OverlayLoader>
-      </Table.OverflowContainer>
-      {hasTransactions && (
-        <div className="relative flex justify-between items-center my-3">
-          <Divider className="w-[45%]" />
-          <InfiniteLoader defaultPage={2} mode="ON_DEMAND" onLoad={onLoad} />
-          <Divider className="w-[45%]" />
+                  )}
+                </Table.Body>
+              </Table>
+            </OverlayLoader>
+          </Table.OverflowContainer>
+          {hasTransactions && (
+            <div className="relative flex justify-between items-center my-3">
+              <Divider className="w-[45%]" />
+              <InfiniteLoader defaultPage={2} mode="ON_DEMAND" onLoad={onLoad} />
+              <Divider className="w-[45%]" />
+            </div>
+          )}
         </div>
+      ) : (
+        <>
+          <Button
+            className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3 px-8 py-6')}
+            onClick={() => setListOpen(true)}
+          >
+            <LoopBoldIcon />
+            <span>View Transactions</span>
+          </Button>
+          <Divider />
+        </>
       )}
-    </div>
+    </>
   );
 };
