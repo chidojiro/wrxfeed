@@ -26,7 +26,7 @@ export const InsightPage = ({}: InsightPageProps) => {
 
   const methods = useForm({
     defaultValues: {
-      name: 'Mock Name',
+      name: '',
       groupBy: 'DEPARTMENT',
       dateRange: '30-days',
       props: [] as Property[],
@@ -39,7 +39,7 @@ export const InsightPage = ({}: InsightPageProps) => {
     watch,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const history = useHistory();
@@ -124,6 +124,7 @@ export const InsightPage = ({}: InsightPageProps) => {
       <Form methods={methods} className="flex flex-col gap-6">
         <InsightHeader />
         <InsightCard
+          errors={errors}
           onPost={handlePost}
           groupBy={groupBy}
           dateRange={dateRange}

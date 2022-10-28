@@ -34,7 +34,6 @@ export const LoginPage = () => {
   }, [message]);
 
   const handleResponseSuccess = async (response: any) => {
-    console.log(response);
     if ('access_token' in response) {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const { access_token } = response;

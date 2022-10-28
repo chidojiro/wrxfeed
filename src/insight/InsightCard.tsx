@@ -1,4 +1,4 @@
-import { EssentialsSendEnableIcon } from '@/assets';
+import { AlertRed, EssentialsSendEnableIcon } from '@/assets';
 import { Button, Divider, Form, Input } from '@/common/components';
 import { CommentBox } from '@/feed/CommentBox';
 import { CommentsSection } from '@/feed/FeedCard/CommentsSection';
@@ -18,6 +18,7 @@ import { useInsightSpendings } from './useInsightSpendings';
 
 export type InsightCardProps = {
   groupBy?: Entities;
+  errors?: any;
   dateRange?: DateRangeFilter;
   props?: Property[];
   onPost?: (data: any) => void;
@@ -36,6 +37,7 @@ export const InsightCard = ({
   onDeleteSuccess,
   feed,
   posting,
+  errors,
 }: InsightCardProps) => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
 
@@ -62,6 +64,17 @@ export const InsightCard = ({
 
   const { mentions } = useMentions();
 
+  const hasNameError = !!errors.name;
+
+  const renderErrorName = () => {
+    return (
+      <div className="flex flex-row items-center px-2 space-x-1 my-1">
+        <AlertRed width={15} height={15} className="w-4 h-4" viewBox="0 0 15 15" />
+        <p className="text-xs text-Gray-6">Insight name is required</p>
+      </div>
+    );
+  };
+
   return (
     <div className={clsx('rounded-card border-card shadow-card overflow-hidden', 'bg-white')}>
       <div
@@ -85,12 +98,20 @@ export const InsightCard = ({
           ) : (
             <Form.Input
               name="name"
+              rules={{
+                required: true,
+                validate: {
+                  required: (value) => !!value.length,
+                },
+              }}
               readOnly={!!feed}
               variant="underline"
               className="font-bold text-lg col-span-7"
+              placeholder="Name this insight..."
             />
           )}
         </div>
+        {hasNameError && renderErrorName()}
         <div className={clsx('relative top-5', 'grid grid-cols-10 gap-4')}>
           <div className="col-span-7">
             <div className="flex gap-4 h-10">
