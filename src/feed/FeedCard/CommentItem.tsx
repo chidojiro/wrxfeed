@@ -19,8 +19,8 @@ import clsx from 'clsx';
 import { EditorState } from 'draft-js';
 import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
+import { CommentBox } from '../CommentBox';
 import { CommentText } from '../CommentText';
-import { CommentBox } from './CommentBox';
 import CommentImage from './CommentImage';
 import { CommentOwner } from './CommentOwner';
 

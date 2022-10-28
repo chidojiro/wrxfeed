@@ -4,7 +4,7 @@ import { Children, ClassName, HTMLButtonProps } from '../../types';
 import { Spinner } from '../Spinner';
 
 type Variant = 'outline' | 'solid' | 'ghost' | 'text';
-type ColorScheme = 'primary' | 'danger' | 'white' | 'purple' | 'gray';
+type ColorScheme = 'primary' | 'danger' | 'white' | 'purple' | 'gray' | 'accent';
 type Size = 'sm' | 'md' | 'lg';
 
 type ClassNameByVariant = Partial<Record<Variant, string>>;
@@ -28,12 +28,16 @@ const grayBackgroundClassNames: ClassNameByVariant = {
   outline: 'hover:bg-Gray-12',
   solid: 'bg-Gray-6',
 };
+const accentBackgroundClassNames: ClassNameByVariant = {
+  solid: 'bg-Accent-2',
+};
 const backgroundClassNames: Record<ColorScheme, ClassNameByVariant> = {
   primary: primaryBackgroundClassNames,
   danger: dangerBackgroundClassNames,
   white: whiteBackgroundClassNames,
   purple: purpleBackgroundClassNames,
   gray: grayBackgroundClassNames,
+  accent: accentBackgroundClassNames,
 };
 
 const primaryBorderColorClassNames: ClassNameByVariant = {
@@ -51,12 +55,16 @@ const purpleBorderColorClassNames: ClassNameByVariant = {
 const grayBorderColorClassNames: ClassNameByVariant = {
   outline: 'border-Gray-11',
 };
+const accentBorderColorClassNames: ClassNameByVariant = {
+  outline: 'border-Accent-2',
+};
 const borderColorClassNames: Record<ColorScheme, ClassNameByVariant> = {
   danger: dangerBorderColorClassNames,
   primary: primaryBorderColorClassNames,
   white: whiteBorderColorClassNames,
   purple: purpleBorderColorClassNames,
   gray: grayBorderColorClassNames,
+  accent: accentBorderColorClassNames,
 };
 
 const primaryTextColorClassNames: ClassNameByVariant = {
@@ -88,12 +96,19 @@ const grayTextColorClassNames: ClassNameByVariant = {
   solid: 'text-white',
   text: 'text-Gray-6',
 };
+const accentTextColorClassNames: ClassNameByVariant = {
+  ghost: 'text-Accent-2',
+  outline: 'text-Accent-2',
+  solid: 'text-white',
+  text: 'text-Accent-2',
+};
 const textColorClassNames: Record<ColorScheme, ClassNameByVariant> = {
   danger: dangerTextColorClassNames,
   primary: primaryTextColorClassNames,
   white: whiteTextColorClassNames,
   purple: purpleTextColorClassNames,
   gray: grayTextColorClassNames,
+  accent: accentTextColorClassNames,
 };
 
 const paddingClassNames: Record<Size, string> = {

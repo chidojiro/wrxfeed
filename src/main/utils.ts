@@ -479,13 +479,16 @@ export const genReviewSentenceFromProperties = (
   categoryProps: TargetProps[] = [],
   departmentProps: TargetProps[] = [],
   exceptionProps: TargetProps[] = [],
+  resolveSentence?: (vendor: string, category: string, team: string, except: string) => string,
 ): string => {
   const vendorSen = getItemsSentence(vendorProps);
   const catSen = getItemsSentence(categoryProps, ' spend within ');
   const teamSen = getItemsSentence(departmentProps, ' for ');
   const exceptSen = getItemsSentence(exceptionProps, ', except ');
 
-  const sentence = `You're targeting all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`;
+  const sentence = resolveSentence
+    ? resolveSentence(vendorSen, catSen, teamSen, exceptSen)
+    : `You're targeting all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`;
 
   return sentence;
 };

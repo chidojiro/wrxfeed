@@ -2,7 +2,7 @@ import { getChartLevels } from '@/main/chart.utils';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { Bar, ComposedChart, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
-import { Spending } from '../types';
+import { Spending } from './types';
 import { TooltipContent } from './TooltipContent';
 import { XAxis } from './XAxis';
 

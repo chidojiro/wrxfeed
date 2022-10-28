@@ -1,52 +1,43 @@
-import { sumBy, uniqBy } from 'lodash-es';
+import { DateRangeFilter } from '@/feed/types';
+import React from 'react';
 import { SpendingChartV2 } from './SpendingChartV2/SpendingChartV2';
 import { SpendingsReport } from './types';
-import { getThisYearTotalsGroupedByItem } from './utils';
+import {
+  getChartDataByDay,
+  getChartDataByMonth,
+  getChartDataByWeek,
+  getThisYearTotalsGroupedByItem,
+} from './utils';
 
 export type GroupedSpendingChartProps = {
   data: SpendingsReport;
+  highlightedItemId?: number;
+  dateRange?: DateRangeFilter;
 };
 
-export const GroupedSpendingChart = ({ data }: GroupedSpendingChartProps) => {
-  const { curYearSpends, prevYearSpends } = data;
+const OTHER_COLOR = '#029B80';
 
-  const uniqueItems = uniqBy(
-    curYearSpends.map(({ item }) => item),
-    'id',
-  ).filter(Boolean);
+export const GroupedSpendingChart = ({
+  data,
+  highlightedItemId,
+  dateRange,
+}: GroupedSpendingChartProps) => {
+  const { curYearSpends } = data;
 
   const thisYearTotals = getThisYearTotalsGroupedByItem(curYearSpends);
 
-  const chartData = new Array(12).fill(null).map((_, idx) => {
-    const month = idx + 1;
+  const chartData = React.useMemo(() => {
+    if (dateRange === '30-days') return getChartDataByDay(data);
 
-    return {
-      month,
-      thisYearTotal: sumBy(
-        curYearSpends.filter((spend) => spend.month === month),
-        'total',
-      ),
-      lastYearTotal: sumBy(
-        prevYearSpends.filter((spend) => spend.month === month),
-        'total',
-      ),
-      ...uniqueItems.reduce(
-        (acc, cur) => ({
-          ...acc,
-          [cur!.id]:
-            curYearSpends.find((spend) => spend.month === month && spend.item?.id === cur?.id)
-              ?.total ?? 0,
-        }),
-        {},
-      ),
-      items: uniqueItems,
-    };
-  });
+    if (dateRange === '90-days') return getChartDataByWeek(data);
+
+    return getChartDataByMonth(data);
+  }, [data, dateRange]);
 
   return (
     <SpendingChartV2
-      data={chartData}
-      barGap={-36}
+      data={chartData as any}
+      dateRange={dateRange}
       charts={[
         {
           type: 'BAR',
@@ -56,10 +47,13 @@ export const GroupedSpendingChart = ({ data }: GroupedSpendingChartProps) => {
         {
           type: 'BAR',
           color: '',
-          stackedBars: thisYearTotals.map(({ id, color }) => ({
-            dataKey: id.toString(),
-            color,
-          })),
+          stackedBars: [
+            thisYearTotals.slice(0, 10).map(({ id, color }) => ({
+              dataKey: id.toString(),
+              color,
+            })),
+            { dataKey: '-1', color: OTHER_COLOR },
+          ].flat(),
         },
       ]}
     />

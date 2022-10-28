@@ -1,37 +1,43 @@
 import { CategoryIcon, TeamIcon } from '@/assets';
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, Select } from '@/common/components';
-import { useQuery, useUrlState } from '@/common/hooks';
+import { useMountEffect, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
-import { SpendingBarChart } from '@/spending/SpendingChart/SpendingBarChart';
-import { TransactionList } from '@/team/TransactionList';
+import { SpendingBarChart } from '@/spending/SpendingBarChart';
+import { DEFAULT_SORT } from '@/team/constants';
+import { TransactionList } from '@/transactions/TransactionList';
 import { TimeRange } from '@/team/types';
-import { useTransactions } from '@/team/useTransactions';
+import { useTransactions } from '@/transactions/useTransactions';
 import dayjs from 'dayjs';
 import { sumBy } from 'lodash-es';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GetVendorSpendingsParams } from './types';
 import { useVendor } from './useVendor';
 import { useVendorSpendings } from './useVendorSpendings';
 import { VendorHeader } from './VendorHeader';
+import { TransLineItem } from '@/main/entity';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const VendorPage = () => {
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
+  const [hoveredItemId, setHoveredItemId] = React.useState<number>();
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
+    'sortTransactionsBy',
+    DEFAULT_SORT,
+  );
   const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
   const [groupBy, setGroupBy] = React.useState<GetVendorSpendingsParams['groupBy']>(undefined);
 
   const { vendorId: vendorIdParam } = useParams() as Record<string, string>;
   const vendorId = +vendorIdParam;
-
+  const [page, setPage] = useState<number>(1);
   const {
     data: vendor,
     isValidating: isValidatingVendor,
@@ -48,11 +54,6 @@ export const VendorPage = () => {
     groupBy,
   });
 
-  const query = useQuery();
-
-  const _page = query.get('page');
-  const page = _page ? +_page : 1;
-
   const getFromDate = () => {
     if (!timeRange || timeRange === 'last-30-days') {
       return dayjs().subtract(30, 'days').format(DATE_FORMAT);
@@ -65,7 +66,11 @@ export const VendorPage = () => {
 
   const getToDate = () => dayjs().format(DATE_FORMAT);
 
-  const { transactions, totalCount, isValidatingTransactions } = useTransactions({
+  useMountEffect(() => {
+    setLoadedTransactions(transactions);
+  });
+
+  const { transactions, isValidatingTransactions } = useTransactions({
     vendId: vendorId,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
     offset: (page - 1) * TRANSACTIONS_PER_PAGE,
@@ -73,6 +78,14 @@ export const VendorPage = () => {
     from: getFromDate(),
     to: getToDate(),
   });
+
+  const [loadedTransactions, setLoadedTransactions] = useState<TransLineItem[]>();
+
+  useEffect(() => {
+    if (loadedTransactions?.length === 0) {
+      setLoadedTransactions(transactions);
+    }
+  }, [loadedTransactions, transactions]);
 
   const { curYearSpends = [], prevYearSpends = [] } = vendorSpendings ?? {};
 
@@ -90,6 +103,12 @@ export const VendorPage = () => {
       </MainLayout>
     );
   }
+
+  const handleLoad = async () => {
+    setPage(page + 1);
+    setLoadedTransactions(loadedTransactions?.concat(transactions));
+    return loadedTransactions;
+  };
 
   return (
     <MainLayout>
@@ -148,20 +167,25 @@ export const VendorPage = () => {
               {!groupBy ? (
                 <SpendingBarChart thisYearData={curYearSpends} lastYearData={prevYearSpends} />
               ) : (
-                <GroupedSpendingChart data={vendorSpendings} />
+                <GroupedSpendingChart data={vendorSpendings} highlightedItemId={hoveredItemId} />
               )}
             </div>
             {!!groupBy && (
-              <GroupedSpendingChartLegends spendings={curYearSpends} groupBy={groupBy} />
+              <GroupedSpendingChartLegends
+                spendings={curYearSpends}
+                groupBy={groupBy}
+                highlightedItemId={hoveredItemId}
+                onItemMouseEnter={setHoveredItemId}
+                onItemMouseLeave={() => setHoveredItemId(undefined)}
+              />
             )}
           </div>
         </div>
       </OverlayLoader>
       <TransactionList
         className="mt-6"
-        transactions={transactions}
-        totalCount={totalCount}
-        perPage={TRANSACTIONS_PER_PAGE}
+        onLoad={() => handleLoad() as Promise<TransLineItem[]>}
+        transactions={loadedTransactions as TransLineItem[]}
         loading={isValidatingTransactions}
         hiddenColumns={['vendorName']}
         timeRange={timeRange}

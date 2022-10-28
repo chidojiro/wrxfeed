@@ -1,3 +1,4 @@
+import { DateRangeFilter } from '@/feed/types';
 import { getChartLevels } from '@/main/chart.utils';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
@@ -18,13 +19,13 @@ type BaseData = {
 type SpendingChartV2Props<TData extends BaseData> = {
   charts: ChartInfo[];
   data: TData[];
-  barGap?: number;
+  dateRange?: DateRangeFilter;
 };
 
 export const SpendingChartV2 = <TData extends BaseData>({
   data,
   charts,
-  barGap,
+  dateRange,
 }: SpendingChartV2Props<TData>) => {
   const [hoveredIndex, setHoveredIndex] = React.useState<number>();
 
@@ -42,13 +43,19 @@ export const SpendingChartV2 = <TData extends BaseData>({
     name: dayjs().set('month', item.month).format('MMM'),
   }));
 
+  const defaultBarSize = React.useMemo(() => {
+    if (dateRange === '30-days') return 8;
+
+    return 24;
+  }, [dateRange]);
+
   const renderBar = (chartInfo: BarChartInfo) => {
     if (!chartInfo.stackedBars) {
       return (
         <Bar
           dataKey={chartInfo.dataKey ?? ''}
           name={chartInfo.title}
-          barSize={chartInfo.width ?? 24}
+          barSize={chartInfo.width ?? defaultBarSize}
           color={chartInfo.color}
           fill={chartInfo.color}
           textAnchor="start"
@@ -72,7 +79,7 @@ export const SpendingChartV2 = <TData extends BaseData>({
             stackId={chartInfo.stackId ?? 'stacked-bar'}
             dataKey={dataKey}
             name={title}
-            barSize={chartInfo.width ?? 24}
+            barSize={chartInfo.width ?? defaultBarSize}
             color={color}
             fill={color}
             textAnchor="start"
@@ -98,6 +105,12 @@ export const SpendingChartV2 = <TData extends BaseData>({
       return null;
     });
   };
+
+  const barGap = React.useMemo(() => {
+    if (dateRange === '30-days') return -14;
+
+    return -36;
+  }, [dateRange]);
 
   return (
     <div className={clsx('flex flex-col w-full h-full')}>
@@ -148,7 +161,7 @@ export const SpendingChartV2 = <TData extends BaseData>({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-      <XAxis startMonth={1} endMonth={12} bar hoveredIndex={hoveredIndex} />
+      <XAxis hoveredIndex={hoveredIndex} dateRange={dateRange} />
     </div>
   );
 };

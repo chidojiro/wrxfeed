@@ -1,3 +1,4 @@
+import { InsightFeedCard, InsightFeedCardProps } from '@/insight/InsightFeedCard';
 import { TargetFeedCard, TargetFeedCardProps } from './TargetFeedCard';
 import { TransactionFeedItemCard, TransactionFeedItemCardProps } from './TransactionFeedItemCard';
 import { TransactionsFeedCard, TransactionsFeedCardProps } from './TransactionsFeedCard';
@@ -5,7 +6,8 @@ import { TransactionsFeedCard, TransactionsFeedCardProps } from './TransactionsF
 export type FeedCardProps =
   | TransactionsFeedCardProps
   | TargetFeedCardProps
-  | TransactionFeedItemCardProps;
+  | TransactionFeedItemCardProps
+  | InsightFeedCardProps;
 
 export const FeedCard = (props: FeedCardProps) => {
   const type = props.feed.type;
@@ -14,5 +16,7 @@ export const FeedCard = (props: FeedCardProps) => {
 
   if (type === 'transaction') return <TransactionFeedItemCard {...(props as any)} />;
 
-  return <TransactionsFeedCard {...props} />;
+  if (type === 'insight') return <InsightFeedCard {...(props as any)} />;
+
+  return <TransactionsFeedCard {...(props as any)} />;
 };

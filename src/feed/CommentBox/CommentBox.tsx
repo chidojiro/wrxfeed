@@ -13,7 +13,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { CommentInput } from './CommentInput';
 import { SendButton } from './SendButton';
 
-export type CommentFormProps = {
+export type CommentBoxProps = {
   id?: string;
   className?: string;
   defaultContent?: EditorState;
@@ -31,6 +31,9 @@ export type CommentFormProps = {
   onAttachFile?: (file: File) => void;
   onChange?: (content?: EditorState) => void;
   mentionData?: MentionData[];
+  renderSubmitButton?: (state: { disabled: boolean; onClick: () => void }) => React.ReactNode;
+  alwaysShowTools?: boolean;
+  allowEmpty?: boolean;
 };
 
 export const CommentBox = ({
@@ -46,7 +49,10 @@ export const CommentBox = ({
   onAttachFile,
   onChange,
   mentionData,
-}: CommentFormProps) => {
+  renderSubmitButton: renderSubmitButtonProp,
+  alwaysShowTools,
+  allowEmpty,
+}: CommentBoxProps) => {
   const [editorState, setEditorState] = React.useState(defaultContent ?? EditorState.createEmpty());
 
   const handleEditorStateChange = (editorState: EditorState) => {
@@ -119,13 +125,35 @@ export const CommentBox = ({
     }
   };
 
+  const isDisabled = allowEmpty ? false : !editorState.getCurrentContent().hasText();
+
+  const renderSubmitButton = () => {
+    if (!showSend) return null;
+
+    if (renderSubmitButtonProp) {
+      return renderSubmitButtonProp({ disabled: isDisabled, onClick: handleSubmit });
+    }
+
+    return (
+      <>
+        <hr className="divider divider-vertical h-5" />
+        <SendButton
+          className="w-5 h-5"
+          disabled={!editorState.getCurrentContent().hasText()}
+          onClick={handleSubmit}
+        />
+      </>
+    );
+  };
+
   return (
     <div>
       <div
         className={clsx(
           focused || alwaysFocus ? 'border-purple-5 bg-white' : ' border-Gray-11',
-          'relative group flex flex-grow min-w-[70%] items-end border transition-all rounded-[1px] py-1.5 pl-2 pr-1.5',
-          className ?? '',
+          'relative group min-w-[70%] border transition-all rounded-[1px] py-1.5 pl-2 pr-1.5',
+          'flex items-center flex-grow',
+          className,
         )}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -142,8 +170,11 @@ export const CommentBox = ({
           onSubmit={handleSubmit}
         />
         <div
-          style={{ transform: focused || hovered || isEmojiHovering ? 'scaleX(1)' : 'scaleX(0)' }}
-          className="flex h-full transform space-x-2 items-end scale-x-0 group-hover:scale-x-100 origin-right transition-all"
+          style={{
+            transform:
+              alwaysShowTools || focused || hovered || isEmojiHovering ? 'scaleX(1)' : 'scaleX(0)',
+          }}
+          className="flex items-center h-full transform space-x-2 scale-x-0 group-hover:scale-x-100 origin-right transition-all"
         >
           {showEmoji && (
             <>
@@ -177,16 +208,7 @@ export const CommentBox = ({
               />
             </UploadButton>
           )}
-          {!!showSend && (
-            <>
-              <hr className="divider divider-vertical h-5" />
-              <SendButton
-                className="w-5 h-5"
-                disabled={!editorState.getCurrentContent().hasText()}
-                onClick={handleSubmit}
-              />
-            </>
-          )}
+          {renderSubmitButton()}
         </div>
       </div>
     </div>

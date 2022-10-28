@@ -4,7 +4,7 @@ import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import { FeedItem, TranStatus } from '@/main/entity';
 import { decimalLogic, getColorByText } from '@/main/utils';
-import { getTransactionColorScheme, getTransactionLabel } from '@/team/TransactionList';
+import { getTransactionColorScheme, getTransactionLabel } from '@/transactions/TransactionList';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
@@ -68,20 +68,20 @@ export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCa
               <div className="space-y-1">
                 <Link
                   className="flex items-center hover:underline"
-                  to={`/vendors/${feed?.lineItem.vendor?.id}?sortTransactionsBy=-transDate`}
+                  to={`/vendors/${feed?.lineItem.vendor?.id}`}
                 >
                   <p className="text-base font-bold text-primary">{feed?.lineItem.vendor?.name}</p>
                 </Link>
                 <p className="flex space-x-0.5 text-xs font-normal text-Gray-6">
                   <Link
                     className="flex items-center hover:underline"
-                    to={`/departments/${feed?.lineItem.department?.id}?sortTransactionsBy=-transDate`}
+                    to={`/departments/${feed?.lineItem.department?.id}`}
                   >
                     {feed?.lineItem.department?.name} ·
                   </Link>
                   <Link
                     className="flex items-center hover:underline"
-                    to={`/categories/${feed?.lineItem.category?.id}?sortTransactionsBy=-transDate`}
+                    to={`/categories/${feed?.lineItem.category?.id}`}
                   >
                     {' '}
                     {feed?.lineItem.category?.name} ·
