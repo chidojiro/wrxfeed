@@ -99,9 +99,7 @@ export const InsightCard = ({
             <Form.Input
               name="name"
               rules={{
-                validate: {
-                  required: (value) => !!value.length,
-                },
+                required: true,
               }}
               readOnly={!!feed}
               variant="underline"
