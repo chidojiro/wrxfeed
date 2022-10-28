@@ -1,10 +1,9 @@
 import { AlertRed, EssentialsSendEnableIcon } from '@/assets';
 import { Button, Form, Input } from '@/common/components';
-import { useMountEffect, useUrlState } from '@/common/hooks';
+import { useUrlState } from '@/common/hooks';
 import { CommentBox } from '@/feed/CommentBox';
 import { CommentsSection } from '@/feed/FeedCard/CommentsSection';
 import { DateRangeFilter, Property } from '@/feed/types';
-import { TransLineItem } from '@/main/entity';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { useMentions } from '@/misc/useMentions';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
@@ -16,7 +15,7 @@ import { TransactionList } from '@/transactions/TransactionList';
 import { Entities } from '@/types';
 import clsx from 'clsx';
 import { sumBy } from 'lodash-es';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { InsightCardActionMenu } from './InsightCardActionMenu';
 import { InsightFeedItem } from './types';
 import { useInsightSpendings } from './useInsightSpendings';
@@ -102,30 +101,22 @@ export const InsightCard = ({
     );
   };
 
-  useMountEffect(() => {
-    setLoadedTransactions(transactions);
-  });
-
   const { transactions, isValidatingTransactions } = useInsightTransactions({
-    props: feed?.insight.props ?? [],
-    dateRange: feed?.insight.dateRange as DateRangeFilter,
-    groupBy: feed?.insight.groupBy as Entities,
-    offset: (page - 1) * TRANSACTIONS_PER_PAGE,
-    limit: TRANSACTIONS_PER_PAGE,
+    props: props ?? [],
+    dateRange: dateRange!,
+    groupBy: groupBy!,
+    offset: 0,
+    limit: TRANSACTIONS_PER_PAGE * page,
   });
 
-  const [loadedTransactions, setLoadedTransactions] = useState<TransLineItem[]>(transactions);
-
-  useEffect(() => {
-    if (loadedTransactions?.length === 0) {
-      setLoadedTransactions(transactions);
-    }
-  }, [loadedTransactions, transactions]);
+  React.useEffect(() => {
+    setPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify({ props: props ?? [], dateRange: dateRange!, groupBy: groupBy! })]);
 
   const handleLoad = async () => {
     setPage(page + 1);
-    setLoadedTransactions(loadedTransactions?.concat(transactions));
-    return loadedTransactions;
+    return [];
   };
 
   return (
@@ -209,8 +200,8 @@ export const InsightCard = ({
       <TransactionList
         className="py-6 px-8"
         defaultExpand={false}
-        onLoad={() => handleLoad() as Promise<TransLineItem[]>}
-        transactions={loadedTransactions as TransLineItem[]}
+        onLoad={handleLoad as any}
+        transactions={transactions}
         loading={isValidatingTransactions}
         timeRange={timeRange}
         onTimeRangeChange={setTimeRange}
