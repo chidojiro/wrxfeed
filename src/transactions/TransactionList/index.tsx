@@ -61,6 +61,7 @@ type TransactionListProps = ClassName & {
   onTimeRangeChange: (timeRange: TimeRange) => void;
   sort: string;
   onSortChange: (sort: string, method?: RedirectMethod) => void;
+  showLoadMoreButton?: boolean;
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
@@ -73,6 +74,7 @@ export const TransactionList = ({
   onSortChange,
   defaultExpand = true,
   onLoad,
+  showLoadMoreButton,
 }: TransactionListProps) => {
   const {
     isLineItemDrawerOpen,
@@ -368,7 +370,9 @@ export const TransactionList = ({
           {hasTransactions && (
             <div className="relative flex justify-between items-center my-3">
               <Divider className="w-[45%]" />
-              <InfiniteLoader defaultPage={2} mode="ON_DEMAND" onLoad={onLoad} />
+              {showLoadMoreButton && (
+                <InfiniteLoader defaultPage={2} mode="ON_DEMAND" onLoad={onLoad} />
+              )}
               <Divider className="w-[45%]" />
             </div>
           )}

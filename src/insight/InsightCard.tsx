@@ -14,7 +14,7 @@ import { TimeRange } from '@/team/types';
 import { TransactionList } from '@/transactions/TransactionList';
 import { Entities } from '@/types';
 import clsx from 'clsx';
-import { sumBy } from 'lodash-es';
+import { range, sumBy } from 'lodash-es';
 import React, { useState } from 'react';
 import { InsightCardActionMenu } from './InsightCardActionMenu';
 import { InsightFeedItem } from './types';
@@ -116,7 +116,7 @@ export const InsightCard = ({
 
   const handleLoad = async () => {
     setPage(page + 1);
-    return [];
+    return range(TRANSACTIONS_PER_PAGE);
   };
 
   return (
@@ -207,6 +207,7 @@ export const InsightCard = ({
         onTimeRangeChange={setTimeRange}
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
+        showLoadMoreButton={transactions.length % 10 === 0}
       />
       {feed ? (
         <CommentsSection feed={feed} />
