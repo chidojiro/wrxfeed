@@ -26,8 +26,6 @@ export const GroupedSpendingChart = ({
 
   const thisYearTotals = getThisYearTotalsGroupedByItem(curYearSpends);
 
-  console.log(getChartDataByDay(data));
-
   const chartData = React.useMemo(() => {
     if (dateRange === '30-days') return getChartDataByDay(data);
 

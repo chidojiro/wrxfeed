@@ -1,24 +1,32 @@
 import { AlertRed, EssentialsSendEnableIcon } from '@/assets';
-import { Button, Divider, Form, Input } from '@/common/components';
+import { Button, Form, Input } from '@/common/components';
+import { useMountEffect, useUrlState } from '@/common/hooks';
 import { CommentBox } from '@/feed/CommentBox';
 import { CommentsSection } from '@/feed/FeedCard/CommentsSection';
 import { DateRangeFilter, Property } from '@/feed/types';
+import { TransLineItem } from '@/main/entity';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { useMentions } from '@/misc/useMentions';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
+import { DEFAULT_SORT } from '@/team/constants';
+import { TimeRange } from '@/team/types';
+import { TransactionList } from '@/transactions/TransactionList';
 import { Entities } from '@/types';
 import clsx from 'clsx';
 import { sumBy } from 'lodash-es';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { InsightCardActionMenu } from './InsightCardActionMenu';
 import { InsightFeedItem } from './types';
 import { useInsightSpendings } from './useInsightSpendings';
+import { useInsightTransactions } from './useInsightTransactions';
+
+const TRANSACTIONS_PER_PAGE = 10;
 
 export type InsightCardProps = {
   groupBy?: Entities;
-  errors?: any;
+  errors?: Record<string, any>;
   dateRange?: DateRangeFilter;
   props?: Property[];
   onPost?: (data: any) => void;
@@ -74,9 +82,16 @@ export const InsightCard = ({
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
+    'sortTransactionsBy',
+    DEFAULT_SORT,
+  );
+  const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
+  const [page, setPage] = useState<number>(1);
+
   const { mentions } = useMentions();
 
-  const hasNameError = !!errors.name;
+  const hasNameError = !!errors?.name;
 
   const renderErrorName = () => {
     return (
@@ -85,6 +100,32 @@ export const InsightCard = ({
         <p className="text-xs text-Gray-6">Insight name is required</p>
       </div>
     );
+  };
+
+  useMountEffect(() => {
+    setLoadedTransactions(transactions);
+  });
+
+  const { transactions, isValidatingTransactions } = useInsightTransactions({
+    props: feed?.insight.props ?? [],
+    dateRange: feed?.insight.dateRange as DateRangeFilter,
+    groupBy: feed?.insight.groupBy as Entities,
+    offset: (page - 1) * TRANSACTIONS_PER_PAGE,
+    limit: TRANSACTIONS_PER_PAGE,
+  });
+
+  const [loadedTransactions, setLoadedTransactions] = useState<TransLineItem[]>(transactions);
+
+  useEffect(() => {
+    if (loadedTransactions?.length === 0) {
+      setLoadedTransactions(transactions);
+    }
+  }, [loadedTransactions, transactions]);
+
+  const handleLoad = async () => {
+    setPage(page + 1);
+    setLoadedTransactions(loadedTransactions?.concat(transactions));
+    return loadedTransactions;
   };
 
   return (
@@ -165,7 +206,17 @@ export const InsightCard = ({
           )}
         </div>
       </div>
-      <Divider />
+      <TransactionList
+        className="py-6 px-8"
+        defaultExpand={false}
+        onLoad={() => handleLoad() as Promise<TransLineItem[]>}
+        transactions={loadedTransactions as TransLineItem[]}
+        loading={isValidatingTransactions}
+        timeRange={timeRange}
+        onTimeRangeChange={setTimeRange}
+        sort={sortTransactionsBy}
+        onSortChange={setSortTransactionsBy}
+      />
       {feed ? (
         <CommentsSection feed={feed} />
       ) : (
