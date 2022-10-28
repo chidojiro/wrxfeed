@@ -69,8 +69,6 @@ export const TransactionList = ({
   transactions,
   loading,
   hiddenColumns,
-  timeRange,
-  onTimeRangeChange,
   sort,
   onSortChange,
   defaultExpand = true,
@@ -88,7 +86,7 @@ export const TransactionList = ({
   const showDepartment = !hiddenColumns?.includes('depName');
   const showVendor = !hiddenColumns?.includes('vendorName');
 
-  const [listOpen, setListOpen] = useState<boolean>(true);
+  const [listOpen, setListOpen] = useState<boolean>(defaultExpand);
 
   const { restrictedItems } = useRestrictedItems();
 
@@ -162,7 +160,7 @@ export const TransactionList = ({
 
   return (
     <>
-      {defaultExpand || listOpen ? (
+      {listOpen ? (
         <div>
           <LineItemDrawer
             open={isLineItemDrawerOpen}
@@ -378,7 +376,10 @@ export const TransactionList = ({
       ) : (
         <>
           <Button
-            className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3 px-8 py-6')}
+            className={clsx(
+              'flex items-center gap-2',
+              'font-semibold text-Gray-3 px-8 py-6 bg-white w-full my-2 rounded-card',
+            )}
             onClick={() => setListOpen(true)}
           >
             <LoopBoldIcon />
