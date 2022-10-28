@@ -1,5 +1,6 @@
 import { Button } from '@/common/components';
 import { ClassName } from '@/common/types';
+import { DateRangeFilter } from '@/feed/types';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { Entities } from '@/types';
 import clsx from 'clsx';
