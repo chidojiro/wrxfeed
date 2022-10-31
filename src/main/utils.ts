@@ -483,7 +483,7 @@ export const genReviewSentenceFromProperties = (
 ): string => {
   const vendorSen = getItemsSentence(vendorProps);
   const catSen = getItemsSentence(categoryProps, ' spend within ');
-  const teamSen = getItemsSentence(departmentProps, ' for ');
+  const teamSen = getItemsSentence(departmentProps, ' spend for ');
   const exceptSen = getItemsSentence(exceptionProps, ', except ');
 
   const sentence = resolveSentence
