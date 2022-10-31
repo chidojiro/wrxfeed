@@ -19,7 +19,7 @@ import { useCategorySpendingsReport } from './useCategorySpendingsReport';
 import { TransLineItem } from '@/main/entity';
 import { useEffect, useState } from 'react';
 import { TeamIcon, VendorIcon } from '@/assets';
-import { GetVendorSpendingsParams } from '@/vendor/types';
+import { GetCategorySpendingsParams } from './types';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -36,7 +36,7 @@ export const CategoryPage = () => {
 
   const { data: vendor, isValidating: isValidatingVendor, error } = useCategory(categoryId);
 
-  const [groupBy, setGroupBy] = useState<GetVendorSpendingsParams['groupBy']>(undefined);
+  const [groupBy, setGroupBy] = useState<GetCategorySpendingsParams['groupBy']>(undefined);
 
   const { categorySpendingsReport, isValidatingCategorySpendingsReport } =
     useCategorySpendingsReport(categoryId, { groupBy });

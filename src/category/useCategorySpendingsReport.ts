@@ -1,9 +1,9 @@
 import { useFetcher } from '@/common/hooks';
-import { GetVendorSpendingsParams } from '@/vendor/types';
 import React from 'react';
 import { CategoryApis } from './apis';
+import { GetCategorySpendingsParams } from './types';
 
-export const useCategorySpendingsReport = (id: number, params?: GetVendorSpendingsParams) => {
+export const useCategorySpendingsReport = (id: number, params?: GetCategorySpendingsParams) => {
   const { data, isInitializing, isValidating, mutate } = useFetcher(
     ['useCategorySpendingsReport', id, params],
     () => CategoryApis.getSpendingsReport(id, params),
