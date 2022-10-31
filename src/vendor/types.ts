@@ -23,5 +23,5 @@ export type UpdateVendorPayload = {
 
 export type GetVendorSpendingsParams = {
   year?: number;
-  groupBy?: 'CATEGORY' | 'DEPARTMENT';
+  groupBy?: 'CATEGORY' | 'DEPARTMENT' | 'VENDOR';
 };
