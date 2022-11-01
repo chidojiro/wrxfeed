@@ -62,7 +62,7 @@ export const GroupedSpendingChartLegends = ({
                     className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                     style={{ background: color }}
                   ></div>
-                  <span className="break-words">{name}</span>
+                  <span className="break-words text-left">{name}</span>
                 </div>
                 <span className="text-Gray-3">{getDisplayUsdAmount(total)}</span>
               </Button>
