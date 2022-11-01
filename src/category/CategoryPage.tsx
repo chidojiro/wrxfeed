@@ -1,5 +1,5 @@
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
-import { OverlayLoader } from '@/common/components';
+import { OverlayLoader, Select } from '@/common/components';
 import { useMountEffect, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
@@ -18,6 +18,8 @@ import { useCategory } from './useCategory';
 import { useCategorySpendingsReport } from './useCategorySpendingsReport';
 import { TransLineItem } from '@/main/entity';
 import { useEffect, useState } from 'react';
+import { TeamIcon, VendorIcon } from '@/assets';
+import { GetCategorySpendingsParams } from './types';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -34,8 +36,10 @@ export const CategoryPage = () => {
 
   const { data: vendor, isValidating: isValidatingVendor, error } = useCategory(categoryId);
 
+  const [groupBy, setGroupBy] = useState<GetCategorySpendingsParams['groupBy']>(undefined);
+
   const { categorySpendingsReport, isValidatingCategorySpendingsReport } =
-    useCategorySpendingsReport(categoryId);
+    useCategorySpendingsReport(categoryId, { groupBy });
 
   const { curYearSpends = [], prevYearSpends = [] } = categorySpendingsReport ?? {};
 
@@ -94,6 +98,34 @@ export const CategoryPage = () => {
   return (
     <MainLayout>
       <CategoryHeader categoryId={categoryId} />
+      <div className="flex justify-end mt-4 w-full">
+        <Select
+          className="border border-solid border-Gray-11 rounded"
+          value={groupBy}
+          onChange={(value: any) => setGroupBy(value)}
+          options={[
+            { label: 'None', value: '' },
+            {
+              label: (
+                <div className="flex items-center gap-2">
+                  <TeamIcon />
+                  Team
+                </div>
+              ),
+              value: 'DEPARTMENT',
+            },
+            {
+              label: (
+                <div className="flex items-center gap-2">
+                  <VendorIcon />
+                  Vendor
+                </div>
+              ),
+              value: 'VENDOR',
+            },
+          ]}
+        />
+      </div>
       <OverlayLoader
         loading={isValidatingVendor || isValidatingCategorySpendingsReport}
         className="mt-6"
