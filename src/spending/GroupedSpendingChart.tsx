@@ -15,7 +15,7 @@ export type GroupedSpendingChartProps = {
   dateRange?: DateRangeFilter;
 };
 
-const OTHER_COLOR = '#029B80';
+const OTHER_COLOR = '#B2B7BB';
 
 export const GroupedSpendingChart = ({
   data,
