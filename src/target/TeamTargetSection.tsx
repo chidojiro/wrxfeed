@@ -14,24 +14,25 @@ import { useTargets } from './useTargets';
 export interface TeamTargetSectionProps {
   className?: string;
   departmentId: number;
+  departmentName: string;
 }
 
 export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
   className = '',
   departmentId,
+  departmentName,
 }) => {
   const addTargetModalDisclosure = useDisclosure();
   const history = useHistory();
 
-  const { data: department } = useDepartment(departmentId);
   const { data: targets = EMPTY_ARRAY, mutate: mutateTargets } = useTargets({
     dep: departmentId,
-    forYou: 1,
+    mode: 'for-you',
   });
 
   const teamHeaderColor: string = React.useMemo(
-    () => getColorByText(department?.name ?? '', department?.id, true),
-    [department?.id, department?.name],
+    () => getColorByText(departmentName, departmentId, true),
+    [departmentId, departmentName],
   );
 
   const onClickTeamName = () => {
@@ -44,7 +45,7 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
   };
 
   return (
-    <div className={clsx('flex flex-col', className)} key={`targets-by-team-${department?.id}`}>
+    <div className={clsx('flex flex-col', className)} key={`targets-by-team-${departmentId}`}>
       <div
         className="flex flex-row items-center px-6 mt-6 justify-between h-14 max-h-14 rounded-card"
         style={{ background: teamHeaderColor }}
@@ -57,7 +58,7 @@ export const TeamTargetSection: React.FC<TeamTargetSectionProps> = ({
             height={16}
           />
           <Button onClick={onClickTeamName}>
-            <p className="text-white font-semibold">{department?.name}</p>
+            <p className="text-white font-semibold">{departmentName}</p>
           </Button>
         </div>
         <Button

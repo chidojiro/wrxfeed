@@ -1,4 +1,4 @@
-import { AddSmallIcon, FeedIcon, TargetIcon, TeamIcon } from '@/assets';
+import { AddSmallIcon, ChartIcon, FeedIcon, TargetIcon, TeamIcon } from '@/assets';
 import { useSubscription } from '@/subscription/useSubscription';
 import { Link } from 'react-router-dom';
 import { SidebarAccordion } from './SidebarAccordion';
@@ -22,6 +22,9 @@ export const SideBar = () => {
             matches={['/dashboard/:slug']}
           >
             Targets
+          </SidebarNavItem>
+          <SidebarNavItem href="/insights" iconLeft={<ChartIcon />} matches={['/insights']}>
+            Insights
           </SidebarNavItem>
         </div>
         <div>

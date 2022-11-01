@@ -1,30 +1,38 @@
+import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader } from '@/common/components';
-import { useQuery, useUrlState } from '@/common/hooks';
+import { useMountEffect, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
+import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
-import { SpendingBarChart } from '@/spending/SpendingChart/SpendingBarChart';
-import { TransactionList } from '@/team/TransactionList';
+import { SpendingBarChart } from '@/spending/SpendingBarChart';
+import { DEFAULT_SORT } from '@/team/constants';
+import { TransactionList } from '@/transactions/TransactionList';
 import { TimeRange } from '@/team/types';
-import { useTransactions } from '@/team/useTransactions';
+import { useTransactions } from '@/transactions/useTransactions';
 import dayjs from 'dayjs';
 import { sumBy } from 'lodash-es';
 import { useParams } from 'react-router-dom';
 import { CategoryHeader } from './CategoryHeader';
 import { useCategory } from './useCategory';
 import { useCategorySpendingsReport } from './useCategorySpendingsReport';
+import { TransLineItem } from '@/main/entity';
+import { useEffect, useState } from 'react';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const CategoryPage = () => {
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState('sortTransactionsBy');
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
+    'sortTransactionsBy',
+    DEFAULT_SORT,
+  );
   const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
 
   const { categoryId: categoryIdParam } = useParams() as Record<string, string>;
   const categoryId = +categoryIdParam;
 
-  const { data: vendor, isValidating: isValidatingVendor } = useCategory(categoryId);
+  const { data: vendor, isValidating: isValidatingVendor, error } = useCategory(categoryId);
 
   const { categorySpendingsReport, isValidatingCategorySpendingsReport } =
     useCategorySpendingsReport(categoryId);
@@ -34,10 +42,8 @@ export const CategoryPage = () => {
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
-  const query = useQuery();
-
-  const _page = query.get('page');
-  const page = _page ? +_page : 1;
+  const [page, setPage] = useState<number>(1);
+  const [loadedTransactions, setLoadedTransactions] = useState<TransLineItem[]>();
 
   const getFromDate = () => {
     if (!timeRange || timeRange === 'last-30-days') {
@@ -51,7 +57,7 @@ export const CategoryPage = () => {
 
   const getToDate = () => dayjs().format(DATE_FORMAT);
 
-  const { transactions, totalCount, isValidatingTransactions } = useTransactions({
+  const { transactions, isValidatingTransactions } = useTransactions({
     catId: categoryId,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
     offset: (page - 1) * TRANSACTIONS_PER_PAGE,
@@ -59,6 +65,31 @@ export const CategoryPage = () => {
     from: getFromDate(),
     to: getToDate(),
   });
+
+  useMountEffect(() => {
+    setLoadedTransactions(transactions);
+  });
+
+  const isForbidden = error?.code === ApiErrorCode.Forbidden;
+
+  useEffect(() => {
+    if (loadedTransactions?.length === 0) {
+      setLoadedTransactions(transactions);
+    }
+  }, [loadedTransactions, transactions]);
+
+  if (isForbidden)
+    return (
+      <MainLayout>
+        <RestrictedAccessPage />
+      </MainLayout>
+    );
+
+  const handleLoad = async () => {
+    setPage(page + 1);
+    setLoadedTransactions(loadedTransactions?.concat(transactions));
+    return loadedTransactions;
+  };
 
   return (
     <MainLayout>
@@ -94,11 +125,10 @@ export const CategoryPage = () => {
       </OverlayLoader>
       <TransactionList
         className="mt-6"
-        transactions={transactions}
-        totalCount={totalCount}
-        perPage={TRANSACTIONS_PER_PAGE}
+        onLoad={() => handleLoad() as Promise<TransLineItem[]>}
+        transactions={loadedTransactions as TransLineItem[]}
         loading={isValidatingTransactions}
-        hiddenColumns={['vendorName']}
+        hiddenColumns={['categoryName']}
         timeRange={timeRange}
         onTimeRangeChange={setTimeRange}
         sort={sortTransactionsBy}

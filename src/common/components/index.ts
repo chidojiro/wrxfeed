@@ -11,6 +11,7 @@ export * from './Form';
 export * from './InfiniteLoader';
 export * from './Input';
 export * from './ListLoader';
+export * from './Menu';
 export * from './OverlayLoader';
 export * from './Pagination';
 export * from './Popover';

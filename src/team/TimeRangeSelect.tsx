@@ -14,6 +14,7 @@ export const TimeRangeSelect = ({ value, onChange }: TimeRangeSelectProps) => {
       value={value}
       onChange={(value: string) => onChange(value as TimeRange)}
       className="text-Gray-6"
+      noBorder
       options={
         [
           { label: 'Last 30 Days', value: 'last-30-days' },

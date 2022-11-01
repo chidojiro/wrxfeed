@@ -1,6 +1,6 @@
-import { SortByParams } from '@/rest/types';
-import { BitBoolean } from '@/common/types';
-import { PaginationParams, SortOrderParams } from '@/rest/types';
+import { PaginationParams, SortByParams, SortOrderParams } from '@/rest/types';
+import { Period } from '@/spending/types';
+import { Entities } from '@/types';
 
 export type GetTransactionsParams = PaginationParams & { feedItemId: number };
 
@@ -14,7 +14,7 @@ export type CreateCommentPayload = {
 export type UpdateCommentPayload = CreateCommentPayload;
 
 export type GetFeedsParams = PaginationParams & {
-  forYou?: BitBoolean;
+  mode?: FeedMode;
   departmentId?: number;
   targetId?: number;
   vendorId?: number;
@@ -28,6 +28,20 @@ export type CreateFeedbackPayload = {
   content: string;
 };
 
+export type GetLineItemsProps = {
+  id: number;
+  exclude: boolean;
+  type: string;
+  name: string;
+};
+
+export type GetTransactionTableItemsParams = PaginationParams &
+  SortByParams & {
+    props: GetLineItemsProps[];
+    dateRange: string;
+    groupBy: string;
+  };
+
 export type GetLineItemsParams = PaginationParams &
   SortByParams & {
     depId?: number;
@@ -37,6 +51,25 @@ export type GetLineItemsParams = PaginationParams &
     to: string;
   };
 
-export type FeedType = 'target' | 'transaction';
+export type FeedType = 'target' | 'rollup' | 'transaction';
+
+export type FeedMode = 'company' | 'for-you';
 
 export type GetUnreadLineItemCountParams = Omit<GetFeedsParams, keyof PaginationParams>;
+
+export type Property = {
+  id: number;
+  type: Entities;
+  name: string;
+  exclude?: boolean;
+};
+
+export type DateRangeFilter = '30-days' | '90-days' | 'year-to-date';
+
+export type GetFeedSpendingParams = {
+  props: Property[];
+  periods: Period[];
+  dateRange: DateRangeFilter;
+  groupByItem: Entities;
+  groupByTime: 'year' | 'month' | 'day' | 'week';
+};

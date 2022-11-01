@@ -66,7 +66,7 @@ export const TransactionsSection = ({ feed, defaultExpand }: TransactionsSection
       <div className="relative flex items-center">
         <Divider className="my-2" />
         <InfiniteLoader
-          defaultPage={1}
+          defaultPage={2}
           mode="ON_DEMAND"
           onLoad={async (paginationParams) => {
             const data = await FeedApis.getTransactions({

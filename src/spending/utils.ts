@@ -4,9 +4,12 @@ import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/mai
 import { decimalLogic, DecimalType } from '@/main/utils';
 import { TargetMonth, TargetPeriod, TargetSpending, TargetStatusConfig } from '@/target/types';
 import dayjs from 'dayjs';
-import { groupBy, range } from 'lodash-es';
+import { groupBy, range, sum, sumBy, uniqBy } from 'lodash-es';
 import { SpendingChartData } from './SpendingChart';
-import { MonthData, Spending, TrackingStatus } from './types';
+import { MonthData, Spending, SpendingsReport, TrackingStatus } from './types';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+
+dayjs.extend(weekOfYear);
 
 const Accent9 = '#C2C2FA';
 
@@ -395,4 +398,175 @@ export const getCurrentSpendings = (
       .slice(firstMeaningfulPeriodMonth, lastMeaningfulPeriodMonth + 1)
       .reduce((total, target) => total + (target.total ?? 0), 0) ?? 0
   );
+};
+
+const COLORS = [
+  '#2C0594',
+  '#6565FB',
+  '#BD86F3',
+  '#BF43A4',
+  '#801BAF',
+  '#EF8482',
+  '#FCCD25',
+  '#FFA31D',
+  '#319DB0',
+  '#225959',
+];
+
+export const getThisYearTotalsGroupedByItem = (curYearSpends: Spending[]) => {
+  const curYearSpendsGroupedByItemId = groupBy(curYearSpends, 'item.id');
+
+  const uniqueItems = uniqBy(
+    curYearSpends.map(({ item }) => item),
+    'id',
+  ).filter(Boolean);
+
+  const thisYearTotals = uniqueItems
+    .map((item) => ({
+      ...item!,
+      total: sumBy(curYearSpendsGroupedByItemId[item!.id], 'total'),
+    }))
+    .sort((a, b) => b.total - a.total)
+    .map((item, idx) => ({ ...item, color: COLORS[idx] }));
+
+  return thisYearTotals;
+};
+
+export const getChartDataByMonth = (spendingReport: SpendingsReport) => {
+  const { curYearSpends, prevYearSpends } = spendingReport;
+
+  return range(12).map((idx) => {
+    const month = idx + 1;
+
+    const uniqueItems = uniqBy(
+      curYearSpends.map(({ item }) => item),
+      'id',
+    ).filter(Boolean);
+
+    return {
+      month,
+      thisYearTotal: sumBy(
+        curYearSpends.filter((spend) => spend.month === month),
+        'total',
+      ),
+      lastYearTotal: sumBy(
+        prevYearSpends.filter((spend) => spend.month === month),
+        'total',
+      ),
+      ...uniqueItems.reduce(
+        (acc, cur) => ({
+          ...acc,
+          [cur!.id]:
+            curYearSpends.find((spend) => spend.month === month && spend.item?.id === cur?.id)
+              ?.total ?? 0,
+        }),
+        {},
+      ),
+      // Others
+      '-1': sum(
+        uniqueItems
+          .slice(10)
+          .map(
+            (item) =>
+              curYearSpends.find((spend) => spend.month === month && spend.item?.id === item?.id)
+                ?.total ?? 0,
+          ),
+      ),
+      items: [uniqueItems, { id: -1, name: 'Other' }].flat(),
+    };
+  });
+};
+
+export const getChartDataByDay = (spendingReport: SpendingsReport) => {
+  const { curYearSpends, prevYearSpends } = spendingReport;
+
+  return range(30)
+    .reverse()
+    .map((idx) => {
+      const day = dayjs().subtract(idx, 'day').date() + 1;
+
+      const uniqueItems = uniqBy(
+        curYearSpends.map(({ item }) => item),
+        'id',
+      ).filter(Boolean);
+
+      return {
+        day,
+        thisYearTotal: sumBy(
+          curYearSpends.filter((spend) => spend.day === day),
+          'total',
+        ),
+        lastYearTotal: sumBy(
+          prevYearSpends.filter((spend) => spend.day === day),
+          'total',
+        ),
+        ...uniqueItems.reduce(
+          (acc, cur) => ({
+            ...acc,
+            [cur!.id]:
+              curYearSpends.find((spend) => spend.day === day && spend.item?.id === cur?.id)
+                ?.total ?? 0,
+          }),
+          {},
+        ),
+        // Others
+        '-1': sum(
+          uniqueItems
+            .slice(10)
+            .map(
+              (item) =>
+                curYearSpends.find((spend) => spend.day === day && spend.item?.id === item?.id)
+                  ?.total ?? 0,
+            ),
+        ),
+        items: [uniqueItems, { id: -1, name: 'Other' }].flat(),
+      };
+    });
+};
+
+export const getChartDataByWeek = (spendingReport: SpendingsReport) => {
+  const { curYearSpends, prevYearSpends } = spendingReport;
+
+  return range(12)
+    .reverse()
+    .map((idx) => {
+      const week = dayjs().day(1).subtract(idx, 'week').week() + 1;
+
+      const uniqueItems = uniqBy(
+        curYearSpends.map(({ item }) => item),
+        'id',
+      ).filter(Boolean);
+
+      return {
+        week,
+        thisYearTotal: sumBy(
+          curYearSpends.filter((spend) => spend.week === week),
+          'total',
+        ),
+        lastYearTotal: sumBy(
+          prevYearSpends.filter((spend) => spend.week === week),
+          'total',
+        ),
+        ...uniqueItems.reduce(
+          (acc, cur) => ({
+            ...acc,
+            [cur!.id]:
+              curYearSpends.find((spend) => spend.week === week && spend.item?.id === cur?.id)
+                ?.total ?? 0,
+          }),
+          {},
+        ),
+        // Others
+        '-1': sum(
+          uniqueItems
+            .slice(10)
+            .map(
+              (item) =>
+                curYearSpends.find((spend) => spend.week === week && spend.item?.id === item?.id)
+                  ?.total ?? 0,
+            ),
+        ),
+        items: [uniqueItems, { id: -1, name: 'Other' }].flat(),
+      };
+    });
 };

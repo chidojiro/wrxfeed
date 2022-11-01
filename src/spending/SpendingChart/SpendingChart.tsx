@@ -4,10 +4,10 @@ import { TargetChart } from '@/target/TargetChart';
 import clsx from 'clsx';
 import { cloneDeep } from 'lodash-es';
 import { defaultMonths } from '../constants';
+import { TooltipContent } from '../TooltipContent';
 import { Period, Spending, TrackingStatus } from '../types';
 import { getLineChartDataInMonth, getMonthsLineChartData, isEmptyPeriods } from '../utils';
-import { TooltipContent } from './TooltipContent';
-import { XAxis } from './XAxis';
+import { XAxis } from '../XAxis';
 
 export type SpendingChartData = {
   periods?: Period[];

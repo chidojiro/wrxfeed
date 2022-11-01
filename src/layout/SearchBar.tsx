@@ -11,12 +11,10 @@ import { useSearch } from '@/misc/useSearch';
 import { TargetTypeProp } from '@/target/types';
 import { Transition } from '@headlessui/react';
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 const DEBOUNCE_WAIT = 0;
 
 const SearchBar: React.FC = () => {
-  const history = useHistory();
   const useableViewRef = useRef(null);
 
   const [keyword, setKeyword] = useState<string>('');
@@ -59,26 +57,15 @@ const SearchBar: React.FC = () => {
     setKeyword('');
   };
 
-  const onPressResultRow = (result: SearchResult) => {
-    clearSearchResults();
-    switch (result.type) {
-      case TargetTypeProp.DEPARTMENT:
-        history.push({
-          pathname: `/departments/${result?.directoryId}`,
-        });
-        break;
-      case TargetTypeProp.CATEGORY:
-        history.push({
-          pathname: `/categories/${result?.directoryId}`,
-        });
-        break;
-      case TargetTypeProp.VENDOR:
-        history.push({
-          pathname: `/vendors/${result?.directoryId}`,
-        });
-        break;
-      default:
-        break;
+  const getResultHref = (result: SearchResult) => {
+    if (result.type === TargetTypeProp.DEPARTMENT) {
+      return '/departments';
+    }
+    if (result.type === TargetTypeProp.VENDOR) {
+      return '/vendors';
+    }
+    if (result.type === TargetTypeProp.CATEGORY) {
+      return '/categories';
     }
   };
 
@@ -109,9 +96,8 @@ const SearchBar: React.FC = () => {
         key={`renderSearchResult-${result?.id}`}
         result={result}
         focus={focus === index + 1}
-        onClickHandler={() => {
-          onPressResultRow(result);
-        }}
+        href={`${getResultHref(result)}/${result.directoryId}`}
+        onClickHandler={() => clearSearchResults()}
       />
     ));
   };

@@ -1,6 +1,7 @@
 import { AdminRoutes } from '@/admin/routes';
 import { CategoryRoutes } from '@/category/routes';
 import { FeedRoutes } from '@/feed/routes';
+import { InsightRoutes } from '@/insight/routes';
 import { TargetRoutes } from '@/target/routes';
 import { TeamRoutes } from '@/team/routes';
 import { VendorRoutes } from '@/vendor/routes';
@@ -24,6 +25,10 @@ const OnboardPage = React.lazy(() =>
 
 const FeedPage = React.lazy(() =>
   import('@/main/pages/Feed').then(({ FeedPage }) => ({ default: FeedPage })),
+);
+
+const LineItemPage = React.lazy(() =>
+  import('@/main/pages/Feed/LineItem').then(({ LineItemPage }) => ({ default: LineItemPage })),
 );
 
 const LoginPage = React.lazy(() =>
@@ -59,6 +64,10 @@ export const Routes: Route = {
     path: '/feed/:id',
     component: Sentry.withProfiler(FeedPage, { name: 'FeedPage' }),
   },
+  LineItem: {
+    path: '/feed/item/:id',
+    component: Sentry.withProfiler(LineItemPage, { name: 'LineItemPage' }),
+  },
   Onboard: {
     path: '/onboarding',
     component: Sentry.withProfiler(OnboardPage, { name: 'OnboardPage' }),
@@ -77,4 +86,5 @@ export const Routes: Route = {
   ...TeamRoutes,
   ...AdminRoutes,
   ...CategoryRoutes,
+  ...InsightRoutes,
 };

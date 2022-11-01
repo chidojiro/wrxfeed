@@ -1,7 +1,6 @@
 import { CategoryApis } from '@/category/apis';
 import { InfiniteLoader, InfiniteLoaderRenderProps } from '@/common/components';
 import { useHandler, useInfiniteData } from '@/common/hooks';
-import { BitBoolean } from '@/common/types';
 import { NotifyBanner } from '@/layout/NotifyBanner';
 import ListLoading from '@/main/atoms/ListLoading';
 import { Category, FeedItem, Visibility } from '@/main/entity';
@@ -14,17 +13,18 @@ import { FeedApis } from './apis';
 import { FeedCard } from './FeedCard';
 import { TransactionsFeedCardProps } from './FeedCard/TransactionsFeedCard';
 import { LineItemDrawer, useLineItemDrawer } from './LineItemDrawer';
+import { FeedMode } from './types';
 
 type FeedsProps = Pick<TransactionsFeedCardProps, 'categoryRedirectHref'> & {
   departmentId?: number;
-  forYou?: BitBoolean;
+  mode?: FeedMode;
   categoryId?: number;
   vendorId?: number;
 };
 
 export const Feeds = ({
   departmentId,
-  forYou,
+  mode,
   categoryId,
   vendorId,
   categoryRedirectHref,
@@ -38,7 +38,7 @@ export const Feeds = ({
     update: updateFeed,
     delete: deleteFeed,
   } = useInfiniteData((paginationParams: PaginationParams) =>
-    FeedApis.getList({ ...paginationParams, forYou, departmentId, categoryId, vendorId }),
+    FeedApis.getList({ ...paginationParams, mode, departmentId, categoryId, vendorId }),
   );
 
   const { handle: updateCategory } = useHandler(CategoryApis.update);
@@ -71,6 +71,10 @@ export const Feeds = ({
     deleteFeed(feed.id);
 
     return res;
+  };
+
+  const handleInsightDeleteSuccess = (id: number) => {
+    deleteFeed(id);
   };
 
   const renderInfiniteLoader = ({ isExhausted, anchorRef }: InfiniteLoaderRenderProps) => {
@@ -143,6 +147,7 @@ export const Feeds = ({
             }}
             onDeleteTarget={(id) => handleDeleteTarget(feed, id)}
             onUpdateTarget={(targetId, target) => handleUpdateTarget(feed, targetId, target)}
+            onInsightDeleteSuccess={() => handleInsightDeleteSuccess(feed.id)}
           />
         ))}
       </ul>

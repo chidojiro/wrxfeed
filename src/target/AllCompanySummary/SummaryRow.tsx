@@ -1,5 +1,7 @@
+import { RestrictedItem } from '@/auth/RestrictedItem';
 import { CommentGroup } from '@/feed/CommentGroup';
 import { getDisplayUsdAmount } from '@/main/utils';
+import { useRestrictedItems } from '@/role/useRestrictedItems';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { DepartmentSummary, TargetStatusType } from '../types';
@@ -24,6 +26,8 @@ const getStatusColor = (status?: TargetStatusType) => {
 export const SummaryRow = ({ data: { comments, id, name, spends, target } }: SummaryRowProps) => {
   const targetSpends = target?.periods?.reduce((acc, cur) => acc + (cur.amount ?? 0), 0);
 
+  const { restrictedItems } = useRestrictedItems();
+
   return (
     <Link
       to={`/departments/${id}`}
@@ -36,7 +40,15 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
             targetSpends ? getStatusColor(target?.trackingStatus) : 'bg-Accent-8',
           )}
         ></div>
-        <p className="line-clamp-2">{name}</p>
+        <p className="line-clamp-2">
+          {restrictedItems.find(
+            (restrictedItem) => restrictedItem.id === id && restrictedItem.type === 'DEPARTMENT',
+          ) ? (
+            <RestrictedItem />
+          ) : (
+            name
+          )}
+        </p>
       </div>
       <div className="col-span-2 text-Gray-6 px-1">{getDisplayUsdAmount(spends)}</div>
       <div className="col-span-2 text-Gray-6 px-1">{getDisplayUsdAmount(targetSpends)}</div>

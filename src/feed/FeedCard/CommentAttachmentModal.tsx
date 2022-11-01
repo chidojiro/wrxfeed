@@ -9,7 +9,7 @@ import { GetUploadFileTokenPayload } from '@/media/types';
 import { MentionData } from '@draft-js-plugins/mention';
 import { EditorState } from 'draft-js';
 import React, { useRef } from 'react';
-import { CommentBox } from './CommentBox';
+import { CommentBox } from '../CommentBox';
 
 export type AttachmentModalProps = ModalProps & {
   style?: React.CSSProperties;

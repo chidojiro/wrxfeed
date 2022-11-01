@@ -11,6 +11,7 @@ export type SelectProps = ClassName & {
   options: Option[];
   name?: string;
   value?: string;
+  noBorder?: boolean;
   onChange?: (value: string) => void;
 };
 
@@ -23,6 +24,7 @@ export const Select = React.forwardRef<HTMLInputElement, SelectProps>(
       name,
       options,
       className,
+      noBorder,
       ...props
     }: SelectProps,
     ref,
@@ -43,6 +45,7 @@ export const Select = React.forwardRef<HTMLInputElement, SelectProps>(
             {...props}
             className={clsx(
               'inline-flex items-center gap-1 justify-between px-2.5 py-1.5 text-xs',
+              { 'border border-solid border-Gray-11 rounded': !noBorder },
               className,
             )}
           >

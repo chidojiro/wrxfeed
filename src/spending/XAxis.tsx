@@ -18,7 +18,7 @@ export const XAxis = ({ startMonth, endMonth, bar }: XAxisProps) => {
   return startMonth === endMonth ? (
     <div
       className={clsx(
-        'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[48px]',
+        'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-around my-1 pl-[48px] pr-[10px]',
       )}
     >
       <div className="w-20 h-7 flex justify-center items-center">
@@ -37,7 +37,7 @@ export const XAxis = ({ startMonth, endMonth, bar }: XAxisProps) => {
   ) : (
     <div
       className={clsx(
-        'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[48px]',
+        'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[48px] pr-[10px]',
         { 'justify-around': bar },
       )}
     >
