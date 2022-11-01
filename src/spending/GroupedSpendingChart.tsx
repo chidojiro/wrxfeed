@@ -38,6 +38,7 @@ export const GroupedSpendingChart = ({
     <SpendingChartV2
       data={chartData as any}
       dateRange={dateRange}
+      highlightedDataKey={highlightedItemId}
       charts={[
         {
           type: 'BAR',

@@ -11,6 +11,7 @@ export type BaseChartInfo = {
 };
 
 export type BarChartInfo = Omit<BaseChartInfo, 'dataKey'> & {
+  id?: string;
   type: 'BAR';
   stackedBars?: Omit<BaseChartInfo, 'width'>[];
   color?: string;
