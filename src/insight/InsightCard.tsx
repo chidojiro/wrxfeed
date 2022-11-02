@@ -208,6 +208,7 @@ export const InsightCard = ({
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
         showLoadMoreButton={transactions.length % 10 === 0}
+        insightView
       />
       {feed ? (
         <CommentsSection feed={feed} />
