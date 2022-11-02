@@ -24,6 +24,7 @@ import { useInsightTransactions } from './useInsightTransactions';
 const TRANSACTIONS_PER_PAGE = 10;
 
 export type InsightCardProps = {
+  isFeed?: boolean;
   groupBy?: Entities;
   errors?: Record<string, any>;
   dateRange?: DateRangeFilter;
@@ -45,6 +46,7 @@ export const InsightCard = ({
   feed,
   posting,
   errors,
+  isFeed = false,
 }: InsightCardProps) => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
 
@@ -127,7 +129,7 @@ export const InsightCard = ({
       ></div>
       <div className={clsx('py-6 px-8')}>
         <div className="grid grid-cols-10">
-          {feed ? (
+          {feed && isFeed ? (
             <>
               <Input
                 readOnly

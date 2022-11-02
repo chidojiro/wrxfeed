@@ -125,14 +125,26 @@ export const InsightPage = ({}: InsightPageProps) => {
     <MainLayout>
       <Form methods={methods} className="flex flex-col gap-6">
         <InsightHeader />
-        <InsightCard
-          errors={errors}
-          onPost={handlePost}
-          groupBy={groupBy}
-          dateRange={dateRange}
-          props={props}
-          posting={isSubmitting}
-        />
+        {insight ? (
+          <InsightCard
+            feed={insight.feedItem}
+            errors={errors}
+            onPost={handlePost}
+            groupBy={groupBy}
+            dateRange={dateRange}
+            props={props}
+            posting={isSubmitting}
+          />
+        ) : (
+          <InsightCard
+            errors={errors}
+            onPost={handlePost}
+            groupBy={groupBy}
+            dateRange={dateRange}
+            props={props}
+            posting={isSubmitting}
+          />
+        )}
       </Form>
     </MainLayout>
   );
