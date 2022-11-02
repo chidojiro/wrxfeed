@@ -28,6 +28,7 @@ import { isEqual } from 'lodash-es';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TimeRange } from '../../team/types';
+import { TimeRangeSelect } from '../../team/TimeRangeSelect';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
@@ -62,6 +63,7 @@ type TransactionListProps = ClassName & {
   sort: string;
   onSortChange: (sort: string, method?: RedirectMethod) => void;
   showLoadMoreButton?: boolean;
+  insightView?: boolean;
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
@@ -75,6 +77,9 @@ export const TransactionList = ({
   defaultExpand = true,
   onLoad,
   showLoadMoreButton,
+  timeRange,
+  onTimeRangeChange,
+  insightView,
 }: TransactionListProps) => {
   const {
     isLineItemDrawerOpen,
@@ -193,6 +198,9 @@ export const TransactionList = ({
                           <LoopBoldIcon />
                           <span>Hide Transactions</span>
                         </Button>
+                        {!insightView && (
+                          <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
+                        )}
                       </div>
                     </Table.Cell>
                   </Table.Row>

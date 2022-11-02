@@ -57,7 +57,7 @@ export const TeamTargetSummary = ({ departmentId }: TeamTargetSummaryProps) => {
         onClose={addTargetModalDisclosure.onClose}
         onCancel={addTargetModalDisclosure.onClose}
         departmentId={departmentId}
-        onCreateSuccess={(data) => history.push(`/feed/${data.id}?route=TargetFeed`)}
+        onCreateSuccess={(data) => history.push(`/feed/${data.feedItem?.id}`)}
       />
     </>
   );
