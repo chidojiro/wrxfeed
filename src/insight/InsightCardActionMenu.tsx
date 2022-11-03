@@ -1,13 +1,8 @@
 import { CategoryIcon, EditIcon, EyeIcon, TeamIcon, VendorIcon } from '@/assets';
-import { useCategories } from '@/category/useCategories';
 import { Avatar, Divider, Menu, Tag } from '@/common/components';
 import { useDisclosure, useHandler } from '@/common/hooks';
 import { distanceToNow } from '@/common/utils';
-import { useDepartments } from '@/team/useDepartments';
-import { useVendors } from '@/vendor/useVendors';
 import { TrashIcon } from '@heroicons/react/outline';
-import { groupBy } from 'lodash-es';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { InsightApis } from './apis';
 import { InsightFeedItem } from './types';

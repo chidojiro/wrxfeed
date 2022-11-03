@@ -7,5 +7,5 @@ export type InsightFeedCardProps = {
 };
 
 export const InsightFeedCard = ({ feed, onInsightDeleteSuccess }: InsightFeedCardProps) => {
-  return <InsightCard isFeed feed={feed} onDeleteSuccess={onInsightDeleteSuccess} />;
+  return <InsightCard feed={feed} onDeleteSuccess={onInsightDeleteSuccess} />;
 };

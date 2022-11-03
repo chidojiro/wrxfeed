@@ -1,4 +1,5 @@
 import { Form } from '@/common/components';
+import { useFetcher } from '@/common/hooks';
 import { FeedApis } from '@/feed/apis';
 import { DateRangeFilter, Property } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
@@ -125,26 +126,15 @@ export const InsightPage = ({}: InsightPageProps) => {
     <MainLayout>
       <Form methods={methods} className="flex flex-col gap-6">
         <InsightHeader />
-        {insight ? (
-          <InsightCard
-            feed={insight.feedItem}
-            errors={errors}
-            onPost={handlePost}
-            groupBy={groupBy}
-            dateRange={dateRange}
-            props={props}
-            posting={isSubmitting}
-          />
-        ) : (
-          <InsightCard
-            errors={errors}
-            onPost={handlePost}
-            groupBy={groupBy}
-            dateRange={dateRange}
-            props={props}
-            posting={isSubmitting}
-          />
-        )}
+        <InsightCard
+          feed={insight?.feedItem}
+          errors={errors}
+          onPost={handlePost}
+          groupBy={groupBy}
+          dateRange={dateRange}
+          props={props}
+          posting={isSubmitting}
+        />
       </Form>
     </MainLayout>
   );
