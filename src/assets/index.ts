@@ -69,3 +69,7 @@ export { ReactComponent as CheckCircleIcon } from '@/assets/icons/solid/check-ci
 export { ReactComponent as GravityLogoImage } from '@/assets/images/gravity-logo.svg';
 export { ReactComponent as LockDBIcon } from '@/assets/icons/solid/lock-db.svg';
 export { ReactComponent as ChartIcon } from '@/assets/icons/solid/chart.svg';
+export { ReactComponent as TargetFeedBadgeIcon } from '@/assets/icons/solid/target-feed-badge.svg';
+export { ReactComponent as CategoryFeedBadgeIcon } from '@/assets/icons/solid/category-feed-badge.svg';
+export { ReactComponent as InsightFeedBadgeIcon } from '@/assets/icons/solid/insight-feed-badge.svg';
+export { ReactComponent as TransactionFeedBadgeIcon } from '@/assets/icons/solid/transaction-feed-badge.svg';
