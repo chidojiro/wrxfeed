@@ -127,7 +127,7 @@ export const InsightCard = ({
       ></div>
       <div className={clsx('py-6 px-8')}>
         <div className="grid grid-cols-10">
-          {feed ? (
+          {feed && feed.insight ? (
             <>
               <Input
                 readOnly
