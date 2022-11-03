@@ -10,9 +10,9 @@ import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import { TransactionList } from '@/transactions/TransactionList';
 import { useTransactions } from '@/transactions/useTransactions';
 import dayjs from 'dayjs';
+import { range } from 'lodash-es';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { TransLineItem } from '../main/entity';
 import { DepartmentApis } from './apis';
 import { DEFAULT_SORT } from './constants';
 import { TeamHeader } from './TeamHeader';
@@ -57,26 +57,20 @@ export const TeamPage = () => {
   const getToDate = () => dayjs().format(DATE_FORMAT);
 
   useMountEffect(() => {
-    setLoadedTransactions(transactions);
     viewDepartmentSummary(departmentId);
   });
 
   const { transactions, isValidatingTransactions } = useTransactions({
     depId: +departmentIdParam,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
-    offset: (page - 1) * TRANSACTIONS_PER_PAGE,
-    limit: TRANSACTIONS_PER_PAGE,
+    limit: TRANSACTIONS_PER_PAGE * page,
     from: getFromDate(transactionTimeRange),
     to: getToDate(),
   });
 
-  const [loadedTransactions, setLoadedTransactions] = useState<TransLineItem[]>(transactions);
-
   useEffect(() => {
-    if (loadedTransactions?.length === 0) {
-      setLoadedTransactions(transactions);
-    }
-  }, [loadedTransactions, transactions]);
+    setPage(1);
+  }, []);
 
   const { data: topCategories = EMPTY_ARRAY, isValidating: isValidatingTopCategories } =
     useTopCategories(departmentId, { from: getFromDate(topCategoriesTimeRange), to: getToDate() });
@@ -94,8 +88,7 @@ export const TeamPage = () => {
 
   const handleLoad = async () => {
     setPage(page + 1);
-    setLoadedTransactions(loadedTransactions.concat(transactions));
-    return loadedTransactions;
+    return range(TRANSACTIONS_PER_PAGE);
   };
 
   return (
@@ -124,8 +117,8 @@ export const TeamPage = () => {
         </div>
       </div>
       <TransactionList
-        onLoad={() => handleLoad() as Promise<TransLineItem[]>}
-        transactions={loadedTransactions}
+        onLoad={handleLoad as any}
+        transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['depName']}
         className="mt-6"

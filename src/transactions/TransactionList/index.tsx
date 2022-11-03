@@ -28,6 +28,7 @@ import { isEqual } from 'lodash-es';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TimeRange } from '../../team/types';
+import { TimeRangeSelect } from '../../team/TimeRangeSelect';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
@@ -61,7 +62,7 @@ type TransactionListProps = ClassName & {
   onTimeRangeChange: (timeRange: TimeRange) => void;
   sort: string;
   onSortChange: (sort: string, method?: RedirectMethod) => void;
-  showLoadMoreButton?: boolean;
+  insightView?: boolean;
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
@@ -74,7 +75,9 @@ export const TransactionList = ({
   onSortChange,
   defaultExpand = true,
   onLoad,
-  showLoadMoreButton,
+  timeRange,
+  onTimeRangeChange,
+  insightView,
 }: TransactionListProps) => {
   const {
     isLineItemDrawerOpen,
@@ -193,6 +196,9 @@ export const TransactionList = ({
                           <LoopBoldIcon />
                           <span>Hide Transactions</span>
                         </Button>
+                        {!insightView && (
+                          <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
+                        )}
                       </div>
                     </Table.Cell>
                   </Table.Row>
@@ -370,7 +376,7 @@ export const TransactionList = ({
           {hasTransactions && (
             <div className="relative flex justify-between items-center my-3">
               <Divider className="w-[45%]" />
-              {showLoadMoreButton && (
+              {transactions.length % 10 === 0 && (
                 <InfiniteLoader defaultPage={2} mode="ON_DEMAND" onLoad={onLoad} />
               )}
               <Divider className="w-[45%]" />

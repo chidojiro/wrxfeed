@@ -127,7 +127,6 @@ export const InsightPage = ({}: InsightPageProps) => {
       <Form methods={methods} className="flex flex-col gap-6">
         <InsightHeader />
         <InsightCard
-          feed={insight?.feedItem}
           errors={errors}
           onPost={handlePost}
           groupBy={groupBy}
