@@ -109,11 +109,6 @@ export const InsightCard = ({
     limit: TRANSACTIONS_PER_PAGE * page,
   });
 
-  React.useEffect(() => {
-    setPage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify({ props: props ?? [], dateRange: dateRange!, groupBy: groupBy! })]);
-
   const handleLoad = async () => {
     setPage(page + 1);
     return range(TRANSACTIONS_PER_PAGE);

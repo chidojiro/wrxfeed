@@ -68,10 +68,6 @@ export const TeamPage = () => {
     to: getToDate(),
   });
 
-  useEffect(() => {
-    setPage(1);
-  }, []);
-
   const { data: topCategories = EMPTY_ARRAY, isValidating: isValidatingTopCategories } =
     useTopCategories(departmentId, { from: getFromDate(topCategoriesTimeRange), to: getToDate() });
 

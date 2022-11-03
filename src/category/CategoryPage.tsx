@@ -67,10 +67,6 @@ export const CategoryPage = () => {
     to: getToDate(),
   });
 
-  useEffect(() => {
-    setPage(1);
-  }, []);
-
   const handleLoad = async () => {
     setPage(page + 1);
     return range(TRANSACTIONS_PER_PAGE);
