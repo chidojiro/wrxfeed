@@ -3,6 +3,7 @@ import { Button, Form, Input } from '@/common/components';
 import { useUrlState } from '@/common/hooks';
 import { CommentBox } from '@/feed/CommentBox';
 import { CommentsSection } from '@/feed/FeedCard/CommentsSection';
+import { FeedCardHeader } from '@/feed/FeedCard/FeedCardHeader';
 import { DateRangeFilter, Property } from '@/feed/types';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { useMentions } from '@/misc/useMentions';
@@ -120,11 +121,15 @@ export const InsightCard = ({
   };
 
   return (
-    <div className={clsx('rounded-card border-card shadow-card overflow-hidden', 'bg-white')}>
-      <div
-        className="h-3"
-        style={{ background: 'linear-gradient(138.74deg, #395BD4 -12.96%, #82B2B3 100%)' }}
-      ></div>
+    <div className={clsx('rounded-card border-card shadow-card', 'bg-white')}>
+      {feed ? (
+        <FeedCardHeader type="INSIGHT" />
+      ) : (
+        <div
+          className="h-3 rounded-t-card"
+          style={{ background: 'linear-gradient(138.74deg, #395BD4 -12.96%, #82B2B3 100%)' }}
+        ></div>
+      )}
       <div className={clsx('py-6 px-8')}>
         <div className="grid grid-cols-10">
           {feed && feed.insight ? (
