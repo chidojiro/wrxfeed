@@ -7,6 +7,7 @@ import { useRestrictedItems } from '@/role/useRestrictedItems';
 import { Entities } from '@/types';
 import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
+import { useHistory } from 'react-router-dom';
 import { Spending } from './types';
 import { getThisYearTotalsGroupedByItem } from './utils';
 
@@ -36,8 +37,22 @@ export const GroupedSpendingChartLegends = ({
 
   const { restrictedItems } = useRestrictedItems();
 
+  const history = useHistory();
+
   const isRestricted = (id: number, type: TRestrictedItem['type']) => {
     return !!restrictedItems.find((item) => isEqual({ id, type }, item));
+  };
+
+  const handleRedirectUrl = (id: number) => {
+    if (groupBy === 'CATEGORY') {
+      history.push(`/categories/${id}`);
+    }
+    if (groupBy === 'VENDOR') {
+      history.push(`/vendors/${id}`);
+    }
+    if (groupBy === 'DEPARTMENT') {
+      history.push(`/departments/${id}`);
+    }
   };
 
   return (
@@ -56,6 +71,7 @@ export const GroupedSpendingChartLegends = ({
                 })}
                 onMouseEnter={() => onItemMouseEnter?.(id)}
                 onMouseLeave={onItemMouseLeave}
+                onClick={() => handleRedirectUrl(id)}
               >
                 <div className="flex items-center gap-2">
                   <div
