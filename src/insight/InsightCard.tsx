@@ -132,7 +132,7 @@ export const InsightCard = ({
       )}
       <div className={clsx('py-6 px-8')}>
         <div className="grid grid-cols-10">
-          {feed && feed.insight ? (
+          {feed ? (
             <>
               <Input
                 readOnly
@@ -212,7 +212,7 @@ export const InsightCard = ({
         onTimeRangeChange={setTimeRange}
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
-        showLoadMoreButton={transactions.length % 10 === 0}
+        insightView
       />
       {feed ? (
         <CommentsSection feed={feed} />

@@ -54,7 +54,7 @@ export const SummaryRow = ({ data: { comments, id, name, spends, target } }: Sum
       <div className="col-span-2 text-Gray-6 px-1">{getDisplayUsdAmount(targetSpends)}</div>
       <div className="col-span-3 relative px-1">
         {comments?.length ? (
-          <Link className="flex items-center" to={`/feed/${target?.id}?route=TargetFeed`}>
+          <Link className="flex items-center" to={`/feed/${target?.feedItem?.id}`}>
             <CommentGroup comments={comments} />
           </Link>
         ) : (

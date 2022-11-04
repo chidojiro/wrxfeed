@@ -1,6 +1,6 @@
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, Select } from '@/common/components';
-import { useMountEffect, useUrlState } from '@/common/hooks';
+import { useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
@@ -11,12 +11,11 @@ import { TransactionList } from '@/transactions/TransactionList';
 import { TimeRange } from '@/team/types';
 import { useTransactions } from '@/transactions/useTransactions';
 import dayjs from 'dayjs';
-import { sumBy } from 'lodash-es';
+import { range, sumBy } from 'lodash-es';
 import { useParams } from 'react-router-dom';
 import { CategoryHeader } from './CategoryHeader';
 import { useCategory } from './useCategory';
 import { useCategorySpendingsReport } from './useCategorySpendingsReport';
-import { TransLineItem } from '@/main/entity';
 import { useEffect, useState } from 'react';
 import { TeamIcon, VendorIcon } from '@/assets';
 import { GetCategorySpendingsParams } from './types';
@@ -47,7 +46,6 @@ export const CategoryPage = () => {
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
   const [page, setPage] = useState<number>(1);
-  const [loadedTransactions, setLoadedTransactions] = useState<TransLineItem[]>();
 
   const getFromDate = () => {
     if (!timeRange || timeRange === 'last-30-days') {
@@ -64,23 +62,17 @@ export const CategoryPage = () => {
   const { transactions, isValidatingTransactions } = useTransactions({
     catId: categoryId,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
-    offset: (page - 1) * TRANSACTIONS_PER_PAGE,
-    limit: TRANSACTIONS_PER_PAGE,
+    limit: TRANSACTIONS_PER_PAGE * page,
     from: getFromDate(),
     to: getToDate(),
   });
 
-  useMountEffect(() => {
-    setLoadedTransactions(transactions);
-  });
+  const handleLoad = async () => {
+    setPage(page + 1);
+    return range(TRANSACTIONS_PER_PAGE);
+  };
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
-
-  useEffect(() => {
-    if (loadedTransactions?.length === 0) {
-      setLoadedTransactions(transactions);
-    }
-  }, [loadedTransactions, transactions]);
 
   if (isForbidden)
     return (
@@ -88,12 +80,6 @@ export const CategoryPage = () => {
         <RestrictedAccessPage />
       </MainLayout>
     );
-
-  const handleLoad = async () => {
-    setPage(page + 1);
-    setLoadedTransactions(loadedTransactions?.concat(transactions));
-    return loadedTransactions;
-  };
 
   return (
     <MainLayout>
@@ -157,8 +143,8 @@ export const CategoryPage = () => {
       </OverlayLoader>
       <TransactionList
         className="mt-6"
-        onLoad={() => handleLoad() as Promise<TransLineItem[]>}
-        transactions={loadedTransactions as TransLineItem[]}
+        onLoad={handleLoad as any}
+        transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['categoryName']}
         timeRange={timeRange}
