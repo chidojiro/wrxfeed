@@ -413,6 +413,8 @@ const COLORS = [
   '#225959',
 ];
 
+const OTHER_COLOR = '#B2B7BB';
+
 export const getThisYearTotalsGroupedByItem = (curYearSpends: Spending[]) => {
   const curYearSpendsGroupedByItemId = groupBy(curYearSpends, 'item.id');
 
@@ -427,7 +429,7 @@ export const getThisYearTotalsGroupedByItem = (curYearSpends: Spending[]) => {
       total: sumBy(curYearSpendsGroupedByItemId[item!.id], 'total'),
     }))
     .sort((a, b) => b.total - a.total)
-    .map((item, idx) => ({ ...item, color: COLORS[idx] }));
+    .map((item, idx) => ({ ...item, color: COLORS[idx] ?? OTHER_COLOR }));
 
   return thisYearTotals;
 };
