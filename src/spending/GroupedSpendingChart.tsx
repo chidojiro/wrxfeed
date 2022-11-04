@@ -38,7 +38,15 @@ export const GroupedSpendingChart = ({
     <SpendingChartV2
       data={chartData as any}
       dateRange={dateRange}
-      highlightedDataKey={highlightedItemId}
+      highlightedDataKey={
+        highlightedItemId &&
+        !thisYearTotals
+          .slice(0, 10)
+          .map(({ id }) => id)
+          .includes(highlightedItemId)
+          ? -1
+          : highlightedItemId
+      }
       charts={[
         {
           type: 'BAR',
