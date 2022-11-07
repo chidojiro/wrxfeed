@@ -89,8 +89,6 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     clearErrors,
   } = methods;
 
-  console.log(watch());
-
   const { isValidatingDepartments, departments } = useDepartments({
     includeSub: true,
   });
@@ -220,7 +218,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     .filter((item): item is TargetSpending => !!item);
 
   React.useEffect(() => {
-    setValue('props', targetProps, { shouldDirty: false });
+    reset({ ...watch(), props: targetProps });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(targetProps), setValue]);
 
