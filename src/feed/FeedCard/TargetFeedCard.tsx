@@ -100,9 +100,6 @@ export const TargetFeedCard = React.memo(
                 </div>
                 <OptionsButton
                   onEditClick={addTargetModalDisclosure.onOpen}
-                  onDeleteClick={
-                    !feed.target?.isPrimary ? () => onDeleteTarget(feed.target.id) : undefined
-                  }
                   className="hidden md:block"
                 />
               </div>
