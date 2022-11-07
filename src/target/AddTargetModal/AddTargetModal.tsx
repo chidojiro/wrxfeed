@@ -85,9 +85,11 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     watch,
     setValue,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
     clearErrors,
   } = methods;
+
+  console.log(watch());
 
   const { isValidatingDepartments, departments } = useDepartments({
     includeSub: true,
@@ -218,7 +220,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     .filter((item): item is TargetSpending => !!item);
 
   React.useEffect(() => {
-    setValue('props', targetProps);
+    setValue('props', targetProps, { shouldDirty: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(targetProps), setValue]);
 
@@ -452,6 +454,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
                 <Button
                   type="submit"
                   loading={isCreatingTarget || isUpdatingTarget}
+                  disabled={!isDirty}
                   variant="solid"
                   colorScheme={isReadyToCreate ? 'primary' : 'gray'}
                   className="hover:bg-primary"
