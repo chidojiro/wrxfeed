@@ -386,7 +386,9 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
                     periods.filter((item) => item.year === new Date().getFullYear() - 1) ?? []
                   }
                   onApply={(data) => {
-                    setValue('periods', getPeriodsFromTargetMonths(data, THIS_YEAR));
+                    setValue('periods', getPeriodsFromTargetMonths(data, THIS_YEAR), {
+                      shouldDirty: true,
+                    });
                     clearErrors('periods');
                   }}
                 />
