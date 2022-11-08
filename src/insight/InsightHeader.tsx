@@ -59,7 +59,7 @@ export const InsightHeader = () => {
     departmentProps,
     exceptionProps,
     (vendorSen, catSen, teamSen, exceptSen) =>
-      `You're looking at all ${vendorSen} ${catSen} ${teamSen}${exceptSen}`,
+      `You're looking at all spend ${vendorSen} ${catSen} ${teamSen}${exceptSen}`,
   );
 
   return (

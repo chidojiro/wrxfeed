@@ -24,6 +24,7 @@ export type SearchResult = {
   title: string;
   type: TargetTypeProp;
   directoryId: number;
+  parentId?: any;
 };
 
 // Chart types

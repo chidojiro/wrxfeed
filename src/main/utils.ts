@@ -430,9 +430,10 @@ export const getColorByPropertyType = (type: TargetTypeProp): string => {
   return '#6565FB';
 };
 
-export const getPropTypeDisplayName = (type: TargetTypeProp): string => {
+export const getPropTypeDisplayName = (type: TargetTypeProp, parrentId: number): string => {
   if (type === TargetTypeProp.VENDOR) return 'Vendor';
-  if (type === TargetTypeProp.DEPARTMENT) return 'Team';
+  if (type === TargetTypeProp.DEPARTMENT && parrentId === null) return 'Team';
+  if (type === TargetTypeProp.DEPARTMENT && parrentId !== null) return 'Subteam';
   if (type === TargetTypeProp.CATEGORY) return 'Category';
   return '#6565FB';
 };
@@ -481,9 +482,9 @@ export const genReviewSentenceFromProperties = (
   exceptionProps: TargetProps[] = [],
   resolveSentence?: (vendor: string, category: string, team: string, except: string) => string,
 ): string => {
-  const vendorSen = getItemsSentence(vendorProps);
-  const catSen = getItemsSentence(categoryProps, ' spend within ');
-  const teamSen = getItemsSentence(departmentProps, ' spend for ');
+  const vendorSen = getItemsSentence(vendorProps, ' of ');
+  const catSen = getItemsSentence(categoryProps, ' within ');
+  const teamSen = getItemsSentence(departmentProps, ' for ');
   const exceptSen = getItemsSentence(exceptionProps, ', except ');
 
   const sentence = resolveSentence

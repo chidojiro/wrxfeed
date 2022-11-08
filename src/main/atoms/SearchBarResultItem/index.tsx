@@ -45,7 +45,7 @@ const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({
       <div className="flex flex-1 items-center ml-2">
         <p className="text-Gray-3 text-sm">{result?.title}</p>
         <p className="text-Gray-6 text-sm ml-2 invisible group-hover:visible">
-          {`- ${getPropTypeDisplayName(result?.type)}`}
+          {`- ${getPropTypeDisplayName(result?.type, result?.parentId)}`}
         </p>
       </div>
       <div className="flex ml-auto">
