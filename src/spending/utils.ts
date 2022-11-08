@@ -445,6 +445,15 @@ export const getChartDataByMonth = (spendingReport: SpendingsReport) => {
       'id',
     ).filter(Boolean);
 
+    const itemsWithTotal = uniqueItems
+      .map((item) => ({
+        ...item,
+        total:
+          curYearSpends.find((spend) => spend.month === month && spend.item?.id === item?.id)
+            ?.total ?? 0,
+      }))
+      .sort((a, b) => b.total - a.total);
+
     return {
       month,
       thisYearTotal: sumBy(
@@ -455,25 +464,15 @@ export const getChartDataByMonth = (spendingReport: SpendingsReport) => {
         prevYearSpends.filter((spend) => spend.month === month),
         'total',
       ),
-      ...uniqueItems.reduce(
+      ...itemsWithTotal.slice(0, 10).reduce(
         (acc, cur) => ({
           ...acc,
-          [cur!.id]:
-            curYearSpends.find((spend) => spend.month === month && spend.item?.id === cur?.id)
-              ?.total ?? 0,
+          [cur!.id!]: cur.total,
         }),
         {},
       ),
       // Others
-      '-1': sum(
-        uniqueItems
-          .slice(10)
-          .map(
-            (item) =>
-              curYearSpends.find((spend) => spend.month === month && spend.item?.id === item?.id)
-                ?.total ?? 0,
-          ),
-      ),
+      '-1': sum(itemsWithTotal.slice(10).map((item) => item.total)),
       items: [uniqueItems, { id: -1, name: 'Other' }].flat(),
     };
   });
@@ -492,6 +491,15 @@ export const getChartDataByDay = (spendingReport: SpendingsReport) => {
         'id',
       ).filter(Boolean);
 
+      const itemsWithTotal = uniqueItems
+        .map((item) => ({
+          ...item,
+          total:
+            curYearSpends.find((spend) => spend.day === day && spend.item?.id === item?.id)
+              ?.total ?? 0,
+        }))
+        .sort((a, b) => b.total - a.total);
+
       return {
         day,
         thisYearTotal: sumBy(
@@ -502,25 +510,15 @@ export const getChartDataByDay = (spendingReport: SpendingsReport) => {
           prevYearSpends.filter((spend) => spend.day === day),
           'total',
         ),
-        ...uniqueItems.reduce(
+        ...itemsWithTotal.slice(0, 10).reduce(
           (acc, cur) => ({
             ...acc,
-            [cur!.id]:
-              curYearSpends.find((spend) => spend.day === day && spend.item?.id === cur?.id)
-                ?.total ?? 0,
+            [cur!.id!]: cur.total,
           }),
           {},
         ),
         // Others
-        '-1': sum(
-          uniqueItems
-            .slice(10)
-            .map(
-              (item) =>
-                curYearSpends.find((spend) => spend.day === day && spend.item?.id === item?.id)
-                  ?.total ?? 0,
-            ),
-        ),
+        '-1': sum(itemsWithTotal.slice(10).map((item) => item.total)),
         items: [uniqueItems, { id: -1, name: 'Other' }].flat(),
       };
     });
@@ -539,6 +537,15 @@ export const getChartDataByWeek = (spendingReport: SpendingsReport) => {
         'id',
       ).filter(Boolean);
 
+      const itemsWithTotal = uniqueItems
+        .map((item) => ({
+          ...item,
+          total:
+            curYearSpends.find((spend) => spend.week === week && spend.item?.id === item?.id)
+              ?.total ?? 0,
+        }))
+        .sort((a, b) => b.total - a.total);
+
       return {
         week,
         thisYearTotal: sumBy(
@@ -549,25 +556,15 @@ export const getChartDataByWeek = (spendingReport: SpendingsReport) => {
           prevYearSpends.filter((spend) => spend.week === week),
           'total',
         ),
-        ...uniqueItems.reduce(
+        ...itemsWithTotal.slice(0, 10).reduce(
           (acc, cur) => ({
             ...acc,
-            [cur!.id]:
-              curYearSpends.find((spend) => spend.week === week && spend.item?.id === cur?.id)
-                ?.total ?? 0,
+            [cur!.id!]: cur.total,
           }),
           {},
         ),
         // Others
-        '-1': sum(
-          uniqueItems
-            .slice(10)
-            .map(
-              (item) =>
-                curYearSpends.find((spend) => spend.week === week && spend.item?.id === item?.id)
-                  ?.total ?? 0,
-            ),
-        ),
+        '-1': sum(itemsWithTotal.slice(10).map((item) => item.total)),
         items: [uniqueItems, { id: -1, name: 'Other' }].flat(),
       };
     });
