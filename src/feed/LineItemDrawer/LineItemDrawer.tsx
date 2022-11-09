@@ -38,9 +38,8 @@ export const LineItemDrawer = withMountOnOpen()(
     const closeOnClickOutsideDisclosure = useDisclosure({ defaultIsOpen: true });
 
     const checkPayloadEmptyString = (value: string | null) => {
-      if (!value) {
-        return null;
-      } else return value;
+      if (!value) return null;
+      return value;
     };
 
     const { handle: handleVendorUpdate } = useHandler(
