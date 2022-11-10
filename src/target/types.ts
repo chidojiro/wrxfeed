@@ -127,6 +127,7 @@ export type Target = {
   props: TargetProps[];
   periods: TargetPeriod[];
   spendings: TargetSpending[];
+  type?: 'company';
 };
 
 export type TargetMonth = {

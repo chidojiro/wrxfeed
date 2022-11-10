@@ -75,10 +75,12 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     onCancel,
     departmentId,
     target,
-    hidePropertyDropdowns,
+    hidePropertyDropdowns: hidePropertyDropdownsProp,
     useDefaultApis = true,
   } = props;
   const isEdit = !!target;
+
+  const hidePropertyDropdowns = hidePropertyDropdownsProp ?? target?.type === 'company';
 
   const methods = useForm({ mode: 'onChange' });
   const {
