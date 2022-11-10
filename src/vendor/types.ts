@@ -15,10 +15,10 @@ export type Vendor = {
 };
 
 export type UpdateVendorPayload = {
-  website: string | null;
-  contactEmail: string | null;
-  contactNumber: string | null;
-  description: string | null;
+  website?: string | null;
+  contactEmail?: string | null;
+  contactNumber?: string | null;
+  description?: string | null;
 };
 
 export type GetVendorSpendingsParams = {

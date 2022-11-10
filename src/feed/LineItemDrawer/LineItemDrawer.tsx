@@ -37,18 +37,13 @@ export const LineItemDrawer = withMountOnOpen()(
 
     const closeOnClickOutsideDisclosure = useDisclosure({ defaultIsOpen: true });
 
-    const checkPayloadEmptyString = (value: string | null) => {
-      if (!value) return null;
-      return value;
-    };
-
     const { handle: handleVendorUpdate } = useHandler(
       async (id: number, payload: UpdateVendorPayload) => {
         const filteredPayLoad: UpdateVendorPayload = {
-          website: checkPayloadEmptyString(payload.website),
-          contactEmail: checkPayloadEmptyString(payload.contactEmail),
-          contactNumber: checkPayloadEmptyString(payload.contactNumber),
-          description: checkPayloadEmptyString(payload.description),
+          website: payload.website ?? null,
+          contactEmail: payload.contactEmail ?? null,
+          contactNumber: payload.contactNumber ?? null,
+          description: payload.description ?? null,
         };
         const res = await VendorApis.update(id, filteredPayLoad);
         mutate();
