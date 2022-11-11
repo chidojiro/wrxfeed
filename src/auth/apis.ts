@@ -14,7 +14,10 @@ const logout = async () => {
   AuthUtils.logout();
 };
 
+const _switch = (email: string) => RestApis.patch('/auth/access-tokens', { email });
+
 export const AuthApis = {
   logout,
   signInWithGoogle,
+  switch: _switch,
 };
