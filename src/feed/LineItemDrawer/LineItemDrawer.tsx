@@ -39,7 +39,13 @@ export const LineItemDrawer = withMountOnOpen()(
 
     const { handle: handleVendorUpdate } = useHandler(
       async (id: number, payload: UpdateVendorPayload) => {
-        const res = await VendorApis.update(id, payload);
+        const filteredPayLoad: UpdateVendorPayload = {
+          website: payload.website ?? null,
+          contactEmail: payload.contactEmail ?? null,
+          contactNumber: payload.contactNumber ?? null,
+          description: payload.description ?? null,
+        };
+        const res = await VendorApis.update(id, filteredPayLoad);
         mutate();
         return res;
       },

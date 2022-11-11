@@ -117,7 +117,7 @@ export const InsightPage = ({}: InsightPageProps) => {
             attachment: data?.attachment,
           });
         }
-        history.push(`/insights/${insight.id}`);
+        history.push(`/feed/${insight.feedItem.id}`);
       }
     })();
   };
