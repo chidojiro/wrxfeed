@@ -1,3 +1,4 @@
+import { UserRole } from '@/auth/constants';
 import { RouteItem } from '@/routing/types';
 import * as Sentry from '@sentry/react';
 import React from 'react';
@@ -10,5 +11,6 @@ export const SupportRoutes: Record<string, RouteItem> = {
   Category: {
     path: '/support',
     component: Sentry.withProfiler(SupportPage, { name: 'SupportPage' }),
+    permissions: [UserRole.EMPLOYEE],
   },
 };
