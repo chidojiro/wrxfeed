@@ -12,16 +12,20 @@ interface InviteHookValues {
   isSent: boolean;
   isLoading: boolean;
   sendInvitation: (contact: Partial<Contact>) => Promise<void>;
+  inviteLink: string;
 }
 
 export function useInvite(): InviteHookValues {
   const [isSent, setSent] = React.useState(false);
+  const [inviteLink, setInviteLink] = React.useState<string>('');
   const { profile } = useProfile();
 
   const { handle: sendInvitation, isLoading } = useHandler(
     async (contact: Partial<Contact>) => {
       setSent(false);
-      await InvitationApis.send({ email: contact?.email ?? '' });
+      await InvitationApis.send({ email: contact?.email ?? '' }).then((res) =>
+        setInviteLink(res.link as string),
+      );
       mixpanel.track('Invite Sent', {
         user_id: profile?.id,
         email: profile?.email,
@@ -41,5 +45,5 @@ export function useInvite(): InviteHookValues {
     },
   );
 
-  return { isSent, isLoading, sendInvitation };
+  return { isSent, isLoading, sendInvitation, inviteLink };
 }
