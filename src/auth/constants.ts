@@ -1,5 +1,6 @@
 export enum UserRole {
   ADMIN = 'Admin',
+  EMPLOYEE = 'Gravity Employees',
 }
 
 export enum ProtectedFeatures {
