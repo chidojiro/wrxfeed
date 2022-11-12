@@ -15,7 +15,7 @@ export type GroupedSpendingChartProps = {
   dateRange?: DateRangeFilter;
 };
 
-const OTHER_COLOR = '#029B80';
+const OTHER_COLOR = '#B2B7BB';
 
 export const GroupedSpendingChart = ({
   data,
@@ -38,6 +38,15 @@ export const GroupedSpendingChart = ({
     <SpendingChartV2
       data={chartData as any}
       dateRange={dateRange}
+      highlightedDataKey={
+        highlightedItemId &&
+        !thisYearTotals
+          .slice(0, 10)
+          .map(({ id }) => id)
+          .includes(highlightedItemId)
+          ? -1
+          : highlightedItemId
+      }
       charts={[
         {
           type: 'BAR',

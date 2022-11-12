@@ -76,7 +76,6 @@ export const TransactionList = ({
   onSortChange,
   defaultExpand = true,
   onLoad,
-  showLoadMoreButton,
   timeRange,
   onTimeRangeChange,
   insightView,
@@ -378,7 +377,7 @@ export const TransactionList = ({
           {hasTransactions && (
             <div className="relative flex justify-between items-center my-3">
               <Divider className="w-[45%]" />
-              {showLoadMoreButton && (
+              {transactions.length % 10 === 0 && (
                 <InfiniteLoader defaultPage={2} mode="ON_DEMAND" onLoad={onLoad} />
               )}
               <Divider className="w-[45%]" />

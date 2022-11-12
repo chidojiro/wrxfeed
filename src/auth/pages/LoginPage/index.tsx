@@ -3,11 +3,12 @@ import { AuthApis } from '@/auth/apis';
 import NotInvited from '@/auth/molecules/NotInvited';
 import { AuthUtils } from '@/auth/utils';
 import SocialAuthButton, { AuthProvider } from '@/common/atoms/SocialAuthButton';
-import { GOOGLE_CLIENT_ID, GOOGLE_SCOPES, GRADIENT_DEFAULT } from '@/config';
+import { BUILD_ENV, GOOGLE_CLIENT_ID, GOOGLE_SCOPES, GRADIENT_DEFAULT } from '@/config';
 import { NotifyBanner } from '@/layout/NotifyBanner';
 import mixpanel from 'mixpanel-browser';
 import { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export interface LocationState {
   fromInvite?: boolean;
@@ -35,19 +36,30 @@ export const LoginPage = () => {
 
   const handleResponseSuccess = async (response: any) => {
     if ('access_token' in response) {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { access_token } = response;
-      const userToken = await AuthApis.signInWithGoogle(access_token);
-      const googleProfile = 'profileObj' in response ? response.profileObj : null;
+      try {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        const { access_token } = response;
+        const userToken = await AuthApis.signInWithGoogle(access_token);
+        const googleProfile = 'profileObj' in response ? response.profileObj : null;
 
-      AuthUtils.setToken(userToken.token);
+        AuthUtils.setToken(userToken.token);
 
-      mixpanel.track('Log In', {
-        user_id: googleProfile?.googleId,
-        email: googleProfile?.email,
-      });
+        mixpanel.track('Log In', {
+          user_id: googleProfile?.googleId,
+          email: googleProfile?.email,
+        });
 
-      history.push('/dashboard/all-company');
+        history.push('/dashboard/all-company');
+      } catch (e) {
+        if (BUILD_ENV === 'demo') {
+          toast.error(
+            'Gravity demos are currently private. Email graham@gravitylabs.co to get a walk through demo.',
+            { className: 'w-[400px]' },
+          );
+        }
+
+        throw e;
+      }
     }
   };
 

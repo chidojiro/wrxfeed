@@ -13,17 +13,18 @@ export type SearchFilters = {
   ignoreEmptyKeyword?: boolean;
 };
 
-const toSearchOptions = <T extends { id: number; name: string }>(
+const toSearchOptions = <T extends { id: number; name: string; parentId?: any }>(
   items: T[],
   type: TargetTypeProp,
 ) =>
   items.map(
-    ({ id, name }) =>
+    ({ id, name, parentId }) =>
       ({
         id: `${type}-${id}`,
         title: name,
         type: type,
         directoryId: id,
+        parentId,
       } as SearchResult),
   );
 

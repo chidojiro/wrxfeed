@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { CommentsSection } from './CommentsSection';
 import { FeedBackModal } from './FeedBackModal';
+import { FeedCardHeader } from './FeedCardHeader';
 
 export type TransactionFeedItemCardProps = {
   feed: FeedItem;
@@ -46,22 +47,12 @@ export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCa
     return items;
   };
 
-  const itemGradientBg = React.useMemo(
-    () => getColorByText(feed.lineItem.category?.name ?? '', undefined, true),
-    [feed.lineItem.category?.name],
-  );
-
   return (
     <>
       <OverlayLoader loading={loading}>
-        <article className="bg-white flex flex-col filter shadow-md rounded-card overflow-hidden">
+        <article className="bg-white flex flex-col filter shadow-md rounded-card">
           <div className="flex flex-row">
-            <div
-              className="flex-grow h-3 border-b border-Gray-11"
-              style={{
-                background: itemGradientBg,
-              }}
-            />
+            <FeedCardHeader type="TRANSACTION" />
           </div>
           <div className="px-8 pt-3 pb-6">
             <div className="flex justify-between">

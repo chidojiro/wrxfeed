@@ -2,6 +2,7 @@ import { AdminRoutes } from '@/admin/routes';
 import { CategoryRoutes } from '@/category/routes';
 import { FeedRoutes } from '@/feed/routes';
 import { InsightRoutes } from '@/insight/routes';
+import { SupportRoutes } from '@/support/routes';
 import { TargetRoutes } from '@/target/routes';
 import { TeamRoutes } from '@/team/routes';
 import { VendorRoutes } from '@/vendor/routes';
@@ -87,4 +88,5 @@ export const Routes: Route = {
   ...AdminRoutes,
   ...CategoryRoutes,
   ...InsightRoutes,
+  ...SupportRoutes,
 };

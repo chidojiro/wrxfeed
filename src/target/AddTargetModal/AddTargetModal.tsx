@@ -75,17 +75,19 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     onCancel,
     departmentId,
     target,
-    hidePropertyDropdowns,
+    hidePropertyDropdowns: hidePropertyDropdownsProp,
     useDefaultApis = true,
   } = props;
   const isEdit = !!target;
+
+  const hidePropertyDropdowns = hidePropertyDropdownsProp ?? target?.type === 'company';
 
   const methods = useForm({ mode: 'onChange' });
   const {
     watch,
     setValue,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
     clearErrors,
   } = methods;
 
@@ -218,7 +220,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     .filter((item): item is TargetSpending => !!item);
 
   React.useEffect(() => {
-    setValue('props', targetProps);
+    reset({ ...watch(), props: targetProps });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(targetProps), setValue]);
 
@@ -386,7 +388,9 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
                     periods.filter((item) => item.year === new Date().getFullYear() - 1) ?? []
                   }
                   onApply={(data) => {
-                    setValue('periods', getPeriodsFromTargetMonths(data, THIS_YEAR));
+                    setValue('periods', getPeriodsFromTargetMonths(data, THIS_YEAR), {
+                      shouldDirty: true,
+                    });
                     clearErrors('periods');
                   }}
                 />
@@ -452,6 +456,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
                 <Button
                   type="submit"
                   loading={isCreatingTarget || isUpdatingTarget}
+                  disabled={!isDirty}
                   variant="solid"
                   colorScheme={isReadyToCreate ? 'primary' : 'gray'}
                   className="hover:bg-primary"

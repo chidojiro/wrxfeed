@@ -20,14 +20,28 @@ type SpendingChartV2Props<TData extends BaseData> = {
   charts: ChartInfo[];
   data: TData[];
   dateRange?: DateRangeFilter;
+  highlightedDataKey?: number;
 };
 
 export const SpendingChartV2 = <TData extends BaseData>({
   data,
   charts,
   dateRange,
+  highlightedDataKey,
 }: SpendingChartV2Props<TData>) => {
   const [hoveredIndex, setHoveredIndex] = React.useState<number>();
+
+  const getCellOpacity = (index: number, dataKey?: number) => {
+    if (hoveredIndex && hoveredIndex !== index) {
+      return 0.5;
+    }
+
+    if (highlightedDataKey && highlightedDataKey !== dataKey) {
+      return 0.2;
+    }
+
+    return 1;
+  };
 
   const maxValue = Math.max(
     ...data.map(({ thisYearTotal }) => thisYearTotal),
@@ -65,7 +79,7 @@ export const SpendingChartV2 = <TData extends BaseData>({
               key={index}
               color={chartInfo.color}
               fill={chartInfo.color}
-              opacity={hoveredIndex === undefined || hoveredIndex === index ? 1 : 0.5}
+              opacity={getCellOpacity(index, chartInfo.dataKey ? +chartInfo.dataKey : 0)}
             />
           ))}
         </Bar>
@@ -89,7 +103,10 @@ export const SpendingChartV2 = <TData extends BaseData>({
                 key={index}
                 color={color}
                 fill={color}
-                opacity={hoveredIndex === undefined || hoveredIndex === index ? 1 : 0.5}
+                opacity={getCellOpacity(
+                  index,
+                  !isNaN(Number(dataKey)) ? Number(dataKey) : undefined,
+                )}
               />
             ))}
           </Bar>

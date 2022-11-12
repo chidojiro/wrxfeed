@@ -1,6 +1,6 @@
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
-import { OverlayLoader } from '@/common/components';
-import { useMountEffect, useUrlState } from '@/common/hooks';
+import { OverlayLoader, Select } from '@/common/components';
+import { useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
@@ -11,13 +11,14 @@ import { TransactionList } from '@/transactions/TransactionList';
 import { TimeRange } from '@/team/types';
 import { useTransactions } from '@/transactions/useTransactions';
 import dayjs from 'dayjs';
-import { sumBy } from 'lodash-es';
+import { range, sumBy } from 'lodash-es';
 import { useParams } from 'react-router-dom';
 import { CategoryHeader } from './CategoryHeader';
 import { useCategory } from './useCategory';
 import { useCategorySpendingsReport } from './useCategorySpendingsReport';
-import { TransLineItem } from '@/main/entity';
 import { useEffect, useState } from 'react';
+import { TeamIcon, VendorIcon } from '@/assets';
+import { GetCategorySpendingsParams } from './types';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -34,8 +35,10 @@ export const CategoryPage = () => {
 
   const { data: vendor, isValidating: isValidatingVendor, error } = useCategory(categoryId);
 
+  const [groupBy, setGroupBy] = useState<GetCategorySpendingsParams['groupBy']>(undefined);
+
   const { categorySpendingsReport, isValidatingCategorySpendingsReport } =
-    useCategorySpendingsReport(categoryId);
+    useCategorySpendingsReport(categoryId, { groupBy });
 
   const { curYearSpends = [], prevYearSpends = [] } = categorySpendingsReport ?? {};
 
@@ -43,7 +46,6 @@ export const CategoryPage = () => {
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
   const [page, setPage] = useState<number>(1);
-  const [loadedTransactions, setLoadedTransactions] = useState<TransLineItem[]>();
 
   const getFromDate = () => {
     if (!timeRange || timeRange === 'last-30-days') {
@@ -60,23 +62,17 @@ export const CategoryPage = () => {
   const { transactions, isValidatingTransactions } = useTransactions({
     catId: categoryId,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
-    offset: (page - 1) * TRANSACTIONS_PER_PAGE,
-    limit: TRANSACTIONS_PER_PAGE,
+    limit: TRANSACTIONS_PER_PAGE * page,
     from: getFromDate(),
     to: getToDate(),
   });
 
-  useMountEffect(() => {
-    setLoadedTransactions(transactions);
-  });
+  const handleLoad = async () => {
+    setPage(page + 1);
+    return range(TRANSACTIONS_PER_PAGE);
+  };
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
-
-  useEffect(() => {
-    if (loadedTransactions?.length === 0) {
-      setLoadedTransactions(transactions);
-    }
-  }, [loadedTransactions, transactions]);
 
   if (isForbidden)
     return (
@@ -85,15 +81,37 @@ export const CategoryPage = () => {
       </MainLayout>
     );
 
-  const handleLoad = async () => {
-    setPage(page + 1);
-    setLoadedTransactions(loadedTransactions?.concat(transactions));
-    return loadedTransactions;
-  };
-
   return (
     <MainLayout>
       <CategoryHeader categoryId={categoryId} />
+      <div className="flex justify-end mt-4 w-full">
+        <Select
+          className="border border-solid border-Gray-11 rounded"
+          value={groupBy}
+          onChange={(value: any) => setGroupBy(value)}
+          options={[
+            { label: 'None', value: '' },
+            {
+              label: (
+                <div className="flex items-center gap-2">
+                  <TeamIcon />
+                  Team
+                </div>
+              ),
+              value: 'DEPARTMENT',
+            },
+            {
+              label: (
+                <div className="flex items-center gap-2">
+                  <VendorIcon />
+                  Vendor
+                </div>
+              ),
+              value: 'VENDOR',
+            },
+          ]}
+        />
+      </div>
       <OverlayLoader
         loading={isValidatingVendor || isValidatingCategorySpendingsReport}
         className="mt-6"
@@ -125,8 +143,8 @@ export const CategoryPage = () => {
       </OverlayLoader>
       <TransactionList
         className="mt-6"
-        onLoad={() => handleLoad() as Promise<TransLineItem[]>}
-        transactions={loadedTransactions as TransLineItem[]}
+        onLoad={handleLoad as any}
+        transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['categoryName']}
         timeRange={timeRange}

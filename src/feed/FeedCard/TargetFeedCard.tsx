@@ -1,4 +1,4 @@
-import { EyeHideIcon } from '@/assets';
+import { EyeHideIcon, TargetFeedBadgeIcon, TargetIcon } from '@/assets';
 import { distanceToNow } from '@/common/utils';
 import { GRADIENT_DEFAULT } from '@/config';
 import UserAvatar from '@/main/atoms/UserAvatar';
@@ -12,6 +12,8 @@ import clsx from 'clsx';
 import React from 'react';
 import { CommentsSection } from './CommentsSection';
 import { FeedBackModal } from './FeedBackModal';
+import { FeedCardBadge } from './FeedCardBadge';
+import { FeedCardHeader } from './FeedCardHeader';
 import { TargetFeedOverview } from './TargetFeedOverview';
 import { TransactionsSection } from './TransactionsSection';
 
@@ -76,12 +78,7 @@ export const TargetFeedCard = React.memo(
           aria-labelledby={`rollup-title-${feed.id}`}
         >
           <div className="flex flex-col">
-            <div
-              className="h-4 w-full rounded-t-card"
-              style={{
-                background: GRADIENT_DEFAULT,
-              }}
-            />
+            <FeedCardHeader type="TARGET" />
             <div
               className={clsx(
                 isHidden ? 'bg-purple-8' : 'bg-white',
@@ -103,9 +100,6 @@ export const TargetFeedCard = React.memo(
                 </div>
                 <OptionsButton
                   onEditClick={addTargetModalDisclosure.onOpen}
-                  onDeleteClick={
-                    !feed.target?.isPrimary ? () => onDeleteTarget(feed.target.id) : undefined
-                  }
                   className="hidden md:block"
                 />
               </div>

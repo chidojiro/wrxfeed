@@ -1,4 +1,5 @@
 import { Form } from '@/common/components';
+import { useFetcher } from '@/common/hooks';
 import { FeedApis } from '@/feed/apis';
 import { DateRangeFilter, Property } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
@@ -116,7 +117,7 @@ export const InsightPage = ({}: InsightPageProps) => {
             attachment: data?.attachment,
           });
         }
-        history.push(`/insights/${insight.id}`);
+        history.push(`/feed/${insight.feedItem.id}`);
       }
     })();
   };

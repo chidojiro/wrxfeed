@@ -1,7 +1,7 @@
 import { CategoryIcon, TeamIcon } from '@/assets';
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, Select } from '@/common/components';
-import { useMountEffect, useUrlState } from '@/common/hooks';
+import { useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { MainLayout } from '@/layout/MainLayout';
@@ -14,14 +14,13 @@ import { TransactionList } from '@/transactions/TransactionList';
 import { TimeRange } from '@/team/types';
 import { useTransactions } from '@/transactions/useTransactions';
 import dayjs from 'dayjs';
-import { sumBy } from 'lodash-es';
+import { range, sumBy } from 'lodash-es';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GetVendorSpendingsParams } from './types';
 import { useVendor } from './useVendor';
 import { useVendorSpendings } from './useVendorSpendings';
 import { VendorHeader } from './VendorHeader';
-import { TransLineItem } from '@/main/entity';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -66,10 +65,6 @@ export const VendorPage = () => {
 
   const getToDate = () => dayjs().format(DATE_FORMAT);
 
-  useMountEffect(() => {
-    setLoadedTransactions(transactions);
-  });
-
   const { transactions, isValidatingTransactions } = useTransactions({
     vendId: vendorId,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
@@ -79,13 +74,10 @@ export const VendorPage = () => {
     to: getToDate(),
   });
 
-  const [loadedTransactions, setLoadedTransactions] = useState<TransLineItem[]>();
-
-  useEffect(() => {
-    if (loadedTransactions?.length === 0) {
-      setLoadedTransactions(transactions);
-    }
-  }, [loadedTransactions, transactions]);
+  const handleLoad = async () => {
+    setPage(page + 1);
+    return range(TRANSACTIONS_PER_PAGE);
+  };
 
   const { curYearSpends = [], prevYearSpends = [] } = vendorSpendings ?? {};
 
@@ -103,12 +95,6 @@ export const VendorPage = () => {
       </MainLayout>
     );
   }
-
-  const handleLoad = async () => {
-    setPage(page + 1);
-    setLoadedTransactions(loadedTransactions?.concat(transactions));
-    return loadedTransactions;
-  };
 
   return (
     <MainLayout>
@@ -184,8 +170,8 @@ export const VendorPage = () => {
       </OverlayLoader>
       <TransactionList
         className="mt-6"
-        onLoad={() => handleLoad() as Promise<TransLineItem[]>}
-        transactions={loadedTransactions as TransLineItem[]}
+        onLoad={handleLoad as any}
+        transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['vendorName']}
         timeRange={timeRange}

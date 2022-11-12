@@ -52,7 +52,6 @@ export const UpdateVendorInfoModal = withMountOnOpen()(
               <Form.Input
                 name="description"
                 placeholder="What goods or services does this business provide?"
-                rules={{ required: true }}
               />
             </div>
             <p className="text-primary text-xs font-semibold">Website</p>
