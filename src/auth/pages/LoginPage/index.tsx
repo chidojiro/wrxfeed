@@ -73,7 +73,7 @@ export const LoginPage = () => {
     <NotInvited onBack={() => setNotInvited(false)} />
   ) : (
     <div className="flex flex-col justify-center items-center min-h-screen my-auto space-y-10">
-      {fromInvite ? (
+      {!fromInvite ? (
         <div className="flex flex-col justify-center items-center mb-3 space-y-8 max-w-xl">
           <GravityLogoImage />
           <div className="flex flex-col items-center mx-4 xl:w-[921px] overflow-hidden rounded-2.5xl bg-white drop-shadow-login-card">
@@ -97,7 +97,10 @@ export const LoginPage = () => {
                   track and target more efficient spending.
                 </p>
               </div>
-              <SocialAuthButton provider={AuthProvider.GOOGLE} onClick={client.requestAccessToken}>
+              <SocialAuthButton
+                provider={AuthProvider.GOOGLE}
+                onClick={() => client.requestAccessToken()}
+              >
                 Sign in with Google
               </SocialAuthButton>
             </div>
