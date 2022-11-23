@@ -8,7 +8,7 @@ const SupportPage = React.lazy(() =>
 );
 
 export const SupportRoutes: Record<string, RouteItem> = {
-  Category: {
+  Support: {
     path: '/support',
     component: Sentry.withProfiler(SupportPage, { name: 'SupportPage' }),
     permissions: [UserRole.EMPLOYEE],
