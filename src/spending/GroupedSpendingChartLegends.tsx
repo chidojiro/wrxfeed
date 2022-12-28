@@ -64,7 +64,7 @@ export const GroupedSpendingChartLegends = ({
 
   return (
     <div className={clsx('flex flex-col', className)}>
-      <h3 className="font-semibold h-10 flex items-end">{LabelsByGroupBy[groupBy]}</h3>
+      <h3 className="font-semibold h-5 flex items-end">{LabelsByGroupBy[groupBy]}</h3>
       <div className="border border-Gray-12 rounded-lg p-2 min-w-[180px] mt-3 text-[10px] flex flex-col flex-1 overflow-auto max-h-[400px]">
         {firstTen.flat().map(({ color, id, name, total }) => (
           <>

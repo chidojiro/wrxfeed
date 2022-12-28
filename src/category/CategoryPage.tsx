@@ -7,13 +7,15 @@ import { ApiErrorCode } from '@/error';
 import { useLineItems } from '@/feed/useLineItems';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
+import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
+import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TimeRange } from '@/team/types';
 import { TransactionList } from '@/transactions/TransactionList';
 import dayjs from 'dayjs';
 import { range, sumBy } from 'lodash-es';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CategoryHeader } from './CategoryHeader';
 import { GetCategorySpendingsParams } from './types';
@@ -24,6 +26,7 @@ const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const CategoryPage = () => {
+  const [hoveredItemId, setHoveredItemId] = React.useState<number>();
   const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
     'sortTransactionsBy',
     DEFAULT_SORT,
@@ -37,8 +40,10 @@ export const CategoryPage = () => {
 
   const [groupBy, setGroupBy] = useState<GetCategorySpendingsParams['groupBy']>(undefined);
 
-  const { categorySpendingsReport, isValidatingCategorySpendingsReport } =
-    useCategorySpendingsReport(categoryId, { groupBy });
+  const {
+    categorySpendingsReport = { curYearSpends: [], prevYearSpends: [] },
+    isValidatingCategorySpendingsReport,
+  } = useCategorySpendingsReport(categoryId, { groupBy });
 
   const { curYearSpends = [], prevYearSpends = [] } = categorySpendingsReport ?? {};
 
@@ -82,6 +87,8 @@ export const CategoryPage = () => {
         <RestrictedAccessPage />
       </MainLayout>
     );
+
+  if (!categorySpendingsReport) return null;
 
   return (
     <MainLayout>
@@ -138,8 +145,26 @@ export const CategoryPage = () => {
               </p>
             </div>
           </div>
-          <div className="h-[400px] mt-4">
-            <SpendingBarChart thisYearData={curYearSpends} lastYearData={prevYearSpends} />
+          <div className="flex gap-8 h-full items-stretch">
+            <div className="h-[400px] mt-8 flex-1 border border-Gray-12 rounded-lg px-4 pt-10 pb-6">
+              {!groupBy ? (
+                <SpendingBarChart thisYearData={curYearSpends} lastYearData={prevYearSpends} />
+              ) : (
+                <GroupedSpendingChart
+                  data={categorySpendingsReport}
+                  highlightedItemId={hoveredItemId}
+                />
+              )}
+            </div>
+            {!!groupBy && (
+              <GroupedSpendingChartLegends
+                spendings={curYearSpends}
+                groupBy={groupBy}
+                highlightedItemId={hoveredItemId}
+                onItemMouseEnter={setHoveredItemId}
+                onItemMouseLeave={() => setHoveredItemId(undefined)}
+              />
+            )}
           </div>
         </div>
       </OverlayLoader>
