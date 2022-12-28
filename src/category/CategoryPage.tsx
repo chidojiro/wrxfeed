@@ -29,7 +29,7 @@ export const CategoryPage = () => {
     'sortTransactionsBy',
     DEFAULT_SORT,
   );
-  const [dateRange, setDateRange] = useUrlState<DateRangeFilter>('dateRange', '30-days');
+  const [dateRange, setDateRange] = useUrlState<DateRangeFilter>('dateRange', 'year-to-date');
 
   const { categoryId: categoryIdParam } = useParams() as Record<string, string>;
   const categoryId = +categoryIdParam;

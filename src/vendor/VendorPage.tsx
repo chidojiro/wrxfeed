@@ -29,7 +29,7 @@ export const VendorPage = () => {
     'sortTransactionsBy',
     DEFAULT_SORT,
   );
-  const [dateRange, setDateRange] = useUrlState<DateRangeFilter>('dateRange');
+  const [dateRange, setDateRange] = useUrlState<DateRangeFilter>('dateRange', 'year-to-date');
   const [groupBy, setGroupBy] = React.useState<GetVendorSpendingsParams['groupBy']>(undefined);
 
   const { vendorId: vendorIdParam } = useParams() as Record<string, string>;
