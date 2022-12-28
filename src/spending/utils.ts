@@ -416,29 +416,51 @@ const COLORS = [
 const OTHER_COLOR = '#B2B7BB';
 
 export const getThisYearTotalsGroupedByItem = (curYearSpends: Spending[]) => {
-  const curYearSpendsGroupedByItemId = groupBy(curYearSpends, 'item.id');
-
   const uniqueItems = uniqBy(
     curYearSpends.map(({ item }) => item),
     'id',
-  ).filter(Boolean);
+  ).filter(Boolean) as any[];
 
-  const thisYearTotals = uniqueItems
+  const itemsWithTotal = uniqueItems
     .map((item) => ({
-      ...item!,
-      total: sumBy(curYearSpendsGroupedByItemId[item!.id], 'total'),
+      ...item,
+      total: sumBy(
+        curYearSpends.filter((spend) => spend.item?.id === item?.id),
+        'total',
+      ),
     }))
     .sort((a, b) => b.total - a.total)
     .map((item, idx) => ({ ...item, color: COLORS[idx] ?? OTHER_COLOR }));
 
-  return thisYearTotals;
+  return itemsWithTotal;
 };
 
-export const getChartDataByMonth = (spendingReport: SpendingsReport) => {
-  const { curYearSpends, prevYearSpends } = spendingReport;
+export const getChartDataByPeriod = (
+  type: 'day' | 'week' | 'month',
+  spendingsReport: SpendingsReport,
+) => {
+  const { curYearSpends, prevYearSpends } = spendingsReport;
 
-  return range(12).map((idx) => {
-    const month = idx + 1;
+  const periodRange = (() => {
+    switch (type) {
+      case 'day':
+        return 30;
+      default:
+        return 12;
+    }
+  })();
+
+  return range(periodRange).map((idx) => {
+    const milestone = (() => {
+      switch (type) {
+        case 'day':
+          return dayjs().subtract(idx, 'day').date() + 1;
+        case 'week':
+          return dayjs().day(1).subtract(idx, 'week').week() + 1;
+        default:
+          return idx + 1;
+      }
+    })();
 
     const uniqueItems = uniqBy(
       curYearSpends.map(({ item }) => item),
@@ -449,123 +471,39 @@ export const getChartDataByMonth = (spendingReport: SpendingsReport) => {
       .map((item) => ({
         ...item,
         total:
-          curYearSpends.find((spend) => spend.month === month && spend.item?.id === item?.id)
+          curYearSpends.find((spend) => spend[type] === milestone && spend.item?.id === item?.id)
             ?.total ?? 0,
       }))
       .sort((a, b) => b.total - a.total);
 
+    const itemsWithTotalGroupedById = groupBy(itemsWithTotal, 'id');
+
+    const thisYearTotalsGroupedByItem = getThisYearTotalsGroupedByItem(curYearSpends);
+
     return {
-      month,
+      [type]: milestone,
       thisYearTotal: sumBy(
-        curYearSpends.filter((spend) => spend.month === month),
+        curYearSpends.filter((spend) => spend[type] === milestone),
         'total',
       ),
       lastYearTotal: sumBy(
-        prevYearSpends.filter((spend) => spend.month === month),
+        prevYearSpends.filter((spend) => spend[type] === milestone),
         'total',
       ),
-      ...itemsWithTotal.slice(0, 10).reduce(
+      ...thisYearTotalsGroupedByItem.slice(0, 10).reduce(
         (acc, cur) => ({
           ...acc,
-          [cur!.id!]: cur.total,
+          [cur.id]: itemsWithTotalGroupedById[cur.id]?.[0]?.total ?? 0,
         }),
         {},
       ),
       // Others
-      '-1': sum(itemsWithTotal.slice(10).map((item) => item.total)),
-      items: [uniqueItems, { id: -1, name: 'Other' }].flat(),
+      '-1': sum(
+        thisYearTotalsGroupedByItem
+          .slice(10)
+          .map((item) => itemsWithTotalGroupedById[item.id]?.[0]?.total ?? 0),
+      ),
+      items: [itemsWithTotal, { id: -1, name: 'Other' }].flat(),
     };
   });
-};
-
-export const getChartDataByDay = (spendingReport: SpendingsReport) => {
-  const { curYearSpends, prevYearSpends } = spendingReport;
-
-  return range(30)
-    .reverse()
-    .map((idx) => {
-      const day = dayjs().subtract(idx, 'day').date() + 1;
-
-      const uniqueItems = uniqBy(
-        curYearSpends.map(({ item }) => item),
-        'id',
-      ).filter(Boolean);
-
-      const itemsWithTotal = uniqueItems
-        .map((item) => ({
-          ...item,
-          total:
-            curYearSpends.find((spend) => spend.day === day && spend.item?.id === item?.id)
-              ?.total ?? 0,
-        }))
-        .sort((a, b) => b.total - a.total);
-
-      return {
-        day,
-        thisYearTotal: sumBy(
-          curYearSpends.filter((spend) => spend.day === day),
-          'total',
-        ),
-        lastYearTotal: sumBy(
-          prevYearSpends.filter((spend) => spend.day === day),
-          'total',
-        ),
-        ...itemsWithTotal.slice(0, 10).reduce(
-          (acc, cur) => ({
-            ...acc,
-            [cur!.id!]: cur.total,
-          }),
-          {},
-        ),
-        // Others
-        '-1': sum(itemsWithTotal.slice(10).map((item) => item.total)),
-        items: [uniqueItems, { id: -1, name: 'Other' }].flat(),
-      };
-    });
-};
-
-export const getChartDataByWeek = (spendingReport: SpendingsReport) => {
-  const { curYearSpends, prevYearSpends } = spendingReport;
-
-  return range(12)
-    .reverse()
-    .map((idx) => {
-      const week = dayjs().day(1).subtract(idx, 'week').week() + 1;
-
-      const uniqueItems = uniqBy(
-        curYearSpends.map(({ item }) => item),
-        'id',
-      ).filter(Boolean);
-
-      const itemsWithTotal = uniqueItems
-        .map((item) => ({
-          ...item,
-          total:
-            curYearSpends.find((spend) => spend.week === week && spend.item?.id === item?.id)
-              ?.total ?? 0,
-        }))
-        .sort((a, b) => b.total - a.total);
-
-      return {
-        week,
-        thisYearTotal: sumBy(
-          curYearSpends.filter((spend) => spend.week === week),
-          'total',
-        ),
-        lastYearTotal: sumBy(
-          prevYearSpends.filter((spend) => spend.week === week),
-          'total',
-        ),
-        ...itemsWithTotal.slice(0, 10).reduce(
-          (acc, cur) => ({
-            ...acc,
-            [cur!.id!]: cur.total,
-          }),
-          {},
-        ),
-        // Others
-        '-1': sum(itemsWithTotal.slice(10).map((item) => item.total)),
-        items: [uniqueItems, { id: -1, name: 'Other' }].flat(),
-      };
-    });
 };
