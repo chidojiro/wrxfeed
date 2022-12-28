@@ -213,7 +213,7 @@ export const InsightCard = ({
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
         showLoadMoreButton={transactions.length % 10 === 0}
-        insightView
+        showTimeRangeSelect
       />
       {feed ? (
         <CommentsSection feed={feed} />
