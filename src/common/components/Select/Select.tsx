@@ -38,7 +38,7 @@ export const Select = React.forwardRef<HTMLInputElement, SelectProps>(
     const selectedOption = options.find((option) => option.value === value) ?? options[0];
 
     return (
-      <Menu as="div" className="relative inline-block text-left">
+      <Menu as="div" className="relative inline-block text-left flex-shrink-0">
         <input name={name} className="minimized" ref={ref} />
         <div>
           <Menu.Button
