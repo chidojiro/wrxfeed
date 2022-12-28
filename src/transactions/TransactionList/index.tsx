@@ -27,8 +27,9 @@ import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TimeRange } from '../../team/types';
-import { TimeRangeSelect } from '../../team/TimeRangeSelect';
+import { TimeRangeSelect } from '@/team/TimeRangeSelect';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
+import { DateRangeFilter } from '@/feed/types';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
@@ -58,12 +59,16 @@ type TransactionListProps = ClassName & {
   defaultExpand?: boolean;
   loading: boolean;
   hiddenColumns?: ('vendorName' | 'depName' | 'categoryName')[];
-  timeRange: TimeRange;
-  onTimeRangeChange: (timeRange: TimeRange) => void;
+  dateRange?: DateRangeFilter;
+  onDateRangeChange?: (dateRange: DateRangeFilter) => void;
   sort: string;
   onSortChange: (sort: string, method?: RedirectMethod) => void;
   showLoadMoreButton?: boolean;
-  showTimeRangeSelect?: boolean;
+  showDateRangeSelect?: boolean;
+  page?: number;
+  onPageChange?: (page: number) => void;
+  totalCount?: number;
+  renderTitle?: (isExpanded: boolean, isEmpty?: boolean) => React.ReactNode;
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
@@ -76,9 +81,12 @@ export const TransactionList = ({
   onSortChange,
   defaultExpand = true,
   onLoad,
-  timeRange,
-  onTimeRangeChange,
-  showTimeRangeSelect,
+  dateRange,
+  onDateRangeChange,
+  page,
+  onPageChange,
+  totalCount,
+  renderTitle,
 }: TransactionListProps) => {
   const {
     isLineItemDrawerOpen,
@@ -187,6 +195,9 @@ export const TransactionList = ({
           <LoopBoldIcon />
           <span>No Transactions</span>
         </Button>
+        {dateRange && onDateRangeChange && (
+          <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
+        )}
       </div>
     );
 
@@ -209,7 +220,7 @@ export const TransactionList = ({
               >
                 <Table.Body>
                   <Table.Row>
-                    <Table.Cell colSpan={7}>
+                    <Table.Cell colSpan={headers.length}>
                       <div
                         className={clsx(
                           'bg-white py-2 px-4 text-base',
@@ -223,8 +234,8 @@ export const TransactionList = ({
                           <LoopBoldIcon />
                           <span>Hide Transactions</span>
                         </Button>
-                        {showTimeRangeSelect && (
-                          <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
+                        {dateRange && onDateRangeChange && (
+                          <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
                         )}
                       </div>
                     </Table.Cell>
@@ -419,10 +430,20 @@ export const TransactionList = ({
             )}
             onClick={() => setListOpen(true)}
           >
-            <LoopBoldIcon />
-            <span>View Transactions</span>
+            <Button
+              className={clsx(
+                'flex items-center gap-2',
+                'font-semibold text-Gray-3 bg-white w-full py-2 px-4',
+              )}
+              onClick={() => setListOpen(true)}
+            >
+              <LoopBoldIcon />
+              <span>{renderTitle?.(false) ?? 'View Transactions'}</span>
+            </Button>
+            {dateRange && onDateRangeChange && (
+              <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
+            )}
           </Button>
-          <Divider />
         </>
       )}
     </>

@@ -11,7 +11,6 @@ import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
-import { TimeRange } from '@/team/types';
 import { TransactionList } from '@/transactions/TransactionList';
 import { Entities } from '@/types';
 import clsx from 'clsx';
@@ -82,11 +81,10 @@ export const InsightCard = ({
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState<string>(
     'sortTransactionsBy',
     DEFAULT_SORT,
   );
-  const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
   const [page, setPage] = useState<number>(1);
 
   const { mentions } = useMentions();
@@ -203,17 +201,14 @@ export const InsightCard = ({
         </div>
       </div>
       <TransactionList
-        className="py-6 px-8"
+        className="my-6 mx-8"
         defaultExpand={false}
         onLoad={handleLoad as any}
         transactions={transactions}
         loading={isValidatingTransactions}
-        timeRange={timeRange}
-        onTimeRangeChange={setTimeRange}
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
         showLoadMoreButton={transactions.length % 10 === 0}
-        showTimeRangeSelect
       />
       {feed ? (
         <CommentsSection feed={feed} />

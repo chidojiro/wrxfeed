@@ -1,6 +1,7 @@
 import { CategoryIcon } from '@/assets';
 import { HiddenItem } from '@/auth/HiddenItem';
 import { EmptyState } from '@/common/components/EmptyState';
+import { DateRangeFilter } from '@/feed/types';
 import { TopCategories as TTopCategories } from '@/main/entity';
 import { useRestrictedItems } from '@/role/useRestrictedItems';
 import clsx from 'clsx';
@@ -8,7 +9,6 @@ import { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Cell, Pie, PieChart, Tooltip } from 'recharts';
 import { TimeRangeSelect } from '../TimeRangeSelect';
-import { TimeRange } from '../types';
 import PieActiveShape from './PieActiveShape';
 import TopCategoriesChartTooltip from './TopCategoriesChartTooltip';
 
@@ -23,14 +23,14 @@ export type CategoryPieCell = {
 };
 
 type TopCategoriesProps = {
-  timeRange: TimeRange;
-  onTimeRangeChange: (value: TimeRange) => void;
+  dateRange: DateRangeFilter;
+  onDateRangeChange: (value: DateRangeFilter) => void;
   topCategories: TTopCategories[];
 };
 
 export const TopCategories = ({
-  timeRange,
-  onTimeRangeChange,
+  dateRange,
+  onDateRangeChange,
   topCategories,
 }: TopCategoriesProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -93,7 +93,7 @@ export const TopCategories = ({
           <CategoryIcon />
           Top Categories
         </div>
-        <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
+        <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
       </div>
       {chartData.length === 0 ? (
         <div className="flex flex-1 p-6">

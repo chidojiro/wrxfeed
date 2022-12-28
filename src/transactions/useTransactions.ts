@@ -1,10 +1,10 @@
 import { EMPTY_ARRAY } from '@/common/constants';
 import { useFetcher } from '@/common/hooks';
 import { FeedApis } from '@/feed/apis';
-import { GetLineItemsParams } from '@/feed/types';
+import { GetLineItemsPayload } from '@/feed/types';
 import React from 'react';
 
-export const useTransactions = (params: GetLineItemsParams) => {
+export const useTransactions = (params: GetLineItemsPayload) => {
   const { data, isInitializing, isValidating, mutate } = useFetcher(
     ['transactions', params],
     () => FeedApis.getLineItems(params),

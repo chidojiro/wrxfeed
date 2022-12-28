@@ -4,6 +4,7 @@ import { OverlayLoader, Select } from '@/common/components';
 import { useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
+import { DateRangeFilter } from '@/feed/types';
 import { useLineItems } from '@/feed/useLineItems';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
@@ -11,9 +12,7 @@ import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
-import { TimeRange } from '@/team/types';
 import { TransactionList } from '@/transactions/TransactionList';
-import dayjs from 'dayjs';
 import { range, sumBy } from 'lodash-es';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -23,15 +22,14 @@ import { useCategory } from './useCategory';
 import { useCategorySpendingsReport } from './useCategorySpendingsReport';
 
 const TRANSACTIONS_PER_PAGE = 10;
-const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const CategoryPage = () => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState<string>(
     'sortTransactionsBy',
     DEFAULT_SORT,
   );
-  const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
+  const [dateRange, setDateRange] = useUrlState<DateRangeFilter>('dateRange', '30-days');
 
   const { categoryId: categoryIdParam } = useParams() as Record<string, string>;
   const categoryId = +categoryIdParam;
@@ -52,27 +50,16 @@ export const CategoryPage = () => {
 
   const [page, setPage] = useState<number>(1);
 
-  const getFromDate = () => {
-    if (!timeRange || timeRange === 'last-30-days') {
-      return dayjs().subtract(30, 'days').format(DATE_FORMAT);
-    }
-
-    if (timeRange === 'last-90-days') return dayjs().subtract(90, 'days').format(DATE_FORMAT);
-
-    return dayjs().date(1).month(1).format(DATE_FORMAT);
-  };
-
-  const getToDate = () => dayjs().format(DATE_FORMAT);
-
-  const { lineItems: transactions, isValidatingLineItems: isValidatingTransactions } = useLineItems(
-    {
-      catId: categoryId,
-      ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
-      limit: TRANSACTIONS_PER_PAGE * page,
-      from: getFromDate(),
-      to: getToDate(),
-    },
-  );
+  const {
+    lineItems: transactions,
+    isValidatingLineItems: isValidatingTransactions,
+    totalLineItemsCount,
+  } = useLineItems({
+    props: [{ id: categoryId, type: 'CATEGORY', name: '', exclude: false }],
+    limit: TRANSACTIONS_PER_PAGE * page,
+    dateRange: dateRange,
+    ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
+  });
 
   const handleLoad = async () => {
     setPage(page + 1);
@@ -174,8 +161,8 @@ export const CategoryPage = () => {
         transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['categoryName']}
-        timeRange={timeRange}
-        onTimeRangeChange={setTimeRange}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
       />

@@ -3,7 +3,7 @@ import { RedirectMethod, useQuery } from './useQuery';
 
 export const useUrlState = <T extends string>(
   paramKey: string,
-  fallbackParam?: string,
+  fallbackParam?: T,
 ): [T, (value: T, method?: RedirectMethod) => void] => {
   const query = useQuery();
 

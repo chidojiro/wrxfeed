@@ -42,13 +42,12 @@ export type GetTransactionTableItemsParams = PaginationParams &
     groupBy: string;
   };
 
-export type GetLineItemsParams = PaginationParams &
+export type GetLineItemsPayload = PaginationParams &
   SortByParams & {
-    depId?: number;
-    catId?: number;
-    vendId?: number;
-    from: string;
-    to: string;
+    props: Property[];
+    dateRange: DateRangeFilter;
+    transIds?: number[];
+    docNum?: string;
   };
 
 export type FeedType = 'target' | 'rollup' | 'transaction';

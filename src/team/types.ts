@@ -8,8 +8,6 @@ export type GetDepartmentsParams = PaginationParams & {
   includeSub?: boolean;
 };
 
-export type TimeRange = 'last-30-days' | 'last-90-days' | 'year-to-date';
-
 export type GetTopCategoriesParams = {
   from?: string;
   to?: string;

@@ -4,6 +4,7 @@ import { OverlayLoader, Select } from '@/common/components';
 import { useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
+import { DateRangeFilter } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
@@ -11,11 +12,9 @@ import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLege
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
-import { TimeRange } from '@/team/types';
 import { useTransactions } from '@/transactions/useTransactions';
-import dayjs from 'dayjs';
 import { range, sumBy } from 'lodash-es';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GetVendorSpendingsParams } from './types';
 import { useVendor } from './useVendor';
@@ -23,15 +22,14 @@ import { useVendorSpendings } from './useVendorSpendings';
 import { VendorHeader } from './VendorHeader';
 
 const TRANSACTIONS_PER_PAGE = 10;
-const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const VendorPage = () => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState(
+  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState<string>(
     'sortTransactionsBy',
     DEFAULT_SORT,
   );
-  const [timeRange, setTimeRange] = useUrlState<TimeRange>('timeRange');
+  const [dateRange, setDateRange] = useUrlState<DateRangeFilter>('dateRange');
   const [groupBy, setGroupBy] = React.useState<GetVendorSpendingsParams['groupBy']>(undefined);
 
   const { vendorId: vendorIdParam } = useParams() as Record<string, string>;
@@ -53,25 +51,12 @@ export const VendorPage = () => {
     groupBy,
   });
 
-  const getFromDate = () => {
-    if (!timeRange || timeRange === 'last-30-days') {
-      return dayjs().subtract(30, 'days').format(DATE_FORMAT);
-    }
-
-    if (timeRange === 'last-90-days') return dayjs().subtract(90, 'days').format(DATE_FORMAT);
-
-    return dayjs().date(1).month(1).format(DATE_FORMAT);
-  };
-
-  const getToDate = () => dayjs().format(DATE_FORMAT);
-
   const { transactions, isValidatingTransactions } = useTransactions({
-    vendId: vendorId,
+    props: [{ id: vendorId, type: 'VENDOR', name: '', exclude: false }],
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
     offset: (page - 1) * TRANSACTIONS_PER_PAGE,
     limit: TRANSACTIONS_PER_PAGE,
-    from: getFromDate(),
-    to: getToDate(),
+    dateRange,
   });
 
   const handleLoad = async () => {
@@ -174,8 +159,8 @@ export const VendorPage = () => {
         transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['vendorName']}
-        timeRange={timeRange}
-        onTimeRangeChange={setTimeRange}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
       />

@@ -13,6 +13,7 @@ import {
   GetFeedCommentsParams,
   GetFeedsParams,
   GetFeedSpendingParams,
+  GetLineItemsPayload,
   GetTransactionsParams,
   UpdateCommentPayload,
 } from './types';
@@ -81,7 +82,7 @@ const deleteComment = (id: number) => RestApis.delete(`/feed/comments/${id}`);
 
 const getLineItem = (id: number) => RestApis.get<TransLineItem>(`/feed/line-items/${id}`);
 
-const getLineItems = (payload: any) =>
+const getLineItems = (payload: GetLineItemsPayload) =>
   RestApis.post<AxiosResponse<any[]>>(`/feed/line-items`, withDefaultPaginationParams(payload), {
     headers: BYPASS_INTERCEPTOR_HEADER,
   }).then(({ data, headers }) => ({
