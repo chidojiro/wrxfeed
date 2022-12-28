@@ -1,24 +1,24 @@
+import { TeamIcon, VendorIcon } from '@/assets';
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, Select } from '@/common/components';
 import { useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
+import { useLineItems } from '@/feed/useLineItems';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
-import { TransactionList } from '@/transactions/TransactionList';
 import { TimeRange } from '@/team/types';
-import { useTransactions } from '@/transactions/useTransactions';
+import { TransactionList } from '@/transactions/TransactionList';
 import dayjs from 'dayjs';
 import { range, sumBy } from 'lodash-es';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CategoryHeader } from './CategoryHeader';
+import { GetCategorySpendingsParams } from './types';
 import { useCategory } from './useCategory';
 import { useCategorySpendingsReport } from './useCategorySpendingsReport';
-import { useEffect, useState } from 'react';
-import { TeamIcon, VendorIcon } from '@/assets';
-import { GetCategorySpendingsParams } from './types';
 
 const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -59,13 +59,15 @@ export const CategoryPage = () => {
 
   const getToDate = () => dayjs().format(DATE_FORMAT);
 
-  const { transactions, isValidatingTransactions } = useTransactions({
-    catId: categoryId,
-    ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
-    limit: TRANSACTIONS_PER_PAGE * page,
-    from: getFromDate(),
-    to: getToDate(),
-  });
+  const { lineItems: transactions, isValidatingLineItems: isValidatingTransactions } = useLineItems(
+    {
+      catId: categoryId,
+      ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
+      limit: TRANSACTIONS_PER_PAGE * page,
+      from: getFromDate(),
+      to: getToDate(),
+    },
+  );
 
   const handleLoad = async () => {
     setPage(page + 1);

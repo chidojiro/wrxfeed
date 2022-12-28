@@ -63,7 +63,7 @@ type TransactionListProps = ClassName & {
   sort: string;
   onSortChange: (sort: string, method?: RedirectMethod) => void;
   showLoadMoreButton?: boolean;
-  insightView?: boolean;
+  showTimeRangeSelect?: boolean;
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
@@ -78,7 +78,7 @@ export const TransactionList = ({
   onLoad,
   timeRange,
   onTimeRangeChange,
-  insightView,
+  showTimeRangeSelect,
 }: TransactionListProps) => {
   const {
     isLineItemDrawerOpen,
@@ -164,6 +164,32 @@ export const TransactionList = ({
     return false;
   };
 
+  if (!transactions.length)
+    return (
+      <div
+        className={clsx(
+          'bg-white py-2 px-4 text-base',
+          'flex items-center justify-between rounded-card',
+          className,
+        )}
+        style={{
+          filter:
+            'drop-shadow(0px 3px 5px rgba(9, 30, 66, 0.05)) drop-shadow(-1px 6px 8px rgba(6, 25, 56, 0.03))',
+        }}
+      >
+        <Button
+          className={clsx(
+            'flex items-center gap-2',
+            'font-semibold text-Gray-6 bg-white w-full py-2 px-4',
+          )}
+          onClick={() => setListOpen(true)}
+        >
+          <LoopBoldIcon />
+          <span>No Transactions</span>
+        </Button>
+      </div>
+    );
+
   return (
     <>
       {listOpen ? (
@@ -197,7 +223,7 @@ export const TransactionList = ({
                           <LoopBoldIcon />
                           <span>Hide Transactions</span>
                         </Button>
-                        {!insightView && (
+                        {showTimeRangeSelect && (
                           <TimeRangeSelect value={timeRange} onChange={onTimeRangeChange} />
                         )}
                       </div>
