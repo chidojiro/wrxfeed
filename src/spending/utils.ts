@@ -194,39 +194,42 @@ export const getMonthsLineChartData = (
   const startMonth = availableTargets[0]?.month ?? 1;
   const endMonth = availableTargets[availableTargets.length - 1]?.month ?? 12;
 
-  let chartData: ChartDataPoint[] = months.reduce<ChartDataPoint[]>((preVal, monthData, index) => {
-    // Out of month range
-    if (monthData.month < startMonth || monthData.month > endMonth) {
-      return preVal;
-    }
-    const month = dayjs().month(index).format(monthFormat);
-    // Calculate cumulative values
-    cumulativeThisYear += round(
-      thisYearSorted.find(({ month }) => month === monthData.month)?.total ?? 0,
-      2,
-    );
-    cumulativeLastYear += round(
-      lastYearSorted.find(({ month }) => month === monthData.month)?.total ?? 0,
-      2,
-    );
-    cumulativeTarget += round(monthData?.amount ?? 0, 2);
+  let chartData: ChartDataPoint[] = months.reduce<ChartDataPoint[]>(
+    (preVal, monthData, index) => {
+      // Out of month range
+      if (monthData.month < startMonth || monthData.month > endMonth) {
+        return preVal;
+      }
+      const month = dayjs().month(index).format(monthFormat);
+      // Calculate cumulative values
+      cumulativeThisYear += round(
+        thisYearSorted.find(({ month }) => month === monthData.month)?.total ?? 0,
+        2,
+      );
+      cumulativeLastYear += round(
+        lastYearSorted.find(({ month }) => month === monthData.month)?.total ?? 0,
+        2,
+      );
+      cumulativeTarget += round(monthData?.amount ?? 0, 2);
 
-    // Generate data point
-    const dataPoint =
-      index > thisMonth
-        ? {
-            name: month,
-            lastYear: cumulativeLastYear,
-            target: cumulativeTarget,
-          }
-        : {
-            name: month,
-            thisYear: cumulativeThisYear,
-            lastYear: cumulativeLastYear,
-            target: cumulativeTarget,
-          };
-    return [...preVal, dataPoint];
-  }, []);
+      // Generate data point
+      const dataPoint =
+        index > thisMonth
+          ? {
+              name: month,
+              lastYear: cumulativeLastYear,
+              target: cumulativeTarget,
+            }
+          : {
+              name: month,
+              thisYear: cumulativeThisYear,
+              lastYear: cumulativeLastYear,
+              target: cumulativeTarget,
+            };
+      return [...preVal, dataPoint];
+    },
+    [{ name: '', lastYear: 0, thisYear: 0, target: 0 }],
+  );
 
   // Duplicate data point to draw a line if there is one data point
   if (chartData.length === 1) {
