@@ -1,5 +1,5 @@
 import { INITIAL_CHART_DATA } from '@/common/constants';
-import { AssertUtils, round } from '@/common/utils';
+import { AssertUtils, DateUtils, round } from '@/common/utils';
 import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType } from '@/main/utils';
 import { TargetMonth, TargetPeriod, TargetSpending, TargetStatusConfig } from '@/target/types';
@@ -22,10 +22,10 @@ const getYearSpending = (spendings: TargetSpending[], year: number) =>
   spendings?.filter((cur) => cur.year === year).reduce((acc, { total }) => total + acc, 0) ?? 0;
 
 export const getThisYearSpending = (spendings: TargetSpending[]) =>
-  getYearSpending(spendings, new Date().getFullYear());
+  getYearSpending(spendings, DateUtils.getThisYear());
 
 export const getLastYearSpending = (spendings: TargetSpending[]) =>
-  getYearSpending(spendings, new Date().getFullYear() - 1);
+  getYearSpending(spendings, DateUtils.getThisYear() - 1);
 
 export const getLineChartDataInMonth = (
   data: SpendingChartData,
@@ -173,9 +173,9 @@ export const getMonthsLineChartData = (
   let cumulativeTarget = 0;
 
   const thisYearSpendings =
-    spendings?.filter((item) => item.year === new Date().getFullYear()) ?? [];
+    spendings?.filter((item) => item.year === DateUtils.getThisYear()) ?? [];
   const lastYearSpendings =
-    spendings?.filter((item) => item.year === new Date().getFullYear() - 1) ?? [];
+    spendings?.filter((item) => item.year === DateUtils.getThisYear() - 1) ?? [];
 
   const thisYearSorted = thisYearSpendings?.sort((a, b) => (a?.month ?? 0) - (b?.month ?? 0));
   const lastYearSorted = range(0, 12).map((monthIdx) => {
@@ -330,7 +330,7 @@ export const getSpendingByYear = (
       lastYear: [],
     };
   }
-  const THIS_YEAR = new Date().getFullYear();
+  const THIS_YEAR = DateUtils.getThisYear();
   const thisYear = spendings?.filter((item: TargetSpending) => {
     if (item.year === THIS_YEAR) {
       return {
@@ -363,7 +363,7 @@ export const isEmptyPeriods = (periods: TargetPeriod[]) =>
 export const getCurrentSpendings = (
   spendings: Spending[],
   periods: TargetPeriod[],
-  year = new Date().getFullYear(),
+  year = DateUtils.getThisYear(),
 ) => {
   const yearSpendingsGroupedByMonth = groupBy(
     spendings.filter((spending) => spending.year === year),

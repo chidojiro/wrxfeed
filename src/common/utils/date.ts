@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { IS_DEMO } from '../constants';
 
 const format = (date: Date | string, formatPattern = 'MM/DD/YY') => {
   try {
@@ -8,6 +9,10 @@ const format = (date: Date | string, formatPattern = 'MM/DD/YY') => {
   }
 };
 
+// TEMPORARY
+const getThisYear = () => (IS_DEMO ? 2022 : 2023);
+
 export const DateUtils = {
   format,
+  getThisYear,
 };

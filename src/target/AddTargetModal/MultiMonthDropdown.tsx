@@ -4,7 +4,7 @@ import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right
 import Loading from '@/common/atoms/Loading';
 import { Button, Popover } from '@/common/components';
 import { defaultTargetMonths, monthsInYear } from '@/common/constants';
-import { formatCurrency, round } from '@/common/utils';
+import { DateUtils, formatCurrency, round } from '@/common/utils';
 import MonthTargetInput from '@/main/atoms/MonthTargetInput';
 import { TargetMonth, TargetPeriod, TargetProps } from '@/target/types';
 import { useDisclosure } from '@dwarvesf/react-hooks';
@@ -64,7 +64,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
   const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
   const [targetMonthValues, setTargetMonthValues] = useState<TargetMonth[]>(defaultTargetMonths);
   // Variables
-  const curYear = new Date().getFullYear();
+  const curYear = DateUtils.getThisYear();
   const minMonth = selectedMonths.length ? Math.min(...selectedMonths) : 0;
   const maxMonth = selectedMonths.length ? Math.max(...selectedMonths) : 0;
   const totalAmount = round(

@@ -31,6 +31,7 @@ import { Match } from 'linkify-it';
 import { cloneDeep } from 'lodash-es';
 import numeral from 'numeral';
 import React from 'react';
+import { DateUtils } from '@/common/utils';
 
 const UserIdRegex = /(userid|depid)="([a-zA-Z0-9]+)"/gi;
 const TagNameRegex = /tagname="([\w\d\s!@#$%^&*()_+\-=[\]{};:\\|,.?]+)"/gi;
@@ -525,7 +526,7 @@ export const getTargetPeriodsAmountTotal = (
   currentSpend: number;
 } => {
   const curMonth = new Date().getMonth() + 1;
-  const curYear = new Date().getFullYear();
+  const curYear = DateUtils.getThisYear();
   const { overallTarget, targetToDate } = target?.periods.reduce(
     (sum, targetPeriod) => {
       if (targetPeriod.year === curYear) {

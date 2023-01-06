@@ -1,3 +1,4 @@
+import { DateUtils } from '@/common/utils';
 import { Category } from '@/main/entity';
 import { RestApis } from '@/rest/apis';
 import { withDefaultPaginationParams } from '@/rest/utils';
@@ -6,7 +7,7 @@ import { GetCategoriesParams, GetCategorySpendingsParams } from './types';
 
 const getSpendingsReport = (id: number, params?: GetCategorySpendingsParams) =>
   RestApis.get<SpendingsReport>(`feed/categories/${id}/spends`, {
-    params: { ...params, year: params?.year ?? new Date().getFullYear() },
+    params: { ...params, year: params?.year ?? DateUtils.getThisYear() },
   });
 
 const get = (id: number) => RestApis.get<Category>(`/feed/categories/${id}`);

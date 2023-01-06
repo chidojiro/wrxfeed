@@ -1,4 +1,4 @@
-import { AssertUtils } from '@/common/utils';
+import { AssertUtils, DateUtils } from '@/common/utils';
 import { groupBy } from 'lodash-es';
 import { TargetPeriod } from './types';
 
@@ -10,7 +10,7 @@ export const getFullYearPeriods = (periods: TargetPeriod[] = []) => {
 
     const { year, amount, threshold } = periodsGroupedByMonth[currentMonth]?.[0] ?? {};
 
-    const thisYear = new Date().getFullYear();
+    const thisYear = DateUtils.getThisYear();
 
     return {
       month: currentMonth,

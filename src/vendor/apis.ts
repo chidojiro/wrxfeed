@@ -1,3 +1,4 @@
+import { DateUtils } from '@/common/utils';
 import { RestApis } from '@/rest/apis';
 import { withDefaultPaginationParams } from '@/rest/utils';
 import { SpendingsReport } from '@/spending/types';
@@ -15,7 +16,7 @@ const update = (id: number, payload: UpdateVendorPayload) =>
 
 const getSpendings = (id: number, params?: GetVendorSpendingsParams) =>
   RestApis.get<SpendingsReport>(`feed/vendors/${id}/spends`, {
-    params: { ...params, year: params?.year ?? new Date().getFullYear() },
+    params: { ...params, year: params?.year ?? DateUtils.getThisYear() },
   });
 
 export const VendorApis = { get, getList, update, getSpendings };

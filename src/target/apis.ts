@@ -1,3 +1,4 @@
+import { DateUtils } from '@/common/utils';
 import { RestApis } from '@/rest/apis';
 import { BYPASS_INTERCEPTOR_HEADER } from '@/rest/constants';
 import { AxiosResponse } from 'axios';
@@ -15,7 +16,7 @@ import { getFullYearPeriods } from './utils';
 const getListEndpoint = () => '/target/targets';
 const getList = ({
   mode = 'company',
-  year = new Date().getFullYear(),
+  year = DateUtils.getThisYear(),
   isPrimary = 0,
   type = 'normal',
   ...restParams

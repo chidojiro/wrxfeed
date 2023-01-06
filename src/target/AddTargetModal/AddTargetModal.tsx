@@ -8,7 +8,7 @@ import { Button, Form, OverlayLoader } from '@/common/components';
 import { defaultTargetMonths, EMPTY_ARRAY } from '@/common/constants';
 import { withMountOnOpen } from '@/common/hocs';
 import { useFetcher, useHandler } from '@/common/hooks';
-import { formatCurrency, round } from '@/common/utils';
+import { DateUtils, formatCurrency, round } from '@/common/utils';
 import { genReviewSentenceFromProperties, getPeriodsFromTargetMonths } from '@/main/utils';
 import { SpendingChart } from '@/spending/SpendingChart';
 import { getCurrentSpendings } from '@/spending/utils';
@@ -60,7 +60,7 @@ export type AddTargetModalProps =
   | AddTargetModalWithDefaultApisProps
   | AddTargetModalWithoutDefaultApisProps;
 
-const THIS_YEAR = new Date().getFullYear();
+const THIS_YEAR = DateUtils.getThisYear();
 
 const getPropFromTagValue = (value: string) => {
   const [type, id, name] = value.split('-');
@@ -385,7 +385,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
                   periods={periods}
                   year={THIS_YEAR}
                   lastYearData={
-                    periods.filter((item) => item.year === new Date().getFullYear() - 1) ?? []
+                    periods.filter((item) => item.year === DateUtils.getThisYear() - 1) ?? []
                   }
                   onApply={(data) => {
                     setValue('periods', getPeriodsFromTargetMonths(data, THIS_YEAR), {

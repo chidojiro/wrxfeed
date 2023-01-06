@@ -21,3 +21,5 @@ export const EMPTY_AMOUNT = '--';
 // Needed as fallback value in cases it's a dependency of a hook
 // The intention is to prevent unnecessary rerenders, or even infinite rerenders
 export const EMPTY_ARRAY = [];
+
+export const IS_DEMO = !!process.env.REACT_IS_DEMO;
