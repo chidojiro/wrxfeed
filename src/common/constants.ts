@@ -22,4 +22,4 @@ export const EMPTY_AMOUNT = '--';
 // The intention is to prevent unnecessary rerenders, or even infinite rerenders
 export const EMPTY_ARRAY = [];
 
-export const IS_DEMO = !!process.env.REACT_IS_DEMO;
+export const IS_DEMO = !!process.env.REACT_APP_IS_DEMO;
