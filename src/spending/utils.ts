@@ -1,4 +1,4 @@
-import { INITIAL_CHART_DATA } from '@/common/constants';
+import { INITIAL_CHART_DATA, IS_DEMO } from '@/common/constants';
 import { AssertUtils, DateUtils, round } from '@/common/utils';
 import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType } from '@/main/utils';
@@ -17,6 +17,8 @@ const DATA_DATE_FORMAT = 'MMM DD';
 const BILLION = Math.pow(10, 9);
 const MILLION = Math.pow(10, 6);
 const THOUSAND = Math.pow(10, 3);
+
+const getThisMonth = () => (IS_DEMO ? 11 : dayjs().month());
 
 const getYearSpending = (spendings: TargetSpending[], year: number) =>
   spendings?.filter((cur) => cur.year === year).reduce((acc, { total }) => total + acc, 0) ?? 0;
@@ -37,7 +39,7 @@ export const getLineChartDataInMonth = (
   const overallTarget = !trackingStatus || isEmptyPeriods(periods);
 
   const targetDate = dayjs().set('month', targetMonth.month - 1);
-  const isThisMonth = dayjs().month() === targetMonth.month - 1;
+  const isThisMonth = getThisMonth() === targetMonth.month - 1;
 
   const totalThisYear = getThisYearSpending(spendings ?? []);
   const totalLastYear = getLastYearSpending(spendings ?? []);
@@ -167,7 +169,7 @@ export const getMonthsLineChartData = (
   const overallTarget = !trackingStatus || isEmptyPeriods(periods);
 
   const monthFormat = 'MMM';
-  const thisMonth = dayjs().month();
+  const thisMonth = getThisMonth();
   let cumulativeThisYear = 0;
   let cumulativeLastYear = 0;
   let cumulativeTarget = 0;
