@@ -1,12 +1,12 @@
 import { AuthUtils } from '@/auth/utils';
-import { API_BASE_URL, IS_TEST } from '@/env';
+import { IS_TEST } from '@/env';
 import { ApiErrorCode } from '@/error';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { ApiError } from './../error/types';
 import { BYPASS_INTERCEPTOR_HEADER_KEY } from './constants';
 
 const myAxios = axios.create({
-  baseURL: API_BASE_URL ?? '/api',
+  baseURL: '/api',
   withCredentials: false,
 });
 

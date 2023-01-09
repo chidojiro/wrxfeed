@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/api/*"
-  to = "API_PLACEHOLDER"
+  to = "REACT_APP_API_BASE_URL"
   status = 200
   force = true
 
