@@ -3,9 +3,9 @@ import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import mixpanel from 'mixpanel-browser';
 import App from './App';
-import { BUILD_ENV, MIX_PANEL_PROJECT_TOKEN } from '@/config';
 import { render } from 'react-dom';
 import { SWRConfig } from 'swr';
+import { BUILD_ENV, MIX_PANEL_PROJECT_TOKEN } from './env';
 
 Sentry.init({
   dsn: 'https://251baec1d78d4edca442c555ed6da304@o1090039.ingest.sentry.io/6105739',

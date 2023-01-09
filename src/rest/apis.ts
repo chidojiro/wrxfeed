@@ -1,5 +1,5 @@
 import { AuthUtils } from '@/auth/utils';
-import { API_BASE_URL, IS_TEST } from '@/config';
+import { API_BASE_URL, IS_TEST } from '@/env';
 import { ApiErrorCode } from '@/error';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { ApiError } from './../error/types';

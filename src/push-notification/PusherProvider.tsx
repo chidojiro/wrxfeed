@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import Pusher from 'pusher-js';
 import PusherContext from './PusherContext';
-import { PUSHER_APP_KEY, PUSHER_APP_CLUSTER } from '@/config';
 import { Children } from '@/common/types';
+import { PUSHER_APP_CLUSTER, PUSHER_APP_KEY } from '@/env';
 
 export const PusherProvider: React.FC<Children> = ({ children }) => {
   const pusherRef = useRef<Pusher>(
