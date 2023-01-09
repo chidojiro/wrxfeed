@@ -1,13 +1,18 @@
 module.exports = {
-  root: true, // ESLint will stop looking in parent folders once it finds a configuration with "root": true.
-  parser: '@typescript-eslint/parser', // Specifies the ESLint parser
+  root: true,
+  // ESLint will stop looking in parent folders once it finds a configuration with "root": true.
+  parser: '@typescript-eslint/parser',
+  // Specifies the ESLint parser
   parserOptions: {
-    ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
-    sourceType: 'module', // Allows for the use of imports
+    ecmaVersion: 2020,
+    // Allows for the parsing of modern ECMAScript features
+    sourceType: 'module',
+    // Allows for the use of imports
     ecmaFeatures: {
       jsx: true, // Allows for the parsing of JSX
     },
   },
+
   plugins: ['@typescript-eslint', 'react', 'react-hooks', 'import', 'jsx-a11y', 'jest', 'prettier'],
   env: {
     browser: true,
@@ -15,10 +20,11 @@ module.exports = {
     'jest/globals': true,
   },
   extends: [
-    'plugin:react/recommended', // Uses the recommended rules from @eslint-plugin-react
-    'plugin:@typescript-eslint/recommended', // Uses the recommended rules from @typescript-eslint/eslint-plugin
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
     'plugin:jest/recommended',
-    'plugin:prettier/recommended', // Enables eslint-plugin-prettier and eslint-config-prettier. This will display prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+    'plugin:prettier/recommended',
+    'plugin:storybook/recommended',
   ],
   overrides: [
     {
@@ -48,14 +54,11 @@ module.exports = {
       rules: {
         'react/prop-types': 'off',
         'import/no-cycle': 'error',
-
         // Disable `no-undef` rule within TypeScript files because it incorrectly errors when exporting default interfaces
         // https://github.com/iamturns/eslint-config-airbnb-typescript/issues/50
         // This will be caught by TypeScript compiler if `strictNullChecks` (or `strict`) is enabled
         'no-undef': 'off',
-
         '@typescript-eslint/no-empty-function': 'off',
-
         /* Using TypeScript makes it safe enough to disable the checks below */
 
         // Disable ESLint-based module resolution check for improved monorepo support
@@ -89,14 +92,16 @@ module.exports = {
         format: ['PascalCase'],
       },
     ],
-
     'react/react-in-jsx-scope': 'off',
     'react/no-unescaped-entities': 'off',
-
     // Append 'tsx' to Airbnb 'react/jsx-filename-extension' rule
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-filename-extension.md
-    'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],
-
+    'react/jsx-filename-extension': [
+      'error',
+      {
+        extensions: ['.jsx', '.tsx'],
+      },
+    ],
     'react-hooks/exhaustive-deps': [
       'warn',
       {

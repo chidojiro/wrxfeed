@@ -48,6 +48,8 @@ export const Checkbox = ({
     if (partial) {
       return <MinusIcon />;
     }
+
+    return null;
   };
 
   return (

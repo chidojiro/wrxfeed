@@ -28,7 +28,9 @@ const Button = ({
   children: (props: { isOpen: boolean }) => React.ReactNode;
 }) => {
   const { open, internalDisclosure } = useAccordionContext();
+
   const isOpen = open ?? internalDisclosure.isOpen;
+
   return (
     <BaseButton
       className={className}
