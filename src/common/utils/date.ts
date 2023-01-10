@@ -1,5 +1,5 @@
+import { IS_DEMO } from '@/env';
 import dayjs from 'dayjs';
-import { IS_DEMO } from '../constants';
 
 const format = (date: Date | string, formatPattern = 'MM/DD/YY') => {
   try {

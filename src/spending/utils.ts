@@ -1,4 +1,4 @@
-import { INITIAL_CHART_DATA, IS_DEMO } from '@/common/constants';
+import { INITIAL_CHART_DATA } from '@/common/constants';
 import { AssertUtils, DateUtils, round } from '@/common/utils';
 import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType } from '@/main/utils';
@@ -8,6 +8,7 @@ import { groupBy, range, sum, sumBy, uniqBy } from 'lodash-es';
 import { SpendingChartData } from './SpendingChart';
 import { MonthData, Spending, SpendingsReport, TrackingStatus } from './types';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
+import { IS_DEMO } from '@/env';
 
 dayjs.extend(weekOfYear);
 
