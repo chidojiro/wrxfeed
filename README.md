@@ -2,13 +2,35 @@
 
 Web UI for Gravity.
 
-## Netlify deploy status
+## Environments
+
+**Dev**
+
+Website: http://dev.gravitylabs.co
+API endpoint: http://dev-api.gravitylabs.co/api
+API doc: http://dev-api.gravitylabs.co/api/doc
+Netlify: https://app.netlify.com/sites/gravity-dev/overview
 
 **Staging**
-[![Netlify Status](https://api.netlify.com/api/v1/badges/bf53b711-3921-47e7-b1c0-e53f9995e189/deploy-status)](https://app.netlify.com/sites/wrxfeed/deploys)
+
+Website: http://staging.gravitylabs.co
+API endpoint: http://staging-api.gravitylabs.co/api
+API doc: http://staging-api.gravitylabs.co/api/doc
+Netlify: https://app.netlify.com/sites/gravity-staging/overview
 
 **Production**
-[![Netlify Status](https://api.netlify.com/api/v1/badges/20904708-afb2-4f6d-ae97-975ad5f96c53/deploy-status)](https://app.netlify.com/sites/gravity-prod/deploys)
+
+Website: http://app.gravitylabs.co
+API endpoint: http://api.gravitylabs.co/api
+API doc: http://api.gravitylabs.co/api/doc
+Netlify: https://app.netlify.com/sites/gravity-prod/overview
+
+**Demo**
+
+Website: http://demo.gravitylabs.co
+API endpoint: http://demo-api.gravitylabs.co/api
+API doc: http://demo-api.gravitylabs.co/api/doc
+Netlify: https://app.netlify.com/sites/gravity-demo-app/overview
 
 ## Requirements
 
@@ -16,24 +38,25 @@ Web UI for Gravity.
 - [Yarn](https://yarnpkg.com/) package + [Node.js](https://nodejs.org/) v12.16 or newer
 - IDE: VSCode with [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) installed. Or any IDE that support ESLint integration.
 
-
 ## Running project locally
 
 ```sh
+yarn install
 cp .env.example .env
 yarn && yarn start
 ```
-
 
 ## Development Workflow
 
 This project use [GitHub flow](https://guides.github.com/introduction/flow/). The following table is the rule of branch name.
 
-| name | description |
-| :--- | :--- |
-| master | production branch, master branch is always deployable. |
-| feature/{name} | this branch is derived from master. use it when you develop a new function. |
-| fix/{name} | this branch is derived from a master branch. use it when you fix bug. |
+| name          | description                                                                               |
+| :------------ | :---------------------------------------------------------------------------------------- |
+| master        | production branch, master branch is always deployable.                                    |
+| develop       | develop branch, develop branch is always deployable.                                      |
+| staging       | staging branch, staging branch is always deployable.                                      |
+| feat/{name}   | this branch is derived from master. use it when you develop a new function.               |
+| fix/{name}    | this branch is derived from a master branch. use it when you fix bug.                     |
 | hotfix/{name} | this branch is derived from a release tag. use it when you fix urgent bugs for a version. |
 
 Your branch name is automatically checked when committing by [git-branch-is](https://github.com/kevinoid/git-branch-is).
@@ -43,7 +66,7 @@ Here's a typical workflow when working on a ticket
 1. Make sure to create a branch and a pull request **before starting development**.
 
 ```sh
-git checkout -b feature/setup-env-be
+git checkout -b feat/setup-env-be
 npm run preversion # check your branch name is correct format.
 git commit --allow-empty -m "chore: setup env be"
 ```
@@ -52,12 +75,11 @@ git commit --allow-empty -m "chore: setup env be"
 3. Start development of your task. Update the PR every day.
 4. When you finish the task, remove `[WIP]` from the pull request's title, assign it to reviewer.
 
-
 ## Standards
 
 ### Code Style
 
-- [TypeScript Style Guide](https://basarat.gitbook.io/typescript/styleguide) + [Airbnb Style Guide](https://github.com/airbnb/javascript).
+- [TypeScript Style Guide](https://basarat.gitbook.io/typescript/styleguide).
 - Code will be checked by linter (ESLint) before committing.
 - Code pushing will be checked by unit test locally before transferring to remote repository. Unit test also has to pass test coverage minimum threshold defined in `jest.config.js` to ensure effective unit test.
 
@@ -65,11 +87,9 @@ git commit --allow-empty -m "chore: setup env be"
 
 - Commit message has to follow [conventional commit](https://conventionalcommits.org/) format.
 
-
 ### Branch name
 
 - Check **Development Workflow** section.
-
 
 ## Available Scripts
 
@@ -117,14 +137,24 @@ Website will be deployed via Netlify.
 
 Check deploy status above **Netlify deploy status**
 
-
 ## Technologies
 
-- TypeScript v4.3
-- React v17.0, React Hook
-- State management: Recoil, React Context
-- UI libs: Tailwind, MUI5, headless UI, draft-js, popperjs, emoji-mart
+- Create-react-app
+- React, React Hook
+- TypeScript
+- SWR
+- React-hook-form
+- State management: React Context
+- UI libs: Tailwind, headless UI, draft-js, popperjs, emoji-mart, recharts
 - Storybook
 - ESLint
 - Github Actions (CI/CD)
-- Webpack (module bundler)
+
+## File structure
+
+The app is mostly structured by features, with at most 2 level nesting (`./src` is exempted). e.g `src/admin/RoleDrawer/RoleDrawer.tsx`
+https://reactjs.org/docs/faq-structure.html#grouping-by-features-or-routes
+
+The is only one exception of `common`, which is structured by types
+
+If you find any components not structured as mentioned above, please make them aligned with it.
