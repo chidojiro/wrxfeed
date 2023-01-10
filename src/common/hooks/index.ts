@@ -14,7 +14,6 @@ export * from './useLegacyQuery';
 export * from './useLocalStorageState';
 export * from './useMountEffect';
 export { default as useNavUtils } from './useNavUtils';
-export * from './useNumberInput';
 export * from './useOnEventOutside';
 export * from './usePagination';
 export * from './useQuery';
