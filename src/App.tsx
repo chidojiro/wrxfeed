@@ -1,6 +1,6 @@
 import { NotFoundPage } from '@/auth/NotFoundPage';
 import { ProtectedRoute } from '@/auth/ProtectedRoute';
-import { EmojiPicker } from '@/common/components';
+import { EmojiPicker, ErrorBoundary } from '@/common/components';
 import { Children } from '@/common/types';
 import { UploadCSVModal } from '@/main/organisms';
 import { PusherProvider } from '@/push-notification/PusherProvider';
@@ -51,32 +51,34 @@ const { protectedRoutes, publicRoutes } = Object.values(Routes).reduce(
 
 const App = () => {
   return (
-    <RecoilRoot>
-      <PusherProvider>
-        <Router>
-          <React.Suspense fallback={<LoadingFallback />}>
-            <Switch>
-              {publicRoutes.map((route, index) => (
-                <Route key={index} exact {...route} />
-              ))}
+    <Router>
+      <ErrorBoundary>
+        <RecoilRoot>
+          <PusherProvider>
+            <React.Suspense fallback={<LoadingFallback />}>
+              <Switch>
+                {publicRoutes.map((route, index) => (
+                  <Route key={index} exact {...route} />
+                ))}
 
-              {protectedRoutes.map((route, index) => (
-                <ProtectedRoute key={index} exact {...route} permissions={route.permissions} />
-              ))}
+                {protectedRoutes.map((route, index) => (
+                  <ProtectedRoute key={index} exact {...route} permissions={route.permissions} />
+                ))}
 
-              <Route exact path="/" component={() => <Redirect to="/dashboard/all-company" />} />
-              <Route>
-                <NotFoundPage />
-              </Route>
-            </Switch>
-          </React.Suspense>
-        </Router>
-        <UploadCSVModal />
-        <StyledToastContainer />
-        <EmojiPicker />
-        <NotifyBannerContainer topOffset={56} />
-      </PusherProvider>
-    </RecoilRoot>
+                <Route exact path="/" component={() => <Redirect to="/dashboard/all-company" />} />
+                <Route>
+                  <NotFoundPage />
+                </Route>
+              </Switch>
+            </React.Suspense>
+            <UploadCSVModal />
+            <StyledToastContainer />
+            <EmojiPicker />
+            <NotifyBannerContainer topOffset={56} />
+          </PusherProvider>
+        </RecoilRoot>
+      </ErrorBoundary>
+    </Router>
   );
 };
 
