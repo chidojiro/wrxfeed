@@ -8,6 +8,7 @@ export * from './ConfirmModal';
 export * from './Divider';
 export * from './Drawer';
 export * from './EmojiPicker';
+export * from './ErrorBoundary';
 export * from './Form';
 export * from './InfiniteLoader';
 export * from './Input';

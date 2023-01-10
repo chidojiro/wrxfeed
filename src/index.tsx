@@ -1,10 +1,10 @@
-import React from 'react';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import mixpanel from 'mixpanel-browser';
-import App from './App';
+import React from 'react';
 import { render } from 'react-dom';
 import { SWRConfig } from 'swr';
+import App from './App';
 import { BUILD_ENV, MIX_PANEL_PROJECT_TOKEN } from './env';
 
 Sentry.init({
