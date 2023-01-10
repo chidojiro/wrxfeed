@@ -38,7 +38,7 @@ export function useNotification(page: PaginationParams): NotificationHookValues 
     {
       onError: (error) => {
         if (isBadRequest(error)) {
-          toast.error(`Failed to mark notification as read 🤦!`);
+          toast.error(`Failed to mark this notification as read 🤦!`);
           return false;
         }
       },
