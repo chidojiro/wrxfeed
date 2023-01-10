@@ -61,7 +61,7 @@ export function useDepartment(params: GetDepartmentsParams): DepartmentHookValue
           return false;
         }
         if (isBadRequest(error)) {
-          toast.error('Can not get departments');
+          toast.error(`Can't get any departments`);
           return false;
         }
       },

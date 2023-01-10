@@ -38,7 +38,7 @@ export function useNotification(page: PaginationParams): NotificationHookValues 
     {
       onError: (error) => {
         if (isBadRequest(error)) {
-          toast.error('Can not patch notification 🤦!');
+          toast.error(`Can't patch notification 🤦!`);
           return false;
         }
       },

@@ -13,7 +13,7 @@ export default function useFormErrorHandler<
     async (error, setError, message) => {
       if (isFormError<TFieldValues>(error)) {
         if (message) {
-          toast.error('Please correct your input.');
+          toast.error('Please revise your input entry.');
         }
         Object.entries(error.details).forEach(([field, msg]) => {
           setError(field as FieldPath<TFieldValues>, { message: msg }, { shouldFocus: true });

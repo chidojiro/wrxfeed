@@ -33,7 +33,7 @@ export const useFileUploader = (callback: FileUploaderCallback): FileUploaderVal
           return false;
         }
         if (isBadRequest(error)) {
-          toast.error('Can not upload file. Please try again later.');
+          toast.error(`Can't upload file. Please try again later.`);
           return false;
         }
       },
