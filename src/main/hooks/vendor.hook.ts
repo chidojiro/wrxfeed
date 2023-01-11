@@ -26,7 +26,7 @@ export function useVendor(pagination: PaginationParams): VendorHookValues {
     {
       onError: (error: unknown) => {
         if (isBadRequest(error)) {
-          toast.error('Can not get vendors');
+          toast.error(`Failed to get any vendors`);
           return false;
         }
       },

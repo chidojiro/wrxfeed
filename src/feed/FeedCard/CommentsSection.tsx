@@ -60,7 +60,7 @@ export const CommentsSection = ({ feed }: CommentsSectionProps) => {
       reverse: true,
       onError: (error: any) => {
         if (isBadRequest(error)) {
-          toast.error('Can not get comments');
+          toast.error(`Failed to get any comments!`);
           return false;
         }
       },

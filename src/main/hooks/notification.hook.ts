@@ -38,7 +38,7 @@ export function useNotification(page: PaginationParams): NotificationHookValues 
     {
       onError: (error) => {
         if (isBadRequest(error)) {
-          toast.error('Can not patch notification 🤦!');
+          toast.error(`Failed to mark this notification as read 🤦!`);
           return false;
         }
       },
@@ -65,7 +65,7 @@ export function useNotification(page: PaginationParams): NotificationHookValues 
     {
       onError: (error) => {
         if (isBadRequest(error)) {
-          toast.error("Can't get notifications 🤦!");
+          toast.error('Failed to get notifications 🤦!');
           return false;
         }
       },
@@ -83,7 +83,7 @@ export function useNotification(page: PaginationParams): NotificationHookValues 
     {
       onError: (error) => {
         if (isBadRequest(error)) {
-          toast.error("Can't mark all notify as read 😤!");
+          toast.error('Failed to mark all notify as read 😤!');
           return false;
         }
       },
