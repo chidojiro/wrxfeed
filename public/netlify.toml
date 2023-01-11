@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/api/*"
-  to = "REACT_APP_API_BASE_URL"
+  to = "$NETLIFY_API_REDIRECT"
   status = 200
   force = true
 
