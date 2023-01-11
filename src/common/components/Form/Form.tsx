@@ -11,7 +11,7 @@ import { Input, InputProps } from '../Input';
 import { Select, SelectProps } from '../Select';
 import { TagsSelect, TagsSelectProps } from '../TagsSelect';
 
-export type FormProps = HeadlessFormProps;
+export type FormProps = HeadlessFormProps<any>;
 
 export const Form = (props: FormProps) => <HeadlessFrom {...props} />;
 

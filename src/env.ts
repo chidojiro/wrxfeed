@@ -11,11 +11,6 @@ export const NODE_ENV = process.env.NODE_ENV ?? 'development';
 export const BUILD_ENV = process.env.REACT_APP_BUILD_ENV ?? 'dev';
 
 /**
- * Backend api base endpoint
- */
-export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL ?? '/api';
-
-/**
  * Mix panel token
  */
 export const MIX_PANEL_PROJECT_TOKEN = process.env.REACT_APP_MIX_PANEL_PROJECT_TOKEN ?? '';

@@ -5,7 +5,7 @@ import { useFormContext } from 'react-hook-form';
 export type ErrorMessageProps = {
   name: string | string[];
   className?: string;
-  children: (message: string) => React.ReactNode;
+  children: (message?: string) => React.ReactNode;
 };
 
 export const ErrorMessage = ({ name, children }: ErrorMessageProps) => {
@@ -19,5 +19,5 @@ export const ErrorMessage = ({ name, children }: ErrorMessageProps) => {
     if (errorMessage) break;
   }
 
-  return <>{children(errorMessage)}</>;
+  return <>{children(errorMessage as string | undefined)}</>;
 };

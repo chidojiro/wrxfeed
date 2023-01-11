@@ -15,7 +15,7 @@ export const withMountAfter =
       }
     }, []);
 
-    if (shouldMount) return <Component {...props} />;
+    if (shouldMount) return <Component {...(props as any)} />;
 
     return null;
   };

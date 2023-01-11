@@ -103,7 +103,7 @@ export const TargetChart: <T>(
                   <Area
                     key={line.name}
                     name={line.name}
-                    type={line.type}
+                    type={line.type as any}
                     dataKey={line.dataKey}
                     strokeWidth={line.strokeWidth}
                     stroke={line.stroke}
