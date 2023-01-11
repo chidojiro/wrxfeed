@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/api/*"
-  to = "$NETLIFY_API_REDIRECT"
+  to = "NETLIFY_API_REDIRECT"
   status = 200
   force = true
 
