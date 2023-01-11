@@ -121,7 +121,7 @@ const SearchBar: React.FC = () => {
                 ref={searchInputRef}
                 id="search"
                 name="search"
-                className="block w-full text-white bg-Gray-3 focus:border focus:border-gray-300 rounded-sm py-0 h-7 pl-8 pr-8 sm:pr-16 sm:pl-9 text-sm placeholder-Gray-6 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-rose-500 focus:border-rose-500 sm:text-sm truncate"
+                className="block w-full text-white bg-Gray-3 rounded-sm py-0 h-7 pl-8 pr-8 sm:pr-16 sm:pl-9 text-sm placeholder-Gray-6 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-Accent-2 sm:text-sm truncate"
                 placeholder="Search for teams, categories, or vendors"
                 autoComplete="off"
                 autoCorrect="off"

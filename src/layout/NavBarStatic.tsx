@@ -48,9 +48,7 @@ export const NavBarStatic = ({
 
   const { departments } = subscription ?? {};
 
-  const { profile, isPermittedToFeature } = useProfile();
-
-  const showInvite = isPermittedToFeature(ProtectedFeatures.Invite);
+  const { profile } = useProfile();
 
   const onClickNotification = () => {
     history.push(Routes?.Notifications?.path as string);
@@ -66,18 +64,13 @@ export const NavBarStatic = ({
   };
 
   const renderInviteButton = () => {
-    if (!showInvite) {
-      return (
-        <div className="ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm" />
-      );
-    }
     const hoverStyle = isOpenInviteModal ? 'ring-2' : '';
     return (
       <Button
         onClick={onClickInviteButton}
         className={clsx(
           hoverStyle,
-          'ml-8 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-offset-2 focus:ring-rose-500',
+          'ml-8 inline-flex items-center px-4 py-2 border border-Gray-3 text-sm font-medium rounded-md shadow-sm text-white hover:bg-primary focus:outline-none focus:ring-offset-2 focus:ring-Accent-2',
         )}
       >
         <UserPlusIcon className="flex mr-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500" />
@@ -221,9 +214,7 @@ export const NavBarStatic = ({
               Sign out
             </a>
           </Popover.Panel>
-          {showInvite && (
-            <InviteModal open={isOpenInviteModal} onClose={() => openInviteModal(false)} />
-          )}
+          <InviteModal open={isOpenInviteModal} onClose={() => openInviteModal(false)} />
         </>
       )}
     </Popover>
