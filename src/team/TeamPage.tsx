@@ -2,7 +2,7 @@ import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader } from '@/common/components';
 import { EMPTY_ARRAY } from '@/common/constants';
 import { useHandler, useMountEffect, useUrlState } from '@/common/hooks';
-import { StringUtils } from '@/common/utils';
+import { DateUtils, StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { DateRangeFilter } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
@@ -50,12 +50,13 @@ export const TeamPage = () => {
 
   const getFromDate = (timeRange: DateRangeFilter) => {
     if (!timeRange || timeRange === '30-days') {
-      return dayjs().subtract(30, 'days').format(DATE_FORMAT);
+      return dayjs().year(DateUtils.getThisYear()).subtract(30, 'days').format(DATE_FORMAT);
     }
 
-    if (timeRange === '90-days') return dayjs().subtract(90, 'days').format(DATE_FORMAT);
+    if (timeRange === '90-days')
+      return dayjs().year(DateUtils.getThisYear()).subtract(90, 'days').format(DATE_FORMAT);
 
-    return dayjs().date(1).month(1).format(DATE_FORMAT);
+    return dayjs().year(DateUtils.getThisYear()).date(1).month(0).format(DATE_FORMAT);
   };
 
   const getToDate = () => dayjs().format(DATE_FORMAT);
