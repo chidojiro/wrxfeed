@@ -1,4 +1,4 @@
-import { IS_DEMO } from '@/env';
+import { USE_PREV_YEAR_SPENDINGS } from '@/env';
 import dayjs from 'dayjs';
 
 const format = (date: Date | string, formatPattern = 'MM/DD/YY') => {
@@ -10,7 +10,7 @@ const format = (date: Date | string, formatPattern = 'MM/DD/YY') => {
 };
 
 // TEMPORARY
-const getThisYear = () => (IS_DEMO ? 2022 : 2023);
+const getThisYear = () => (USE_PREV_YEAR_SPENDINGS ? 2022 : 2023);
 
 export const DateUtils = {
   format,

@@ -8,7 +8,7 @@ import { groupBy, range, sum, sumBy, uniqBy } from 'lodash-es';
 import { SpendingChartData } from './SpendingChart';
 import { MonthData, Spending, SpendingsReport, TrackingStatus } from './types';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
-import { IS_DEMO } from '@/env';
+import { USE_PREV_YEAR_SPENDINGS } from '@/env';
 
 dayjs.extend(weekOfYear);
 
@@ -19,7 +19,7 @@ const BILLION = Math.pow(10, 9);
 const MILLION = Math.pow(10, 6);
 const THOUSAND = Math.pow(10, 3);
 
-const getThisMonth = () => (IS_DEMO ? 11 : dayjs().month());
+const getThisMonth = () => (USE_PREV_YEAR_SPENDINGS ? 11 : dayjs().month());
 
 const getYearSpending = (spendings: TargetSpending[], year: number) =>
   spendings?.filter((cur) => cur.year === year).reduce((acc, { total }) => total + acc, 0) ?? 0;
