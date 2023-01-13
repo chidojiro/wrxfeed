@@ -33,7 +33,7 @@ import { DateRangeFilter } from '@/feed/types';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
-    case TranStatus.PaidInFull:
+    case TranStatus.PaidInFull || TranStatus.Paid:
       return 'green';
     case TranStatus.Open:
       return 'purple';
@@ -42,14 +42,24 @@ export const getTransactionColorScheme = (status: TranStatus): StatusTagColorSch
   }
 };
 
+const statusTruncateConditions = [
+  TranStatus.Open,
+  TranStatus.Cancelled,
+  TranStatus.Closed,
+  TranStatus.Rejected,
+  TranStatus.Paid,
+];
+
+const shouldTruncateTranStatus = (status: TranStatus) => !statusTruncateConditions.includes(status);
+
 export const getTransactionLabel = (status: TranStatus) => {
   switch (status) {
-    case TranStatus.PaidInFull:
+    case TranStatus.Paid:
       return 'Paid';
     case TranStatus.Open:
       return 'Open';
     default:
-      return 'Pending';
+      return status;
   }
 };
 
@@ -359,9 +369,21 @@ export const TransactionList = ({
                             <div className="flex justify-end">
                               <StatusTag
                                 colorScheme={getTransactionColorScheme(transaction.transStatus)}
-                                className="font-semibold"
+                                className={clsx('font-semibold')}
                               >
-                                {getTransactionLabel(transaction.transStatus)}
+                                {shouldTruncateTranStatus(transaction.transStatus) ? (
+                                  <Tooltip
+                                    trigger={
+                                      <p className="truncate w-8">
+                                        {getTransactionLabel(transaction.transStatus)}
+                                      </p>
+                                    }
+                                  >
+                                    {getTransactionLabel(transaction.transStatus)}
+                                  </Tooltip>
+                                ) : (
+                                  <p>{getTransactionLabel(transaction.transStatus)}</p>
+                                )}
                               </StatusTag>
                             </div>
                           </Table.Cell>

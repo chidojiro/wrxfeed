@@ -16,6 +16,7 @@ export enum TranStatus {
   Closed = 'Closed',
   Open = 'Open',
   PartiallyReceived = 'Partially Received',
+  Paid = 'Paid',
   PaidInFull = 'Paid In Full',
   FullyBilled = 'Fully Billed',
   ApprovedByAccounting = 'Approved by Accounting',
