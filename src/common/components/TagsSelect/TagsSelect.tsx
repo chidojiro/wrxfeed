@@ -99,6 +99,7 @@ export const TagsSelect = React.forwardRef(<TValue,>(props: TagsSelectProps<TVal
   return (
     <TagsSelectProvider value={providerValue}>
       <Popover
+        usePortal={false}
         placement={placement}
         trigger={
           <Button
