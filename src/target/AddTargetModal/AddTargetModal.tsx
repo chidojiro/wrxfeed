@@ -398,20 +398,15 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
             </div>
             {!!hasPeriodsError && renderNoMonthError()}
             <div className="h-[270px] px-6">
-              <OverlayLoader
-                loading={!isValidatingOptions && isValidatingSpendings}
-                className="h-full"
-              >
-                <div className="h-full w-full rounded-lg">
-                  <SpendingChart
-                    data={{
-                      periods,
-                      spendings: displaySpendings,
-                      trackingStatus: trackingStatus ?? target?.trackingStatus,
-                    }}
-                  />
-                </div>
-              </OverlayLoader>
+              <div className="h-full w-full rounded-lg">
+                <SpendingChart
+                  data={{
+                    periods,
+                    spendings: displaySpendings,
+                    trackingStatus: trackingStatus ?? target?.trackingStatus,
+                  }}
+                />
+              </div>
             </div>
             <div className="flex flex-row pt-4 pb-6 px-10 space-x-4 items-center justify-end text-primary text-xs font-semibold">
               <p className="">
