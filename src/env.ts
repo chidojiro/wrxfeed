@@ -21,7 +21,7 @@ export const MIX_PANEL_PROJECT_TOKEN = process.env.REACT_APP_MIX_PANEL_PROJECT_T
 export const PUSHER_APP_KEY = process.env.REACT_APP_PUSHER_APP_KEY ?? '';
 export const PUSHER_APP_CLUSTER = process.env.REACT_APP_PUSHER_APP_CLUSTER ?? '';
 
-export const USE_PREV_YEAR_SPENDINGS = process.env.REACT_APP_USE_PREV_YEAR_SPENDINGS ?? '';
+export const USE_PREV_YEAR_SPENDINGS = !!process.env.REACT_APP_USE_PREV_YEAR_SPENDINGS;
 
 export const IS_TEST = process.env.NODE_ENV === 'test';
 export const IS_PROD = BUILD_ENV === 'production';

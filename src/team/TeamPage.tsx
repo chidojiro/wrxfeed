@@ -3,6 +3,7 @@ import { OverlayLoader } from '@/common/components';
 import { EMPTY_ARRAY } from '@/common/constants';
 import { useHandler, useMountEffect, useUrlState } from '@/common/hooks';
 import { DateUtils, StringUtils } from '@/common/utils';
+import { USE_PREV_YEAR_SPENDINGS } from '@/env';
 import { ApiErrorCode } from '@/error';
 import { DateRangeFilter } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
@@ -59,7 +60,10 @@ export const TeamPage = () => {
     return dayjs().year(DateUtils.getThisYear()).date(1).month(0).format(DATE_FORMAT);
   };
 
-  const getToDate = () => dayjs().format(DATE_FORMAT);
+  const getToDate = () =>
+    USE_PREV_YEAR_SPENDINGS
+      ? dayjs().year(DateUtils.getThisYear()).month(11).date(31).format(DATE_FORMAT)
+      : dayjs().format(DATE_FORMAT);
 
   useMountEffect(() => {
     viewDepartmentSummary(departmentId);
