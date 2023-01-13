@@ -50,18 +50,8 @@ const statusTruncateConditions = [
   TranStatus.Paid,
 ];
 
-const shouldTruncateTranStatus = (status: TranStatus) => !statusTruncateConditions.includes(status);
-
-export const getTransactionLabel = (status: TranStatus) => {
-  switch (status) {
-    case TranStatus.Paid:
-      return 'Paid';
-    case TranStatus.Open:
-      return 'Open';
-    default:
-      return status;
-  }
-};
+export const shouldTruncateTranStatus = (status: TranStatus) =>
+  !statusTruncateConditions.includes(status);
 
 type TransactionListProps = ClassName & {
   transactions: TransLineItem[];
@@ -369,20 +359,18 @@ export const TransactionList = ({
                             <div className="flex justify-end">
                               <StatusTag
                                 colorScheme={getTransactionColorScheme(transaction.transStatus)}
-                                className={clsx('font-semibold')}
+                                className="font-semibold"
                               >
                                 {shouldTruncateTranStatus(transaction.transStatus) ? (
                                   <Tooltip
                                     trigger={
-                                      <p className="truncate w-8">
-                                        {getTransactionLabel(transaction.transStatus)}
-                                      </p>
+                                      <p className="truncate w-8">{transaction.transStatus}</p>
                                     }
                                   >
-                                    {getTransactionLabel(transaction.transStatus)}
+                                    {transaction.transStatus}
                                   </Tooltip>
                                 ) : (
-                                  <p>{getTransactionLabel(transaction.transStatus)}</p>
+                                  <p>{transaction.transStatus}</p>
                                 )}
                               </StatusTag>
                             </div>
