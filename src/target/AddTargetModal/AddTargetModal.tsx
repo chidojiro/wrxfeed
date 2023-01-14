@@ -195,7 +195,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
   );
 
   const { isValidating: isValidatingSpendings, data } = useFetcher(
-    !!targetProps.length && isValidPeriods(periods) && ['targetSpending', targetProps, periods],
+    ['targetSpending', targetProps, periods],
     () => TargetApis.getSpending({ props: targetProps, periods }),
   );
   const { spendings: spendingsRaw = EMPTY_ARRAY, trackingStatus } = data ?? {};
@@ -392,17 +392,22 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
               </div>
             </div>
             {!!hasPeriodsError && renderNoMonthError()}
-            <div className="h-[270px] px-6">
-              <div className="h-full w-full rounded-lg">
-                <SpendingChart
-                  data={{
-                    periods,
-                    spendings: displaySpendings,
-                    trackingStatus: trackingStatus ?? target?.trackingStatus,
-                  }}
-                />
+            <OverlayLoader
+              loading={!isValidatingOptions && isValidatingSpendings}
+              className="h-full relative z-[-1]"
+            >
+              <div className="h-[270px] px-6">
+                <div className="h-full w-full rounded-lg">
+                  <SpendingChart
+                    data={{
+                      periods,
+                      spendings: displaySpendings,
+                      trackingStatus: trackingStatus ?? target?.trackingStatus,
+                    }}
+                  />
+                </div>
               </div>
-            </div>
+            </OverlayLoader>
             <div className="flex flex-row pt-4 pb-6 px-10 space-x-4 items-center justify-end text-primary text-xs font-semibold">
               <p className="">
                 Current Spend:
