@@ -302,7 +302,6 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
 
   const hasNameError = !!errors.name;
   const hasPeriodsError = !!errors.periods;
-  const hasPropsError = !!errors.props;
 
   const handleCreate = () => {
     const payload = {
@@ -334,16 +333,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     <Modal open={open} onClose={onClose} center={false}>
       <OverlayLoader loading={isValidatingOptions}>
         <Form methods={methods} onSubmit={isEdit ? handleSave : handleCreate}>
-          <Form.Input
-            name="props"
-            rules={{
-              validate: {
-                required: (value: TargetProps[]) => (hidePropertyDropdowns ? true : !!value.length),
-              },
-            }}
-            readOnly
-            className="w-0 h-0 overflow-hidden"
-          />
+          <Form.Input name="props" readOnly className="w-0 h-0 overflow-hidden" />
           <Form.Input
             name="periods"
             rules={{
@@ -366,11 +356,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
               {hasNameError && renderErrorName()}
             </div>
             {!hidePropertyDropdowns && (
-              <PropsSection
-                reviewSentence={reviewSentence}
-                exceptionProps={exceptionProps}
-                error={hasPropsError}
-              />
+              <PropsSection reviewSentence={reviewSentence} exceptionProps={exceptionProps} />
             )}
             <div className="flex flex-row pt-2 px-10 justify-between">
               <div className="flex flex-row items-center space-x-2 py-3">
