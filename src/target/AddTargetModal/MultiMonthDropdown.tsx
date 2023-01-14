@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import { BasicsDownSmall, LeftSmallIcon } from '@/assets';
+import { BasicsDownSmall } from '@/assets';
 import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
 import Loading from '@/common/atoms/Loading';
 import { Button, Popover } from '@/common/components';
@@ -38,11 +38,13 @@ export const getButtonTitle = (min: number, max: number): string => {
   let name = 'Select';
   if (min !== 0) {
     name = dayjs()
+      .year(DateUtils.getThisYear())
       .month(min - 1)
       .format('MMM, YYYY');
   }
   if (max !== 0 && max !== min) {
     name += ` - ${dayjs()
+      .year(DateUtils.getThisYear())
       .month(max - 1)
       .format('MMM, YYYY')}`;
   }
@@ -190,6 +192,7 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
   return (
     <div className={clsx('flex-shrink-0 relative', className)} ref={useableViewRef}>
       <Popover
+        usePortal={false}
         open={popoverDisclosure.isOpen}
         onClose={popoverDisclosure.onClose}
         placement={isHeightRestricted ? 'right-start' : 'bottom-start'}
@@ -214,19 +217,12 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
             )}
           >
             <div className="flex flex-row items-center px-4 border-b border-Gray-11 h-8">
-              <LeftSmallIcon className="w-4 h-4" width={16} height={16} viewBox="0 0 16 16" />
               <div className="flex flex-1 flex-row justify-center items-center">
                 <p className="text-primary text-xs font-semibold ml-4">{curYear}</p>
                 {/* <div className="w-4 h-4 flex justify-center items-center">
                     {isLoadingData && <Loading width={8} height={8} />}
                   </div> */}
               </div>
-              <LeftSmallIcon
-                className="w-4 h-4 rotate-180"
-                width={16}
-                height={16}
-                viewBox="0 0 16 16"
-              />
             </div>
             <div className="flex flex-row items-center justify-between text-xs text-Gray-6 px-7 pt-2 h-8">
               <p>Month</p>

@@ -14,6 +14,7 @@ export interface ModalProps {
   contentClass?: string;
   showCloseButton?: boolean;
   closeOnClickOutside?: boolean;
+  stopPropagation?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -25,6 +26,7 @@ const Modal: React.FC<ModalProps> = ({
   contentClass,
   showCloseButton,
   closeOnClickOutside,
+  stopPropagation,
 }) => {
   const [delayableOpen, setDelayableOpen] = useDelayableState({ delayBy: 200, defaultState: open });
 
@@ -44,7 +46,10 @@ const Modal: React.FC<ModalProps> = ({
       open={open}
       onClose={noop}
     >
-      <div className="relative flex items-center justify-center h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div
+        className="relative flex items-center justify-center h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+        onClick={stopPropagation ? (e) => e.stopPropagation() : undefined}
+      >
         <Dialog.Overlay
           className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
           onClick={closeOnClickOutside ? onClose : undefined}
