@@ -84,12 +84,6 @@ export const PropertiesDropdown = React.forwardRef(
           placeholder={searchPlaceholder}
           onChange={(e) => setSearchDebounced(e.target.value)}
         />
-        {!!error && (
-          <div className="flex flex-row items-center px-2 space-x-1 mb-2">
-            <AlertRed width={15} height={15} className="w-4 h-4" viewBox="0 0 15 15" />
-            <p className="text-xs text-Gray-6">Targets need at least one property</p>
-          </div>
-        )}
         <div
           className={clsx('invisible-scrollbar flex-1 overflow-auto', {
             'min-h-[150px]': !showOptionsOnEmptySearch,
