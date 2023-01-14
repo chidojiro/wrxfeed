@@ -38,11 +38,13 @@ export const getButtonTitle = (min: number, max: number): string => {
   let name = 'Select';
   if (min !== 0) {
     name = dayjs()
+      .year(DateUtils.getThisYear())
       .month(min - 1)
       .format('MMM, YYYY');
   }
   if (max !== 0 && max !== min) {
     name += ` - ${dayjs()
+      .year(DateUtils.getThisYear())
       .month(max - 1)
       .format('MMM, YYYY')}`;
   }
