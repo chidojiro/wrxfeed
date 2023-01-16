@@ -33,7 +33,7 @@ import { DateRangeFilter } from '@/feed/types';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
-    case TranStatus.PaidInFull:
+    case TranStatus.PaidInFull || TranStatus.Paid:
       return 'green';
     case TranStatus.Open:
       return 'purple';
@@ -42,16 +42,16 @@ export const getTransactionColorScheme = (status: TranStatus): StatusTagColorSch
   }
 };
 
-export const getTransactionLabel = (status: TranStatus) => {
-  switch (status) {
-    case TranStatus.PaidInFull:
-      return 'Paid';
-    case TranStatus.Open:
-      return 'Open';
-    default:
-      return 'Pending';
-  }
-};
+const statusTruncateConditions = [
+  TranStatus.Open,
+  TranStatus.Cancelled,
+  TranStatus.Closed,
+  TranStatus.Rejected,
+  TranStatus.Paid,
+];
+
+export const shouldTruncateTranStatus = (status: TranStatus) =>
+  !statusTruncateConditions.includes(status);
 
 type TransactionListProps = ClassName & {
   transactions: TransLineItem[];
@@ -361,7 +361,17 @@ export const TransactionList = ({
                                 colorScheme={getTransactionColorScheme(transaction.transStatus)}
                                 className="font-semibold"
                               >
-                                {getTransactionLabel(transaction.transStatus)}
+                                {shouldTruncateTranStatus(transaction.transStatus) ? (
+                                  <Tooltip
+                                    trigger={
+                                      <p className="truncate w-8">{transaction.transStatus}</p>
+                                    }
+                                  >
+                                    {transaction.transStatus}
+                                  </Tooltip>
+                                ) : (
+                                  <p>{transaction.transStatus}</p>
+                                )}
                               </StatusTag>
                             </div>
                           </Table.Cell>
