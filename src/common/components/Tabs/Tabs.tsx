@@ -44,7 +44,6 @@ export const Tabs = ({ value, onChange, items, className }: TabsProps) => {
                     'text-sm text-Gray-3',
                     'py-1 px-1 mr-3 ml-1',
                     'hover:text-Gray-3',
-                    !tab.href && 'cursor-not-allowed',
                   )}
                   aria-current={isActive ? 'page' : undefined}
                 >
