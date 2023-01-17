@@ -22,7 +22,6 @@ export const TargetPage = () => {
             content: <ForYouDashboard />,
             label: 'For You',
             value: 'for-you',
-            href: '/dashboard/for-you',
           },
         ]}
       ></Tabs>
