@@ -2,6 +2,7 @@ import { TargetArrowFilled } from '@/assets';
 import { OverlayLoader } from '@/common/components';
 import { useDisclosure, useFetcher, useScrollbarDetector } from '@/common/hooks';
 import { ClassName } from '@/common/types';
+import { useRestrictedItems } from '@/role/useRestrictedItems';
 import { DepartmentApis } from '@/team/apis';
 import clsx from 'clsx';
 import React from 'react';
@@ -25,6 +26,8 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
     const isOnTop = (e.target as HTMLInputElement).scrollTop === 0;
     isOnTopDisclosure.set(!isOnTop);
   };
+
+  const { restrictedItems } = useRestrictedItems();
 
   return (
     <OverlayLoader loading={isValidating} className={className}>
@@ -53,9 +56,17 @@ export const AllCompanySummary = ({ className }: AllCompanySummaryProps) => {
           className="overflow-auto hide-scrollbar flex-1 pb-5 p-px"
           ref={summaryListRef}
         >
-          {summaries.map((summary) => (
-            <SummaryRow data={summary} key={summary.id} />
-          ))}
+          {summaries
+            .filter(
+              ({ id }) =>
+                !restrictedItems.find(
+                  (restrictedItem) =>
+                    restrictedItem.id === id && restrictedItem.type === 'DEPARTMENT',
+                ),
+            )
+            .map((summary) => (
+              <SummaryRow data={summary} key={summary.id} />
+            ))}
         </div>
       </div>
     </OverlayLoader>

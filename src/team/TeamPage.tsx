@@ -1,6 +1,6 @@
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader } from '@/common/components';
-import { EMPTY_ARRAY } from '@/common/constants';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD, EMPTY_ARRAY } from '@/common/constants';
 import { useHandler, useMountEffect, useUrlState } from '@/common/hooks';
 import { DateUtils, StringUtils } from '@/common/utils';
 import { USE_PREV_YEAR_SPENDINGS } from '@/env';
@@ -12,7 +12,6 @@ import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import { TransactionList } from '@/transactions/TransactionList';
 import { useTransactions } from '@/transactions/useTransactions';
 import dayjs from 'dayjs';
-import { range } from 'lodash-es';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DepartmentApis } from './apis';
@@ -23,7 +22,6 @@ import { TopCategories } from './TopCategories';
 import { useDepartment } from './useDepartment';
 import { useTopCategories } from './useTopCategories';
 
-const TRANSACTIONS_PER_PAGE = 10;
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const TeamPage = () => {
@@ -69,10 +67,11 @@ export const TeamPage = () => {
     viewDepartmentSummary(departmentId);
   });
 
-  const { transactions, isValidatingTransactions } = useTransactions({
+  const { transactions, isValidatingTransactions, totalCount } = useTransactions({
     props: [{ id: +departmentIdParam, type: 'DEPARTMENT', name: '', exclude: false }],
-    limit: TRANSACTIONS_PER_PAGE * page,
     dateRange: transactionTimeRange,
+    limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
+    offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
 
@@ -89,11 +88,6 @@ export const TeamPage = () => {
         <RestrictedAccessPage />
       </MainLayout>
     );
-
-  const handleLoad = async () => {
-    setPage(page + 1);
-    return range(TRANSACTIONS_PER_PAGE);
-  };
 
   return (
     <MainLayout>
@@ -121,12 +115,13 @@ export const TeamPage = () => {
         </div>
       </div>
       <TransactionList
-        onLoad={handleLoad as any}
+        onPageChange={setPage}
         transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['depName']}
         className="mt-6"
         sort={sortTransactionsBy}
+        totalCount={totalCount}
         onSortChange={setSortTransactionsBy}
         dateRange={transactionTimeRange}
         onDateRangeChange={setTransactionTimeRange}
