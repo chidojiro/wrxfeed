@@ -1,6 +1,7 @@
 import { TeamIcon, VendorIcon } from '@/assets';
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, Select } from '@/common/components';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import { useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
@@ -13,15 +14,13 @@ import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLege
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
-import { range, sumBy } from 'lodash-es';
+import { sumBy } from 'lodash-es';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CategoryHeader } from './CategoryHeader';
 import { GetCategorySpendingsParams } from './types';
 import { useCategory } from './useCategory';
 import { useCategorySpendingsReport } from './useCategorySpendingsReport';
-
-const TRANSACTIONS_PER_PAGE = 10;
 
 export const CategoryPage = () => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
@@ -56,15 +55,11 @@ export const CategoryPage = () => {
     totalLineItemsCount,
   } = useLineItems({
     props: [{ id: categoryId, type: 'CATEGORY', name: '', exclude: false }],
-    limit: TRANSACTIONS_PER_PAGE * page,
     dateRange: dateRange,
+    limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
+    offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
-
-  const handleLoad = async () => {
-    setPage(page + 1);
-    return range(TRANSACTIONS_PER_PAGE);
-  };
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
 
@@ -157,7 +152,7 @@ export const CategoryPage = () => {
       </OverlayLoader>
       <TransactionList
         className="mt-6"
-        onLoad={handleLoad as any}
+        onPageChange={setPage}
         transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['categoryName']}
@@ -165,6 +160,7 @@ export const CategoryPage = () => {
         onDateRangeChange={setDateRange}
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
+        totalCount={totalLineItemsCount}
       />
     </MainLayout>
   );

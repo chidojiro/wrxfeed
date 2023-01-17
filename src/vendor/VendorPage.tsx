@@ -1,6 +1,7 @@
 import { CategoryIcon, TeamIcon } from '@/assets';
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, Select } from '@/common/components';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import { useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
@@ -13,15 +14,13 @@ import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { useTransactions } from '@/transactions/useTransactions';
-import { range, sumBy } from 'lodash-es';
+import { sumBy } from 'lodash-es';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GetVendorSpendingsParams } from './types';
 import { useVendor } from './useVendor';
 import { useVendorSpendings } from './useVendorSpendings';
 import { VendorHeader } from './VendorHeader';
-
-const TRANSACTIONS_PER_PAGE = 10;
 
 export const VendorPage = () => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
@@ -51,18 +50,13 @@ export const VendorPage = () => {
     groupBy,
   });
 
-  const { transactions, isValidatingTransactions } = useTransactions({
+  const { transactions, isValidatingTransactions, totalCount } = useTransactions({
     props: [{ id: vendorId, type: 'VENDOR', name: '', exclude: false }],
-    ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
-    offset: (page - 1) * TRANSACTIONS_PER_PAGE,
-    limit: TRANSACTIONS_PER_PAGE,
+    limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
+    offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     dateRange,
+    ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
-
-  const handleLoad = async () => {
-    setPage(page + 1);
-    return range(TRANSACTIONS_PER_PAGE);
-  };
 
   const { curYearSpends = [], prevYearSpends = [] } = vendorSpendings ?? {};
 
@@ -155,7 +149,8 @@ export const VendorPage = () => {
       </OverlayLoader>
       <TransactionList
         className="mt-6"
-        onLoad={handleLoad as any}
+        onPageChange={setPage}
+        totalCount={totalCount}
         transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['vendorName']}
