@@ -2,8 +2,7 @@ import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader } from '@/common/components';
 import { DEFAULT_ITEMS_PER_INFINITE_LOAD, EMPTY_ARRAY } from '@/common/constants';
 import { useHandler, useMountEffect, useUrlState } from '@/common/hooks';
-import { DateUtils, StringUtils } from '@/common/utils';
-import { USE_PREV_YEAR_SPENDINGS } from '@/env';
+import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { DateRangeFilter } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
@@ -11,7 +10,6 @@ import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import { TransactionList } from '@/transactions/TransactionList';
 import { useTransactions } from '@/transactions/useTransactions';
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DepartmentApis } from './apis';
@@ -21,8 +19,6 @@ import { TeamTargetSummary } from './TeamTargetSummary';
 import { TopCategories } from './TopCategories';
 import { useDepartment } from './useDepartment';
 import { useTopCategories } from './useTopCategories';
-
-const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const TeamPage = () => {
   const [sortTransactionsBy, setSortTransactionsBy] = useUrlState<string>(
@@ -47,22 +43,6 @@ export const TeamPage = () => {
   const { data: target, isValidating: isValidatingTarget, mutate } = usePrimaryTarget(departmentId);
   const [page, setPage] = useState<number>(1);
 
-  const getFromDate = (timeRange: DateRangeFilter) => {
-    if (!timeRange || timeRange === '30-days') {
-      return dayjs().year(DateUtils.getThisYear()).subtract(30, 'days').format(DATE_FORMAT);
-    }
-
-    if (timeRange === '90-days')
-      return dayjs().year(DateUtils.getThisYear()).subtract(90, 'days').format(DATE_FORMAT);
-
-    return dayjs().year(DateUtils.getThisYear()).date(1).month(0).format(DATE_FORMAT);
-  };
-
-  const getToDate = () =>
-    USE_PREV_YEAR_SPENDINGS
-      ? dayjs().year(DateUtils.getThisYear()).month(11).date(31).format(DATE_FORMAT)
-      : dayjs().format(DATE_FORMAT);
-
   useMountEffect(() => {
     viewDepartmentSummary(departmentId);
   });
@@ -76,7 +56,7 @@ export const TeamPage = () => {
   });
 
   const { data: topCategories = EMPTY_ARRAY, isValidating: isValidatingTopCategories } =
-    useTopCategories(departmentId, { from: getFromDate(topCategoriesTimeRange), to: getToDate() });
+    useTopCategories(departmentId, { dateRange: topCategoriesTimeRange });
 
   const { data: department, error } = useDepartment(departmentId);
 
