@@ -25,8 +25,7 @@ const updateAssigned = (id: number, payload: UpdateAssignedRolesPayload) =>
 
 const getCategories = () => RestApis.get<Category[]>('/rbac/categories');
 
-const getDepartments = () =>
-  RestApis.get<Department[]>('/rbac/departments', { params: { hierarchy: true } });
+const getDepartments = () => RestApis.get<Department[]>('/rbac/departments');
 
 const getVendors = () => RestApis.get<Vendor[]>('/rbac/vendors');
 

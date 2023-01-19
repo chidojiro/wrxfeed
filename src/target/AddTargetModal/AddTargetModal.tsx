@@ -91,9 +91,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     clearErrors,
   } = methods;
 
-  const { isValidatingDepartments, departments } = useDepartments({
-    includeSub: true,
-  });
+  const { isValidatingDepartments, departments } = useDepartments();
 
   const { isValidatingVendors } = useVendors();
 

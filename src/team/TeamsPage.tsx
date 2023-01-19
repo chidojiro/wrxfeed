@@ -30,7 +30,7 @@ export const TeamsPage = () => {
   const query = useLegacyQuery();
   // Department states
   const [filter, setFilter] = React.useState<PaginationParams>(INIT_PAGINATION);
-  const { departments, hasMore, isLoading } = useDepartment(filter);
+  const { departments, hasMore, isLoading } = useDepartment({ ...filter, parentOnly: true });
 
   // Feeds states
   const [feedsFilter, setFeedsFilter] = React.useState<GetFeedsParams>(
