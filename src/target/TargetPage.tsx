@@ -2,7 +2,6 @@ import { Tabs } from '@/common/components';
 import { MainLayout } from '@/layout/MainLayout';
 import { useParams } from 'react-router-dom';
 import { AllCompany } from './AllCompany';
-import { ForYouDashboard } from './ForYouDashboard';
 
 export const TargetPage = () => {
   const { slug } = useParams() as Record<string, string>;
@@ -17,12 +16,6 @@ export const TargetPage = () => {
             label: 'All Company',
             value: 'all-company',
             href: '/dashboard/all-company',
-          },
-          {
-            content: <ForYouDashboard />,
-            label: 'For You',
-            value: 'for-you',
-            href: '/dashboard/for-you',
           },
         ]}
       ></Tabs>
