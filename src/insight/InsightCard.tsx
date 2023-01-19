@@ -2,6 +2,7 @@ import { AlertRed, EssentialsSendEnableIcon } from '@/assets';
 import { Button, Form, Input } from '@/common/components';
 import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import { useUrlState } from '@/common/hooks';
+import { StringUtils } from '@/common/utils';
 import { CommentBox } from '@/feed/CommentBox';
 import { CommentsSection } from '@/feed/FeedCard/CommentsSection';
 import { FeedCardHeader } from '@/feed/FeedCard/FeedCardHeader';
@@ -102,7 +103,7 @@ export const InsightCard = ({
     groupBy: groupBy!,
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
-    sortBy: sortTransactionsBy,
+    ...StringUtils.toApiSortParam(sortTransactionsBy),
   });
 
   React.useEffect(() => {
