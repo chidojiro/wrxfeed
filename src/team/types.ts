@@ -1,3 +1,4 @@
+import { DateRangeFilter } from '@/feed/types';
 import { PaginationParams } from '@/rest/types';
 
 export type GetRecentlyViewedDepartmentSummariesParams = PaginationParams;
@@ -9,6 +10,5 @@ export type GetDepartmentsParams = PaginationParams & {
 };
 
 export type GetTopCategoriesParams = {
-  from?: string;
-  to?: string;
+  dateRange: DateRangeFilter;
 };
