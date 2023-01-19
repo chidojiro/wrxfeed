@@ -418,7 +418,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
             </div>
             <hr className="divider divider-horizontal w-full" />
             <div className="flex flex-row w-full px-12 py-4">
-              {target?.type === 'company' && (
+              {!!isEdit && target.type !== 'company' && (
                 <Button
                   variant="ghost"
                   loading={isDeleting}
