@@ -80,10 +80,7 @@ export const InsightCard = ({
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState<string>(
-    'sortTransactionsBy',
-    DEFAULT_SORT,
-  );
+  const [sortTransactionsBy, setSortTransactionsBy] = useState<string>(DEFAULT_SORT);
   const [page, setPage] = useState<number>(1);
 
   const { mentions } = useMentions();
@@ -105,6 +102,7 @@ export const InsightCard = ({
     groupBy: groupBy!,
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
+    sortBy: sortTransactionsBy,
   });
 
   React.useEffect(() => {

@@ -1,6 +1,5 @@
-import { EyeHideIcon, TargetFeedBadgeIcon, TargetIcon } from '@/assets';
+import { EyeHideIcon } from '@/assets';
 import { distanceToNow } from '@/common/utils';
-import { GRADIENT_DEFAULT } from '@/config';
 import UserAvatar from '@/main/atoms/UserAvatar';
 import { FeedItem, Visibility } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
@@ -12,7 +11,6 @@ import clsx from 'clsx';
 import React from 'react';
 import { CommentsSection } from './CommentsSection';
 import { FeedBackModal } from './FeedBackModal';
-import { FeedCardBadge } from './FeedCardBadge';
 import { FeedCardHeader } from './FeedCardHeader';
 import { TargetFeedOverview } from './TargetFeedOverview';
 import { TransactionsSection } from './TransactionsSection';

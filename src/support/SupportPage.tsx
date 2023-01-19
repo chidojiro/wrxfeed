@@ -33,7 +33,6 @@ export const SupportPage = ({}: SupportPageProps) => {
   };
 
   const sendInvite = async (email: string) => {
-    console.log(email);
     setLoading(true);
     setInviteEmail(watch('invite-email'));
     await sendInvitation({ email });
