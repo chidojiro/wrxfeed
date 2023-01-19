@@ -418,6 +418,18 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
             </div>
             <hr className="divider divider-horizontal w-full" />
             <div className="flex flex-row w-full px-12 py-4">
+              {target?.type === 'company' && (
+                <Button
+                  variant="ghost"
+                  loading={isDeleting}
+                  colorScheme="gray"
+                  type="button"
+                  iconLeft={<CarbonTrashCan width={16} height={16} className="w-4 h-4" />}
+                  onClick={handleDelete}
+                >
+                  <p className="text-Gray-6 text-xs font-semibold">Delete</p>
+                </Button>
+              )}
               <div className="flex gap-3 ml-auto">
                 <Button variant="ghost" colorScheme="gray" onClick={onCancel}>
                   Cancel
