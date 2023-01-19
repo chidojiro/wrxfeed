@@ -78,37 +78,40 @@ export const VendorPage = () => {
   return (
     <MainLayout>
       <VendorHeader vendorId={vendorId} />
-      <div className="flex justify-end mt-4 w-full">
-        <Select
-          className="border border-solid border-Gray-11 rounded"
-          value={groupBy}
-          onChange={(value: any) => setGroupBy(value)}
-          options={[
-            { label: 'None', value: '' },
-            {
-              label: (
-                <div className="flex items-center gap-2">
-                  <TeamIcon />
-                  Team
-                </div>
-              ),
-              value: 'DEPARTMENT',
-            },
-            {
-              label: (
-                <div className="flex items-center gap-2">
-                  <CategoryIcon />
-                  Category
-                </div>
-              ),
-              value: 'CATEGORY',
-            },
-          ]}
-        />
-      </div>
       <OverlayLoader loading={isValidatingVendor || isValidatingVendorSpendings} className="mt-6">
         <div className="rounded-card shadow-card px-6 py-4 bg-white">
-          <h3 className="text-primary font-bold">{vendor?.name}</h3>
+          <div className="flex justify-between">
+            <h3 className="text-primary font-bold">{vendor?.name}</h3>
+            <div className="flex space-x-2 items-center">
+              <p className="text-xs text-primary">Group By</p>
+              <Select
+                className="border border-solid border-Gray-11 rounded"
+                value={groupBy}
+                onChange={(value: any) => setGroupBy(value)}
+                options={[
+                  { label: 'None', value: '' },
+                  {
+                    label: (
+                      <div className="flex items-center gap-2">
+                        <TeamIcon />
+                        Team
+                      </div>
+                    ),
+                    value: 'DEPARTMENT',
+                  },
+                  {
+                    label: (
+                      <div className="flex items-center gap-2">
+                        <CategoryIcon />
+                        Category
+                      </div>
+                    ),
+                    value: 'CATEGORY',
+                  },
+                ]}
+              />
+            </div>
+          </div>
           <div className="flex gap-4 mt-2">
             <div>
               <div className="flex gap-1 items-center text-xs text-Gray-6">
