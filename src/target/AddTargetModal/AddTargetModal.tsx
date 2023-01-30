@@ -331,7 +331,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
     <Modal open={open} onClose={onClose} center={false}>
       <OverlayLoader loading={isValidatingOptions}>
         <Form methods={methods} onSubmit={isEdit ? handleSave : handleCreate}>
-          <Form.Input name="props" readOnly className="w-0 h-0 overflow-hidden" />
+          <Form.Input name="props" readOnly className="w-0 h-0 overflow-hidden hidden" />
           <Form.Input
             name="periods"
             rules={{
@@ -340,7 +340,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
               },
             }}
             readOnly
-            className="w-0 h-0 overflow-hidden"
+            className="w-0 h-0 overflow-hidden hidden"
           />
           <div className="flex flex-col w-[685px] outline-none">
             <div className="flex flex-col space-y-2 px-10 py-4 w-full">
