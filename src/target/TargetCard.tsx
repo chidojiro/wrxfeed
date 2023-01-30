@@ -50,6 +50,10 @@ export const TargetCard = ({
     history.push(`${(Routes.Feed.path as string).replace(':id', `${target?.feedItem?.id}`)}`);
   };
 
+  const goToTeamPage = () => {
+    history.push(`/departments/${target?.props[0]?.id}`);
+  };
+
   const handleSetTarget = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
     addTargetModalDisclosure.onOpen();
     e.stopPropagation();
@@ -78,7 +82,7 @@ export const TargetCard = ({
         hidePropertyDropdowns={hidePropertyDropdowns}
       />
       <Button
-        onClick={goToTargetDetails}
+        onClick={(e) => [goToTeamPage, e.stopPropagation]}
         key={target?.id}
         className={clsx(
           'bg-white relative w-full rounded-card shadow-card hover:shadow-target-hover flex flex-col border border-transparent hover:border-Accent-4',
