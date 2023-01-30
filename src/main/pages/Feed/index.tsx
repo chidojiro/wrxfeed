@@ -1,6 +1,5 @@
-import { ListLoader, OverlayLoader } from '@/common/components';
+import { ListLoader } from '@/common/components';
 import { useFetcher, useHandler, useNavUtils } from '@/common/hooks';
-import { ApiErrorCode } from '@/error';
 import { FeedApis } from '@/feed/apis';
 import { fallbackFeed } from '@/feed/constants';
 import { FeedCard } from '@/feed/FeedCard';
