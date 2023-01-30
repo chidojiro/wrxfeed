@@ -1,6 +1,5 @@
-import { OverlayLoader } from '@/common/components';
+import { ListLoader } from '@/common/components';
 import { useFetcher, useHandler, useNavUtils } from '@/common/hooks';
-import { ApiErrorCode } from '@/error';
 import { FeedApis } from '@/feed/apis';
 import { fallbackFeed } from '@/feed/constants';
 import { FeedCard } from '@/feed/FeedCard';
@@ -54,8 +53,8 @@ export const FeedPage: React.FC = () => {
     }
 
     return (
-      <div className="w-full h-full overflow-auto hide-scrollbar invisible-scrollbar">
-        <OverlayLoader loading={isValidating}>
+      <div className="w-full h-full hide-scrollbar invisible-scrollbar">
+        <ListLoader loading={isValidating}>
           <FeedCard
             feed={feedItem ?? fallbackFeed}
             defaultExpand
@@ -63,7 +62,7 @@ export const FeedPage: React.FC = () => {
             onDeleteTarget={deleteTarget}
             onUpdateTarget={updateTarget}
           />
-        </OverlayLoader>
+        </ListLoader>
         <LineItemDrawer
           open={isLineItemDrawerOpen}
           onClose={closeLineItemDrawer}
