@@ -271,14 +271,18 @@ export const LineItemDetails = ({
           </div>
 
           <div className="flex flex-row w-full mt-2 mb-2">
-            <div className="flex flex-row flex-initial text-xs text-Gray-6 mr-1">
-              <div className="flex items-center mr-0.5">Created by:</div>
-              {renderAvatarIcon(item?.transaction?.createdByName ?? '')}
-            </div>
-            <div className="flex flex-row flex-0 text-xs text-Gray-6 mr-1">
-              <div className="flex items-center mr-0.5">Approver:</div>
-              {renderAvatarIcon(item?.transaction?.billApproverName ?? '')}
-            </div>
+            {item?.transaction?.createdByName && (
+              <div className="flex flex-row flex-initial text-xs text-Gray-6 mr-1">
+                <div className="flex items-center mr-0.5">Created by:</div>
+                {renderAvatarIcon(item.transaction.createdByName)}
+              </div>
+            )}
+            {item?.transaction?.billApproverName && (
+              <div className="flex flex-row flex-0 text-xs text-Gray-6 mr-1">
+                <div className="flex items-center mr-0.5">Approver:</div>
+                {renderAvatarIcon(item.transaction.billApproverName)}
+              </div>
+            )}
             <div className="flex flex-row flex-1 text-xs text-Gray-6 justify-end">
               <div className="flex items-center">
                 Transaction Date:&nbsp;
