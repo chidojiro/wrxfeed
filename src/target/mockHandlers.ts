@@ -8,7 +8,7 @@ export const defaultMockTarget: Target = {
   isPrimary: true,
   name: 'Community Operations',
   trackingStatus: TargetStatusType.OnTrack,
-  updatedBy: {
+  updater: {
     id: 1,
     email: 'support@gravitylabs.co',
     fullName: 'Gravity Assistant',

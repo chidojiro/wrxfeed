@@ -29,10 +29,10 @@ export const TargetFeedCard = React.memo(
     const isHidden = feed?.category !== null && feed?.category?.visibility === Visibility.HIDDEN;
 
     const renderEditorAvatar = (target: Target) => {
-      const updaterName = target?.updatedBy?.fullName ?? '';
+      const updaterName = target?.updater?.fullName ?? '';
       return (
         <div className="flex w-6 h-6 group relative rounded-card">
-          <UserAvatar user={target?.updatedBy} />
+          <UserAvatar user={target?.updater} />
           {typeof updaterName === 'string' && updaterName?.length > 0 && (
             <div className="invisible group-hover:visible absolute -top-10 left-0">
               <div className="bg-primary p-2 rounded-sm">

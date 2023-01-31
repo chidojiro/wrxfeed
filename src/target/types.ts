@@ -119,7 +119,7 @@ export type Target = {
   feedItem?: FeedItem;
   name: string | null;
   creator?: User;
-  updatedBy: User;
+  updater: User;
   updatedAt?: string;
   lastInteraction?: string;
   department?: Department;
