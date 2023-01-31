@@ -4,7 +4,7 @@ export const fallbackTarget: Target = {
   id: 0,
   name: '',
   creator: {},
-  updatedBy: {},
+  updater: {},
   trackingStatus: TargetStatusType.OnTrack,
   props: [],
   periods: [],

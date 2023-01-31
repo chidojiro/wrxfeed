@@ -105,8 +105,8 @@ export const TargetCard = ({
                 <div className="flex items-center gap-2 h-6 max-h-6 mt-2">
                   <Avatar
                     size="sm"
-                    fullName={target.updatedBy?.fullName ?? ''}
-                    src={target.updatedBy?.avatar}
+                    fullName={target.updater?.fullName ?? ''}
+                    src={target.updater?.avatar}
                     showTooltip
                   />
                   <span className="text-Gray-6 text-xs">
