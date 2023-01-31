@@ -4,9 +4,12 @@ import { FeedApis } from '@/feed/apis';
 import { DateRangeFilter, Property } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
 import { commentEditorHtmlParser } from '@/main/utils';
+import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { useProfile } from '@/profile/useProfile';
 import { Entities } from '@/types';
 import { EditorState } from 'draft-js';
-import React from 'react';
+import mixpanel from 'mixpanel-browser';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import { InsightApis } from './apis';
@@ -45,7 +48,19 @@ export const InsightPage = ({}: InsightPageProps) => {
 
   const history = useHistory();
 
-  React.useEffect(() => {
+  const { profile } = useProfile();
+
+  useEffect(() => {
+    mixpanel.track('Insight Page View', {
+      user_id: profile?.id,
+      email: profile?.email,
+      company: profile?.company?.id,
+    });
+    useMixPanelUserProfile(profile);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (isEdit) {
       const getTagValueFromProps = ({ id, name, type }: Property) => `${type}-${id}-${name}`;
       const { dateRange, groupBy, props, name } = insight;

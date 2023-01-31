@@ -9,13 +9,16 @@ import { DateRangeFilter } from '@/feed/types';
 import { useLineItems } from '@/feed/useLineItems';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
+import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { useProfile } from '@/profile/useProfile';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { sumBy } from 'lodash-es';
-import React, { useState } from 'react';
+import mixpanel from 'mixpanel-browser';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CategoryHeader } from './CategoryHeader';
 import { GetCategorySpendingsParams } from './types';
@@ -60,6 +63,18 @@ export const CategoryPage = () => {
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
+
+  const { profile } = useProfile();
+
+  useEffect(() => {
+    mixpanel.track('Category Page View', {
+      user_id: profile?.id,
+      email: profile?.email,
+      company: profile?.company?.id,
+    });
+    useMixPanelUserProfile(profile);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
 

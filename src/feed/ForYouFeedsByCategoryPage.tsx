@@ -1,6 +1,7 @@
 import { ChevronLeftIcon } from '@/assets';
 import { useCategory } from '@/category/useCategory';
 import { MainLayout } from '@/layout/MainLayout';
+import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import React from 'react';
@@ -17,6 +18,7 @@ export const ForYouFeedsByCategoryPage = () => {
       email: profile?.email,
       company: profile?.company?.id,
     });
+    useMixPanelUserProfile(profile);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -7,6 +7,7 @@ import ListEndComponent from '@/main/atoms/ListEndComponent';
 import mixpanel from 'mixpanel-browser';
 import { useProfile } from '@/profile/useProfile';
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
 
 interface NotificationListProps {
   style?: CSSProperties;
@@ -33,6 +34,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
       email: profile?.email,
       company: profile?.company?.id,
     });
+    useMixPanelUserProfile(profile);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

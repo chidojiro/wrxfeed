@@ -8,8 +8,11 @@ import SearchBarResultItem from '@/main/atoms/SearchBarResultItem';
 import useRoveFocus from '@/main/hooks/focus.hook';
 import { SearchResult } from '@/main/types';
 import { useSearch } from '@/misc/useSearch';
+import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { useProfile } from '@/profile/useProfile';
 import { TargetTypeProp } from '@/target/types';
 import { Transition } from '@headlessui/react';
+import mixpanel from 'mixpanel-browser';
 import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 
 const DEBOUNCE_WAIT = 0;
@@ -25,6 +28,8 @@ const SearchBar: React.FC = () => {
   const { results, isLoading, clearSearchResults } = useSearch({ keyword });
 
   const [focus, setRoveFocus] = useRoveFocus(results?.length + 1);
+
+  const { profile } = useProfile();
 
   useEffect(() => {
     if (focus === 0) {
@@ -132,6 +137,14 @@ const SearchBar: React.FC = () => {
                   setRoveFocus(0);
                 }}
                 onBlur={() => setFocus(false)}
+                onClick={() => {
+                  mixpanel.track('Category Page View', {
+                    user_id: profile?.id,
+                    email: profile?.email,
+                    company: profile?.company?.id,
+                  });
+                  useMixPanelUserProfile(profile);
+                }}
               />
               {(isFocus || isSearching) && (
                 <Button

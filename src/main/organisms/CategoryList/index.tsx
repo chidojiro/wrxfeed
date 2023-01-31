@@ -2,6 +2,7 @@ import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import ListLoading from '@/main/atoms/ListLoading';
 import { Category } from '@/main/entity';
 import DirectoryItem from '@/main/molecules/DirectoryItem';
+import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import React, { useEffect } from 'react';
@@ -28,6 +29,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
       email: profile?.email,
       company: profile?.company?.id,
     });
+    useMixPanelUserProfile(profile);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -6,11 +6,14 @@ import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { DateRangeFilter } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
+import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { useProfile } from '@/profile/useProfile';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import { TransactionList } from '@/transactions/TransactionList';
 import { useTransactions } from '@/transactions/useTransactions';
-import { useState } from 'react';
+import mixpanel from 'mixpanel-browser';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DepartmentApis } from './apis';
 import { DEFAULT_SORT } from './constants';
@@ -61,6 +64,18 @@ export const TeamPage = () => {
   const { data: department, error } = useDepartment(departmentId);
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
+
+  const { profile } = useProfile();
+
+  useEffect(() => {
+    mixpanel.track('Team Page View', {
+      user_id: profile?.id,
+      email: profile?.email,
+      company: profile?.company?.id,
+    });
+    useMixPanelUserProfile(profile);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isForbidden)
     return (

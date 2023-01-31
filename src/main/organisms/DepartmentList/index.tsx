@@ -4,6 +4,7 @@ import { Department } from '@/main/entity';
 import { DepartmentSection } from '@/main/hooks/department.hook';
 import DepartmentItem from '@/main/molecules/DepartmentItem';
 import RootDepartmentHeader from '@/main/molecules/RootDepartmentHeader';
+import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import React, { useEffect } from 'react';
@@ -32,6 +33,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
       email: profile?.email,
       company: profile?.company?.id,
     });
+    useMixPanelUserProfile(profile);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

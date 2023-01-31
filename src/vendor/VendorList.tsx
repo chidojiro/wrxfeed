@@ -3,6 +3,7 @@ import { Vendor } from './types';
 import mixpanel from 'mixpanel-browser';
 import React from 'react';
 import { useProfile } from '@/profile/useProfile';
+import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
 
 type VendorListProps = {
   vendors: Vendor[];
@@ -18,6 +19,7 @@ export const VendorList: React.VFC<VendorListProps> = ({ vendors, onVendorClick 
       email: profile?.email,
       company: profile?.company?.id,
     });
+    useMixPanelUserProfile(profile);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
