@@ -286,11 +286,15 @@ export const RoleDrawer = withMountOnOpen()(
             />
           </div>
           <div className="py-5 px-6 flex justify-between gap-2 border-t border-solid border-Gray-28">
-            <Checkbox
-              checked={isAllChecked}
-              onChange={toggleCheckAll}
-              label={isAllChecked ? 'Uncheck All' : 'Check All'}
-            />
+            <div>
+              {tab !== 'members' && (
+                <Checkbox
+                  checked={isAllChecked}
+                  onChange={toggleCheckAll}
+                  label={isAllChecked ? 'Uncheck All' : 'Check All'}
+                />
+              )}
+            </div>
             <div>
               <Button variant="ghost" colorScheme="gray" onClick={onClose}>
                 Cancel
