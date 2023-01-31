@@ -125,6 +125,50 @@ export const RoleDrawer = withMountOnOpen()(
       }
     };
 
+    const checkAll = () => {
+      switch (tab) {
+        case 'teams': {
+          setValue('departments', checkAllItems(allDepartments));
+          break;
+        }
+
+        case 'categories': {
+          setValue('categories', checkAllItems(allCategories));
+          break;
+        }
+
+        case 'vendors': {
+          setValue('vendors', checkAllItems(allVendors));
+          break;
+        }
+
+        default:
+          break;
+      }
+    };
+
+    const uncheckAll = () => {
+      switch (tab) {
+        case 'teams': {
+          setValue('departments', uncheckAllItems(allDepartments));
+          break;
+        }
+
+        case 'categories': {
+          setValue('categories', uncheckAllItems(allCategories));
+          break;
+        }
+
+        case 'vendors': {
+          setValue('vendors', uncheckAllItems(allVendors));
+          break;
+        }
+
+        default:
+          break;
+      }
+    };
+
     const { assignableCategories } = useAssignableCategories();
     const { assignableVendors } = useAssignableVendors();
     const { assignableDepartments } = useAssignableDepartments();
@@ -305,7 +349,7 @@ export const RoleDrawer = withMountOnOpen()(
                   <Button
                     variant="text"
                     className="underline"
-                    onClick={toggleCheckAll}
+                    onClick={checkAll}
                     disabled={isAllChecked}
                   >
                     Check All
@@ -313,7 +357,7 @@ export const RoleDrawer = withMountOnOpen()(
                   <Button
                     variant="text"
                     className="underline"
-                    onClick={toggleCheckAll}
+                    onClick={uncheckAll}
                     disabled={isAllUnChecked}
                   >
                     Uncheck All
