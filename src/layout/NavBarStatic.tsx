@@ -3,6 +3,7 @@ import { ProtectedFeatures } from '@/auth/constants';
 import { Avatar, Button } from '@/common/components';
 import { NotifyPopover, UserProfilePopover } from '@/main/molecules';
 import { InviteModal } from '@/main/organisms';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import { Routes } from '@/routing/routes';
 import { useSubscription } from '@/subscription/useSubscription';
@@ -59,8 +60,9 @@ export const NavBarStatic = ({
     mixpanel.track('Invite Button Click', {
       user_id: profile?.id,
       email: profile?.email,
-      company: profile?.company?.id,
+      company_id: profile?.company?.id,
     });
+    identifyMixPanelUserProfile(profile);
   };
 
   const renderInviteButton = () => {

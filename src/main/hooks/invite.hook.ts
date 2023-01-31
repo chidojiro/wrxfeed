@@ -3,6 +3,7 @@ import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
 import { InvitationApis } from '@/invitation/apis';
 import { Contact } from '@/main/entity';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import React from 'react';
@@ -29,8 +30,9 @@ export function useInvite(): InviteHookValues {
       mixpanel.track('Invite Sent', {
         user_id: profile?.id,
         email: profile?.email,
-        company: profile?.company?.id,
+        company_id: profile?.company?.id,
       });
+      identifyMixPanelUserProfile(profile);
       setSent(true);
     },
     {

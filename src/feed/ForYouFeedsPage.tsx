@@ -1,7 +1,8 @@
+import { useMountEffect } from '@/common/hooks';
 import { MainLayout } from '@/layout/MainLayout';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
-import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Feeds } from './Feeds';
 
@@ -9,14 +10,14 @@ export const ForYouFeedsPage = () => {
   const { pathname } = useLocation();
   const { profile } = useProfile();
 
-  React.useEffect(() => {
+  useMountEffect(() => {
     mixpanel.track('For You Feed View', {
       user_id: profile?.id,
       email: profile?.email,
-      company: profile?.company?.id,
+      company_id: profile?.company?.id,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    identifyMixPanelUserProfile(profile);
+  });
 
   return (
     <MainLayout>

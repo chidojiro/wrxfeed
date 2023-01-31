@@ -2,12 +2,14 @@ import { CategoryIcon, TeamIcon } from '@/assets';
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, Select } from '@/common/components';
 import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
-import { useUrlState } from '@/common/hooks';
+import { useMountEffect, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { DateRangeFilter } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
+import { useProfile } from '@/profile/useProfile';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
@@ -15,7 +17,8 @@ import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { useTransactions } from '@/transactions/useTransactions';
 import { sumBy } from 'lodash-es';
-import React, { useState } from 'react';
+import mixpanel from 'mixpanel-browser';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GetVendorSpendingsParams } from './types';
 import { useVendor } from './useVendor';
@@ -64,6 +67,17 @@ export const VendorPage = () => {
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
   if (!vendorSpendings) return null;
+
+  const { profile } = useProfile();
+
+  useMountEffect(() => {
+    mixpanel.track('Vendor Page View', {
+      user_id: profile?.id,
+      email: profile?.email,
+      company_id: profile?.company?.id,
+    });
+    identifyMixPanelUserProfile(profile);
+  });
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
 

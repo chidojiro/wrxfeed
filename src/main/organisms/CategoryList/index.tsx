@@ -1,10 +1,12 @@
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import { useMountEffect } from '@/common/hooks';
 import ListLoading from '@/main/atoms/ListLoading';
 import { Category } from '@/main/entity';
 import DirectoryItem from '@/main/molecules/DirectoryItem';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface CategoryListProps {
   categories: Category[];
@@ -22,14 +24,14 @@ const CategoryList: React.FC<CategoryListProps> = ({
 }) => {
   const { profile } = useProfile();
 
-  useEffect(() => {
+  useMountEffect(() => {
     mixpanel.track('Category Directory View', {
       user_id: profile?.id,
       email: profile?.email,
-      company: profile?.company?.id,
+      company_id: profile?.company?.id,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    identifyMixPanelUserProfile(profile);
+  });
 
   return (
     <InfiniteScroller

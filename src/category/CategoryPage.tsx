@@ -2,19 +2,22 @@ import { TeamIcon, VendorIcon } from '@/assets';
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, Select } from '@/common/components';
 import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
-import { useUrlState } from '@/common/hooks';
+import { useMountEffect, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { DateRangeFilter } from '@/feed/types';
 import { useLineItems } from '@/feed/useLineItems';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
+import { useProfile } from '@/profile/useProfile';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { sumBy } from 'lodash-es';
+import mixpanel from 'mixpanel-browser';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CategoryHeader } from './CategoryHeader';
@@ -59,6 +62,17 @@ export const CategoryPage = () => {
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
+  });
+
+  const { profile } = useProfile();
+
+  useMountEffect(() => {
+    mixpanel.track('Category Page View', {
+      user_id: profile?.id,
+      email: profile?.email,
+      company_id: profile?.company?.id,
+    });
+    identifyMixPanelUserProfile(profile);
   });
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
