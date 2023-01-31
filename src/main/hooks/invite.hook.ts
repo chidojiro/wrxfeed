@@ -30,7 +30,7 @@ export function useInvite(): InviteHookValues {
       mixpanel.track('Invite Sent', {
         user_id: profile?.id,
         email: profile?.email,
-        company: profile?.company?.id,
+        company_id: profile?.company?.id,
       });
       useMixPanelUserProfile(profile);
       setSent(true);

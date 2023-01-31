@@ -64,7 +64,7 @@ export const LineItemDrawer = withMountOnOpen()(
       mixpanel.track('Feed Detail View', {
         user_id: profile?.id,
         email: profile?.email,
-        company: profile?.company?.id,
+        company_id: profile?.company?.id,
         feed_id: feedId,
         line_item_id: lineItem?.id,
       });

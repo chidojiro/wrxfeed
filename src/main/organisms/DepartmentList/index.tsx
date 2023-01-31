@@ -31,7 +31,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
     mixpanel.track('Team Directory View', {
       user_id: profile?.id,
       email: profile?.email,
-      company: profile?.company?.id,
+      company_id: profile?.company?.id,
     });
     useMixPanelUserProfile(profile);
     // eslint-disable-next-line react-hooks/exhaustive-deps
