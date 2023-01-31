@@ -138,7 +138,7 @@ const SearchBar: React.FC = () => {
                 }}
                 onBlur={() => setFocus(false)}
                 onClick={() => {
-                  mixpanel.track('Category Page View', {
+                  mixpanel.track('Searchbar View', {
                     user_id: profile?.id,
                     email: profile?.email,
                     company: profile?.company?.id,
