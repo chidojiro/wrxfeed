@@ -1,4 +1,4 @@
-import { Button, ConfirmModal, Drawer, Form } from '@/common/components';
+import { Button, Checkbox, ConfirmModal, Drawer, Form } from '@/common/components';
 import { withMountOnOpen } from '@/common/hocs';
 import { useDisclosure } from '@/common/hooks';
 import { OpenClose } from '@/common/types';
@@ -17,15 +17,26 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { AccessControlTabs } from './AccessControlTabs';
+import { AccessControlTabs, TabValue } from './AccessControlTabs';
 
 export type RoleDrawerProps = OpenClose & {
   roleId?: number;
   isCreate?: boolean;
 };
 
+const isAllItemsChecked = (collection: any[] = []) =>
+  !collection.find((item: any) => !item.visible);
+
+const uncheckAllItems = (collection: any[] = []) =>
+  collection.map((item: any) => ({ ...item, visible: false }));
+
+const checkAllItems = (collection: any[] = []) =>
+  collection.map((item: any) => ({ ...item, visible: true }));
+
 export const RoleDrawer = withMountOnOpen()(
   ({ onClose, open, roleId, isCreate }: RoleDrawerProps) => {
+    const [tab, setTab] = React.useState<TabValue>('teams');
+
     const history = useHistory();
     const confirmUpdateDisclosure = useDisclosure();
     const saveSuccessDisclosure = useDisclosure();
@@ -39,9 +50,67 @@ export const RoleDrawer = withMountOnOpen()(
     const methods = useForm();
     const {
       reset,
+      setValue,
       getValues,
+      watch,
       formState: { isSubmitting },
     } = methods;
+
+    const formValue = watch();
+
+    const allDepartments = React.useMemo(
+      () => formValue?.departments ?? [],
+      [formValue?.departments],
+    );
+    const allCategories = React.useMemo(() => formValue?.categories ?? [], [formValue?.categories]);
+    const allVendors = React.useMemo(() => formValue?.vendors ?? [], [formValue?.vendors]);
+
+    const isAllChecked = React.useMemo(() => {
+      if (tab === 'teams') return isAllItemsChecked(allDepartments);
+
+      if (tab === 'categories') return isAllItemsChecked(allCategories);
+
+      if (tab === 'vendors') return isAllItemsChecked(allVendors);
+
+      return false;
+    }, [allCategories, allDepartments, allVendors, tab]);
+
+    const toggleCheckAll: React.ChangeEventHandler<HTMLInputElement> = () => {
+      switch (tab) {
+        case 'teams': {
+          if (isAllItemsChecked(allDepartments)) {
+            setValue('departments', uncheckAllItems(allDepartments));
+          } else {
+            setValue('departments', checkAllItems(allDepartments));
+          }
+
+          break;
+        }
+
+        case 'categories': {
+          if (isAllItemsChecked(allCategories)) {
+            setValue('categories', uncheckAllItems(allCategories));
+          } else {
+            setValue('categories', checkAllItems(allCategories));
+          }
+
+          break;
+        }
+
+        case 'vendors': {
+          if (isAllItemsChecked(allVendors)) {
+            setValue('vendors', uncheckAllItems(allVendors));
+          } else {
+            setValue('vendors', checkAllItems(allVendors));
+          }
+
+          break;
+        }
+
+        default:
+          break;
+      }
+    };
 
     const { assignableCategories } = useAssignableCategories();
     const { assignableVendors } = useAssignableVendors();
@@ -208,15 +277,28 @@ export const RoleDrawer = withMountOnOpen()(
                 }
               />
             </div>
-            <AccessControlTabs isBase={role?.id === 0} isCreate={isCreate} isUpdate={isUpdate} />
+            <AccessControlTabs
+              tab={tab}
+              onTabChange={setTab}
+              isBase={role?.id === 0}
+              isCreate={isCreate}
+              isUpdate={isUpdate}
+            />
           </div>
-          <div className="py-5 px-6 flex justify-end gap-2 border-t border-solid border-Gray-28">
-            <Button variant="ghost" colorScheme="gray" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button variant="solid" type="submit" loading={isSubmitting}>
-              Save
-            </Button>
+          <div className="py-5 px-6 flex justify-between gap-2 border-t border-solid border-Gray-28">
+            <Checkbox
+              checked={isAllChecked}
+              onChange={toggleCheckAll}
+              label={isAllChecked ? 'Uncheck All' : 'Check All'}
+            />
+            <div>
+              <Button variant="ghost" colorScheme="gray" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button variant="solid" type="submit" loading={isSubmitting}>
+                Save
+              </Button>
+            </div>
           </div>
         </Form>
       </Drawer>

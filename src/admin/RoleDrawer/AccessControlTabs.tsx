@@ -8,15 +8,25 @@ import { SearchInput } from './SearchInput';
 import { DepartmentsTab } from './DepartmentsTab';
 import { VendorsTab } from './VendorsTab';
 
+export type TabValue = 'teams' | 'categories' | 'vendors' | 'members';
+
 export type AccessControlTabsProps = {
+  tab: TabValue;
+  onTabChange: (tab: TabValue) => void;
   isBase?: boolean;
   isUpdate?: boolean;
   isCreate?: boolean;
 };
 
-export const AccessControlTabs = ({ isBase, isUpdate, isCreate }: AccessControlTabsProps) => {
+export const AccessControlTabs = ({
+  isBase,
+  isUpdate,
+  isCreate,
+  tab,
+  onTabChange,
+}: AccessControlTabsProps) => {
   const [keyword, setKeyWord] = React.useState<string>('');
-  const tabs: { content: React.ReactNode; value: string; label: string }[] = [
+  const tabs: { content: React.ReactNode; value: TabValue; label: string }[] = [
     { content: <DepartmentsTab keyWord={keyword} />, value: 'teams', label: 'Teams' },
     {
       content: <CategoriesTab keyWord={keyword} />,
@@ -32,10 +42,9 @@ export const AccessControlTabs = ({ isBase, isUpdate, isCreate }: AccessControlT
       label: 'Members',
     },
   ];
-  const [tab, setTab] = React.useState(tabs[0].value);
 
   return (
-    <Tabs value={tab} onChange={setTab}>
+    <Tabs value={tab} onChange={onTabChange}>
       <div className="flex justify-between items-center border-b border-Gray-11 gap-10 mt-4">
         <div className="flex gap-8">
           {tabs.map(({ content, label, value }) => (
