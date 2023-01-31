@@ -1,6 +1,7 @@
 import { Tabs } from '@/common/components';
+import { useMountEffect } from '@/common/hooks';
 import { MainLayout } from '@/layout/MainLayout';
-import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import { useEffect } from 'react';
@@ -12,15 +13,14 @@ export const TargetPage = () => {
 
   const { profile } = useProfile();
 
-  useEffect(() => {
+  useMountEffect(() => {
     mixpanel.track('Target Page View', {
       user_id: profile?.id,
       email: profile?.email,
       company_id: profile?.company?.id,
     });
-    useMixPanelUserProfile(profile);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    identifyMixPanelUserProfile(profile);
+  });
 
   return (
     <MainLayout>

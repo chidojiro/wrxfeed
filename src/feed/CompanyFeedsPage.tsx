@@ -1,8 +1,8 @@
+import { useMountEffect } from '@/common/hooks';
 import { MainLayout } from '@/layout/MainLayout';
-import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
-import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Feeds } from './Feeds';
 
@@ -11,15 +11,14 @@ export const CompanyFeedsPage = () => {
 
   const { profile } = useProfile();
 
-  useEffect(() => {
+  useMountEffect(() => {
     mixpanel.track('Company Feed View', {
       user_id: profile?.id,
       email: profile?.email,
       company_id: profile?.company?.id,
     });
-    useMixPanelUserProfile(profile);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    identifyMixPanelUserProfile(profile);
+  });
 
   return (
     <MainLayout>

@@ -8,7 +8,7 @@ import SearchBarResultItem from '@/main/atoms/SearchBarResultItem';
 import useRoveFocus from '@/main/hooks/focus.hook';
 import { SearchResult } from '@/main/types';
 import { useSearch } from '@/misc/useSearch';
-import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import { TargetTypeProp } from '@/target/types';
 import { Transition } from '@headlessui/react';
@@ -143,7 +143,7 @@ const SearchBar: React.FC = () => {
                     email: profile?.email,
                     company_id: profile?.company?.id,
                   });
-                  useMixPanelUserProfile(profile);
+                  identifyMixPanelUserProfile(profile);
                 }}
               />
               {(isFocus || isSearching) && (

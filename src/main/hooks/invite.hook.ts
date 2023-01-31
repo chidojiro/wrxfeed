@@ -3,7 +3,7 @@ import { ApiErrorCode } from '@/error/types';
 import { isApiError } from '@/error/utils';
 import { InvitationApis } from '@/invitation/apis';
 import { Contact } from '@/main/entity';
-import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import React from 'react';
@@ -32,7 +32,7 @@ export function useInvite(): InviteHookValues {
         email: profile?.email,
         company_id: profile?.company?.id,
       });
-      useMixPanelUserProfile(profile);
+      identifyMixPanelUserProfile(profile);
       setSent(true);
     },
     {

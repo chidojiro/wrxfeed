@@ -6,7 +6,7 @@ import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { DateRangeFilter } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
-import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
@@ -67,15 +67,14 @@ export const TeamPage = () => {
 
   const { profile } = useProfile();
 
-  useEffect(() => {
+  useMountEffect(() => {
     mixpanel.track('Team Page View', {
       user_id: profile?.id,
       email: profile?.email,
       company_id: profile?.company?.id,
     });
-    useMixPanelUserProfile(profile);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    identifyMixPanelUserProfile(profile);
+  });
 
   if (isForbidden)
     return (

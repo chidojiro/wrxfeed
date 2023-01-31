@@ -3,7 +3,7 @@ import { distanceToNow } from '@/common/utils';
 import { CommentText } from '@/feed/CommentText';
 import { Notification, NotifyStatus } from '@/main/entity';
 import { getColorByText, getNameAbbreviation } from '@/main/utils';
-import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import clsx from 'clsx';
 import mixpanel from 'mixpanel-browser';
@@ -47,7 +47,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ item, onClick }) =>
           email: profile?.email,
           company_id: profile?.company?.id,
         });
-        useMixPanelUserProfile(profile);
+        identifyMixPanelUserProfile(profile);
       }}
       className={clsx(
         'flex flex-row min-h-16 pl-3 pr-5 py-4 w-full',

@@ -1,7 +1,7 @@
 import { GoogleProfile, Profile } from '@/profile/types';
 import mixpanel from 'mixpanel-browser';
 
-export const useMixPanelUserProfile = (profile?: Profile & GoogleProfile) => {
+export const identifyMixPanelUserProfile = (profile?: Profile & GoogleProfile) => {
   mixpanel.identify(String(profile?.id));
   mixpanel.people.set({
     $name: profile?.fullName,

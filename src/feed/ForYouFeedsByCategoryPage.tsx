@@ -1,10 +1,10 @@
 import { ChevronLeftIcon } from '@/assets';
 import { useCategory } from '@/category/useCategory';
+import { useMountEffect } from '@/common/hooks';
 import { MainLayout } from '@/layout/MainLayout';
-import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
-import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Feeds } from './Feeds';
 
@@ -12,15 +12,14 @@ export const ForYouFeedsByCategoryPage = () => {
   const params = useParams() as Record<string, string>;
   const { profile } = useProfile();
 
-  React.useEffect(() => {
+  useMountEffect(() => {
     mixpanel.track('For You Feeds By Category View', {
       user_id: profile?.id,
       email: profile?.email,
       company_id: profile?.company?.id,
     });
-    useMixPanelUserProfile(profile);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    identifyMixPanelUserProfile(profile);
+  });
 
   const categoryId = +params.categoryId;
 

@@ -1,10 +1,11 @@
 import InfiniteScroller from '@/common/atoms/InfiniteScroller';
+import { useMountEffect } from '@/common/hooks';
 import ListLoading from '@/main/atoms/ListLoading';
 import { Department } from '@/main/entity';
 import { DepartmentSection } from '@/main/hooks/department.hook';
 import DepartmentItem from '@/main/molecules/DepartmentItem';
 import RootDepartmentHeader from '@/main/molecules/RootDepartmentHeader';
-import { useMixPanelUserProfile } from '@/mixpanel/useMixPanelUserProfile';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
 import React, { useEffect } from 'react';
@@ -27,15 +28,14 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
 }) => {
   const { profile } = useProfile();
 
-  useEffect(() => {
+  useMountEffect(() => {
     mixpanel.track('Team Directory View', {
       user_id: profile?.id,
       email: profile?.email,
       company_id: profile?.company?.id,
     });
-    useMixPanelUserProfile(profile);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    identifyMixPanelUserProfile(profile);
+  });
 
   const renderDeptSection = (dept: DepartmentSection) => (
     <div className="shadow-md rounded-card overflow-hidden" key={dept.id}>
