@@ -27,8 +27,8 @@ export type RoleDrawerProps = OpenClose & {
 const isAllItemsChecked = (collection: any[] = []) =>
   !collection.find((item: any) => !item.visible);
 
-const isSomeItemsChecked = (collection: any[] = []) =>
-  collection.find((item: any) => item.visible) && collection.find((item: any) => !item.visible);
+const isAllItemsUnchecked = (collection: any[] = []) =>
+  !collection.find((item: any) => item.visible);
 
 const uncheckAllItems = (collection: any[] = []) =>
   collection.map((item: any) => ({ ...item, visible: false }));
@@ -78,17 +78,17 @@ export const RoleDrawer = withMountOnOpen()(
       return false;
     }, [allCategories, allDepartments, allVendors, tab]);
 
-    const isSomeChecked = React.useMemo(() => {
-      if (tab === 'teams') return isSomeItemsChecked(allDepartments);
+    const isAllUnChecked = React.useMemo(() => {
+      if (tab === 'teams') return isAllItemsUnchecked(allDepartments);
 
-      if (tab === 'categories') return isSomeItemsChecked(allCategories);
+      if (tab === 'categories') return isAllItemsUnchecked(allCategories);
 
-      if (tab === 'vendors') return isSomeItemsChecked(allVendors);
+      if (tab === 'vendors') return isAllItemsUnchecked(allVendors);
 
       return false;
     }, [allCategories, allDepartments, allVendors, tab]);
 
-    const toggleCheckAll: React.ChangeEventHandler<HTMLInputElement> = () => {
+    const toggleCheckAll = () => {
       switch (tab) {
         case 'teams': {
           if (isAllItemsChecked(allDepartments)) {
@@ -301,12 +301,24 @@ export const RoleDrawer = withMountOnOpen()(
           <div className="py-5 px-6 flex justify-between gap-2 border-t border-solid border-Gray-28">
             <div>
               {tab !== 'members' && (
-                <Checkbox
-                  checked={isAllChecked}
-                  partial={isSomeChecked}
-                  onChange={toggleCheckAll}
-                  label="Check All"
-                />
+                <>
+                  <Button
+                    variant="text"
+                    className="underline"
+                    onClick={toggleCheckAll}
+                    disabled={isAllChecked}
+                  >
+                    Check All
+                  </Button>
+                  <Button
+                    variant="text"
+                    className="underline"
+                    onClick={toggleCheckAll}
+                    disabled={isAllUnChecked}
+                  >
+                    Uncheck All
+                  </Button>
+                </>
               )}
             </div>
             <div>
