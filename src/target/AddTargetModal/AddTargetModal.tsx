@@ -23,6 +23,7 @@ import {
 } from '@/target/types';
 import { useDepartments } from '@/team/useDepartments';
 import { useVendors } from '@/vendor/useVendors';
+import clsx from 'clsx';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { TargetApis } from '../apis';
@@ -327,6 +328,8 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
 
   const handleDelete = deleteTarget;
 
+  console.log(target);
+
   return (
     <Modal open={open} onClose={onClose} center={false}>
       <OverlayLoader loading={isValidatingOptions}>
@@ -349,11 +352,18 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
                 variant="underline"
                 placeholder="e.g Direct marketing & online advertising"
                 rules={{ required: true }}
+                disabled={target?.isPrimary}
               />
               {hasNameError && renderErrorName()}
             </div>
             {!hidePropertyDropdowns && (
-              <PropsSection reviewSentence={reviewSentence} exceptionProps={exceptionProps} />
+              <div
+                className={clsx(
+                  target?.isPrimary && 'opacity-70 cursor-default pointer-events-none',
+                )}
+              >
+                <PropsSection reviewSentence={reviewSentence} exceptionProps={exceptionProps} />
+              </div>
             )}
             <div className="flex flex-row pt-2 px-10 justify-between">
               <div className="flex flex-row items-center space-x-2 py-3">
