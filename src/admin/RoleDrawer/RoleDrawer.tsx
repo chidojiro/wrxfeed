@@ -27,6 +27,9 @@ export type RoleDrawerProps = OpenClose & {
 const isAllItemsChecked = (collection: any[] = []) =>
   !collection.find((item: any) => !item.visible);
 
+const isSomeItemsChecked = (collection: any[] = []) =>
+  collection.find((item: any) => item.visible) && collection.find((item: any) => !item.visible);
+
 const uncheckAllItems = (collection: any[] = []) =>
   collection.map((item: any) => ({ ...item, visible: false }));
 
@@ -71,6 +74,16 @@ export const RoleDrawer = withMountOnOpen()(
       if (tab === 'categories') return isAllItemsChecked(allCategories);
 
       if (tab === 'vendors') return isAllItemsChecked(allVendors);
+
+      return false;
+    }, [allCategories, allDepartments, allVendors, tab]);
+
+    const isSomeChecked = React.useMemo(() => {
+      if (tab === 'teams') return isSomeItemsChecked(allDepartments);
+
+      if (tab === 'categories') return isSomeItemsChecked(allCategories);
+
+      if (tab === 'vendors') return isSomeItemsChecked(allVendors);
 
       return false;
     }, [allCategories, allDepartments, allVendors, tab]);
@@ -290,8 +303,9 @@ export const RoleDrawer = withMountOnOpen()(
               {tab !== 'members' && (
                 <Checkbox
                   checked={isAllChecked}
+                  partial={isSomeChecked}
                   onChange={toggleCheckAll}
-                  label={isAllChecked ? 'Uncheck All' : 'Check All'}
+                  label="Check All"
                 />
               )}
             </div>

@@ -66,8 +66,6 @@ export const VendorPage = () => {
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
-  if (!vendorSpendings) return null;
-
   const { profile } = useProfile();
 
   useMountEffect(() => {
@@ -78,6 +76,8 @@ export const VendorPage = () => {
     });
     identifyMixPanelUserProfile(profile);
   });
+
+  if (!vendorSpendings) return null;
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
 
