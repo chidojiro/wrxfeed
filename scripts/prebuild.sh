@@ -1,1 +1,1 @@
-sed -i  -e s/%BUILD_VERSION%/ff57eda8c111a7ec2a724577b00e9e6a2991d916/g scripts/../public/index.html
+sed -i  -e s/%BUILD_VERSION%/435b398d65424635c3679ae555de192a117ab1a9/g scripts/../public/index.html

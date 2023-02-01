@@ -1,12 +1,15 @@
 import { Form } from '@/common/components';
-import { useFetcher } from '@/common/hooks';
+import { useMountEffect } from '@/common/hooks';
 import { FeedApis } from '@/feed/apis';
 import { DateRangeFilter, Property } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
 import { commentEditorHtmlParser } from '@/main/utils';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
+import { useProfile } from '@/profile/useProfile';
 import { Entities } from '@/types';
 import { EditorState } from 'draft-js';
-import React from 'react';
+import mixpanel from 'mixpanel-browser';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import { InsightApis } from './apis';
@@ -45,7 +48,18 @@ export const InsightPage = ({}: InsightPageProps) => {
 
   const history = useHistory();
 
-  React.useEffect(() => {
+  const { profile } = useProfile();
+
+  useMountEffect(() => {
+    mixpanel.track('Insight Page View', {
+      user_id: profile?.id,
+      email: profile?.email,
+      company_id: profile?.company?.id,
+    });
+    identifyMixPanelUserProfile(profile);
+  });
+
+  useEffect(() => {
     if (isEdit) {
       const getTagValueFromProps = ({ id, name, type }: Property) => `${type}-${id}-${name}`;
       const { dateRange, groupBy, props, name } = insight;

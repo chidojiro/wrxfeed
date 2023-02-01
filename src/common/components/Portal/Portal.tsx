@@ -1,5 +1,4 @@
-import { Children } from '../../types';
-import React from 'react';
+import { Children } from '@/common/types';
 import { createPortal } from 'react-dom';
 
 export type PortalProps = Children & {
@@ -7,11 +6,5 @@ export type PortalProps = Children & {
 };
 
 export const Portal = ({ children, asChildOf }: PortalProps) => {
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  return mounted ? createPortal(children, asChildOf ?? document.body) : null;
+  return createPortal(children, asChildOf ?? document.getElementById('root') ?? document.body);
 };

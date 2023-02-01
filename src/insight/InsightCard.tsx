@@ -1,6 +1,8 @@
 import { AlertRed, EssentialsSendEnableIcon } from '@/assets';
 import { Button, Form, Input } from '@/common/components';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import { useUrlState } from '@/common/hooks';
+import { StringUtils } from '@/common/utils';
 import { CommentBox } from '@/feed/CommentBox';
 import { CommentsSection } from '@/feed/FeedCard/CommentsSection';
 import { FeedCardHeader } from '@/feed/FeedCard/FeedCardHeader';
@@ -14,14 +16,12 @@ import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { Entities } from '@/types';
 import clsx from 'clsx';
-import { range, sumBy } from 'lodash-es';
+import { sumBy } from 'lodash-es';
 import React, { useState } from 'react';
 import { InsightCardActionMenu } from './InsightCardActionMenu';
 import { InsightFeedItem } from './types';
 import { useInsightSpendings } from './useInsightSpendings';
 import { useInsightTransactions } from './useInsightTransactions';
-
-const TRANSACTIONS_PER_PAGE = 10;
 
 export type InsightCardProps = {
   groupBy?: Entities;
@@ -81,10 +81,7 @@ export const InsightCard = ({
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
-  const [sortTransactionsBy, setSortTransactionsBy] = useUrlState<string>(
-    'sortTransactionsBy',
-    DEFAULT_SORT,
-  );
+  const [sortTransactionsBy, setSortTransactionsBy] = useState<string>(DEFAULT_SORT);
   const [page, setPage] = useState<number>(1);
 
   const { mentions } = useMentions();
@@ -100,23 +97,19 @@ export const InsightCard = ({
     );
   };
 
-  const { transactions, isValidatingTransactions } = useInsightTransactions({
+  const { transactions, isValidatingTransactions, totalCount } = useInsightTransactions({
     props: props ?? [],
     dateRange: dateRange!,
     groupBy: groupBy!,
-    offset: 0,
-    limit: TRANSACTIONS_PER_PAGE * page,
+    limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
+    offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
+    ...StringUtils.toApiSortParam(sortTransactionsBy),
   });
 
   React.useEffect(() => {
     setPage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify({ props: props ?? [], dateRange: dateRange!, groupBy: groupBy! })]);
-
-  const handleLoad = async () => {
-    setPage(page + 1);
-    return range(TRANSACTIONS_PER_PAGE);
-  };
 
   return (
     <div className={clsx('rounded-card border-card shadow-card', 'bg-white')}>
@@ -203,7 +196,8 @@ export const InsightCard = ({
       <TransactionList
         className="my-6 mx-8"
         defaultExpand={false}
-        onLoad={handleLoad as any}
+        onPageChange={setPage}
+        totalCount={totalCount}
         transactions={transactions}
         loading={isValidatingTransactions}
         sort={sortTransactionsBy}

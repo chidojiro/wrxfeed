@@ -1,19 +1,19 @@
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader } from '@/common/components';
-import { EMPTY_ARRAY } from '@/common/constants';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD, EMPTY_ARRAY } from '@/common/constants';
 import { useHandler, useMountEffect, useUrlState } from '@/common/hooks';
-import { DateUtils, StringUtils } from '@/common/utils';
-import { USE_PREV_YEAR_SPENDINGS } from '@/env';
+import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { DateRangeFilter } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
+import { useProfile } from '@/profile/useProfile';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import { TransactionList } from '@/transactions/TransactionList';
 import { useTransactions } from '@/transactions/useTransactions';
-import dayjs from 'dayjs';
-import { range } from 'lodash-es';
-import { useState } from 'react';
+import mixpanel from 'mixpanel-browser';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DepartmentApis } from './apis';
 import { DEFAULT_SORT } from './constants';
@@ -22,9 +22,6 @@ import { TeamTargetSummary } from './TeamTargetSummary';
 import { TopCategories } from './TopCategories';
 import { useDepartment } from './useDepartment';
 import { useTopCategories } from './useTopCategories';
-
-const TRANSACTIONS_PER_PAGE = 10;
-const DATE_FORMAT = 'YYYY-MM-DD';
 
 export const TeamPage = () => {
   const [sortTransactionsBy, setSortTransactionsBy] = useUrlState<string>(
@@ -49,39 +46,35 @@ export const TeamPage = () => {
   const { data: target, isValidating: isValidatingTarget, mutate } = usePrimaryTarget(departmentId);
   const [page, setPage] = useState<number>(1);
 
-  const getFromDate = (timeRange: DateRangeFilter) => {
-    if (!timeRange || timeRange === '30-days') {
-      return dayjs().year(DateUtils.getThisYear()).subtract(30, 'days').format(DATE_FORMAT);
-    }
-
-    if (timeRange === '90-days')
-      return dayjs().year(DateUtils.getThisYear()).subtract(90, 'days').format(DATE_FORMAT);
-
-    return dayjs().year(DateUtils.getThisYear()).date(1).month(0).format(DATE_FORMAT);
-  };
-
-  const getToDate = () =>
-    USE_PREV_YEAR_SPENDINGS
-      ? dayjs().year(DateUtils.getThisYear()).month(11).date(31).format(DATE_FORMAT)
-      : dayjs().format(DATE_FORMAT);
-
   useMountEffect(() => {
     viewDepartmentSummary(departmentId);
   });
 
-  const { transactions, isValidatingTransactions } = useTransactions({
+  const { transactions, isValidatingTransactions, totalCount } = useTransactions({
     props: [{ id: +departmentIdParam, type: 'DEPARTMENT', name: '', exclude: false }],
-    limit: TRANSACTIONS_PER_PAGE * page,
     dateRange: transactionTimeRange,
+    limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
+    offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
 
   const { data: topCategories = EMPTY_ARRAY, isValidating: isValidatingTopCategories } =
-    useTopCategories(departmentId, { from: getFromDate(topCategoriesTimeRange), to: getToDate() });
+    useTopCategories(departmentId, { dateRange: topCategoriesTimeRange });
 
   const { data: department, error } = useDepartment(departmentId);
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
+
+  const { profile } = useProfile();
+
+  useMountEffect(() => {
+    mixpanel.track('Team Page View', {
+      user_id: profile?.id,
+      email: profile?.email,
+      company_id: profile?.company?.id,
+    });
+    identifyMixPanelUserProfile(profile);
+  });
 
   if (isForbidden)
     return (
@@ -89,11 +82,6 @@ export const TeamPage = () => {
         <RestrictedAccessPage />
       </MainLayout>
     );
-
-  const handleLoad = async () => {
-    setPage(page + 1);
-    return range(TRANSACTIONS_PER_PAGE);
-  };
 
   return (
     <MainLayout>
@@ -121,12 +109,13 @@ export const TeamPage = () => {
         </div>
       </div>
       <TransactionList
-        onLoad={handleLoad as any}
+        onPageChange={setPage}
         transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['depName']}
         className="mt-6"
         sort={sortTransactionsBy}
+        totalCount={totalCount}
         onSortChange={setSortTransactionsBy}
         dateRange={transactionTimeRange}
         onDateRangeChange={setTransactionTimeRange}

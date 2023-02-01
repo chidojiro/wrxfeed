@@ -12,6 +12,7 @@ import mixpanel from 'mixpanel-browser';
 import React from 'react';
 import { FeedApis } from '../apis';
 import { LineItemDetails } from './LineItemDetails';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 
 export interface SelectItemProps {
   item: TransLineItem;
@@ -63,11 +64,12 @@ export const LineItemDrawer = withMountOnOpen()(
       mixpanel.track('Feed Detail View', {
         user_id: profile?.id,
         email: profile?.email,
-        company: profile?.company?.id,
+        company_id: profile?.company?.id,
         feed_id: feedId,
         line_item_id: lineItem?.id,
       });
-    }, [feedId, profile?.company?.id, profile?.email, profile?.id, lineItem?.id]);
+      identifyMixPanelUserProfile(profile);
+    }, [feedId, profile?.company?.id, profile?.email, profile?.id, lineItem?.id, profile]);
 
     return (
       <Drawer

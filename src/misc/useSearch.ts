@@ -39,7 +39,7 @@ export const useSearch = ({
 
   const [results, setResults] = React.useState<SearchResult[]>([]);
 
-  const { departments, isInitializingDepartments } = useDepartments({ includeSub: true });
+  const { departments, isInitializingDepartments } = useDepartments();
 
   const { categories, isInitializingCategories } = useCategories();
 

@@ -14,19 +14,12 @@ export type InviteModalProps = {
   onClose: () => void;
 };
 
-const LIMIT = 20;
-const INIT_PAGINATION = Object.freeze({
-  offset: 0,
-  limit: LIMIT,
-});
-
 type InviteTagInputHandler = React.ElementRef<typeof InviteTagInput>;
 
 const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
   const tagInputRef = useRef<InviteTagInputHandler>(null);
   const [filter, setFilter] = useState<GetInvitationContactsParams>({
     text: '',
-    ...INIT_PAGINATION,
   });
   const { contacts } = useGetContacts(filter);
   const { sendInvitation, isSent } = useInvite();
@@ -37,7 +30,6 @@ const InviteModal: React.FC<InviteModalProps> = ({ open = false, onClose }) => {
     (value: string) => {
       setFilter({
         text: value,
-        ...INIT_PAGINATION,
       });
     },
     [setFilter],

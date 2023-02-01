@@ -1,27 +1,29 @@
 import { TeamIcon, VendorIcon } from '@/assets';
 import { RestrictedAccessPage } from '@/auth/RestrictedAccess';
 import { OverlayLoader, Select } from '@/common/components';
-import { useUrlState } from '@/common/hooks';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
+import { useMountEffect, useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import { ApiErrorCode } from '@/error';
 import { DateRangeFilter } from '@/feed/types';
 import { useLineItems } from '@/feed/useLineItems';
 import { MainLayout } from '@/layout/MainLayout';
 import { getDisplayUsdAmount } from '@/main/utils';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
+import { useProfile } from '@/profile/useProfile';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
-import { range, sumBy } from 'lodash-es';
+import { sumBy } from 'lodash-es';
+import mixpanel from 'mixpanel-browser';
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CategoryHeader } from './CategoryHeader';
 import { GetCategorySpendingsParams } from './types';
 import { useCategory } from './useCategory';
 import { useCategorySpendingsReport } from './useCategorySpendingsReport';
-
-const TRANSACTIONS_PER_PAGE = 10;
 
 export const CategoryPage = () => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
@@ -56,15 +58,22 @@ export const CategoryPage = () => {
     totalLineItemsCount,
   } = useLineItems({
     props: [{ id: categoryId, type: 'CATEGORY', name: '', exclude: false }],
-    limit: TRANSACTIONS_PER_PAGE * page,
     dateRange: dateRange,
+    limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
+    offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
 
-  const handleLoad = async () => {
-    setPage(page + 1);
-    return range(TRANSACTIONS_PER_PAGE);
-  };
+  const { profile } = useProfile();
+
+  useMountEffect(() => {
+    mixpanel.track('Category Page View', {
+      user_id: profile?.id,
+      email: profile?.email,
+      company_id: profile?.company?.id,
+    });
+    identifyMixPanelUserProfile(profile);
+  });
 
   const isForbidden = error?.code === ApiErrorCode.Forbidden;
 
@@ -80,40 +89,43 @@ export const CategoryPage = () => {
   return (
     <MainLayout>
       <CategoryHeader categoryId={categoryId} />
-      <div className="flex justify-end mt-4 w-full">
-        <Select
-          className="border border-solid border-Gray-11 rounded"
-          value={groupBy}
-          onChange={(value: any) => setGroupBy(value)}
-          options={[
-            { label: 'None', value: '' },
-            {
-              label: (
-                <div className="flex items-center gap-2">
-                  <TeamIcon />
-                  Team
-                </div>
-              ),
-              value: 'DEPARTMENT',
-            },
-            {
-              label: (
-                <div className="flex items-center gap-2">
-                  <VendorIcon />
-                  Vendor
-                </div>
-              ),
-              value: 'VENDOR',
-            },
-          ]}
-        />
-      </div>
       <OverlayLoader
         loading={isValidatingVendor || isValidatingCategorySpendingsReport}
         className="mt-6"
       >
         <div className="rounded-card shadow-card px-6 py-4 bg-white">
-          <h3 className="text-primary font-bold">{vendor?.name}</h3>
+          <div className="flex justify-between">
+            <h3 className="text-primary font-bold">{vendor?.name}</h3>
+            <div className="flex space-x-2 items-center">
+              <p className="text-xs text-primary">Group By</p>
+              <Select
+                className="border border-solid border-Gray-11 rounded"
+                value={groupBy}
+                onChange={(value: any) => setGroupBy(value)}
+                options={[
+                  { label: 'None', value: '' },
+                  {
+                    label: (
+                      <div className="flex items-center gap-2">
+                        <TeamIcon />
+                        Team
+                      </div>
+                    ),
+                    value: 'DEPARTMENT',
+                  },
+                  {
+                    label: (
+                      <div className="flex items-center gap-2">
+                        <VendorIcon />
+                        Vendor
+                      </div>
+                    ),
+                    value: 'VENDOR',
+                  },
+                ]}
+              />
+            </div>
+          </div>
           <div className="flex gap-4 mt-2">
             <div>
               <div className="flex gap-1 items-center text-xs text-Gray-6">
@@ -157,7 +169,7 @@ export const CategoryPage = () => {
       </OverlayLoader>
       <TransactionList
         className="mt-6"
-        onLoad={handleLoad as any}
+        onPageChange={setPage}
         transactions={transactions}
         loading={isValidatingTransactions}
         hiddenColumns={['categoryName']}
@@ -165,6 +177,7 @@ export const CategoryPage = () => {
         onDateRangeChange={setDateRange}
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
+        totalCount={totalLineItemsCount}
       />
     </MainLayout>
   );

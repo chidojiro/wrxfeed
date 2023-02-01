@@ -24,10 +24,7 @@ export const PropertiesSection = ({
 }: PropertiesSectionProps) => {
   const exceptionsDropdownRef = React.useRef<any>();
 
-  const { departments } = useDepartments({
-    limit: 0,
-    includeSub: true,
-  });
+  const { departments } = useDepartments({ limit: 0 });
 
   const { vendors } = useVendors({
     limit: 0,

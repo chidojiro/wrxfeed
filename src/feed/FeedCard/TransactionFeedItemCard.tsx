@@ -1,10 +1,13 @@
 import { MoreVerticalIcon } from '@/assets';
-import { OverlayLoader, StatusTag } from '@/common/components';
+import { OverlayLoader, StatusTag, Tooltip } from '@/common/components';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import { FeedItem, TranStatus } from '@/main/entity';
 import { decimalLogic, getColorByText } from '@/main/utils';
-import { getTransactionColorScheme, getTransactionLabel } from '@/transactions/TransactionList';
+import {
+  getTransactionColorScheme,
+  shouldTruncateTranStatus,
+} from '@/transactions/TransactionList';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
@@ -117,7 +120,17 @@ export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCa
                 colorScheme={getTransactionColorScheme(feed?.lineItem.transStatus as TranStatus)}
                 className="h-5 text-xs font-medium"
               >
-                {getTransactionLabel(feed?.lineItem.transStatus as TranStatus)}
+                {shouldTruncateTranStatus(feed?.lineItem.transStatus as TranStatus) ? (
+                  <Tooltip
+                    trigger={
+                      <p className="truncate w-8">{feed?.lineItem.transStatus as TranStatus}</p>
+                    }
+                  >
+                    {feed?.lineItem.transStatus as TranStatus}
+                  </Tooltip>
+                ) : (
+                  <p>{feed?.lineItem.transStatus as TranStatus}</p>
+                )}
               </StatusTag>
             </div>
           </div>
@@ -127,7 +140,7 @@ export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCa
       <FeedBackModal
         open={feedbackModalDisclosure.isOpen}
         onClose={feedbackModalDisclosure.onClose}
-        itemId={feed.lineItemId as number}
+        itemId={feed.lineItem.id as number}
       />
     </>
   );

@@ -4,8 +4,8 @@ import {
   Avatar,
   Button,
   Divider,
-  InfiniteLoader,
   OverlayLoader,
+  Pagination,
   StatusTag,
   StatusTagColorScheme,
   Table,
@@ -19,7 +19,6 @@ import { CommentGroup } from '@/feed/CommentGroup';
 import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { Category, Department, TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
-import { PaginationParams } from '@/rest/types';
 import { RestrictedItem as TRestrictedItem } from '@/role/types';
 import { useRestrictedItems } from '@/role/useRestrictedItems';
 import { Vendor } from '@/vendor/types';
@@ -33,7 +32,7 @@ import { DateRangeFilter } from '@/feed/types';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
-    case TranStatus.PaidInFull:
+    case TranStatus.PaidInFull || TranStatus.Paid:
       return 'green';
     case TranStatus.Open:
       return 'purple';
@@ -42,22 +41,21 @@ export const getTransactionColorScheme = (status: TranStatus): StatusTagColorSch
   }
 };
 
-export const getTransactionLabel = (status: TranStatus) => {
-  switch (status) {
-    case TranStatus.PaidInFull:
-      return 'Paid';
-    case TranStatus.Open:
-      return 'Open';
-    default:
-      return 'Pending';
-  }
-};
+const statusTruncateConditions = [
+  TranStatus.Open,
+  TranStatus.Cancelled,
+  TranStatus.Closed,
+  TranStatus.Rejected,
+  TranStatus.Paid,
+];
+
+export const shouldTruncateTranStatus = (status: TranStatus) =>
+  !statusTruncateConditions.includes(status);
 
 type TransactionListProps = ClassName & {
   transactions: TransLineItem[];
-  onLoad: (params: PaginationParams) => Promise<TransLineItem[]>;
   defaultExpand?: boolean;
-  loading: boolean;
+  loading?: boolean;
   hiddenColumns?: ('vendorName' | 'depName' | 'categoryName')[];
   dateRange?: DateRangeFilter;
   onDateRangeChange?: (dateRange: DateRangeFilter) => void;
@@ -80,7 +78,6 @@ export const TransactionList = ({
   sort,
   onSortChange,
   defaultExpand = true,
-  onLoad,
   dateRange,
   onDateRangeChange,
   page,
@@ -99,8 +96,6 @@ export const TransactionList = ({
   const showCategory = !hiddenColumns?.includes('categoryName');
   const showDepartment = !hiddenColumns?.includes('depName');
   const showVendor = !hiddenColumns?.includes('vendorName');
-
-  const [listOpen, setListOpen] = useState<boolean>(defaultExpand);
 
   const { restrictedItems } = useRestrictedItems();
 
@@ -185,16 +180,15 @@ export const TransactionList = ({
             'drop-shadow(0px 3px 5px rgba(9, 30, 66, 0.05)) drop-shadow(-1px 6px 8px rgba(6, 25, 56, 0.03))',
         }}
       >
-        <Button
+        <div
           className={clsx(
             'flex items-center gap-2',
             'font-semibold text-Gray-6 bg-white w-full py-2 px-4',
           )}
-          onClick={() => setListOpen(true)}
         >
           <LoopBoldIcon />
           <span>No Transactions</span>
-        </Button>
+        </div>
         {dateRange && onDateRangeChange && (
           <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
         )}
@@ -203,7 +197,13 @@ export const TransactionList = ({
 
   return (
     <>
-      {listOpen ? (
+      <div
+        className={className}
+        style={{
+          filter:
+            'drop-shadow(0px 3px 5px rgba(9, 30, 66, 0.05)) drop-shadow(-1px 6px 8px rgba(6, 25, 56, 0.03))',
+        }}
+      >
         <div>
           <LineItemDrawer
             open={isLineItemDrawerOpen}
@@ -211,7 +211,7 @@ export const TransactionList = ({
             lineItem={selectedLineItem!}
             feedId={feedId}
           />
-          <Table.OverflowContainer className={className}>
+          <Table.OverflowContainer style={{ filter: 'none' }}>
             <OverlayLoader loading={loading}>
               <Table
                 className="rounded-card"
@@ -227,13 +227,12 @@ export const TransactionList = ({
                           'flex items-center justify-between',
                         )}
                       >
-                        <Button
+                        <div
                           className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3')}
-                          onClick={() => setListOpen(false)}
                         >
                           <LoopBoldIcon />
-                          <span>Hide Transactions</span>
-                        </Button>
+                          <span>View Transactions</span>
+                        </div>
                         {dateRange && onDateRangeChange && (
                           <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
                         )}
@@ -361,7 +360,17 @@ export const TransactionList = ({
                                 colorScheme={getTransactionColorScheme(transaction.transStatus)}
                                 className="font-semibold"
                               >
-                                {getTransactionLabel(transaction.transStatus)}
+                                {shouldTruncateTranStatus(transaction.transStatus) ? (
+                                  <Tooltip
+                                    trigger={
+                                      <p className="truncate w-8">{transaction.transStatus}</p>
+                                    }
+                                  >
+                                    {transaction.transStatus}
+                                  </Tooltip>
+                                ) : (
+                                  <p>{transaction.transStatus}</p>
+                                )}
                               </StatusTag>
                             </div>
                           </Table.Cell>
@@ -411,40 +420,24 @@ export const TransactionList = ({
               </Table>
             </OverlayLoader>
           </Table.OverflowContainer>
-          {hasTransactions && (
-            <div className="relative flex justify-between items-center my-3">
-              <Divider className="w-[45%]" />
-              {transactions.length % 10 === 0 && (
-                <InfiniteLoader defaultPage={2} mode="ON_DEMAND" onLoad={onLoad} />
-              )}
-              <Divider className="w-[45%]" />
-            </div>
-          )}
         </div>
-      ) : (
-        <>
-          <Button
-            className={clsx(
-              'flex items-center gap-2',
-              'font-semibold text-Gray-3 px-8 py-6 bg-white w-full my-2 rounded-card',
-            )}
-            onClick={() => setListOpen(true)}
+      </div>
+      {hasTransactions && onPageChange && !!totalCount && (
+        <div>
+          <Divider className="mt-4" />
+          <Pagination
+            totalRecord={totalCount}
+            sideItemsCount={2}
+            onChange={(page) => onPageChange(page)}
+            perPage={DEFAULT_ITEMS_PER_INFINITE_LOAD}
+            page={page}
           >
-            <Button
-              className={clsx(
-                'flex items-center gap-2',
-                'font-semibold text-Gray-3 bg-white w-full py-2 px-4',
-              )}
-              onClick={() => setListOpen(true)}
-            >
-              <LoopBoldIcon />
-              <span>{renderTitle?.(false) ?? 'View Transactions'}</span>
-            </Button>
-            {dateRange && onDateRangeChange && (
-              <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
-            )}
-          </Button>
-        </>
+            <div className="flex items-center justify-between mt-4 px-4">
+              <Pagination.ShowingRange className="hidden md:block" />
+              <Pagination.Items className="mx-auto md:mx-0" />
+            </div>
+          </Pagination>
+        </div>
       )}
     </>
   );

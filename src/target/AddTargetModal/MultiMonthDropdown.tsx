@@ -192,7 +192,6 @@ const MultiMonthDropdown: ForwardRefRenderFunction<
   return (
     <div className={clsx('flex-shrink-0 relative', className)} ref={useableViewRef}>
       <Popover
-        usePortal={false}
         open={popoverDisclosure.isOpen}
         onClose={popoverDisclosure.onClose}
         placement={isHeightRestricted ? 'right-start' : 'bottom-start'}

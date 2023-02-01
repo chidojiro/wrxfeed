@@ -1,6 +1,7 @@
 import { MainLayout } from '@/layout/MainLayout';
 import { Notification } from '@/main/entity';
 import { useNotification } from '@/main/hooks';
+import { NotificationApis } from '@/notification/apis';
 import { PaginationParams } from '@/rest/types';
 import { Routes } from '@/routing/routes';
 import React from 'react';
@@ -18,6 +19,10 @@ export const NotificationsPage = () => {
   const [filter, setFilter] = React.useState<PaginationParams>(INIT_PAGINATION);
   const { notifications, isLoading, hasMore, patchNotification } = useNotification(filter);
   const history = useHistory();
+
+  React.useEffect(() => {
+    NotificationApis.markAllAsRead();
+  }, []);
 
   const handleLoadMore = React.useCallback(() => {
     if (!hasMore || isLoading) return;

@@ -38,13 +38,21 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
   const profileForms = [
     {
       title: 'Name',
-      content: profile?.fullName || 'Unknown',
+      content: profile?.fullName || '--',
       onChange: () => null,
       editable: false,
     },
     {
       title: 'Title',
-      content: profile?.title || 'Unknown',
+      content: profile?.title || '--',
+      onChange: (text: string) => {
+        setTitle(text);
+      },
+      editable: false,
+    },
+    {
+      title: 'Team',
+      content: profile?.department?.name || '--',
       onChange: (text: string) => {
         setTitle(text);
       },
@@ -52,7 +60,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
     },
     {
       title: 'Email',
-      content: profile?.email || 'Unknown',
+      content: profile?.email || '--',
       onChange: () => null,
       editable: false,
     },
@@ -215,7 +223,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
           <Popover.Button
             className={clsx(
               'bg-white rounded-full flex focus:outline-none',
-              open ? 'ring-2 ring-offset-2 ring-rose-500' : '',
+              open ? 'ring-2 ring-offset-2 ring-Accent-2' : '',
             )}
           >
             {renderAvatarIcon()}
