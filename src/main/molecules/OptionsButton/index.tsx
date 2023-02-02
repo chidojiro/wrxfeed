@@ -43,6 +43,7 @@ export const OptionsButton = ({
             label="View Details"
             onClick={onViewClick}
             stopPropagation
+            preventDefault
             Icon={EyeIcon}
             className="text-Gray-3"
           />
@@ -54,6 +55,7 @@ export const OptionsButton = ({
             label="Edit Target"
             onClick={onEditClick}
             stopPropagation
+            preventDefault
             Icon={EditIcon}
             className="text-Gray-3"
           />
@@ -65,6 +67,7 @@ export const OptionsButton = ({
             label="Delete Target"
             onClick={onDeleteClick}
             stopPropagation
+            preventDefault
             Icon={BinIcon}
             className="text-system-alert"
           />

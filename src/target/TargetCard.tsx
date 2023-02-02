@@ -1,5 +1,5 @@
 import Loading from '@/common/atoms/Loading';
-import { Avatar, Button } from '@/common/components';
+import { Avatar } from '@/common/components';
 import { useHandler } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { distanceToNow } from '@/common/utils';
@@ -12,7 +12,7 @@ import { SpendingChart } from '@/spending/SpendingChart';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { AddTargetModal, AddTargetModalProps } from './AddTargetModal';
 import { AddTargetModalWithDefaultApisProps } from './AddTargetModal/AddTargetModal';
 import { TargetApis } from './apis';
@@ -77,8 +77,8 @@ export const TargetCard = ({
         onDeleteSuccess={onDeleteSuccess}
         hidePropertyDropdowns={hidePropertyDropdowns}
       />
-      <Button
-        onClick={goToTargetDetails}
+      <Link
+        to={`/departments/${target?.department?.id}`}
         key={target?.id}
         className={clsx(
           'bg-white relative w-full rounded-card shadow-card hover:shadow-target-hover flex flex-col border border-transparent hover:border-Accent-4',
@@ -177,7 +177,7 @@ export const TargetCard = ({
             <Loading color="Gray-3" />
           </div>
         )}
-      </Button>
+      </Link>
     </>
   );
 };
