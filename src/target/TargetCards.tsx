@@ -24,6 +24,7 @@ export const TargetCards = ({
           chartContainerClass="h-[184px]"
           onDeleteSuccess={onDeleteSuccess}
           onUpdateSuccess={onUpdateSuccess}
+          url={`/departments/${target?.department?.id}`}
         />
       ))}
     </div>

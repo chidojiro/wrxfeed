@@ -95,6 +95,7 @@ export const TeamPage = () => {
             showColorfulHeading={false}
             onUpdateSuccess={(target) => mutate([target])}
             onDeleteSuccess={() => mutate()}
+            url={`/feed/${target.feedItem?.id}`}
           />
         </OverlayLoader>
         <div className="col-span-9 lg:col-span-4 flex flex-col gap-6">
