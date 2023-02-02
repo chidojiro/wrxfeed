@@ -24,7 +24,7 @@ export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
           onUpdateSuccess={(target) => mutate([target])}
           onDeleteSuccess={() => mutate()}
           deletable={false}
-          url={`/departments/${targets[0]?.department?.id}`}
+          url={`/feed/${targets[0]?.feedItem?.id}`}
         />
       ) : (
         <div />
