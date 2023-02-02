@@ -25,10 +25,12 @@ export type TargetCardProps = ClassName &
     showColorfulHeading?: boolean;
     deletable?: boolean;
     chartContainerClass?: string;
+    href: string;
   };
 
 export const TargetCard = ({
   target,
+  href,
   className,
   onUpdateSuccess,
   onDeleteSuccess,
@@ -78,7 +80,7 @@ export const TargetCard = ({
         hidePropertyDropdowns={hidePropertyDropdowns}
       />
       <Link
-        to={`/departments/${target?.department?.id}`}
+        to={href}
         key={target?.id}
         className={clsx(
           'bg-white relative w-full rounded-card shadow-card hover:shadow-target-hover flex flex-col border border-transparent hover:border-Accent-4',
