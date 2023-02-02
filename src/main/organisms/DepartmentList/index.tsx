@@ -2,30 +2,20 @@ import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import { useMountEffect } from '@/common/hooks';
 import ListLoading from '@/main/atoms/ListLoading';
 import { Department } from '@/main/entity';
-import { DepartmentSection } from '@/main/hooks/department.hook';
 import DepartmentItem from '@/main/molecules/DepartmentItem';
 import RootDepartmentHeader from '@/main/molecules/RootDepartmentHeader';
 import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface DepartmentListProps {
-  departments: DepartmentSection[];
-  isLoading: boolean;
-  onLoadMore: () => void;
-  hasMore: boolean;
+  departments: Department[];
   onSelect?: (dept: Department) => void;
   onSelectRoot?: (dept: Department) => void;
 }
 
-const DepartmentList: React.FC<DepartmentListProps> = ({
-  departments,
-  isLoading,
-  onLoadMore,
-  onSelect,
-  onSelectRoot,
-}) => {
+const DepartmentList: React.FC<DepartmentListProps> = ({ departments, onSelect, onSelectRoot }) => {
   const { profile } = useProfile();
 
   useMountEffect(() => {
@@ -37,14 +27,14 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
     identifyMixPanelUserProfile(profile);
   });
 
-  const renderDeptSection = (dept: DepartmentSection) => (
+  const renderDeptSection = (dept: Department) => (
     <div className="shadow-md rounded-card overflow-hidden" key={dept.id}>
       <RootDepartmentHeader
         item={dept}
         department={dept}
         onClick={() => onSelectRoot && onSelectRoot(dept)}
       />
-      {!!dept.children.length && (
+      {!!dept.children?.length && (
         <div className="bg-white">
           <ul className="divide-y divide-gray-200">
             {dept.children.map((child) => (
@@ -58,16 +48,7 @@ const DepartmentList: React.FC<DepartmentListProps> = ({
     </div>
   );
 
-  return (
-    <InfiniteScroller
-      className="pb-14 mr-0.5 overflow-hidden px-2 sm:px-0"
-      onLoadMore={onLoadMore}
-      isLoading={isLoading}
-      LoadingComponent={<ListLoading />}
-    >
-      <div className="overflow-hidden space-y-6 pb-5">{departments.map(renderDeptSection)}</div>
-    </InfiniteScroller>
-  );
+  return <div className="overflow-hidden space-y-6 pb-5">{departments.map(renderDeptSection)}</div>;
 };
 
 export default DepartmentList;
