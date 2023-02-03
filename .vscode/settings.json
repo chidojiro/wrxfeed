@@ -98,7 +98,4 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "githubPullRequests.ignoredPullRequestBranches": [
-    "main"
-  ]
 }
