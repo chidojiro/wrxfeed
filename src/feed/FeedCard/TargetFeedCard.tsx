@@ -1,7 +1,6 @@
 import { EyeHideIcon } from '@/assets';
 import { Avatar } from '@/common/components';
 import { distanceToNow } from '@/common/utils';
-import UserAvatar from '@/main/atoms/UserAvatar';
 import { FeedItem, Visibility } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
 import { getTargetName } from '@/main/utils';
