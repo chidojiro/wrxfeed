@@ -1,6 +1,6 @@
 import { EyeHideIcon } from '@/assets';
+import { Avatar } from '@/common/components';
 import { distanceToNow } from '@/common/utils';
-import UserAvatar from '@/main/atoms/UserAvatar';
 import { FeedItem, Visibility } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
 import { getTargetName } from '@/main/utils';
@@ -32,7 +32,11 @@ export const TargetFeedCard = React.memo(
       const updaterName = target?.updater?.fullName ?? '';
       return (
         <div className="flex w-6 h-6 group relative rounded-card">
-          <UserAvatar user={target?.updater} />
+          <Avatar
+            fullName={target.updater.fullName as string}
+            src={target.updater.avatar}
+            showTooltip
+          />
           {typeof updaterName === 'string' && updaterName?.length > 0 && (
             <div className="invisible group-hover:visible absolute -top-10 left-0">
               <div className="bg-primary p-2 rounded-sm">
