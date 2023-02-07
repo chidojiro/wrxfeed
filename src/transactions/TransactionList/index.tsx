@@ -184,135 +184,140 @@ export const TransactionList = ({
                           </Table.Header>
                         ))}
                       </Table.Row>
-                      {transactions.map(
-                        (transaction: TransLineItem) =>
-                          ((transaction as any).department = null) || (
-                            <Table.Row
-                              key={transaction.id}
-                              className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
-                            >
-                              <Table.Cell>
-                                {transaction.transDate && DateUtils.format(transaction.transDate)}
-                              </Table.Cell>
-                              {showDepartment && (
-                                <Table.Cell className="hover:bg-Gray-12 !p-0">
-                                  <div className="py-2 px-4">
-                                    {transaction.department ? (
-                                      <Link
-                                        className="flex items-center gap-2"
-                                        to={`/departments/${transaction.department?.id}`}
-                                      >
-                                        {transaction.department?.name}
-                                      </Link>
-                                    ) : (
-                                      '--'
-                                    )}
-                                  </div>
-                                </Table.Cell>
-                              )}
-                              {showCategory && (
-                                <Table.Cell className="hover:bg-Gray-12 !p-0">
-                                  <div className="py-2 px-4">
-                                    <Link
-                                      className="flex items-center gap-2"
-                                      to={`/categories/${transaction.category?.id}`}
-                                    >
-                                      {transaction.category?.name}
-                                    </Link>
-                                  </div>
-                                </Table.Cell>
-                              )}
-                              {showVendor && (
-                                <Table.Cell className="hover:bg-Gray-12 !p-0">
-                                  <div className="py-2 px-4">
-                                    <Link
-                                      to={`/vendors/${transaction.vendor?.id}`}
-                                      className="flex items-center gap-2"
-                                    >
-                                      <Avatar
-                                        size="sm"
-                                        src={transaction.vendor?.avatar}
-                                        fullName={transaction.vendor?.name ?? ''}
-                                        className="w-6 h-6 flex-shrink-0"
-                                      />
-                                      <div>
-                                        <p>{transaction.vendor?.name}</p>
-                                        {transaction.transRecordType?.toLowerCase() ===
-                                          'Expense Report'.toLowerCase() && (
-                                          <div className="flex flex-row items-center space-x-1">
-                                            <p className="text-Accent-2 text-xs font-normal">
-                                              Expensed
-                                            </p>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </Link>
-                                  </div>
-                                </Table.Cell>
-                              )}
-                              <Table.Cell>
-                                <Button
-                                  className="text-left"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openLineItemDrawer(transaction, transaction?.feedItem?.id);
-                                  }}
-                                >
-                                  {(transaction.description ?? '').length >= 93 ? (
-                                    <Tooltip
-                                      trigger={
-                                        <div className="flex flex-col items-center max-w-[350px]">
-                                          <p className="line-clamp-3">{transaction.description}</p>
-                                        </div>
-                                      }
-                                    >
-                                      {transaction.description}
-                                    </Tooltip>
-                                  ) : (
-                                    <p>{transaction.description}</p>
-                                  )}
-                                </Button>
-                              </Table.Cell>
-                              <Table.Cell className="text-right">
-                                {decimalLogic(transaction.amountUsd, '$')}
-                              </Table.Cell>
-                              <Table.Cell>
-                                <div className="flex justify-end">
-                                  <StatusTag
-                                    colorScheme={getTransactionColorScheme(transaction.transStatus)}
-                                    className="font-semibold"
+                      {transactions.map((transaction: TransLineItem) => (
+                        <Table.Row
+                          key={transaction.id}
+                          className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
+                        >
+                          <Table.Cell>
+                            {transaction.transDate && DateUtils.format(transaction.transDate)}
+                          </Table.Cell>
+                          {showDepartment && (
+                            <Table.Cell className="hover:bg-Gray-12 !p-0">
+                              <div className="py-2 px-4">
+                                {transaction.department ? (
+                                  <Link
+                                    className="flex items-center gap-2"
+                                    to={`/departments/${transaction.department?.id}`}
                                   >
-                                    {shouldTruncateTranStatus(transaction.transStatus) ? (
-                                      <Tooltip
-                                        trigger={
-                                          <p className="truncate w-8">{transaction.transStatus}</p>
-                                        }
-                                      >
-                                        {transaction.transStatus}
-                                      </Tooltip>
-                                    ) : (
-                                      <p>{transaction.transStatus}</p>
-                                    )}
-                                  </StatusTag>
-                                </div>
-                              </Table.Cell>
-                              <Table.Cell>
-                                <Link to={`/feed/item/${transaction.feedItem?.id}`}>
-                                  {transaction.feedItem?.comments.length ? (
-                                    <CommentGroup comments={transaction.feedItem.comments} />
-                                  ) : (
-                                    <div className="relative m-2">
-                                      <CommentIcon className="text-Gray-7 h-7 w-6" />
-                                      <div className="absolute bottom-[43%] left-3 transform -translate-x-1/2 text-Gray-2">
-                                        <AddSmallSlimIcon />
-                                      </div>
+                                    {transaction.department?.name}
+                                  </Link>
+                                ) : (
+                                  '--'
+                                )}
+                              </div>
+                            </Table.Cell>
+                          )}
+                          {showCategory && (
+                            <Table.Cell className="hover:bg-Gray-12 !p-0">
+                              <div className="py-2 px-4">
+                                {transaction.category ? (
+                                  <Link
+                                    className="flex items-center gap-2"
+                                    to={`/categories/${transaction.category?.id}`}
+                                  >
+                                    {transaction.category?.name}
+                                  </Link>
+                                ) : (
+                                  '--'
+                                )}
+                              </div>
+                            </Table.Cell>
+                          )}
+                          {showVendor && (
+                            <Table.Cell className="hover:bg-Gray-12 !p-0">
+                              <div className="py-2 px-4">
+                                {transaction.vendor ? (
+                                  <Link
+                                    to={`/vendors/${transaction.vendor?.id}`}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <Avatar
+                                      size="sm"
+                                      src={transaction.vendor?.avatar}
+                                      fullName={transaction.vendor?.name ?? ''}
+                                      className="w-6 h-6 flex-shrink-0"
+                                    />
+                                    <div>
+                                      <p>{transaction.vendor?.name}</p>
+                                      {transaction.transRecordType?.toLowerCase() ===
+                                        'Expense Report'.toLowerCase() && (
+                                        <div className="flex flex-row items-center space-x-1">
+                                          <p className="text-Accent-2 text-xs font-normal">
+                                            Expensed
+                                          </p>
+                                        </div>
+                                      )}
                                     </div>
-                                  )}
-                                </Link>
-                              </Table.Cell>
-                            </Table.Row>
-                          ),
-                      )}
+                                  </Link>
+                                ) : (
+                                  '--'
+                                )}
+                              </div>
+                            </Table.Cell>
+                          )}
+                          <Table.Cell>
+                            <Button
+                              className="text-left"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openLineItemDrawer(transaction, transaction?.feedItem?.id);
+                              }}
+                            >
+                              {(transaction.description ?? '').length >= 93 ? (
+                                <Tooltip
+                                  trigger={
+                                    <div className="flex flex-col items-center max-w-[350px]">
+                                      <p className="line-clamp-3">{transaction.description}</p>
+                                    </div>
+                                  }
+                                >
+                                  {transaction.description}
+                                </Tooltip>
+                              ) : (
+                                <p>{transaction.description}</p>
+                              )}
+                            </Button>
+                          </Table.Cell>
+                          <Table.Cell className="text-right">
+                            {decimalLogic(transaction.amountUsd, '$')}
+                          </Table.Cell>
+                          <Table.Cell>
+                            <div className="flex justify-end">
+                              <StatusTag
+                                colorScheme={getTransactionColorScheme(transaction.transStatus)}
+                                className="font-semibold"
+                              >
+                                {shouldTruncateTranStatus(transaction.transStatus) ? (
+                                  <Tooltip
+                                    trigger={
+                                      <p className="truncate w-8">{transaction.transStatus}</p>
+                                    }
+                                  >
+                                    {transaction.transStatus}
+                                  </Tooltip>
+                                ) : (
+                                  <p>{transaction.transStatus}</p>
+                                )}
+                              </StatusTag>
+                            </div>
+                          </Table.Cell>
+                          <Table.Cell>
+                            <Link to={`/feed/item/${transaction.feedItem?.id}`}>
+                              {transaction.feedItem?.comments.length ? (
+                                <CommentGroup comments={transaction.feedItem.comments} />
+                              ) : (
+                                <div className="relative m-2">
+                                  <CommentIcon className="text-Gray-7 h-7 w-6" />
+                                  <div className="absolute bottom-[43%] left-3 transform -translate-x-1/2 text-Gray-2">
+                                    <AddSmallSlimIcon />
+                                  </div>
+                                </div>
+                              )}
+                            </Link>
+                          </Table.Cell>
+                        </Table.Row>
+                      ))}
                     </>
                   ) : (
                     <Table.Row>
