@@ -2,7 +2,6 @@ import { AddSmallSlimIcon, CommentIcon, LoopBoldIcon } from '@/assets';
 import {
   Avatar,
   Button,
-  Divider,
   OverlayLoader,
   Pagination,
   StatusTag,
