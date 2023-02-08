@@ -170,7 +170,7 @@ export const TransactionList = ({
                             'flex items-center justify-between',
                           )}
                         >
-                          {disableHideTransactionButton ? (
+                          {disableTransactionButton ? (
                             <div
                               className={clsx(
                                 'flex items-center gap-2',
