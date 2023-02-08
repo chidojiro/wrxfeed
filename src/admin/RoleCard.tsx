@@ -36,7 +36,7 @@ export const RoleCard = ({
         <p className="text-sm leading-4 font-normal text-Gray-6">{description}</p>
       </div>
       {deletable &&
-        (!isDeleting ? (
+        (isDeleting ? (
           <Spinner className="!w-4 !h-4" />
         ) : (
           <XIcon
