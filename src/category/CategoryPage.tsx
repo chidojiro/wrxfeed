@@ -179,6 +179,7 @@ export const CategoryPage = () => {
         onSortChange={setSortTransactionsBy}
         totalCount={totalLineItemsCount}
         disableTransactionButton
+        defaultExpand
       />
     </MainLayout>
   );

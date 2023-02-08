@@ -169,28 +169,14 @@ export const TransactionList = ({
                             'flex items-center justify-between',
                           )}
                         >
-                          {disableTransactionButton ? (
-                            <div
-                              className={clsx(
-                                'flex items-center gap-2',
-                                'font-semibold text-Gray-3',
-                              )}
-                            >
-                              <LoopBoldIcon />
-                              <span>Transactions</span>
-                            </div>
-                          ) : (
-                            <Button
-                              className={clsx(
-                                'flex items-center gap-2',
-                                'font-semibold text-Gray-3',
-                              )}
-                              onClick={() => setListOpen(false)}
-                            >
-                              <LoopBoldIcon />
-                              <span>{renderTitle?.(true) ?? 'Hide Transactions'}</span>
-                            </Button>
-                          )}
+                          <Button
+                            className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3')}
+                            onClick={() => setListOpen(false)}
+                            disabled={disableTransactionButton}
+                          >
+                            <LoopBoldIcon />
+                            <span>{renderTitle?.(true) ?? 'Hide Transactions'}</span>
+                          </Button>
                           {dateRange && onDateRangeChange && (
                             <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
                           )}

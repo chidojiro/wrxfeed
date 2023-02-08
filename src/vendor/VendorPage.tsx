@@ -176,6 +176,7 @@ export const VendorPage = () => {
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
         disableTransactionButton
+        defaultExpand
       />
     </MainLayout>
   );
