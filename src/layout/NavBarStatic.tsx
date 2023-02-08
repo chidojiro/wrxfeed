@@ -3,6 +3,7 @@ import { ProtectedFeatures } from '@/auth/constants';
 import { Avatar, Button } from '@/common/components';
 import { NotifyPopover, UserProfilePopover } from '@/main/molecules';
 import { InviteModal } from '@/main/organisms';
+import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import { Routes } from '@/routing/routes';
 import { useSubscription } from '@/subscription/useSubscription';
@@ -62,6 +63,7 @@ export const NavBarStatic = ({
       email: profile?.email,
       company_id: profile?.company?.id,
     });
+    identifyMixPanelUserProfile(profile);
   };
 
   const renderInviteButton = () => {
