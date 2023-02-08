@@ -178,7 +178,7 @@ export const CategoryPage = () => {
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
         totalCount={totalLineItemsCount}
-        disableHideTransactionButton
+        disableTransactionButton
       />
     </MainLayout>
   );

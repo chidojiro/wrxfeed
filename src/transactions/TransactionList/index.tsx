@@ -62,7 +62,7 @@ type TransactionListProps = ClassName & {
   onPageChange?: (page: number) => void;
   totalCount?: number;
   renderTitle?: (isExpanded: boolean, isEmpty?: boolean) => React.ReactNode;
-  disableHideTransactionButton?: boolean;
+  disableTransactionButton?: boolean;
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
@@ -80,7 +80,7 @@ export const TransactionList = ({
   totalCount,
   defaultExpand = false,
   renderTitle,
-  disableHideTransactionButton = false,
+  disableTransactionButton = false,
 }: TransactionListProps) => {
   const {
     isLineItemDrawerOpen,
