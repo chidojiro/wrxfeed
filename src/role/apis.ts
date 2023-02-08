@@ -20,6 +20,8 @@ const create = (payload: CreateRolePayload) => RestApis.post(`/rbac/roles`, payl
 const update = (id: number, payload: UpdateRolePayload) =>
   RestApis.put(`/rbac/roles/${id}`, payload);
 
+const _delete = (id: number) => RestApis.delete(`/rbac/roles/${id}`);
+
 const updateAssigned = (id: number, payload: UpdateAssignedRolesPayload) =>
   RestApis.put(`/rbac/accounts/${id}/roles`, payload);
 
@@ -36,6 +38,7 @@ export const RoleApis = {
   getList,
   create,
   update,
+  delete: _delete,
   updateAssigned,
   getCategories,
   getDepartments,

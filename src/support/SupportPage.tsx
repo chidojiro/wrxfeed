@@ -1,9 +1,13 @@
 import { AuthApis } from '@/auth/apis';
-import { Button, Divider, Form, Input } from '@/common/components';
-import { useDisclosure } from '@/common/hooks';
+import { Button, Divider, Form, Input, Tooltip } from '@/common/components';
+import { useDisclosure, useHandler } from '@/common/hooks';
+import { CompanyApis } from '@/company/apis';
 import { useInvite } from '@/main/hooks';
+import { useClipboard } from '@dwarvesf/react-hooks';
+import { ClipboardCopyIcon } from '@heroicons/react/outline';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 export type SupportPageProps = {
   //
@@ -16,6 +20,8 @@ export const SupportPage = ({}: SupportPageProps) => {
   const [inviteEmail, setInviteEmail] = useState<string>('');
   const methods = useForm({ mode: 'onChange' });
   const { reset, watch } = methods;
+
+  const companyFormMethods = useForm();
 
   const hasLoginError = useDisclosure();
 
@@ -38,6 +44,26 @@ export const SupportPage = ({}: SupportPageProps) => {
     await sendInvitation({ email });
     reset();
     setLoading(false);
+  };
+
+  const { handle: createCompany, data: createdCompany } = useHandler(
+    (data) => CompanyApis.create(data),
+    {
+      onError: (error: any) => {
+        toast.error(
+          Object.values(error?.details?.details ?? {})[0] ?? (error as any).details?.message,
+        );
+
+        return false;
+      },
+    },
+  );
+
+  const { onCopy } = useClipboard((createdCompany as any)?.token);
+
+  const handleCopyToken = () => {
+    onCopy();
+    toast.success('Token was copied to clipboard!');
   };
 
   return (
@@ -75,9 +101,9 @@ export const SupportPage = ({}: SupportPageProps) => {
           </p>
         )}
 
-        <Divider className="my-[100px]" />
+        <Divider className="my-12" />
 
-        <h3 className="font-bold text-[28px] mt-24">Invite</h3>
+        <h3 className="font-bold text-[28px]">Invite</h3>
         <p className="font-bold mt-6 text-sm">Enter email for the user you want to invite</p>
         <Form methods={methods} onSubmit={() => sendInvite(watch('invite-email'))}>
           <div className="flex items-center gap-6 mt-8">
@@ -97,6 +123,63 @@ export const SupportPage = ({}: SupportPageProps) => {
             >
               {isLoading ? 'Sending...' : 'Invite'}
             </Button>
+          </div>
+        </Form>
+
+        <Divider className="my-12" />
+
+        <h3 className="font-bold text-[28px]">New company</h3>
+        <Form
+          methods={companyFormMethods}
+          onSubmit={async (data: any) => {
+            await createCompany({ ...data, name: 'Admin' });
+            toast.success('Company was created!');
+          }}
+        >
+          <div className="flex gap-6">
+            <div className="flex flex-col gap-6 mt-8 w-[300px] flex-shrink-0">
+              <Form.Input
+                className="bg-[#EDEDED] rounded-lg"
+                name="fullName"
+                required={true}
+                placeholder="Admin name"
+              />
+              <Form.Input
+                className="bg-[#EDEDED] rounded-lg"
+                name="adminEmail"
+                required={true}
+                type="email"
+                placeholder="Admin email"
+              />
+              <Form.Input
+                className="=bg-[#EDEDED] rounded-lg"
+                name="domain"
+                required={true}
+                placeholder="Company domain"
+              />
+              <Button type="submit" variant="solid" colorScheme="accent" className="rounded">
+                Create
+              </Button>
+            </div>
+            {companyFormMethods.formState.isSubmitSuccessful && (
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold">Token</p>
+                  <Tooltip
+                    trigger={
+                      <Button onClick={handleCopyToken}>
+                        <ClipboardCopyIcon width={16} />
+                      </Button>
+                    }
+                  >
+                    Copy to clipboard
+                  </Tooltip>
+                </div>
+                <p className="p-4 rounded border border-gray-400 break-all max-w-[500px] mt-2 h-full">
+                  {(createdCompany as any)?.token}
+                </p>
+              </div>
+            )}
           </div>
         </Form>
         {isSent && (

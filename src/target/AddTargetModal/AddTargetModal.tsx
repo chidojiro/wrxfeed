@@ -328,8 +328,6 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
 
   const handleDelete = deleteTarget;
 
-  console.log(target);
-
   return (
     <Modal open={open} onClose={onClose} center={false}>
       <OverlayLoader loading={isValidatingOptions}>

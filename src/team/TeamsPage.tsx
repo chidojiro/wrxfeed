@@ -1,13 +1,15 @@
-import { useLegacyQuery } from '@/common/hooks';
+import { InfiniteLoader } from '@/common/components';
+import { useInfiniteData, useLegacyQuery } from '@/common/hooks';
 import { GetFeedsParams } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
 import { Department } from '@/main/entity';
-import { useDepartment } from '@/main/hooks/department.hook';
 import DepartmentList from '@/main/organisms/DepartmentList';
 import { scrollToTop } from '@/main/utils';
 import { PaginationParams } from '@/rest/types';
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { DepartmentApis } from './apis';
+import { useDepartments } from './useDepartments';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({
@@ -29,8 +31,10 @@ export const TeamsPage = () => {
   const { id: deptId } = useParams<{ id?: string }>();
   const query = useLegacyQuery();
   // Department states
-  const [filter, setFilter] = React.useState<PaginationParams>(INIT_PAGINATION);
-  const { departments, hasMore, isLoading } = useDepartment({ ...filter, parentOnly: true });
+
+  const { data: departments, loadMore } = useInfiniteData((paginationParams: PaginationParams) =>
+    DepartmentApis.getList({ ...paginationParams, includeSub: true, parentOnly: true }),
+  );
 
   // Feeds states
   const [feedsFilter, setFeedsFilter] = React.useState<GetFeedsParams>(
@@ -75,14 +79,6 @@ export const TeamsPage = () => {
     filterByRoute();
   }, [filterByRoute]);
 
-  const handleLoadMore = React.useCallback(() => {
-    if (!hasMore || isLoading) return;
-    setFilter((prevFilter) => ({
-      ...prevFilter,
-      offset: (prevFilter?.offset ?? 0) + (prevFilter?.limit ?? 0),
-    }));
-  }, [hasMore, isLoading]);
-
   const handleDepartmentSelect = (value?: Department): void => {
     history.push({
       pathname: `/departments/${value?.id.toString()}`,
@@ -95,12 +91,12 @@ export const TeamsPage = () => {
       <h1 className="sr-only">Department list</h1>
       <DepartmentList
         departments={departments}
-        isLoading={isLoading}
-        hasMore={hasMore}
-        onLoadMore={handleLoadMore}
         onSelect={handleDepartmentSelect}
         onSelectRoot={handleDepartmentSelect}
       />
+      <div className="mt-4">
+        <InfiniteLoader mode="ON_SIGHT" itemsPerLoad={5} onLoad={loadMore}></InfiniteLoader>
+      </div>
     </MainLayout>
   );
 };

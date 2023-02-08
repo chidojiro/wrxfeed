@@ -140,7 +140,7 @@ export const TransactionFeedItemCard = ({ feed, loading }: TransactionFeedItemCa
       <FeedBackModal
         open={feedbackModalDisclosure.isOpen}
         onClose={feedbackModalDisclosure.onClose}
-        itemId={feed.lineItem.id as number}
+        itemId={feed.id as number}
       />
     </>
   );
