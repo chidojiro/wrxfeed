@@ -60,7 +60,7 @@ export const NavBarStatic = ({
     mixpanel.track('Invite Button Click', {
       user_id: profile?.id,
       email: profile?.email,
-      company: profile?.company?.id,
+      company_id: profile?.company?.id,
     });
   };
 
