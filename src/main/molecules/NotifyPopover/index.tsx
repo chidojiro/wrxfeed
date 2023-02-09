@@ -107,8 +107,8 @@ const NotifyPopover: React.FC<NotifyPopoverProps> = ({
 
   const renderNotifyIconWithBell = () => {
     return (
-      <div className="flex h-8 w-8 justify-center items-center rounded-full focus:outline-none hover:ring-2 ring-offset-2 ring-Accent-2">
-        <NotifyIcon aria-hidden="true" />
+      <div className="flex h-8 w-8 justify-center items-center rounded-full focus:outline-none hover:ring-2 ring-Accent-2">
+        <NotifyIcon className="text-white" aria-hidden="true" />
         {newNotifyCount !== 0 && (
           <div className="absolute flex bg-system-alert top-0 right-1 justify-center items-center border-2 border-primary w-5 h-5 rounded-full">
             {showNumberNotify && (

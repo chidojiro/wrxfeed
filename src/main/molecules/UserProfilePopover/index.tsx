@@ -223,7 +223,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
           <Popover.Button
             className={clsx(
               'bg-white rounded-full flex focus:outline-none',
-              open ? 'ring-2 ring-offset-2 ring-Accent-2' : '',
+              open ? 'ring-2 ring-Accent-2' : '',
             )}
           >
             {renderAvatarIcon()}

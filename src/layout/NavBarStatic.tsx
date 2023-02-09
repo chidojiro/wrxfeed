@@ -73,7 +73,7 @@ export const NavBarStatic = ({
         onClick={onClickInviteButton}
         className={clsx(
           hoverStyle,
-          'ml-8 inline-flex items-center px-4 py-2 border border-Gray-3 text-sm font-medium rounded-md shadow-sm text-white hover:bg-primary focus:outline-none focus:ring-offset-2 focus:ring-Accent-2',
+          'ml-8 inline-flex items-center px-4 py-2 border border-Gray-3 text-sm font-medium rounded-md shadow-sm text-white hover:bg-primary focus:outline-none focus:ring-Accent-2',
         )}
       >
         <UserPlusIcon className="flex mr-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-Accent-2" />
