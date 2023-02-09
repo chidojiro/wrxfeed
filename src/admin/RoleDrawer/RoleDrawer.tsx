@@ -48,6 +48,8 @@ export const RoleDrawer = withMountOnOpen()(
 
     const { role, isInitializingRole } = useRole(roleId ?? 0);
 
+    const isBaseRole = role?.id === 0;
+
     const { mutateRoles } = useRoles();
 
     const methods = useForm();
@@ -56,7 +58,7 @@ export const RoleDrawer = withMountOnOpen()(
       setValue,
       getValues,
       watch,
-      formState: { isSubmitting },
+      formState: { isSubmitting, isDirty },
     } = methods;
 
     const formValue = watch();
@@ -182,17 +184,17 @@ export const RoleDrawer = withMountOnOpen()(
       departments: data.departments.map(({ id, visible, default: _default }: VisibilityConfig) => ({
         id,
         visible,
-        useDefault: _default === visible,
+        useDefault: !isBaseRole ? _default === visible : undefined,
       })),
       categories: data.categories.map(({ id, visible, default: _default }: VisibilityConfig) => ({
         id,
         visible,
-        useDefault: _default === visible,
+        useDefault: !isBaseRole ? _default === visible : undefined,
       })),
       vendors: data.vendors.map(({ id, visible, default: _default }: VisibilityConfig) => ({
         id,
         visible,
-        useDefault: _default === visible,
+        useDefault: !isBaseRole ? _default === visible : undefined,
       })),
     });
 
@@ -329,7 +331,7 @@ export const RoleDrawer = withMountOnOpen()(
               <Button variant="ghost" colorScheme="gray" onClick={onClose}>
                 Cancel
               </Button>
-              <Button variant="solid" type="submit" loading={isSubmitting}>
+              <Button variant="solid" type="submit" loading={isSubmitting} disabled={!isDirty}>
                 Save
               </Button>
             </div>
