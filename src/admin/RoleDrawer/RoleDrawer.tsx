@@ -55,66 +55,60 @@ export const RoleDrawer = withMountOnOpen()(
       reset,
       setValue,
       getValues,
-      watch,
       formState: { isSubmitting },
     } = methods;
 
-    const formValue = watch();
-
-    const allDepartments = React.useMemo(
-      () => formValue?.departments ?? [],
-      [formValue?.departments],
-    );
-    const allCategories = React.useMemo(() => formValue?.categories ?? [], [formValue?.categories]);
-    const allVendors = React.useMemo(() => formValue?.vendors ?? [], [formValue?.vendors]);
+    const getAllDepartments = React.useCallback(() => getValues().departments, [getValues]);
+    const getAllCategories = React.useCallback(() => getValues().categories, [getValues]);
+    const getAllVendors = React.useCallback(() => getValues().vendors, [getValues]);
 
     const isAllChecked = React.useMemo(() => {
-      if (tab === 'teams') return isAllItemsChecked(allDepartments);
+      if (tab === 'teams') return isAllItemsChecked(getAllDepartments());
 
-      if (tab === 'categories') return isAllItemsChecked(allCategories);
+      if (tab === 'categories') return isAllItemsChecked(getAllCategories());
 
-      if (tab === 'vendors') return isAllItemsChecked(allVendors);
+      if (tab === 'vendors') return isAllItemsChecked(getAllVendors());
 
       return false;
-    }, [allCategories, allDepartments, allVendors, tab]);
+    }, [getAllCategories, getAllDepartments, getAllVendors, tab]);
 
     const isAllUnChecked = React.useMemo(() => {
-      if (tab === 'teams') return isAllItemsUnchecked(allDepartments);
+      if (tab === 'teams') return isAllItemsUnchecked(getAllDepartments());
 
-      if (tab === 'categories') return isAllItemsUnchecked(allCategories);
+      if (tab === 'categories') return isAllItemsUnchecked(getAllCategories());
 
-      if (tab === 'vendors') return isAllItemsUnchecked(allVendors);
+      if (tab === 'vendors') return isAllItemsUnchecked(getAllVendors());
 
       return false;
-    }, [allCategories, allDepartments, allVendors, tab]);
+    }, [getAllCategories(), getAllDepartments(), getAllVendors(), tab]);
 
     const toggleCheckAll = () => {
       switch (tab) {
         case 'teams': {
-          if (isAllItemsChecked(allDepartments)) {
-            setValue('departments', uncheckAllItems(allDepartments));
+          if (isAllItemsChecked(getAllDepartments())) {
+            setValue('departments', uncheckAllItems(getAllDepartments()));
           } else {
-            setValue('departments', checkAllItems(allDepartments));
+            setValue('departments', checkAllItems(getAllDepartments()));
           }
 
           break;
         }
 
         case 'categories': {
-          if (isAllItemsChecked(allCategories)) {
-            setValue('categories', uncheckAllItems(allCategories));
+          if (isAllItemsChecked(getAllCategories())) {
+            setValue('categories', uncheckAllItems(getAllCategories()));
           } else {
-            setValue('categories', checkAllItems(allCategories));
+            setValue('categories', checkAllItems(getAllCategories()));
           }
 
           break;
         }
 
         case 'vendors': {
-          if (isAllItemsChecked(allVendors)) {
-            setValue('vendors', uncheckAllItems(allVendors));
+          if (isAllItemsChecked(getAllVendors())) {
+            setValue('vendors', uncheckAllItems(getAllVendors()));
           } else {
-            setValue('vendors', checkAllItems(allVendors));
+            setValue('vendors', checkAllItems(getAllVendors()));
           }
 
           break;
@@ -128,17 +122,17 @@ export const RoleDrawer = withMountOnOpen()(
     const checkAll = () => {
       switch (tab) {
         case 'teams': {
-          setValue('departments', checkAllItems(allDepartments));
+          setValue('departments', checkAllItems(getAllDepartments()));
           break;
         }
 
         case 'categories': {
-          setValue('categories', checkAllItems(allCategories));
+          setValue('categories', checkAllItems(getAllCategories()));
           break;
         }
 
         case 'vendors': {
-          setValue('vendors', checkAllItems(allVendors));
+          setValue('vendors', checkAllItems(getAllVendors()));
           break;
         }
 
@@ -150,17 +144,17 @@ export const RoleDrawer = withMountOnOpen()(
     const uncheckAll = () => {
       switch (tab) {
         case 'teams': {
-          setValue('departments', uncheckAllItems(allDepartments));
+          setValue('departments', uncheckAllItems(getAllDepartments()));
           break;
         }
 
         case 'categories': {
-          setValue('categories', uncheckAllItems(allCategories));
+          setValue('categories', uncheckAllItems(getAllCategories()));
           break;
         }
 
         case 'vendors': {
-          setValue('vendors', uncheckAllItems(allVendors));
+          setValue('vendors', uncheckAllItems(getAllVendors()));
           break;
         }
 
