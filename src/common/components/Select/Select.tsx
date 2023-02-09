@@ -3,6 +3,7 @@ import { useControllableState } from '@/common/hooks';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import clsx from 'clsx';
+import { isEqual } from 'lodash-es';
 import React, { Fragment } from 'react';
 import { ClassName, Option } from '../../types';
 
@@ -13,6 +14,8 @@ export type SelectProps = ClassName & {
   value?: string;
   noBorder?: boolean;
   onChange?: (value: string) => void;
+  renderItem?: (props: { selected: boolean; handleClick: () => void } & Option) => React.ReactNode;
+  renderSelectedItemLabel?: (props: Option) => React.ReactNode;
 };
 
 export const Select = React.forwardRef<HTMLInputElement, SelectProps>(
@@ -25,6 +28,8 @@ export const Select = React.forwardRef<HTMLInputElement, SelectProps>(
       options,
       className,
       noBorder,
+      renderItem,
+      renderSelectedItemLabel,
       ...props
     }: SelectProps,
     ref,
@@ -35,11 +40,16 @@ export const Select = React.forwardRef<HTMLInputElement, SelectProps>(
       onChange: onChangeProp,
     });
 
-    const selectedOption = options.find((option) => option.value === value) ?? options[0];
+    const selectedOption = options.find((option) => isEqual(option.value, value)) ?? options[0];
 
     return (
       <Menu as="div" className="relative inline-block text-left flex-shrink-0">
-        <input name={name} className="minimized" ref={ref} />
+        <input
+          name={name}
+          className="absolute invisible w-full h-full z-[-1] pointer-events-none"
+          tabIndex={-1}
+          ref={ref}
+        />
         <div>
           <Menu.Button
             {...props}
@@ -49,7 +59,11 @@ export const Select = React.forwardRef<HTMLInputElement, SelectProps>(
               className,
             )}
           >
-            <div className="text-medium">{selectedOption?.label}</div>
+            <div className="text-medium">
+              {renderSelectedItemLabel
+                ? renderSelectedItemLabel(selectedOption)
+                : selectedOption?.label}
+            </div>
             <ChevronDownIcon className="w-5 h-5 text-Gray-3" aria-hidden="true" />
           </Menu.Button>
         </div>
@@ -67,25 +81,33 @@ export const Select = React.forwardRef<HTMLInputElement, SelectProps>(
               {options.map((option, id) => {
                 return (
                   <Menu.Item key={id}>
-                    {({ active }) => (
-                      <div
-                        onClick={() => setValue(option.value)}
-                        className={clsx(
-                          'block px-4 py-2 text-xs text-Gray-3 cursor-pointer',
-                          'flex items-center gap-1',
-                          {
-                            'bg-Gray-7': active,
-                          },
-                        )}
-                      >
-                        <div className="flex-1">{option.label}</div>
-                        <div className="w-5 h-5 flex items-center justify-end">
-                          {selectedOption.value === option.value && (
-                            <TickIcon className="w-full h-full" />
+                    {({ active }) =>
+                      renderItem ? (
+                        renderItem({
+                          selected: selectedOption.value === option.value,
+                          handleClick: () => setValue(option.value),
+                          ...option,
+                        })
+                      ) : (
+                        <div
+                          onClick={() => setValue(option.value)}
+                          className={clsx(
+                            'block px-4 py-2 text-xs text-Gray-3 cursor-pointer',
+                            'flex items-center gap-1',
+                            {
+                              'bg-Gray-7': active,
+                            },
                           )}
+                        >
+                          <div className="flex-1">{option.label}</div>
+                          <div className="w-5 h-5 flex items-center justify-end">
+                            {selectedOption.value === option.value && (
+                              <TickIcon className="w-full h-full" />
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )
+                    }
                   </Menu.Item>
                 );
               })}

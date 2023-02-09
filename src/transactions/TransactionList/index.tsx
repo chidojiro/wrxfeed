@@ -19,7 +19,7 @@ import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { DateRangeFilter } from '@/feed/types';
 import { TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
-import { TimeRangeSelect } from '@/team/TimeRangeSelect';
+import { DateRangeSelect } from '@/team/DateRangeSelect';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -131,7 +131,7 @@ export const TransactionList = ({
           <span>No Transactions</span>
         </div>
         {dateRange && onDateRangeChange && (
-          <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
+          <DateRangeSelect value={dateRange} onChange={onDateRangeChange} />
         )}
       </div>
     );
@@ -178,7 +178,7 @@ export const TransactionList = ({
                             <span>{renderTitle?.(true) ?? 'Hide Transactions'}</span>
                           </Button>
                           {dateRange && onDateRangeChange && (
-                            <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
+                            <DateRangeSelect value={dateRange} onChange={onDateRangeChange} />
                           )}
                         </div>
                       </Table.Cell>
@@ -381,7 +381,7 @@ export const TransactionList = ({
                 <span>{renderTitle?.(false) ?? 'View Transactions'}</span>
               </Button>
               {dateRange && onDateRangeChange && (
-                <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
+                <DateRangeSelect value={dateRange} onChange={onDateRangeChange} />
               )}
             </div>
           </>

@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Cell, Pie, PieChart, Tooltip } from 'recharts';
-import { TimeRangeSelect } from '../TimeRangeSelect';
+import { DateRangeSelect } from '../DateRangeSelect';
 import PieActiveShape from './PieActiveShape';
 import TopCategoriesChartTooltip from './TopCategoriesChartTooltip';
 
@@ -93,7 +93,7 @@ export const TopCategories = ({
           <CategoryIcon />
           Top Categories
         </div>
-        <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
+        <DateRangeSelect value={dateRange} onChange={onDateRangeChange} />
       </div>
       {chartData.length === 0 ? (
         <div className="flex flex-1 p-6">

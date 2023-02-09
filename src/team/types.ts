@@ -11,5 +11,7 @@ export type GetDepartmentsParams = PaginationParams & {
 };
 
 export type GetTopCategoriesParams = {
-  dateRange: DateRangeFilter;
+  dateRange?: DateRangeFilter;
+  from?: string;
+  to?: string;
 };
