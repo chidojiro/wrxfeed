@@ -41,13 +41,17 @@ export const DepartmentsTab = ({ keyWord }: DepartmentsTabProps) => {
     ].flat();
     const departmentAndChildrenIds = departmentAndChildren.map(({ id }) => id);
 
-    setValue('departments', [
-      ...departments.filter((department) => !departmentAndChildrenIds.includes(department.id)),
-      ...departmentAndChildrenIds.map((id) => ({
-        ...departmentsGroupedById[id][0],
-        visible: checked,
-      })),
-    ]);
+    setValue(
+      'departments',
+      [
+        ...departments.filter((department) => !departmentAndChildrenIds.includes(department.id)),
+        ...departmentAndChildrenIds.map((id) => ({
+          ...departmentsGroupedById[id][0],
+          visible: checked,
+        })),
+      ],
+      { shouldDirty: true },
+    );
   };
 
   const hasKeyword = (department: Department) =>
