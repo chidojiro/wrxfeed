@@ -61,12 +61,7 @@ export const RolesTabContent = () => {
           {roles
             .filter((item) => item.id === 0 || item.name === 'Admin')
             .map((role) => (
-              <RoleCard
-                key={role.id}
-                title={role.name}
-                description={role.description}
-                onClick={() => startEditingRole(role.id)}
-              />
+              <RoleCard key={role.id} role={role} onClick={() => startEditingRole(role.id)} />
             ))}
         </div>
         {!!customRoles.length && (
@@ -77,9 +72,9 @@ export const RolesTabContent = () => {
               {customRoles.map((role) => (
                 <RoleCard
                   key={role.id}
-                  title={role.name}
-                  description={role.description}
+                  role={role}
                   onClick={() => startEditingRole(role.id)}
+                  deletable
                 />
               ))}
             </div>

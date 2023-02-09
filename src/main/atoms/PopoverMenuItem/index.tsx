@@ -9,6 +9,7 @@ interface PopoverMenuItemProps {
   className?: string;
   onClick?: () => void;
   stopPropagation?: boolean;
+  preventDefault?: boolean;
   Icon?: FunctionComponent<SVGAttributes<SVGElement>> | null;
   iconClass?: string;
 }
@@ -19,6 +20,7 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
   className = '',
   onClick,
   stopPropagation,
+  preventDefault,
   Icon,
   iconClass = '',
   ...rest
@@ -26,6 +28,9 @@ const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
   const onClickItem = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (stopPropagation) {
       event.stopPropagation();
+    }
+    if (preventDefault) {
+      event.preventDefault();
     }
     if (onClick) onClick();
   };

@@ -7,6 +7,7 @@ export type GetDepartmentsParams = PaginationParams & {
   parent?: number;
   term?: string;
   parentOnly?: boolean;
+  includeSub?: boolean;
 };
 
 export type GetTopCategoriesParams = {

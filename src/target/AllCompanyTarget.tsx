@@ -24,6 +24,7 @@ export const AllCompanyTarget = ({ className }: AllCompanyTargetProps) => {
           onUpdateSuccess={(target) => mutate([target])}
           onDeleteSuccess={() => mutate()}
           deletable={false}
+          href={`/feed/${targets[0]?.feedItem?.id}`}
         />
       ) : (
         <div />

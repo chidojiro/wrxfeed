@@ -1,5 +1,4 @@
-import { AddSmallSlimIcon, CommentIcon, EyeHideIcon, LoopBoldIcon } from '@/assets';
-import { RestrictedItem } from '@/auth/RestrictedItem';
+import { AddSmallSlimIcon, CommentIcon, LoopBoldIcon } from '@/assets';
 import {
   Avatar,
   Button,
@@ -12,23 +11,19 @@ import {
   Tooltip,
 } from '@/common/components';
 import { EmptyState } from '@/common/components/EmptyState';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import { RedirectMethod } from '@/common/hooks';
 import { ClassName } from '@/common/types';
 import { DateUtils } from '@/common/utils';
 import { CommentGroup } from '@/feed/CommentGroup';
 import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
-import { Category, Department, TransLineItem, TranStatus } from '@/main/entity';
-import { decimalLogic } from '@/main/utils';
-import { RestrictedItem as TRestrictedItem } from '@/role/types';
-import { useRestrictedItems } from '@/role/useRestrictedItems';
-import { Vendor } from '@/vendor/types';
-import clsx from 'clsx';
-import { isEqual } from 'lodash-es';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { TimeRangeSelect } from '@/team/TimeRangeSelect';
-import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import { DateRangeFilter } from '@/feed/types';
+import { TransLineItem, TranStatus } from '@/main/entity';
+import { decimalLogic } from '@/main/utils';
+import { useRestrictedItems } from '@/role/useRestrictedItems';
+import { TimeRangeSelect } from '@/team/TimeRangeSelect';
+import clsx from 'clsx';
+import { Link } from 'react-router-dom';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
   switch (status) {
@@ -77,13 +72,11 @@ export const TransactionList = ({
   hiddenColumns,
   sort,
   onSortChange,
-  defaultExpand = true,
   dateRange,
   onDateRangeChange,
   page,
   onPageChange,
   totalCount,
-  renderTitle,
 }: TransactionListProps) => {
   const {
     isLineItemDrawerOpen,
@@ -97,8 +90,6 @@ export const TransactionList = ({
   const showDepartment = !hiddenColumns?.includes('depName');
   const showVendor = !hiddenColumns?.includes('vendorName');
 
-  const { restrictedItems } = useRestrictedItems();
-
   const headers: HeaderItem[] = [
     { label: 'Date', sortKey: 'transDate' },
     showDepartment && { label: 'Team', sortKey: 'depName' },
@@ -111,61 +102,6 @@ export const TransactionList = ({
   ].filter((item): item is HeaderItem => !!item);
 
   const hasTransactions = transactions?.length > 0;
-
-  const isRestricted = (id: number, type: TRestrictedItem['type']) => {
-    return !!restrictedItems.find((item) => isEqual({ id, type }, item));
-  };
-
-  const isAllRestricted = (department?: Department, vendor?: Vendor, category?: Category) => {
-    if (!department || !vendor || !category) return false;
-
-    if (
-      !showDepartment &&
-      isRestricted(vendor.id, 'VENDOR') &&
-      isRestricted(category.id, 'CATEGORY')
-    )
-      return true;
-
-    if (
-      !showVendor &&
-      isRestricted(department.id, 'DEPARTMENT') &&
-      isRestricted(category.id, 'CATEGORY')
-    )
-      return true;
-
-    if (
-      !showCategory &&
-      isRestricted(vendor.id, 'VENDOR') &&
-      isRestricted(department.id, 'DEPARTMENT')
-    )
-      return true;
-
-    return false;
-  };
-
-  const isSomeRestricted = (department?: Department, vendor?: Vendor, category?: Category) => {
-    if (!department || !vendor || !category) return false;
-
-    if (
-      !showDepartment &&
-      (isRestricted(vendor.id, 'VENDOR') || isRestricted(category.id, 'CATEGORY'))
-    )
-      return true;
-
-    if (
-      !showVendor &&
-      (isRestricted(department.id, 'DEPARTMENT') || isRestricted(category.id, 'CATEGORY'))
-    )
-      return true;
-
-    if (
-      !showCategory &&
-      (isRestricted(vendor.id, 'VENDOR') || isRestricted(department.id, 'DEPARTMENT'))
-    )
-      return true;
-
-    return false;
-  };
 
   if (!transactions.length)
     return (
@@ -259,15 +195,15 @@ export const TransactionList = ({
                           {showDepartment && (
                             <Table.Cell className="hover:bg-Gray-12 !p-0">
                               <div className="py-2 px-4">
-                                {isRestricted(transaction.department?.id ?? 0, 'DEPARTMENT') ? (
-                                  <RestrictedItem />
-                                ) : (
+                                {transaction.department ? (
                                   <Link
                                     className="flex items-center gap-2"
                                     to={`/departments/${transaction.department?.id}`}
                                   >
                                     {transaction.department?.name}
                                   </Link>
+                                ) : (
+                                  '--'
                                 )}
                               </div>
                             </Table.Cell>
@@ -275,15 +211,15 @@ export const TransactionList = ({
                           {showCategory && (
                             <Table.Cell className="hover:bg-Gray-12 !p-0">
                               <div className="py-2 px-4">
-                                {isRestricted(transaction.category?.id ?? 0, 'CATEGORY') ? (
-                                  <RestrictedItem />
-                                ) : (
+                                {transaction.category ? (
                                   <Link
                                     className="flex items-center gap-2"
                                     to={`/categories/${transaction.category?.id}`}
                                   >
                                     {transaction.category?.name}
                                   </Link>
+                                ) : (
+                                  '--'
                                 )}
                               </div>
                             </Table.Cell>
@@ -291,9 +227,7 @@ export const TransactionList = ({
                           {showVendor && (
                             <Table.Cell className="hover:bg-Gray-12 !p-0">
                               <div className="py-2 px-4">
-                                {isRestricted(transaction.vendor?.id ?? 0, 'VENDOR') ? (
-                                  <RestrictedItem />
-                                ) : (
+                                {transaction.vendor ? (
                                   <Link
                                     to={`/vendors/${transaction.vendor?.id}`}
                                     className="flex items-center gap-2"
@@ -316,40 +250,34 @@ export const TransactionList = ({
                                       )}
                                     </div>
                                   </Link>
+                                ) : (
+                                  '--'
                                 )}
                               </div>
                             </Table.Cell>
                           )}
                           <Table.Cell>
-                            {isSomeRestricted(
-                              transaction.department,
-                              transaction.vendor,
-                              transaction.category,
-                            ) ? (
-                              <RestrictedItem />
-                            ) : (
-                              <Button
-                                className="text-left"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openLineItemDrawer(transaction, transaction?.feedItem?.id);
-                                }}
-                              >
-                                {(transaction.description ?? '').length >= 93 ? (
-                                  <Tooltip
-                                    trigger={
-                                      <div className="flex flex-col items-center max-w-[350px]">
-                                        <p className="line-clamp-3">{transaction.description}</p>
-                                      </div>
-                                    }
-                                  >
-                                    {transaction.description}
-                                  </Tooltip>
-                                ) : (
-                                  <p>{transaction.description}</p>
-                                )}
-                              </Button>
-                            )}
+                            <Button
+                              className="text-left"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openLineItemDrawer(transaction, transaction?.feedItem?.id);
+                              }}
+                            >
+                              {(transaction.description ?? '').length >= 93 ? (
+                                <Tooltip
+                                  trigger={
+                                    <div className="flex flex-col items-center max-w-[350px]">
+                                      <p className="line-clamp-3">{transaction.description}</p>
+                                    </div>
+                                  }
+                                >
+                                  {transaction.description}
+                                </Tooltip>
+                              ) : (
+                                <p>{transaction.description}</p>
+                              )}
+                            </Button>
                           </Table.Cell>
                           <Table.Cell className="text-right">
                             {decimalLogic(transaction.amountUsd, '$')}
@@ -375,31 +303,18 @@ export const TransactionList = ({
                             </div>
                           </Table.Cell>
                           <Table.Cell>
-                            {isAllRestricted(
-                              transaction.department,
-                              transaction.vendor,
-                              transaction.category,
-                            ) ? (
-                              <div className="relative">
-                                <CommentIcon className="text-Gray-7 h-7 w-6" />
-                                <div className="absolute top-0 left-0 w-6 h-full">
-                                  <EyeHideIcon className="absolute top-3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xs font-semibold text-red-1" />
-                                </div>
-                              </div>
-                            ) : (
-                              <Link to={`/feed/item/${transaction.feedItem?.id}`}>
-                                {transaction.feedItem?.comments.length ? (
-                                  <CommentGroup comments={transaction.feedItem.comments} />
-                                ) : (
-                                  <div className="relative m-2">
-                                    <CommentIcon className="text-Gray-7 h-7 w-6" />
-                                    <div className="absolute bottom-[43%] left-3 transform -translate-x-1/2 text-Gray-2">
-                                      <AddSmallSlimIcon />
-                                    </div>
+                            <Link to={`/feed/item/${transaction.feedItem?.id}`}>
+                              {transaction.feedItem?.comments.length ? (
+                                <CommentGroup comments={transaction.feedItem.comments} />
+                              ) : (
+                                <div className="relative m-2">
+                                  <CommentIcon className="text-Gray-7 h-7 w-6" />
+                                  <div className="absolute bottom-[43%] left-3 transform -translate-x-1/2 text-Gray-2">
+                                    <AddSmallSlimIcon />
                                   </div>
-                                )}
-                              </Link>
-                            )}
+                                </div>
+                              )}
+                            </Link>
                           </Table.Cell>
                         </Table.Row>
                       ))}
