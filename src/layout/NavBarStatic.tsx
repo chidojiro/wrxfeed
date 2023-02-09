@@ -1,4 +1,4 @@
-import { AddSmallIcon, FeedIcon, TargetIcon, TeamIcon, UserPlusIcon } from '@/assets';
+import { AddSmallIcon, ChartIcon, FeedIcon, TargetIcon, TeamIcon, UserPlusIcon } from '@/assets';
 import { ProtectedFeatures } from '@/auth/constants';
 import { Avatar, Button } from '@/common/components';
 import { NotifyPopover, UserProfilePopover } from '@/main/molecules';
@@ -15,7 +15,6 @@ import { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import { SidebarAccordion } from './SideBar/SidebarAccordion';
-import { SidebarNavGroup } from './SideBar/SidebarNavGroup';
 import { SidebarNavItem } from './SideBar/SidebarNavItem';
 import { UnfollowButton } from './SideBar/UnfollowButton';
 
@@ -49,7 +48,9 @@ export const NavBarStatic = ({
 
   const { departments } = subscription ?? {};
 
-  const { profile } = useProfile();
+  const { profile, isPermittedToFeature } = useProfile();
+
+  const showInvite = isPermittedToFeature(ProtectedFeatures.Invite);
 
   const onClickNotification = () => {
     history.push(Routes?.Notifications?.path as string);
@@ -99,7 +100,7 @@ export const NavBarStatic = ({
             <div className="relative flex flex-row-reverse px-2 sm:px-0 justify-between h-navbar md:grid md:grid-cols-12">
               <div className="flex flex-col justify-center md:col-span-3 pl-2 sm:pl-12 pr-3">
                 <h1 className={clsx('text-lg font-bold text-white', companyStyle)}>
-                  <Link to="/dashboard/all-company">{companyName}</Link>
+                  {companyName}
                 </h1>
               </div>
               <div className="hidden sm:flex items-center min-w-0 flex-1 md:pl-6 md:col-span-6 lg:col-span-6">
@@ -151,18 +152,6 @@ export const NavBarStatic = ({
                 </div>
                 <div className="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4">
                   <div className="block rounded-md py-4 px-6 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
-                    <SidebarNavGroup className="!p-0">Boards</SidebarNavGroup>
-                    <SidebarNavItem
-                      className="!p-0"
-                      href="/dashboard/all-company"
-                      iconLeft={<TargetIcon />}
-                      matches={['/dashboard/:slug']}
-                    >
-                      Targets
-                    </SidebarNavItem>
-                  </div>
-                  <div className="block rounded-md py-4 px-6 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
-                    <SidebarNavGroup className="!p-0">Following</SidebarNavGroup>
                     <SidebarAccordion
                       defaultOpen={false}
                       label="Teams"
@@ -198,12 +187,23 @@ export const NavBarStatic = ({
                     </SidebarAccordion>
                   </div>
                   <div className="block rounded-md py-4 px-6 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
-                    <SidebarNavGroup className="!p-0">Feeds</SidebarNavGroup>
+                    <SidebarNavItem
+                      className="!p-0"
+                      href="/dashboard/all-company"
+                      iconLeft={<TargetIcon />}
+                      matches={['/dashboard/:slug']}
+                    >
+                      All Company
+                    </SidebarNavItem>
+                  </div>
+                  <div className="block rounded-md py-4 px-6 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
+                    <SidebarNavItem className="!p-0" href="/insights" iconLeft={<ChartIcon />}>
+                      Insights
+                    </SidebarNavItem>
+                  </div>
+                  <div className="block rounded-md py-4 px-6 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
                     <SidebarNavItem className="!p-0" href="/feeds/for-you" iconLeft={<FeedIcon />}>
                       For you
-                    </SidebarNavItem>
-                    <SidebarNavItem className="!p-0" href="/feeds/company" iconLeft={<FeedIcon />}>
-                      Company
                     </SidebarNavItem>
                   </div>
                 </div>
@@ -216,7 +216,9 @@ export const NavBarStatic = ({
               Sign out
             </a>
           </Popover.Panel>
-          <InviteModal open={isOpenInviteModal} onClose={() => openInviteModal(false)} />
+          {showInvite && (
+            <InviteModal open={isOpenInviteModal} onClose={() => openInviteModal(false)} />
+          )}
         </>
       )}
     </Popover>

@@ -2,7 +2,6 @@ import { AddSmallSlimIcon, CommentIcon, LoopBoldIcon } from '@/assets';
 import {
   Avatar,
   Button,
-  Divider,
   OverlayLoader,
   Pagination,
   StatusTag,
@@ -20,9 +19,9 @@ import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { DateRangeFilter } from '@/feed/types';
 import { TransLineItem, TranStatus } from '@/main/entity';
 import { decimalLogic } from '@/main/utils';
-import { useRestrictedItems } from '@/role/useRestrictedItems';
 import { TimeRangeSelect } from '@/team/TimeRangeSelect';
 import clsx from 'clsx';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export const getTransactionColorScheme = (status: TranStatus): StatusTagColorScheme => {
@@ -62,6 +61,7 @@ type TransactionListProps = ClassName & {
   onPageChange?: (page: number) => void;
   totalCount?: number;
   renderTitle?: (isExpanded: boolean, isEmpty?: boolean) => React.ReactNode;
+  disableTransactionButton?: boolean;
 };
 
 type HeaderItem = { label: string; sortKey?: string; align?: string };
@@ -77,6 +77,9 @@ export const TransactionList = ({
   page,
   onPageChange,
   totalCount,
+  defaultExpand = false,
+  renderTitle,
+  disableTransactionButton = false,
 }: TransactionListProps) => {
   const {
     isLineItemDrawerOpen,
@@ -89,6 +92,8 @@ export const TransactionList = ({
   const showCategory = !hiddenColumns?.includes('categoryName');
   const showDepartment = !hiddenColumns?.includes('depName');
   const showVendor = !hiddenColumns?.includes('vendorName');
+
+  const [listOpen, setListOpen] = useState<boolean>(defaultExpand);
 
   const headers: HeaderItem[] = [
     { label: 'Date', sortKey: 'transDate' },
@@ -140,220 +145,248 @@ export const TransactionList = ({
             'drop-shadow(0px 3px 5px rgba(9, 30, 66, 0.05)) drop-shadow(-1px 6px 8px rgba(6, 25, 56, 0.03))',
         }}
       >
-        <div>
-          <LineItemDrawer
-            open={isLineItemDrawerOpen}
-            onClose={closeLineItemDrawer}
-            lineItem={selectedLineItem!}
-            feedId={feedId}
-          />
-          <Table.OverflowContainer style={{ filter: 'none' }}>
-            <OverlayLoader loading={loading}>
-              <Table
-                className="rounded-card"
-                sort={sort}
-                onSortChange={(sort) => onSortChange(sort)}
-              >
-                <Table.Body>
-                  <Table.Row>
-                    <Table.Cell colSpan={headers.length}>
-                      <div
-                        className={clsx(
-                          'bg-white py-2 px-4 text-base',
-                          'flex items-center justify-between',
-                        )}
-                      >
-                        <div
-                          className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3')}
-                        >
-                          <LoopBoldIcon />
-                          <span>View Transactions</span>
-                        </div>
-                        {dateRange && onDateRangeChange && (
-                          <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
-                        )}
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                  {hasTransactions ? (
-                    <>
-                      <Table.Row>
-                        {headers.map(({ label, sortKey, align }) => (
-                          <Table.Header key={label} sortKey={sortKey} className={align}>
-                            {label}
-                          </Table.Header>
-                        ))}
-                      </Table.Row>
-                      {transactions.map((transaction: TransLineItem) => (
-                        <Table.Row
-                          key={transaction.id}
-                          className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
-                        >
-                          <Table.Cell>
-                            {transaction.transDate && DateUtils.format(transaction.transDate)}
-                          </Table.Cell>
-                          {showDepartment && (
-                            <Table.Cell className="hover:bg-Gray-12 !p-0">
-                              <div className="py-2 px-4">
-                                {transaction.department ? (
-                                  <Link
-                                    className="flex items-center gap-2"
-                                    to={`/departments/${transaction.department?.id}`}
-                                  >
-                                    {transaction.department?.name}
-                                  </Link>
-                                ) : (
-                                  '--'
-                                )}
-                              </div>
-                            </Table.Cell>
-                          )}
-                          {showCategory && (
-                            <Table.Cell className="hover:bg-Gray-12 !p-0">
-                              <div className="py-2 px-4">
-                                {transaction.category ? (
-                                  <Link
-                                    className="flex items-center gap-2"
-                                    to={`/categories/${transaction.category?.id}`}
-                                  >
-                                    {transaction.category?.name}
-                                  </Link>
-                                ) : (
-                                  '--'
-                                )}
-                              </div>
-                            </Table.Cell>
-                          )}
-                          {showVendor && (
-                            <Table.Cell className="hover:bg-Gray-12 !p-0">
-                              <div className="py-2 px-4">
-                                {transaction.vendor ? (
-                                  <Link
-                                    to={`/vendors/${transaction.vendor?.id}`}
-                                    className="flex items-center gap-2"
-                                  >
-                                    <Avatar
-                                      size="sm"
-                                      src={transaction.vendor?.avatar}
-                                      fullName={transaction.vendor?.name ?? ''}
-                                      className="w-6 h-6 flex-shrink-0"
-                                    />
-                                    <div>
-                                      <p>{transaction.vendor?.name}</p>
-                                      {transaction.transRecordType?.toLowerCase() ===
-                                        'Expense Report'.toLowerCase() && (
-                                        <div className="flex flex-row items-center space-x-1">
-                                          <p className="text-Accent-2 text-xs font-normal">
-                                            Expensed
-                                          </p>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </Link>
-                                ) : (
-                                  '--'
-                                )}
-                              </div>
-                            </Table.Cell>
-                          )}
-                          <Table.Cell>
-                            <Button
-                              className="text-left"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openLineItemDrawer(transaction, transaction?.feedItem?.id);
-                              }}
-                            >
-                              {(transaction.description ?? '').length >= 93 ? (
-                                <Tooltip
-                                  trigger={
-                                    <div className="flex flex-col items-center max-w-[350px]">
-                                      <p className="line-clamp-3">{transaction.description}</p>
-                                    </div>
-                                  }
-                                >
-                                  {transaction.description}
-                                </Tooltip>
-                              ) : (
-                                <p>{transaction.description}</p>
-                              )}
-                            </Button>
-                          </Table.Cell>
-                          <Table.Cell className="text-right">
-                            {decimalLogic(transaction.amountUsd, '$')}
-                          </Table.Cell>
-                          <Table.Cell>
-                            <div className="flex justify-end">
-                              <StatusTag
-                                colorScheme={getTransactionColorScheme(transaction.transStatus)}
-                                className="font-semibold"
-                              >
-                                {shouldTruncateTranStatus(transaction.transStatus) ? (
-                                  <Tooltip
-                                    trigger={
-                                      <p className="truncate w-8">{transaction.transStatus}</p>
-                                    }
-                                  >
-                                    {transaction.transStatus}
-                                  </Tooltip>
-                                ) : (
-                                  <p>{transaction.transStatus}</p>
-                                )}
-                              </StatusTag>
-                            </div>
-                          </Table.Cell>
-                          <Table.Cell>
-                            <Link to={`/feed/item/${transaction.feedItem?.id}`}>
-                              {transaction.feedItem?.comments.length ? (
-                                <CommentGroup comments={transaction.feedItem.comments} />
-                              ) : (
-                                <div className="relative m-2">
-                                  <CommentIcon className="text-Gray-7 h-7 w-6" />
-                                  <div className="absolute bottom-[43%] left-3 transform -translate-x-1/2 text-Gray-2">
-                                    <AddSmallSlimIcon />
-                                  </div>
-                                </div>
-                              )}
-                            </Link>
-                          </Table.Cell>
-                        </Table.Row>
-                      ))}
-                    </>
-                  ) : (
+        {listOpen ? (
+          <div>
+            <LineItemDrawer
+              open={isLineItemDrawerOpen}
+              onClose={closeLineItemDrawer}
+              lineItem={selectedLineItem!}
+              feedId={feedId}
+            />
+            <Table.OverflowContainer style={{ filter: 'none' }}>
+              <OverlayLoader loading={loading}>
+                <Table
+                  className="rounded-card"
+                  sort={sort}
+                  onSortChange={(sort) => onSortChange(sort)}
+                >
+                  <Table.Body>
                     <Table.Row>
-                      <Table.Cell colSpan={7}>
-                        <div className="flex flex-1 py-4 px-2 w-full">
-                          <EmptyState
-                            title="No recent transactions"
-                            content="This will change as more transactions come in."
-                          />
+                      <Table.Cell colSpan={headers.length}>
+                        <div
+                          className={clsx(
+                            'bg-white py-2 px-4 text-base',
+                            'flex items-center justify-between',
+                          )}
+                        >
+                          <Button
+                            className={clsx('flex items-center gap-2', 'font-semibold text-Gray-3')}
+                            onClick={() => setListOpen(false)}
+                            disabled={disableTransactionButton}
+                          >
+                            <LoopBoldIcon />
+                            <span>{renderTitle?.(true) ?? 'Hide Transactions'}</span>
+                          </Button>
+                          {dateRange && onDateRangeChange && (
+                            <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
+                          )}
                         </div>
                       </Table.Cell>
                     </Table.Row>
-                  )}
-                </Table.Body>
-              </Table>
-            </OverlayLoader>
-          </Table.OverflowContainer>
-        </div>
-      </div>
-      {hasTransactions && onPageChange && !!totalCount && (
-        <div>
-          <Divider className="mt-4" />
-          <Pagination
-            totalRecord={totalCount}
-            sideItemsCount={2}
-            onChange={(page) => onPageChange(page)}
-            perPage={DEFAULT_ITEMS_PER_INFINITE_LOAD}
-            page={page}
-          >
-            <div className="flex items-center justify-between mt-4 px-4">
-              <Pagination.ShowingRange className="hidden md:block" />
-              <Pagination.Items className="mx-auto md:mx-0" />
+                    {hasTransactions ? (
+                      <>
+                        <Table.Row>
+                          {headers.map(({ label, sortKey, align }) => (
+                            <Table.Header key={label} sortKey={sortKey} className={align}>
+                              {label}
+                            </Table.Header>
+                          ))}
+                        </Table.Row>
+                        {transactions.map((transaction: TransLineItem) => (
+                          <Table.Row
+                            key={transaction.id}
+                            className={clsx('relative cursor-pointer h-14', 'list-row-hover')}
+                          >
+                            <Table.Cell>
+                              {transaction.transDate && DateUtils.format(transaction.transDate)}
+                            </Table.Cell>
+                            {showDepartment && (
+                              <Table.Cell className="hover:bg-Gray-12 !p-0">
+                                <div className="py-2 px-4">
+                                  {transaction.department ? (
+                                    <Link
+                                      className="flex items-center gap-2"
+                                      to={`/departments/${transaction.department?.id}`}
+                                    >
+                                      {transaction.department?.name}
+                                    </Link>
+                                  ) : (
+                                    '--'
+                                  )}
+                                </div>
+                              </Table.Cell>
+                            )}
+                            {showCategory && (
+                              <Table.Cell className="hover:bg-Gray-12 !p-0">
+                                <div className="py-2 px-4">
+                                  {transaction.category ? (
+                                    <Link
+                                      className="flex items-center gap-2"
+                                      to={`/categories/${transaction.category?.id}`}
+                                    >
+                                      {transaction.category?.name}
+                                    </Link>
+                                  ) : (
+                                    '--'
+                                  )}
+                                </div>
+                              </Table.Cell>
+                            )}
+                            {showVendor && (
+                              <Table.Cell className="hover:bg-Gray-12 !p-0">
+                                <div className="py-2 px-4">
+                                  {transaction.vendor ? (
+                                    <Link
+                                      to={`/vendors/${transaction.vendor?.id}`}
+                                      className="flex items-center gap-2"
+                                    >
+                                      <Avatar
+                                        size="sm"
+                                        src={transaction.vendor?.avatar}
+                                        fullName={transaction.vendor?.name ?? ''}
+                                        className="w-6 h-6 flex-shrink-0"
+                                      />
+                                      <div>
+                                        <p>{transaction.vendor?.name}</p>
+                                        {transaction.transRecordType?.toLowerCase() ===
+                                          'Expense Report'.toLowerCase() && (
+                                          <div className="flex flex-row items-center space-x-1">
+                                            <p className="text-Accent-2 text-xs font-normal">
+                                              Expensed
+                                            </p>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </Link>
+                                  ) : (
+                                    '--'
+                                  )}
+                                </div>
+                              </Table.Cell>
+                            )}
+                            <Table.Cell>
+                              <Button
+                                className="text-left"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openLineItemDrawer(transaction, transaction?.feedItem?.id);
+                                }}
+                              >
+                                {(transaction.description ?? '').length >= 93 ? (
+                                  <Tooltip
+                                    trigger={
+                                      <div className="flex flex-col items-center max-w-[350px]">
+                                        <p className="line-clamp-3">{transaction.description}</p>
+                                      </div>
+                                    }
+                                  >
+                                    {transaction.description}
+                                  </Tooltip>
+                                ) : (
+                                  <p>{transaction.description}</p>
+                                )}
+                              </Button>
+                            </Table.Cell>
+                            <Table.Cell className="text-right">
+                              {decimalLogic(transaction.amountUsd, '$')}
+                            </Table.Cell>
+                            <Table.Cell>
+                              <div className="flex justify-end">
+                                <StatusTag
+                                  colorScheme={getTransactionColorScheme(transaction.transStatus)}
+                                  className="font-semibold"
+                                >
+                                  {shouldTruncateTranStatus(transaction.transStatus) ? (
+                                    <Tooltip
+                                      trigger={
+                                        <p className="truncate w-8">{transaction.transStatus}</p>
+                                      }
+                                    >
+                                      {transaction.transStatus}
+                                    </Tooltip>
+                                  ) : (
+                                    <p>{transaction.transStatus}</p>
+                                  )}
+                                </StatusTag>
+                              </div>
+                            </Table.Cell>
+                            <Table.Cell>
+                              <Link to={`/feed/item/${transaction.feedItem?.id}`}>
+                                {transaction.feedItem?.comments.length ? (
+                                  <CommentGroup comments={transaction.feedItem.comments} />
+                                ) : (
+                                  <div className="relative m-2">
+                                    <CommentIcon className="text-Gray-7 h-7 w-6" />
+                                    <div className="absolute bottom-[43%] left-3 transform -translate-x-1/2 text-Gray-2">
+                                      <AddSmallSlimIcon />
+                                    </div>
+                                  </div>
+                                )}
+                              </Link>
+                            </Table.Cell>
+                          </Table.Row>
+                        ))}
+                        <Table.Row>
+                          <Table.Cell colSpan={headers.length}>
+                            {hasTransactions && onPageChange && !!totalCount && (
+                              <Pagination
+                                totalRecord={totalCount}
+                                sideItemsCount={2}
+                                onChange={(page) => onPageChange(page)}
+                                perPage={DEFAULT_ITEMS_PER_INFINITE_LOAD}
+                                page={page}
+                              >
+                                <div className="flex items-center justify-between mt-4 px-4">
+                                  <Pagination.ShowingRange className="hidden md:block" />
+                                  <Pagination.Items className="mx-auto md:mx-0" />
+                                </div>
+                              </Pagination>
+                            )}
+                          </Table.Cell>
+                        </Table.Row>
+                      </>
+                    ) : (
+                      <Table.Row>
+                        <Table.Cell colSpan={7}>
+                          <div className="flex flex-1 py-4 px-2 w-full">
+                            <EmptyState
+                              title="No recent transactions"
+                              content="This will change as more transactions come in."
+                            />
+                          </div>
+                        </Table.Cell>
+                      </Table.Row>
+                    )}
+                  </Table.Body>
+                </Table>
+              </OverlayLoader>
+            </Table.OverflowContainer>
+          </div>
+        ) : (
+          <>
+            <div
+              className={clsx(
+                'bg-white py-2 pl-4 pr-8 text-base',
+                'flex items-center justify-between rounded-card',
+              )}
+            >
+              <Button
+                className={clsx(
+                  'flex items-center gap-2',
+                  'font-semibold text-Gray-3 bg-white w-full py-3 px-4',
+                )}
+                onClick={() => setListOpen(true)}
+              >
+                <LoopBoldIcon />
+                <span>{renderTitle?.(false) ?? 'View Transactions'}</span>
+              </Button>
+              {dateRange && onDateRangeChange && (
+                <TimeRangeSelect value={dateRange} onChange={onDateRangeChange} />
+              )}
             </div>
-          </Pagination>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </>
   );
 };
