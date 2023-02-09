@@ -55,69 +55,35 @@ export const RoleDrawer = withMountOnOpen()(
       reset,
       setValue,
       getValues,
+      watch,
       formState: { isSubmitting },
     } = methods;
 
-    const getAllDepartments = React.useCallback(() => getValues().departments, [getValues]);
+    const formValue = watch();
+
+    const getAllDepartments = React.useCallback(() => getValues('departments'), [getValues]);
     const getAllCategories = React.useCallback(() => getValues().categories, [getValues]);
     const getAllVendors = React.useCallback(() => getValues().vendors, [getValues]);
 
     const isAllChecked = React.useMemo(() => {
-      if (tab === 'teams') return isAllItemsChecked(getAllDepartments());
+      if (tab === 'teams') return isAllItemsChecked(formValue.departments);
 
-      if (tab === 'categories') return isAllItemsChecked(getAllCategories());
+      if (tab === 'categories') return isAllItemsChecked(formValue.categories);
 
-      if (tab === 'vendors') return isAllItemsChecked(getAllVendors());
+      if (tab === 'vendors') return isAllItemsChecked(formValue.vendors);
 
       return false;
-    }, [getAllCategories, getAllDepartments, getAllVendors, tab]);
+    }, [formValue.categories, formValue.departments, formValue.vendors, tab]);
 
     const isAllUnChecked = React.useMemo(() => {
-      if (tab === 'teams') return isAllItemsUnchecked(getAllDepartments());
+      if (tab === 'teams') return isAllItemsUnchecked(formValue.departments);
 
-      if (tab === 'categories') return isAllItemsUnchecked(getAllCategories());
+      if (tab === 'categories') return isAllItemsUnchecked(formValue.categories);
 
-      if (tab === 'vendors') return isAllItemsUnchecked(getAllVendors());
+      if (tab === 'vendors') return isAllItemsUnchecked(formValue.vendors);
 
       return false;
-    }, [getAllCategories(), getAllDepartments(), getAllVendors(), tab]);
-
-    const toggleCheckAll = () => {
-      switch (tab) {
-        case 'teams': {
-          if (isAllItemsChecked(getAllDepartments())) {
-            setValue('departments', uncheckAllItems(getAllDepartments()));
-          } else {
-            setValue('departments', checkAllItems(getAllDepartments()));
-          }
-
-          break;
-        }
-
-        case 'categories': {
-          if (isAllItemsChecked(getAllCategories())) {
-            setValue('categories', uncheckAllItems(getAllCategories()));
-          } else {
-            setValue('categories', checkAllItems(getAllCategories()));
-          }
-
-          break;
-        }
-
-        case 'vendors': {
-          if (isAllItemsChecked(getAllVendors())) {
-            setValue('vendors', uncheckAllItems(getAllVendors()));
-          } else {
-            setValue('vendors', checkAllItems(getAllVendors()));
-          }
-
-          break;
-        }
-
-        default:
-          break;
-      }
-    };
+    }, [formValue.categories, formValue.departments, formValue.vendors, tab]);
 
     const checkAll = () => {
       switch (tab) {

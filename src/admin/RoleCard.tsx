@@ -38,6 +38,7 @@ export const RoleCard = ({
         title="Delete this role?"
         content="You are permanently deleting this role. Any team members currently using this role will be
         affected."
+        variant="alert"
       ></ConfirmModal>
       <Button
         onClick={onClick}
