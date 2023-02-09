@@ -27,7 +27,7 @@ const Modal: React.FC<ModalProps> = ({
   closeOnClickOutside,
   stopPropagation,
 }) => {
-  const [delayableOpen, setDelayableOpen] = useDelayableState({ delayBy: 200, defaultState: open });
+  const [delayableOpen, setDelayableOpen] = useDelayableState({ delayBy: 0, defaultState: open });
 
   React.useEffect(() => {
     setDelayableOpen({ state: !!open, shouldDelay: !open });
@@ -45,9 +45,7 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <Portal>
-      <div
-        className={clsx('fixed z-40 inset-0', open ? 'animate-modal-enter' : 'animate-modal-leave')}
-      >
+      <div className={clsx('fixed z-40 inset-0', open ? 'animate-modal-enter' : '')}>
         <div
           className="relative flex items-center justify-center h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
           onClick={stopPropagation ? (e) => e.stopPropagation() : undefined}

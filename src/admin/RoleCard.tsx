@@ -34,6 +34,7 @@ export const RoleCard = ({
           confirmModalDisclosure.close();
         }}
         onCancel={confirmModalDisclosure.close}
+        onClose={confirmModalDisclosure.close}
         title="Delete this role?"
         content="You are permanently deleting this role. Any team members currently using this role will be
         affected."
