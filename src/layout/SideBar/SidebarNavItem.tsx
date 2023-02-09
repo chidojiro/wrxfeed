@@ -38,6 +38,7 @@ export const SidebarNavItem = ({
         'pl-[42px] h-9 w-full',
         'flex items-center',
         'hover:bg-Gray-7 text-sm rounded-sm',
+        'flex-shrink-0',
         { 'text-Accent-2 font-semibold': isActive },
         className,
       )}

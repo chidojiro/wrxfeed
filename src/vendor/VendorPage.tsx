@@ -175,6 +175,8 @@ export const VendorPage = () => {
         onDateRangeChange={setDateRange}
         sort={sortTransactionsBy}
         onSortChange={setSortTransactionsBy}
+        disableTransactionButton
+        defaultExpand
       />
     </MainLayout>
   );
