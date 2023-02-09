@@ -16,6 +16,7 @@ import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLege
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
+import dayjs from 'dayjs';
 import { sumBy } from 'lodash-es';
 import mixpanel from 'mixpanel-browser';
 import React, { useState } from 'react';
@@ -31,7 +32,7 @@ export const CategoryPage = () => {
     'sortTransactionsBy',
     DEFAULT_SORT,
   );
-  const [dateRange, setDateRange] = useUrlState<DateRangeFilter>('dateRange', 'year-to-date');
+  const [dateRange, setDateRange] = useState<DateRangeFilter>('year-to-date');
 
   const { categoryId: categoryIdParam } = useParams() as Record<string, string>;
   const categoryId = +categoryIdParam;
@@ -58,7 +59,9 @@ export const CategoryPage = () => {
     totalLineItemsCount,
   } = useLineItems({
     props: [{ id: categoryId, type: 'CATEGORY', name: '', exclude: false }],
-    dateRange: dateRange,
+    dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+    from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
+    to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),

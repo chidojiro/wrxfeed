@@ -1,3 +1,4 @@
+import { DateRangePickerValue } from '@/common/components';
 import { PaginationParams, SortByParams, SortOrderParams } from '@/rest/types';
 import { Period } from '@/spending/types';
 import { Entities } from '@/types';
@@ -38,14 +39,18 @@ export type GetLineItemsProps = {
 export type GetTransactionTableItemsParams = PaginationParams &
   SortByParams & {
     props: GetLineItemsProps[];
-    dateRange: string;
+    dateRange?: Exclude<DateRangeFilter, DateRangePickerValue>;
+    from?: string;
+    to?: string;
     groupBy: string;
   };
 
 export type GetLineItemsPayload = PaginationParams &
   SortByParams & {
     props: Property[];
-    dateRange: DateRangeFilter;
+    dateRange?: Exclude<DateRangeFilter, DateRangePickerValue>;
+    from?: string;
+    to?: string;
     transIds?: number[];
     docNum?: string;
   };
@@ -63,12 +68,14 @@ export type Property = {
   exclude?: boolean;
 };
 
-export type DateRangeFilter = '30-days' | '90-days' | 'year-to-date';
+export type DateRangeFilter = '30-days' | '90-days' | 'year-to-date' | DateRangePickerValue;
 
 export type GetFeedSpendingParams = {
   props: Property[];
   periods: Period[];
-  dateRange: DateRangeFilter;
+  dateRange?: DateRangeFilter;
+  from?: string;
+  to?: string;
   groupByItem: Entities;
   groupByTime: 'year' | 'month' | 'day' | 'week';
 };

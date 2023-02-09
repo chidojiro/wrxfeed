@@ -7,6 +7,7 @@ import { commentEditorHtmlParser } from '@/main/utils';
 import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import { Entities } from '@/types';
+import dayjs from 'dayjs';
 import { EditorState } from 'draft-js';
 import mixpanel from 'mixpanel-browser';
 import React, { useEffect } from 'react';
@@ -93,7 +94,7 @@ export const InsightPage = ({}: InsightPageProps) => {
       ) ?? {};
 
       reset({
-        dateRange,
+        dateRange: dateRange as any,
         groupBy,
         props,
         name,
@@ -114,9 +115,14 @@ export const InsightPage = ({}: InsightPageProps) => {
 
     const parsedContent = commentEditorHtmlParser(contentState.getCurrentContent());
 
-    handleSubmit(async (formData: any) => {
+    handleSubmit(async ({ dateRange, ...restFormData }: any) => {
       if (isEdit) {
-        await InsightApis.update(insight.id, formData);
+        await InsightApis.update(insight.id, {
+          ...restFormData,
+          dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+          from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
+          to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
+        });
         if (isDirty) {
           await FeedApis.createComment(insight.feedItem.id, {
             content: parsedContent,
@@ -124,7 +130,12 @@ export const InsightPage = ({}: InsightPageProps) => {
           });
         }
       } else {
-        const insight = await InsightApis.create(formData);
+        const insight = await InsightApis.create({
+          ...restFormData,
+          dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+          from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
+          to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
+        });
         if (isDirty) {
           await FeedApis.createComment(insight.feedItem.id, {
             content: parsedContent,

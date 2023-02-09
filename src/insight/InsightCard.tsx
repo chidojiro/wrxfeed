@@ -16,6 +16,7 @@ import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { Entities } from '@/types';
 import clsx from 'clsx';
+import dayjs from 'dayjs';
 import { sumBy } from 'lodash-es';
 import React, { useState } from 'react';
 import { InsightCardActionMenu } from './InsightCardActionMenu';
@@ -71,7 +72,9 @@ export const InsightCard = ({
   const { insightSpendings = fallbackData } = useInsightSpendings({
     props: props!,
     periods: [],
-    dateRange: dateRange!,
+    dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+    from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
+    to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
     groupByItem: groupBy!,
     groupByTime,
   });
@@ -99,7 +102,9 @@ export const InsightCard = ({
 
   const { transactions, isValidatingTransactions, totalCount } = useInsightTransactions({
     props: props ?? [],
-    dateRange: dateRange!,
+    dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+    from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
+    to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
     groupBy: groupBy!,
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,

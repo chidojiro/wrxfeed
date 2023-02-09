@@ -1,5 +1,5 @@
 import { Property } from '@/feed/types';
-import { FeedItem, User } from '@/main/entity';
+import { User } from '@/main/entity';
 import { PaginationParams, SortByParams } from '@/rest/types';
 import { Entities } from '@/types';
 import { DateRangeFilter } from './../feed/types';
@@ -7,14 +7,18 @@ import { DateRangeFilter } from './../feed/types';
 export type CreateInsightPayload = {
   name: string;
   props: Property[];
-  dateRange: DateRangeFilter;
+  dateRange?: DateRangeFilter;
+  from?: string;
+  to?: string;
   groupBy: Entities;
 };
 
 export type GetInsightLineItemsBody = PaginationParams &
   SortByParams & {
     props: Property[];
-    dateRange: DateRangeFilter;
+    dateRange?: DateRangeFilter;
+    from?: string;
+    to?: string;
     groupBy: Entities;
   };
 

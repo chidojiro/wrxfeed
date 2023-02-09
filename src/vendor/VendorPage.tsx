@@ -16,9 +16,10 @@ import { SpendingBarChart } from '@/spending/SpendingBarChart';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { useTransactions } from '@/transactions/useTransactions';
+import dayjs from 'dayjs';
 import { sumBy } from 'lodash-es';
 import mixpanel from 'mixpanel-browser';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { GetVendorSpendingsParams } from './types';
 import { useVendor } from './useVendor';
@@ -31,12 +32,12 @@ export const VendorPage = () => {
     'sortTransactionsBy',
     DEFAULT_SORT,
   );
-  const [dateRange, setDateRange] = useUrlState<DateRangeFilter>('dateRange', 'year-to-date');
+  const [dateRange, setDateRange] = React.useState<DateRangeFilter>('year-to-date');
   const [groupBy, setGroupBy] = React.useState<GetVendorSpendingsParams['groupBy']>(undefined);
 
   const { vendorId: vendorIdParam } = useParams() as Record<string, string>;
   const vendorId = +vendorIdParam;
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = React.useState<number>(1);
   const {
     data: vendor,
     isValidating: isValidatingVendor,
@@ -57,7 +58,9 @@ export const VendorPage = () => {
     props: [{ id: vendorId, type: 'VENDOR', name: '', exclude: false }],
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
-    dateRange,
+    dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+    from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
+    to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
 

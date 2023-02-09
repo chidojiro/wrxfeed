@@ -12,8 +12,9 @@ import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import { TransactionList } from '@/transactions/TransactionList';
 import { useTransactions } from '@/transactions/useTransactions';
+import dayjs from 'dayjs';
 import mixpanel from 'mixpanel-browser';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DepartmentApis } from './apis';
 import { DEFAULT_SORT } from './constants';
@@ -28,14 +29,8 @@ export const TeamPage = () => {
     'sortTransactionsBy',
     DEFAULT_SORT,
   );
-  const [transactionTimeRange, setTransactionTimeRange] = useUrlState<DateRangeFilter>(
-    'transactionTimeRange',
-    '30-days',
-  );
-  const [topCategoriesTimeRange, setTopCategoriesTimeRange] = useUrlState<DateRangeFilter>(
-    'topCategoriesTimeRange',
-    '30-days',
-  );
+  const [dateRange, setDateRange] = useState<DateRangeFilter>('30-days');
+  const [topCategoriesDateRange, setTopCategoriesDateRange] = useState<DateRangeFilter>('30-days');
   const { handle: viewDepartmentSummary } = useHandler((departmentId: number) =>
     DepartmentApis.viewSummary(departmentId),
   );
@@ -52,14 +47,24 @@ export const TeamPage = () => {
 
   const { transactions, isValidatingTransactions, totalCount } = useTransactions({
     props: [{ id: +departmentIdParam, type: 'DEPARTMENT', name: '', exclude: false }],
-    dateRange: transactionTimeRange,
+    dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+    from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
+    to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
 
   const { data: topCategories = EMPTY_ARRAY, isValidating: isValidatingTopCategories } =
-    useTopCategories(departmentId, { dateRange: topCategoriesTimeRange });
+    useTopCategories(departmentId, {
+      dateRange: typeof topCategoriesDateRange === 'string' ? topCategoriesDateRange : undefined,
+      from: Array.isArray(topCategoriesDateRange)
+        ? dayjs(topCategoriesDateRange[0]).format('YYYY-MM-DD')
+        : undefined,
+      to: Array.isArray(topCategoriesDateRange)
+        ? dayjs(topCategoriesDateRange[1]).format('YYYY-MM-DD')
+        : undefined,
+    });
 
   const { data: department, error } = useDepartment(departmentId);
 
@@ -102,8 +107,8 @@ export const TeamPage = () => {
           <TeamTargetSummary departmentId={departmentId} />
           <OverlayLoader loading={isValidatingTopCategories}>
             <TopCategories
-              dateRange={topCategoriesTimeRange}
-              onDateRangeChange={setTopCategoriesTimeRange}
+              dateRange={topCategoriesDateRange}
+              onDateRangeChange={setTopCategoriesDateRange}
               topCategories={topCategories}
             />
           </OverlayLoader>
@@ -118,8 +123,8 @@ export const TeamPage = () => {
         sort={sortTransactionsBy}
         totalCount={totalCount}
         onSortChange={setSortTransactionsBy}
-        dateRange={transactionTimeRange}
-        onDateRangeChange={setTransactionTimeRange}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
       />
     </MainLayout>
   );
