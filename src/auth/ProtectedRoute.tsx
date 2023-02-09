@@ -13,9 +13,7 @@ export const ProtectedRoute = ({ path, component, permissions }: ProtectedRouteP
   const { profile, isInitializingProfile } = useProfile();
 
   const isAccessible =
-    profile?.email === 'ngoc@gravitylabs.co' ||
-    !permissions ||
-    profile?.roles?.some((role) => permissions?.includes(role.name));
+    !permissions || profile?.roles?.some((role) => permissions?.includes(role.name));
 
   if (isInitializingProfile) {
     if (path === '/onboarding') return <LoadingFallback />;
@@ -23,7 +21,6 @@ export const ProtectedRoute = ({ path, component, permissions }: ProtectedRouteP
     return <MainLayout />;
   }
 
-  console.log(profile);
   if (!isAccessible) {
     return <NoPermission />;
   }
