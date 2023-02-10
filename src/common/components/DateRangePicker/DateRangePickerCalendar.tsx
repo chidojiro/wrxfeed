@@ -22,11 +22,13 @@ export const DateRangePickerCalendar = ({
       <DateRangePickerCalendarHeader month={viewingMonth} onNext={onNext} onPrev={onPrev} />
       <div className="py-2 px-3 border-t border-b border-Gray-11 flex-1">
         <DateRangePickerCalendarDays />
-        <DateRangePickerCalendarDates
-          viewableDates={viewableDates}
-          showNext={!!onNext}
-          showPrev={!!onPrev}
-        />
+        <div className="h-44">
+          <DateRangePickerCalendarDates
+            viewableDates={viewableDates}
+            showNext={!!onNext}
+            showPrev={!!onPrev}
+          />
+        </div>
       </div>
     </div>
   );
