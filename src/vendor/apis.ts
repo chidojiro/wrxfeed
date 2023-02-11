@@ -15,8 +15,11 @@ const update = (id: number, payload: UpdateVendorPayload) =>
   RestApis.patch<Vendor>(`/feed/vendors/${id}`, payload);
 
 const getSpendings = (id: number, params?: GetVendorSpendingsParams) =>
-  RestApis.get<SpendingsReport>(`feed/vendors/${id}/spends`, {
-    params: { ...params, year: params?.year ?? DateUtils.getThisYear() },
+  RestApis.patch<SpendingsReport>(`feed/spending`, {
+    groupByItem: params?.groupBy,
+    groupByTime: 'month',
+    dateRange: 'year-to-date',
+    props: [{ id: id, type: 'VENDOR', exclude: false }],
   });
 
 export const VendorApis = { get, getList, update, getSpendings };
