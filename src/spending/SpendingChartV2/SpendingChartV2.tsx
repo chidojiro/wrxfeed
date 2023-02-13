@@ -54,7 +54,9 @@ export const SpendingChartV2 = <TData extends BaseData>({
 
   const chartData = data.map((item) => ({
     ...item,
-    name: dayjs().set('month', item.month).format('MMM'),
+    name: dayjs()
+      .set('month', item.month - 1)
+      .format('MMM'),
   }));
 
   const defaultBarSize = React.useMemo(() => {
