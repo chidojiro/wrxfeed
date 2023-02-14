@@ -41,14 +41,19 @@ export const DateRangePicker = ({ className, onClose, ...restProps }: DateRangeP
           />
         </div>
         <div className="p-4 flex items-center justify-between">
-          <Button className="text-Gray-3 text-sm font-semibold" onClick={onClose}>
+          <Button className="text-Gray-3 text-sm font-semibold tracking-[-2%]" onClick={onClose}>
             Cancel custom date
           </Button>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" colorScheme="gray" onClick={() => setSelectedRange([])}>
+            <Button
+              className="text-Gray-3 hover:text-Gray-2 font-semibold tracking-[-2%]"
+              variant="text"
+              onClick={() => setSelectedRange([])}
+            >
               Clear
             </Button>
             <Button
+              className="font-semibold tracking-[-2%]"
               variant="solid"
               onClick={() => {
                 confirm();

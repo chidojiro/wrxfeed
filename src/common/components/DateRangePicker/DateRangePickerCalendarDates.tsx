@@ -28,7 +28,7 @@ export const DateRangePickerCalendarDates = ({
     return (
       <Button
         key={date.toString()}
-        className={clsx('relative text-sm', {
+        className={clsx('relative text-sm my-[3px] mx-[0.4px]', {
           'text-Gray-6': inMonth !== 'CURRENT_MONTH',
 
           'bg-Accent-3': checkIsInRange(date),
