@@ -43,7 +43,7 @@ export const DateRangeSelect = ({ value, onChange, variant = 'text' }: DateRange
               { label: 'Year To Date', value: 'year-to-date' },
               {
                 label: 'Custom Date',
-                value: Array.isArray(value) ? convertDateRangeValueToString(value) : 'CUSTOM',
+                value: Array.isArray(value) ? convertDateRangeValueToString(value) : 'custom',
               },
             ] as Option<any>[]
           }
@@ -53,7 +53,7 @@ export const DateRangeSelect = ({ value, onChange, variant = 'text' }: DateRange
             return label;
           }}
           renderItem={({ selected, label, value, handleClick }) => {
-            if (value.includes(' - ') || value === 'CUSTOM')
+            if (value.includes(' - ') || value === 'custom')
               return (
                 <Button
                   className="flex items-center gap-2 border-t border-Gray-11 w-full py-2 px-4 text-Gray-3 text-sm"

@@ -59,7 +59,7 @@ export const CategoryPage = () => {
     totalLineItemsCount,
   } = useLineItems({
     props: [{ id: categoryId, type: 'CATEGORY', name: '', exclude: false }],
-    dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+    dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
     from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
     to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,

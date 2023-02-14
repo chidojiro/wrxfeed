@@ -54,4 +54,6 @@ export type Insight = {
   updatedAt: string;
   creator: User;
   feedItem: InsightFeedItem;
+  from?: string;
+  to?: string;
 };

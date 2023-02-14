@@ -58,7 +58,7 @@ export const VendorPage = () => {
     props: [{ id: vendorId, type: 'VENDOR', name: '', exclude: false }],
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
-    dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+    dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
     from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
     to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),

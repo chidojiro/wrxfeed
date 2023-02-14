@@ -55,6 +55,8 @@ export const InsightCard = ({
       groupBy = groupByProp,
       props = propsProp,
       name = '',
+      from = undefined,
+      to = undefined,
     } = {},
   } = feed ?? {};
 
@@ -72,9 +74,9 @@ export const InsightCard = ({
   const { insightSpendings = fallbackData } = useInsightSpendings({
     props: props!,
     periods: [],
-    dateRange: typeof dateRange === 'string' ? dateRange : undefined,
-    from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
-    to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
+    dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
+    from: from ?? (Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined),
+    to: to ?? (Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined),
     groupByItem: groupBy!,
     groupByTime,
   });
@@ -102,9 +104,9 @@ export const InsightCard = ({
 
   const { transactions, isValidatingTransactions, totalCount } = useInsightTransactions({
     props: props ?? [],
-    dateRange: typeof dateRange === 'string' ? dateRange : undefined,
-    from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
-    to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
+    dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
+    from: from ?? (Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined),
+    to: to ?? (Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined),
     groupBy: groupBy!,
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,

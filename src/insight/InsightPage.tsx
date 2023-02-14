@@ -119,7 +119,7 @@ export const InsightPage = ({}: InsightPageProps) => {
       if (isEdit) {
         await InsightApis.update(insight.id, {
           ...restFormData,
-          dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+          dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
           from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
           to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
         });
@@ -132,7 +132,7 @@ export const InsightPage = ({}: InsightPageProps) => {
       } else {
         const insight = await InsightApis.create({
           ...restFormData,
-          dateRange: typeof dateRange === 'string' ? dateRange : undefined,
+          dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
           from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
           to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
         });

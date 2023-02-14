@@ -1,5 +1,5 @@
 import { RestApis } from '@/rest/apis';
-import { CreateInsightPayload, Insight, InsightFeedItem, UpdateInsightPayload } from './types';
+import { CreateInsightPayload, Insight, UpdateInsightPayload } from './types';
 
 const get = (id: number) => RestApis.get<Insight>(`/insight/items/${id}`);
 

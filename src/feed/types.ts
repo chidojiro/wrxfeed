@@ -68,7 +68,12 @@ export type Property = {
   exclude?: boolean;
 };
 
-export type DateRangeFilter = '30-days' | '90-days' | 'year-to-date' | DateRangePickerValue;
+export type DateRangeFilter =
+  | '30-days'
+  | '90-days'
+  | 'year-to-date'
+  | 'custom'
+  | DateRangePickerValue;
 
 export type GetFeedSpendingParams = {
   props: Property[];
