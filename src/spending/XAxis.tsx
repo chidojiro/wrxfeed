@@ -37,11 +37,13 @@ export const XAxis = ({ startMonth, endMonth, bar }: XAxisProps) => {
   ) : (
     <div
       className={clsx(
-        'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[38px]',
-        { 'justify-around': bar },
+        'flex flex-row w-full text-xs text-Gray-6 font-semibold justify-between pl-[48px] pr-[10px]',
+        { 'justify-around pl-[48px] pr-[10px]': bar, 'pl-[38px]': !bar },
       )}
     >
-      <div className="w-[25px] h-7 flex justify-center items-center first:justify-start last:justify-end"></div>
+      {!bar && (
+        <div className="w-[25px] h-7 flex justify-center items-center first:justify-start last:justify-end"></div>
+      )}
       {range(startMonth, endMonth + 1).map((month: number) => (
         <div
           key={`x-${month}`}
