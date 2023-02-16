@@ -73,3 +73,5 @@ export { ReactComponent as TargetFeedBadgeIcon } from '@/assets/icons/solid/targ
 export { ReactComponent as CategoryFeedBadgeIcon } from '@/assets/icons/solid/category-feed-badge.svg';
 export { ReactComponent as InsightFeedBadgeIcon } from '@/assets/icons/solid/insight-feed-badge.svg';
 export { ReactComponent as TransactionFeedBadgeIcon } from '@/assets/icons/solid/transaction-feed-badge.svg';
+export { ReactComponent as PlusCircleSolidIcon } from '@/assets/icons/solid/plus-circle.svg';
+export { ReactComponent as TickCircleSolidIcon } from '@/assets/icons/solid/tick-circle.svg';

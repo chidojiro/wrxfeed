@@ -35,7 +35,7 @@ export const SidebarNavItem = ({
       to={href}
       className={clsx(
         'relative',
-        'pl-[42px] h-9 w-full',
+        'pl-[42px] h-7 w-full',
         'flex items-center',
         'hover:bg-Gray-7 text-sm rounded-sm',
         'flex-shrink-0',
@@ -44,7 +44,7 @@ export const SidebarNavItem = ({
       )}
     >
       <div className="flex items-center flex-1">
-        <div className="flex items-center flex-1 pr-3 gap-4">
+        <div className="flex items-center flex-1 pr-3 gap-[10px]">
           <div
             className={clsx('w-5 h-5 flex items-center justify-center', {
               'text-Accent-2': isActive,

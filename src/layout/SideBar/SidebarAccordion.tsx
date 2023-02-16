@@ -24,14 +24,14 @@ export const SidebarAccordion = ({
     <Accordion defaultOpen={defaultOpen}>
       <Accordion.Button
         className={clsx(
-          'pl-[42px] pr-4 h-9 w-full',
+          'pl-[42px] pr-4 h-7 w-full',
           'flex items-center',
           'text-sm rounded-sm',
           className,
         )}
       >
         {({ isOpen }) => (
-          <div className="relative flex items-center flex-1 pr-3 gap-4">
+          <div className="relative flex items-center flex-1 pr-3 gap-[10px]">
             <DownSmall
               className={clsx(
                 'w-4 h-4 absolute top-1/2 left-0 transform -translate-x-5 -translate-y-1/2',

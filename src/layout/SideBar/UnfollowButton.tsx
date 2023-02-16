@@ -1,13 +1,15 @@
 import { BasicsXSmall } from '@/assets';
-import { Button, Spinner, Tooltip } from '@/common/components';
+import { Button, Tooltip } from '@/common/components';
+import { Insight } from '@/insight/types';
 import { Department } from '@/main/entity';
 import { useUnsubscribe } from '@/subscription/useUnsubscribe';
 
 export type UnfollowButtonProps = {
-  department: Department;
+  department?: Department;
+  insight?: Insight;
 };
 
-export const UnfollowButton = ({ department }: UnfollowButtonProps) => {
+export const UnfollowButton = ({ department, insight }: UnfollowButtonProps) => {
   const { unsubscribe } = useUnsubscribe();
 
   return (
@@ -17,7 +19,14 @@ export const UnfollowButton = ({ department }: UnfollowButtonProps) => {
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
-            unsubscribe('departments', department);
+
+            if (department) {
+              unsubscribe('departments', department);
+            }
+
+            if (insight) {
+              unsubscribe('insights', insight);
+            }
           }}
           className="w-4 h-4"
         >

@@ -15,10 +15,10 @@ export const useSubscribe = <T extends { id: number; name: string }>() => {
 
           await SubscriptionApis.update(params);
 
-          return { ...subscription, [type]: [subscription?.[type] ?? [], item].flat() };
+          return { ...subscription!, [type]: [subscription?.[type] ?? [], item].flat() };
         },
         {
-          optimisticData: (prev) => ({ ...prev, [type]: [prev?.[type] ?? [], item].flat() }),
+          optimisticData: (prev) => ({ ...prev!, [type]: [prev?.[type] ?? [], item].flat() }),
           populateCache: true,
           rollbackOnError: true,
         },

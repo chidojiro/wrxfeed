@@ -1,7 +1,18 @@
-import { CategoryIcon, EditIcon, EyeIcon, TeamIcon, VendorIcon } from '@/assets';
+import {
+  CategoryIcon,
+  EditIcon,
+  EyeIcon,
+  PlusCircleSolidIcon,
+  TeamIcon,
+  TickCircleSolidIcon,
+  VendorIcon,
+} from '@/assets';
 import { Avatar, Divider, Menu, Tag } from '@/common/components';
 import { useDisclosure, useHandler } from '@/common/hooks';
 import { distanceToNow } from '@/common/utils';
+import { useSubscribe } from '@/subscription/useSubscribe';
+import { useSubscription } from '@/subscription/useSubscription';
+import { useUnsubscribe } from '@/subscription/useUnsubscribe';
 import { TrashIcon } from '@heroicons/react/outline';
 import { Link } from 'react-router-dom';
 import { InsightApis } from './apis';
@@ -13,16 +24,16 @@ export type InsightCardActionMenuProps = {
 };
 
 export const InsightCardActionMenu = ({
-  feed: {
-    insight: {
-      id,
-      updatedAt,
-      props,
-      creator: { fullName, avatar },
-    },
-  },
+  feed: { insight },
   onDeleteSuccess,
 }: InsightCardActionMenuProps) => {
+  const {
+    id,
+    updatedAt,
+    props,
+    creator: { fullName, avatar },
+  } = insight;
+
   const vendorProps = props.filter(({ type }) => type === 'VENDOR');
   const departmentProps = props.filter(({ type }) => type === 'DEPARTMENT');
   const categoryProps = props.filter(({ type }) => type === 'CATEGORY');
@@ -32,6 +43,12 @@ export const InsightCardActionMenu = ({
   const { handle: deleteInsight } = useHandler(() => InsightApis.delete(id), {
     onSuccess: onDeleteSuccess,
   });
+
+  const { subscription } = useSubscription();
+  const { subscribe } = useSubscribe();
+  const { unsubscribe } = useUnsubscribe();
+
+  const isFollowing = subscription?.insights?.find((insight) => insight.id === id);
 
   return (
     <Menu placement="bottom-end" onClose={viewDetailsDisclosure.close}>
@@ -80,6 +97,21 @@ export const InsightCardActionMenu = ({
           <Link to={`/insights/${id}`}>
             <Menu.Item leftIcon={<EditIcon width={16} height={16} />}>Edit Insight</Menu.Item>
           </Link>
+          {!isFollowing ? (
+            <Menu.Item
+              leftIcon={<PlusCircleSolidIcon />}
+              onClick={() => subscribe('insights', [insight])}
+            >
+              Follow
+            </Menu.Item>
+          ) : (
+            <Menu.Item
+              leftIcon={<TickCircleSolidIcon width={16} height={16} className="text-Green-400" />}
+              onClick={() => unsubscribe('insights', [insight])}
+            >
+              Following
+            </Menu.Item>
+          )}
           <Divider />
           <Menu.Item
             onClick={deleteInsight}
