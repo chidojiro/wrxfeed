@@ -10,7 +10,7 @@ import { Entities } from '@/types';
 import dayjs from 'dayjs';
 import { EditorState } from 'draft-js';
 import mixpanel from 'mixpanel-browser';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import { InsightApis } from './apis';
@@ -161,6 +161,7 @@ export const InsightPage = ({}: InsightPageProps) => {
             props={props}
             posting={isSubmitting}
             initializing={isInitializingInsight}
+            postable={profile?.id === insight?.creator.id}
           />
         </Form>
       </ListLoader>

@@ -34,6 +34,7 @@ export type InsightCardProps = {
   onDeleteSuccess?: () => void;
   posting?: boolean;
   initializing?: boolean;
+  postable?: boolean;
 };
 
 const fallbackData = { curYearSpends: [], prevYearSpends: [] };
@@ -48,6 +49,7 @@ export const InsightCard = ({
   posting,
   errors,
   initializing,
+  postable,
 }: InsightCardProps) => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
 
@@ -223,7 +225,7 @@ export const InsightCard = ({
         {feed ? (
           <CommentsSection feed={feed} />
         ) : (
-          <div className="py-4 px-18">
+          <div className={clsx('py-4 px-18', { 'opacity-70 pointer-events-none': !postable })}>
             <CommentBox
               allowEmpty
               alwaysShowTools
