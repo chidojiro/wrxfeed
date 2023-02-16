@@ -14,7 +14,7 @@ export const useUnsubscribe = <T extends { id: number; name: string }>() => {
           const params = { [type]: ids };
           await SubscriptionApis.delete(params);
           return {
-            ...subscription,
+            ...subscription!,
             [type]: ((subscription?.[type] ?? []) as T[]).filter(({ id }) => {
               const itemIds = [item].flat().map(({ id }) => id);
 
@@ -24,7 +24,7 @@ export const useUnsubscribe = <T extends { id: number; name: string }>() => {
         },
         {
           optimisticData: (prev) => ({
-            ...prev,
+            ...prev!,
             [type]: ((prev?.[type] ?? []) as T[]).filter(({ id }) => {
               const itemIds = [item].flat().map(({ id }) => id);
 
