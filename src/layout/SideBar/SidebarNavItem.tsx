@@ -44,7 +44,7 @@ export const SidebarNavItem = ({
       )}
     >
       <div className="flex items-center flex-1">
-        <div className="flex items-center flex-1 pr-3 gap-[10px]">
+        <div className="flex items-center flex-1 pr-3 gap-2.5">
           <div
             className={clsx('w-5 h-5 flex items-center justify-center', {
               'text-Accent-2': isActive,

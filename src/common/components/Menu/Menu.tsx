@@ -78,7 +78,7 @@ const MenuItem = ({
         className,
       )}
     >
-      {leftIcon}
+      <div className="text-Gray-2">{leftIcon}</div>
       {children}
     </Button>
   );

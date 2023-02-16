@@ -31,7 +31,7 @@ export const SidebarAccordion = ({
         )}
       >
         {({ isOpen }) => (
-          <div className="relative flex items-center flex-1 pr-3 gap-[10px]">
+          <div className="relative flex items-center flex-1 pr-3 gap-2.5">
             <DownSmall
               className={clsx(
                 'w-4 h-4 absolute top-1/2 left-0 transform -translate-x-5 -translate-y-1/2',
