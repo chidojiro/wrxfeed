@@ -3,9 +3,14 @@ import { FeedApis } from '@/feed/apis';
 import { GetFeedSpendingParams } from '@/feed/types';
 import React from 'react';
 
-export const useInsightSpendings = (params: GetFeedSpendingParams) => {
+export const useInsightSpendings = (
+  params: GetFeedSpendingParams,
+  configs?: { enabled: boolean },
+) => {
+  const { enabled = true } = configs || {};
+
   const { data, isInitializing, isValidating, mutate } = useFetcher(
-    ['useInsightSpendings', params],
+    enabled && ['useInsightSpendings', params],
     () => FeedApis.getSpending(params),
     { laggy: true },
   );

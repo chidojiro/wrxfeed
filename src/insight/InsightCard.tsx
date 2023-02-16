@@ -1,5 +1,5 @@
 import { AlertRed, EssentialsSendEnableIcon } from '@/assets';
-import { Button, Form, Input } from '@/common/components';
+import { Button, Form, Input, OverlayLoader } from '@/common/components';
 import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
 import { useUrlState } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
@@ -33,6 +33,7 @@ export type InsightCardProps = {
   feed?: InsightFeedItem;
   onDeleteSuccess?: () => void;
   posting?: boolean;
+  initializing?: boolean;
 };
 
 const fallbackData = { curYearSpends: [], prevYearSpends: [] };
@@ -46,6 +47,7 @@ export const InsightCard = ({
   feed,
   posting,
   errors,
+  initializing,
 }: InsightCardProps) => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
 
@@ -71,15 +73,19 @@ export const InsightCard = ({
     }
   }, [dateRange]);
 
-  const { insightSpendings = fallbackData } = useInsightSpendings({
-    props: props!,
-    periods: [],
-    dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
-    from: from ?? (Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined),
-    to: to ?? (Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined),
-    groupByItem: groupBy!,
-    groupByTime,
-  });
+  const { insightSpendings = fallbackData, isInitializingInsightSpendings } = useInsightSpendings(
+    {
+      props: props!,
+      periods: [],
+      dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
+      from:
+        from ?? (Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined),
+      to: to ?? (Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined),
+      groupByItem: groupBy!,
+      groupByTime,
+    },
+    { enabled: !initializing },
+  );
 
   const { curYearSpends, prevYearSpends } = insightSpendings;
 
@@ -119,126 +125,130 @@ export const InsightCard = ({
   }, [JSON.stringify({ props: props ?? [], dateRange: dateRange!, groupBy: groupBy! })]);
 
   return (
-    <div className={clsx('rounded-card border-card shadow-card', 'bg-white')}>
-      {feed ? (
-        <FeedCardHeader type="INSIGHT" />
-      ) : (
-        <div
-          className="h-3 rounded-t-card"
-          style={{ background: 'linear-gradient(138.74deg, #395BD4 -12.96%, #82B2B3 100%)' }}
-        ></div>
-      )}
-      <div className={clsx('py-6 px-8')}>
-        <div className="grid grid-cols-10">
-          {feed ? (
-            <>
-              <Input
-                readOnly
-                value={name}
+    <OverlayLoader loading={isInitializingInsightSpendings}>
+      <div className={clsx('rounded-card border-card shadow-card', 'bg-white')}>
+        {feed ? (
+          <FeedCardHeader type="INSIGHT" />
+        ) : (
+          <div
+            className="h-3 rounded-t-card"
+            style={{ background: 'linear-gradient(138.74deg, #395BD4 -12.96%, #82B2B3 100%)' }}
+          ></div>
+        )}
+        <div className={clsx('py-6 px-8')}>
+          <div className="grid grid-cols-10">
+            {feed ? (
+              <>
+                <Input
+                  readOnly
+                  value={name}
+                  variant="underline"
+                  className="font-bold text-lg col-span-7"
+                />
+                <div className="col-span-3 flex items-center justify-end">
+                  <InsightCardActionMenu feed={feed} onDeleteSuccess={onDeleteSuccess} />
+                </div>
+              </>
+            ) : (
+              <Form.Input
+                name="name"
+                rules={{
+                  required: true,
+                }}
+                readOnly={!!feed}
                 variant="underline"
                 className="font-bold text-lg col-span-7"
+                placeholder="Name this insight..."
               />
-              <div className="col-span-3 flex items-center justify-end">
-                <InsightCardActionMenu feed={feed} onDeleteSuccess={onDeleteSuccess} />
-              </div>
-            </>
-          ) : (
-            <Form.Input
-              name="name"
-              rules={{
-                required: true,
-              }}
-              readOnly={!!feed}
-              variant="underline"
-              className="font-bold text-lg col-span-7"
-              placeholder="Name this insight..."
-            />
-          )}
-        </div>
-        {hasNameError && renderErrorName()}
-        <div className={clsx('relative top-5', 'grid grid-cols-10 gap-4')}>
-          <div className="col-span-7">
-            <div className="flex gap-4 h-10">
-              <div>
-                <div className="flex gap-1 items-center text-xs text-Gray-6">
-                  <div className="w-1.5 h-1.5 rounded bg-Accent-2"></div>
-                  <span>Spend</span>
-                </div>
-                <p className="text-primary font-bold font-sm">{getDisplayUsdAmount(totalSpend)}</p>
-              </div>
-              <div>
-                <div className="flex gap-1 items-center text-xs text-Gray-6">
-                  <div className="w-1.5 h-1.5 rounded bg-Gray-6"></div>
-                  <span>Last Year</span>
-                </div>
-                <p className="text-primary font-bold font-sm">
-                  {getDisplayUsdAmount(totalSpendLastYear)}
-                </p>
-              </div>
-            </div>
-            <div className="h-[400px] mt-3 flex-1 border border-Gray-12 rounded-lg px-4 pt-10 pb-6">
-              {!groupBy ? (
-                <SpendingBarChart thisYearData={curYearSpends} lastYearData={prevYearSpends} />
-              ) : (
-                <GroupedSpendingChart
-                  data={insightSpendings}
-                  highlightedItemId={hoveredItemId}
-                  dateRange={dateRange}
-                />
-              )}
-            </div>
-          </div>
-          {!!groupBy && (
-            <GroupedSpendingChartLegends
-              spendings={curYearSpends}
-              groupBy={groupBy}
-              highlightedItemId={hoveredItemId}
-              onItemMouseEnter={setHoveredItemId}
-              onItemMouseLeave={() => setHoveredItemId(undefined)}
-              className="col-span-3 w-auto"
-            />
-          )}
-        </div>
-      </div>
-      <TransactionList
-        className="my-6 mx-8"
-        defaultExpand={false}
-        onPageChange={setPage}
-        totalCount={totalCount}
-        transactions={transactions}
-        loading={isValidatingTransactions}
-        sort={sortTransactionsBy}
-        onSortChange={setSortTransactionsBy}
-        showLoadMoreButton={transactions.length % 10 === 0}
-      />
-      {feed ? (
-        <CommentsSection feed={feed} />
-      ) : (
-        <div className="py-4 px-18">
-          <CommentBox
-            allowEmpty
-            alwaysShowTools
-            mentionData={mentions}
-            onSubmit={onPost}
-            className="!rounded-lg"
-            placeholder="@mention people or teams to your share insights"
-            renderSubmitButton={({ disabled, onClick }) => (
-              <Button
-                loading={posting}
-                variant="solid"
-                colorScheme="accent"
-                size="sm"
-                disabled={disabled}
-                onClick={onClick}
-                iconRight={<EssentialsSendEnableIcon />}
-                className="px-6"
-              >
-                Post
-              </Button>
             )}
-          />
+          </div>
+          {hasNameError && renderErrorName()}
+          <div className={clsx('relative top-5', 'grid grid-cols-10 gap-4')}>
+            <div className="col-span-7">
+              <div className="flex gap-4 h-10">
+                <div>
+                  <div className="flex gap-1 items-center text-xs text-Gray-6">
+                    <div className="w-1.5 h-1.5 rounded bg-Accent-2"></div>
+                    <span>Spend</span>
+                  </div>
+                  <p className="text-primary font-bold font-sm">
+                    {getDisplayUsdAmount(totalSpend)}
+                  </p>
+                </div>
+                <div>
+                  <div className="flex gap-1 items-center text-xs text-Gray-6">
+                    <div className="w-1.5 h-1.5 rounded bg-Gray-6"></div>
+                    <span>Last Year</span>
+                  </div>
+                  <p className="text-primary font-bold font-sm">
+                    {getDisplayUsdAmount(totalSpendLastYear)}
+                  </p>
+                </div>
+              </div>
+              <div className="h-[400px] mt-3 flex-1 border border-Gray-12 rounded-lg px-4 pt-10 pb-6">
+                {!groupBy ? (
+                  <SpendingBarChart thisYearData={curYearSpends} lastYearData={prevYearSpends} />
+                ) : (
+                  <GroupedSpendingChart
+                    data={insightSpendings}
+                    highlightedItemId={hoveredItemId}
+                    dateRange={dateRange}
+                  />
+                )}
+              </div>
+            </div>
+            {!!groupBy && (
+              <GroupedSpendingChartLegends
+                spendings={curYearSpends}
+                groupBy={groupBy}
+                highlightedItemId={hoveredItemId}
+                onItemMouseEnter={setHoveredItemId}
+                onItemMouseLeave={() => setHoveredItemId(undefined)}
+                className="col-span-3 w-auto"
+              />
+            )}
+          </div>
         </div>
-      )}
-    </div>
+        <TransactionList
+          className="my-6 mx-8"
+          defaultExpand={false}
+          onPageChange={setPage}
+          totalCount={totalCount}
+          transactions={transactions}
+          loading={isValidatingTransactions}
+          sort={sortTransactionsBy}
+          onSortChange={setSortTransactionsBy}
+          showLoadMoreButton={transactions.length % 10 === 0}
+        />
+        {feed ? (
+          <CommentsSection feed={feed} />
+        ) : (
+          <div className="py-4 px-18">
+            <CommentBox
+              allowEmpty
+              alwaysShowTools
+              mentionData={mentions}
+              onSubmit={onPost}
+              className="!rounded-lg"
+              placeholder="@mention people or teams to your share insights"
+              renderSubmitButton={({ disabled, onClick }) => (
+                <Button
+                  loading={posting}
+                  variant="solid"
+                  colorScheme="accent"
+                  size="sm"
+                  disabled={disabled}
+                  onClick={onClick}
+                  iconRight={<EssentialsSendEnableIcon />}
+                  className="px-6"
+                >
+                  Post
+                </Button>
+              )}
+            />
+          </div>
+        )}
+      </div>
+    </OverlayLoader>
   );
 };

@@ -1,4 +1,4 @@
-import { Form } from '@/common/components';
+import { Form, ListLoader } from '@/common/components';
 import { useMountEffect } from '@/common/hooks';
 import { FeedApis } from '@/feed/apis';
 import { DateRangeFilter, Property } from '@/feed/types';
@@ -25,7 +25,7 @@ export type InsightPageProps = {
 export const InsightPage = ({}: InsightPageProps) => {
   const { insightId } = useParams() as any;
 
-  const { insight } = useInsight(insightId);
+  const { insight, isInitializingInsight } = useInsight(insightId);
 
   const isEdit = !!insight;
 
@@ -33,7 +33,7 @@ export const InsightPage = ({}: InsightPageProps) => {
     defaultValues: {
       name: '',
       groupBy: 'DEPARTMENT',
-      dateRange: 'year-to-date',
+      dateRange: 'year-to-date' as DateRangeFilter,
       props: [] as Property[],
       vendors: [] as string[],
       departments: [] as string[],
@@ -63,7 +63,7 @@ export const InsightPage = ({}: InsightPageProps) => {
   useEffect(() => {
     if (isEdit) {
       const getTagValueFromProps = ({ id, name, type }: Property) => `${type}-${id}-${name}`;
-      const { dateRange, groupBy, props, name } = insight;
+      const { dateRange, groupBy, props, name, from, to } = insight;
 
       const {
         vendorProps = [],
@@ -94,7 +94,8 @@ export const InsightPage = ({}: InsightPageProps) => {
       ) ?? {};
 
       reset({
-        dateRange: dateRange as any,
+        dateRange:
+          dateRange === 'custom' && from && to ? [new Date(from), new Date(to)] : dateRange,
         groupBy,
         props,
         name,
@@ -149,17 +150,20 @@ export const InsightPage = ({}: InsightPageProps) => {
 
   return (
     <MainLayout>
-      <Form methods={methods} className="flex flex-col gap-6">
-        <InsightHeader />
-        <InsightCard
-          errors={errors}
-          onPost={handlePost}
-          groupBy={groupBy}
-          dateRange={dateRange}
-          props={props}
-          posting={isSubmitting}
-        />
-      </Form>
+      <ListLoader loading={isInitializingInsight}>
+        <Form methods={methods} className="flex flex-col gap-6">
+          <InsightHeader />
+          <InsightCard
+            errors={errors}
+            onPost={handlePost}
+            groupBy={groupBy}
+            dateRange={dateRange}
+            props={props}
+            posting={isSubmitting}
+            initializing={isInitializingInsight}
+          />
+        </Form>
+      </ListLoader>
     </MainLayout>
   );
 };
