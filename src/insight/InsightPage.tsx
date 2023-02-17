@@ -161,7 +161,7 @@ export const InsightPage = ({}: InsightPageProps) => {
             props={props}
             posting={isSubmitting}
             initializing={isInitializingInsight}
-            postable={profile?.id === insight?.creator.id}
+            postable={isEdit ? profile?.id === insight?.creator.id : true}
           />
         </Form>
       </ListLoader>
