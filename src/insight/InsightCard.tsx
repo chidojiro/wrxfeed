@@ -49,7 +49,7 @@ export const InsightCard = ({
   posting,
   errors,
   initializing,
-  postable,
+  postable = true,
 }: InsightCardProps) => {
   const [hoveredItemId, setHoveredItemId] = React.useState<number>();
 
