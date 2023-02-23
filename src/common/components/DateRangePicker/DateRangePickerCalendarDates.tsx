@@ -4,6 +4,7 @@ import React from 'react';
 import { Button } from '../Button';
 import { useDateRangePickerContext } from './DateRangePickerProvider';
 import { ViewableDate } from './types';
+import { trimTime } from './useDateRangePicker';
 
 export type DateRangePickerCalendarDatesProps = {
   viewableDates: ViewableDate[];
@@ -35,7 +36,7 @@ export const DateRangePickerCalendarDates = ({
         })}
         onClick={() => handleDateClick(date)}
       >
-        {selectedRange?.[0] && dayjs(selectedRange[0]).isSame(date) && (
+        {selectedRange?.[0] && trimTime(dayjs(selectedRange[0])).isSame(date) && (
           <div className="absolute left-0 top-0 h-full bg-white w-1/2"></div>
         )}
         <div
@@ -48,7 +49,7 @@ export const DateRangePickerCalendarDates = ({
         >
           {date.getDate()}
         </div>
-        {selectedRange?.[1] && dayjs(selectedRange[1]).isSame(date) && (
+        {selectedRange?.[1] && trimTime(dayjs(selectedRange[1])).isSame(date) && (
           <div className="absolute right-0 top-0 h-full bg-white w-1/2"></div>
         )}
       </Button>
