@@ -86,8 +86,7 @@ export const useDateRangePicker = ({
   const checkIsInRange = React.useCallback(
     (date) =>
       selectedRange.length === 2 &&
-      !trimTime(date).isBefore(selectedRange[0]) &&
-      !trimTime(date).isAfter(selectedRange[1]),
+      trimTime(date).isBetween(selectedRange[0], selectedRange[1], 'day', '[]'),
     [selectedRange],
   );
 
