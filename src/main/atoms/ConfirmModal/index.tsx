@@ -35,9 +35,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       <div className="px-4 py-5 sm:max-w-[400px] sm:w-full">
         <div className="flex items-center justify-between space-x-4">
           {icon || <ExclamationCircle />}
-          <Dialog.Title as="h3" className="text-sm text-Gray-1 font-semibold flex-grow">
-            {title}
-          </Dialog.Title>
+          <h3 className="text-sm text-Gray-1 font-semibold flex-grow">{title}</h3>
           <CloseIcon onClick={onClose} />
         </div>
         <div className="pl-10 pr-8 pt-1 space-y-3">
