@@ -80,7 +80,7 @@ export const SpendingChartV2 = <TData extends BaseData>({
   const maxValueForChart = Math.max(maxValueWithSurplus, MIN_Y_VALUE);
   const chartLevels = getChartLevels(maxValueForChart);
 
-  const isSlimBar = data.length > 12;
+  const isSlimBar = data.length > 13;
 
   const defaultBarSize = React.useMemo(() => {
     if (isSlimBar) return 8;
