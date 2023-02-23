@@ -14,6 +14,7 @@ import mixpanel from 'mixpanel-browser';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { InsightApis } from './apis';
 import { InsightCard } from './InsightCard';
 import { InsightHeader } from './InsightHeader';
@@ -124,10 +125,15 @@ export const InsightPage = ({}: InsightPageProps) => {
           ...convertDateRangeToFromTo({ dateRange }),
         });
         if (isDirty) {
-          await FeedApis.createComment(insight.feedItem.id, {
-            content: parsedContent,
-            attachment: data?.attachment,
-          });
+          try {
+            await FeedApis.createComment(insight.feedItem.id, {
+              content: parsedContent,
+              attachment: data?.attachment,
+            });
+            toast.success('Comment sent!');
+          } catch (error) {
+            toast.error(error);
+          }
         }
         mutateSubscription();
       } else {
