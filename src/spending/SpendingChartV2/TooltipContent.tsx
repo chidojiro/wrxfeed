@@ -42,7 +42,7 @@ export const TooltipContent = ({ active, payload }: TooltipContentProps) => {
               <p>Current</p>
             </div>
             <p className="text-right font-semibold">
-              {decimalLogic(dataPoints?.thisYearTotal ?? 0, DecimalType.SummedNumbers, '$')}
+              {decimalLogic(dataPoints?.currentYearTotal ?? 0, DecimalType.SummedNumbers, '$')}
             </p>
           </div>
           <div
@@ -53,7 +53,7 @@ export const TooltipContent = ({ active, payload }: TooltipContentProps) => {
               <p>Last Year</p>
             </div>
             <p className="text-right font-semibold">
-              {decimalLogic(dataPoints?.lastYearTotal ?? 0, DecimalType.SummedNumbers, '$')}
+              {decimalLogic(dataPoints?.previousYearTotal ?? 0, DecimalType.SummedNumbers, '$')}
             </p>
           </div>
 
@@ -79,7 +79,10 @@ export const TooltipContent = ({ active, payload }: TooltipContentProps) => {
                       <span className="font-semibold">
                         {decimalLogic((data.value as number) ?? 0, DecimalType.SummedNumbers, '$')}
                       </span>
-                      <span> ({Math.round((+data.value * 100) / dataPoints.thisYearTotal)})%</span>
+                      <span>
+                        {' '}
+                        ({Math.round((+data.value * 100) / dataPoints.currentYearTotal)})%
+                      </span>
                     </div>
                   </div>
                 ),

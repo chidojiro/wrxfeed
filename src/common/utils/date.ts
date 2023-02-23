@@ -9,8 +9,7 @@ const format = (date: Date | string, formatPattern = 'MM/DD/YY') => {
   }
 };
 
-// TEMPORARY
-const getThisYear = () => (USE_PREV_YEAR_SPENDINGS ? 2022 : 2023);
+export const getThisYear = () => (USE_PREV_YEAR_SPENDINGS ? 2022 : 2023);
 
 export const DateUtils = {
   format,
