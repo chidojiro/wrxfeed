@@ -23,6 +23,8 @@ export const PUSHER_APP_CLUSTER = process.env.REACT_APP_PUSHER_APP_CLUSTER ?? ''
 
 export const USE_PREV_YEAR_SPENDINGS = !!process.env.REACT_APP_USE_PREV_YEAR_SPENDINGS;
 
+export const SPENDINGS_DATE_LIMIT = USE_PREV_YEAR_SPENDINGS ? '2022-12-31' : undefined;
+
 export const IS_TEST = process.env.NODE_ENV === 'test';
 export const IS_PROD = BUILD_ENV === 'production';
 export const IS_DEV = BUILD_ENV === 'dev';

@@ -1,6 +1,6 @@
 import { INITIAL_CHART_DATA } from '@/common/constants';
 import { AssertUtils, DateUtils, round } from '@/common/utils';
-import { USE_PREV_YEAR_SPENDINGS } from '@/env';
+import { SPENDINGS_DATE_LIMIT, USE_PREV_YEAR_SPENDINGS } from '@/env';
 import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType } from '@/main/utils';
 import { TargetMonth, TargetPeriod, TargetSpending, TargetStatusConfig } from '@/target/types';
@@ -635,11 +635,11 @@ export const convertDateRangeToFromTo = (
         (() => {
           switch (dateRange) {
             case '30-days':
-              return trimTime(dayjs().subtract(29, 'day'));
+              return trimTime(dayjs(SPENDINGS_DATE_LIMIT).subtract(29, 'day'));
             case '90-days':
-              return dayjs().subtract(89, 'day');
+              return dayjs(SPENDINGS_DATE_LIMIT).subtract(89, 'day');
             case 'year-to-date':
-              return dayjs().date(1).month(0);
+              return dayjs(SPENDINGS_DATE_LIMIT).date(1).month(0);
             default:
               return dayjs(dateRange[0]);
           }
@@ -649,10 +649,10 @@ export const convertDateRangeToFromTo = (
         (() => {
           switch (dateRange) {
             case 'year-to-date':
-              return dayjs().month(11).date(31);
+              return dayjs(SPENDINGS_DATE_LIMIT).month(11).date(31);
             case '30-days':
             case '90-days':
-              return dayjs();
+              return dayjs(SPENDINGS_DATE_LIMIT);
             default:
               return dayjs(dateRange[1]);
           }
