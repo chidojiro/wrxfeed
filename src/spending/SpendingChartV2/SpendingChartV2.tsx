@@ -149,7 +149,7 @@ export const SpendingChartV2 = <TData extends BaseData>({
   };
 
   const getInterval = () => {
-    if (timelineUnit === 'day') return 1;
+    if (isSlimBar) return 1;
 
     return 0;
   };
