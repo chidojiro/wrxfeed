@@ -1,19 +1,45 @@
 import { DateRangeFilter } from '@/feed/types';
 import { getChartLevels } from '@/main/chart.utils';
 import clsx from 'clsx';
-import dayjs from 'dayjs';
 import React from 'react';
-import { Bar, Cell, ComposedChart, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
+import { Bar, Cell, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { getChartTimelineUnit } from '../utils';
 import { TooltipContent } from './TooltipContent';
 import { BarChartInfo, ChartInfo } from './types';
-import { XAxis } from './XAxis';
 
 const MIN_Y_VALUE = 100;
 
+function CustomizedTick(props: any) {
+  const { x, y, payload, hoveredIndex } = props;
+  const { value, index } = payload;
+
+  const [line1, line2] = value?.toString().split('\n');
+
+  return (
+    <g transform={`translate(${x},${y})`} className="text-xs font-semibold">
+      <text
+        x={0}
+        y={0}
+        dy={10}
+        fill="#7D8490"
+        className={clsx({
+          'opacity-50': typeof hoveredIndex === 'number' && hoveredIndex !== index,
+        })}
+      >
+        <tspan textAnchor="middle" x="0">
+          {line1}
+        </tspan>
+        <tspan textAnchor="middle" x="0" dy="12">
+          {line2}
+        </tspan>
+      </text>
+    </g>
+  );
+}
+
 type BaseData = {
-  month: number;
-  thisYearTotal: number;
-  lastYearTotal: number;
+  currentYearTotal: number;
+  previousYearTotal: number;
 };
 
 type SpendingChartV2Props<TData extends BaseData> = {
@@ -31,6 +57,8 @@ export const SpendingChartV2 = <TData extends BaseData>({
 }: SpendingChartV2Props<TData>) => {
   const [hoveredIndex, setHoveredIndex] = React.useState<number>();
 
+  const timelineUnit = dateRange ? getChartTimelineUnit(dateRange) : 'month';
+
   const getCellOpacity = (index: number, dataKey?: number) => {
     if (hoveredIndex && hoveredIndex !== index) {
       return 0.5;
@@ -44,26 +72,21 @@ export const SpendingChartV2 = <TData extends BaseData>({
   };
 
   const maxValue = Math.max(
-    ...data.map(({ thisYearTotal }) => thisYearTotal),
-    ...data.map(({ lastYearTotal }) => lastYearTotal),
+    ...data.map(({ currentYearTotal }) => currentYearTotal),
+    ...data.map(({ previousYearTotal }) => previousYearTotal),
     MIN_Y_VALUE,
   );
   const maxValueWithSurplus = Math.ceil(maxValue * 1.1);
   const maxValueForChart = Math.max(maxValueWithSurplus, MIN_Y_VALUE);
   const chartLevels = getChartLevels(maxValueForChart);
 
-  const chartData = data.map((item) => ({
-    ...item,
-    name: dayjs()
-      .set('month', item.month - 1)
-      .format('MMM'),
-  }));
+  const isSlimBar = data.length > 12;
 
   const defaultBarSize = React.useMemo(() => {
-    if (dateRange === '30-days') return 8;
+    if (isSlimBar) return 8;
 
     return 24;
-  }, [dateRange]);
+  }, [isSlimBar]);
 
   const renderBar = (chartInfo: BarChartInfo) => {
     if (!chartInfo.stackedBars) {
@@ -76,7 +99,7 @@ export const SpendingChartV2 = <TData extends BaseData>({
           fill={chartInfo.color}
           textAnchor="start"
         >
-          {chartData.map((_, index) => (
+          {data.map((_, index) => (
             <Cell
               key={index}
               color={chartInfo.color}
@@ -100,7 +123,7 @@ export const SpendingChartV2 = <TData extends BaseData>({
             fill={color}
             textAnchor="start"
           >
-            {chartData.map((_, index) => (
+            {data.map((_, index) => (
               <Cell
                 key={index}
                 color={color}
@@ -125,16 +148,41 @@ export const SpendingChartV2 = <TData extends BaseData>({
     });
   };
 
+  const getInterval = () => {
+    if (timelineUnit === 'day') return 1;
+
+    return 0;
+  };
+
+  const renderXAxis = () => {
+    return (
+      <XAxis
+        dataKey="name"
+        tick={<CustomizedTick hoveredIndex={hoveredIndex} />}
+        tickLine={false}
+        height={22}
+        interval={getInterval()}
+        axisLine={false}
+        style={{
+          fontSize: '12px',
+          fontWeight: 500,
+          color: '#7D8490',
+          whiteSpace: 'pre-line',
+        }}
+      />
+    );
+  };
+
   const barGap = React.useMemo(() => {
-    if (dateRange === '30-days') return -14;
+    if (isSlimBar) return -14;
 
     return -36;
-  }, [dateRange]);
+  }, [isSlimBar]);
 
   return (
     <div className={clsx('flex flex-col w-full h-full')}>
       <div className="flex relative flex-col flex-1 max-h-[400px]">
-        <div className="absolute top-[-3px] flex w-full h-full justify-between flex-col-reverse">
+        <div className="absolute top-[-3px] flex w-full h-full justify-between flex-col-reverse pb-[22px]">
           {chartLevels.map((level) => {
             const textColor = level?.isTarget ? 'text-Accent-2' : 'text-Gray-6';
             return (
@@ -159,7 +207,7 @@ export const SpendingChartV2 = <TData extends BaseData>({
           <ComposedChart
             width={500}
             height={300}
-            data={chartData}
+            data={data}
             margin={{
               top: 5,
               right: 10,
@@ -172,6 +220,7 @@ export const SpendingChartV2 = <TData extends BaseData>({
           >
             {renderCharts()}
             <YAxis domain={[0, maxValueForChart]} width={0} height={0} className="opacity-0" />
+            {renderXAxis()}
             <Tooltip
               cursor={{ fill: 'transparent' }}
               position={{ y: 5 }}
@@ -180,7 +229,6 @@ export const SpendingChartV2 = <TData extends BaseData>({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-      <XAxis hoveredIndex={hoveredIndex} dateRange={dateRange} />
     </div>
   );
 };

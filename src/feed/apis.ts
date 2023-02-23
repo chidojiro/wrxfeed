@@ -5,7 +5,7 @@ import { RestApis } from '@/rest/apis';
 import { BYPASS_INTERCEPTOR_HEADER } from '@/rest/constants';
 import { PaginationParams } from '@/rest/types';
 import { withDefaultPaginationParams } from '@/rest/utils';
-import { SpendingsReport } from '@/spending/types';
+import { Spending } from '@/spending/types';
 import { AxiosResponse } from 'axios';
 import {
   CreateCommentPayload,
@@ -102,7 +102,7 @@ const getTransactionFeedItem = (id: number) =>
   RestApis.get<FeedItem[]>(`/feed/items?mode=for-you&lineItemId=${id}`);
 
 const getSpending = (params: GetFeedSpendingParams) =>
-  RestApis.patch<SpendingsReport>('feed/spending', params);
+  RestApis.patch<Spending[]>('feed/spending', params);
 
 const getInsightLineItems = (body: GetInsightLineItemsBody) =>
   RestApis.post<AxiosResponse<TransLineItem[]>>(`/feed/line-items`, body, {

@@ -1,7 +1,6 @@
-import { DateUtils } from '@/common/utils';
+import { Spending } from '@/spending/types';
 import { RestApis } from '@/rest/apis';
 import { withDefaultPaginationParams } from '@/rest/utils';
-import { SpendingsReport } from '@/spending/types';
 import { GetVendorsParams, GetVendorSpendingsParams, UpdateVendorPayload, Vendor } from './types';
 
 const get = (id: number) => RestApis.get<Vendor>(`/feed/vendors/${id}`);
@@ -15,10 +14,8 @@ const update = (id: number, payload: UpdateVendorPayload) =>
   RestApis.patch<Vendor>(`/feed/vendors/${id}`, payload);
 
 const getSpendings = (id: number, params?: GetVendorSpendingsParams) =>
-  RestApis.patch<SpendingsReport>(`feed/spending`, {
+  RestApis.patch<Spending[]>(`feed/spending`, {
     groupByItem: params?.groupBy,
-    groupByTime: 'month',
-    dateRange: 'year-to-date',
     props: [{ id: id, type: 'VENDOR', exclude: false }],
   });
 

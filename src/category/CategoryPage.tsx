@@ -14,9 +14,9 @@ import { useProfile } from '@/profile/useProfile';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
+import { convertDateRangeToFromTo } from '@/spending/utils';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
-import dayjs from 'dayjs';
 import { sumBy } from 'lodash-es';
 import mixpanel from 'mixpanel-browser';
 import React, { useState } from 'react';
@@ -42,11 +42,11 @@ export const CategoryPage = () => {
   const [groupBy, setGroupBy] = useState<GetCategorySpendingsParams['groupBy']>(undefined);
 
   const {
-    categorySpendingsReport = { curYearSpends: [], prevYearSpends: [] },
+    categorySpendingsReport,
+    curYearSpends,
+    prevYearSpends,
     isValidatingCategorySpendingsReport,
   } = useCategorySpendingsReport(categoryId, { groupBy });
-
-  const { curYearSpends = [], prevYearSpends = [] } = categorySpendingsReport ?? {};
 
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
@@ -59,11 +59,9 @@ export const CategoryPage = () => {
     totalLineItemsCount,
   } = useLineItems({
     props: [{ id: categoryId, type: 'CATEGORY', name: '', exclude: false }],
-    dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
-    from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
-    to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
+    ...convertDateRangeToFromTo({ dateRange }),
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
 
@@ -165,6 +163,7 @@ export const CategoryPage = () => {
                 highlightedItemId={hoveredItemId}
                 onItemMouseEnter={setHoveredItemId}
                 onItemMouseLeave={() => setHoveredItemId(undefined)}
+                dateRange={dateRange!}
               />
             )}
           </div>
