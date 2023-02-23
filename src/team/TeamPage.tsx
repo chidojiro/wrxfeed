@@ -8,6 +8,7 @@ import { DateRangeFilter } from '@/feed/types';
 import { MainLayout } from '@/layout/MainLayout';
 import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
+import { convertDateRangeToFromTo } from '@/spending/utils';
 import { TargetCard } from '@/target/TargetCard';
 import { usePrimaryTarget } from '@/target/usePrimaryTarget';
 import { TransactionList } from '@/transactions/TransactionList';
@@ -47,9 +48,7 @@ export const TeamPage = () => {
 
   const { transactions, isValidatingTransactions, totalCount } = useTransactions({
     props: [{ id: +departmentIdParam, type: 'DEPARTMENT', name: '', exclude: false }],
-    dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
-    from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
-    to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
+    ...convertDateRangeToFromTo({ dateRange }),
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),

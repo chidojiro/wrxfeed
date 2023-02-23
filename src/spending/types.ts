@@ -24,8 +24,3 @@ export type MonthData = {
   month: number;
   amount?: number;
 };
-
-export type SpendingsReport = {
-  curYearSpends: Spending[];
-  prevYearSpends: Spending[];
-};

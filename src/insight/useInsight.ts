@@ -11,7 +11,15 @@ export const useInsight = (id: number) => {
 
   return React.useMemo(
     () => ({
-      insight: data,
+      insight: data
+        ? {
+            ...data,
+            dateRange:
+              data.dateRange === 'custom' && data.from && data.to
+                ? [new Date(data.from), new Date(data.to)]
+                : data.dateRange,
+          }
+        : undefined,
       isInitializingInsight: isInitializing,
       isValidatingInsight: isValidating,
       mutateInsight: mutate,

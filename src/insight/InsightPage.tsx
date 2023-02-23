@@ -6,8 +6,9 @@ import { MainLayout } from '@/layout/MainLayout';
 import { commentEditorHtmlParser } from '@/main/utils';
 import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
+import { convertDateRangeToFromTo } from '@/spending/utils';
+import { useSubscription } from '@/subscription/useSubscription';
 import { Entities } from '@/types';
-import dayjs from 'dayjs';
 import { EditorState } from 'draft-js';
 import mixpanel from 'mixpanel-browser';
 import { useEffect } from 'react';
@@ -25,7 +26,8 @@ export type InsightPageProps = {
 export const InsightPage = ({}: InsightPageProps) => {
   const { insightId } = useParams() as any;
 
-  const { insight, isInitializingInsight } = useInsight(insightId);
+  const { insight, isInitializingInsight, mutateInsight } = useInsight(insightId);
+  const { mutateSubscription } = useSubscription();
 
   const isEdit = !!insight;
 
@@ -63,7 +65,7 @@ export const InsightPage = ({}: InsightPageProps) => {
   useEffect(() => {
     if (isEdit) {
       const getTagValueFromProps = ({ id, name, type }: Property) => `${type}-${id}-${name}`;
-      const { dateRange, groupBy, props, name, from, to } = insight;
+      const { dateRange, groupBy, props, name } = insight;
 
       const {
         vendorProps = [],
@@ -94,8 +96,7 @@ export const InsightPage = ({}: InsightPageProps) => {
       ) ?? {};
 
       reset({
-        dateRange:
-          dateRange === 'custom' && from && to ? [new Date(from), new Date(to)] : dateRange,
+        dateRange,
         groupBy,
         props,
         name,
@@ -120,9 +121,7 @@ export const InsightPage = ({}: InsightPageProps) => {
       if (isEdit) {
         await InsightApis.update(insight.id, {
           ...restFormData,
-          dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
-          from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
-          to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
+          ...convertDateRangeToFromTo({ dateRange }),
         });
         if (isDirty) {
           await FeedApis.createComment(insight.feedItem.id, {
@@ -130,12 +129,11 @@ export const InsightPage = ({}: InsightPageProps) => {
             attachment: data?.attachment,
           });
         }
+        mutateSubscription();
       } else {
         const insight = await InsightApis.create({
           ...restFormData,
-          dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
-          from: Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined,
-          to: Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined,
+          ...convertDateRangeToFromTo({ dateRange }),
         });
         if (isDirty) {
           await FeedApis.createComment(insight.feedItem.id, {

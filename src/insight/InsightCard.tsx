@@ -1,7 +1,6 @@
 import { AlertRed, EssentialsSendEnableIcon } from '@/assets';
 import { Button, Form, Input, OverlayLoader } from '@/common/components';
-import { DEFAULT_ITEMS_PER_INFINITE_LOAD } from '@/common/constants';
-import { useUrlState } from '@/common/hooks';
+import { DEFAULT_ITEMS_PER_INFINITE_LOAD, EMPTY_ARRAY } from '@/common/constants';
 import { StringUtils } from '@/common/utils';
 import { CommentBox } from '@/feed/CommentBox';
 import { CommentsSection } from '@/feed/FeedCard/CommentsSection';
@@ -12,6 +11,7 @@ import { useMentions } from '@/misc/useMentions';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
+import { convertDateRangeToFromTo, getSortedTotalSpendings } from '@/spending/utils';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { Entities } from '@/types';
@@ -37,8 +37,6 @@ export type InsightCardProps = {
   postable?: boolean;
 };
 
-const fallbackData = { curYearSpends: [], prevYearSpends: [] };
-
 export const InsightCard = ({
   groupBy: groupByProp,
   dateRange: dateRangeProp,
@@ -55,43 +53,36 @@ export const InsightCard = ({
 
   const {
     insight: {
-      dateRange = dateRangeProp,
+      dateRange: _dateRange = dateRangeProp,
       groupBy = groupByProp,
       props = propsProp,
       name = '',
-      from = undefined,
-      to = undefined,
+      from: _from = undefined,
+      to: _to = undefined,
     } = {},
   } = feed ?? {};
 
-  const groupByTime = React.useMemo(() => {
-    switch (dateRange) {
-      case '30-days':
-        return 'day';
-      case '90-days':
-        return 'week';
-      default:
-        return 'month';
-    }
-  }, [dateRange]);
+  const dateRange =
+    _dateRange === 'custom' && _from && _to ? [new Date(_from), new Date(_to)] : _dateRange;
 
-  const { insightSpendings = fallbackData, isInitializingInsightSpendings } = useInsightSpendings(
+  const {
+    insightSpendings = EMPTY_ARRAY,
+    curYearSpends,
+    prevYearSpends,
+    isInitializingInsightSpendings,
+  } = useInsightSpendings(
     {
       props: props!,
       periods: [],
-      dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
-      from:
-        from ?? (Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined),
-      to: to ?? (Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined),
       groupByItem: groupBy!,
-      groupByTime,
+      ...convertDateRangeToFromTo({ dateRange: dateRange!, from: _from, to: _to }),
     },
     { enabled: !initializing },
   );
 
-  const { curYearSpends, prevYearSpends } = insightSpendings;
+  const sortedTotalSpendings = getSortedTotalSpendings(insightSpendings, dateRange!);
 
-  const totalSpend = sumBy(curYearSpends, 'total');
+  const totalSpend = sumBy(sortedTotalSpendings, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
 
   const [sortTransactionsBy, setSortTransactionsBy] = useState<string>(DEFAULT_SORT);
@@ -110,16 +101,24 @@ export const InsightCard = ({
     );
   };
 
+  const from =
+    _from ?? (Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined);
+
+  const to =
+    _to ?? (Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined);
+
   const { transactions, isValidatingTransactions, totalCount } = useInsightTransactions({
     props: props ?? [],
     dateRange: typeof dateRange === 'string' ? dateRange : 'custom',
-    from: from ?? (Array.isArray(dateRange) ? dayjs(dateRange[0]).format('YYYY-MM-DD') : undefined),
-    to: to ?? (Array.isArray(dateRange) ? dayjs(dateRange[1]).format('YYYY-MM-DD') : undefined),
+    from,
+    to,
     groupBy: groupBy!,
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
     ...StringUtils.toApiSortParam(sortTransactionsBy),
   });
+
+  const hideLastYear = !!from && !!to && dayjs(from).year() !== dayjs(to).year();
 
   React.useEffect(() => {
     setPage(1);
@@ -177,15 +176,17 @@ export const InsightCard = ({
                     {getDisplayUsdAmount(totalSpend)}
                   </p>
                 </div>
-                <div>
-                  <div className="flex gap-1 items-center text-xs text-Gray-6">
-                    <div className="w-1.5 h-1.5 rounded bg-Gray-6"></div>
-                    <span>Last Year</span>
+                {!hideLastYear && (
+                  <div>
+                    <div className="flex gap-1 items-center text-xs text-Gray-6">
+                      <div className="w-1.5 h-1.5 rounded bg-Gray-6"></div>
+                      <span>Last Year</span>
+                    </div>
+                    <p className="text-primary font-bold font-sm">
+                      {getDisplayUsdAmount(totalSpendLastYear)}
+                    </p>
                   </div>
-                  <p className="text-primary font-bold font-sm">
-                    {getDisplayUsdAmount(totalSpendLastYear)}
-                  </p>
-                </div>
+                )}
               </div>
               <div className="h-[400px] mt-3 flex-1 border border-Gray-12 rounded-lg px-4 pt-10 pb-6">
                 {!groupBy ? (
@@ -201,11 +202,12 @@ export const InsightCard = ({
             </div>
             {!!groupBy && (
               <GroupedSpendingChartLegends
-                spendings={curYearSpends}
+                spendings={insightSpendings}
                 groupBy={groupBy}
                 highlightedItemId={hoveredItemId}
                 onItemMouseEnter={setHoveredItemId}
                 onItemMouseLeave={() => setHoveredItemId(undefined)}
+                dateRange={dateRange!}
                 className="col-span-3 w-auto"
               />
             )}

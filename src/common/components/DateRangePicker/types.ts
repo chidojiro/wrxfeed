@@ -3,4 +3,4 @@ export type ViewableDate = {
   inMonth: 'PREVIOUS_MONTH' | 'CURRENT_MONTH' | 'NEXT_MONTH';
 };
 
-export type DateRangePickerValue = [Date, Date];
+export type DateRangePickerValue = Date[];

@@ -78,9 +78,8 @@ export type DateRangeFilter =
 export type GetFeedSpendingParams = {
   props: Property[];
   periods: Period[];
-  dateRange?: DateRangeFilter;
+  dateRange: DateRangeFilter;
   from?: string;
   to?: string;
   groupByItem: Entities;
-  groupByTime: 'year' | 'month' | 'day' | 'week';
 };
