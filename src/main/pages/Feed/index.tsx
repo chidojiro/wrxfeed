@@ -7,7 +7,7 @@ import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { MainLayout } from '@/layout/MainLayout';
 import { Routes } from '@/routing/routes';
 import { TargetApis } from '@/target/apis';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 
 export const FeedPage: React.FC = () => {
@@ -28,7 +28,7 @@ export const FeedPage: React.FC = () => {
     mutate,
     isValidating,
     error,
-  } = useFetcher(['feed'], () => FeedApis.get(feedId));
+  } = useFetcher(!!feedId && ['feed', feedId], () => FeedApis.get(feedId));
 
   const goBackToDashboard = () => {
     redirect(Routes.Dashboard.path as string);
@@ -38,10 +38,6 @@ export const FeedPage: React.FC = () => {
     onSuccess: () => mutate(),
   });
   const { handle: deleteTarget } = useHandler(TargetApis.delete, { onSuccess: goBackToDashboard });
-
-  useEffect(() => {
-    mutate();
-  }, [feedId, mutate]);
 
   const renderFeed = () => {
     if (error) {
