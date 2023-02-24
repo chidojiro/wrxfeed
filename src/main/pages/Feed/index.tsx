@@ -28,7 +28,7 @@ export const FeedPage: React.FC = () => {
     mutate,
     isValidating,
     error,
-  } = useFetcher(['feed'], () => FeedApis.get(feedId));
+  } = useFetcher(!!feedId && ['feed', feedId], () => FeedApis.get(feedId));
 
   const goBackToDashboard = () => {
     redirect(Routes.Dashboard.path as string);
