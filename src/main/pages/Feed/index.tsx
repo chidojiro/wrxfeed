@@ -7,7 +7,7 @@ import { LineItemDrawer, useLineItemDrawer } from '@/feed/LineItemDrawer';
 import { MainLayout } from '@/layout/MainLayout';
 import { Routes } from '@/routing/routes';
 import { TargetApis } from '@/target/apis';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 export const FeedPage: React.FC = () => {
@@ -38,6 +38,10 @@ export const FeedPage: React.FC = () => {
     onSuccess: () => mutate(),
   });
   const { handle: deleteTarget } = useHandler(TargetApis.delete, { onSuccess: goBackToDashboard });
+
+  useEffect(() => {
+    mutate();
+  }, [feedId, mutate]);
 
   const renderFeed = () => {
     if (error) {

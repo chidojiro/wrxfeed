@@ -1,7 +1,7 @@
 import { Children, ClassName } from '@/common/types';
 import clsx from 'clsx';
 import React from 'react';
-import { matchPath } from 'react-router-dom';
+import { Link, matchPath } from 'react-router-dom';
 
 export type SidebarNavItemProps = ClassName &
   Children & {
@@ -31,8 +31,8 @@ export const SidebarNavItem = ({
   );
 
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       className={clsx(
         'relative',
         'pl-[42px] h-7 w-full',
@@ -65,6 +65,6 @@ export const SidebarNavItem = ({
         </div>
         {!!activatable && !!isActive && <div className="w-1 h-6 rounded-full bg-Accent-2" />}
       </div>
-    </a>
+    </Link>
   );
 };
