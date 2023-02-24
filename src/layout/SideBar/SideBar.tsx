@@ -81,7 +81,7 @@ export const SideBar = () => {
             {insights?.map((insight) => (
               <SidebarNavItem
                 key={insight.id}
-                href={`/insights/${insight.id}`}
+                href={`/feed/${insight?.feedItem?.id}`}
                 className="group"
                 iconRight={<UnfollowButton insight={insight} />}
               >
