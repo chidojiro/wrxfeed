@@ -29,7 +29,6 @@ yarn-error.log*
 # temporarily generated files
 infra/nginx.conf
 infra/admin.yml
-/dist
 
 package-lock.json
 .firebase
