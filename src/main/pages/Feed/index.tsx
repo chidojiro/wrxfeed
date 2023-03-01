@@ -55,7 +55,7 @@ export const FeedPage: React.FC = () => {
 
     return (
       <div className="w-full h-full hide-scrollbar invisible-scrollbar">
-        <ListLoader loading={isValidating}>
+        <ListLoader loading={isValidating || !feedItem}>
           <FeedCard
             feed={feedItem ?? fallbackFeed}
             defaultExpand
