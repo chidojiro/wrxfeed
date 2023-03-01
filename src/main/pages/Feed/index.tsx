@@ -8,11 +8,12 @@ import { MainLayout } from '@/layout/MainLayout';
 import { Routes } from '@/routing/routes';
 import { TargetApis } from '@/target/apis';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 export const FeedPage: React.FC = () => {
   const { redirect } = useNavUtils();
   const params = useParams<{ id: string }>();
+  const history = useHistory();
 
   const feedId = +params.id;
 
@@ -61,6 +62,7 @@ export const FeedPage: React.FC = () => {
             categoryRedirectHref={(category) => `/categories/${category?.id.toString()}`}
             onDeleteTarget={deleteTarget}
             onUpdateTarget={updateTarget}
+            onInsightDeleteSuccess={() => history.push('/dashboard/all-company')}
           />
         </ListLoader>
         <LineItemDrawer
