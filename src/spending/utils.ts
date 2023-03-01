@@ -562,9 +562,9 @@ export const getChartDataByDateRange = (spendings: Spending[], dateRange: DateRa
       const isDifferentYear = dayjs(from).year() !== dayjs(to).year();
 
       if (timelineUnit === 'day' || timelineUnit === 'week') {
-        if (isDifferentYear) return dayjs(currentDate).format('MM/DD\nYYYY');
+        if (isDifferentYear) return dayjs(currentDate).format('M/DD\nYYYY');
 
-        return dayjs(currentDate).format('MM/DD');
+        return dayjs(currentDate).format('M/DD');
       }
 
       if (isDifferentYear) return dayjs(currentDate).format('MMM\nYYYY');

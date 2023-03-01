@@ -55,17 +55,15 @@ export const FeedPage: React.FC = () => {
 
     return (
       <div className="w-full h-full hide-scrollbar invisible-scrollbar">
-        <ListLoader loading={isValidating}>
-          {feedItem && (
-            <FeedCard
-              feed={feedItem ?? fallbackFeed}
-              defaultExpand
-              categoryRedirectHref={(category) => `/categories/${category?.id.toString()}`}
-              onDeleteTarget={deleteTarget}
-              onUpdateTarget={updateTarget}
-              onInsightDeleteSuccess={() => history.push('/dashboard/all-company')}
-            />
-          )}
+        <ListLoader loading={isValidating || !feedItem}>
+          <FeedCard
+            feed={feedItem ?? fallbackFeed}
+            defaultExpand
+            categoryRedirectHref={(category) => `/categories/${category?.id.toString()}`}
+            onDeleteTarget={deleteTarget}
+            onUpdateTarget={updateTarget}
+            onInsightDeleteSuccess={() => history.push('/dashboard/all-company')}
+          />
         </ListLoader>
         <LineItemDrawer
           open={isLineItemDrawerOpen}
