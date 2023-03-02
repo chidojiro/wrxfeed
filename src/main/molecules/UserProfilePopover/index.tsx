@@ -138,6 +138,7 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
           id="button-file-avatar"
           accept={UPLOAD_FILE_ACCEPT}
           onFileSelected={onFileSelected}
+          isImage
         >
           <img alt="user-avatar" className="flex w-36 h-36 rounded-full" src={userAvatar} />
           <div className="flex absolute group-hover:bg-blue-upload w-full h-full rounded-full justify-center items-center">
