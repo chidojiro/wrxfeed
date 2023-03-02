@@ -15,7 +15,7 @@ export const CommentGroup = ({ comments, className }: CommentGroupProps) => {
     fullName: comment?.user?.fullName ?? '',
   }));
 
-  const avatars = uniqueAvatars.length > 3 ? uniqueAvatars.slice(0, 2) : uniqueAvatars;
+  const avatars = uniqueAvatars.length > 3 ? uniqueAvatars.slice(0, 3) : uniqueAvatars;
 
   const trailingCommentIcon = (
     <div className="relative">
