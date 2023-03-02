@@ -11,7 +11,7 @@ export type CommentGroupProps = ClassName & {
 
 export const CommentGroup = ({ comments, className }: CommentGroupProps) => {
   const uniqueAvatars: AvatarProps[] = uniqBy(
-    comments.sort((a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()),
+    comments?.sort((a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()),
     'user.id',
   ).map((comment) => ({
     src: comment?.user?.avatar,
