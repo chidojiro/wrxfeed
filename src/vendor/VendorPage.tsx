@@ -150,7 +150,11 @@ export const VendorPage = () => {
               {!groupBy ? (
                 <SpendingBarChart thisYearData={curYearSpends} lastYearData={prevYearSpends} />
               ) : (
-                <GroupedSpendingChart data={vendorSpendings} highlightedItemId={hoveredItemId} />
+                <GroupedSpendingChart
+                  data={vendorSpendings}
+                  highlightedItemId={hoveredItemId}
+                  dateRange={dateRange!}
+                />
               )}
             </div>
             {!!groupBy && (

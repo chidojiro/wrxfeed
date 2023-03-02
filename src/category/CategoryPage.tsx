@@ -153,6 +153,7 @@ export const CategoryPage = () => {
                 <GroupedSpendingChart
                   data={categorySpendingsReport}
                   highlightedItemId={hoveredItemId}
+                  dateRange={dateRange!}
                 />
               )}
             </div>

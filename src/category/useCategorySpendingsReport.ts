@@ -6,7 +6,7 @@ import { GetCategorySpendingsParams } from './types';
 
 export const useCategorySpendingsReport = (id: number, params?: GetCategorySpendingsParams) => {
   const { data, isInitializing, isValidating, mutate } = useFetcher(
-    ['useCategorySpendingsReport', id, params],
+    !!id && !!params && ['useCategorySpendingsReport', id, params],
     () => CategoryApis.getSpendingsReport(id, params),
   );
 
