@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AlertRed } from '@/assets';
 import { ReactComponent as ArrowRight } from '@/assets/icons/outline/arrow-right-2.svg';
 import { ReactComponent as CarbonTrashCan } from '@/assets/icons/outline/carbon-trash-can.svg';
@@ -423,7 +422,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
             </div>
             <hr className="divider divider-horizontal w-full" />
             <div className="flex flex-row w-full px-12 py-4">
-              {!!isEdit && target.type !== 'company' && (
+              {!!isEdit && !target.isPrimary && target.type !== 'company' && (
                 <Button
                   variant="ghost"
                   loading={isDeleting}

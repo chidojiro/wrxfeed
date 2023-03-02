@@ -4,11 +4,13 @@ import { distanceToNow } from '@/common/utils';
 import { FeedItem, Visibility } from '@/main/entity';
 import { OptionsButton } from '@/main/molecules';
 import { getTargetName } from '@/main/utils';
+import { Routes } from '@/routing/routes';
 import { AddTargetModal } from '@/target/AddTargetModal';
 import { Target, UpdateTargetPayload } from '@/target/types';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { CommentsSection } from './CommentsSection';
 import { FeedBackModal } from './FeedBackModal';
 import { FeedCardHeader } from './FeedCardHeader';
@@ -24,9 +26,15 @@ export interface TargetFeedCardProps {
 
 export const TargetFeedCard = React.memo(
   ({ feed, defaultExpand, onDeleteTarget, onUpdateTarget }: TargetFeedCardProps) => {
+    const history = useHistory();
+
     const [isOpenFeedbackModal, openFeedbackModal] = React.useState(false);
     const addTargetModalDisclosure = useDisclosure();
     const isHidden = feed?.category !== null && feed?.category?.visibility === Visibility.HIDDEN;
+
+    const goToTargetDetails = () => {
+      history.push(`${(Routes.Feed.path as string).replace(':id', `${feed?.id}`)}`);
+    };
 
     const renderEditorAvatar = (target: Target) => {
       const updaterName = target?.updater?.fullName ?? '';
@@ -101,6 +109,7 @@ export const TargetFeedCard = React.memo(
                   )}
                 </div>
                 <OptionsButton
+                  onViewClick={goToTargetDetails}
                   onEditClick={addTargetModalDisclosure.onOpen}
                   className="hidden md:block"
                 />
