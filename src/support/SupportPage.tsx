@@ -140,12 +140,6 @@ export const SupportPage = ({}: SupportPageProps) => {
             <div className="flex flex-col gap-6 mt-8 w-[300px] flex-shrink-0">
               <Form.Input
                 className="bg-[#EDEDED] rounded-lg"
-                name="name"
-                required
-                placeholder="Name"
-              />
-              <Form.Input
-                className="bg-[#EDEDED] rounded-lg"
                 name="fullName"
                 required
                 placeholder="Admin name"
@@ -156,6 +150,12 @@ export const SupportPage = ({}: SupportPageProps) => {
                 required
                 type="email"
                 placeholder="Admin email"
+              />
+              <Form.Input
+                className="bg-[#EDEDED] rounded-lg"
+                name="name"
+                required
+                placeholder="Company name"
               />
               <Form.Input
                 className="=bg-[#EDEDED] rounded-lg"
