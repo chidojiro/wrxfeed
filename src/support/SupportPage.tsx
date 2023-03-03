@@ -132,7 +132,7 @@ export const SupportPage = ({}: SupportPageProps) => {
         <Form
           methods={companyFormMethods}
           onSubmit={async (data: any) => {
-            await createCompany({ ...data, name: 'Admin' });
+            await createCompany(data);
             toast.success('Company was created!');
           }}
         >
@@ -140,21 +140,27 @@ export const SupportPage = ({}: SupportPageProps) => {
             <div className="flex flex-col gap-6 mt-8 w-[300px] flex-shrink-0">
               <Form.Input
                 className="bg-[#EDEDED] rounded-lg"
+                name="name"
+                required
+                placeholder="Name"
+              />
+              <Form.Input
+                className="bg-[#EDEDED] rounded-lg"
                 name="fullName"
-                required={true}
+                required
                 placeholder="Admin name"
               />
               <Form.Input
                 className="bg-[#EDEDED] rounded-lg"
                 name="adminEmail"
-                required={true}
+                required
                 type="email"
                 placeholder="Admin email"
               />
               <Form.Input
                 className="=bg-[#EDEDED] rounded-lg"
                 name="domain"
-                required={true}
+                required
                 placeholder="Company domain"
               />
               <Button type="submit" variant="solid" colorScheme="accent" className="rounded">
