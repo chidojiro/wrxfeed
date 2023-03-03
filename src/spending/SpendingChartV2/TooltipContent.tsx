@@ -1,14 +1,8 @@
 import { decimalLogic, DecimalType } from '@/main/utils';
-import React from 'react';
 import { TooltipProps } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import { TrackingStatus } from '../types';
 
-export type TooltipContentProps = TooltipProps<ValueType, NameType> & {
-  showTarget?: boolean;
-  trackingStatus?: TrackingStatus;
-  overallTarget?: boolean;
-};
+export type TooltipContentProps = TooltipProps<ValueType, NameType>;
 
 const MonthLabels: Record<string, string> = {
   Jan: 'January',

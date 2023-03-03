@@ -224,7 +224,7 @@ export const SpendingChartV2 = <TData extends BaseData>({
             <Tooltip
               cursor={{ fill: 'transparent' }}
               position={{ y: 5 }}
-              content={(props) => <TooltipContent {...props} showTarget={false} overallTarget />}
+              content={(props) => <TooltipContent {...props} />}
             />
           </ComposedChart>
         </ResponsiveContainer>

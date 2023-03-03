@@ -3,7 +3,13 @@ import { AssertUtils, DateUtils, round } from '@/common/utils';
 import { SPENDINGS_DATE_LIMIT, USE_PREV_YEAR_SPENDINGS } from '@/env';
 import { ChartDataPoint, ChartLevel, ChartLineProps, LineChartData } from '@/main/types';
 import { decimalLogic, DecimalType } from '@/main/utils';
-import { TargetMonth, TargetPeriod, TargetSpending, TargetStatusConfig } from '@/target/types';
+import {
+  TargetMonth,
+  TargetPeriod,
+  TargetSpending,
+  TargetStatusConfig,
+  TargetStatusType,
+} from '@/target/types';
 import dayjs from 'dayjs';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import { groupBy, range, sumBy } from 'lodash-es';
@@ -13,6 +19,7 @@ import { MonthData, Spending, TrackingStatus } from './types';
 
 dayjs.extend(weekOfYear);
 
+const Accent2 = '#6565FB';
 const Accent9 = '#C2C2FA';
 
 const DATA_DATE_FORMAT = 'MMM DD';
@@ -34,11 +41,9 @@ export const getLastYearSpending = (spendings: TargetSpending[]) =>
 export const getLineChartDataInMonth = (
   data: SpendingChartData,
   targetMonth: TargetMonth,
-  trackingStatus?: TrackingStatus,
+  trackingStatus: TrackingStatus,
 ): LineChartData => {
-  const { spendings, periods = [] } = data;
-
-  const overallTarget = !trackingStatus || isEmptyPeriods(periods);
+  const { spendings } = data;
 
   const targetDate = dayjs().set('month', targetMonth.month - 1);
   const isThisMonth = getThisMonth() === targetMonth.month - 1;
@@ -121,9 +126,9 @@ export const getLineChartDataInMonth = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: overallTarget ? Accent9 : dotStatusColor,
+      stroke: trackingStatus === TargetStatusType.NotSet ? Accent2 : dotStatusColor,
       dot: false,
-      fill: overallTarget ? Accent9 : backgroundStatusColor,
+      fill: trackingStatus === TargetStatusType.NotSet ? Accent9 : backgroundStatusColor,
     },
   ];
 
@@ -166,9 +171,7 @@ export const getMonthsLineChartData = (
 ): LineChartData => {
   if (!data) return INITIAL_CHART_DATA;
 
-  const { periods = [], spendings } = data;
-
-  const overallTarget = !trackingStatus || isEmptyPeriods(periods);
+  const { spendings } = data;
 
   const monthFormat = 'MMM';
   const thisMonth = getThisMonth();
@@ -313,9 +316,9 @@ export const getMonthsLineChartData = (
       type: 'monotone',
       dataKey: 'thisYear',
       strokeWidth: 3,
-      stroke: overallTarget ? Accent9 : dotStatusColor,
+      stroke: trackingStatus === TargetStatusType.NotSet ? Accent2 : dotStatusColor,
       dot: false,
-      fill: overallTarget ? Accent9 : backgroundStatusColor,
+      fill: trackingStatus === TargetStatusType.NotSet ? Accent9 : backgroundStatusColor,
     },
   ];
 

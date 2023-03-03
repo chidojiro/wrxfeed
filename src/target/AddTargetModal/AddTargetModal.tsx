@@ -17,6 +17,7 @@ import {
   TargetPeriod,
   TargetProps,
   TargetSpending,
+  TargetStatusType,
   TargetTypeProp,
   UpdateTargetPayload,
 } from '@/target/types';
@@ -392,7 +393,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
                     data={{
                       periods,
                       spendings: displaySpendings,
-                      trackingStatus: trackingStatus ?? target?.trackingStatus,
+                      trackingStatus: target?.trackingStatus ?? TargetStatusType.NotSet,
                     }}
                   />
                 </div>

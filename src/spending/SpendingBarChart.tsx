@@ -5,6 +5,7 @@ import { Bar, ComposedChart, ResponsiveContainer, Tooltip, YAxis } from 'rechart
 import { Spending } from './types';
 import { TooltipContent } from './TooltipContent';
 import { XAxis } from './XAxis';
+import { TargetStatusType } from '@/target/types';
 
 const MIN_Y_VALUE = 100;
 
@@ -73,7 +74,13 @@ export const SpendingBarChart = ({ thisYearData, lastYearData }: SpendingBarChar
             <Tooltip
               cursor={{ fill: 'transparent' }}
               position={{ y: 5 }}
-              content={(props) => <TooltipContent {...props} showTarget={false} overallTarget />}
+              content={(props) => (
+                <TooltipContent
+                  {...props}
+                  showTarget={false}
+                  trackingStatus={TargetStatusType.NotSet}
+                />
+              )}
             />
           </ComposedChart>
         </ResponsiveContainer>

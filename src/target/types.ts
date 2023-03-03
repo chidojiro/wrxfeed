@@ -106,10 +106,10 @@ export const TargetStatusConfig = {
     name: 'Exceeded',
   },
   [TargetStatusType.NotSet]: {
-    label: '#7D8490',
-    background: '#D1FAE5',
-    dot: '#7D8490',
-    name: 'Exceeded',
+    label: '#3730A3',
+    background: '#E0E7FF',
+    dot: '#818CF8',
+    name: 'Set target',
   },
 };
 
@@ -123,7 +123,7 @@ export type Target = {
   updatedAt?: string;
   lastInteraction?: string;
   department?: Department;
-  trackingStatus?: TargetStatusType;
+  trackingStatus: TargetStatusType;
   props: TargetProps[];
   periods: TargetPeriod[];
   spendings: TargetSpending[];
