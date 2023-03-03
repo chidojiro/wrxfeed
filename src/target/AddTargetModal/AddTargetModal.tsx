@@ -275,6 +275,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
   const totalTargetAmount = round(
     periods.reduce((total, target) => total + (target.amount ?? 0), 0),
   );
+
   const displaySpendings = hidePropertyDropdowns && target ? target?.spendings : spendings;
   const totalCurrentSpend = getCurrentSpendings(displaySpendings, periods);
 
@@ -393,7 +394,7 @@ export const AddTargetModal = withMountOnOpen()((props: AddTargetModalProps) => 
                     data={{
                       periods,
                       spendings: displaySpendings,
-                      trackingStatus: target?.trackingStatus ?? TargetStatusType.NotSet,
+                      trackingStatus: trackingStatus ?? TargetStatusType.NotSet,
                     }}
                   />
                 </div>

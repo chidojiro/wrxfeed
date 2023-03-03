@@ -379,6 +379,7 @@ export const getCurrentSpendings = (
     spendings.filter((spending) => spending.year === year),
     'month',
   );
+
   const spendingsSortedByMonth = new Array(12)
     .fill(null)
     .map((_, idx) => ({ ...yearSpendingsGroupedByMonth[idx + 1]?.[0], month: idx + 1 }));
