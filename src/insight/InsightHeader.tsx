@@ -84,7 +84,7 @@ export const InsightHeader = () => {
           <p className="text-white text-sm">- Drill down by team, category or vendor.</p>
         </div>
       </div>
-      <div className="py-4 px-8 grid grid-cols-2 gap-12">
+      <div className="py-4 px-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
         <div>
           <div className="flex items-center gap-1">
             <span className="font-bold text-sm">Properties:</span>

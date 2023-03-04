@@ -4,7 +4,6 @@ import { MainLayout } from '@/layout/MainLayout';
 import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
 import mixpanel from 'mixpanel-browser';
-import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { AllCompany } from './AllCompany';
 

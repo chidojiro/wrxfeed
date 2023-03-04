@@ -104,8 +104,8 @@ export const PropertiesSection = ({
           <span className="text-Gray-3 font-normal ml-1">{reviewSentence}</span>
         </p>
       )}
-      <div className="flex flex-row py-1 space-x-2">
-        <div className="flex items-center justify-center min-w-[50px] h-[30px]">
+      <div className="flex flex-col lg:flex-row py-1 space-y-2 lg:space-y-0 lg:space-x-2">
+        <div className="flex items-center lg:justify-center min-w-[50px] h-[30px]">
           <p className="text-Gray-6 text-xs">Select:</p>
         </div>
         <PropertiesDropdown
