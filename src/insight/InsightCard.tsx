@@ -164,8 +164,13 @@ export const InsightCard = ({
             )}
           </div>
           {hasNameError && renderErrorName()}
-          <div className={clsx('relative top-5', 'grid grid-cols-10 gap-4')}>
-            <div className="col-span-7">
+          <div
+            className={clsx(
+              'relative top-5',
+              'lg:grid lg:grid-cols-10 space-y-2 lg:space-y-0 lg:gap-4 overflow-auto',
+            )}
+          >
+            <div className="lg:col-span-7 w-[600px]">
               <div className="flex gap-4 h-10">
                 <div>
                   <div className="flex gap-1 items-center text-xs text-Gray-6">
