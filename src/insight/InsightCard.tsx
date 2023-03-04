@@ -213,7 +213,7 @@ export const InsightCard = ({
                 onItemMouseEnter={setHoveredItemId}
                 onItemMouseLeave={() => setHoveredItemId(undefined)}
                 dateRange={dateRange!}
-                className="col-span-3 w-auto"
+                className="lg:col-span-3 lg:w-auto"
               />
             )}
           </div>
