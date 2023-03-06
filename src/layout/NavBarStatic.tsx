@@ -46,7 +46,7 @@ export const NavBarStatic = ({
 
   const { subscription } = useSubscription();
 
-  const { departments } = subscription ?? {};
+  const { departments, insights } = subscription ?? {};
 
   const { profile, isPermittedToFeature } = useProfile();
 
@@ -182,6 +182,37 @@ export const NavBarStatic = ({
                         <div className="flex gap-2 items-center text-Gray-6 group-hover:text-Gray-9">
                           <AddSmallIcon />
                           Add Teams
+                        </div>
+                      </SidebarNavItem>
+                    </SidebarAccordion>
+                  </div>
+                  <div className="block rounded-md py-4 px-6 text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900">
+                    <SidebarAccordion
+                      defaultOpen={false}
+                      label="Insights"
+                      className="group !p-0"
+                      iconLeft={<ChartIcon />}
+                      iconRight={
+                        // stopPropagation to prevent closing accordion
+                        <Link to="/insights" onClick={(e) => e.stopPropagation()}>
+                          <AddSmallIcon className="group-hover:block hidden" />
+                        </Link>
+                      }
+                    >
+                      {insights?.map((insight) => (
+                        <SidebarNavItem
+                          key={insight.id}
+                          href={`/feed/${insight.id}`}
+                          className="group !p-0"
+                          iconRight={<UnfollowButton insight={insight} />}
+                        >
+                          {insight.name}
+                        </SidebarNavItem>
+                      ))}
+                      <SidebarNavItem href="/insights" className="group !p-0" activatable={false}>
+                        <div className="flex gap-2 items-center text-Gray-6 group-hover:text-Gray-9">
+                          <AddSmallIcon />
+                          Add Insight
                         </div>
                       </SidebarNavItem>
                     </SidebarAccordion>

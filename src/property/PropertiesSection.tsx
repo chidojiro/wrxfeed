@@ -138,7 +138,7 @@ export const PropertiesSection = ({
         <PropertiesDropdown
           name="departments"
           placeholder={
-            <Tag colorScheme="cyan" icon={<TeamIcon width={14} height={14} />}>
+            <Tag className="" colorScheme="cyan" icon={<TeamIcon width={14} height={14} />}>
               All Teams
             </Tag>
           }
@@ -146,25 +146,27 @@ export const PropertiesSection = ({
           options={departmentOptions}
           placement="bottom-end"
         />
-        <PropertiesDropdown
-          ref={exceptionsDropdownRef}
-          name="exceptions"
-          searchPlaceholder="Enter a team, category, or vendor"
-          options={exceptionOptions}
-          trigger={
-            <Button size="sm" variant="outline" square colorScheme="gray">
-              <IntersectIcon className="w-4 h-4" width={16} height={16} />
-            </Button>
-          }
-          placement="bottom-end"
-          showOptionsOnEmptySearch={false}
-          description={
-            <div className="flex items-center text-xs mb-2 text-Gray-6">
-              <p className="font-semibold text-Gray-1">Except</p> - Specify any properties not to
-              include
-            </div>
-          }
-        />
+        <div className="flex items-center justify-center w-6 h-[30px]">
+          <PropertiesDropdown
+            ref={exceptionsDropdownRef}
+            name="exceptions"
+            searchPlaceholder="Enter a team, category, or vendor"
+            options={exceptionOptions}
+            trigger={
+              <Button size="sm" variant="outline" square colorScheme="gray">
+                <IntersectIcon className="w-4 h-4" width={16} height={16} />
+              </Button>
+            }
+            placement="bottom-end"
+            showOptionsOnEmptySearch={false}
+            description={
+              <div className="flex items-center text-xs mb-2 text-Gray-6">
+                <p className="font-semibold text-Gray-1">Except</p> - Specify any properties not to
+                include
+              </div>
+            }
+          />
+        </div>
       </div>
       <ExceptionList
         items={exceptionProps}
