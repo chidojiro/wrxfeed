@@ -155,7 +155,7 @@ export const InsightPage = ({}: InsightPageProps) => {
   return (
     <MainLayout>
       <ListLoader loading={isInitializingInsight}>
-        <Form methods={methods} className="flex flex-col gap-6">
+        <Form methods={methods} className="flex flex-col gap-4 lg:gap-6">
           <InsightHeader />
           <InsightCard
             errors={errors}
