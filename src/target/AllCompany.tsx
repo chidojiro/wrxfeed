@@ -1,7 +1,6 @@
 import { Divider, ListLoader } from '@/common/components';
 import { useFetcher } from '@/common/hooks';
 import { DepartmentApis } from '@/team/apis';
-import React from 'react';
 import { AllCompanySummary } from './AllCompanySummary';
 import { AllCompanyTarget } from './AllCompanyTarget';
 import { TargetCards } from './TargetCards';

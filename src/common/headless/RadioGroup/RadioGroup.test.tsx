@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, act, waitFor } from '@testing-library/react';
 import { RadioGroup, RadioGroupProps } from './RadioGroup';
 import userEvent from '@testing-library/user-event';

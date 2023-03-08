@@ -1,6 +1,4 @@
-import InfiniteScroller from '@/common/atoms/InfiniteScroller';
 import { useMountEffect } from '@/common/hooks';
-import ListLoading from '@/main/atoms/ListLoading';
 import { Department } from '@/main/entity';
 import DepartmentItem from '@/main/molecules/DepartmentItem';
 import RootDepartmentHeader from '@/main/molecules/RootDepartmentHeader';

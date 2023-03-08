@@ -1,7 +1,6 @@
 import { Button } from '@/common/components';
 import { Children } from '@/common/types';
 import clsx from 'clsx';
-import React from 'react';
 
 type LoadMoreButtonProps = Children & {
   onClick?: () => void;

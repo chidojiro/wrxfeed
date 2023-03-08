@@ -140,7 +140,11 @@ const UserProfilePopover: React.FC<UserProfilePopoverProps> = ({ style }) => {
           onFileSelected={onFileSelected}
           isImage
         >
-          <img alt="user-avatar" className="flex w-36 h-36 rounded-full" src={userAvatar} />
+          <img
+            alt="user-avatar"
+            className="flex w-36 h-36 rounded-full object-cover"
+            src={userAvatar}
+          />
           <div className="flex absolute group-hover:bg-blue-upload w-full h-full rounded-full justify-center items-center">
             {!isUploading && (
               <div className="flex opacity-0 text-white group-hover:opacity-100 text-sm font-semibold">

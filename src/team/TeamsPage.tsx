@@ -9,7 +9,6 @@ import { PaginationParams } from '@/rest/types';
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { DepartmentApis } from './apis';
-import { useDepartments } from './useDepartments';
 
 const LIMIT = 10;
 const INIT_PAGINATION = Object.freeze({

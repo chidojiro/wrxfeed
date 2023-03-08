@@ -1,6 +1,5 @@
 import { ClassName } from '@/common/types';
 import clsx from 'clsx';
-import React from 'react';
 import { TargetCard, TargetCardProps } from './TargetCard';
 import { Target } from './types';
 

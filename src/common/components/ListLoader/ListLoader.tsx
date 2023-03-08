@@ -1,6 +1,5 @@
 import { Children } from '@/common/types';
 import ListLoading from '@/main/atoms/ListLoading';
-import React from 'react';
 
 export type ListLoaderProps = Children & {
   loading?: boolean;

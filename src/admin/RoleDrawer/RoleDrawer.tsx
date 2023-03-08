@@ -1,4 +1,4 @@
-import { Button, Checkbox, ConfirmModal, Drawer, Form } from '@/common/components';
+import { Button, ConfirmModal, Drawer, Form } from '@/common/components';
 import { withMountOnOpen } from '@/common/hocs';
 import { useDisclosure } from '@/common/hooks';
 import { OpenClose } from '@/common/types';

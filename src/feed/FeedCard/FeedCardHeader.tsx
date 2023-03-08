@@ -5,7 +5,6 @@ import {
   TransactionFeedBadgeIcon,
 } from '@/assets';
 import clsx from 'clsx';
-import React from 'react';
 import { FeedCardBadge } from './FeedCardBadge';
 
 export type FeedCardHeaderProps = JSX.IntrinsicElements['div'] & {

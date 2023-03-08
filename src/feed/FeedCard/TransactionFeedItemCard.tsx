@@ -3,7 +3,7 @@ import { OverlayLoader, StatusTag, Tooltip } from '@/common/components';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import { FeedItem, TranStatus } from '@/main/entity';
-import { decimalLogic, getColorByText } from '@/main/utils';
+import { decimalLogic } from '@/main/utils';
 import {
   getTransactionColorScheme,
   shouldTruncateTranStatus,
@@ -11,7 +11,6 @@ import {
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
 import dayjs from 'dayjs';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { CommentsSection } from './CommentsSection';

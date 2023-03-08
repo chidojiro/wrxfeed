@@ -2,7 +2,6 @@ import { Button } from '@/common/components';
 import { getColorByPropertyType, getPropIconByType } from '@/main/utils';
 import { TargetProps } from '@/target/types';
 import clsx from 'clsx';
-import React from 'react';
 
 type ExceptionListProps = {
   className?: string;

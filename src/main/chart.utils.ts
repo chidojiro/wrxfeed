@@ -14,8 +14,6 @@ import dayjs from 'dayjs';
 import { range } from 'lodash-es';
 import { decimalLogic, DecimalType } from './utils';
 
-const Accent6 = '#818CF8';
-
 const DATA_DATE_FORMAT = 'MMM DD';
 const BILLION = Math.pow(10, 9);
 const MILLION = Math.pow(10, 6);

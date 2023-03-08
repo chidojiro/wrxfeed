@@ -2,7 +2,6 @@ import { useBreakpoint } from '@/common/hooks';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { range } from 'lodash-es';
-import React from 'react';
 
 export type XAxisProps = {
   startMonth: number;

@@ -1,5 +1,4 @@
 import { ComponentStory } from '@storybook/react';
-import React from 'react';
 import { usePagination, UsePaginationProps } from '.';
 import classNames from 'classnames';
 
