@@ -1,4 +1,3 @@
-import { AlertRed } from '@/assets';
 import {
   Form,
   TagColorScheme,

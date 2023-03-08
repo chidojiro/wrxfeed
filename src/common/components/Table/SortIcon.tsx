@@ -1,4 +1,3 @@
-import React from 'react';
 import { TableSortAscIcon, TableSortDescIcon, TableSortIcon } from '@/assets';
 
 type SortIconProps = { order: 'asc' | 'desc' | 'none' };

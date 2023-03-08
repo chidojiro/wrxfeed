@@ -27,7 +27,7 @@ export type InsightPageProps = {
 export const InsightPage = ({}: InsightPageProps) => {
   const { insightId } = useParams() as any;
 
-  const { insight, isInitializingInsight, mutateInsight } = useInsight(insightId);
+  const { insight, isInitializingInsight } = useInsight(insightId);
   const { mutateSubscription } = useSubscription();
 
   const isEdit = !!insight;

@@ -1,6 +1,5 @@
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/outline';
 import dayjs from 'dayjs';
-import React from 'react';
 import { Button } from '../Button';
 
 export type DateRangePickerCalendarHeaderProps = {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { OverlayLoader } from '@/common/components';
 import { ClassName } from '@/common/types';
 import { fallbackTarget } from './constants';

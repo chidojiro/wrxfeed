@@ -3,7 +3,6 @@ import { getChartLevels } from '@/main/chart.utils';
 import clsx from 'clsx';
 import React from 'react';
 import { Bar, Cell, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { getChartTimelineUnit } from '../utils';
 import { TooltipContent } from './TooltipContent';
 import { BarChartInfo, ChartInfo } from './types';
 
@@ -56,8 +55,6 @@ export const SpendingChartV2 = <TData extends BaseData>({
   highlightedDataKey,
 }: SpendingChartV2Props<TData>) => {
   const [hoveredIndex, setHoveredIndex] = React.useState<number>();
-
-  const timelineUnit = dateRange ? getChartTimelineUnit(dateRange) : 'month';
 
   const getCellOpacity = (index: number, dataKey?: number) => {
     if (hoveredIndex && hoveredIndex !== index) {

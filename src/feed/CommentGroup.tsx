@@ -3,7 +3,6 @@ import { AvatarGroup, AvatarProps } from '@/common/components';
 import { ClassName } from '@/common/types';
 import { Comment } from '@/main/entity';
 import { uniqBy } from 'lodash-es';
-import React from 'react';
 
 export type CommentGroupProps = ClassName & {
   comments: Comment[];

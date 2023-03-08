@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect } from 'react';
+import React, { CSSProperties } from 'react';
 import NotificationItem from '@/main/molecules/NotificationItem';
 import { Notification } from '@/main/entity';
 import ListLoading from '@/main/atoms/ListLoading';

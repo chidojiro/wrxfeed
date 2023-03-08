@@ -1,6 +1,6 @@
 import { Button } from '@/common/components';
 import { emailMatches, isEmail } from '@/common/utils';
-import React, {
+import {
   ChangeEvent,
   ClipboardEventHandler,
   forwardRef,

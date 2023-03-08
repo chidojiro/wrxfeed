@@ -5,7 +5,6 @@ import { TransLineItem } from '@/main/entity';
 import { TransactionLineItem } from './TransactionLineItem';
 import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
-import React from 'react';
 
 export interface TransactionLineItemsProps {
   className?: string;

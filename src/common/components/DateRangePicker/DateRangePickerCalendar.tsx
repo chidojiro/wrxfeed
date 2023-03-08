@@ -1,4 +1,3 @@
-import React from 'react';
 import { DateRangePickerCalendarDates } from './DateRangePickerCalendarDates';
 import { DateRangePickerCalendarDays } from './DateRangePickerCalendarDays';
 import { DateRangePickerCalendarHeader } from './DateRangePickerCalendarHeader';

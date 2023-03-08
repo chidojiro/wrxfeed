@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import dayjs from 'dayjs';
-import React from 'react';
 import { Button } from '../Button';
 import { useDateRangePickerContext } from './DateRangePickerProvider';
 import { ViewableDate } from './types';

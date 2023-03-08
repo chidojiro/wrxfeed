@@ -1,4 +1,3 @@
-import { RestrictedItem } from '@/auth/RestrictedItem';
 import { CommentGroup } from '@/feed/CommentGroup';
 import { getDisplayUsdAmount } from '@/main/utils';
 import clsx from 'clsx';

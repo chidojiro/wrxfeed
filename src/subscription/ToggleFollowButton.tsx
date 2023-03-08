@@ -2,7 +2,6 @@ import { ReactComponent as AddIcon } from '@/assets/icons/solid/add-small.svg';
 import { ReactComponent as TickIcon } from '@/assets/icons/solid/tick-small.svg';
 import { Button } from '@/common/components';
 import { Subscription } from '@/main/entity';
-import React from 'react';
 import { useSubscribe } from './useSubscribe';
 import { useSubscription } from './useSubscription';
 import { useUnsubscribe } from './useUnsubscribe';

@@ -1,5 +1,4 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
-import clsx from 'clsx';
 import { Drawer } from './Drawer';
 
 export default {

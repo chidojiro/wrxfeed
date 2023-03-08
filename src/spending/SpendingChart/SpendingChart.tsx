@@ -6,7 +6,7 @@ import { cloneDeep } from 'lodash-es';
 import { defaultMonths } from '../constants';
 import { TooltipContent } from '../TooltipContent';
 import { Period, Spending, TrackingStatus } from '../types';
-import { getLineChartDataInMonth, getMonthsLineChartData, isEmptyPeriods } from '../utils';
+import { getLineChartDataInMonth, getMonthsLineChartData } from '../utils';
 import { XAxis } from '../XAxis';
 
 export type SpendingChartData = {

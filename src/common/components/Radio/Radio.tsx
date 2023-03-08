@@ -1,4 +1,3 @@
-import { MinusIcon, TickIcon } from '@/assets';
 import { useDisclosure } from '@/common/hooks';
 import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';

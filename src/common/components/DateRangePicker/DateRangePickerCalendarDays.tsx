@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import { range } from 'lodash-es';
-import React from 'react';
 
 export type DateRangePickerCalendarDaysProps = {
   //
