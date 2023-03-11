@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { EmojiData, Picker } from 'emoji-mart';
 import { Transition } from '@headlessui/react';

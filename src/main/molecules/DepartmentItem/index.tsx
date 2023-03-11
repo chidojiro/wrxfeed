@@ -3,7 +3,7 @@ import { Category, Department } from '@/main/entity';
 import { ToggleFollowButton } from '@/subscription/ToggleFollowButton';
 import { Vendor } from '@/vendor/types';
 import clsx from 'clsx';
-import React, { MouseEventHandler } from 'react';
+import { MouseEventHandler } from 'react';
 
 type DepartmentItemProps = ClassName & {
   item: Department | Category | Vendor;

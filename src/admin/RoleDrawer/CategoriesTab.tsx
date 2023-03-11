@@ -1,6 +1,6 @@
-import { Checkbox, Divider, Form, ListLoader } from '@/common/components';
+import { Divider, Form, ListLoader } from '@/common/components';
 import { ResettableCheckbox } from '@/common/components/ResettableCheckbox';
-import { CheckboxGroup, CheckboxGroupOption } from '@/common/headless';
+import { CheckboxGroupOption } from '@/common/headless';
 import { useAssignableCategories } from '@/role/useAssignableCategories';
 import { groupBy } from 'lodash-es';
 import { useFormContext } from 'react-hook-form';

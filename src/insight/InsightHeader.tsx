@@ -1,8 +1,10 @@
 import { CategoryIcon, ChartIcon, TeamIcon, VendorIcon } from '@/assets';
 import { Form } from '@/common/components';
 import { EMPTY_ARRAY } from '@/common/constants';
+import { Field } from '@/common/headless';
 import { genReviewSentenceFromProperties } from '@/main/utils';
 import { PropertiesSection } from '@/property/PropertiesSection';
+import { DateRangeSelect } from '@/team/DateRangeSelect';
 import clsx from 'clsx';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -82,7 +84,7 @@ export const InsightHeader = () => {
           <p className="text-white text-sm">- Drill down by team, category or vendor.</p>
         </div>
       </div>
-      <div className="py-4 px-8 grid grid-cols-2 gap-12">
+      <div className="py-4 px-8 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12">
         <div>
           <div className="flex items-center gap-1">
             <span className="font-bold text-sm">Properties:</span>
@@ -93,14 +95,7 @@ export const InsightHeader = () => {
         <div className="flex gap-4 flex-shrink-0">
           <div className="flex flex-col gap-2">
             <label className="font-bold text-sm">Date Range</label>
-            <Form.Select
-              name="dateRange"
-              options={[
-                { label: 'Last 30 Days', value: '30-days' },
-                { label: 'Last 90 Days', value: '90-days' },
-                { label: 'Year To Date', value: 'year-to-date' },
-              ]}
-            ></Form.Select>
+            <Field name="dateRange" component={DateRangeSelect} variant="outline"></Field>
           </div>
           <div className="flex flex-col gap-2">
             <label className="block font-bold text-sm">Group By</label>

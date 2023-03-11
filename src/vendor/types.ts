@@ -1,3 +1,4 @@
+import { DateRangeFilter } from '@/feed/types';
 import { Category } from '@/main/entity';
 import { PaginationParams } from '@/rest/types';
 
@@ -24,4 +25,7 @@ export type UpdateVendorPayload = {
 export type GetVendorSpendingsParams = {
   year?: number;
   groupBy?: 'CATEGORY' | 'DEPARTMENT';
+  dateRange: DateRangeFilter;
+  from?: string;
+  to?: string;
 };

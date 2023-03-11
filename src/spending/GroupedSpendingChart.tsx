@@ -3,11 +3,11 @@ import { DateRangeFilter } from '@/feed/types';
 import { Target } from '@/target/types';
 import React from 'react';
 import { ChartInfo, SpendingChartV2 } from './SpendingChartV2';
-import { SpendingsReport } from './types';
-import { getChartDataByPeriod, getThisYearTotalsGroupedByItem } from './utils';
+import { Spending } from './types';
+import { getChartDataByDateRange, getSortedTotalSpendings } from './utils';
 
 export type GroupedSpendingChartProps = ClassName & {
-  data: SpendingsReport;
+  data: Spending[];
   highlightedItemId?: number;
   dateRange?: DateRangeFilter;
   target?: Target;
@@ -19,19 +19,17 @@ export const GroupedSpendingChart = ({
   data,
   highlightedItemId,
   dateRange,
-  className,
   target,
 }: GroupedSpendingChartProps) => {
-  const { curYearSpends } = data;
-
-  const thisYearTotals = getThisYearTotalsGroupedByItem(curYearSpends);
+  const top10TotalSpendings = (dateRange ? getSortedTotalSpendings(data, dateRange) : []).slice(
+    0,
+    10,
+  );
 
   const chartData = React.useMemo(() => {
-    if (dateRange === '30-days') return getChartDataByPeriod('day', data);
+    if (!dateRange) return [];
 
-    if (dateRange === '90-days') return getChartDataByPeriod('week', data);
-
-    return getChartDataByPeriod('month', data);
+    return getChartDataByDateRange(data, dateRange);
   }, [data, dateRange]);
 
   return (
@@ -39,11 +37,7 @@ export const GroupedSpendingChart = ({
       data={chartData}
       dateRange={dateRange}
       highlightedDataKey={
-        highlightedItemId &&
-        !thisYearTotals
-          .slice(0, 10)
-          .map(({ id }) => id)
-          .includes(highlightedItemId)
+        highlightedItemId && !top10TotalSpendings.map(({ id }) => id).includes(highlightedItemId)
           ? -1
           : highlightedItemId
       }
@@ -52,13 +46,13 @@ export const GroupedSpendingChart = ({
           {
             type: 'BAR',
             color: '#EFF0F2',
-            dataKey: 'lastYearTotal',
+            dataKey: 'previousYearTotal',
           },
           {
             type: 'BAR',
             color: '',
             stackedBars: [
-              thisYearTotals.slice(0, 10).map(({ id, color }) => ({
+              top10TotalSpendings.map(({ id, color }) => ({
                 dataKey: id.toString(),
                 color,
               })),

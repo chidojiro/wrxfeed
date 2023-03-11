@@ -3,19 +3,21 @@ import { AvatarGroup, AvatarProps } from '@/common/components';
 import { ClassName } from '@/common/types';
 import { Comment } from '@/main/entity';
 import { uniqBy } from 'lodash-es';
-import React from 'react';
 
 export type CommentGroupProps = ClassName & {
   comments: Comment[];
 };
 
 export const CommentGroup = ({ comments, className }: CommentGroupProps) => {
-  const uniqueAvatars: AvatarProps[] = uniqBy(comments, 'user.id').map((comment) => ({
+  const uniqueAvatars: AvatarProps[] = uniqBy(
+    comments?.sort((a, b) => new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()),
+    'user.id',
+  ).map((comment) => ({
     src: comment?.user?.avatar,
     fullName: comment?.user?.fullName ?? '',
   }));
 
-  const avatars = uniqueAvatars.length > 3 ? uniqueAvatars.slice(0, 2) : uniqueAvatars;
+  const avatars = uniqueAvatars.length > 3 ? uniqueAvatars.slice(0, 3) : uniqueAvatars;
 
   const trailingCommentIcon = (
     <div className="relative">

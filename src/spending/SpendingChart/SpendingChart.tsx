@@ -6,12 +6,12 @@ import { cloneDeep } from 'lodash-es';
 import { defaultMonths } from '../constants';
 import { TooltipContent } from '../TooltipContent';
 import { Period, Spending, TrackingStatus } from '../types';
-import { getLineChartDataInMonth, getMonthsLineChartData, isEmptyPeriods } from '../utils';
+import { getLineChartDataInMonth, getMonthsLineChartData } from '../utils';
 import { XAxis } from '../XAxis';
 
 export type SpendingChartData = {
   periods?: Period[];
-  trackingStatus?: TrackingStatus;
+  trackingStatus: TrackingStatus;
   spendings: Spending[];
 };
 
@@ -22,7 +22,6 @@ export type SpendingChartProps = ClassName & {
 
 export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartProps) => {
   const { periods = [], trackingStatus } = data;
-  const overallTarget = !trackingStatus || isEmptyPeriods(periods);
 
   const months = (() => {
     if (periods?.length > 0) {
@@ -67,7 +66,6 @@ export const SpendingChart = ({ className, data, prevYearColor }: SpendingChartP
                   {...props}
                   trackingStatus={data.trackingStatus}
                   showTarget={showTarget}
-                  overallTarget={overallTarget}
                 />
               )}
               levelLabelClass="text-Gray-6 text-2xs font-normal"

@@ -1,4 +1,4 @@
-import { Checkbox, Divider, Form, ListLoader } from '@/common/components';
+import { Divider, Form, ListLoader } from '@/common/components';
 import { ResettableCheckbox } from '@/common/components/ResettableCheckbox';
 import { CheckboxGroupOption } from '@/common/headless';
 import { Department } from '@/main/entity';

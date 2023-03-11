@@ -14,6 +14,7 @@ import { useProfile } from '@/profile/useProfile';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
+import { convertDateRangeToFromTo } from '@/spending/utils';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { sumBy } from 'lodash-es';
@@ -31,7 +32,7 @@ export const CategoryPage = () => {
     'sortTransactionsBy',
     DEFAULT_SORT,
   );
-  const [dateRange, setDateRange] = useUrlState<DateRangeFilter>('dateRange', 'year-to-date');
+  const [dateRange, setDateRange] = useState<DateRangeFilter>('year-to-date');
 
   const { categoryId: categoryIdParam } = useParams() as Record<string, string>;
   const categoryId = +categoryIdParam;
@@ -41,11 +42,11 @@ export const CategoryPage = () => {
   const [groupBy, setGroupBy] = useState<GetCategorySpendingsParams['groupBy']>(undefined);
 
   const {
-    categorySpendingsReport = { curYearSpends: [], prevYearSpends: [] },
+    categorySpendingsReport,
+    curYearSpends,
+    prevYearSpends,
     isValidatingCategorySpendingsReport,
   } = useCategorySpendingsReport(categoryId, { groupBy });
-
-  const { curYearSpends = [], prevYearSpends = [] } = categorySpendingsReport ?? {};
 
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
@@ -58,9 +59,9 @@ export const CategoryPage = () => {
     totalLineItemsCount,
   } = useLineItems({
     props: [{ id: categoryId, type: 'CATEGORY', name: '', exclude: false }],
-    dateRange: dateRange,
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
+    ...convertDateRangeToFromTo({ dateRange }),
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
 
@@ -152,6 +153,7 @@ export const CategoryPage = () => {
                 <GroupedSpendingChart
                   data={categorySpendingsReport}
                   highlightedItemId={hoveredItemId}
+                  dateRange={dateRange!}
                 />
               )}
             </div>
@@ -162,6 +164,7 @@ export const CategoryPage = () => {
                 highlightedItemId={hoveredItemId}
                 onItemMouseEnter={setHoveredItemId}
                 onItemMouseLeave={() => setHoveredItemId(undefined)}
+                dateRange={dateRange!}
               />
             )}
           </div>

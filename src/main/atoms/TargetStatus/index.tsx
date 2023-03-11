@@ -21,13 +21,17 @@ const TargetStatus: React.FC<TargetStatusProps> = ({
   onTargetSet,
 }) => {
   const { label, background, dot } = TargetStatusConfig[type];
-  const { overallTarget = 0, exceeding } = getTargetPeriodsAmountTotal(target);
+  const { exceeding } = getTargetPeriodsAmountTotal(target);
 
-  if (overallTarget === 0) {
+  if (type === TargetStatusType.NotSet) {
     return (
       <Button
         className="rounded-full px-2 h-5 max-h-5 bg-Accent-8 text-Accent-2 justify-center items-center space-x-1.5 hidden lg:flex"
-        onClick={onTargetSet}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          onTargetSet?.(e);
+        }}
       >
         <span className="font-medium text-xs">Set target</span>
         <RightSmallIcon className="text-Accent-2 h-2 w-2 hidden lg:block" />

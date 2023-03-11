@@ -1,21 +1,12 @@
 import { ExclamationCircle, EyeHideIcon, MoreVerticalIcon } from '@/assets';
-import { ProtectedFeatures } from '@/auth/constants';
 import { Button, ButtonProps, ConditionalWrapper } from '@/common/components';
 import ConfirmModal from '@/main/atoms/ConfirmModal';
 import PopoverMenu from '@/main/atoms/PopoverMenu';
 import PopoverMenuItem from '@/main/atoms/PopoverMenuItem';
 import { Category, FeedItem, Visibility } from '@/main/entity';
-import {
-  decimalLogic,
-  DecimalType,
-  getColorByText,
-  getDisplayUsdAmount,
-  scrollToTop,
-} from '@/main/utils';
-import { useProfile } from '@/profile/useProfile';
+import { decimalLogic, DecimalType, getDisplayUsdAmount, scrollToTop } from '@/main/utils';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import { Menu } from '@headlessui/react';
-import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { sumBy } from 'lodash-es';
 import React from 'react';
@@ -48,59 +39,12 @@ export const TransactionsFeedCard = React.memo(
     const showCategoryConfirmModalDisclosure = useDisclosure();
     const hideCategoryConfirmModalDisclosure = useDisclosure();
 
-    const { isPermittedToFeature } = useProfile();
-
     const isHidden = feed.category !== null && feed.category?.visibility === Visibility.HIDDEN;
-    const hideCategoryPermission = isPermittedToFeature(ProtectedFeatures.HideCategory);
 
     const handleCopyFeedLink = () => {
       navigator.clipboard.writeText(`${window.location.host}/feed/${feed.id}`);
       toast.success('Feed link has been copied');
     };
-
-    const renderMenuItems = () => {
-      const items = [];
-      if (hideCategoryPermission) {
-        items.push(
-          isHidden ? (
-            <PopoverMenuItem
-              key="show-category"
-              value="show-category"
-              label="Show Category"
-              onClick={showCategoryConfirmModalDisclosure.onOpen}
-            />
-          ) : (
-            <PopoverMenuItem
-              key="hide-category"
-              value="hide-category"
-              label="Hide Category"
-              onClick={hideCategoryConfirmModalDisclosure.onOpen}
-            />
-          ),
-        );
-      }
-      items.push(
-        <PopoverMenuItem
-          key="issue-with-this-item"
-          value="issue-with-this-item"
-          label="Issue With This Item"
-          onClick={feedbackModalDisclosure.onOpen}
-        />,
-        <PopoverMenuItem
-          key="copy-feed-link"
-          value="copy-feed-link"
-          label="Copy Link"
-          onClick={handleCopyFeedLink}
-        />,
-      );
-      return items;
-    };
-
-    const catName = feed.category?.name ?? 'unknown';
-    const itemGradientBg = React.useMemo(
-      () => getColorByText(catName ?? '', undefined, true),
-      [catName],
-    );
 
     return (
       <>
@@ -162,7 +106,20 @@ export const TransactionsFeedCard = React.memo(
                         />
                       </Menu.Button>
                     </div>
-                    <PopoverMenu>{renderMenuItems()}</PopoverMenu>
+                    <PopoverMenu>
+                      <PopoverMenuItem
+                        key="issue-with-this-item"
+                        value="issue-with-this-item"
+                        label="Issue With This Item"
+                        onClick={feedbackModalDisclosure.onOpen}
+                      />
+                      <PopoverMenuItem
+                        key="copy-feed-link"
+                        value="copy-feed-link"
+                        label="Copy Link"
+                        onClick={handleCopyFeedLink}
+                      />
+                    </PopoverMenu>
                   </Menu>
                 </div>
               </div>

@@ -1,4 +1,3 @@
-import React from 'react';
 import * as Sentry from '@sentry/react';
 import TargetBoardSummaries from '@/main/organisms/TargetBoardSummaries';
 import { TargetsByDepartment } from './TargetsByDepartment';

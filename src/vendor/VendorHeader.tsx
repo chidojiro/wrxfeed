@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import React from 'react';
 import { VendorIcon } from '@/assets';
 import { ClassName } from '@/common/types';
 import { getColorByText } from '@/main/utils';

@@ -2,7 +2,6 @@ import { AddSmallSolid, TeamIcon } from '@/assets';
 import { Button } from '@/common/components';
 import { EMPTY_ARRAY } from '@/common/constants';
 import { getColorByText } from '@/main/utils';
-import { useDepartment } from '@/team/useDepartment';
 import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import React from 'react';

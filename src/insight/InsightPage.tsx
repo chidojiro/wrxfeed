@@ -1,4 +1,4 @@
-import { Form } from '@/common/components';
+import { Form, ListLoader } from '@/common/components';
 import { useMountEffect } from '@/common/hooks';
 import { FeedApis } from '@/feed/apis';
 import { DateRangeFilter, Property } from '@/feed/types';
@@ -6,12 +6,15 @@ import { MainLayout } from '@/layout/MainLayout';
 import { commentEditorHtmlParser } from '@/main/utils';
 import { identifyMixPanelUserProfile } from '@/mixpanel/useMixPanel';
 import { useProfile } from '@/profile/useProfile';
+import { convertDateRangeToFromTo } from '@/spending/utils';
+import { useSubscription } from '@/subscription/useSubscription';
 import { Entities } from '@/types';
 import { EditorState } from 'draft-js';
 import mixpanel from 'mixpanel-browser';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { InsightApis } from './apis';
 import { InsightCard } from './InsightCard';
 import { InsightHeader } from './InsightHeader';
@@ -24,7 +27,8 @@ export type InsightPageProps = {
 export const InsightPage = ({}: InsightPageProps) => {
   const { insightId } = useParams() as any;
 
-  const { insight } = useInsight(insightId);
+  const { insight, isInitializingInsight } = useInsight(insightId);
+  const { mutateSubscription } = useSubscription();
 
   const isEdit = !!insight;
 
@@ -32,7 +36,7 @@ export const InsightPage = ({}: InsightPageProps) => {
     defaultValues: {
       name: '',
       groupBy: 'DEPARTMENT',
-      dateRange: 'year-to-date',
+      dateRange: 'year-to-date' as DateRangeFilter,
       props: [] as Property[],
       vendors: [] as string[],
       departments: [] as string[],
@@ -114,17 +118,29 @@ export const InsightPage = ({}: InsightPageProps) => {
 
     const parsedContent = commentEditorHtmlParser(contentState.getCurrentContent());
 
-    handleSubmit(async (formData: any) => {
+    handleSubmit(async ({ dateRange, ...restFormData }: any) => {
       if (isEdit) {
-        await InsightApis.update(insight.id, formData);
+        await InsightApis.update(insight.id, {
+          ...restFormData,
+          ...convertDateRangeToFromTo({ dateRange }),
+        });
         if (isDirty) {
-          await FeedApis.createComment(insight.feedItem.id, {
-            content: parsedContent,
-            attachment: data?.attachment,
-          });
+          try {
+            await FeedApis.createComment(insight.feedItem.id, {
+              content: parsedContent,
+              attachment: data?.attachment,
+            });
+            toast.success('Comment sent!');
+          } catch (error) {
+            toast.error(error);
+          }
         }
+        mutateSubscription();
       } else {
-        const insight = await InsightApis.create(formData);
+        const insight = await InsightApis.create({
+          ...restFormData,
+          ...convertDateRangeToFromTo({ dateRange }),
+        });
         if (isDirty) {
           await FeedApis.createComment(insight.feedItem.id, {
             content: parsedContent,
@@ -138,17 +154,21 @@ export const InsightPage = ({}: InsightPageProps) => {
 
   return (
     <MainLayout>
-      <Form methods={methods} className="flex flex-col gap-6">
-        <InsightHeader />
-        <InsightCard
-          errors={errors}
-          onPost={handlePost}
-          groupBy={groupBy}
-          dateRange={dateRange}
-          props={props}
-          posting={isSubmitting}
-        />
-      </Form>
+      <ListLoader loading={isInitializingInsight}>
+        <Form methods={methods} className="flex flex-col gap-4 lg:gap-6">
+          <InsightHeader />
+          <InsightCard
+            errors={errors}
+            onPost={handlePost}
+            groupBy={groupBy}
+            dateRange={dateRange}
+            props={props}
+            posting={isSubmitting}
+            initializing={isInitializingInsight}
+            postable={isEdit ? profile?.id === insight?.creator.id : true}
+          />
+        </Form>
+      </ListLoader>
     </MainLayout>
   );
 };

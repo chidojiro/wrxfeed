@@ -1,4 +1,3 @@
-import React from 'react';
 import { ReactComponent as MessageTextAltIcon } from '@/assets/icons/solid/message-text-alt.svg';
 import clsx from 'clsx';
 import { Button, Spinner } from '@/common/components';

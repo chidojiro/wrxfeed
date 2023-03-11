@@ -1,7 +1,6 @@
 import { ClassName } from '@/common/types';
 import { StringUtils } from '@/common/utils';
 import clsx from 'clsx';
-import React from 'react';
 import { Tooltip } from '../Tooltip';
 
 type AvatarSize = 'sm' | 'md' | 'lg';

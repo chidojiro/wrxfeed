@@ -6,8 +6,7 @@ import { TrackingStatus } from './types';
 
 export type TooltipContentProps = TooltipProps<ValueType, NameType> & {
   showTarget?: boolean;
-  trackingStatus?: TrackingStatus;
-  overallTarget?: boolean;
+  trackingStatus: TrackingStatus;
 };
 
 export const TooltipContent = ({
@@ -15,7 +14,6 @@ export const TooltipContent = ({
   payload,
   showTarget,
   trackingStatus,
-  overallTarget,
 }: TooltipContentProps) => {
   if (active && payload) {
     const dataPoints = payload[0]?.payload;
@@ -47,9 +45,7 @@ export const TooltipContent = ({
               <div
                 className="w-1 h-1 rounded"
                 style={{
-                  background: overallTarget
-                    ? '#818CF8'
-                    : trackingStatus && TargetStatusConfig[trackingStatus].dot,
+                  background: TargetStatusConfig[trackingStatus].dot,
                 }}
               />
               <p className="text-white text-2xs">Current</p>

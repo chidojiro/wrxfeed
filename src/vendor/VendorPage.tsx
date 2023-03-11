@@ -13,12 +13,13 @@ import { useProfile } from '@/profile/useProfile';
 import { GroupedSpendingChart } from '@/spending/GroupedSpendingChart';
 import { GroupedSpendingChartLegends } from '@/spending/GroupedSpendingChartLegends';
 import { SpendingBarChart } from '@/spending/SpendingBarChart';
+import { convertDateRangeToFromTo } from '@/spending/utils';
 import { DEFAULT_SORT } from '@/team/constants';
 import { TransactionList } from '@/transactions/TransactionList';
 import { useTransactions } from '@/transactions/useTransactions';
 import { sumBy } from 'lodash-es';
 import mixpanel from 'mixpanel-browser';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { GetVendorSpendingsParams } from './types';
 import { useVendor } from './useVendor';
@@ -31,12 +32,12 @@ export const VendorPage = () => {
     'sortTransactionsBy',
     DEFAULT_SORT,
   );
-  const [dateRange, setDateRange] = useUrlState<DateRangeFilter>('dateRange', 'year-to-date');
+  const [dateRange, setDateRange] = React.useState<DateRangeFilter>('year-to-date');
   const [groupBy, setGroupBy] = React.useState<GetVendorSpendingsParams['groupBy']>(undefined);
 
   const { vendorId: vendorIdParam } = useParams() as Record<string, string>;
   const vendorId = +vendorIdParam;
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = React.useState<number>(1);
   const {
     data: vendor,
     isValidating: isValidatingVendor,
@@ -49,19 +50,19 @@ export const VendorPage = () => {
     },
   });
 
-  const { vendorSpendings, isValidatingVendorSpendings } = useVendorSpendings(vendorId, {
-    groupBy,
-  });
+  const { vendorSpendings, curYearSpends, prevYearSpends, isValidatingVendorSpendings } =
+    useVendorSpendings(vendorId, {
+      groupBy,
+      ...convertDateRangeToFromTo({ dateRange: 'year-to-date' }),
+    });
 
   const { transactions, isValidatingTransactions, totalCount } = useTransactions({
     props: [{ id: vendorId, type: 'VENDOR', name: '', exclude: false }],
     limit: DEFAULT_ITEMS_PER_INFINITE_LOAD,
     offset: (page - 1) * DEFAULT_ITEMS_PER_INFINITE_LOAD,
-    dateRange,
+    ...convertDateRangeToFromTo({ dateRange }),
     ...StringUtils.toApiSortParam(sortTransactionsBy ?? ''),
   });
-
-  const { curYearSpends = [], prevYearSpends = [] } = vendorSpendings ?? {};
 
   const totalSpend = sumBy(curYearSpends, 'total');
   const totalSpendLastYear = sumBy(prevYearSpends, 'total');
@@ -149,7 +150,11 @@ export const VendorPage = () => {
               {!groupBy ? (
                 <SpendingBarChart thisYearData={curYearSpends} lastYearData={prevYearSpends} />
               ) : (
-                <GroupedSpendingChart data={vendorSpendings} highlightedItemId={hoveredItemId} />
+                <GroupedSpendingChart
+                  data={vendorSpendings}
+                  highlightedItemId={hoveredItemId}
+                  dateRange={dateRange!}
+                />
               )}
             </div>
             {!!groupBy && (
@@ -159,6 +164,7 @@ export const VendorPage = () => {
                 highlightedItemId={hoveredItemId}
                 onItemMouseEnter={setHoveredItemId}
                 onItemMouseLeave={() => setHoveredItemId(undefined)}
+                dateRange={dateRange}
               />
             )}
           </div>

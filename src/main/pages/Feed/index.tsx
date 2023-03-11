@@ -8,11 +8,12 @@ import { MainLayout } from '@/layout/MainLayout';
 import { Routes } from '@/routing/routes';
 import { TargetApis } from '@/target/apis';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 export const FeedPage: React.FC = () => {
   const { redirect } = useNavUtils();
   const params = useParams<{ id: string }>();
+  const history = useHistory();
 
   const feedId = +params.id;
 
@@ -28,7 +29,7 @@ export const FeedPage: React.FC = () => {
     mutate,
     isValidating,
     error,
-  } = useFetcher(['feed'], () => FeedApis.get(feedId));
+  } = useFetcher(!!feedId && ['feed', feedId], () => FeedApis.get(feedId));
 
   const goBackToDashboard = () => {
     redirect(Routes.Dashboard.path as string);
@@ -54,13 +55,14 @@ export const FeedPage: React.FC = () => {
 
     return (
       <div className="w-full h-full hide-scrollbar invisible-scrollbar">
-        <ListLoader loading={isValidating}>
+        <ListLoader loading={isValidating || !feedItem}>
           <FeedCard
             feed={feedItem ?? fallbackFeed}
             defaultExpand
             categoryRedirectHref={(category) => `/categories/${category?.id.toString()}`}
             onDeleteTarget={deleteTarget}
             onUpdateTarget={updateTarget}
+            onInsightDeleteSuccess={() => history.push('/dashboard/all-company')}
           />
         </ListLoader>
         <LineItemDrawer

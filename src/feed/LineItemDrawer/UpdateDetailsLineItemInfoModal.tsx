@@ -4,7 +4,6 @@ import { withMountOnOpen } from '@/common/hocs';
 import { useHandler } from '@/common/hooks';
 import { TransLineItem } from '@/main/entity';
 import { getNameAbbreviation } from '@/main/utils';
-import clsx from 'clsx';
 import dayjs from 'dayjs';
 import React from 'react';
 import { useForm } from 'react-hook-form';

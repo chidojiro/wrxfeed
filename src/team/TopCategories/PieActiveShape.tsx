@@ -1,4 +1,3 @@
-import React from 'react';
 import { PieProps, Sector } from 'recharts';
 
 const PieActiveShape: PieProps['activeShape'] = ({

@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 import { Children, ClassName } from '@/common/types';
 

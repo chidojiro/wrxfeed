@@ -11,7 +11,7 @@ import { useDisclosure } from '@dwarvesf/react-hooks';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { cloneDeep } from 'lodash-es';
-import React, { forwardRef, ForwardRefRenderFunction, useEffect, useRef, useState } from 'react';
+import { forwardRef, ForwardRefRenderFunction, useEffect, useRef, useState } from 'react';
 import { useWindowSize } from '@react-hook/window-size';
 
 interface MultiMonthDropdownProps {

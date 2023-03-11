@@ -1,7 +1,7 @@
-import { RestrictedItem } from '@/auth/RestrictedItem';
 import { Button } from '@/common/components';
 import { useDisclosure } from '@/common/hooks';
 import { ClassName } from '@/common/types';
+import { DateRangeFilter } from '@/feed/types';
 import { getDisplayUsdAmount } from '@/main/utils';
 import { RestrictedItem as TRestrictedItem } from '@/role/types';
 import { useRestrictedItems } from '@/role/useRestrictedItems';
@@ -11,7 +11,7 @@ import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
 import { useHistory } from 'react-router-dom';
 import { Spending } from './types';
-import { getThisYearTotalsGroupedByItem } from './utils';
+import { getSortedTotalSpendings } from './utils';
 
 export type GroupedSpendingChartLegendsProps = ClassName & {
   spendings: Spending[];
@@ -19,6 +19,7 @@ export type GroupedSpendingChartLegendsProps = ClassName & {
   highlightedItemId?: number;
   onItemMouseEnter: (itemId: number) => void;
   onItemMouseLeave: () => void;
+  dateRange: DateRangeFilter;
 };
 
 const LabelsByGroupBy = {
@@ -34,8 +35,9 @@ export const GroupedSpendingChartLegends = ({
   className,
   onItemMouseEnter,
   onItemMouseLeave,
+  dateRange,
 }: GroupedSpendingChartLegendsProps) => {
-  const thisYearTotals = getThisYearTotalsGroupedByItem(spendings);
+  const sortedTotalSpendings = getSortedTotalSpendings(spendings, dateRange);
 
   const showOthersDisclosure = useDisclosure();
 
@@ -59,8 +61,8 @@ export const GroupedSpendingChartLegends = ({
     }
   };
 
-  const firstTen = thisYearTotals.flat().slice(0, 10);
-  const remaining = thisYearTotals.flat().slice(10);
+  const firstTen = sortedTotalSpendings.flat().slice(0, 10);
+  const remaining = sortedTotalSpendings.flat().slice(10);
 
   return (
     <div className={clsx('flex flex-col', className)}>
